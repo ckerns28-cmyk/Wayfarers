@@ -3,307 +3,784 @@ export class WorldRoom {
     this.state = state;
     this.env = env;
   }
+
   async fetch(request) {
     return new Response("WorldRoom active");
   }
 }
 
 export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    if (url.pathname === "/favicon.ico") {
-      return new Response(null, { status: 204 });
-    }
+  async fetch(request) {
     return new Response(html, {
-      headers: { "content-type": "text/html; charset=UTF-8" },
+      headers: {
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store",
+      },
     });
   },
 };
 
-const html = `<!DOCTYPE html>
-<html>
+const html = String.raw`<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Wayfarer v7</title>
-<style>
-  body { margin:0; overflow:hidden; background:#111; color:#fff; font-family:monospace; }
-  #ui { position:fixed; top:10px; left:10px; z-index:5; background:rgba(0,0,0,.55); padding:10px; border:1px solid #666; }
-  #dialogue { position:fixed; left:50%; transform:translateX(-50%); bottom:20px; width:min(760px,92vw); z-index:6; background:rgba(10,10,20,.92); border:2px solid #d7d7ff; padding:14px; display:none; }
-  #dialogue button { margin-top:10px; font-family:inherit; }
-  #inventory { position:fixed; top:10px; right:10px; width:260px; z-index:6; background:rgba(0,0,0,.6); border:1px solid #666; padding:10px; display:none; }
-  #slots { display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; }
-  .slot { height:34px; border:1px solid #777; display:flex; align-items:center; justify-content:center; font-size:10px; text-align:center; padding:2px; background:rgba(255,255,255,.04); }
-  canvas { display:block; image-rendering: pixelated; }
-  .muted { color:#bbb; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wayfarer v8 - Broken Marker</title>
+  <style>
+    :root {
+      --bg: #071019;
+      --panel: rgba(12, 18, 28, 0.92);
+      --panel-border: rgba(255,255,255,0.10);
+      --text: #e9eef7;
+      --muted: #a7b0c0;
+      --accent: #7cc3ff;
+      --danger: #ff7a7a;
+      --ok: #8fe388;
+      --gold: #f5d36a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    #wrap {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      height: 100vh;
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.28);
+    }
+
+    #sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      line-height: 1.1;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+      font-size: 15px;
+      align-items: center;
+    }
+
+    .muted { color: var(--muted); }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    #chat {
+      background: rgba(0,0,0,0.28);
+      border-radius: 14px;
+      padding: 12px;
+      min-height: 180px;
+      max-height: 260px;
+      overflow: auto;
+      white-space: pre-line;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+    }
+
+    #gamePanel {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    #game {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+      border-radius: 20px;
+      background: #0b1621;
+    }
+
+    #hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(0,0,0,0.34);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      pointer-events: none;
+      white-space: pre-line;
+    }
+
+    #dialogue {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      background: rgba(10, 12, 18, 0.96);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      padding: 16px;
+      display: none;
+      box-shadow: 0 14px 44px rgba(0,0,0,0.4);
+    }
+
+    #dialogueName {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    #dialogueText {
+      min-height: 76px;
+      white-space: pre-line;
+      line-height: 1.45;
+      color: var(--text);
+    }
+
+    #dialogueHint {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .questTitle {
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+  </style>
 </head>
 <body>
-<div id="ui">
-  <div><strong>Wayfarer v7</strong></div>
-  <div class="muted">Move: WASD / Arrows</div>
-  <div class="muted">Attack: Space</div>
-  <div class="muted">Inventory: I</div>
-  <div id="status">Connected. Mirror Pond awaits.</div>
-  <div id="xp">XP: 0</div>
-  <div id="zone">Zone: Hearthvale Crossroads</div>
-</div>
-<div id="inventory">
-  <div><strong>Inventory</strong> (20)</div>
-  <div id="slots"></div>
-</div>
-<div id="dialogue">
-  <div id="dialogueName"></div>
-  <div id="dialogueText" style="margin-top:8px; white-space:pre-line;"></div>
-  <button id="dialogueNext">Continue</button>
-</div>
-<canvas id="game"></canvas>
-<script>
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-const TILE = 32;
-const VIEW_W = () => Math.floor(canvas.width / TILE);
-const VIEW_H = () => Math.floor(canvas.height / TILE);
-function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
-addEventListener('resize', resize); resize();
+  <div id="wrap">
+    <aside id="sidebar">
+      <section class="panel">
+        <h1>Wayfarer</h1>
+        <div class="sub">v8 — Broken Marker</div>
+        <div class="pill">Exploration + story first</div>
+      </section>
 
-const world = { width: 72, height: 54 };
-const player = { x: 10, y: 26, hp: 100, maxHp: 100, atk: 7, xp: 0, facing:'down', inventory:["Rusty Sword"], footprints:[] };
-const state = { showInv:false, dialogue:null, dialogueIndex:0, ticks:0, combatCooldown:0 };
+      <section class="panel">
+        <div class="stats">
+          <div class="muted">HP</div><div id="hpVal">50/50</div>
+          <div class="muted">XP</div><div id="xpVal">0</div>
+          <div class="muted">Coins</div><div id="coinsVal">0</div>
+          <div class="muted">Weapon</div><div>Rusty Sword (+2)</div>
+          <div class="muted">Quest</div><div id="questVal">None</div>
+          <div class="muted">Zone</div><div id="zoneVal">Hearthvale Crossroads</div>
+        </div>
+      </section>
 
-const zones = [
-  { name:'Hearthvale Crossroads', x1:0,y1:20,x2:20,y2:34 },
-  { name:'Western Fields', x1:0,y1:10,x2:22,y2:20 },
-  { name:'Eastern Fields', x1:20,y1:10,x2:42,y2:22 },
-  { name:'Mirror Pond', x1:29,y1:24,x2:49,y2:42 },
-  { name:'Wolf Territory North', x1:45,y1:7,x2:68,y2:20 },
-  { name:'Wolf Territory East', x1:50,y1:24,x2:70,y2:40 }
-];
+      <section class="panel">
+        <div class="questTitle">Current Objective</div>
+        <div id="objectiveText" class="muted">Speak to Edrin Vale near Mirror Pond.</div>
+      </section>
 
-const pond = { x1:33, y1:27, x2:44, y2:36 };
-const farms = [
-  { x1:5,y1:12,x2:14,y2:18, label:'Field A' },
-  { x1:22,y1:12,x2:31,y2:18, label:'Field B' },
-  { x1:34,y1:12,x2:41,y2:18, label:'Field C' }
-];
-const trees = [];
-for (let i=0;i<130;i++) {
-  const x = 40 + (i*7)%30;
-  const y = 4 + (i*11)%44;
-  if ((x > pond.x1-2 && x < pond.x2+2 && y > pond.y1-2 && y < pond.y2+2)) continue;
-  trees.push({x,y});
-}
-for (let i=0;i<50;i++) trees.push({x:2 + (i*3)%18, y:2 + (i*5)%12});
+      <section class="panel">
+        <div style="font-weight:700; margin-bottom:8px;">Log</div>
+        <div id="chat"></div>
+      </section>
+    </aside>
 
-const npcs = [
-  {
-    id:'edrin', name:'Edrin Vale', x:31, y:25,
-    dialogue:[
-      'You are not from here.',
-      '...good.',
-      'Most travelers walk roads.',
-      'Few question where they lead.',
-      'There is a stone beyond the trees.',
-      'It should not exist.',
-      'Yet it does.'
-    ]
-  }
-];
+    <main id="gamePanel" class="panel">
+      <canvas id="game"></canvas>
+      <div id="hud"></div>
 
-const loot = [];
-const creatures = [];
-function addCreature(type,x,y){
-  creatures.push({
-    type,x,y,hp:type==='wolf'?28:14,maxHp:type==='wolf'?28:14,
-    atk:type==='wolf'?6:2, cooldown:0, dead:0,
-    homeX:x, homeY:y,
-    color:type==='wolf'?'#9aa3ad':'#9a6b2f',
-    loot:type==='wolf'?[['Wolf Pelt',1],['Raw Meat',1],['Coins',6]]:[['Turkey Meat',1],['Feather',1],['Coins',3]]
-  });
-}
-[[52,12],[57,14],[60,15],[55,18],[63,16],[58,30],[61,32],[64,35],[67,34]].forEach(p=>addCreature('wolf',...p));
-[[9,15],[11,16],[24,14],[26,16],[36,15],[38,16]].forEach(p=>addCreature('turkey',...p));
+      <div id="dialogue">
+        <div id="dialogueName"></div>
+        <div id="dialogueText"></div>
+        <div id="dialogueHint">Click anywhere on the dialogue box to continue.</div>
+      </div>
+    </main>
+  </div>
 
-function currentZone(){
-  const z = zones.find(z => player.x>=z.x1 && player.x<=z.x2 && player.y>=z.y1 && player.y<=z.y2);
-  return z ? z.name : 'Outskirts';
-}
-function passable(x,y){
-  if (x<0||y<0||x>=world.width||y>=world.height) return false;
-  if (trees.some(t=>t.x===x&&t.y===y)) return false;
-  return true;
-}
-function addFootprint(){ player.footprints.push({x:player.x,y:player.y,life:40}); if(player.footprints.length>40) player.footprints.shift(); }
-function move(dx,dy){
-  const nx=player.x+dx, ny=player.y+dy;
-  if (dx>0) player.facing='right'; if (dx<0) player.facing='left'; if (dy>0) player.facing='down'; if (dy<0) player.facing='up';
-  if(passable(nx,ny)){ addFootprint(); player.x=nx; player.y=ny; pickupLoot(); }
-}
-addEventListener('keydown', e=>{
-  if (state.dialogue) return;
-  if (e.key==='ArrowUp'||e.key==='w'||e.key==='W') move(0,-1);
-  if (e.key==='ArrowDown'||e.key==='s'||e.key==='S') move(0,1);
-  if (e.key==='ArrowLeft'||e.key==='a'||e.key==='A') move(-1,0);
-  if (e.key==='ArrowRight'||e.key==='d'||e.key==='D') move(1,0);
-  if (e.key===' ') attackNearest();
-  if (e.key==='i'||e.key==='I') toggleInventory();
-});
-canvas.addEventListener('click', e=>{
-  const {wx, wy} = screenToWorld(e.clientX, e.clientY);
-  const npc = npcs.find(n=>n.x===wx&&n.y===wy);
-  if (npc){ openDialogue(npc); return; }
-  const c = creatures.find(c=>!c.dead && Math.abs(c.x-wx)<=0 && Math.abs(c.y-wy)<=0);
-  if (c) attackCreature(c);
-});
-function toggleInventory(){ state.showInv=!state.showInv; document.getElementById('inventory').style.display = state.showInv ? 'block':'none'; renderInventory(); }
-function renderInventory(){
-  const slots = document.getElementById('slots'); slots.innerHTML='';
-  for(let i=0;i<20;i++){
-    const div = document.createElement('div'); div.className='slot'; div.textContent = player.inventory[i] || ''; slots.appendChild(div);
-  }
-}
-function openDialogue(npc){ state.dialogue=npc; state.dialogueIndex=0; document.getElementById('dialogue').style.display='block'; document.getElementById('dialogueName').textContent=npc.name; renderDialogue(); }
-function renderDialogue(){ document.getElementById('dialogueText').textContent = state.dialogue.dialogue[state.dialogueIndex]; }
-document.getElementById('dialogueNext').onclick=()=>{
-  if(!state.dialogue) return;
-  state.dialogueIndex++;
-  if(state.dialogueIndex>=state.dialogue.dialogue.length){ document.getElementById('dialogue').style.display='none'; state.dialogue=null; return; }
-  renderDialogue();
-};
-function pickupLoot(){
-  for (let i=loot.length-1;i>=0;i--){
-    const l=loot[i];
-    if(l.x===player.x&&l.y===player.y){
-      player.inventory.push(l.item);
-      loot.splice(i,1);
-      renderInventory();
-      document.getElementById('status').textContent = 'Picked up ' + l.item + '.';
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    const hud = document.getElementById("hud");
+    const chat = document.getElementById("chat");
+    const hpVal = document.getElementById("hpVal");
+    const xpVal = document.getElementById("xpVal");
+    const coinsVal = document.getElementById("coinsVal");
+    const zoneVal = document.getElementById("zoneVal");
+    const questVal = document.getElementById("questVal");
+    const objectiveText = document.getElementById("objectiveText");
+
+    const dialogue = document.getElementById("dialogue");
+    const dialogueName = document.getElementById("dialogueName");
+    const dialogueText = document.getElementById("dialogueText");
+
+    const TILE = 28;
+    const WORLD_W = 60;
+    const WORLD_H = 34;
+
+    function resize() {
+      const rect = document.getElementById("gamePanel").getBoundingClientRect();
+      canvas.width = Math.max(900, Math.floor(rect.width));
+      canvas.height = Math.max(620, Math.floor(rect.height));
     }
-  }
-}
-function attackNearest(){
-  const target = creatures.filter(c=>!c.dead).find(c => Math.abs(c.x-player.x)+Math.abs(c.y-player.y) <= 1);
-  if(target) attackCreature(target);
-}
-function attackCreature(c){
-  if (c.dead) return;
-  c.hp -= player.atk;
-  document.getElementById('status').textContent = 'Hit ' + c.type + ' for ' + player.atk + '.';
-  if (c.hp <= 0){
-    c.dead = 200;
-    player.xp += c.type==='wolf'?20:8;
-    document.getElementById('xp').textContent = 'XP: ' + player.xp;
-    c.loot.forEach(([item,count])=>{ loot.push({x:c.x,y:c.y,item}); });
-    document.getElementById('status').textContent = 'Defeated ' + c.type + '.';
-  }
-}
-function updateCreatures(){
-  creatures.forEach(c=>{
-    if(c.dead){ c.dead--; if(c.dead===0){ c.hp=c.maxHp; c.x=c.homeX; c.y=c.homeY; } return; }
-    const dist = Math.abs(c.x-player.x)+Math.abs(c.y-player.y);
-    if(c.type==='wolf' && dist<6){
-      if(state.ticks%18===0){
-        const dx = Math.sign(player.x-c.x), dy = Math.sign(player.y-c.y);
-        const nx = c.x + (Math.abs(player.x-c.x) > Math.abs(player.y-c.y) ? dx : 0);
-        const ny = c.y + (Math.abs(player.y-c.y) >= Math.abs(player.x-c.x) ? dy : 0);
-        if(passable(nx,ny)){ c.x=nx; c.y=ny; }
+    resize();
+    addEventListener("resize", resize);
+
+    const world = {
+      roads: [
+        { x: 0, y: 16, w: 60, h: 2 },
+        { x: 18, y: 8, w: 2, h: 16 },
+        { x: 30, y: 4, w: 2, h: 22 },
+        { x: 48, y: 2, w: 2, h: 16 },
+      ],
+      fields: [
+        { x: 0, y: 0, w: 11, h: 8, name: "Western Fields" },
+        { x: 18, y: 0, w: 11, h: 8, name: "Central Fields" },
+        { x: 35, y: 0, w: 11, h: 8, name: "Eastern Fields" },
+      ],
+      pond: { x: 33, y: 17, w: 12, h: 7, name: "Mirror Pond" },
+      trees: [],
+      markers: [
+        { x: 52, y: 10, text: "Broken Marker", discovered: false }
+      ],
+      labels: [
+        { x: 2, y: 12, text: "Hearthvale Crossroads" },
+        { x: 37, y: 16, text: "Mirror Pond" },
+        { x: 23, y: 29, text: "Eastern Fields" },
+      ]
+    };
+
+    function pushTree(x, y) {
+      world.trees.push({ x, y });
+    }
+
+    // Tree lines / clusters
+    for (let i = 44; i < 60; i += 3) pushTree(i, 4);
+    for (let i = 45; i < 60; i += 2) pushTree(i, 30);
+    [31,33,35,38,41,46,50].forEach((x, idx) => pushTree(x, 10 + (idx % 3)));
+    [34,36,38,40,43,46,48].forEach((x, idx) => pushTree(x, 25 + (idx % 2)));
+
+    const player = {
+      x: 30,
+      y: 16,
+      hp: 50,
+      maxHp: 50,
+      xp: 0,
+      coins: 0,
+      facing: "down"
+    };
+
+    const npcs = [
+      {
+        id: "edrin",
+        name: "Edrin Vale",
+        x: 29,
+        y: 16,
+        color: "#7e5bef"
       }
-      if(dist<=1 && state.ticks%30===0){
-        player.hp = Math.max(0, player.hp - c.atk);
-        document.getElementById('status').textContent = 'A wolf bites you for ' + c.atk + '.';
-      }
-    } else if(state.ticks%50===0 && Math.random() < 0.4){
-      const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
-      const [dx,dy] = dirs[Math.floor(Math.random()*dirs.length)];
-      const nx=c.x+dx, ny=c.y+dy;
-      const inTerritory = c.type==='wolf' ? ((c.homeX<60 && nx>=45&&nx<=68&&ny>=7&&ny<=20) || (c.homeX>=60 && nx>=50&&nx<=70&&ny>=24&&ny<=40)) : true;
-      if(passable(nx,ny) && inTerritory){ c.x=nx; c.y=ny; }
-    }
-  });
-  player.footprints.forEach(f=>f.life--);
-  player.footprints = player.footprints.filter(f=>f.life>0);
-}
+    ];
 
-function dayNightAlpha(){
-  const t = (Math.sin(state.ticks/260)+1)/2; // 0..1
-  return 0.08 + (1-t)*0.18;
-}
-function camera(){
-  return { x: Math.max(0, Math.min(world.width - VIEW_W(), player.x - Math.floor(VIEW_W()/2))), y: Math.max(0, Math.min(world.height - VIEW_H(), player.y - Math.floor(VIEW_H()/2))) };
-}
-function worldToScreen(wx,wy){ const cam=camera(); return {sx:(wx-cam.x)*TILE, sy:(wy-cam.y)*TILE}; }
-function screenToWorld(px,py){ const cam=camera(); return {wx:Math.floor(px/TILE)+cam.x, wy:Math.floor(py/TILE)+cam.y}; }
-function drawTile(wx,wy){
-  const {sx,sy}=worldToScreen(wx,wy);
-  let color = '#355b2d';
-  if (wy>=20 && wy<=32 && wx<22) color = '#496d30';
-  if (wx>=pond.x1 && wx<=pond.x2 && wy>=pond.y1 && wy<=pond.y2) color = '#2a6fe8';
-  if ((wx>=4&&wx<=42&&wy===26) || (wx===24&&wy>=18&&wy<=26) || (wx===36&&wy>=18&&wy<=26) || (wx===32&&wy>=26&&wy<=31) || (wx===46&&wy>=14&&wy<=26)) color = '#9a8458';
-  ctx.fillStyle = color; ctx.fillRect(sx,sy,TILE,TILE);
-}
-function drawWorld(){
-  const cam = camera();
-  for(let y=cam.y;y<cam.y+VIEW_H()+1;y++){
-    for(let x=cam.x;x<cam.x+VIEW_W()+1;x++) drawTile(x,y);
-  }
-  farms.forEach(f=>{
-    for(let x=f.x1;x<=f.x2;x++) for(let y=f.y1;y<=f.y2;y++){
-      const {sx,sy}=worldToScreen(x,y); ctx.fillStyle='#7c8f31'; ctx.fillRect(sx+4,sy+4,TILE-8,TILE-8);
+    const creatures = [
+      { id: "wolf1", type: "wolf", x: 46, y: 12, hp: 18, maxHp: 18, homeX: 46, homeY: 12, roam: 3 },
+      { id: "wolf2", type: "wolf", x: 48, y: 11, hp: 18, maxHp: 18, homeX: 48, homeY: 11, roam: 3 },
+      { id: "wolf3", type: "wolf", x: 50, y: 13, hp: 18, maxHp: 18, homeX: 50, homeY: 13, roam: 3 },
+      { id: "turkey1", type: "turkey", x: 25, y: 6, hp: 8, maxHp: 8, homeX: 25, homeY: 6, roam: 2 },
+      { id: "turkey2", type: "turkey", x: 21, y: 5, hp: 8, maxHp: 8, homeX: 21, homeY: 5, roam: 2 },
+      { id: "turkey3", type: "turkey", x: 41, y: 5, hp: 8, maxHp: 8, homeX: 41, homeY: 5, roam: 2 }
+    ];
+
+    const quest = {
+      id: "broken_marker",
+      state: "not_started", // not_started | active | found | complete
+    };
+
+    let lastAttackAt = 0;
+    let lastCreatureStep = 0;
+    let lastWolfHit = 0;
+
+    let activeDialogue = null;
+    let activeDialogueIndex = 0;
+
+    const edrinIntro = [
+      "You are not from here.",
+      "...good.",
+      "Most travelers walk roads.",
+      "Few question where they lead.",
+      "There is a stone beyond the trees.",
+      "It should not exist.",
+      "Yet it does."
+    ];
+
+    const edrinAfterFind = [
+      "So. You found it.",
+      "Then the stories were not lies after all.",
+      "Keep what you felt to yourself, for now.",
+      "Take this coin. And remember the shape of that stone."
+    ];
+
+    function log(message) {
+      chat.textContent = message + "\\n" + chat.textContent;
     }
-    for(let x=f.x1;x<=f.x2;x++){
-      [[x,f.y1],[x,f.y2]].forEach(([xx,yy])=>{const {sx,sy}=worldToScreen(xx,yy); ctx.fillStyle='#c9b07d'; ctx.fillRect(sx,sy,TILE,4); ctx.fillRect(sx,sy+TILE-4,TILE,4);});
+
+    log("System: Wayfarer v8 loaded.");
+    log("System: Speak to Edrin Vale near Mirror Pond.");
+
+    const keys = new Set();
+
+    addEventListener("keydown", (e) => {
+      const key = e.key.toLowerCase();
+      if (["arrowup","arrowdown","arrowleft","arrowright","w","a","s","d"," "].includes(key)) {
+        e.preventDefault();
+      }
+      keys.add(key);
+
+      if (key === " " || e.key === " ") {
+        manualAttack();
+      }
+    });
+
+    addEventListener("keyup", (e) => {
+      keys.delete(e.key.toLowerCase());
+    });
+
+    dialogue.addEventListener("click", () => {
+      if (!activeDialogue) return;
+
+      activeDialogueIndex++;
+      if (activeDialogueIndex >= activeDialogue.lines.length) {
+        dialogue.style.display = "none";
+
+        if (activeDialogue.id === "edrin_intro" && quest.state === "not_started") {
+          quest.state = "active";
+          log("Quest started: The Broken Marker");
+        }
+
+        if (activeDialogue.id === "edrin_complete" && quest.state === "found") {
+          quest.state = "complete";
+          player.xp += 25;
+          player.coins += 10;
+          log("Quest complete: The Broken Marker");
+          log("Reward: +25 XP, +10 coins");
+        }
+
+        activeDialogue = null;
+        activeDialogueIndex = 0;
+        updateSidebar();
+        return;
+      }
+
+      renderDialogue();
+    });
+
+    canvas.addEventListener("click", (e) => {
+      if (activeDialogue) return;
+
+      const { worldX, worldY } = screenToWorld(e.clientX, e.clientY);
+
+      const npc = npcs.find(n => n.x === worldX && n.y === worldY);
+      if (npc && npc.id === "edrin") {
+        if (quest.state === "found") {
+          startDialogue("edrin_complete", "Edrin Vale", edrinAfterFind);
+        } else {
+          startDialogue("edrin_intro", "Edrin Vale", edrinIntro);
+        }
+        return;
+      }
+
+      const target = creatures.find(c => c.hp > 0 && c.x === worldX && c.y === worldY);
+      if (target) {
+        attackCreature(target);
+      }
+    });
+
+    function startDialogue(id, speaker, lines) {
+      activeDialogue = { id, speaker, lines };
+      activeDialogueIndex = 0;
+      renderDialogue();
     }
-    for(let y=f.y1;y<=f.y2;y++){
-      [[f.x1,y],[f.x2,y]].forEach(([xx,yy])=>{const {sx,sy}=worldToScreen(xx,yy); ctx.fillStyle='#c9b07d'; ctx.fillRect(sx,sy,4,TILE); ctx.fillRect(sx+TILE-4,sy,4,TILE);});
+
+    function renderDialogue() {
+      if (!activeDialogue) return;
+      dialogueName.textContent = activeDialogue.speaker;
+      dialogueText.textContent = activeDialogue.lines[activeDialogueIndex];
+      dialogue.style.display = "block";
     }
-  });
-  trees.forEach(t=>{ const {sx,sy}=worldToScreen(t.x,t.y); ctx.fillStyle='#174c21'; ctx.fillRect(sx+4,sy+2,24,20); ctx.fillStyle='#5b381b'; ctx.fillRect(sx+12,sy+18,8,12); });
-  player.footprints.forEach(f=>{ const {sx,sy}=worldToScreen(f.x,f.y); ctx.fillStyle='rgba(180,180,180,'+(f.life/60)+')'; ctx.fillRect(sx+10,sy+22,4,4); ctx.fillRect(sx+18,sy+24,4,4); });
-}
-function drawPlayer(){
-  const {sx,sy}=worldToScreen(player.x,player.y);
-  // cloak/body
-  ctx.fillStyle='#1f4aa8'; ctx.fillRect(sx+8,sy+6,16,22);
-  ctx.fillStyle='#d6c6a3'; ctx.fillRect(sx+10,sy+2,12,8);
-  ctx.fillStyle='#6d4a2b'; ctx.fillRect(sx+7,sy+28,6,4); ctx.fillRect(sx+19,sy+28,6,4);
-  // sword
-  ctx.fillStyle='#c7d2da';
-  if(player.facing==='right') ctx.fillRect(sx+24,sy+12,8,3);
-  else if(player.facing==='left') ctx.fillRect(sx,sy+12,8,3);
-  else ctx.fillRect(sx+22,sy+14,6,2);
-  // hp bar
-  ctx.fillStyle='#111'; ctx.fillRect(sx, sy-8, TILE, 5); ctx.fillStyle='#30cc55'; ctx.fillRect(sx+1, sy-7, (TILE-2)*(player.hp/player.maxHp), 3);
-}
-function drawCreatures(){
-  creatures.forEach(c=>{
-    if(c.dead) return;
-    const {sx,sy}=worldToScreen(c.x,c.y);
-    if(c.type==='wolf'){
-      ctx.fillStyle='#8b949e'; ctx.fillRect(sx+6,sy+10,20,12); ctx.fillStyle='#6f7780'; ctx.fillRect(sx+2,sy+12,8,8); ctx.fillRect(sx+22,sy+12,6,6);
-    } else {
-      ctx.fillStyle='#8b5a2b'; ctx.fillRect(sx+8,sy+10,16,14); ctx.fillStyle='#d2c08d'; ctx.fillRect(sx+18,sy+8,6,6);
+
+    function worldToScreen(x, y) {
+      const camX = Math.max(0, Math.min(player.x - 16, WORLD_W - 32));
+      const camY = Math.max(0, Math.min(player.y - 10, WORLD_H - 20));
+      return {
+        x: (x - camX) * TILE + 40,
+        y: (y - camY) * TILE + 40,
+        camX,
+        camY
+      };
     }
-    ctx.fillStyle='#111'; ctx.fillRect(sx, sy-6, TILE, 4); ctx.fillStyle='#cc3333'; ctx.fillRect(sx+1, sy-5, (TILE-2)*(c.hp/c.maxHp), 2);
-  });
-}
-function drawLoot(){
-  loot.forEach(l=>{ const {sx,sy}=worldToScreen(l.x,l.y); ctx.fillStyle='#f4d35e'; ctx.fillRect(sx+12,sy+12,8,8); });
-}
-function drawNPCs(){
-  npcs.forEach(n=>{ const {sx,sy}=worldToScreen(n.x,n.y); ctx.fillStyle='#7c5cff'; ctx.fillRect(sx+8,sy+6,16,20); ctx.fillStyle='#e5d4b4'; ctx.fillRect(sx+10,sy+2,12,8); ctx.fillStyle='white'; ctx.font='12px monospace'; ctx.fillText(n.name,sx-10,sy-4); });
-}
-function drawLabels(){
-  const labels = [ ['Mirror Pond', 36, 26], ['Eastern Fields', 30, 10], ['Western Fields', 7, 10], ['Hearthvale Crossroads', 7, 22] ];
-  labels.forEach(([name,x,y])=>{ const {sx,sy}=worldToScreen(x,y); ctx.fillStyle='rgba(0,0,0,.5)'; ctx.fillRect(sx-4,sy-16,ctx.measureText(name).width+10,18); ctx.fillStyle='white'; ctx.font='14px monospace'; ctx.fillText(name,sx,sy-4); });
-}
-function render(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  drawWorld(); drawLoot(); drawCreatures(); drawNPCs(); drawPlayer(); drawLabels();
-  ctx.fillStyle = 'rgba(15,25,55,' + dayNightAlpha() + ')'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  document.getElementById('zone').textContent = 'Zone: ' + currentZone();
-}
-function loop(){ state.ticks++; updateCreatures(); render(); requestAnimationFrame(loop); }
-renderInventory(); loop();
-</script>
+
+    function screenToWorld(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+
+      const camX = Math.max(0, Math.min(player.x - 16, WORLD_W - 32));
+      const camY = Math.max(0, Math.min(player.y - 10, WORLD_H - 20));
+
+      return {
+        worldX: Math.floor((px - 40) / TILE) + camX,
+        worldY: Math.floor((py - 40) / TILE) + camY
+      };
+    }
+
+    function updateSidebar() {
+      hpVal.textContent = player.hp + "/" + player.maxHp;
+      xpVal.textContent = String(player.xp);
+      coinsVal.textContent = String(player.coins);
+
+      let zone = currentZone();
+      zoneVal.textContent = zone;
+
+      if (quest.state === "not_started") {
+        questVal.textContent = "None";
+        objectiveText.textContent = "Speak to Edrin Vale near Mirror Pond.";
+      } else if (quest.state === "active") {
+        questVal.textContent = "The Broken Marker";
+        objectiveText.textContent = "Search beyond the trees for the stone Edrin described.";
+      } else if (quest.state === "found") {
+        questVal.textContent = "The Broken Marker";
+        objectiveText.textContent = "Return to Edrin Vale at Mirror Pond.";
+      } else {
+        questVal.textContent = "Complete";
+        objectiveText.textContent = "Quest complete. More story to come.";
+      }
+
+      hud.textContent =
+        "Move: WASD / Arrows\\n" +
+        "Attack: Space or click creature\\n" +
+        "Zone: " + zone + "\\n" +
+        "Quest: " + (quest.state === "not_started" ? "None" : "The Broken Marker");
+    }
+
+    function currentZone() {
+      const p = world.pond;
+      if (player.x >= p.x && player.x < p.x + p.w && player.y >= p.y && player.y < p.y + p.h) {
+        return p.name;
+      }
+      if (player.y < 9) {
+        return "Eastern Fields";
+      }
+      return "Hearthvale Crossroads";
+    }
+
+    function movePlayer(dx, dy) {
+      const nx = Math.max(0, Math.min(WORLD_W - 1, player.x + dx));
+      const ny = Math.max(0, Math.min(WORLD_H - 1, player.y + dy));
+
+      // don't walk through Edrin
+      if (npcs.some(n => n.x === nx && n.y === ny)) return;
+
+      player.x = nx;
+      player.y = ny;
+
+      if (dx < 0) player.facing = "left";
+      if (dx > 0) player.facing = "right";
+      if (dy < 0) player.facing = "up";
+      if (dy > 0) player.facing = "down";
+
+      checkMarkerDiscovery();
+    }
+
+    function manualAttack() {
+      const nearby = creatures.find(c => c.hp > 0 && Math.abs(c.x - player.x) <= 1 && Math.abs(c.y - player.y) <= 1);
+      if (nearby) attackCreature(nearby);
+    }
+
+    function attackCreature(creature) {
+      const now = performance.now();
+      if (now - lastAttackAt < 350) return;
+      lastAttackAt = now;
+
+      if (Math.abs(creature.x - player.x) > 2 || Math.abs(creature.y - player.y) > 2) return;
+
+      const damage = creature.type === "wolf" ? 6 : 5;
+      creature.hp -= damage;
+      log("You hit " + creature.type + " for " + damage + ".");
+
+      if (creature.hp <= 0) {
+        if (creature.type === "wolf") {
+          player.xp += 20;
+          player.coins += 6;
+          log("System: Wayfarer defeated a wolf.");
+          log("System: +20 XP, +6 coins.");
+        } else {
+          player.xp += 8;
+          player.coins += 2;
+          log("System: Wayfarer defeated a turkey.");
+          log("System: +8 XP, +2 coins.");
+        }
+
+        setTimeout(() => {
+          creature.hp = creature.maxHp;
+          creature.x = creature.homeX;
+          creature.y = creature.homeY;
+        }, 4500);
+      }
+
+      updateSidebar();
+    }
+
+    function updateCreatures(now) {
+      if (now - lastCreatureStep < 700) return;
+      lastCreatureStep = now;
+
+      creatures.forEach(c => {
+        if (c.hp <= 0) return;
+
+        if (c.type === "wolf") {
+          const dx = player.x - c.x;
+          const dy = player.y - c.y;
+          const dist = Math.abs(dx) + Math.abs(dy);
+
+          if (dist <= 6) {
+            c.x += dx === 0 ? 0 : dx > 0 ? 1 : -1;
+            c.y += dy === 0 ? 0 : dy > 0 ? 1 : -1;
+          } else {
+            if (Math.abs(c.x - c.homeX) > c.roam) c.x += c.x < c.homeX ? 1 : -1;
+            if (Math.abs(c.y - c.homeY) > c.roam) c.y += c.y < c.homeY ? 1 : -1;
+          }
+        } else {
+          const dir = Math.floor(Math.random() * 4);
+          const ox = c.x;
+          const oy = c.y;
+          if (dir === 0) c.x++;
+          if (dir === 1) c.x--;
+          if (dir === 2) c.y++;
+          if (dir === 3) c.y--;
+          if (Math.abs(c.x - c.homeX) > c.roam) c.x = ox;
+          if (Math.abs(c.y - c.homeY) > c.roam) c.y = oy;
+        }
+      });
+    }
+
+    function wolvesAttack(now) {
+      if (now - lastWolfHit < 1000) return;
+
+      const bitingWolf = creatures.find(c => c.type === "wolf" && c.hp > 0 && Math.abs(c.x - player.x) <= 1 && Math.abs(c.y - player.y) <= 1);
+      if (!bitingWolf) return;
+
+      lastWolfHit = now;
+      player.hp = Math.max(0, player.hp - 6);
+      log("A wolf bites you for 6.");
+
+      if (player.hp <= 0) {
+        player.hp = player.maxHp;
+        player.x = 30;
+        player.y = 16;
+        log("System: You collapse and wake at Hearthvale Crossroads.");
+      }
+
+      updateSidebar();
+    }
+
+    function checkMarkerDiscovery() {
+      if (quest.state !== "active") return;
+
+      const marker = world.markers[0];
+      if (Math.abs(player.x - marker.x) <= 1 && Math.abs(player.y - marker.y) <= 1) {
+        marker.discovered = true;
+        quest.state = "found";
+        log("System: You feel something is wrong here.");
+        log("System: Broken Marker discovered.");
+        updateSidebar();
+      }
+    }
+
+    function drawTileRect(x, y, w, h, color) {
+      const pos = worldToScreen(x, y);
+      ctx.fillStyle = color;
+      ctx.fillRect(pos.x, pos.y, w * TILE, h * TILE);
+    }
+
+    function drawWorld() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // grass
+      const camX = Math.max(0, Math.min(player.x - 16, WORLD_W - 32));
+      const camY = Math.max(0, Math.min(player.y - 10, WORLD_H - 20));
+
+      for (let y = camY; y < camY + 21; y++) {
+        for (let x = camX; x < camX + 33; x++) {
+          const sx = (x - camX) * TILE + 40;
+          const sy = (y - camY) * TILE + 40;
+          const checker = (x + y) % 2 === 0;
+          ctx.fillStyle = checker ? "#2d6030" : "#2a5630";
+          ctx.fillRect(sx, sy, TILE, TILE);
+        }
+      }
+
+      // roads
+      world.roads.forEach(r => drawTileRect(r.x, r.y, r.w, r.h, "#a9916b"));
+
+      // fields
+      world.fields.forEach(f => {
+        drawTileRect(f.x, f.y, f.w, f.h, "#c9c06a");
+        for (let x = f.x; x < f.x + f.w; x++) {
+          for (let y = f.y; y < f.y + f.h; y++) {
+            const p = worldToScreen(x, y);
+            ctx.fillStyle = (x + y) % 2 === 0 ? "#889443" : "#798739";
+            ctx.fillRect(p.x + 4, p.y + 4, TILE - 8, TILE - 8);
+          }
+        }
+      });
+
+      // pond
+      drawTileRect(world.pond.x, world.pond.y, world.pond.w, world.pond.h, "#3469cc");
+      drawTileRect(world.pond.x + 2, world.pond.y + 1, 5, 3, "#5a8de8");
+
+      // trees
+      world.trees.forEach(t => {
+        const p = worldToScreen(t.x, t.y);
+        ctx.fillStyle = "#4a8c45";
+        ctx.beginPath();
+        ctx.arc(p.x + TILE/2, p.y + TILE/2 - 2, 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#5a3d28";
+        ctx.fillRect(p.x + 11, p.y + 16, 6, 10);
+      });
+
+      // marker (only visible after found or if very close)
+      const marker = world.markers[0];
+      if (marker.discovered || Math.abs(player.x - marker.x) <= 2 && Math.abs(player.y - marker.y) <= 2) {
+        const p = worldToScreen(marker.x, marker.y);
+        ctx.fillStyle = "#8a8f9a";
+        ctx.fillRect(p.x + 8, p.y + 4, 12, 22);
+        ctx.fillStyle = "#b7d8ff";
+        ctx.fillRect(p.x + 11, p.y + 7, 6, 6);
+      }
+
+      // labels
+      world.labels.forEach(label => {
+        const p = worldToScreen(label.x, label.y);
+        ctx.fillStyle = "rgba(0,0,0,0.45)";
+        ctx.fillRect(p.x - 4, p.y - 18, label.text.length * 7 + 8, 18);
+        ctx.fillStyle = "#f1f3f5";
+        ctx.font = "bold 12px monospace";
+        ctx.fillText(label.text, p.x, p.y - 6);
+      });
+
+      // NPCs
+      npcs.forEach(npc => {
+        const p = worldToScreen(npc.x, npc.y);
+        ctx.fillStyle = "#6d55de";
+        ctx.fillRect(p.x + 7, p.y + 4, 14, 22);
+        ctx.fillStyle = "#d7d9ea";
+        ctx.fillRect(p.x + 10, p.y + 1, 8, 8);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 12px monospace";
+        ctx.fillText(npc.name, p.x - 6, p.y - 4);
+      });
+
+      // creatures
+      creatures.forEach(c => {
+        if (c.hp <= 0) return;
+        const p = worldToScreen(c.x, c.y);
+
+        if (c.type === "wolf") {
+          ctx.fillStyle = "#8a92a0";
+          ctx.fillRect(p.x + 4, p.y + 10, 18, 10);
+          ctx.fillRect(p.x + 18, p.y + 12, 7, 6);
+          ctx.fillRect(p.x + 7, p.y + 18, 3, 7);
+          ctx.fillRect(p.x + 16, p.y + 18, 3, 7);
+        } else {
+          ctx.fillStyle = "#b86a35";
+          ctx.fillRect(p.x + 8, p.y + 10, 12, 10);
+          ctx.fillRect(p.x + 16, p.y + 7, 6, 6);
+          ctx.fillRect(p.x + 11, p.y + 18, 2, 7);
+          ctx.fillRect(p.x + 17, p.y + 18, 2, 7);
+        }
+
+        // hp bar
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillRect(p.x + 4, p.y - 8, 22, 4);
+        ctx.fillStyle = "#89d96b";
+        ctx.fillRect(p.x + 4, p.y - 8, 22 * (c.hp / c.maxHp), 4);
+      });
+
+      // player
+      const pp = worldToScreen(player.x, player.y);
+      ctx.fillStyle = "#e3e8f0";
+      ctx.fillRect(pp.x + 9, pp.y + 2, 10, 8);  // head
+      ctx.fillStyle = "#2d6cdf";
+      ctx.fillRect(pp.x + 7, pp.y + 10, 14, 16); // body
+      ctx.fillStyle = "#4d311d";
+      ctx.fillRect(pp.x + 10, pp.y + 26, 3, 6);
+      ctx.fillRect(pp.x + 16, pp.y + 26, 3, 6);
+      ctx.fillStyle = "#c9d1dc";
+      ctx.fillRect(pp.x + 4, pp.y + 12, 4, 12); // sword/arm silhouette
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 12px monospace";
+      ctx.fillText("Wayfarer", pp.x - 4, pp.y - 4);
+
+      // day/night tint
+      const phase = (performance.now() / 10000) % (Math.PI * 2);
+      const tint = 0.08 + Math.max(0, Math.sin(phase)) * 0.12;
+      ctx.fillStyle = "rgba(15,24,40," + tint.toFixed(3) + ")";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function update(now) {
+      if (!activeDialogue) {
+        if (keys.has("arrowup") || keys.has("w")) movePlayer(0, -1);
+        else if (keys.has("arrowdown") || keys.has("s")) movePlayer(0, 1);
+        else if (keys.has("arrowleft") || keys.has("a")) movePlayer(-1, 0);
+        else if (keys.has("arrowright") || keys.has("d")) movePlayer(1, 0);
+      }
+
+      updateCreatures(now);
+      wolvesAttack(now);
+      updateSidebar();
+    }
+
+    function loop(now) {
+      update(now);
+      drawWorld();
+      requestAnimationFrame(loop);
+    }
+
+    updateSidebar();
+    requestAnimationFrame(loop);
+  </script>
 </body>
 </html>`;
