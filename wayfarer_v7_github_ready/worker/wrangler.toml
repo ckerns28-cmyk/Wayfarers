@@ -1,12 +1,7 @@
-name = "wayfarer-worker"
+name = "wayfarers"
 main = "src/index.js"
 compatibility_date = "2026-04-22"
 
-[durable_objects]
-bindings = [
-  { name = "WORLD_ROOM", class_name = "WorldRoom" }
-]
-
-[[migrations]]
-tag = "v1"
-new_sqlite_classes = ["WorldRoom"]
+[assets]
+directory = "./"
+not_found_handling = "single-page-application"
