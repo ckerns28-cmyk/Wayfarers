@@ -1,0 +1,11 @@
+{
+  "name": "wayfarer-worker",
+  "version": "0.7.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.84.1"
+  }
+}
