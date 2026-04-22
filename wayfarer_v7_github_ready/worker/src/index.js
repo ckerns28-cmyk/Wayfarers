@@ -25,23 +25,23 @@ const html = String.raw`<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wayfarer — Quality Slice</title>
+  <title>Wayfarer — Polished Town Slice</title>
   <style>
     :root {
       --bg: #071018;
-      --panel: rgba(10, 15, 23, 0.94);
+      --panel: rgba(10, 15, 23, 0.95);
       --panel-border: rgba(255,255,255,0.08);
       --text: #e8edf5;
       --muted: #a9b3c2;
-      --accent: #9fc7ff;
-      --gold: #e3c26a;
+      --accent: #a6c8ff;
+      --gold: #e0c26d;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: radial-gradient(circle at top, #0d1824 0%, #071018 55%);
+      background: radial-gradient(circle at top, #0d1824 0%, #071018 58%);
       color: var(--text);
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       overflow: hidden;
@@ -70,10 +70,7 @@ const html = String.raw`<!DOCTYPE html>
       min-width: 0;
     }
 
-    #brand,
-    #stats,
-    #objective,
-    #logPanel {
+    #brand, #stats, #objective, #logPanel {
       padding: 18px;
     }
 
@@ -133,7 +130,7 @@ const html = String.raw`<!DOCTYPE html>
       display: block;
       border-radius: 22px;
       image-rendering: pixelated;
-      background: #0a1520;
+      background: #08131d;
     }
 
     #hud {
@@ -194,8 +191,8 @@ const html = String.raw`<!DOCTYPE html>
     <aside id="sidebar">
       <section id="brand" class="panel">
         <h1>Wayfarer</h1>
-        <div class="sub">Quality Slice — Town / Pond / Forest Edge</div>
-        <span class="tag">Moody mythic rebuild</span>
+        <div class="sub">Visual Polish Pass — Hearthvale Slice</div>
+        <span class="tag">Moody mythic quality rebuild</span>
       </section>
 
       <section id="stats" class="panel">
@@ -204,14 +201,14 @@ const html = String.raw`<!DOCTYPE html>
           <div class="muted">XP</div><div id="xpVal">0</div>
           <div class="muted">Coins</div><div id="coinsVal">0</div>
           <div class="muted">Weapon</div><div>Rusty Sword (+2)</div>
-          <div class="muted">Quest</div><div id="questVal">None</div>
+          <div class="muted">Quest</div><div id="questVal">Town Slice</div>
           <div class="muted">Zone</div><div id="zoneVal">Hearthvale Square</div>
         </div>
       </section>
 
       <section id="objective" class="panel">
         <div class="questTitle">Current Objective</div>
-        <div id="objectiveText" class="muted">Walk the town square and visit Mirror Pond.</div>
+        <div id="objectiveText" class="muted">Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.</div>
       </section>
 
       <section id="logPanel" class="panel">
@@ -250,9 +247,8 @@ const html = String.raw`<!DOCTYPE html>
     const dialogueText = document.getElementById("dialogueText");
 
     const TILE = 32;
-    const WORLD_W = 36;
+    const WORLD_W = 38;
     const WORLD_H = 24;
-
     const VIEW_TILES_X = 22;
     const VIEW_TILES_Y = 14;
 
@@ -271,43 +267,31 @@ const html = String.raw`<!DOCTYPE html>
     const assets = {
       grass: new Image(),
       road: new Image(),
-      tree: new Image(),
+      treeA: new Image(),
+      treeB: new Image(),
       waterDeep: new Image(),
       waterShallow: new Image()
     };
 
     assets.grass.src = "./assets/terrain/grass/moss_grass_32.png";
     assets.road.src = "./assets/terrain/roads/worn_path_32.png";
-    assets.tree.src = "./assets/terrain/trees/pine_mythic_32.png";
+    assets.treeA.src = "./assets/terrain/trees/pine_mythic_32.png";
+    assets.treeB.src = "./assets/terrain/trees/oak_mythic_32.png";
     assets.waterDeep.src = "./assets/terrain/water/deep_water_32.png";
     assets.waterShallow.src = "./assets/terrain/water/shallow_water_32.png";
-
-    const loaded = {
-      grass: false,
-      road: false,
-      tree: false,
-      waterDeep: false,
-      waterShallow: false
-    };
-
-    Object.entries(assets).forEach(([key, img]) => {
-      img.onload = () => loaded[key] = true;
-      img.onerror = () => loaded[key] = false;
-    });
-
-    const world = {
-      trees: [],
-      buildings: [],
-      roads: [],
-      ponds: [],
-      fences: [],
-      zones: [],
-      blocked: new Set()
-    };
 
     function keyOf(x, y) {
       return x + "," + y;
     }
+
+    const world = {
+      blocked: new Set(),
+      trees: [],
+      fences: [],
+      buildings: [],
+      roads: [],
+      zones: []
+    };
 
     function blockRect(x, y, w, h) {
       for (let ix = x; ix < x + w; ix++) {
@@ -317,69 +301,72 @@ const html = String.raw`<!DOCTYPE html>
       }
     }
 
-    // -------------------------
-    // QUALITY SLICE LAYOUT
-    // -------------------------
-
-    // Main square roads
+    // ---------- Layout ----------
+    // central roads
     world.roads.push(
-      { x: 6, y: 11, w: 24, h: 2 },
-      { x: 17, y: 5, w: 2, h: 14 },
-      { x: 9, y: 8, w: 2, h: 8 },
+      { x: 7, y: 11, w: 24, h: 2 },
+      { x: 17, y: 5, w: 2, h: 15 },
+      { x: 10, y: 8, w: 2, h: 8 },
       { x: 24, y: 7, w: 2, h: 8 }
     );
 
-    // Pond
-    world.ponds.push({ x: 21, y: 13, w: 7, h: 5, name: "Mirror Pond" });
-
-    // Houses around central town
+    // buildings
     world.buildings.push(
-      { x: 11, y: 6, w: 4, h: 3, roof: "#5e3f3f", wall: "#6f6a59", doorX: 13, doorY: 9 },
-      { x: 20, y: 6, w: 4, h: 3, roof: "#4a4f68", wall: "#746f60", doorX: 22, doorY: 9 },
-      { x: 11, y: 14, w: 4, h: 3, roof: "#5b4e39", wall: "#726956", doorX: 13, doorY: 13 }
+      { x: 11, y: 6, w: 4, h: 3, roofTop: "#745048", roofSide: "#5b3c35", wall: "#807862", doorX: 13, doorY: 9 },
+      { x: 20, y: 6, w: 4, h: 3, roofTop: "#56617f", roofSide: "#434b66", wall: "#847c68", doorX: 22, doorY: 9 },
+      { x: 12, y: 14, w: 4, h: 3, roofTop: "#6e6248", roofSide: "#54493a", wall: "#7e7460", doorX: 14, doorY: 13 }
     );
-
     world.buildings.forEach(b => blockRect(b.x, b.y, b.w, b.h));
 
-    // Well in town
-    const well = { x: 18, y: 11 };
+    // pond
+    const pond = {
+      x: 22,
+      y: 13,
+      w: 7,
+      h: 5,
+      cx: 25.5,
+      cy: 15.5
+    };
 
-    // Fences near farmland edge
-    for (let x = 27; x <= 33; x++) {
+    // fences / field edge
+    for (let x = 29; x <= 35; x++) {
       world.fences.push({ x, y: 6 });
       world.fences.push({ x, y: 10 });
     }
     for (let y = 7; y <= 9; y++) {
-      world.fences.push({ x: 27, y });
-      world.fences.push({ x: 33, y });
+      world.fences.push({ x: 29, y });
+      world.fences.push({ x: 35, y });
     }
-
     world.fences.forEach(f => world.blocked.add(keyOf(f.x, f.y)));
 
-    // Forest edge trees
-    const treePoints = [
-      [2,3],[4,4],[6,3],[8,4],[29,3],[31,4],[33,3],
-      [29,20],[31,21],[33,20],[6,20],[8,19],[26,19],[28,20],
-      [20,3],[22,4],[24,3],[3,16],[4,18],[5,19],[30,15],[31,16],[32,17]
+    // trees - more intentional framing
+    const treeData = [
+      [3,4,"a"],[5,5,"a"],[7,4,"b"],[9,5,"a"],
+      [28,4,"a"],[30,4,"b"],[33,4,"a"],[35,5,"a"],
+      [3,19,"a"],[5,21,"a"],[7,22,"b"],
+      [30,20,"a"],[32,21,"b"],[34,22,"a"],[36,21,"a"],
+      [20,3,"b"],[22,4,"a"],[24,4,"b"],
+      [30,15,"a"],[31,17,"b"],[33,18,"a"]
     ];
-    treePoints.forEach(([x, y]) => {
-      world.trees.push({ x, y });
+    treeData.forEach(([x,y,type]) => {
+      world.trees.push({ x, y, type });
       world.blocked.add(keyOf(x, y));
     });
 
+    // zones
     world.zones.push(
-      { name: "Hearthvale Square", x: 8, y: 7, w: 18, h: 11 },
-      { name: "Mirror Pond", x: 20, y: 12, w: 10, h: 7 },
-      { name: "Forest Edge", x: 26, y: 2, w: 10, h: 20 },
-      { name: "West Lane", x: 0, y: 8, w: 10, h: 10 }
+      { name: "Hearthvale Square", x: 9, y: 7, w: 18, h: 11 },
+      { name: "Mirror Pond", x: 21, y: 12, w: 10, h: 8 },
+      { name: "Forest Edge", x: 27, y: 3, w: 11, h: 19 },
+      { name: "West Lane", x: 0, y: 7, w: 10, h: 12 }
     );
 
     const player = {
-      x: 17,
+      x: 18,
       y: 11,
-      px: 17 * TILE,
+      px: 18 * TILE,
       py: 11 * TILE,
-      targetX: 17,
+      targetX: 18,
       targetY: 11,
       hp: 50,
       maxHp: 50,
@@ -387,29 +374,29 @@ const html = String.raw`<!DOCTYPE html>
       coins: 0,
       moving: false,
       facing: "down",
-      speed: 180
+      speed: 160
     };
 
     const npc = {
-      x: 20,
+      x: 21,
       y: 12,
       name: "Edrin Vale",
-      color: "#6e58df"
+      color: "#6f58df"
     };
 
     const wolf = {
-      x: 30,
+      x: 31,
       y: 13,
-      px: 30 * TILE,
+      px: 31 * TILE,
       py: 13 * TILE,
-      targetX: 30,
+      targetX: 31,
       targetY: 13,
       hp: 22,
       maxHp: 22,
-      homeX: 30,
+      homeX: 31,
       homeY: 13,
       roam: 3,
-      speed: 120
+      speed: 110
     };
 
     let lastWolfDecision = 0;
@@ -421,9 +408,9 @@ const html = String.raw`<!DOCTYPE html>
     const edrinLines = [
       "You are not from here.",
       "...good.",
-      "This town still remembers how to be quiet.",
-      "The pond remembers more.",
-      "Walk slowly. Some places should be learned before they are used."
+      "This town is older than it lets itself appear.",
+      "Mirror Pond listens longer than most people do.",
+      "Walk slowly. Some places reveal themselves only when you stop trying to rush them."
     ];
 
     function startDialogue(name, lines) {
@@ -488,7 +475,7 @@ const html = String.raw`<!DOCTYPE html>
 
     addEventListener("keydown", (e) => {
       const k = e.key.toLowerCase();
-      if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(k)) {
+      if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"].includes(k)) {
         e.preventDefault();
       }
       keys.add(k);
@@ -508,28 +495,13 @@ const html = String.raw`<!DOCTYPE html>
       }
     });
 
-    function screenToWorld(clientX, clientY) {
-      const rect = canvas.getBoundingClientRect();
-      const mx = clientX - rect.left;
-      const my = clientY - rect.top;
-
-      const cam = getCamera();
-      return {
-        x: Math.floor((mx - cam.offsetX) / TILE) + cam.tileX,
-        y: Math.floor((my - cam.offsetY) / TILE) + cam.tileY
-      };
-    }
-
     function getCamera() {
       const tileX = Math.max(0, Math.min(player.targetX - Math.floor(VIEW_TILES_X / 2), WORLD_W - VIEW_TILES_X));
       const tileY = Math.max(0, Math.min(player.targetY - Math.floor(VIEW_TILES_Y / 2), WORLD_H - VIEW_TILES_Y));
-
       const viewPxW = VIEW_TILES_X * TILE;
       const viewPxH = VIEW_TILES_Y * TILE;
-
       const offsetX = Math.floor((canvas.width - viewPxW) / 2);
       const offsetY = Math.floor((canvas.height - viewPxH) / 2);
-
       return { tileX, tileY, offsetX, offsetY };
     }
 
@@ -541,14 +513,24 @@ const html = String.raw`<!DOCTYPE html>
       };
     }
 
+    function screenToWorld(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = clientX - rect.left;
+      const my = clientY - rect.top;
+      const cam = getCamera();
+      return {
+        x: Math.floor((mx - cam.offsetX) / TILE) + cam.tileX,
+        y: Math.floor((my - cam.offsetY) / TILE) + cam.tileY
+      };
+    }
+
     function smoothMove(entity, dt) {
       const targetPxX = entity.targetX * TILE;
       const targetPxY = entity.targetY * TILE;
-
       const dx = targetPxX - entity.px;
       const dy = targetPxY - entity.py;
-
       const dist = Math.hypot(dx, dy);
+
       if (dist < 0.5) {
         entity.px = targetPxX;
         entity.py = targetPxY;
@@ -582,8 +564,15 @@ const html = String.raw`<!DOCTYPE html>
       else if (keys.has("d") || keys.has("arrowright")) tryPlayerStep(1, 0, "right");
     }
 
+    function canWolfMoveTo(x, y) {
+      if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) return false;
+      if (world.blocked.has(keyOf(x, y))) return false;
+      if (x === npc.x && y === npc.y) return false;
+      return true;
+    }
+
     function updateWolf(now) {
-      if (now - lastWolfDecision < 600) return;
+      if (now - lastWolfDecision < 650) return;
       lastWolfDecision = now;
 
       const dx = player.targetX - wolf.targetX;
@@ -594,34 +583,27 @@ const html = String.raw`<!DOCTYPE html>
         const stepX = dx === 0 ? 0 : dx > 0 ? 1 : -1;
         const stepY = dy === 0 ? 0 : dy > 0 ? 1 : -1;
 
-        const tryA = { x: wolf.targetX + stepX, y: wolf.targetY };
-        const tryB = { x: wolf.targetX, y: wolf.targetY + stepY };
+        const optionA = { x: wolf.targetX + stepX, y: wolf.targetY };
+        const optionB = { x: wolf.targetX, y: wolf.targetY + stepY };
 
-        if (Math.abs(dx) >= Math.abs(dy) && canWolfMoveTo(tryA.x, tryA.y)) {
-          wolf.targetX = tryA.x;
-          wolf.targetY = tryA.y;
-        } else if (canWolfMoveTo(tryB.x, tryB.y)) {
-          wolf.targetX = tryB.x;
-          wolf.targetY = tryB.y;
+        if (Math.abs(dx) >= Math.abs(dy) && canWolfMoveTo(optionA.x, optionA.y)) {
+          wolf.targetX = optionA.x;
+          wolf.targetY = optionA.y;
+        } else if (canWolfMoveTo(optionB.x, optionB.y)) {
+          wolf.targetX = optionB.x;
+          wolf.targetY = optionB.y;
         }
       } else {
-        const driftX = wolf.targetX < wolf.homeX ? 1 : wolf.targetX > wolf.homeX ? -1 : 0;
-        const driftY = wolf.targetY < wolf.homeY ? 1 : wolf.targetY > wolf.homeY ? -1 : 0;
+        const backX = wolf.targetX < wolf.homeX ? 1 : wolf.targetX > wolf.homeX ? -1 : 0;
+        const backY = wolf.targetY < wolf.homeY ? 1 : wolf.targetY > wolf.homeY ? -1 : 0;
 
-        if (Math.abs(wolf.targetX - wolf.homeX) > wolf.roam && canWolfMoveTo(wolf.targetX + driftX, wolf.targetY)) {
-          wolf.targetX += driftX;
+        if (Math.abs(wolf.targetX - wolf.homeX) > wolf.roam && canWolfMoveTo(wolf.targetX + backX, wolf.targetY)) {
+          wolf.targetX += backX;
         }
-        if (Math.abs(wolf.targetY - wolf.homeY) > wolf.roam && canWolfMoveTo(wolf.targetX, wolf.targetY + driftY)) {
-          wolf.targetY += driftY;
+        if (Math.abs(wolf.targetY - wolf.homeY) > wolf.roam && canWolfMoveTo(wolf.targetX, wolf.targetY + backY)) {
+          wolf.targetY += backY;
         }
       }
-    }
-
-    function canWolfMoveTo(x, y) {
-      if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) return false;
-      if (world.blocked.has(keyOf(x, y))) return false;
-      if (x === npc.x && y === npc.y) return false;
-      return true;
     }
 
     function wolfAttack(now) {
@@ -635,18 +617,12 @@ const html = String.raw`<!DOCTYPE html>
 
       if (player.hp <= 0) {
         player.hp = player.maxHp;
-        player.targetX = 17;
+        player.targetX = 18;
         player.targetY = 11;
         player.px = player.targetX * TILE;
         player.py = player.targetY * TILE;
         log("System: You wake in Hearthvale Square.");
       }
-    }
-
-    function drawFallbackTile(x, y, color) {
-      const p = tileToScreen(x, y);
-      ctx.fillStyle = color;
-      ctx.fillRect(p.x, p.y, TILE, TILE);
     }
 
     function drawImageTile(img, x, y, fallback) {
@@ -657,6 +633,102 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillStyle = fallback;
         ctx.fillRect(p.x, p.y, TILE, TILE);
       }
+    }
+
+    function drawShoreWater() {
+      for (let x = pond.x; x < pond.x + pond.w; x++) {
+        for (let y = pond.y; y < pond.y + pond.h; y++) {
+          const dx = (x + 0.5 - pond.cx) / (pond.w / 2);
+          const dy = (y + 0.5 - pond.cy) / (pond.h / 2);
+          const d = dx * dx + dy * dy;
+
+          const edge = d > 0.55;
+          drawImageTile(edge ? assets.waterShallow : assets.waterDeep, x, y, edge ? "#6d97d7" : "#3b67bf");
+        }
+      }
+
+      // soft reflective center overlay
+      const c = tileToScreen(pond.x + 2, pond.y + 1);
+      ctx.fillStyle = "rgba(180,210,255,0.16)";
+      ctx.fillRect(c.x, c.y, 3 * TILE, 2 * TILE);
+    }
+
+    function drawBuilding(b) {
+      // wall
+      for (let x = b.x; x < b.x + b.w; x++) {
+        for (let y = b.y + 1; y < b.y + b.h; y++) {
+          const p = tileToScreen(x, y);
+          ctx.fillStyle = b.wall;
+          ctx.fillRect(p.x, p.y, TILE, TILE);
+          ctx.fillStyle = "rgba(255,255,255,0.04)";
+          ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, 3);
+        }
+      }
+
+      // roof top
+      for (let x = b.x; x < b.x + b.w; x++) {
+        const p = tileToScreen(x, b.y);
+        ctx.fillStyle = b.roofTop;
+        ctx.fillRect(p.x, p.y, TILE, TILE);
+        ctx.fillStyle = b.roofSide;
+        ctx.fillRect(p.x, p.y + TILE - 6, TILE, 6);
+      }
+
+      // subtle roof overhang shadow
+      for (let x = b.x; x < b.x + b.w; x++) {
+        const p = tileToScreen(x, b.y + 1);
+        ctx.fillStyle = "rgba(0,0,0,0.16)";
+        ctx.fillRect(p.x, p.y, TILE, 4);
+      }
+
+      // door
+      {
+        const d = tileToScreen(b.doorX, b.doorY - 1);
+        ctx.fillStyle = "#3b2518";
+        ctx.fillRect(d.x + 10, d.y + 14, 12, 18);
+        ctx.fillStyle = "#23140d";
+        ctx.fillRect(d.x + 10, d.y + 14, 2, 18);
+      }
+
+      // window
+      {
+        const w = tileToScreen(b.x + 1, b.y + 1);
+        ctx.fillStyle = "#d7c76d";
+        ctx.fillRect(w.x + 8, w.y + 9, 10, 8);
+        ctx.fillStyle = "rgba(255,255,255,0.18)";
+        ctx.fillRect(w.x + 9, w.y + 10, 8, 2);
+      }
+    }
+
+    function drawTree(t) {
+      const p = tileToScreen(t.x, t.y);
+      const img = t.type === "b" ? assets.treeB : assets.treeA;
+
+      // larger shadow
+      ctx.fillStyle = "rgba(0,0,0,0.18)";
+      ctx.beginPath();
+      ctx.ellipse(p.x + 16, p.y + 27, 11, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (img && img.complete && img.naturalWidth > 0) {
+        ctx.drawImage(img, p.x, p.y - 4, TILE, TILE + 4);
+      } else {
+        ctx.fillStyle = "#4a8c45";
+        ctx.beginPath();
+        ctx.arc(p.x + 16, p.y + 12, 11, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#5a3d28";
+        ctx.fillRect(p.x + 13, p.y + 16, 6, 10);
+      }
+    }
+
+    function drawZoneLabel(text, tx, ty) {
+      const p = tileToScreen(tx, ty);
+      ctx.fillStyle = "rgba(0,0,0,0.42)";
+      ctx.fillRect(p.x - 2, p.y - 16, text.length * 7 + 10, 18);
+      ctx.fillStyle = "#eef2f7";
+      ctx.font = "bold 12px monospace";
+      ctx.fillText(text, p.x + 3, p.y - 3);
     }
 
     function drawWorld() {
@@ -680,111 +752,87 @@ const html = String.raw`<!DOCTYPE html>
         }
       });
 
-      // pond with shoreline feel
-      world.ponds.forEach(p => {
-        for (let x = p.x; x < p.x + p.w; x++) {
-          for (let y = p.y; y < p.y + p.h; y++) {
-            const edge = (x === p.x || x === p.x + p.w - 1 || y === p.y || y === p.y + p.h - 1);
-            drawImageTile(edge ? assets.waterShallow : assets.waterDeep, x, y, edge ? "#5f8fd4" : "#3666c0");
-          }
-        }
-      });
-
       // buildings
-      world.buildings.forEach(b => {
-        // wall
-        for (let x = b.x; x < b.x + b.w; x++) {
-          for (let y = b.y + 1; y < b.y + b.h; y++) {
-            const p = tileToScreen(x, y);
-            ctx.fillStyle = b.wall;
-            ctx.fillRect(p.x, p.y, TILE, TILE);
-          }
-        }
-        // roof
-        for (let x = b.x; x < b.x + b.w; x++) {
-          const p = tileToScreen(x, b.y);
-          ctx.fillStyle = b.roof;
-          ctx.fillRect(p.x, p.y, TILE, TILE + 4);
-        }
-        // door
-        const d = tileToScreen(b.doorX, b.doorY - 1);
-        ctx.fillStyle = "#3a2416";
-        ctx.fillRect(d.x + 9, d.y + 14, 14, 18);
-        // window
-        const w = tileToScreen(b.x + 1, b.y + 1);
-        ctx.fillStyle = "#d8c36f";
-        ctx.fillRect(w.x + 8, w.y + 8, 10, 8);
-      });
+      world.buildings.forEach(drawBuilding);
+
+      // pond
+      drawShoreWater();
 
       // well
       {
-        const p = tileToScreen(well.x, well.y);
-        ctx.fillStyle = "#6f777f";
+        const p = tileToScreen(18, 11);
+        ctx.fillStyle = "#6e757e";
         ctx.beginPath();
         ctx.arc(p.x + 16, p.y + 16, 11, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = "#2c4278";
+
+        ctx.fillStyle = "#2f477e";
         ctx.beginPath();
         ctx.arc(p.x + 16, p.y + 16, 6, 0, Math.PI * 2);
         ctx.fill();
+
+        ctx.fillStyle = "#8f7551";
+        ctx.fillRect(p.x + 6, p.y + 4, 3, 10);
+        ctx.fillRect(p.x + 23, p.y + 4, 3, 10);
+        ctx.fillRect(p.x + 8, p.y + 4, 16, 3);
       }
 
       // fences
       world.fences.forEach(f => {
         const p = tileToScreen(f.x, f.y);
-        ctx.fillStyle = "#8d734f";
+        ctx.fillStyle = "#8b7350";
         ctx.fillRect(p.x + 2, p.y + 12, 28, 4);
         ctx.fillRect(p.x + 5, p.y + 5, 4, 22);
         ctx.fillRect(p.x + 23, p.y + 5, 4, 22);
       });
 
       // trees
-      world.trees.forEach(t => {
-        const p = tileToScreen(t.x, t.y);
-        if (assets.tree.complete && assets.tree.naturalWidth > 0) {
-          ctx.drawImage(assets.tree, p.x, p.y, TILE, TILE);
-        } else {
-          ctx.fillStyle = "#4a8c45";
-          ctx.beginPath();
-          ctx.arc(p.x + 16, p.y + 12, 11, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = "#5a3d28";
-          ctx.fillRect(p.x + 13, p.y + 16, 6, 10);
-        }
-      });
+      world.trees.forEach(drawTree);
 
-      // zone labels
-      world.zones.forEach(z => {
-        const p = tileToScreen(z.x, z.y);
-        ctx.fillStyle = "rgba(0,0,0,0.45)";
-        ctx.fillRect(p.x - 2, p.y - 18, z.name.length * 7 + 8, 18);
-        ctx.fillStyle = "#f2f5f9";
-        ctx.font = "bold 12px monospace";
-        ctx.fillText(z.name, p.x + 2, p.y - 5);
-      });
+      // labels (fewer, cleaner)
+      drawZoneLabel("Hearthvale Square", 12, 7);
+      drawZoneLabel("Mirror Pond", 23, 12);
+      drawZoneLabel("Forest Edge", 30, 4);
 
       // NPC
       {
         const p = tileToScreen(npc.x, npc.y);
-        ctx.fillStyle = "#d8d9e8";
-        ctx.fillRect(p.x + 10, p.y + 2, 12, 9);
+        ctx.fillStyle = "rgba(0,0,0,0.22)";
+        ctx.beginPath();
+        ctx.ellipse(p.x + 16, p.y + 29, 8, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#e1e4ee";
+        ctx.fillRect(p.x + 10, p.y + 2, 12, 10);
         ctx.fillStyle = npc.color;
-        ctx.fillRect(p.x + 8, p.y + 11, 16, 15);
+        ctx.fillRect(p.x + 8, p.y + 12, 16, 17);
+        ctx.fillStyle = "#4a2f78";
+        ctx.fillRect(p.x + 8, p.y + 25, 16, 4);
+
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold 12px monospace";
         ctx.fillText(npc.name, p.x - 10, p.y - 4);
       }
 
-      // Wolf
+      // wolf
       {
         const sx = wolf.px / TILE;
         const sy = wolf.py / TILE;
         const p = tileToScreen(sx, sy);
-        ctx.fillStyle = "#8a92a0";
+
+        ctx.fillStyle = "rgba(0,0,0,0.18)";
+        ctx.beginPath();
+        ctx.ellipse(p.x + 16, p.y + 28, 9, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#8f98a5";
         ctx.fillRect(p.x + 5, p.y + 12, 18, 9);
-        ctx.fillRect(p.x + 18, p.y + 10, 9, 7);
-        ctx.fillRect(p.x + 8, p.y + 19, 3, 7);
-        ctx.fillRect(p.x + 17, p.y + 19, 3, 7);
+        ctx.fillRect(p.x + 18, p.y + 10, 8, 7);
+        ctx.fillStyle = "#737c88";
+        ctx.fillRect(p.x + 6, p.y + 13, 10, 3);
+        ctx.fillStyle = "#8f98a5";
+        ctx.fillRect(p.x + 8, p.y + 20, 3, 7);
+        ctx.fillRect(p.x + 17, p.y + 20, 3, 7);
 
         ctx.fillStyle = "rgba(0,0,0,0.45)";
         ctx.fillRect(p.x + 4, p.y - 8, 22, 4);
@@ -792,51 +840,55 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillRect(p.x + 4, p.y - 8, 22 * (wolf.hp / wolf.maxHp), 4);
       }
 
-      // Player
+      // player (larger / clearer)
       {
         const sx = player.px / TILE;
         const sy = player.py / TILE;
         const p = tileToScreen(sx, sy);
 
-        ctx.fillStyle = "rgba(0,0,0,0.25)";
+        ctx.fillStyle = "rgba(0,0,0,0.22)";
         ctx.beginPath();
-        ctx.ellipse(p.x + 16, p.y + 28, 9, 4, 0, 0, Math.PI * 2);
+        ctx.ellipse(p.x + 16, p.y + 29, 8, 4, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = "#e1e7ef";
-        ctx.fillRect(p.x + 11, p.y + 2, 10, 9);
+        ctx.fillStyle = "#e4e9f1";
+        ctx.fillRect(p.x + 10, p.y + 2, 12, 10);
 
         ctx.fillStyle = "#2f67d2";
-        ctx.fillRect(p.x + 9, p.y + 11, 14, 16);
+        ctx.fillRect(p.x + 8, p.y + 12, 16, 17);
 
-        ctx.fillStyle = "#5d4027";
-        ctx.fillRect(p.x + 12, p.y + 27, 3, 6);
-        ctx.fillRect(p.x + 18, p.y + 27, 3, 6);
+        ctx.fillStyle = "#5c4028";
+        ctx.fillRect(p.x + 11, p.y + 29, 3, 5);
+        ctx.fillRect(p.x + 18, p.y + 29, 3, 5);
 
-        // sword arm
-        ctx.fillStyle = "#c5ced7";
-        ctx.fillRect(p.x + 5, p.y + 13, 4, 12);
+        ctx.fillStyle = "#cad2db";
+        ctx.fillRect(p.x + 4, p.y + 14, 4, 12);
 
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold 12px monospace";
         ctx.fillText("Wayfarer", p.x - 8, p.y - 4);
       }
 
-      // atmosphere
+      // subtle atmospheric tint
       const phase = (performance.now() / 12000) % (Math.PI * 2);
-      const tint = 0.08 + Math.max(0, Math.sin(phase)) * 0.10;
+      const tint = 0.07 + Math.max(0, Math.sin(phase)) * 0.08;
       ctx.fillStyle = "rgba(10,18,32," + tint.toFixed(3) + ")";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function updateInput() {
+      if (keys.has("w") || keys.has("arrowup")) tryPlayerStep(0, -1, "up");
+      else if (keys.has("s") || keys.has("arrowdown")) tryPlayerStep(0, 1, "down");
+      else if (keys.has("a") || keys.has("arrowleft")) tryPlayerStep(-1, 0, "left");
+      else if (keys.has("d") || keys.has("arrowright")) tryPlayerStep(1, 0, "right");
     }
 
     function update(dt, now) {
       updateInput();
       smoothMove(player, dt);
-
       updateWolf(now);
       smoothMove(wolf, dt);
       wolfAttack(now);
-
       updateSidebar();
     }
 
@@ -851,8 +903,8 @@ const html = String.raw`<!DOCTYPE html>
       requestAnimationFrame(loop);
     }
 
-    log("System: Quality slice loaded.");
-    log("System: Visit Mirror Pond and speak to Edrin Vale.");
+    log("System: Visual polish slice loaded.");
+    log("System: Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.");
 
     updateSidebar();
     requestAnimationFrame(loop);
