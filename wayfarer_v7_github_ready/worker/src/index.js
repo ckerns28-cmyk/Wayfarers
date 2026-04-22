@@ -25,27 +25,25 @@ const html = String.raw`<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wayfarer v8 - Broken Marker</title>
+  <title>Wayfarer — Quality Slice</title>
   <style>
     :root {
-      --bg: #071019;
-      --panel: rgba(12, 18, 28, 0.92);
-      --panel-border: rgba(255,255,255,0.10);
-      --text: #e9eef7;
-      --muted: #a7b0c0;
-      --accent: #7cc3ff;
-      --danger: #ff7a7a;
-      --ok: #8fe388;
-      --gold: #f5d36a;
+      --bg: #071018;
+      --panel: rgba(10, 15, 23, 0.94);
+      --panel-border: rgba(255,255,255,0.08);
+      --text: #e8edf5;
+      --muted: #a9b3c2;
+      --accent: #9fc7ff;
+      --gold: #e3c26a;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: var(--bg);
+      background: radial-gradient(circle at top, #0d1824 0%, #071018 55%);
       color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       overflow: hidden;
     }
 
@@ -60,9 +58,9 @@ const html = String.raw`<!DOCTYPE html>
     .panel {
       background: var(--panel);
       border: 1px solid var(--panel-border);
-      border-radius: 20px;
-      padding: 16px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.28);
+      border-radius: 22px;
+      box-shadow: 0 14px 50px rgba(0,0,0,0.35);
+      backdrop-filter: blur(8px);
     }
 
     #sidebar {
@@ -72,53 +70,59 @@ const html = String.raw`<!DOCTYPE html>
       min-width: 0;
     }
 
+    #brand,
+    #stats,
+    #objective,
+    #logPanel {
+      padding: 18px;
+    }
+
     h1 {
-      margin: 0 0 6px;
+      margin: 0 0 8px;
       font-size: 26px;
-      line-height: 1.1;
+      line-height: 1.05;
     }
 
     .sub {
       color: var(--muted);
       font-size: 14px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 12px;
     }
 
     .stats {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 8px 12px;
-      font-size: 15px;
+      gap: 10px 12px;
       align-items: center;
+      font-size: 15px;
     }
 
     .muted { color: var(--muted); }
 
-    .pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 10px;
-    }
-
     #chat {
-      background: rgba(0,0,0,0.28);
-      border-radius: 14px;
-      padding: 12px;
+      background: rgba(0,0,0,0.26);
+      border-radius: 16px;
+      padding: 14px;
       min-height: 180px;
-      max-height: 260px;
+      max-height: 280px;
       overflow: auto;
       white-space: pre-line;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 13px;
+      line-height: 1.42;
     }
 
     #gamePanel {
       position: relative;
-      min-width: 0;
       overflow: hidden;
       padding: 0;
     }
@@ -127,9 +131,9 @@ const html = String.raw`<!DOCTYPE html>
       width: 100%;
       height: 100%;
       display: block;
+      border-radius: 22px;
       image-rendering: pixelated;
-      border-radius: 20px;
-      background: #0b1621;
+      background: #0a1520;
     }
 
     #hud {
@@ -152,25 +156,24 @@ const html = String.raw`<!DOCTYPE html>
       left: 24px;
       right: 24px;
       bottom: 24px;
-      background: rgba(10, 12, 18, 0.96);
-      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(9, 11, 17, 0.97);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 18px;
       padding: 16px;
       display: none;
-      box-shadow: 0 14px 44px rgba(0,0,0,0.4);
+      box-shadow: 0 16px 44px rgba(0,0,0,0.42);
     }
 
     #dialogueName {
       font-weight: 700;
-      margin-bottom: 8px;
       color: var(--accent);
+      margin-bottom: 8px;
     }
 
     #dialogueText {
-      min-height: 76px;
       white-space: pre-line;
-      line-height: 1.45;
-      color: var(--text);
+      line-height: 1.48;
+      min-height: 72px;
     }
 
     #dialogueHint {
@@ -189,30 +192,30 @@ const html = String.raw`<!DOCTYPE html>
 <body>
   <div id="wrap">
     <aside id="sidebar">
-      <section class="panel">
+      <section id="brand" class="panel">
         <h1>Wayfarer</h1>
-        <div class="sub">v8 — Broken Marker</div>
-        <div class="pill">Exploration + story first</div>
+        <div class="sub">Quality Slice — Town / Pond / Forest Edge</div>
+        <span class="tag">Moody mythic rebuild</span>
       </section>
 
-      <section class="panel">
+      <section id="stats" class="panel">
         <div class="stats">
           <div class="muted">HP</div><div id="hpVal">50/50</div>
           <div class="muted">XP</div><div id="xpVal">0</div>
           <div class="muted">Coins</div><div id="coinsVal">0</div>
           <div class="muted">Weapon</div><div>Rusty Sword (+2)</div>
           <div class="muted">Quest</div><div id="questVal">None</div>
-          <div class="muted">Zone</div><div id="zoneVal">Hearthvale Crossroads</div>
+          <div class="muted">Zone</div><div id="zoneVal">Hearthvale Square</div>
         </div>
       </section>
 
-      <section class="panel">
+      <section id="objective" class="panel">
         <div class="questTitle">Current Objective</div>
-        <div id="objectiveText" class="muted">Speak to Edrin Vale near Mirror Pond.</div>
+        <div id="objectiveText" class="muted">Walk the town square and visit Mirror Pond.</div>
       </section>
 
-      <section class="panel">
-        <div style="font-weight:700; margin-bottom:8px;">Log</div>
+      <section id="logPanel" class="panel">
+        <div class="questTitle">Log</div>
         <div id="chat"></div>
       </section>
     </aside>
@@ -224,7 +227,7 @@ const html = String.raw`<!DOCTYPE html>
       <div id="dialogue">
         <div id="dialogueName"></div>
         <div id="dialogueText"></div>
-        <div id="dialogueHint">Click anywhere on the dialogue box to continue.</div>
+        <div id="dialogueHint">Click this dialogue box to continue.</div>
       </div>
     </main>
   </div>
@@ -246,538 +249,610 @@ const html = String.raw`<!DOCTYPE html>
     const dialogueName = document.getElementById("dialogueName");
     const dialogueText = document.getElementById("dialogueText");
 
-    const TILE = 28;
-    const WORLD_W = 60;
-    const WORLD_H = 34;
+    const TILE = 32;
+    const WORLD_W = 36;
+    const WORLD_H = 24;
+
+    const VIEW_TILES_X = 22;
+    const VIEW_TILES_Y = 14;
 
     function resize() {
       const rect = document.getElementById("gamePanel").getBoundingClientRect();
-      canvas.width = Math.max(900, Math.floor(rect.width));
-      canvas.height = Math.max(620, Math.floor(rect.height));
+      canvas.width = Math.floor(rect.width);
+      canvas.height = Math.floor(rect.height);
     }
     resize();
     addEventListener("resize", resize);
-
-    const world = {
-      roads: [
-        { x: 0, y: 16, w: 60, h: 2 },
-        { x: 18, y: 8, w: 2, h: 16 },
-        { x: 30, y: 4, w: 2, h: 22 },
-        { x: 48, y: 2, w: 2, h: 16 },
-      ],
-      fields: [
-        { x: 0, y: 0, w: 11, h: 8, name: "Western Fields" },
-        { x: 18, y: 0, w: 11, h: 8, name: "Central Fields" },
-        { x: 35, y: 0, w: 11, h: 8, name: "Eastern Fields" },
-      ],
-      pond: { x: 33, y: 17, w: 12, h: 7, name: "Mirror Pond" },
-      trees: [],
-      markers: [
-        { x: 52, y: 10, text: "Broken Marker", discovered: false }
-      ],
-      labels: [
-        { x: 2, y: 12, text: "Hearthvale Crossroads" },
-        { x: 37, y: 16, text: "Mirror Pond" },
-        { x: 23, y: 29, text: "Eastern Fields" },
-      ]
-    };
-
-    function pushTree(x, y) {
-      world.trees.push({ x, y });
-    }
-
-    // Tree lines / clusters
-    for (let i = 44; i < 60; i += 3) pushTree(i, 4);
-    for (let i = 45; i < 60; i += 2) pushTree(i, 30);
-    [31,33,35,38,41,46,50].forEach((x, idx) => pushTree(x, 10 + (idx % 3)));
-    [34,36,38,40,43,46,48].forEach((x, idx) => pushTree(x, 25 + (idx % 2)));
-
-    const player = {
-      x: 30,
-      y: 16,
-      hp: 50,
-      maxHp: 50,
-      xp: 0,
-      coins: 0,
-      facing: "down"
-    };
-
-    const npcs = [
-      {
-        id: "edrin",
-        name: "Edrin Vale",
-        x: 29,
-        y: 16,
-        color: "#7e5bef"
-      }
-    ];
-
-    const creatures = [
-      { id: "wolf1", type: "wolf", x: 46, y: 12, hp: 18, maxHp: 18, homeX: 46, homeY: 12, roam: 3 },
-      { id: "wolf2", type: "wolf", x: 48, y: 11, hp: 18, maxHp: 18, homeX: 48, homeY: 11, roam: 3 },
-      { id: "wolf3", type: "wolf", x: 50, y: 13, hp: 18, maxHp: 18, homeX: 50, homeY: 13, roam: 3 },
-      { id: "turkey1", type: "turkey", x: 25, y: 6, hp: 8, maxHp: 8, homeX: 25, homeY: 6, roam: 2 },
-      { id: "turkey2", type: "turkey", x: 21, y: 5, hp: 8, maxHp: 8, homeX: 21, homeY: 5, roam: 2 },
-      { id: "turkey3", type: "turkey", x: 41, y: 5, hp: 8, maxHp: 8, homeX: 41, homeY: 5, roam: 2 }
-    ];
-
-    const quest = {
-      id: "broken_marker",
-      state: "not_started", // not_started | active | found | complete
-    };
-
-    let lastAttackAt = 0;
-    let lastCreatureStep = 0;
-    let lastWolfHit = 0;
-
-    let activeDialogue = null;
-    let activeDialogueIndex = 0;
-
-    const edrinIntro = [
-      "You are not from here.",
-      "...good.",
-      "Most travelers walk roads.",
-      "Few question where they lead.",
-      "There is a stone beyond the trees.",
-      "It should not exist.",
-      "Yet it does."
-    ];
-
-    const edrinAfterFind = [
-      "So. You found it.",
-      "Then the stories were not lies after all.",
-      "Keep what you felt to yourself, for now.",
-      "Take this coin. And remember the shape of that stone."
-    ];
 
     function log(message) {
       chat.textContent = message + "\\n" + chat.textContent;
     }
 
-    log("System: Wayfarer v8 loaded.");
-    log("System: Speak to Edrin Vale near Mirror Pond.");
+    const assets = {
+      grass: new Image(),
+      road: new Image(),
+      tree: new Image(),
+      waterDeep: new Image(),
+      waterShallow: new Image()
+    };
 
-    const keys = new Set();
+    assets.grass.src = "./assets/terrain/grass/moss_grass_32.png";
+    assets.road.src = "./assets/terrain/roads/worn_path_32.png";
+    assets.tree.src = "./assets/terrain/trees/pine_mythic_32.png";
+    assets.waterDeep.src = "./assets/terrain/water/deep_water_32.png";
+    assets.waterShallow.src = "./assets/terrain/water/shallow_water_32.png";
 
-    addEventListener("keydown", (e) => {
-      const key = e.key.toLowerCase();
-      if (["arrowup","arrowdown","arrowleft","arrowright","w","a","s","d"," "].includes(key)) {
-        e.preventDefault();
-      }
-      keys.add(key);
+    const loaded = {
+      grass: false,
+      road: false,
+      tree: false,
+      waterDeep: false,
+      waterShallow: false
+    };
 
-      if (key === " " || e.key === " ") {
-        manualAttack();
-      }
+    Object.entries(assets).forEach(([key, img]) => {
+      img.onload = () => loaded[key] = true;
+      img.onerror = () => loaded[key] = false;
     });
 
-    addEventListener("keyup", (e) => {
-      keys.delete(e.key.toLowerCase());
-    });
+    const world = {
+      trees: [],
+      buildings: [],
+      roads: [],
+      ponds: [],
+      fences: [],
+      zones: [],
+      blocked: new Set()
+    };
 
-    dialogue.addEventListener("click", () => {
-      if (!activeDialogue) return;
+    function keyOf(x, y) {
+      return x + "," + y;
+    }
 
-      activeDialogueIndex++;
-      if (activeDialogueIndex >= activeDialogue.lines.length) {
-        dialogue.style.display = "none";
-
-        if (activeDialogue.id === "edrin_intro" && quest.state === "not_started") {
-          quest.state = "active";
-          log("Quest started: The Broken Marker");
+    function blockRect(x, y, w, h) {
+      for (let ix = x; ix < x + w; ix++) {
+        for (let iy = y; iy < y + h; iy++) {
+          world.blocked.add(keyOf(ix, iy));
         }
-
-        if (activeDialogue.id === "edrin_complete" && quest.state === "found") {
-          quest.state = "complete";
-          player.xp += 25;
-          player.coins += 10;
-          log("Quest complete: The Broken Marker");
-          log("Reward: +25 XP, +10 coins");
-        }
-
-        activeDialogue = null;
-        activeDialogueIndex = 0;
-        updateSidebar();
-        return;
       }
+    }
 
-      renderDialogue();
+    // -------------------------
+    // QUALITY SLICE LAYOUT
+    // -------------------------
+
+    // Main square roads
+    world.roads.push(
+      { x: 6, y: 11, w: 24, h: 2 },
+      { x: 17, y: 5, w: 2, h: 14 },
+      { x: 9, y: 8, w: 2, h: 8 },
+      { x: 24, y: 7, w: 2, h: 8 }
+    );
+
+    // Pond
+    world.ponds.push({ x: 21, y: 13, w: 7, h: 5, name: "Mirror Pond" });
+
+    // Houses around central town
+    world.buildings.push(
+      { x: 11, y: 6, w: 4, h: 3, roof: "#5e3f3f", wall: "#6f6a59", doorX: 13, doorY: 9 },
+      { x: 20, y: 6, w: 4, h: 3, roof: "#4a4f68", wall: "#746f60", doorX: 22, doorY: 9 },
+      { x: 11, y: 14, w: 4, h: 3, roof: "#5b4e39", wall: "#726956", doorX: 13, doorY: 13 }
+    );
+
+    world.buildings.forEach(b => blockRect(b.x, b.y, b.w, b.h));
+
+    // Well in town
+    const well = { x: 18, y: 11 };
+
+    // Fences near farmland edge
+    for (let x = 27; x <= 33; x++) {
+      world.fences.push({ x, y: 6 });
+      world.fences.push({ x, y: 10 });
+    }
+    for (let y = 7; y <= 9; y++) {
+      world.fences.push({ x: 27, y });
+      world.fences.push({ x: 33, y });
+    }
+
+    world.fences.forEach(f => world.blocked.add(keyOf(f.x, f.y)));
+
+    // Forest edge trees
+    const treePoints = [
+      [2,3],[4,4],[6,3],[8,4],[29,3],[31,4],[33,3],
+      [29,20],[31,21],[33,20],[6,20],[8,19],[26,19],[28,20],
+      [20,3],[22,4],[24,3],[3,16],[4,18],[5,19],[30,15],[31,16],[32,17]
+    ];
+    treePoints.forEach(([x, y]) => {
+      world.trees.push({ x, y });
+      world.blocked.add(keyOf(x, y));
     });
 
-    canvas.addEventListener("click", (e) => {
-      if (activeDialogue) return;
+    world.zones.push(
+      { name: "Hearthvale Square", x: 8, y: 7, w: 18, h: 11 },
+      { name: "Mirror Pond", x: 20, y: 12, w: 10, h: 7 },
+      { name: "Forest Edge", x: 26, y: 2, w: 10, h: 20 },
+      { name: "West Lane", x: 0, y: 8, w: 10, h: 10 }
+    );
 
-      const { worldX, worldY } = screenToWorld(e.clientX, e.clientY);
+    const player = {
+      x: 17,
+      y: 11,
+      px: 17 * TILE,
+      py: 11 * TILE,
+      targetX: 17,
+      targetY: 11,
+      hp: 50,
+      maxHp: 50,
+      xp: 0,
+      coins: 0,
+      moving: false,
+      facing: "down",
+      speed: 180
+    };
 
-      const npc = npcs.find(n => n.x === worldX && n.y === worldY);
-      if (npc && npc.id === "edrin") {
-        if (quest.state === "found") {
-          startDialogue("edrin_complete", "Edrin Vale", edrinAfterFind);
-        } else {
-          startDialogue("edrin_intro", "Edrin Vale", edrinIntro);
-        }
-        return;
-      }
+    const npc = {
+      x: 20,
+      y: 12,
+      name: "Edrin Vale",
+      color: "#6e58df"
+    };
 
-      const target = creatures.find(c => c.hp > 0 && c.x === worldX && c.y === worldY);
-      if (target) {
-        attackCreature(target);
-      }
-    });
+    const wolf = {
+      x: 30,
+      y: 13,
+      px: 30 * TILE,
+      py: 13 * TILE,
+      targetX: 30,
+      targetY: 13,
+      hp: 22,
+      maxHp: 22,
+      homeX: 30,
+      homeY: 13,
+      roam: 3,
+      speed: 120
+    };
 
-    function startDialogue(id, speaker, lines) {
-      activeDialogue = { id, speaker, lines };
-      activeDialogueIndex = 0;
+    let lastWolfDecision = 0;
+    let lastWolfAttack = 0;
+
+    let activeDialogue = null;
+    let dialogueIndex = 0;
+
+    const edrinLines = [
+      "You are not from here.",
+      "...good.",
+      "This town still remembers how to be quiet.",
+      "The pond remembers more.",
+      "Walk slowly. Some places should be learned before they are used."
+    ];
+
+    function startDialogue(name, lines) {
+      activeDialogue = { name, lines };
+      dialogueIndex = 0;
       renderDialogue();
     }
 
     function renderDialogue() {
       if (!activeDialogue) return;
-      dialogueName.textContent = activeDialogue.speaker;
-      dialogueText.textContent = activeDialogue.lines[activeDialogueIndex];
       dialogue.style.display = "block";
+      dialogueName.textContent = activeDialogue.name;
+      dialogueText.textContent = activeDialogue.lines[dialogueIndex];
     }
 
-    function worldToScreen(x, y) {
-      const camX = Math.max(0, Math.min(player.x - 16, WORLD_W - 32));
-      const camY = Math.max(0, Math.min(player.y - 10, WORLD_H - 20));
-      return {
-        x: (x - camX) * TILE + 40,
-        y: (y - camY) * TILE + 40,
-        camX,
-        camY
-      };
-    }
+    dialogue.addEventListener("click", () => {
+      if (!activeDialogue) return;
+      dialogueIndex++;
+      if (dialogueIndex >= activeDialogue.lines.length) {
+        activeDialogue = null;
+        dialogue.style.display = "none";
+        return;
+      }
+      renderDialogue();
+    });
 
-    function screenToWorld(clientX, clientY) {
-      const rect = canvas.getBoundingClientRect();
-      const px = clientX - rect.left;
-      const py = clientY - rect.top;
-
-      const camX = Math.max(0, Math.min(player.x - 16, WORLD_W - 32));
-      const camY = Math.max(0, Math.min(player.y - 10, WORLD_H - 20));
-
-      return {
-        worldX: Math.floor((px - 40) / TILE) + camX,
-        worldY: Math.floor((py - 40) / TILE) + camY
-      };
+    function currentZoneName() {
+      for (const z of world.zones) {
+        if (
+          player.targetX >= z.x &&
+          player.targetX < z.x + z.w &&
+          player.targetY >= z.y &&
+          player.targetY < z.y + z.h
+        ) return z.name;
+      }
+      return "Outer Road";
     }
 
     function updateSidebar() {
       hpVal.textContent = player.hp + "/" + player.maxHp;
       xpVal.textContent = String(player.xp);
       coinsVal.textContent = String(player.coins);
-
-      let zone = currentZone();
-      zoneVal.textContent = zone;
-
-      if (quest.state === "not_started") {
-        questVal.textContent = "None";
-        objectiveText.textContent = "Speak to Edrin Vale near Mirror Pond.";
-      } else if (quest.state === "active") {
-        questVal.textContent = "The Broken Marker";
-        objectiveText.textContent = "Search beyond the trees for the stone Edrin described.";
-      } else if (quest.state === "found") {
-        questVal.textContent = "The Broken Marker";
-        objectiveText.textContent = "Return to Edrin Vale at Mirror Pond.";
-      } else {
-        questVal.textContent = "Complete";
-        objectiveText.textContent = "Quest complete. More story to come.";
-      }
+      zoneVal.textContent = currentZoneName();
+      questVal.textContent = "Town Slice";
+      objectiveText.textContent = "Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.";
 
       hud.textContent =
         "Move: WASD / Arrows\\n" +
-        "Attack: Space or click creature\\n" +
-        "Zone: " + zone + "\\n" +
-        "Quest: " + (quest.state === "not_started" ? "None" : "The Broken Marker");
+        "Interact: Click Edrin Vale\\n" +
+        "Combat: Avoid or approach the wolf\\n" +
+        "Zone: " + currentZoneName();
     }
 
-    function currentZone() {
-      const p = world.pond;
-      if (player.x >= p.x && player.x < p.x + p.w && player.y >= p.y && player.y < p.y + p.h) {
-        return p.name;
+    function canMoveTo(x, y) {
+      if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) return false;
+      if (world.blocked.has(keyOf(x, y))) return false;
+      if (x === npc.x && y === npc.y) return false;
+      return true;
+    }
+
+    const keys = new Set();
+
+    addEventListener("keydown", (e) => {
+      const k = e.key.toLowerCase();
+      if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(k)) {
+        e.preventDefault();
       }
-      if (player.y < 9) {
-        return "Eastern Fields";
+      keys.add(k);
+    });
+
+    addEventListener("keyup", (e) => {
+      keys.delete(e.key.toLowerCase());
+    });
+
+    canvas.addEventListener("click", (e) => {
+      if (activeDialogue) return;
+
+      const clicked = screenToWorld(e.clientX, e.clientY);
+
+      if (clicked.x === npc.x && clicked.y === npc.y) {
+        startDialogue(npc.name, edrinLines);
       }
-      return "Hearthvale Crossroads";
+    });
+
+    function screenToWorld(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = clientX - rect.left;
+      const my = clientY - rect.top;
+
+      const cam = getCamera();
+      return {
+        x: Math.floor((mx - cam.offsetX) / TILE) + cam.tileX,
+        y: Math.floor((my - cam.offsetY) / TILE) + cam.tileY
+      };
     }
 
-    function movePlayer(dx, dy) {
-      const nx = Math.max(0, Math.min(WORLD_W - 1, player.x + dx));
-      const ny = Math.max(0, Math.min(WORLD_H - 1, player.y + dy));
+    function getCamera() {
+      const tileX = Math.max(0, Math.min(player.targetX - Math.floor(VIEW_TILES_X / 2), WORLD_W - VIEW_TILES_X));
+      const tileY = Math.max(0, Math.min(player.targetY - Math.floor(VIEW_TILES_Y / 2), WORLD_H - VIEW_TILES_Y));
 
-      // don't walk through Edrin
-      if (npcs.some(n => n.x === nx && n.y === ny)) return;
+      const viewPxW = VIEW_TILES_X * TILE;
+      const viewPxH = VIEW_TILES_Y * TILE;
 
-      player.x = nx;
-      player.y = ny;
+      const offsetX = Math.floor((canvas.width - viewPxW) / 2);
+      const offsetY = Math.floor((canvas.height - viewPxH) / 2);
 
-      if (dx < 0) player.facing = "left";
-      if (dx > 0) player.facing = "right";
-      if (dy < 0) player.facing = "up";
-      if (dy > 0) player.facing = "down";
-
-      checkMarkerDiscovery();
+      return { tileX, tileY, offsetX, offsetY };
     }
 
-    function manualAttack() {
-      const nearby = creatures.find(c => c.hp > 0 && Math.abs(c.x - player.x) <= 1 && Math.abs(c.y - player.y) <= 1);
-      if (nearby) attackCreature(nearby);
+    function tileToScreen(tx, ty) {
+      const cam = getCamera();
+      return {
+        x: (tx - cam.tileX) * TILE + cam.offsetX,
+        y: (ty - cam.tileY) * TILE + cam.offsetY
+      };
     }
 
-    function attackCreature(creature) {
-      const now = performance.now();
-      if (now - lastAttackAt < 350) return;
-      lastAttackAt = now;
+    function smoothMove(entity, dt) {
+      const targetPxX = entity.targetX * TILE;
+      const targetPxY = entity.targetY * TILE;
 
-      if (Math.abs(creature.x - player.x) > 2 || Math.abs(creature.y - player.y) > 2) return;
+      const dx = targetPxX - entity.px;
+      const dy = targetPxY - entity.py;
 
-      const damage = creature.type === "wolf" ? 6 : 5;
-      creature.hp -= damage;
-      log("You hit " + creature.type + " for " + damage + ".");
+      const dist = Math.hypot(dx, dy);
+      if (dist < 0.5) {
+        entity.px = targetPxX;
+        entity.py = targetPxY;
+        entity.moving = false;
+        return;
+      }
 
-      if (creature.hp <= 0) {
-        if (creature.type === "wolf") {
-          player.xp += 20;
-          player.coins += 6;
-          log("System: Wayfarer defeated a wolf.");
-          log("System: +20 XP, +6 coins.");
-        } else {
-          player.xp += 8;
-          player.coins += 2;
-          log("System: Wayfarer defeated a turkey.");
-          log("System: +8 XP, +2 coins.");
+      entity.moving = true;
+      const step = entity.speed * dt;
+      const nx = dx / dist;
+      const ny = dy / dist;
+
+      entity.px += nx * Math.min(step, dist);
+      entity.py += ny * Math.min(step, dist);
+    }
+
+    function tryPlayerStep(dx, dy, facing) {
+      if (player.moving || activeDialogue) return;
+      const nx = player.targetX + dx;
+      const ny = player.targetY + dy;
+      player.facing = facing;
+      if (!canMoveTo(nx, ny)) return;
+      player.targetX = nx;
+      player.targetY = ny;
+    }
+
+    function updateInput() {
+      if (keys.has("w") || keys.has("arrowup")) tryPlayerStep(0, -1, "up");
+      else if (keys.has("s") || keys.has("arrowdown")) tryPlayerStep(0, 1, "down");
+      else if (keys.has("a") || keys.has("arrowleft")) tryPlayerStep(-1, 0, "left");
+      else if (keys.has("d") || keys.has("arrowright")) tryPlayerStep(1, 0, "right");
+    }
+
+    function updateWolf(now) {
+      if (now - lastWolfDecision < 600) return;
+      lastWolfDecision = now;
+
+      const dx = player.targetX - wolf.targetX;
+      const dy = player.targetY - wolf.targetY;
+      const dist = Math.abs(dx) + Math.abs(dy);
+
+      if (dist <= 4) {
+        const stepX = dx === 0 ? 0 : dx > 0 ? 1 : -1;
+        const stepY = dy === 0 ? 0 : dy > 0 ? 1 : -1;
+
+        const tryA = { x: wolf.targetX + stepX, y: wolf.targetY };
+        const tryB = { x: wolf.targetX, y: wolf.targetY + stepY };
+
+        if (Math.abs(dx) >= Math.abs(dy) && canWolfMoveTo(tryA.x, tryA.y)) {
+          wolf.targetX = tryA.x;
+          wolf.targetY = tryA.y;
+        } else if (canWolfMoveTo(tryB.x, tryB.y)) {
+          wolf.targetX = tryB.x;
+          wolf.targetY = tryB.y;
         }
+      } else {
+        const driftX = wolf.targetX < wolf.homeX ? 1 : wolf.targetX > wolf.homeX ? -1 : 0;
+        const driftY = wolf.targetY < wolf.homeY ? 1 : wolf.targetY > wolf.homeY ? -1 : 0;
 
-        setTimeout(() => {
-          creature.hp = creature.maxHp;
-          creature.x = creature.homeX;
-          creature.y = creature.homeY;
-        }, 4500);
-      }
-
-      updateSidebar();
-    }
-
-    function updateCreatures(now) {
-      if (now - lastCreatureStep < 700) return;
-      lastCreatureStep = now;
-
-      creatures.forEach(c => {
-        if (c.hp <= 0) return;
-
-        if (c.type === "wolf") {
-          const dx = player.x - c.x;
-          const dy = player.y - c.y;
-          const dist = Math.abs(dx) + Math.abs(dy);
-
-          if (dist <= 6) {
-            c.x += dx === 0 ? 0 : dx > 0 ? 1 : -1;
-            c.y += dy === 0 ? 0 : dy > 0 ? 1 : -1;
-          } else {
-            if (Math.abs(c.x - c.homeX) > c.roam) c.x += c.x < c.homeX ? 1 : -1;
-            if (Math.abs(c.y - c.homeY) > c.roam) c.y += c.y < c.homeY ? 1 : -1;
-          }
-        } else {
-          const dir = Math.floor(Math.random() * 4);
-          const ox = c.x;
-          const oy = c.y;
-          if (dir === 0) c.x++;
-          if (dir === 1) c.x--;
-          if (dir === 2) c.y++;
-          if (dir === 3) c.y--;
-          if (Math.abs(c.x - c.homeX) > c.roam) c.x = ox;
-          if (Math.abs(c.y - c.homeY) > c.roam) c.y = oy;
+        if (Math.abs(wolf.targetX - wolf.homeX) > wolf.roam && canWolfMoveTo(wolf.targetX + driftX, wolf.targetY)) {
+          wolf.targetX += driftX;
         }
-      });
+        if (Math.abs(wolf.targetY - wolf.homeY) > wolf.roam && canWolfMoveTo(wolf.targetX, wolf.targetY + driftY)) {
+          wolf.targetY += driftY;
+        }
+      }
     }
 
-    function wolvesAttack(now) {
-      if (now - lastWolfHit < 1000) return;
+    function canWolfMoveTo(x, y) {
+      if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) return false;
+      if (world.blocked.has(keyOf(x, y))) return false;
+      if (x === npc.x && y === npc.y) return false;
+      return true;
+    }
 
-      const bitingWolf = creatures.find(c => c.type === "wolf" && c.hp > 0 && Math.abs(c.x - player.x) <= 1 && Math.abs(c.y - player.y) <= 1);
-      if (!bitingWolf) return;
+    function wolfAttack(now) {
+      const dist = Math.abs(player.targetX - wolf.targetX) + Math.abs(player.targetY - wolf.targetY);
+      if (dist > 1) return;
+      if (now - lastWolfAttack < 1100) return;
 
-      lastWolfHit = now;
-      player.hp = Math.max(0, player.hp - 6);
-      log("A wolf bites you for 6.");
+      lastWolfAttack = now;
+      player.hp = Math.max(0, player.hp - 5);
+      log("A wolf bites you for 5.");
 
       if (player.hp <= 0) {
         player.hp = player.maxHp;
-        player.x = 30;
-        player.y = 16;
-        log("System: You collapse and wake at Hearthvale Crossroads.");
-      }
-
-      updateSidebar();
-    }
-
-    function checkMarkerDiscovery() {
-      if (quest.state !== "active") return;
-
-      const marker = world.markers[0];
-      if (Math.abs(player.x - marker.x) <= 1 && Math.abs(player.y - marker.y) <= 1) {
-        marker.discovered = true;
-        quest.state = "found";
-        log("System: You feel something is wrong here.");
-        log("System: Broken Marker discovered.");
-        updateSidebar();
+        player.targetX = 17;
+        player.targetY = 11;
+        player.px = player.targetX * TILE;
+        player.py = player.targetY * TILE;
+        log("System: You wake in Hearthvale Square.");
       }
     }
 
-    function drawTileRect(x, y, w, h, color) {
-      const pos = worldToScreen(x, y);
+    function drawFallbackTile(x, y, color) {
+      const p = tileToScreen(x, y);
       ctx.fillStyle = color;
-      ctx.fillRect(pos.x, pos.y, w * TILE, h * TILE);
+      ctx.fillRect(p.x, p.y, TILE, TILE);
+    }
+
+    function drawImageTile(img, x, y, fallback) {
+      const p = tileToScreen(x, y);
+      if (img && img.complete && img.naturalWidth > 0) {
+        ctx.drawImage(img, p.x, p.y, TILE, TILE);
+      } else {
+        ctx.fillStyle = fallback;
+        ctx.fillRect(p.x, p.y, TILE, TILE);
+      }
     }
 
     function drawWorld() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // grass
-      const camX = Math.max(0, Math.min(player.x - 16, WORLD_W - 32));
-      const camY = Math.max(0, Math.min(player.y - 10, WORLD_H - 20));
+      const cam = getCamera();
 
-      for (let y = camY; y < camY + 21; y++) {
-        for (let x = camX; x < camX + 33; x++) {
-          const sx = (x - camX) * TILE + 40;
-          const sy = (y - camY) * TILE + 40;
-          const checker = (x + y) % 2 === 0;
-          ctx.fillStyle = checker ? "#2d6030" : "#2a5630";
-          ctx.fillRect(sx, sy, TILE, TILE);
+      // base grass
+      for (let y = cam.tileY; y < cam.tileY + VIEW_TILES_Y; y++) {
+        for (let x = cam.tileX; x < cam.tileX + VIEW_TILES_X; x++) {
+          drawImageTile(assets.grass, x, y, (x + y) % 2 === 0 ? "#2a5630" : "#2d6030");
         }
       }
 
       // roads
-      world.roads.forEach(r => drawTileRect(r.x, r.y, r.w, r.h, "#a9916b"));
-
-      // fields
-      world.fields.forEach(f => {
-        drawTileRect(f.x, f.y, f.w, f.h, "#c9c06a");
-        for (let x = f.x; x < f.x + f.w; x++) {
-          for (let y = f.y; y < f.y + f.h; y++) {
-            const p = worldToScreen(x, y);
-            ctx.fillStyle = (x + y) % 2 === 0 ? "#889443" : "#798739";
-            ctx.fillRect(p.x + 4, p.y + 4, TILE - 8, TILE - 8);
+      world.roads.forEach(r => {
+        for (let x = r.x; x < r.x + r.w; x++) {
+          for (let y = r.y; y < r.y + r.h; y++) {
+            drawImageTile(assets.road, x, y, "#9f8764");
           }
         }
       });
 
-      // pond
-      drawTileRect(world.pond.x, world.pond.y, world.pond.w, world.pond.h, "#3469cc");
-      drawTileRect(world.pond.x + 2, world.pond.y + 1, 5, 3, "#5a8de8");
+      // pond with shoreline feel
+      world.ponds.forEach(p => {
+        for (let x = p.x; x < p.x + p.w; x++) {
+          for (let y = p.y; y < p.y + p.h; y++) {
+            const edge = (x === p.x || x === p.x + p.w - 1 || y === p.y || y === p.y + p.h - 1);
+            drawImageTile(edge ? assets.waterShallow : assets.waterDeep, x, y, edge ? "#5f8fd4" : "#3666c0");
+          }
+        }
+      });
+
+      // buildings
+      world.buildings.forEach(b => {
+        // wall
+        for (let x = b.x; x < b.x + b.w; x++) {
+          for (let y = b.y + 1; y < b.y + b.h; y++) {
+            const p = tileToScreen(x, y);
+            ctx.fillStyle = b.wall;
+            ctx.fillRect(p.x, p.y, TILE, TILE);
+          }
+        }
+        // roof
+        for (let x = b.x; x < b.x + b.w; x++) {
+          const p = tileToScreen(x, b.y);
+          ctx.fillStyle = b.roof;
+          ctx.fillRect(p.x, p.y, TILE, TILE + 4);
+        }
+        // door
+        const d = tileToScreen(b.doorX, b.doorY - 1);
+        ctx.fillStyle = "#3a2416";
+        ctx.fillRect(d.x + 9, d.y + 14, 14, 18);
+        // window
+        const w = tileToScreen(b.x + 1, b.y + 1);
+        ctx.fillStyle = "#d8c36f";
+        ctx.fillRect(w.x + 8, w.y + 8, 10, 8);
+      });
+
+      // well
+      {
+        const p = tileToScreen(well.x, well.y);
+        ctx.fillStyle = "#6f777f";
+        ctx.beginPath();
+        ctx.arc(p.x + 16, p.y + 16, 11, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#2c4278";
+        ctx.beginPath();
+        ctx.arc(p.x + 16, p.y + 16, 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // fences
+      world.fences.forEach(f => {
+        const p = tileToScreen(f.x, f.y);
+        ctx.fillStyle = "#8d734f";
+        ctx.fillRect(p.x + 2, p.y + 12, 28, 4);
+        ctx.fillRect(p.x + 5, p.y + 5, 4, 22);
+        ctx.fillRect(p.x + 23, p.y + 5, 4, 22);
+      });
 
       // trees
       world.trees.forEach(t => {
-        const p = worldToScreen(t.x, t.y);
-        ctx.fillStyle = "#4a8c45";
-        ctx.beginPath();
-        ctx.arc(p.x + TILE/2, p.y + TILE/2 - 2, 12, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = "#5a3d28";
-        ctx.fillRect(p.x + 11, p.y + 16, 6, 10);
+        const p = tileToScreen(t.x, t.y);
+        if (assets.tree.complete && assets.tree.naturalWidth > 0) {
+          ctx.drawImage(assets.tree, p.x, p.y, TILE, TILE);
+        } else {
+          ctx.fillStyle = "#4a8c45";
+          ctx.beginPath();
+          ctx.arc(p.x + 16, p.y + 12, 11, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#5a3d28";
+          ctx.fillRect(p.x + 13, p.y + 16, 6, 10);
+        }
       });
 
-      // marker (only visible after found or if very close)
-      const marker = world.markers[0];
-      if (marker.discovered || Math.abs(player.x - marker.x) <= 2 && Math.abs(player.y - marker.y) <= 2) {
-        const p = worldToScreen(marker.x, marker.y);
-        ctx.fillStyle = "#8a8f9a";
-        ctx.fillRect(p.x + 8, p.y + 4, 12, 22);
-        ctx.fillStyle = "#b7d8ff";
-        ctx.fillRect(p.x + 11, p.y + 7, 6, 6);
-      }
-
-      // labels
-      world.labels.forEach(label => {
-        const p = worldToScreen(label.x, label.y);
+      // zone labels
+      world.zones.forEach(z => {
+        const p = tileToScreen(z.x, z.y);
         ctx.fillStyle = "rgba(0,0,0,0.45)";
-        ctx.fillRect(p.x - 4, p.y - 18, label.text.length * 7 + 8, 18);
-        ctx.fillStyle = "#f1f3f5";
+        ctx.fillRect(p.x - 2, p.y - 18, z.name.length * 7 + 8, 18);
+        ctx.fillStyle = "#f2f5f9";
         ctx.font = "bold 12px monospace";
-        ctx.fillText(label.text, p.x, p.y - 6);
+        ctx.fillText(z.name, p.x + 2, p.y - 5);
       });
 
-      // NPCs
-      npcs.forEach(npc => {
-        const p = worldToScreen(npc.x, npc.y);
-        ctx.fillStyle = "#6d55de";
-        ctx.fillRect(p.x + 7, p.y + 4, 14, 22);
-        ctx.fillStyle = "#d7d9ea";
-        ctx.fillRect(p.x + 10, p.y + 1, 8, 8);
+      // NPC
+      {
+        const p = tileToScreen(npc.x, npc.y);
+        ctx.fillStyle = "#d8d9e8";
+        ctx.fillRect(p.x + 10, p.y + 2, 12, 9);
+        ctx.fillStyle = npc.color;
+        ctx.fillRect(p.x + 8, p.y + 11, 16, 15);
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold 12px monospace";
-        ctx.fillText(npc.name, p.x - 6, p.y - 4);
-      });
+        ctx.fillText(npc.name, p.x - 10, p.y - 4);
+      }
 
-      // creatures
-      creatures.forEach(c => {
-        if (c.hp <= 0) return;
-        const p = worldToScreen(c.x, c.y);
+      // Wolf
+      {
+        const sx = wolf.px / TILE;
+        const sy = wolf.py / TILE;
+        const p = tileToScreen(sx, sy);
+        ctx.fillStyle = "#8a92a0";
+        ctx.fillRect(p.x + 5, p.y + 12, 18, 9);
+        ctx.fillRect(p.x + 18, p.y + 10, 9, 7);
+        ctx.fillRect(p.x + 8, p.y + 19, 3, 7);
+        ctx.fillRect(p.x + 17, p.y + 19, 3, 7);
 
-        if (c.type === "wolf") {
-          ctx.fillStyle = "#8a92a0";
-          ctx.fillRect(p.x + 4, p.y + 10, 18, 10);
-          ctx.fillRect(p.x + 18, p.y + 12, 7, 6);
-          ctx.fillRect(p.x + 7, p.y + 18, 3, 7);
-          ctx.fillRect(p.x + 16, p.y + 18, 3, 7);
-        } else {
-          ctx.fillStyle = "#b86a35";
-          ctx.fillRect(p.x + 8, p.y + 10, 12, 10);
-          ctx.fillRect(p.x + 16, p.y + 7, 6, 6);
-          ctx.fillRect(p.x + 11, p.y + 18, 2, 7);
-          ctx.fillRect(p.x + 17, p.y + 18, 2, 7);
-        }
-
-        // hp bar
-        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillStyle = "rgba(0,0,0,0.45)";
         ctx.fillRect(p.x + 4, p.y - 8, 22, 4);
-        ctx.fillStyle = "#89d96b";
-        ctx.fillRect(p.x + 4, p.y - 8, 22 * (c.hp / c.maxHp), 4);
-      });
+        ctx.fillStyle = "#92de76";
+        ctx.fillRect(p.x + 4, p.y - 8, 22 * (wolf.hp / wolf.maxHp), 4);
+      }
 
-      // player
-      const pp = worldToScreen(player.x, player.y);
-      ctx.fillStyle = "#e3e8f0";
-      ctx.fillRect(pp.x + 9, pp.y + 2, 10, 8);  // head
-      ctx.fillStyle = "#2d6cdf";
-      ctx.fillRect(pp.x + 7, pp.y + 10, 14, 16); // body
-      ctx.fillStyle = "#4d311d";
-      ctx.fillRect(pp.x + 10, pp.y + 26, 3, 6);
-      ctx.fillRect(pp.x + 16, pp.y + 26, 3, 6);
-      ctx.fillStyle = "#c9d1dc";
-      ctx.fillRect(pp.x + 4, pp.y + 12, 4, 12); // sword/arm silhouette
+      // Player
+      {
+        const sx = player.px / TILE;
+        const sy = player.py / TILE;
+        const p = tileToScreen(sx, sy);
 
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 12px monospace";
-      ctx.fillText("Wayfarer", pp.x - 4, pp.y - 4);
+        ctx.fillStyle = "rgba(0,0,0,0.25)";
+        ctx.beginPath();
+        ctx.ellipse(p.x + 16, p.y + 28, 9, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
 
-      // day/night tint
-      const phase = (performance.now() / 10000) % (Math.PI * 2);
-      const tint = 0.08 + Math.max(0, Math.sin(phase)) * 0.12;
-      ctx.fillStyle = "rgba(15,24,40," + tint.toFixed(3) + ")";
+        ctx.fillStyle = "#e1e7ef";
+        ctx.fillRect(p.x + 11, p.y + 2, 10, 9);
+
+        ctx.fillStyle = "#2f67d2";
+        ctx.fillRect(p.x + 9, p.y + 11, 14, 16);
+
+        ctx.fillStyle = "#5d4027";
+        ctx.fillRect(p.x + 12, p.y + 27, 3, 6);
+        ctx.fillRect(p.x + 18, p.y + 27, 3, 6);
+
+        // sword arm
+        ctx.fillStyle = "#c5ced7";
+        ctx.fillRect(p.x + 5, p.y + 13, 4, 12);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 12px monospace";
+        ctx.fillText("Wayfarer", p.x - 8, p.y - 4);
+      }
+
+      // atmosphere
+      const phase = (performance.now() / 12000) % (Math.PI * 2);
+      const tint = 0.08 + Math.max(0, Math.sin(phase)) * 0.10;
+      ctx.fillStyle = "rgba(10,18,32," + tint.toFixed(3) + ")";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    function update(now) {
-      if (!activeDialogue) {
-        if (keys.has("arrowup") || keys.has("w")) movePlayer(0, -1);
-        else if (keys.has("arrowdown") || keys.has("s")) movePlayer(0, 1);
-        else if (keys.has("arrowleft") || keys.has("a")) movePlayer(-1, 0);
-        else if (keys.has("arrowright") || keys.has("d")) movePlayer(1, 0);
-      }
+    function update(dt, now) {
+      updateInput();
+      smoothMove(player, dt);
 
-      updateCreatures(now);
-      wolvesAttack(now);
+      updateWolf(now);
+      smoothMove(wolf, dt);
+      wolfAttack(now);
+
       updateSidebar();
     }
 
+    let last = performance.now();
+
     function loop(now) {
-      update(now);
+      const dt = Math.min(0.033, (now - last) / 1000);
+      last = now;
+
+      update(dt, now);
       drawWorld();
       requestAnimationFrame(loop);
     }
+
+    log("System: Quality slice loaded.");
+    log("System: Visit Mirror Pond and speak to Edrin Vale.");
 
     updateSidebar();
     requestAnimationFrame(loop);
