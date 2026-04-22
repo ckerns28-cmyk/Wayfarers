@@ -269,6 +269,7 @@ const html = String.raw`<!DOCTYPE html>
       road: new Image(),
       treeA: new Image(),
       treeB: new Image(),
+      treeC: new Image(),
       waterDeep: new Image(),
       waterShallow: new Image()
     };
@@ -277,6 +278,7 @@ const html = String.raw`<!DOCTYPE html>
     assets.road.src = "./assets/terrain/roads/worn_path_32.png";
     assets.treeA.src = "./assets/terrain/trees/pine_mythic_32.png";
     assets.treeB.src = "./assets/terrain/trees/oak_mythic_32.png";
+    assets.treeC.src = "./assets/terrain/trees/pine_bright_32.png";
     assets.waterDeep.src = "./assets/terrain/water/deep_water_32.png";
     assets.waterShallow.src = "./assets/terrain/water/shallow_water_32.png";
 
@@ -290,7 +292,9 @@ const html = String.raw`<!DOCTYPE html>
       fences: [],
       buildings: [],
       roads: [],
-      zones: []
+      zones: [],
+      pondBlocked: new Set(),
+      pondShore: new Set()
     };
 
     function blockRect(x, y, w, h) {
@@ -304,10 +308,12 @@ const html = String.raw`<!DOCTYPE html>
     // ---------- Layout ----------
     // central roads
     world.roads.push(
-      { x: 7, y: 11, w: 24, h: 2 },
+      { x: 6, y: 11, w: 26, h: 2 },
       { x: 17, y: 5, w: 2, h: 15 },
       { x: 10, y: 8, w: 2, h: 8 },
-      { x: 24, y: 7, w: 2, h: 8 }
+      { x: 24, y: 7, w: 2, h: 8 },
+      { x: 19, y: 12, w: 5, h: 2 },
+      { x: 26, y: 12, w: 3, h: 2 }
     );
 
     // buildings
@@ -327,6 +333,19 @@ const html = String.raw`<!DOCTYPE html>
       cx: 25.5,
       cy: 15.5
     };
+    for (let x = pond.x; x < pond.x + pond.w; x++) {
+      for (let y = pond.y; y < pond.y + pond.h; y++) {
+        const dx = (x + 0.5 - pond.cx) / (pond.w / 2);
+        const dy = (y + 0.5 - pond.cy) / (pond.h / 2);
+        const d = dx * dx + dy * dy;
+        if (d <= 0.97) {
+          world.pondBlocked.add(keyOf(x, y));
+        }
+        if (d >= 0.5 && d <= 1.1) {
+          world.pondShore.add(keyOf(x, y));
+        }
+      }
+    }
 
     // fences / field edge
     for (let x = 29; x <= 35; x++) {
@@ -341,15 +360,23 @@ const html = String.raw`<!DOCTYPE html>
 
     // trees - more intentional framing
     const treeData = [
-      [3,4,"a"],[5,5,"a"],[7,4,"b"],[9,5,"a"],
-      [28,4,"a"],[30,4,"b"],[33,4,"a"],[35,5,"a"],
-      [3,19,"a"],[5,21,"a"],[7,22,"b"],
-      [30,20,"a"],[32,21,"b"],[34,22,"a"],[36,21,"a"],
-      [20,3,"b"],[22,4,"a"],[24,4,"b"],
-      [30,15,"a"],[31,17,"b"],[33,18,"a"]
+      [3,4,"a",1.08], [5,5,"a",0.95], [7,4,"b",1.12], [9,5,"c",0.92],
+      [28,4,"a",1.05], [30,4,"b",1.1], [33,4,"c",0.9], [35,5,"a",1.02],
+      [3,19,"a",1.06], [5,21,"c",0.9], [7,22,"b",1.18],
+      [30,20,"a",1.02], [32,21,"b",1.15], [34,22,"c",0.88], [36,21,"a",0.98],
+      [20,3,"b",1.1], [22,4,"a",0.98], [24,4,"b",1.09],
+      [29,15,"a",0.96], [30,15,"c",0.9], [31,17,"b",1.2], [33,18,"a",1.06],
+      [26,18,"c",0.86], [27,19,"a",0.94]
     ];
-    treeData.forEach(([x,y,type]) => {
-      world.trees.push({ x, y, type });
+    treeData.forEach(([x,y,type,scale]) => {
+      world.trees.push({
+        x,
+        y,
+        type,
+        scale,
+        jitterX: ((x * 37 + y * 19) % 7) - 3,
+        jitterY: ((x * 11 + y * 23) % 5) - 2
+      });
       world.blocked.add(keyOf(x, y));
     });
 
@@ -374,14 +401,15 @@ const html = String.raw`<!DOCTYPE html>
       coins: 0,
       moving: false,
       facing: "down",
-      speed: 160
+      speed: 180
     };
 
     const npc = {
       x: 21,
       y: 12,
       name: "Edrin Vale",
-      color: "#6f58df"
+      color: "#6f58df",
+      scale: 0.93
     };
 
     const wolf = {
@@ -467,6 +495,7 @@ const html = String.raw`<!DOCTYPE html>
     function canMoveTo(x, y) {
       if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) return false;
       if (world.blocked.has(keyOf(x, y))) return false;
+      if (world.pondBlocked.has(keyOf(x, y))) return false;
       if (x === npc.x && y === npc.y) return false;
       return true;
     }
@@ -531,7 +560,7 @@ const html = String.raw`<!DOCTYPE html>
       const dy = targetPxY - entity.py;
       const dist = Math.hypot(dx, dy);
 
-      if (dist < 0.5) {
+      if (dist < 0.35) {
         entity.px = targetPxX;
         entity.py = targetPxY;
         entity.moving = false;
@@ -546,6 +575,8 @@ const html = String.raw`<!DOCTYPE html>
       entity.px += nx * Math.min(step, dist);
       entity.py += ny * Math.min(step, dist);
     }
+
+    const moveIntent = { dx: 0, dy: 0, facing: "down" };
 
     function tryPlayerStep(dx, dy, facing) {
       if (player.moving || activeDialogue) return;
@@ -562,6 +593,22 @@ const html = String.raw`<!DOCTYPE html>
       else if (keys.has("s") || keys.has("arrowdown")) tryPlayerStep(0, 1, "down");
       else if (keys.has("a") || keys.has("arrowleft")) tryPlayerStep(-1, 0, "left");
       else if (keys.has("d") || keys.has("arrowright")) tryPlayerStep(1, 0, "right");
+
+      moveIntent.dx = 0;
+      moveIntent.dy = 0;
+      if (keys.has("w") || keys.has("arrowup")) {
+        moveIntent.dy = -1;
+        moveIntent.facing = "up";
+      } else if (keys.has("s") || keys.has("arrowdown")) {
+        moveIntent.dy = 1;
+        moveIntent.facing = "down";
+      } else if (keys.has("a") || keys.has("arrowleft")) {
+        moveIntent.dx = -1;
+        moveIntent.facing = "left";
+      } else if (keys.has("d") || keys.has("arrowright")) {
+        moveIntent.dx = 1;
+        moveIntent.facing = "right";
+      }
     }
 
     function canWolfMoveTo(x, y) {
@@ -644,6 +691,14 @@ const html = String.raw`<!DOCTYPE html>
 
           const edge = d > 0.55;
           drawImageTile(edge ? assets.waterShallow : assets.waterDeep, x, y, edge ? "#6d97d7" : "#3b67bf");
+
+          if (world.pondShore.has(keyOf(x, y))) {
+            const p = tileToScreen(x, y);
+            ctx.fillStyle = "rgba(208,185,138,0.14)";
+            ctx.fillRect(p.x, p.y, TILE, TILE);
+            ctx.fillStyle = "rgba(255,255,255,0.05)";
+            ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, 2);
+          }
         }
       }
 
@@ -651,6 +706,20 @@ const html = String.raw`<!DOCTYPE html>
       const c = tileToScreen(pond.x + 2, pond.y + 1);
       ctx.fillStyle = "rgba(180,210,255,0.16)";
       ctx.fillRect(c.x, c.y, 3 * TILE, 2 * TILE);
+
+      // shoreline reeds
+      for (let x = pond.x - 1; x <= pond.x + pond.w; x++) {
+        for (let y = pond.y - 1; y <= pond.y + pond.h; y++) {
+          if (!world.pondShore.has(keyOf(x, y))) continue;
+          const p = tileToScreen(x, y);
+          const seed = (x * 13 + y * 17) % 5;
+          if (seed <= 1) {
+            ctx.fillStyle = "rgba(76,118,66,0.6)";
+            ctx.fillRect(p.x + 6 + seed * 4, p.y + 20, 2, 8);
+            ctx.fillRect(p.x + 11 + seed * 3, p.y + 18, 2, 10);
+          }
+        }
+      }
     }
 
     function drawBuilding(b) {
@@ -688,6 +757,8 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillRect(d.x + 10, d.y + 14, 12, 18);
         ctx.fillStyle = "#23140d";
         ctx.fillRect(d.x + 10, d.y + 14, 2, 18);
+        ctx.fillStyle = "rgba(235,181,96,0.13)";
+        ctx.fillRect(d.x + 11, d.y + 15, 9, 7);
       }
 
       // window
@@ -698,24 +769,36 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillStyle = "rgba(255,255,255,0.18)";
         ctx.fillRect(w.x + 9, w.y + 10, 8, 2);
       }
+      if (b.w >= 4) {
+        const w2 = tileToScreen(b.x + b.w - 2, b.y + 1);
+        ctx.fillStyle = "#cabd72";
+        ctx.fillRect(w2.x + 8, w2.y + 9, 9, 8);
+        ctx.fillStyle = "rgba(255,255,255,0.12)";
+        ctx.fillRect(w2.x + 9, w2.y + 10, 7, 2);
+      }
     }
 
     function drawTree(t) {
       const p = tileToScreen(t.x, t.y);
-      const img = t.type === "b" ? assets.treeB : assets.treeA;
+      const img = t.type === "b" ? assets.treeB : t.type === "c" ? assets.treeC : assets.treeA;
+      const scale = t.scale || 1;
+      const drawW = TILE * scale;
+      const drawH = (TILE + 4) * scale;
+      const drawX = p.x + t.jitterX - (drawW - TILE) / 2;
+      const drawY = p.y - 4 + t.jitterY - (drawH - (TILE + 4));
 
       // larger shadow
       ctx.fillStyle = "rgba(0,0,0,0.18)";
       ctx.beginPath();
-      ctx.ellipse(p.x + 16, p.y + 27, 11, 5, 0, 0, Math.PI * 2);
+      ctx.ellipse(p.x + 16 + t.jitterX * 0.35, p.y + 27, 8 + scale * 4, 4 + scale * 1.6, 0, 0, Math.PI * 2);
       ctx.fill();
 
       if (img && img.complete && img.naturalWidth > 0) {
-        ctx.drawImage(img, p.x, p.y - 4, TILE, TILE + 4);
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
       } else {
         ctx.fillStyle = "#4a8c45";
         ctx.beginPath();
-        ctx.arc(p.x + 16, p.y + 12, 11, 0, Math.PI * 2);
+        ctx.arc(p.x + 16, p.y + 12, 8 + scale * 3, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = "#5a3d28";
         ctx.fillRect(p.x + 13, p.y + 16, 6, 10);
@@ -790,9 +873,10 @@ const html = String.raw`<!DOCTYPE html>
       world.trees.forEach(drawTree);
 
       // labels (fewer, cleaner)
-      drawZoneLabel("Hearthvale Square", 12, 7);
-      drawZoneLabel("Mirror Pond", 23, 12);
-      drawZoneLabel("Forest Edge", 30, 4);
+      const zoneName = currentZoneName();
+      if (zoneName === "Hearthvale Square") drawZoneLabel("Hearthvale Square", 12, 7);
+      if (zoneName === "Mirror Pond") drawZoneLabel("Mirror Pond", 23, 12);
+      if (zoneName === "Forest Edge") drawZoneLabel("Forest Edge", 30, 4);
 
       // NPC
       {
@@ -809,9 +893,13 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillStyle = "#4a2f78";
         ctx.fillRect(p.x + 8, p.y + 25, 16, 4);
 
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 12px monospace";
-        ctx.fillText(npc.name, p.x - 10, p.y - 4);
+        if (Math.abs(player.targetX - npc.x) + Math.abs(player.targetY - npc.y) <= 5) {
+          ctx.fillStyle = "rgba(0,0,0,0.55)";
+          ctx.fillRect(p.x - 14, p.y - 16, 78, 14);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 11px monospace";
+          ctx.fillText(npc.name, p.x - 10, p.y - 5);
+        }
       }
 
       // wolf
@@ -864,9 +952,11 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillStyle = "#cad2db";
         ctx.fillRect(p.x + 4, p.y + 14, 4, 12);
 
+        ctx.fillStyle = "rgba(0,0,0,0.52)";
+        ctx.fillRect(p.x - 10, p.y - 16, 62, 14);
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 12px monospace";
-        ctx.fillText("Wayfarer", p.x - 8, p.y - 4);
+        ctx.font = "bold 11px monospace";
+        ctx.fillText("Wayfarer", p.x - 6, p.y - 5);
       }
 
       // subtle atmospheric tint
@@ -876,16 +966,12 @@ const html = String.raw`<!DOCTYPE html>
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    function updateInput() {
-      if (keys.has("w") || keys.has("arrowup")) tryPlayerStep(0, -1, "up");
-      else if (keys.has("s") || keys.has("arrowdown")) tryPlayerStep(0, 1, "down");
-      else if (keys.has("a") || keys.has("arrowleft")) tryPlayerStep(-1, 0, "left");
-      else if (keys.has("d") || keys.has("arrowright")) tryPlayerStep(1, 0, "right");
-    }
-
     function update(dt, now) {
       updateInput();
       smoothMove(player, dt);
+      if (!player.moving && (moveIntent.dx !== 0 || moveIntent.dy !== 0)) {
+        tryPlayerStep(moveIntent.dx, moveIntent.dy, moveIntent.facing);
+      }
       updateWolf(now);
       smoothMove(wolf, dt);
       wolfAttack(now);
