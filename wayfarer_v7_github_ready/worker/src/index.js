@@ -265,7 +265,9 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     const assets = {
-      grass: new Image(),
+      grassA: new Image(),
+      grassB: new Image(),
+      grassC: new Image(),
       road: new Image(),
       treeA: new Image(),
       treeB: new Image(),
@@ -274,7 +276,9 @@ const html = String.raw`<!DOCTYPE html>
       waterShallow: new Image()
     };
 
-    assets.grass.src = "./assets/terrain/grass/moss_grass_32.png";
+    assets.grassA.src = "./assets/terrain/grass/moss_grass_32.png";
+    assets.grassB.src = "./assets/terrain/grass/shadow_grass_32.png";
+    assets.grassC.src = "./assets/terrain/grass/shadow_grass_32.png";
     assets.road.src = "./assets/terrain/roads/worn_path_32.png";
     assets.treeA.src = "./assets/terrain/trees/pine_mythic_32.png";
     assets.treeB.src = "./assets/terrain/trees/oak_mythic_32.png";
@@ -294,7 +298,9 @@ const html = String.raw`<!DOCTYPE html>
       roads: [],
       zones: [],
       pondBlocked: new Set(),
-      pondShore: new Set()
+      pondWater: new Set(),
+      pondShore: new Set(),
+      pondNearEdge: new Set()
     };
 
     function blockRect(x, y, w, h) {
@@ -333,16 +339,31 @@ const html = String.raw`<!DOCTYPE html>
       cx: 25.5,
       cy: 15.5
     };
-    for (let x = pond.x; x < pond.x + pond.w; x++) {
-      for (let y = pond.y; y < pond.y + pond.h; y++) {
-        const dx = (x + 0.5 - pond.cx) / (pond.w / 2);
-        const dy = (y + 0.5 - pond.cy) / (pond.h / 2);
+
+    function terrainNoise(x, y) {
+      return ((x * 928371 + y * 123457 + x * y * 3343) % 1000) / 1000;
+    }
+
+    for (let x = pond.x - 1; x <= pond.x + pond.w; x++) {
+      for (let y = pond.y - 1; y <= pond.y + pond.h; y++) {
+        const dx = (x + 0.5 - pond.cx) / ((pond.w + 0.6) / 2);
+        const dy = (y + 0.5 - pond.cy) / ((pond.h + 0.9) / 2);
         const d = dx * dx + dy * dy;
-        if (d <= 0.97) {
+
+        const edgeWobble = (terrainNoise(x, y) - 0.5) * 0.22;
+        const waterLimit = 0.9 + edgeWobble;
+
+        if (d <= waterLimit) {
+          world.pondWater.add(keyOf(x, y));
           world.pondBlocked.add(keyOf(x, y));
         }
-        if (d >= 0.5 && d <= 1.1) {
+
+        if (d >= waterLimit - 0.16 && d <= waterLimit + 0.16) {
           world.pondShore.add(keyOf(x, y));
+        }
+
+        if (d >= waterLimit - 0.22 && d <= waterLimit + 0.05) {
+          world.pondNearEdge.add(keyOf(x, y));
         }
       }
     }
@@ -360,13 +381,12 @@ const html = String.raw`<!DOCTYPE html>
 
     // trees - more intentional framing
     const treeData = [
-      [3,4,"a",1.08], [5,5,"a",0.95], [7,4,"b",1.12], [9,5,"c",0.92],
-      [28,4,"a",1.05], [30,4,"b",1.1], [33,4,"c",0.9], [35,5,"a",1.02],
-      [3,19,"a",1.06], [5,21,"c",0.9], [7,22,"b",1.18],
+      [2,4,"a",1.08], [4,5,"b",1.02], [6,4,"a",1.12], [8,5,"c",0.92],
+      [9,3,"b",1.04], [13,3,"a",1.1], [17,3,"b",1.16], [21,3,"c",0.94], [25,3,"a",1.07],
+      [31,4,"a",1.03], [34,4,"b",1.12], [36,5,"c",0.9],
+      [2,19,"a",1.06], [4,20,"c",0.9], [7,21,"b",1.18], [10,20,"a",1.01],
       [30,20,"a",1.02], [32,21,"b",1.15], [34,22,"c",0.88], [36,21,"a",0.98],
-      [20,3,"b",1.1], [22,4,"a",0.98], [24,4,"b",1.09],
-      [29,15,"a",0.96], [30,15,"c",0.9], [31,17,"b",1.2], [33,18,"a",1.06],
-      [26,18,"c",0.86], [27,19,"a",0.94]
+      [29,11,"a",0.96], [31,13,"c",0.93], [33,15,"b",1.14], [35,17,"a",1.05]
     ];
     treeData.forEach(([x,y,type,scale]) => {
       world.trees.push({
@@ -486,9 +506,9 @@ const html = String.raw`<!DOCTYPE html>
       objectiveText.textContent = "Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.";
 
       hud.textContent =
-        "Move: WASD / Arrows\\n" +
-        "Interact: Click Edrin Vale\\n" +
-        "Combat: Avoid or approach the wolf\\n" +
+        "Move: WASD / Arrows\n" +
+        "Interact: Click Edrin Vale\n" +
+        "Combat: Avoid or approach the wolf\n" +
         "Zone: " + currentZoneName();
     }
 
@@ -683,46 +703,59 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     function drawShoreWater() {
-      for (let x = pond.x; x < pond.x + pond.w; x++) {
-        for (let y = pond.y; y < pond.y + pond.h; y++) {
+      for (let x = pond.x - 1; x <= pond.x + pond.w; x++) {
+        for (let y = pond.y - 1; y <= pond.y + pond.h; y++) {
+          const key = keyOf(x, y);
+          if (!world.pondWater.has(key)) continue;
+
           const dx = (x + 0.5 - pond.cx) / (pond.w / 2);
           const dy = (y + 0.5 - pond.cy) / (pond.h / 2);
           const d = dx * dx + dy * dy;
 
-          const edge = d > 0.55;
-          drawImageTile(edge ? assets.waterShallow : assets.waterDeep, x, y, edge ? "#6d97d7" : "#3b67bf");
+          const isEdgeWater = d > 0.54 || world.pondNearEdge.has(key);
+          drawImageTile(isEdgeWater ? assets.waterShallow : assets.waterDeep, x, y, isEdgeWater ? "#6d97d7" : "#3b67bf");
 
-          if (world.pondShore.has(keyOf(x, y))) {
-            const p = tileToScreen(x, y);
-            ctx.fillStyle = "rgba(208,185,138,0.14)";
+          const p = tileToScreen(x, y);
+
+          // reflection band near shoreline
+          if (world.pondNearEdge.has(key)) {
+            ctx.fillStyle = "rgba(214,235,255,0.12)";
+            ctx.fillRect(p.x + 2, p.y + 3, TILE - 4, 3);
+          }
+
+          // depth readability gradient
+          const depthAlpha = Math.max(0, Math.min(0.24, (0.72 - d) * 0.34));
+          if (depthAlpha > 0) {
+            ctx.fillStyle = "rgba(18,46,96," + depthAlpha.toFixed(3) + ")";
             ctx.fillRect(p.x, p.y, TILE, TILE);
-            ctx.fillStyle = "rgba(255,255,255,0.05)";
-            ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, 2);
           }
         }
       }
 
-      // soft reflective center overlay
-      const c = tileToScreen(pond.x + 2, pond.y + 1);
-      ctx.fillStyle = "rgba(180,210,255,0.16)";
-      ctx.fillRect(c.x, c.y, 3 * TILE, 2 * TILE);
-
-      // shoreline reeds
+      // shoreline color variation and reeds
       for (let x = pond.x - 1; x <= pond.x + pond.w; x++) {
         for (let y = pond.y - 1; y <= pond.y + pond.h; y++) {
           if (!world.pondShore.has(keyOf(x, y))) continue;
           const p = tileToScreen(x, y);
-          const seed = (x * 13 + y * 17) % 5;
-          if (seed <= 1) {
-            ctx.fillStyle = "rgba(76,118,66,0.6)";
-            ctx.fillRect(p.x + 6 + seed * 4, p.y + 20, 2, 8);
-            ctx.fillRect(p.x + 11 + seed * 3, p.y + 18, 2, 10);
+          const seed = (x * 13 + y * 17) % 7;
+
+          ctx.fillStyle = seed % 2 === 0 ? "rgba(178,151,112,0.15)" : "rgba(142,165,108,0.14)";
+          ctx.fillRect(p.x, p.y, TILE, TILE);
+
+          if (seed <= 2) {
+            ctx.fillStyle = "rgba(76,118,66,0.62)";
+            ctx.fillRect(p.x + 6 + seed * 3, p.y + 20, 2, 8);
+            ctx.fillRect(p.x + 11 + seed * 2, p.y + 18, 2, 10);
           }
         }
       }
     }
 
     function drawBuilding(b) {
+      const groundShadow = tileToScreen(b.x, b.y + b.h);
+      ctx.fillStyle = "rgba(0,0,0,0.15)";
+      ctx.fillRect(groundShadow.x - 3, groundShadow.y - 2, b.w * TILE + 6, 8);
+
       // wall
       for (let x = b.x; x < b.x + b.w; x++) {
         for (let y = b.y + 1; y < b.y + b.h; y++) {
@@ -739,15 +772,19 @@ const html = String.raw`<!DOCTYPE html>
         const p = tileToScreen(x, b.y);
         ctx.fillStyle = b.roofTop;
         ctx.fillRect(p.x, p.y, TILE, TILE);
+        ctx.fillStyle = "rgba(255,255,255,0.08)";
+        ctx.fillRect(p.x, p.y + 1, TILE, 2);
+        ctx.fillStyle = "rgba(0,0,0,0.2)";
+        ctx.fillRect(p.x, p.y + 12, TILE, 8);
         ctx.fillStyle = b.roofSide;
         ctx.fillRect(p.x, p.y + TILE - 6, TILE, 6);
       }
 
-      // subtle roof overhang shadow
+      // stronger roof overhang shadow (directional)
       for (let x = b.x; x < b.x + b.w; x++) {
         const p = tileToScreen(x, b.y + 1);
-        ctx.fillStyle = "rgba(0,0,0,0.16)";
-        ctx.fillRect(p.x, p.y, TILE, 4);
+        ctx.fillStyle = "rgba(0,0,0,0.25)";
+        ctx.fillRect(p.x + 1, p.y + 1, TILE - 1, 5);
       }
 
       // door
@@ -822,7 +859,21 @@ const html = String.raw`<!DOCTYPE html>
       // base grass
       for (let y = cam.tileY; y < cam.tileY + VIEW_TILES_Y; y++) {
         for (let x = cam.tileX; x < cam.tileX + VIEW_TILES_X; x++) {
-          drawImageTile(assets.grass, x, y, (x + y) % 2 === 0 ? "#2a5630" : "#2d6030");
+          const p = tileToScreen(x, y);
+          const mix = (x * 17 + y * 23 + x * y * 5) % 11;
+          const grassImg = mix <= 2 ? assets.grassB : mix <= 5 ? assets.grassA : assets.grassC;
+          drawImageTile(grassImg, x, y, mix % 2 === 0 ? "#2a5630" : "#2d6030");
+
+          if (mix === 1 || mix === 6) {
+            ctx.fillStyle = "rgba(88,130,72,0.12)";
+            ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
+          } else if (mix === 4 || mix === 9) {
+            ctx.fillStyle = "rgba(52,86,46,0.10)";
+            ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, TILE - 4);
+          } else if (mix === 8) {
+            ctx.fillStyle = "rgba(120,154,92,0.09)";
+            ctx.fillRect(p.x + 3, p.y + 3, TILE - 6, TILE - 6);
+          }
         }
       }
 
