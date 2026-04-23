@@ -314,6 +314,12 @@ const html = String.raw`<!DOCTYPE html>
       pondNearEdge: new Set()
     };
 
+    const BUILDING_TILE_WIDTH = 4;
+    const BUILDING_TILE_HEIGHT = 3;
+    const BUILDING_WINDOW_ROW = 1;
+    const BUILDING_DOOR_PIXEL_WIDTH = 14;
+    const BUILDING_DOOR_PIXEL_HEIGHT = 19;
+
     function blockRect(x, y, w, h) {
       for (let ix = x; ix < x + w; ix++) {
         for (let iy = y; iy < y + h; iy++) {
@@ -335,9 +341,9 @@ const html = String.raw`<!DOCTYPE html>
 
     // buildings
     world.buildings.push(
-      { x: 11, y: 6, w: 4, h: 3, roofTop: "#745048", roofSide: "#5b3c35", wall: "#807862", doorX: 13, doorY: 9 },
-      { x: 20, y: 6, w: 4, h: 3, roofTop: "#56617f", roofSide: "#434b66", wall: "#847c68", doorX: 22, doorY: 9 },
-      { x: 12, y: 14, w: 4, h: 3, roofTop: "#6e6248", roofSide: "#54493a", wall: "#7e7460", doorX: 14, doorY: 13 }
+      { x: 11, y: 6, w: BUILDING_TILE_WIDTH, h: BUILDING_TILE_HEIGHT, roofTop: "#745048", roofSide: "#5b3c35", wall: "#807862" },
+      { x: 20, y: 6, w: BUILDING_TILE_WIDTH, h: BUILDING_TILE_HEIGHT, roofTop: "#56617f", roofSide: "#434b66", wall: "#847c68" },
+      { x: 12, y: 14, w: BUILDING_TILE_WIDTH, h: BUILDING_TILE_HEIGHT, roofTop: "#6e6248", roofSide: "#54493a", wall: "#7e7460" }
     );
     world.buildings.forEach(b => blockRect(b.x, b.y, b.w, b.h));
 
@@ -388,6 +394,10 @@ const html = String.raw`<!DOCTYPE html>
       world.fences.push({ x: 29, y });
       world.fences.push({ x: 35, y });
     }
+    world.fences = world.fences
+      .map(f => ({ x: Math.round(f.x), y: Math.round(f.y) }))
+      .sort((a, b) => (a.y - b.y) || (a.x - b.x))
+      .filter((f, i, arr) => i === 0 || f.x !== arr[i - 1].x || f.y !== arr[i - 1].y);
     world.fences.forEach(f => world.blocked.add(keyOf(f.x, f.y)));
 
     // trees - dense edge containment with open town center
@@ -586,6 +596,7 @@ const html = String.raw`<!DOCTYPE html>
         "Space : Attack\n" +
         "Click Edrin Vale : Talk\n" +
         "Wolf nearby : Keep distance\n" +
+        "G : Toggle alignment grid\n" +
         "Current Zone : " + currentZoneName();
     }
 
@@ -599,11 +610,15 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     const keys = new Set();
+    let showAlignmentGrid = false;
 
     addEventListener("keydown", (e) => {
       const k = e.key.toLowerCase();
       if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(k)) {
         e.preventDefault();
+      }
+      if (k === "g") {
+        showAlignmentGrid = !showAlignmentGrid;
       }
       keys.add(k);
     });
@@ -846,6 +861,46 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillStyle = fallback;
         ctx.fillRect(p.x, p.y, TILE, TILE);
       }
+    }
+
+    function buildingDoorRect(b) {
+      const baseTile = tileToScreen(b.x, b.y + b.h - 1);
+      const doorX = Math.round(baseTile.x + (b.w * TILE - BUILDING_DOOR_PIXEL_WIDTH) / 2);
+      const doorY = baseTile.y + (TILE - BUILDING_DOOR_PIXEL_HEIGHT);
+      return { x: doorX, y: doorY };
+    }
+
+    function buildingWindowTiles(b) {
+      if (b.w < 3) return [];
+      const left = b.x + 1;
+      const right = b.x + b.w - 2;
+      if (left === right) return [left];
+      return [left, right];
+    }
+
+    function drawAlignmentGrid() {
+      const cam = getCamera();
+      const startX = cam.offsetX;
+      const startY = cam.offsetY;
+      const endX = startX + VIEW_TILES_X * TILE;
+      const endY = startY + VIEW_TILES_Y * TILE;
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(221,233,255,0.16)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x <= VIEW_TILES_X; x++) {
+        const px = startX + x * TILE + 0.5;
+        ctx.moveTo(px, startY);
+        ctx.lineTo(px, endY);
+      }
+      for (let y = 0; y <= VIEW_TILES_Y; y++) {
+        const py = startY + y * TILE + 0.5;
+        ctx.moveTo(startX, py);
+        ctx.lineTo(endX, py);
+      }
+      ctx.stroke();
+      ctx.restore();
     }
 
     function drawSoftShadow(cx, cy, rx, ry, alpha = 0.2, offsetX = 3, offsetY = 4) {
@@ -1105,49 +1160,47 @@ const html = String.raw`<!DOCTYPE html>
 
       // door
       {
-        const d = tileToScreen(b.doorX, b.doorY - 1);
+        const d = buildingDoorRect(b);
         ctx.fillStyle = "#4f3825";
-        ctx.fillRect(d.x + 9, d.y + 13, 14, 19);
+        ctx.fillRect(d.x, d.y, BUILDING_DOOR_PIXEL_WIDTH, BUILDING_DOOR_PIXEL_HEIGHT);
         ctx.fillStyle = "#3b2518";
-        ctx.fillRect(d.x + 10, d.y + 14, 12, 18);
+        ctx.fillRect(d.x + 1, d.y + 1, BUILDING_DOOR_PIXEL_WIDTH - 2, BUILDING_DOOR_PIXEL_HEIGHT - 1);
         ctx.fillStyle = "#23140d";
-        ctx.fillRect(d.x + 10, d.y + 14, 2, 18);
+        ctx.fillRect(d.x + 1, d.y + 1, 2, BUILDING_DOOR_PIXEL_HEIGHT - 1);
         ctx.fillStyle = "rgba(0,0,0,0.28)";
-        ctx.fillRect(d.x + 21, d.y + 14, 1, 18);
+        ctx.fillRect(d.x + BUILDING_DOOR_PIXEL_WIDTH - 2, d.y + 1, 1, BUILDING_DOOR_PIXEL_HEIGHT - 1);
         ctx.fillStyle = "rgba(235,181,96,0.13)";
-        ctx.fillRect(d.x + 11, d.y + 15, 9, 7);
+        ctx.fillRect(d.x + 2, d.y + 2, BUILDING_DOOR_PIXEL_WIDTH - 5, 7);
         ctx.fillStyle = "#9a7542";
-        ctx.fillRect(d.x + 10, d.y + 12, 12, 2);
+        ctx.fillRect(d.x + 1, d.y - 1, BUILDING_DOOR_PIXEL_WIDTH - 2, 2);
       }
 
       // window
       {
-        const w = tileToScreen(b.x + 1, b.y + 1);
-        ctx.fillStyle = "#4b3e2f";
-        ctx.fillRect(w.x + 6, w.y + 7, 14, 12);
-        const jitterA = Math.max(0, Math.sin(t * 17.5 + b.x * 4.3) - 0.92) * 0.28;
-        const warmFlicker = 0.82 + (Math.sin(t * 4.8 + b.x * 0.7) + 1) * 0.1 + (Math.sin(t * 11.4 + b.y * 0.33) + 1) * 0.04 + jitterA;
-        ctx.fillStyle = "rgba(215,199,109," + Math.min(0.98, warmFlicker).toFixed(3) + ")";
-        ctx.fillRect(w.x + 8, w.y + 9, 10, 8);
-        ctx.fillStyle = "rgba(72,52,34,0.72)";
-        ctx.fillRect(w.x + 12, w.y + 9, 1, 8);
-        ctx.fillRect(w.x + 8, w.y + 12, 10, 1);
-        ctx.fillStyle = "rgba(255,255,255,0.18)";
-        ctx.fillRect(w.x + 9, w.y + 10, 8, 2);
-      }
-      if (b.w >= 4) {
-        const w2 = tileToScreen(b.x + b.w - 2, b.y + 1);
-        ctx.fillStyle = "#4b3e2f";
-        ctx.fillRect(w2.x + 6, w2.y + 7, 13, 12);
-        const jitterB = Math.max(0, Math.sin(t * 15.8 + b.y * 3.1) - 0.93) * 0.24;
-        const warmFlickerB = 0.79 + (Math.sin(t * 5.2 + b.y * 0.9) + 1) * 0.1 + (Math.cos(t * 9.7 + b.x * 0.5) + 1) * 0.04 + jitterB;
-        ctx.fillStyle = "rgba(202,189,114," + Math.min(0.96, warmFlickerB).toFixed(3) + ")";
-        ctx.fillRect(w2.x + 8, w2.y + 9, 9, 8);
-        ctx.fillStyle = "rgba(72,52,34,0.72)";
-        ctx.fillRect(w2.x + 12, w2.y + 9, 1, 8);
-        ctx.fillRect(w2.x + 8, w2.y + 12, 9, 1);
-        ctx.fillStyle = "rgba(255,255,255,0.12)";
-        ctx.fillRect(w2.x + 9, w2.y + 10, 7, 2);
+        const windows = buildingWindowTiles(b);
+        windows.forEach((windowTileX, index) => {
+          const w = tileToScreen(windowTileX, b.y + BUILDING_WINDOW_ROW);
+          const frameWidth = index === 0 ? 14 : 13;
+          const glassWidth = index === 0 ? 10 : 9;
+          const glassAlphaBase = index === 0 ? 0.82 : 0.79;
+          const glassMaxAlpha = index === 0 ? 0.98 : 0.96;
+          const jitter = index === 0
+            ? Math.max(0, Math.sin(t * 17.5 + b.x * 4.3) - 0.92) * 0.28
+            : Math.max(0, Math.sin(t * 15.8 + b.y * 3.1) - 0.93) * 0.24;
+          const warmFlicker = index === 0
+            ? glassAlphaBase + (Math.sin(t * 4.8 + b.x * 0.7) + 1) * 0.1 + (Math.sin(t * 11.4 + b.y * 0.33) + 1) * 0.04 + jitter
+            : glassAlphaBase + (Math.sin(t * 5.2 + b.y * 0.9) + 1) * 0.1 + (Math.cos(t * 9.7 + b.x * 0.5) + 1) * 0.04 + jitter;
+
+          ctx.fillStyle = "#4b3e2f";
+          ctx.fillRect(w.x + 6, w.y + 7, frameWidth, 12);
+          ctx.fillStyle = (index === 0 ? "rgba(215,199,109," : "rgba(202,189,114,") + Math.min(glassMaxAlpha, warmFlicker).toFixed(3) + ")";
+          ctx.fillRect(w.x + 8, w.y + 9, glassWidth, 8);
+          ctx.fillStyle = "rgba(72,52,34,0.72)";
+          ctx.fillRect(w.x + 12, w.y + 9, 1, 8);
+          ctx.fillRect(w.x + 8, w.y + 12, glassWidth, 1);
+          ctx.fillStyle = index === 0 ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.12)";
+          ctx.fillRect(w.x + 9, w.y + 10, glassWidth - 2, 2);
+        });
       }
     }
 
@@ -1212,13 +1265,23 @@ const html = String.raw`<!DOCTYPE html>
       ctx.fillText(text, p.x + 2, labelY - 1);
     }
 
-    function drawHumanoidSprite(tileX, tileY, facing, palette, label, scale = 1, isMoving = false, attackData = null, hitAlpha = 0, recoil = null, posePhase = 0) {
+    function spriteAnchorPoint(tileX, tileY, scale) {
       const p = tileToScreen(tileX, tileY);
+      return {
+        tile: p,
+        x: p.x + Math.round((TILE - TILE * scale) / 2),
+        y: p.y + Math.round(TILE - TILE * scale)
+      };
+    }
+
+    function drawHumanoidSprite(tileX, tileY, facing, palette, label, scale = 1, isMoving = false, attackData = null, hitAlpha = 0, recoil = null, posePhase = 0) {
+      const anchor = spriteAnchorPoint(tileX, tileY, scale);
+      const p = anchor.tile;
       const unit = Math.max(1, Math.round(scale));
       const s = v => Math.round(v * scale);
       const pose = animationPose(isMoving, 150, 1.08, posePhase);
-      const anchorX = p.x + Math.round((TILE - TILE * scale) / 2);
-      const anchorY = p.y + Math.round((TILE - TILE * scale));
+      const anchorX = anchor.x;
+      const anchorY = anchor.y;
 
       drawSoftShadow(p.x + 16, p.y + 29, s(8), s(4), 0.24, 3, 3);
 
@@ -1364,11 +1427,12 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     function drawWolfSprite(tileX, tileY, facing, scale = 1, isMoving = false, attackData = null, hitAlpha = 0, recoil = null) {
-      const p = tileToScreen(tileX, tileY);
+      const anchor = spriteAnchorPoint(tileX, tileY, scale);
+      const p = anchor.tile;
       const pose = animationPose(isMoving, 165, 1.16, 0.81);
       const s = v => Math.round(v * scale);
-      const anchorX = p.x + Math.round((TILE - TILE * scale) / 2);
-      const anchorY = p.y + Math.round((TILE - TILE * scale));
+      const anchorX = anchor.x;
+      const anchorY = anchor.y;
 
       drawSoftShadow(p.x + 16, p.y + 28, s(10), s(4), 0.22, 4, 3);
 
@@ -1508,6 +1572,10 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillRect(p.x + 5, p.y + 5, 4, 22);
         ctx.fillRect(p.x + 23, p.y + 5, 4, 22);
       });
+
+      if (showAlignmentGrid) {
+        drawAlignmentGrid();
+      }
 
       // trees
       world.trees.forEach(drawTree);
