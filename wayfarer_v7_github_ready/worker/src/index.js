@@ -66,13 +66,14 @@ const html = String.raw`<!DOCTYPE html>
     #sidebar {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 11px;
       min-width: 0;
+      padding-right: 2px;
     }
 
     #brand, #stats, #objective, #logPanel {
       padding: 16px 18px;
-      border: 1px solid rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     h1 {
@@ -98,26 +99,30 @@ const html = String.raw`<!DOCTYPE html>
 
     .stats {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px 12px;
+      grid-template-columns: minmax(72px, 1fr) auto;
+      gap: 10px 14px;
       align-items: center;
       font-size: 14px;
-      line-height: 1.3;
+      line-height: 1.35;
+      letter-spacing: 0.1px;
     }
 
-    .muted { color: var(--muted); }
+    .muted {
+      color: var(--muted);
+      letter-spacing: 0.15px;
+    }
 
     #chat {
       background: rgba(0,0,0,0.26);
       border-radius: 16px;
-      padding: 14px;
+      padding: 14px 15px;
       min-height: 180px;
       max-height: 280px;
       overflow: auto;
       white-space: pre-line;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 12px;
-      line-height: 1.55;
+      line-height: 1.6;
       border: 1px solid rgba(255,255,255,0.08);
     }
 
@@ -146,8 +151,8 @@ const html = String.raw`<!DOCTYPE html>
       padding: 12px 14px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 12px;
-      line-height: 1.6;
-      letter-spacing: 0.2px;
+      line-height: 1.62;
+      letter-spacing: 0.24px;
       pointer-events: none;
       white-space: pre-line;
       max-width: 320px;
@@ -755,6 +760,39 @@ const html = String.raw`<!DOCTYPE html>
       }
     }
 
+    function drawSoftShadow(cx, cy, rx, ry, alpha = 0.2, offsetX = 3, offsetY = 4) {
+      const grad = ctx.createRadialGradient(
+        cx + offsetX,
+        cy + offsetY,
+        Math.max(1, rx * 0.3),
+        cx + offsetX,
+        cy + offsetY,
+        Math.max(rx, ry) * 1.2
+      );
+      grad.addColorStop(0, "rgba(0,0,0," + (alpha * 0.8).toFixed(3) + ")");
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.ellipse(cx + offsetX, cy + offsetY, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function animationPose(moving, stepMs, amplitude = 1) {
+      const t = performance.now();
+      if (moving) {
+        const frame = Math.floor(t / stepMs) % 4;
+        const legSwing = [0.85, -0.65, -0.9, 0.6][frame] * amplitude;
+        const armSwing = [-0.65, 0.75, 0.7, -0.55][frame] * amplitude;
+        const bob = [0, 1, 0, -1][frame] * Math.max(0.6, amplitude * 0.9);
+        return { moving: true, frame, legSwing, armSwing, bob, breath: 0, stance: 0 };
+      }
+
+      const breath = Math.sin(t / 560) * 0.7 * amplitude;
+      const stance = Math.cos(t / 900) * 0.5 * amplitude;
+      const bob = Math.sin(t / 700) * 0.35 * amplitude;
+      return { moving: false, frame: 0, legSwing: 0, armSwing: 0, bob, breath, stance };
+    }
+
     function drawShoreWater() {
       const t = performance.now() * 0.0016;
       for (let x = pond.x - 1; x <= pond.x + pond.w; x++) {
@@ -770,6 +808,14 @@ const html = String.raw`<!DOCTYPE html>
           drawImageTile(isEdgeWater ? assets.waterShallow : assets.waterDeep, x, y, isEdgeWater ? "#6d97d7" : "#3b67bf");
 
           const p = tileToScreen(x, y);
+
+          const layerA = (Math.sin(t * 3.4 + x * 0.92 + y * 0.33) + 1) * 0.5;
+          const layerB = (Math.cos(t * 2.8 + x * 0.43 - y * 1.08) + 1) * 0.5;
+          const translucency = 0.03 + layerA * 0.045;
+          ctx.fillStyle = "rgba(120,174,232," + translucency.toFixed(3) + ")";
+          ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
+          ctx.fillStyle = "rgba(72,128,196," + (0.018 + layerB * 0.03).toFixed(3) + ")";
+          ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, TILE - 4);
 
           // reflection band near shoreline
           if (world.pondNearEdge.has(key)) {
@@ -819,6 +865,7 @@ const html = String.raw`<!DOCTYPE html>
             ctx.fillStyle = "rgba(227,243,255," + edgeAlpha.toFixed(3) + ")";
             ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, 1);
             ctx.fillRect(p.x + 1, p.y + TILE - 2, TILE - 2, 1);
+            ctx.fillRect(p.x + 1 + ((x + y) % 4), p.y + 3, TILE - 8, 1);
           }
         }
       }
@@ -846,8 +893,15 @@ const html = String.raw`<!DOCTYPE html>
 
     function drawBuilding(b) {
       const groundShadow = tileToScreen(b.x, b.y + b.h);
-      ctx.fillStyle = "rgba(0,0,0,0.15)";
-      ctx.fillRect(groundShadow.x - 3, groundShadow.y - 2, b.w * TILE + 6, 8);
+      drawSoftShadow(
+        groundShadow.x + (b.w * TILE) / 2,
+        groundShadow.y + 2,
+        b.w * TILE * 0.54,
+        7,
+        0.2,
+        4,
+        2
+      );
 
       // wall
       for (let x = b.x; x < b.x + b.w; x++) {
@@ -952,10 +1006,15 @@ const html = String.raw`<!DOCTYPE html>
       const drawY = p.y - 4 + t.jitterY - (drawH - (TILE + 4));
 
       // larger shadow
-      ctx.fillStyle = "rgba(0,0,0,0.18)";
-      ctx.beginPath();
-      ctx.ellipse(p.x + 16 + t.jitterX * 0.35, p.y + 27, 8 + scale * 4, 4 + scale * 1.6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      drawSoftShadow(
+        p.x + 16 + t.jitterX * 0.35,
+        p.y + 25,
+        8 + scale * 4,
+        4 + scale * 1.6,
+        0.2,
+        3,
+        3
+      );
 
       if (img && img.complete && img.naturalWidth > 0) {
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
@@ -997,94 +1056,99 @@ const html = String.raw`<!DOCTYPE html>
       ctx.fillText(text, p.x + 2, labelY - 1);
     }
 
-    function drawHumanoidSprite(tileX, tileY, facing, palette, label, scale = 1) {
+    function drawHumanoidSprite(tileX, tileY, facing, palette, label, scale = 1, isMoving = false) {
       const p = tileToScreen(tileX, tileY);
-      const t = performance.now();
-      const idleBob = Math.round(Math.sin(t / 420) * 1.2);
       const unit = Math.max(1, Math.round(scale));
       const s = v => Math.round(v * scale);
+      const pose = animationPose(isMoving, 160, 1);
       const anchorX = p.x + Math.round((TILE - TILE * scale) / 2);
       const anchorY = p.y + Math.round((TILE - TILE * scale));
 
-      ctx.fillStyle = "rgba(0,0,0,0.24)";
-      ctx.beginPath();
-      ctx.ellipse(p.x + 16, p.y + 30, s(8), s(4), 0, 0, Math.PI * 2);
-      ctx.fill();
+      drawSoftShadow(p.x + 16, p.y + 29, s(8), s(4), 0.24, 3, 3);
 
-      const bx = anchorX + s(7);
-      const by = anchorY + s(4) + idleBob;
+      const bx = anchorX + s(7) + Math.round(pose.stance * 0.35);
+      const by = anchorY + s(4) + Math.round(pose.bob);
+      const legShiftA = Math.round(pose.legSwing);
+      const legShiftB = -legShiftA;
 
       ctx.fillStyle = palette.boots;
       if (facing === "left" || facing === "right") {
-        ctx.fillRect(bx + s(4), by + s(22), s(4), s(6));
-        ctx.fillRect(bx + s(10), by + s(22), s(4), s(6));
+        ctx.fillRect(bx + s(4), by + s(22) + legShiftA, s(4), s(6));
+        ctx.fillRect(bx + s(10), by + s(22) + legShiftB, s(4), s(6));
       } else {
-        ctx.fillRect(bx + s(3), by + s(22), s(4), s(6));
-        ctx.fillRect(bx + s(10), by + s(22), s(4), s(6));
+        ctx.fillRect(bx + s(3), by + s(22) + legShiftA, s(4), s(6));
+        ctx.fillRect(bx + s(10), by + s(22) + legShiftB, s(4), s(6));
       }
 
+      const breathLift = Math.round(pose.breath);
       ctx.fillStyle = palette.tunic;
-      ctx.fillRect(bx + s(2), by + s(11), s(13), s(12));
+      ctx.fillRect(bx + s(2), by + s(11) - breathLift, s(13), s(12));
       ctx.fillStyle = palette.tunicShade;
-      ctx.fillRect(bx + s(2), by + s(20), s(13), s(3));
+      ctx.fillRect(bx + s(2), by + s(20) - breathLift, s(13), s(3));
 
+      const armA = Math.round(pose.armSwing);
+      const armB = -armA;
       if (facing === "up") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + s(1), by + s(12), s(15), s(9));
+        ctx.fillRect(bx + s(1), by + s(12) - breathLift, s(15), s(9));
       } else if (facing === "left") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + s(1), by + s(12), s(4), s(9));
+        ctx.fillRect(bx + s(1), by + s(12) + armA, s(4), s(9));
       } else if (facing === "right") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + s(12), by + s(12), s(4), s(9));
+        ctx.fillRect(bx + s(12), by + s(12) + armB, s(4), s(9));
+      } else {
+        ctx.fillStyle = palette.cloak;
+        ctx.fillRect(bx + s(1), by + s(12) + armA, s(2), s(8));
+        ctx.fillRect(bx + s(14), by + s(12) + armB, s(2), s(8));
       }
 
       ctx.fillStyle = palette.skin;
       if (facing === "left") {
-        ctx.fillRect(bx + s(2), by + s(4), s(9), s(9));
+        ctx.fillRect(bx + s(2), by + s(4) - breathLift, s(9), s(9));
       } else if (facing === "right") {
-        ctx.fillRect(bx + s(6), by + s(4), s(9), s(9));
+        ctx.fillRect(bx + s(6), by + s(4) - breathLift, s(9), s(9));
       } else {
-        ctx.fillRect(bx + s(4), by + s(3), s(9), s(9));
+        ctx.fillRect(bx + s(4), by + s(3) - breathLift, s(9), s(9));
       }
       ctx.fillStyle = palette.skinShade;
       if (facing === "up") {
-        ctx.fillRect(bx + s(4), by + s(10), s(9), s(3));
+        ctx.fillRect(bx + s(4), by + s(10) - breathLift, s(9), s(3));
       } else if (facing === "left") {
-        ctx.fillRect(bx + s(2), by + s(11), s(9), s(2));
+        ctx.fillRect(bx + s(2), by + s(11) - breathLift, s(9), s(2));
       } else if (facing === "right") {
-        ctx.fillRect(bx + s(6), by + s(11), s(9), s(2));
+        ctx.fillRect(bx + s(6), by + s(11) - breathLift, s(9), s(2));
       } else {
-        ctx.fillRect(bx + s(4), by + s(11), s(9), s(2));
+        ctx.fillRect(bx + s(4), by + s(11) - breathLift, s(9), s(2));
       }
 
       ctx.fillStyle = palette.hair;
       if (facing === "up") {
-        ctx.fillRect(bx + s(3), by + s(2), s(11), s(5));
+        ctx.fillRect(bx + s(3), by + s(2) - breathLift, s(11), s(5));
       } else if (facing === "left") {
-        ctx.fillRect(bx + s(2), by + s(3), s(8), s(5));
+        ctx.fillRect(bx + s(2), by + s(3) - breathLift, s(8), s(5));
       } else if (facing === "right") {
-        ctx.fillRect(bx + s(7), by + s(3), s(8), s(5));
+        ctx.fillRect(bx + s(7), by + s(3) - breathLift, s(8), s(5));
       } else {
-        ctx.fillRect(bx + s(3), by + s(2), s(11), s(4));
+        ctx.fillRect(bx + s(3), by + s(2) - breathLift, s(11), s(4));
       }
       ctx.fillStyle = palette.hairShade;
-      ctx.fillRect(bx + s(4), by + s(7), s(9), unit);
+      ctx.fillRect(bx + s(4), by + s(7) - breathLift, s(9), unit);
 
       ctx.strokeStyle = "rgba(12,20,30,0.65)";
       ctx.lineWidth = Math.max(1, Math.round(scale * 0.9));
-      ctx.strokeRect(bx + s(2), by + s(3), s(13), s(20));
+      ctx.strokeRect(bx + s(2), by + s(3) - breathLift, s(13), s(20));
 
       if (facing === "down") {
         ctx.fillStyle = "#1b1e28";
-        ctx.fillRect(bx + s(6), by + s(8), unit, unit);
-        ctx.fillRect(bx + s(9), by + s(8), unit, unit);
+        ctx.fillRect(bx + s(6), by + s(8) - breathLift, unit, unit);
+        ctx.fillRect(bx + s(9), by + s(8) - breathLift, unit, unit);
       } else if (facing === "left") {
         ctx.fillStyle = "#1b1e28";
-        ctx.fillRect(bx + s(4), by + s(8), unit, unit);
+        ctx.fillRect(bx + s(4), by + s(8) - breathLift, unit, unit);
       } else if (facing === "right") {
         ctx.fillStyle = "#1b1e28";
-        ctx.fillRect(bx + s(11), by + s(8), unit, unit);
+        ctx.fillRect(bx + s(11), by + s(8) - breathLift, unit, unit);
       }
 
       if (label) {
@@ -1098,21 +1162,17 @@ const html = String.raw`<!DOCTYPE html>
       }
     }
 
-    function drawWolfSprite(tileX, tileY, facing, scale = 1) {
+    function drawWolfSprite(tileX, tileY, facing, scale = 1, isMoving = false) {
       const p = tileToScreen(tileX, tileY);
-      const t = performance.now();
-      const gait = Math.round(Math.sin(t / 220) * 1.2);
+      const pose = animationPose(isMoving, 170, 1.05);
       const s = v => Math.round(v * scale);
       const anchorX = p.x + Math.round((TILE - TILE * scale) / 2);
       const anchorY = p.y + Math.round((TILE - TILE * scale));
 
-      ctx.fillStyle = "rgba(0,0,0,0.2)";
-      ctx.beginPath();
-      ctx.ellipse(p.x + 16, p.y + 29, s(10), s(4), 0, 0, Math.PI * 2);
-      ctx.fill();
+      drawSoftShadow(p.x + 16, p.y + 28, s(10), s(4), 0.22, 4, 3);
 
-      const bx = anchorX + s(5);
-      const by = anchorY + s(9) + gait;
+      const bx = anchorX + s(5) + Math.round(pose.stance * 0.4);
+      const by = anchorY + s(9) + Math.round(pose.bob);
 
       ctx.fillStyle = "#8f98a5";
       ctx.fillRect(bx + s(3), by + s(4), s(16), s(9));
@@ -1121,7 +1181,7 @@ const html = String.raw`<!DOCTYPE html>
 
       const headOffset = facing === "right" ? s(18) : 0;
       ctx.fillStyle = "#909aa9";
-      ctx.fillRect(bx + headOffset, by + s(1), s(9), s(7));
+      ctx.fillRect(bx + headOffset, by + s(1) + Math.round(pose.breath * 0.6), s(9), s(7));
       ctx.fillStyle = "#6f7783";
       ctx.fillRect(bx + headOffset + (facing === "right" ? s(5) : 0), by + s(6), s(4), s(2));
       ctx.fillStyle = "#9fa8b4";
@@ -1132,9 +1192,11 @@ const html = String.raw`<!DOCTYPE html>
       if (facing === "right") ctx.fillRect(bx + s(1), by + s(7), s(5), s(2));
       else ctx.fillRect(bx + s(18), by + s(7), s(5), s(2));
 
+      const legA = Math.round(pose.legSwing);
+      const legB = -legA;
       ctx.fillStyle = "#747d88";
-      ctx.fillRect(bx + s(6), by + s(13), s(3), s(6));
-      ctx.fillRect(bx + s(14), by + s(13), s(3), s(6));
+      ctx.fillRect(bx + s(6), by + s(13) + legA, s(3), s(6));
+      ctx.fillRect(bx + s(14), by + s(13) + legB, s(3), s(6));
       ctx.fillStyle = "rgba(16,20,27,0.42)";
       ctx.strokeRect(bx + s(3), by + s(1), s(23), s(18));
 
@@ -1176,6 +1238,18 @@ const html = String.raw`<!DOCTYPE html>
             ctx.fillStyle = "rgba(44,82,39,0.14)";
             ctx.fillRect(p.x + 6, p.y + 7, 2, 2);
             ctx.fillRect(p.x + 18, p.y + 18, 2, 2);
+          }
+
+          const dirtNoise = ((x * 71 + y * 43 + x * y * 11) % 997) / 997;
+          if (dirtNoise > 0.79) {
+            ctx.fillStyle = "rgba(95,74,52,0.16)";
+            ctx.fillRect(p.x + 3 + ((x + y) % 9), p.y + 4 + ((x * 2 + y) % 12), 1, 1);
+            ctx.fillRect(p.x + 15 + ((x + y * 3) % 7), p.y + 6 + ((x * 3 + y) % 11), 1, 1);
+          }
+          if (dirtNoise < 0.14) {
+            ctx.fillStyle = "rgba(134,171,106,0.08)";
+            ctx.fillRect(p.x + 5, p.y + 12, 3, 2);
+            ctx.fillRect(p.x + 19, p.y + 20, 2, 2);
           }
         }
       }
@@ -1239,14 +1313,15 @@ const html = String.raw`<!DOCTYPE html>
         npc.facing,
         npc.palette,
         Math.abs(player.targetX - npc.x) + Math.abs(player.targetY - npc.y) <= 5 ? npc.name : "",
-        1.5
+        1.5,
+        false
       );
 
       // wolf
       {
         const sx = wolf.px / TILE;
         const sy = wolf.py / TILE;
-        drawWolfSprite(sx, sy, wolf.facing, 1.52);
+        drawWolfSprite(sx, sy, wolf.facing, 1.52, wolf.moving);
       }
 
       const playerPalette = {
@@ -1264,7 +1339,7 @@ const html = String.raw`<!DOCTYPE html>
       {
         const sx = player.px / TILE;
         const sy = player.py / TILE;
-        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.58);
+        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.58, player.moving);
       }
 
       // subtle atmospheric tint
