@@ -471,6 +471,8 @@ const html = String.raw`<!DOCTYPE html>
       attackUntil: 0,
       hitUntil: 0,
       hitFlickerUntil: 0,
+      attackLungeX: 0,
+      attackLungeY: 0,
       recoilX: 0,
       recoilY: 0
     };
@@ -491,7 +493,8 @@ const html = String.raw`<!DOCTYPE html>
         boots: "#35261d"
       },
       animationPulse: 0,
-      idleSeed: 1.37
+      idleSeed: 1.37,
+      idleVariant: 0
     };
 
     const wolf = {
@@ -511,6 +514,8 @@ const html = String.raw`<!DOCTYPE html>
       attackUntil: 0,
       hitUntil: 0,
       hitFlickerUntil: 0,
+      attackLungeX: 0,
+      attackLungeY: 0,
       recoilX: 0,
       recoilY: 0
     };
@@ -519,6 +524,7 @@ const html = String.raw`<!DOCTYPE html>
     let lastWolfAttack = 0;
     let lastPlayerAttack = 0;
     let wolfRespawnAt = 0;
+    let hitStopUntil = 0;
 
     let activeDialogue = null;
     let dialogueIndex = 0;
@@ -771,9 +777,12 @@ const html = String.raw`<!DOCTYPE html>
       player.hp = Math.max(0, player.hp - 5);
       player.hitUntil = now + 300;
       player.hitFlickerUntil = now + 220;
+      hitStopUntil = now + 55;
       const wx = player.targetX - wolf.targetX;
       const wy = player.targetY - wolf.targetY;
       const len = Math.max(1, Math.hypot(wx, wy));
+      wolf.attackLungeX = (wx / len) * 2;
+      wolf.attackLungeY = (wy / len) * 1.2;
       player.recoilX = (wx / len) * 2.5;
       player.recoilY = (wy / len) * 1.6;
       log("A wolf bites you for 5.");
@@ -814,7 +823,10 @@ const html = String.raw`<!DOCTYPE html>
       wolf.hp = Math.max(0, wolf.hp - 6);
       wolf.hitUntil = now + 320;
       wolf.hitFlickerUntil = now + 240;
+      hitStopUntil = now + 65;
       const stepPush = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[player.facing];
+      player.attackLungeX = stepPush.x * 2.4;
+      player.attackLungeY = stepPush.y * 1.4;
       wolf.recoilX = stepPush.x * 2.3;
       wolf.recoilY = stepPush.y * 1.5;
       log("You strike the wolf for 6.");
@@ -857,13 +869,15 @@ const html = String.raw`<!DOCTYPE html>
     function animationPose(moving, stepMs, amplitude = 1, phase = 0) {
       const t = performance.now();
       if (moving) {
-        const frame = (Math.floor((t + phase * stepMs * 0.7) / stepMs) % 4 + 4) % 4;
-        const legSwing = [1.35, -1.05, -1.45, 1.1][frame] * amplitude;
-        const armSwing = [-0.95, 1.05, 0.92, -0.86][frame] * amplitude;
-        const footLiftA = [0, -2.6, 0, -1.2][frame] * Math.max(0.8, amplitude);
-        const footLiftB = [-2.2, 0, -1.5, 0][frame] * Math.max(0.8, amplitude);
-        const bob = [0.55, 2, 0.35, -1.45][frame] * Math.max(0.62, amplitude * 0.95);
-        return { moving: true, frame, legSwing, armSwing, bob, breath: 0, stance: 0, footLiftA, footLiftB, bodyTilt: legSwing * 0.08 };
+        const cycle = (t + phase * stepMs * 0.9) / stepMs;
+        const stride = Math.sin(cycle * Math.PI * 2);
+        const strideOpp = Math.sin(cycle * Math.PI * 2 + Math.PI);
+        const bob = Math.abs(Math.sin(cycle * Math.PI * 2)) * 2.35 * Math.max(0.62, amplitude) - 1.2;
+        const legSwing = stride * 1.95 * amplitude;
+        const armSwing = -stride * 1.35 * amplitude;
+        const footLiftA = Math.max(0, -stride) * -3.4 * Math.max(0.9, amplitude);
+        const footLiftB = Math.max(0, -strideOpp) * -3.4 * Math.max(0.9, amplitude);
+        return { moving: true, frame: Math.floor(cycle) % 2, legSwing, armSwing, bob, breath: 0, stance: stride * 0.55, footLiftA, footLiftB, bodyTilt: legSwing * 0.1 };
       }
 
       const breath = Math.sin(t / 560 + phase) * 0.8 * amplitude;
@@ -880,31 +894,35 @@ const html = String.raw`<!DOCTYPE html>
       const recoverMs = 155;
       const total = windupMs + strikeMs + recoverMs;
       const left = Math.max(0, entity.attackUntil - now);
-      if (left <= 0) return { active: false, thrust: 0, swing: 0, lean: 0, frame: "idle" };
+      if (left <= 0) return { active: false, thrust: 0, swing: 0, lean: 0, arc: 0, frame: "idle" };
       const elapsed = total - left;
       let thrust = 0;
       let swing = 0;
       let lean = 0;
+      let arc = 0;
       let frame = "windup";
       if (elapsed < windupMs) {
         const t = elapsed / windupMs;
         thrust = -1.5 * t;
         swing = -0.72 * t;
         lean = -0.7 * t;
+        arc = 0.15 * t;
       } else if (elapsed < windupMs + strikeMs) {
         const t = (elapsed - windupMs) / strikeMs;
         thrust = -1.5 + 5.1 * t;
         swing = -0.72 + 3.1 * t;
         lean = -0.7 + 1.55 * t;
+        arc = 0.25 + t * 0.85;
         frame = "strike";
       } else {
         const t = (elapsed - windupMs - strikeMs) / recoverMs;
         thrust = 3.6 - 3.6 * t;
         swing = 2.38 - 2.38 * t;
         lean = 0.85 - 0.85 * t;
+        arc = 1.1 - t * 1.1;
         frame = "recover";
       }
-      return { active: true, thrust, swing, lean, frame };
+      return { active: true, thrust, swing, lean, arc, frame };
     }
 
     function hitVisualAlpha(entity) {
@@ -934,8 +952,9 @@ const html = String.raw`<!DOCTYPE html>
           const p = tileToScreen(x, y);
 
           const tilePhase = ((x * 19 + y * 31) % 11) * 0.18;
+          const randomRip = Math.sin(t * 0.82 + x * 1.77 + y * 2.13) * 0.12;
           const layerA = (Math.sin(t * 3.4 + x * 0.92 + y * 0.33 + tilePhase) + 1) * 0.5;
-          const layerB = (Math.cos(t * 2.8 + x * 0.43 - y * 1.08 + tilePhase * 0.7) + 1) * 0.5;
+          const layerB = (Math.cos(t * (2.8 + randomRip) + x * 0.43 - y * 1.08 + tilePhase * 0.7) + 1) * 0.5;
           const layerC = (Math.sin(t * 2.05 + x * 0.61 + y * 0.74 - tilePhase * 1.3) + 1) * 0.5;
           const translucency = 0.03 + layerA * 0.045;
           ctx.fillStyle = "rgba(120,174,232," + translucency.toFixed(3) + ")";
@@ -1106,7 +1125,8 @@ const html = String.raw`<!DOCTYPE html>
         const w = tileToScreen(b.x + 1, b.y + 1);
         ctx.fillStyle = "#4b3e2f";
         ctx.fillRect(w.x + 6, w.y + 7, 14, 12);
-        const warmFlicker = 0.82 + (Math.sin(t * 4.8 + b.x * 0.7) + 1) * 0.1 + (Math.sin(t * 11.4 + b.y * 0.33) + 1) * 0.04;
+        const jitterA = Math.max(0, Math.sin(t * 17.5 + b.x * 4.3) - 0.92) * 0.28;
+        const warmFlicker = 0.82 + (Math.sin(t * 4.8 + b.x * 0.7) + 1) * 0.1 + (Math.sin(t * 11.4 + b.y * 0.33) + 1) * 0.04 + jitterA;
         ctx.fillStyle = "rgba(215,199,109," + Math.min(0.98, warmFlicker).toFixed(3) + ")";
         ctx.fillRect(w.x + 8, w.y + 9, 10, 8);
         ctx.fillStyle = "rgba(72,52,34,0.72)";
@@ -1119,7 +1139,8 @@ const html = String.raw`<!DOCTYPE html>
         const w2 = tileToScreen(b.x + b.w - 2, b.y + 1);
         ctx.fillStyle = "#4b3e2f";
         ctx.fillRect(w2.x + 6, w2.y + 7, 13, 12);
-        const warmFlickerB = 0.79 + (Math.sin(t * 5.2 + b.y * 0.9) + 1) * 0.1 + (Math.cos(t * 9.7 + b.x * 0.5) + 1) * 0.04;
+        const jitterB = Math.max(0, Math.sin(t * 15.8 + b.y * 3.1) - 0.93) * 0.24;
+        const warmFlickerB = 0.79 + (Math.sin(t * 5.2 + b.y * 0.9) + 1) * 0.1 + (Math.cos(t * 9.7 + b.x * 0.5) + 1) * 0.04 + jitterB;
         ctx.fillStyle = "rgba(202,189,114," + Math.min(0.96, warmFlickerB).toFixed(3) + ")";
         ctx.fillRect(w2.x + 8, w2.y + 9, 9, 8);
         ctx.fillStyle = "rgba(72,52,34,0.72)";
@@ -1134,7 +1155,7 @@ const html = String.raw`<!DOCTYPE html>
       const p = tileToScreen(t.x, t.y);
       const img = t.type === "b" ? assets.treeB : t.type === "c" ? assets.treeC : assets.treeA;
       const scale = t.scale || 1;
-      const sway = Math.sin(performance.now() * 0.0016 + t.variantSeed * 1.73 + t.x * 0.24 + t.y * 0.37) * (0.45 + scale * 0.12);
+      const sway = Math.sin(performance.now() * 0.0013 + t.variantSeed * 1.73 + t.x * 0.24 + t.y * 0.37) * (0.62 + scale * 0.16);
       const drawW = TILE * scale;
       const drawH = (TILE + 4) * scale;
       const drawX = p.x + t.jitterX + sway - (drawW - TILE) / 2;
@@ -1256,6 +1277,23 @@ const html = String.raw`<!DOCTYPE html>
           ctx.fillRect(bx + s(7), by + s(5) + swingY, s(2), s(10));
         } else {
           ctx.fillRect(bx + s(7), by + s(12) - swingY, s(2), s(10));
+        }
+
+        if (attackData.frame === "strike" || attackData.frame === "recover") {
+          const arcAlpha = Math.min(0.34, attackData.arc * 0.32);
+          ctx.strokeStyle = "rgba(232,246,255," + arcAlpha.toFixed(3) + ")";
+          ctx.lineWidth = Math.max(1, Math.round(scale * 1.2));
+          ctx.beginPath();
+          if (facing === "left") {
+            ctx.arc(bx + s(4), by + s(12), s(10), Math.PI * 0.62, Math.PI * 1.26);
+          } else if (facing === "right") {
+            ctx.arc(bx + s(14), by + s(12), s(10), Math.PI * -0.26, Math.PI * 0.38);
+          } else if (facing === "up") {
+            ctx.arc(bx + s(8), by + s(8), s(10), Math.PI * 1.15, Math.PI * 1.84);
+          } else {
+            ctx.arc(bx + s(8), by + s(14), s(9), Math.PI * 0.15, Math.PI * 0.85);
+          }
+          ctx.stroke();
         }
       }
 
@@ -1481,7 +1519,8 @@ const html = String.raw`<!DOCTYPE html>
       if (zoneName === "Forest Edge") drawZoneLabel("Forest Edge", 30, 4);
 
       // NPC
-      const npcIdlePhase = npc.idleSeed + Math.sin(performance.now() / 1200 + npc.animationPulse) * 0.6;
+      const npcIdleOffset = npc.idleVariant === 0 ? 0 : npc.idleVariant === 1 ? 0.42 : -0.36;
+      const npcIdlePhase = npc.idleSeed + npcIdleOffset + Math.sin(performance.now() / 1200 + npc.animationPulse) * 0.6;
       drawHumanoidSprite(
         npc.x,
         npc.y,
@@ -1500,7 +1539,7 @@ const html = String.raw`<!DOCTYPE html>
       if (wolf.hp > 0) {
         const sx = wolf.px / TILE;
         const sy = wolf.py / TILE;
-        drawWolfSprite(sx, sy, wolf.facing, 1.52, wolf.moving, attackPose(wolf), hitVisualAlpha(wolf), { x: wolf.recoilX, y: wolf.recoilY });
+        drawWolfSprite(sx, sy, wolf.facing, 1.52, wolf.moving, attackPose(wolf), hitVisualAlpha(wolf), { x: wolf.recoilX + wolf.attackLungeX, y: wolf.recoilY + wolf.attackLungeY });
       }
 
       const playerPalette = {
@@ -1518,7 +1557,7 @@ const html = String.raw`<!DOCTYPE html>
       {
         const sx = player.px / TILE;
         const sy = player.py / TILE;
-        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.58, player.moving, attackPose(player), hitVisualAlpha(player), { x: player.recoilX, y: player.recoilY }, 0.26);
+        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.58, player.moving, attackPose(player), hitVisualAlpha(player), { x: player.recoilX + player.attackLungeX, y: player.recoilY + player.attackLungeY }, 0.26);
       }
 
       // subtle atmospheric tint
@@ -1558,11 +1597,20 @@ const html = String.raw`<!DOCTYPE html>
     function update(dt, now) {
       player.recoilX *= 0.8;
       player.recoilY *= 0.8;
+      player.attackLungeX *= 0.74;
+      player.attackLungeY *= 0.74;
       wolf.recoilX *= 0.82;
       wolf.recoilY *= 0.82;
+      wolf.attackLungeX *= 0.78;
+      wolf.attackLungeY *= 0.78;
       if (now >= npc.animationPulse) {
         npc.animationPulse = now + 900 + Math.random() * 1800;
         npc.idleSeed = (npc.idleSeed + 0.38 + Math.random() * 0.6) % (Math.PI * 2);
+        npc.idleVariant = (npc.idleVariant + 1) % 3;
+      }
+      if (now < hitStopUntil) {
+        updateSidebar();
+        return;
       }
       updateInput();
       tryPlayerAttack(now);
