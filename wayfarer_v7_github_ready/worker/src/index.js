@@ -284,7 +284,14 @@ const html = String.raw`<!DOCTYPE html>
       treeB: new Image(),
       treeC: new Image(),
       waterDeep: new Image(),
-      waterShallow: new Image()
+      waterShallow: new Image(),
+      buildingRoofLeft: new Image(),
+      buildingRoofCenter: new Image(),
+      buildingRoofRight: new Image(),
+      buildingWallPlain: new Image(),
+      buildingWallWindow: new Image(),
+      buildingDoorCenter: new Image(),
+      buildingRoofShadow: new Image()
     };
 
     assets.grassA.src = "./assets/terrain/grass/moss_grass_32.png";
@@ -296,6 +303,85 @@ const html = String.raw`<!DOCTYPE html>
     assets.treeC.src = "./assets/terrain/trees/pine_bright_32.png";
     assets.waterDeep.src = "./assets/terrain/water/deep_water_32.png";
     assets.waterShallow.src = "./assets/terrain/water/shallow_water_32.png";
+
+    function fillRectPx(px, x, y, w, h, color) {
+      px.fillStyle = color;
+      px.fillRect(x, y, w, h);
+    }
+
+    function buildHouseTileDataUrl(tileName) {
+      const tileCanvas = document.createElement("canvas");
+      tileCanvas.width = TILE;
+      tileCanvas.height = TILE;
+      const px = tileCanvas.getContext("2d");
+      px.imageSmoothingEnabled = false;
+
+      if (tileName === "roof_left" || tileName === "roof_center" || tileName === "roof_right") {
+        fillRectPx(px, 0, 0, TILE, TILE, "#755047");
+        fillRectPx(px, 0, 0, TILE, 4, "#9a7067");
+        fillRectPx(px, 0, TILE - 6, TILE, 6, "#5a3d36");
+        for (let y = 6; y < 24; y += 6) {
+          for (let x = 3; x < 30; x += 6) {
+            fillRectPx(px, x, y, 1, 1, "#b08a80");
+          }
+        }
+        if (tileName === "roof_left") {
+          for (let y = 0; y < TILE; y++) {
+            fillRectPx(px, 0, y, Math.max(0, 10 - Math.floor(y / 4)), 1, "#4d312c");
+          }
+        }
+        if (tileName === "roof_right") {
+          for (let y = 0; y < TILE; y++) {
+            const wedge = Math.max(0, 10 - Math.floor(y / 4));
+            fillRectPx(px, TILE - wedge, y, wedge, 1, "#4d312c");
+          }
+        }
+      } else if (tileName === "wall_plain") {
+        fillRectPx(px, 0, 0, TILE, TILE, "#807862");
+        fillRectPx(px, 0, 0, TILE, 3, "#9a927a");
+        fillRectPx(px, 0, TILE - 3, TILE, 3, "#615949");
+        for (let y = 5; y < TILE - 5; y += 6) {
+          for (let x = (y / 2) % 4; x < TILE; x += 8) {
+            fillRectPx(px, Math.floor(x), y, 1, 1, "#8d846f");
+          }
+        }
+      } else if (tileName === "wall_window") {
+        fillRectPx(px, 0, 0, TILE, TILE, "#807862");
+        fillRectPx(px, 0, 0, TILE, 3, "#9a927a");
+        fillRectPx(px, 0, TILE - 3, TILE, 3, "#615949");
+        fillRectPx(px, 8, 8, 16, 14, "#47392c");
+        fillRectPx(px, 10, 10, 12, 10, "#d8c06f");
+        fillRectPx(px, 11, 11, 10, 3, "#efe4aa");
+        fillRectPx(px, 15, 10, 1, 10, "#34281e");
+        fillRectPx(px, 10, 14, 12, 1, "#34281e");
+      } else if (tileName === "door_center") {
+        fillRectPx(px, 0, 0, TILE, TILE, "#807862");
+        fillRectPx(px, 0, 0, TILE, 3, "#9a927a");
+        fillRectPx(px, 0, TILE - 3, TILE, 3, "#615949");
+        fillRectPx(px, 9, 11, 14, 20, "#4b3223");
+        fillRectPx(px, 10, 12, 12, 18, "#3e281c");
+        fillRectPx(px, 9, 11, 14, 2, "#a07b4a");
+        fillRectPx(px, 9, 11, 2, 20, "#2a1a12");
+        fillRectPx(px, 20, 22, 1, 1, "#d2a258");
+      } else if (tileName === "shadow_roof") {
+        px.clearRect(0, 0, TILE, TILE);
+        for (let y = 0; y < 14; y++) {
+          const alpha = Math.max(0, 0.3 - y * 0.02);
+          px.fillStyle = "rgba(0,0,0," + alpha.toFixed(3) + ")";
+          px.fillRect(2, y, TILE - 4, 1);
+        }
+      }
+
+      return tileCanvas.toDataURL("image/png");
+    }
+
+    assets.buildingRoofLeft.src = buildHouseTileDataUrl("roof_left");
+    assets.buildingRoofCenter.src = buildHouseTileDataUrl("roof_center");
+    assets.buildingRoofRight.src = buildHouseTileDataUrl("roof_right");
+    assets.buildingWallPlain.src = buildHouseTileDataUrl("wall_plain");
+    assets.buildingWallWindow.src = buildHouseTileDataUrl("wall_window");
+    assets.buildingDoorCenter.src = buildHouseTileDataUrl("door_center");
+    assets.buildingRoofShadow.src = buildHouseTileDataUrl("shadow_roof");
 
     function keyOf(x, y) {
       return x + "," + y;
@@ -341,7 +427,15 @@ const html = String.raw`<!DOCTYPE html>
 
     // buildings
     world.buildings.push(
-      { x: 11, y: 6, w: BUILDING_TILE_WIDTH, h: BUILDING_TILE_HEIGHT, roofTop: "#745048", roofSide: "#5b3c35", wall: "#807862" },
+      {
+        x: 10, y: 6, w: 3, h: 3, roofTop: "#745048", roofSide: "#5b3c35", wall: "#807862",
+        tileRows: [
+          ["roof_left", "roof_center", "roof_right"],
+          ["wall_window", "wall_plain", "wall_window"],
+          ["wall_plain", "door_center", "wall_plain"]
+        ],
+        doorTileIndex: 1
+      },
       { x: 20, y: 6, w: BUILDING_TILE_WIDTH, h: BUILDING_TILE_HEIGHT, roofTop: "#56617f", roofSide: "#434b66", wall: "#847c68" },
       { x: 12, y: 14, w: BUILDING_TILE_WIDTH, h: BUILDING_TILE_HEIGHT, roofTop: "#6e6248", roofSide: "#54493a", wall: "#7e7460" }
     );
@@ -1095,6 +1189,10 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     function drawBuilding(b) {
+      if (b.tileRows) {
+        drawTileBuilding(b);
+        return;
+      }
       const t = performance.now() * 0.001;
       const groundShadow = tileToScreen(b.x, b.y + b.h);
       drawSoftShadow(
@@ -1202,6 +1300,59 @@ const html = String.raw`<!DOCTYPE html>
           ctx.fillRect(w.x + 9, w.y + 10, glassWidth - 2, 2);
         });
       }
+    }
+
+    const buildingTileImage = {
+      roof_left: "buildingRoofLeft",
+      roof_center: "buildingRoofCenter",
+      roof_right: "buildingRoofRight",
+      wall_plain: "buildingWallPlain",
+      wall_window: "buildingWallWindow",
+      door_center: "buildingDoorCenter",
+      shadow_roof: "buildingRoofShadow"
+    };
+
+    function drawTileBuilding(b) {
+      const groundShadow = tileToScreen(b.x, b.y + b.h);
+      drawSoftShadow(
+        groundShadow.x + (b.w * TILE) / 2,
+        groundShadow.y + 2,
+        b.w * TILE * 0.54,
+        7,
+        0.2,
+        4,
+        2
+      );
+
+      b.tileRows.forEach((row, rowIndex) => {
+        row.forEach((tileKey, colIndex) => {
+          const imageName = buildingTileImage[tileKey];
+          const image = imageName ? assets[imageName] : null;
+          const p = tileToScreen(b.x + colIndex, b.y + rowIndex);
+          if (image && image.complete && image.naturalWidth > 0) {
+            ctx.drawImage(image, p.x, p.y, TILE, TILE);
+          } else {
+            ctx.fillStyle = "#7a705e";
+            ctx.fillRect(p.x, p.y, TILE, TILE);
+          }
+        });
+      });
+
+      for (let x = b.x; x < b.x + b.w; x++) {
+        const p = tileToScreen(x, b.y + 1);
+        const roofShadow = assets.buildingRoofShadow;
+        if (roofShadow && roofShadow.complete && roofShadow.naturalWidth > 0) {
+          ctx.drawImage(roofShadow, p.x, p.y, TILE, TILE);
+        } else {
+          ctx.fillStyle = "rgba(0,0,0,0.2)";
+          ctx.fillRect(p.x, p.y, TILE, 8);
+        }
+      }
+
+      const doorColumn = Number.isInteger(b.doorTileIndex) ? b.doorTileIndex : Math.floor(b.w / 2);
+      const doorTile = tileToScreen(b.x + doorColumn, b.y + b.h - 1);
+      ctx.strokeStyle = "rgba(0,0,0,0.16)";
+      ctx.strokeRect(doorTile.x + 0.5, doorTile.y + 0.5, TILE - 1, TILE - 1);
     }
 
     function drawTree(t) {
