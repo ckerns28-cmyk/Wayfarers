@@ -505,6 +505,8 @@ const html = String.raw`<!DOCTYPE html>
 
     let lastWolfDecision = 0;
     let lastWolfAttack = 0;
+    let lastPlayerAttack = 0;
+    let wolfRespawnAt = 0;
 
     let activeDialogue = null;
     let dialogueIndex = 0;
@@ -563,6 +565,7 @@ const html = String.raw`<!DOCTYPE html>
 
       hud.textContent =
         "WASD / Arrows : Move\n" +
+        "Space : Attack\n" +
         "Click Edrin Vale : Talk\n" +
         "Wolf nearby : Keep distance\n" +
         "Current Zone : " + currentZoneName();
@@ -573,6 +576,7 @@ const html = String.raw`<!DOCTYPE html>
       if (world.blocked.has(keyOf(x, y))) return false;
       if (world.pondBlocked.has(keyOf(x, y))) return false;
       if (x === npc.x && y === npc.y) return false;
+      if (wolf.hp > 0 && x === wolf.targetX && y === wolf.targetY) return false;
       return true;
     }
 
@@ -580,7 +584,7 @@ const html = String.raw`<!DOCTYPE html>
 
     addEventListener("keydown", (e) => {
       const k = e.key.toLowerCase();
-      if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"].includes(k)) {
+      if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(k)) {
         e.preventDefault();
       }
       keys.add(k);
@@ -695,6 +699,19 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     function updateWolf(now) {
+      if (wolf.hp <= 0) {
+        if (wolfRespawnAt !== 0 && now >= wolfRespawnAt) {
+          wolf.hp = wolf.maxHp;
+          wolf.targetX = wolf.homeX;
+          wolf.targetY = wolf.homeY;
+          wolf.px = wolf.targetX * TILE;
+          wolf.py = wolf.targetY * TILE;
+          wolfRespawnAt = 0;
+          log("The wolf prowls back into the clearing.");
+        }
+        return;
+      }
+
       if (now - lastWolfDecision < 650) return;
       lastWolfDecision = now;
 
@@ -732,6 +749,7 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     function wolfAttack(now) {
+      if (wolf.hp <= 0) return;
       const dist = Math.abs(player.targetX - wolf.targetX) + Math.abs(player.targetY - wolf.targetY);
       if (dist > 1) return;
       if (now - lastWolfAttack < 1100) return;
@@ -747,6 +765,38 @@ const html = String.raw`<!DOCTYPE html>
         player.px = player.targetX * TILE;
         player.py = player.targetY * TILE;
         log("System: You wake in Hearthvale Square.");
+      }
+    }
+
+    function tryPlayerAttack(now) {
+      if (activeDialogue || wolf.hp <= 0) return;
+      if (!(keys.has(" ") || keys.has("space"))) return;
+      if (now - lastPlayerAttack < 420) return;
+
+      lastPlayerAttack = now;
+
+      const facingSteps = {
+        up: { x: 0, y: -1 },
+        down: { x: 0, y: 1 },
+        left: { x: -1, y: 0 },
+        right: { x: 1, y: 0 }
+      };
+      const step = facingSteps[player.facing] || facingSteps.down;
+      const attackX = player.targetX + step.x;
+      const attackY = player.targetY + step.y;
+
+      if (attackX !== wolf.targetX || attackY !== wolf.targetY) {
+        log("You swing at empty air.");
+        return;
+      }
+
+      wolf.hp = Math.max(0, wolf.hp - 6);
+      log("You strike the wolf for 6.");
+      if (wolf.hp <= 0) {
+        player.xp += 12;
+        player.coins += 4;
+        wolfRespawnAt = now + 10000;
+        log("The wolf collapses. (+12 XP, +4 coins)");
       }
     }
 
@@ -1318,7 +1368,7 @@ const html = String.raw`<!DOCTYPE html>
       );
 
       // wolf
-      {
+      if (wolf.hp > 0) {
         const sx = wolf.px / TILE;
         const sy = wolf.py / TILE;
         drawWolfSprite(sx, sy, wolf.facing, 1.52, wolf.moving);
@@ -1378,6 +1428,7 @@ const html = String.raw`<!DOCTYPE html>
 
     function update(dt, now) {
       updateInput();
+      tryPlayerAttack(now);
       smoothMove(player, dt);
       if (!player.moving && (moveIntent.dx !== 0 || moveIntent.dy !== 0)) {
         tryPlayerStep(moveIntent.dx, moveIntent.dy, moveIntent.facing);
