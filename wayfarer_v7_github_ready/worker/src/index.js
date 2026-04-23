@@ -278,7 +278,7 @@ const html = String.raw`<!DOCTYPE html>
 
     assets.grassA.src = "./assets/terrain/grass/moss_grass_32.png";
     assets.grassB.src = "./assets/terrain/grass/shadow_grass_32.png";
-    assets.grassC.src = "./assets/terrain/grass/shadow_grass_32.png";
+    assets.grassC.src = "./assets/terrain/grass/moss_grass_32.png";
     assets.road.src = "./assets/terrain/roads/worn_path_32.png";
     assets.treeA.src = "./assets/terrain/trees/pine_mythic_32.png";
     assets.treeB.src = "./assets/terrain/trees/oak_mythic_32.png";
@@ -344,14 +344,14 @@ const html = String.raw`<!DOCTYPE html>
       return ((x * 928371 + y * 123457 + x * y * 3343) % 1000) / 1000;
     }
 
-    for (let x = pond.x - 1; x <= pond.x + pond.w; x++) {
-      for (let y = pond.y - 1; y <= pond.y + pond.h; y++) {
-        const dx = (x + 0.5 - pond.cx) / ((pond.w + 0.6) / 2);
-        const dy = (y + 0.5 - pond.cy) / ((pond.h + 0.9) / 2);
+    for (let x = pond.x; x < pond.x + pond.w; x++) {
+      for (let y = pond.y; y < pond.y + pond.h; y++) {
+        const dx = (x + 0.5 - pond.cx) / (pond.w / 2);
+        const dy = (y + 0.5 - pond.cy) / (pond.h / 2);
         const d = dx * dx + dy * dy;
 
-        const edgeWobble = (terrainNoise(x, y) - 0.5) * 0.22;
-        const waterLimit = 0.9 + edgeWobble;
+        const edgeWobble = (terrainNoise(x, y) - 0.5) * 0.18;
+        const waterLimit = 0.92 + edgeWobble;
 
         if (d <= waterLimit) {
           world.pondWater.add(keyOf(x, y));
@@ -860,19 +860,16 @@ const html = String.raw`<!DOCTYPE html>
       for (let y = cam.tileY; y < cam.tileY + VIEW_TILES_Y; y++) {
         for (let x = cam.tileX; x < cam.tileX + VIEW_TILES_X; x++) {
           const p = tileToScreen(x, y);
-          const mix = (x * 17 + y * 23 + x * y * 5) % 11;
+          const mix = (x * 17 + y * 23 + x * y * 5) % 9;
           const grassImg = mix <= 2 ? assets.grassB : mix <= 5 ? assets.grassA : assets.grassC;
           drawImageTile(grassImg, x, y, mix % 2 === 0 ? "#2a5630" : "#2d6030");
 
           if (mix === 1 || mix === 6) {
             ctx.fillStyle = "rgba(88,130,72,0.12)";
             ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
-          } else if (mix === 4 || mix === 9) {
+          } else if (mix === 4) {
             ctx.fillStyle = "rgba(52,86,46,0.10)";
             ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, TILE - 4);
-          } else if (mix === 8) {
-            ctx.fillStyle = "rgba(120,154,92,0.09)";
-            ctx.fillRect(p.x + 3, p.y + 3, TILE - 6, TILE - 6);
           }
         }
       }
