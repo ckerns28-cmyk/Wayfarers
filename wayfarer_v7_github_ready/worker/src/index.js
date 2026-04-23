@@ -753,6 +753,7 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     function drawShoreWater() {
+      const t = performance.now() * 0.0016;
       for (let x = pond.x - 1; x <= pond.x + pond.w; x++) {
         for (let y = pond.y - 1; y <= pond.y + pond.h; y++) {
           const key = keyOf(x, y);
@@ -769,7 +770,8 @@ const html = String.raw`<!DOCTYPE html>
 
           // reflection band near shoreline
           if (world.pondNearEdge.has(key)) {
-            ctx.fillStyle = "rgba(214,235,255,0.12)";
+            const shimmer = 0.08 + ((Math.sin(t * 3.8 + x * 0.84 + y * 0.54) + 1) * 0.03);
+            ctx.fillStyle = "rgba(214,235,255," + shimmer.toFixed(3) + ")";
             ctx.fillRect(p.x + 2, p.y + 3, TILE - 4, 3);
           }
 
@@ -779,6 +781,23 @@ const html = String.raw`<!DOCTYPE html>
             ctx.fillStyle = "rgba(18,46,96," + depthAlpha.toFixed(3) + ")";
             ctx.fillRect(p.x, p.y, TILE, TILE);
           }
+
+          // interior animated depth pulse
+          const pulse = Math.max(0, (Math.sin(t * 2.6 + x * 0.55 - y * 0.41) + 1) * 0.5 - 0.45);
+          if (pulse > 0.015) {
+            ctx.fillStyle = "rgba(136,182,236," + (pulse * 0.14).toFixed(3) + ")";
+            ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
+          }
+
+          // ripple lines to keep pond visually alive
+          const rippleA = (Math.sin(t * 5.2 + x * 1.16 + y * 0.83) + 1) * 0.5;
+          const rippleB = (Math.sin(t * 4.4 + x * 0.71 - y * 1.19) + 1) * 0.5;
+          const alphaA = 0.03 + rippleA * 0.05;
+          const alphaB = 0.02 + rippleB * 0.04;
+          ctx.fillStyle = "rgba(197,228,255," + alphaA.toFixed(3) + ")";
+          ctx.fillRect(p.x + 3, p.y + 7 + ((x + y) % 3), TILE - 10, 1);
+          ctx.fillStyle = "rgba(143,190,241," + alphaB.toFixed(3) + ")";
+          ctx.fillRect(p.x + 5, p.y + 18 + ((x * 2 + y) % 2), TILE - 13, 1);
         }
       }
 
@@ -791,6 +810,8 @@ const html = String.raw`<!DOCTYPE html>
 
           ctx.fillStyle = seed % 2 === 0 ? "rgba(178,151,112,0.15)" : "rgba(142,165,108,0.14)";
           ctx.fillRect(p.x, p.y, TILE, TILE);
+          ctx.fillStyle = "rgba(102,138,88,0.11)";
+          ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
 
           if (seed <= 2) {
             ctx.fillStyle = "rgba(76,118,66,0.62)";
@@ -814,38 +835,52 @@ const html = String.raw`<!DOCTYPE html>
           ctx.fillRect(p.x, p.y, TILE, TILE);
           ctx.fillStyle = "rgba(255,255,255,0.04)";
           ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, 3);
+          ctx.fillStyle = "rgba(0,0,0,0.14)";
+          ctx.fillRect(p.x + TILE - 3, p.y + 1, 2, TILE - 2);
+          ctx.fillStyle = "rgba(0,0,0,0.10)";
+          ctx.fillRect(p.x + 1, p.y + TILE - 3, TILE - 2, 2);
         }
       }
 
       // roof top
       for (let x = b.x; x < b.x + b.w; x++) {
         const p = tileToScreen(x, b.y);
+        const tone = ((x * 17 + b.y * 13) % 3) - 1;
+        const tint = tone === 1 ? "rgba(255,255,255,0.07)" : tone === -1 ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.03)";
         ctx.fillStyle = b.roofTop;
         ctx.fillRect(p.x, p.y, TILE, TILE);
+        ctx.fillStyle = tint;
+        ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
         ctx.fillStyle = "rgba(255,255,255,0.08)";
         ctx.fillRect(p.x, p.y + 1, TILE, 2);
-        ctx.fillStyle = "rgba(0,0,0,0.2)";
-        ctx.fillRect(p.x, p.y + 12, TILE, 8);
+        ctx.fillStyle = "rgba(0,0,0,0.26)";
+        ctx.fillRect(p.x, p.y + 10, TILE, 10);
         ctx.fillStyle = b.roofSide;
-        ctx.fillRect(p.x, p.y + TILE - 6, TILE, 6);
+        ctx.fillRect(p.x, p.y + TILE - 7, TILE, 7);
       }
 
       // stronger roof overhang shadow (directional)
       for (let x = b.x; x < b.x + b.w; x++) {
         const p = tileToScreen(x, b.y + 1);
-        ctx.fillStyle = "rgba(0,0,0,0.25)";
-        ctx.fillRect(p.x + 1, p.y + 1, TILE - 1, 5);
+        ctx.fillStyle = "rgba(0,0,0,0.3)";
+        ctx.fillRect(p.x + 1, p.y + 1, TILE - 1, 6);
       }
 
       // door
       {
         const d = tileToScreen(b.doorX, b.doorY - 1);
+        ctx.fillStyle = "#4f3825";
+        ctx.fillRect(d.x + 9, d.y + 13, 14, 19);
         ctx.fillStyle = "#3b2518";
         ctx.fillRect(d.x + 10, d.y + 14, 12, 18);
         ctx.fillStyle = "#23140d";
         ctx.fillRect(d.x + 10, d.y + 14, 2, 18);
+        ctx.fillStyle = "rgba(0,0,0,0.28)";
+        ctx.fillRect(d.x + 21, d.y + 14, 1, 18);
         ctx.fillStyle = "rgba(235,181,96,0.13)";
         ctx.fillRect(d.x + 11, d.y + 15, 9, 7);
+        ctx.fillStyle = "#9a7542";
+        ctx.fillRect(d.x + 10, d.y + 12, 12, 2);
       }
 
       // window
@@ -907,86 +942,90 @@ const html = String.raw`<!DOCTYPE html>
       ctx.fillText(text, p.x + 2, labelY - 1);
     }
 
-    function drawHumanoidSprite(tileX, tileY, facing, palette, label) {
+    function drawHumanoidSprite(tileX, tileY, facing, palette, label, scale = 1) {
       const p = tileToScreen(tileX, tileY);
       const t = performance.now();
       const idleBob = Math.round(Math.sin(t / 420) * 1.2);
+      const unit = Math.max(1, Math.round(scale));
+      const s = v => Math.round(v * scale);
+      const anchorX = p.x + Math.round((TILE - TILE * scale) / 2);
+      const anchorY = p.y + Math.round((TILE - TILE * scale));
 
       ctx.fillStyle = "rgba(0,0,0,0.24)";
       ctx.beginPath();
-      ctx.ellipse(p.x + 16, p.y + 29, 8, 4, 0, 0, Math.PI * 2);
+      ctx.ellipse(p.x + 16, p.y + 30, s(8), s(4), 0, 0, Math.PI * 2);
       ctx.fill();
 
-      const bx = p.x + 7;
-      const by = p.y + 4 + idleBob;
+      const bx = anchorX + s(7);
+      const by = anchorY + s(4) + idleBob;
 
       ctx.fillStyle = palette.boots;
       if (facing === "left" || facing === "right") {
-        ctx.fillRect(bx + 4, by + 21, 4, 6);
-        ctx.fillRect(bx + 9, by + 21, 4, 6);
+        ctx.fillRect(bx + s(4), by + s(21), s(4), s(6));
+        ctx.fillRect(bx + s(9), by + s(21), s(4), s(6));
       } else {
-        ctx.fillRect(bx + 3, by + 21, 4, 6);
-        ctx.fillRect(bx + 9, by + 21, 4, 6);
+        ctx.fillRect(bx + s(3), by + s(21), s(4), s(6));
+        ctx.fillRect(bx + s(9), by + s(21), s(4), s(6));
       }
 
       ctx.fillStyle = palette.tunic;
-      ctx.fillRect(bx + 2, by + 12, 12, 10);
+      ctx.fillRect(bx + s(2), by + s(12), s(12), s(10));
       ctx.fillStyle = palette.tunicShade;
-      ctx.fillRect(bx + 2, by + 19, 12, 3);
+      ctx.fillRect(bx + s(2), by + s(19), s(12), s(3));
 
       if (facing === "up") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + 1, by + 13, 14, 8);
+        ctx.fillRect(bx + s(1), by + s(13), s(14), s(8));
       } else if (facing === "left") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + 1, by + 13, 3, 8);
+        ctx.fillRect(bx + s(1), by + s(13), s(3), s(8));
       } else if (facing === "right") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + 12, by + 13, 3, 8);
+        ctx.fillRect(bx + s(12), by + s(13), s(3), s(8));
       }
 
       ctx.fillStyle = palette.skin;
       if (facing === "left") {
-        ctx.fillRect(bx + 2, by + 5, 8, 8);
+        ctx.fillRect(bx + s(2), by + s(5), s(8), s(8));
       } else if (facing === "right") {
-        ctx.fillRect(bx + 6, by + 5, 8, 8);
+        ctx.fillRect(bx + s(6), by + s(5), s(8), s(8));
       } else {
-        ctx.fillRect(bx + 4, by + 4, 8, 8);
+        ctx.fillRect(bx + s(4), by + s(4), s(8), s(8));
       }
       ctx.fillStyle = palette.skinShade;
       if (facing === "up") {
-        ctx.fillRect(bx + 4, by + 9, 8, 3);
+        ctx.fillRect(bx + s(4), by + s(9), s(8), s(3));
       } else if (facing === "left") {
-        ctx.fillRect(bx + 2, by + 10, 8, 2);
+        ctx.fillRect(bx + s(2), by + s(10), s(8), s(2));
       } else if (facing === "right") {
-        ctx.fillRect(bx + 6, by + 10, 8, 2);
+        ctx.fillRect(bx + s(6), by + s(10), s(8), s(2));
       } else {
-        ctx.fillRect(bx + 4, by + 10, 8, 2);
+        ctx.fillRect(bx + s(4), by + s(10), s(8), s(2));
       }
 
       ctx.fillStyle = palette.hair;
       if (facing === "up") {
-        ctx.fillRect(bx + 3, by + 3, 10, 5);
+        ctx.fillRect(bx + s(3), by + s(3), s(10), s(5));
       } else if (facing === "left") {
-        ctx.fillRect(bx + 2, by + 4, 7, 4);
+        ctx.fillRect(bx + s(2), by + s(4), s(7), s(4));
       } else if (facing === "right") {
-        ctx.fillRect(bx + 7, by + 4, 7, 4);
+        ctx.fillRect(bx + s(7), by + s(4), s(7), s(4));
       } else {
-        ctx.fillRect(bx + 3, by + 3, 10, 4);
+        ctx.fillRect(bx + s(3), by + s(3), s(10), s(4));
       }
       ctx.fillStyle = palette.hairShade;
-      ctx.fillRect(bx + 4, by + 7, 8, 1);
+      ctx.fillRect(bx + s(4), by + s(7), s(8), unit);
 
       if (facing === "down") {
         ctx.fillStyle = "#1b1e28";
-        ctx.fillRect(bx + 6, by + 8, 1, 1);
-        ctx.fillRect(bx + 9, by + 8, 1, 1);
+        ctx.fillRect(bx + s(6), by + s(8), unit, unit);
+        ctx.fillRect(bx + s(9), by + s(8), unit, unit);
       } else if (facing === "left") {
         ctx.fillStyle = "#1b1e28";
-        ctx.fillRect(bx + 4, by + 8, 1, 1);
+        ctx.fillRect(bx + s(4), by + s(8), unit, unit);
       } else if (facing === "right") {
         ctx.fillStyle = "#1b1e28";
-        ctx.fillRect(bx + 11, by + 8, 1, 1);
+        ctx.fillRect(bx + s(11), by + s(8), unit, unit);
       }
 
       if (label) {
@@ -1000,45 +1039,48 @@ const html = String.raw`<!DOCTYPE html>
       }
     }
 
-    function drawWolfSprite(tileX, tileY, facing) {
+    function drawWolfSprite(tileX, tileY, facing, scale = 1) {
       const p = tileToScreen(tileX, tileY);
       const t = performance.now();
       const gait = Math.round(Math.sin(t / 220) * 1.2);
+      const s = v => Math.round(v * scale);
+      const anchorX = p.x + Math.round((TILE - TILE * scale) / 2);
+      const anchorY = p.y + Math.round((TILE - TILE * scale));
 
       ctx.fillStyle = "rgba(0,0,0,0.2)";
       ctx.beginPath();
-      ctx.ellipse(p.x + 16, p.y + 28, 10, 4, 0, 0, Math.PI * 2);
+      ctx.ellipse(p.x + 16, p.y + 29, s(10), s(4), 0, 0, Math.PI * 2);
       ctx.fill();
 
-      const bx = p.x + 5;
-      const by = p.y + 9 + gait;
+      const bx = anchorX + s(5);
+      const by = anchorY + s(9) + gait;
 
       ctx.fillStyle = "#8f98a5";
-      ctx.fillRect(bx + 4, by + 5, 15, 8);
+      ctx.fillRect(bx + s(4), by + s(5), s(15), s(8));
       ctx.fillStyle = "#757e89";
-      ctx.fillRect(bx + 5, by + 5, 14, 3);
+      ctx.fillRect(bx + s(5), by + s(5), s(14), s(3));
 
-      const headOffset = facing === "right" ? 18 : 0;
+      const headOffset = facing === "right" ? s(18) : 0;
       ctx.fillStyle = "#909aa9";
-      ctx.fillRect(bx + headOffset, by + 2, 8, 6);
+      ctx.fillRect(bx + headOffset, by + s(2), s(8), s(6));
       ctx.fillStyle = "#6f7783";
-      ctx.fillRect(bx + headOffset + (facing === "right" ? 4 : 0), by + 6, 4, 2);
+      ctx.fillRect(bx + headOffset + (facing === "right" ? s(4) : 0), by + s(6), s(4), s(2));
       ctx.fillStyle = "#9fa8b4";
-      ctx.fillRect(bx + headOffset + 1, by, 2, 3);
-      ctx.fillRect(bx + headOffset + 5, by, 2, 3);
+      ctx.fillRect(bx + headOffset + s(1), by, s(2), s(3));
+      ctx.fillRect(bx + headOffset + s(5), by, s(2), s(3));
 
       ctx.fillStyle = "#7f8995";
-      if (facing === "right") ctx.fillRect(bx + 1, by + 7, 5, 2);
-      else ctx.fillRect(bx + 18, by + 7, 5, 2);
+      if (facing === "right") ctx.fillRect(bx + s(1), by + s(7), s(5), s(2));
+      else ctx.fillRect(bx + s(18), by + s(7), s(5), s(2));
 
       ctx.fillStyle = "#747d88";
-      ctx.fillRect(bx + 6, by + 13, 3, 6);
-      ctx.fillRect(bx + 14, by + 13, 3, 6);
+      ctx.fillRect(bx + s(6), by + s(13), s(3), s(6));
+      ctx.fillRect(bx + s(14), by + s(13), s(3), s(6));
 
       ctx.fillStyle = "rgba(0,0,0,0.45)";
-      ctx.fillRect(p.x + 4, p.y - 8, 22, 4);
+      ctx.fillRect(p.x + 2, p.y - 10, Math.max(22, s(22)), 4);
       ctx.fillStyle = "#92de76";
-      ctx.fillRect(p.x + 4, p.y - 8, 22 * (wolf.hp / wolf.maxHp), 4);
+      ctx.fillRect(p.x + 2, p.y - 10, Math.max(22, s(22)) * (wolf.hp / wolf.maxHp), 4);
     }
 
     function drawWorld() {
@@ -1060,6 +1102,19 @@ const html = String.raw`<!DOCTYPE html>
           } else if (mix === 4) {
             ctx.fillStyle = "rgba(52,86,46,0.10)";
             ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, TILE - 4);
+          }
+
+          const noiseA = ((x * 97 + y * 31 + x * y * 7) % 1000) / 1000;
+          const noiseB = ((x * 29 + y * 113 + x * y * 3) % 1000) / 1000;
+          if (noiseA > 0.73) {
+            ctx.fillStyle = "rgba(125,168,93,0.11)";
+            ctx.fillRect(p.x + 4, p.y + 5, 2, 2);
+            ctx.fillRect(p.x + 10, p.y + 14, 2, 2);
+            ctx.fillRect(p.x + 20, p.y + 9, 2, 2);
+          } else if (noiseB < 0.2) {
+            ctx.fillStyle = "rgba(44,82,39,0.14)";
+            ctx.fillRect(p.x + 6, p.y + 7, 2, 2);
+            ctx.fillRect(p.x + 18, p.y + 18, 2, 2);
           }
         }
       }
@@ -1122,14 +1177,15 @@ const html = String.raw`<!DOCTYPE html>
         npc.y,
         npc.facing,
         npc.palette,
-        Math.abs(player.targetX - npc.x) + Math.abs(player.targetY - npc.y) <= 5 ? npc.name : ""
+        Math.abs(player.targetX - npc.x) + Math.abs(player.targetY - npc.y) <= 5 ? npc.name : "",
+        1.34
       );
 
       // wolf
       {
         const sx = wolf.px / TILE;
         const sy = wolf.py / TILE;
-        drawWolfSprite(sx, sy, wolf.facing);
+        drawWolfSprite(sx, sy, wolf.facing, 1.36);
       }
 
       const playerPalette = {
@@ -1147,13 +1203,28 @@ const html = String.raw`<!DOCTYPE html>
       {
         const sx = player.px / TILE;
         const sy = player.py / TILE;
-        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer");
+        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.38);
       }
 
       // subtle atmospheric tint
       const phase = (performance.now() / 12000) % (Math.PI * 2);
       const tint = 0.07 + Math.max(0, Math.sin(phase)) * 0.08;
       ctx.fillStyle = "rgba(10,18,32," + tint.toFixed(3) + ")";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // viewport edge fade to reduce hard map boundaries
+      const edgeFade = ctx.createRadialGradient(
+        canvas.width * 0.5,
+        canvas.height * 0.5,
+        Math.min(canvas.width, canvas.height) * 0.32,
+        canvas.width * 0.5,
+        canvas.height * 0.5,
+        Math.max(canvas.width, canvas.height) * 0.66
+      );
+      edgeFade.addColorStop(0, "rgba(0,0,0,0)");
+      edgeFade.addColorStop(0.76, "rgba(2,7,12,0.1)");
+      edgeFade.addColorStop(1, "rgba(2,7,12,0.44)");
+      ctx.fillStyle = edgeFade;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
