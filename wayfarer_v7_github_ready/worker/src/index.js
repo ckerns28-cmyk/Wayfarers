@@ -490,7 +490,8 @@ const html = String.raw`<!DOCTYPE html>
         cloak: "#3f2f72",
         boots: "#35261d"
       },
-      animationPulse: 0
+      animationPulse: 0,
+      idleSeed: 1.37
     };
 
     const wolf = {
@@ -766,10 +767,10 @@ const html = String.raw`<!DOCTYPE html>
       if (now - lastWolfAttack < 1100) return;
 
       lastWolfAttack = now;
-      wolf.attackUntil = now + 300;
+      wolf.attackUntil = now + 350;
       player.hp = Math.max(0, player.hp - 5);
-      player.hitUntil = now + 250;
-      player.hitFlickerUntil = now + 180;
+      player.hitUntil = now + 300;
+      player.hitFlickerUntil = now + 220;
       const wx = player.targetX - wolf.targetX;
       const wy = player.targetY - wolf.targetY;
       const len = Math.max(1, Math.hypot(wx, wy));
@@ -793,7 +794,7 @@ const html = String.raw`<!DOCTYPE html>
       if (now - lastPlayerAttack < 420) return;
 
       lastPlayerAttack = now;
-      player.attackUntil = now + 300;
+      player.attackUntil = now + 350;
 
       const facingSteps = {
         up: { x: 0, y: -1 },
@@ -811,8 +812,8 @@ const html = String.raw`<!DOCTYPE html>
       }
 
       wolf.hp = Math.max(0, wolf.hp - 6);
-      wolf.hitUntil = now + 270;
-      wolf.hitFlickerUntil = now + 210;
+      wolf.hitUntil = now + 320;
+      wolf.hitFlickerUntil = now + 240;
       const stepPush = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[player.facing];
       wolf.recoilX = stepPush.x * 2.3;
       wolf.recoilY = stepPush.y * 1.5;
@@ -853,55 +854,66 @@ const html = String.raw`<!DOCTYPE html>
       ctx.fill();
     }
 
-    function animationPose(moving, stepMs, amplitude = 1) {
+    function animationPose(moving, stepMs, amplitude = 1, phase = 0) {
       const t = performance.now();
       if (moving) {
-        const frame = Math.floor(t / stepMs) % 4;
-        const legSwing = [0.85, -0.65, -0.9, 0.6][frame] * amplitude;
-        const armSwing = [-0.65, 0.75, 0.7, -0.55][frame] * amplitude;
-        const bob = [0, 1, 0, -1][frame] * Math.max(0.6, amplitude * 0.9);
-        return { moving: true, frame, legSwing, armSwing, bob, breath: 0, stance: 0 };
+        const frame = (Math.floor((t + phase * stepMs * 0.7) / stepMs) % 4 + 4) % 4;
+        const legSwing = [1.35, -1.05, -1.45, 1.1][frame] * amplitude;
+        const armSwing = [-0.95, 1.05, 0.92, -0.86][frame] * amplitude;
+        const footLiftA = [0, -2.6, 0, -1.2][frame] * Math.max(0.8, amplitude);
+        const footLiftB = [-2.2, 0, -1.5, 0][frame] * Math.max(0.8, amplitude);
+        const bob = [0.55, 2, 0.35, -1.45][frame] * Math.max(0.62, amplitude * 0.95);
+        return { moving: true, frame, legSwing, armSwing, bob, breath: 0, stance: 0, footLiftA, footLiftB, bodyTilt: legSwing * 0.08 };
       }
 
-      const breath = Math.sin(t / 560) * 0.7 * amplitude;
-      const stance = Math.cos(t / 900) * 0.5 * amplitude;
-      const bob = Math.sin(t / 700) * 0.35 * amplitude;
-      return { moving: false, frame: 0, legSwing: 0, armSwing: 0, bob, breath, stance };
+      const breath = Math.sin(t / 560 + phase) * 0.8 * amplitude;
+      const stance = Math.cos(t / 930 + phase * 0.7) * 0.58 * amplitude;
+      const bob = Math.sin(t / 760 + phase * 1.2) * 0.52 * amplitude;
+      const idleShift = Math.sin(t / 1450 + phase * 2.1) * 0.45 * amplitude;
+      return { moving: false, frame: 0, legSwing: 0, armSwing: 0, bob, breath, stance, footLiftA: 0, footLiftB: 0, bodyTilt: idleShift };
     }
 
     function attackPose(entity) {
       const now = performance.now();
-      const windupMs = 90;
-      const strikeMs = 90;
-      const recoverMs = 120;
+      const windupMs = 100;
+      const strikeMs = 95;
+      const recoverMs = 155;
       const total = windupMs + strikeMs + recoverMs;
       const left = Math.max(0, entity.attackUntil - now);
-      if (left <= 0) return { active: false, thrust: 0, swing: 0 };
+      if (left <= 0) return { active: false, thrust: 0, swing: 0, lean: 0, frame: "idle" };
       const elapsed = total - left;
       let thrust = 0;
       let swing = 0;
+      let lean = 0;
+      let frame = "windup";
       if (elapsed < windupMs) {
         const t = elapsed / windupMs;
-        thrust = -1.2 * t;
-        swing = -0.5 * t;
+        thrust = -1.5 * t;
+        swing = -0.72 * t;
+        lean = -0.7 * t;
       } else if (elapsed < windupMs + strikeMs) {
         const t = (elapsed - windupMs) / strikeMs;
-        thrust = -1.2 + 4.4 * t;
-        swing = -0.5 + 2.6 * t;
+        thrust = -1.5 + 5.1 * t;
+        swing = -0.72 + 3.1 * t;
+        lean = -0.7 + 1.55 * t;
+        frame = "strike";
       } else {
         const t = (elapsed - windupMs - strikeMs) / recoverMs;
-        thrust = 3.2 - 3.2 * t;
-        swing = 2.1 - 2.1 * t;
+        thrust = 3.6 - 3.6 * t;
+        swing = 2.38 - 2.38 * t;
+        lean = 0.85 - 0.85 * t;
+        frame = "recover";
       }
-      return { active: true, thrust, swing };
+      return { active: true, thrust, swing, lean, frame };
     }
 
     function hitVisualAlpha(entity) {
       const now = performance.now();
       if (now >= entity.hitUntil) return 0;
       const left = entity.hitUntil - now;
-      const base = Math.min(0.46, 0.14 + left / 320);
-      const flicker = now < entity.hitFlickerUntil && Math.floor(now / 42) % 2 === 0 ? 0.18 : 0;
+      const pauseAccent = Math.min(0.14, left / 900);
+      const base = Math.min(0.52, 0.2 + left / 300 + pauseAccent);
+      const flicker = now < entity.hitFlickerUntil && Math.floor(now / 36) % 2 === 0 ? 0.24 : 0;
       return Math.max(0, base + flicker);
     }
 
@@ -961,8 +973,9 @@ const html = String.raw`<!DOCTYPE html>
           }
 
           // ripple lines to keep pond visually alive
-          const rippleA = (Math.sin(t * 5.2 + x * 1.16 + y * 0.83) + 1) * 0.5;
-          const rippleB = (Math.sin(t * 4.4 + x * 0.71 - y * 1.19) + 1) * 0.5;
+          const rippleDrift = Math.sin(t * 1.25 + x * 0.21 + y * 0.17);
+          const rippleA = (Math.sin(t * (5.1 + rippleDrift * 0.32) + x * 1.16 + y * 0.83) + 1) * 0.5;
+          const rippleB = (Math.sin(t * (4.25 + rippleDrift * 0.27) + x * 0.71 - y * 1.19) + 1) * 0.5;
           const alphaA = 0.03 + rippleA * 0.05;
           const alphaB = 0.02 + rippleB * 0.04;
           ctx.fillStyle = "rgba(197,228,255," + alphaA.toFixed(3) + ")";
@@ -1008,6 +1021,7 @@ const html = String.raw`<!DOCTYPE html>
     }
 
     function drawBuilding(b) {
+      const t = performance.now() * 0.001;
       const groundShadow = tileToScreen(b.x, b.y + b.h);
       drawSoftShadow(
         groundShadow.x + (b.w * TILE) / 2,
@@ -1092,7 +1106,8 @@ const html = String.raw`<!DOCTYPE html>
         const w = tileToScreen(b.x + 1, b.y + 1);
         ctx.fillStyle = "#4b3e2f";
         ctx.fillRect(w.x + 6, w.y + 7, 14, 12);
-        ctx.fillStyle = "#d7c76d";
+        const warmFlicker = 0.82 + (Math.sin(t * 4.8 + b.x * 0.7) + 1) * 0.1 + (Math.sin(t * 11.4 + b.y * 0.33) + 1) * 0.04;
+        ctx.fillStyle = "rgba(215,199,109," + Math.min(0.98, warmFlicker).toFixed(3) + ")";
         ctx.fillRect(w.x + 8, w.y + 9, 10, 8);
         ctx.fillStyle = "rgba(72,52,34,0.72)";
         ctx.fillRect(w.x + 12, w.y + 9, 1, 8);
@@ -1104,7 +1119,8 @@ const html = String.raw`<!DOCTYPE html>
         const w2 = tileToScreen(b.x + b.w - 2, b.y + 1);
         ctx.fillStyle = "#4b3e2f";
         ctx.fillRect(w2.x + 6, w2.y + 7, 13, 12);
-        ctx.fillStyle = "#cabd72";
+        const warmFlickerB = 0.79 + (Math.sin(t * 5.2 + b.y * 0.9) + 1) * 0.1 + (Math.cos(t * 9.7 + b.x * 0.5) + 1) * 0.04;
+        ctx.fillStyle = "rgba(202,189,114," + Math.min(0.96, warmFlickerB).toFixed(3) + ")";
         ctx.fillRect(w2.x + 8, w2.y + 9, 9, 8);
         ctx.fillStyle = "rgba(72,52,34,0.72)";
         ctx.fillRect(w2.x + 12, w2.y + 9, 1, 8);
@@ -1118,14 +1134,15 @@ const html = String.raw`<!DOCTYPE html>
       const p = tileToScreen(t.x, t.y);
       const img = t.type === "b" ? assets.treeB : t.type === "c" ? assets.treeC : assets.treeA;
       const scale = t.scale || 1;
+      const sway = Math.sin(performance.now() * 0.0016 + t.variantSeed * 1.73 + t.x * 0.24 + t.y * 0.37) * (0.45 + scale * 0.12);
       const drawW = TILE * scale;
       const drawH = (TILE + 4) * scale;
-      const drawX = p.x + t.jitterX - (drawW - TILE) / 2;
+      const drawX = p.x + t.jitterX + sway - (drawW - TILE) / 2;
       const drawY = p.y - 4 + t.jitterY - (drawH - (TILE + 4));
 
       // larger shadow
       drawSoftShadow(
-        p.x + 16 + t.jitterX * 0.35,
+        p.x + 16 + t.jitterX * 0.35 + sway * 0.55,
         p.y + 25,
         8 + scale * 4,
         4 + scale * 1.6,
@@ -1174,11 +1191,11 @@ const html = String.raw`<!DOCTYPE html>
       ctx.fillText(text, p.x + 2, labelY - 1);
     }
 
-    function drawHumanoidSprite(tileX, tileY, facing, palette, label, scale = 1, isMoving = false, attackData = null, hitAlpha = 0, recoil = null) {
+    function drawHumanoidSprite(tileX, tileY, facing, palette, label, scale = 1, isMoving = false, attackData = null, hitAlpha = 0, recoil = null, posePhase = 0) {
       const p = tileToScreen(tileX, tileY);
       const unit = Math.max(1, Math.round(scale));
       const s = v => Math.round(v * scale);
-      const pose = animationPose(isMoving, 160, 1);
+      const pose = animationPose(isMoving, 150, 1.08, posePhase);
       const anchorX = p.x + Math.round((TILE - TILE * scale) / 2);
       const anchorY = p.y + Math.round((TILE - TILE * scale));
 
@@ -1186,20 +1203,23 @@ const html = String.raw`<!DOCTYPE html>
 
       const recoilX = recoil ? Math.round(recoil.x) : 0;
       const recoilY = recoil ? Math.round(recoil.y) : 0;
-      const attackShiftX = attackData && attackData.active ? Math.round(attackData.thrust * 0.9) : 0;
-      const attackShiftY = attackData && attackData.active ? Math.round(-Math.abs(attackData.thrust) * 0.15) : 0;
-      const bx = anchorX + s(7) + Math.round(pose.stance * 0.35) + recoilX + attackShiftX;
-      const by = anchorY + s(4) + Math.round(pose.bob) + recoilY + attackShiftY;
+      const attackShiftX = attackData && attackData.active ? Math.round(attackData.thrust * 1.02) : 0;
+      const attackShiftY = attackData && attackData.active ? Math.round(-Math.abs(attackData.thrust) * 0.2) : 0;
+      const attackLean = attackData && attackData.active ? Math.round(attackData.lean) : 0;
+      const bx = anchorX + s(7) + Math.round(pose.stance * 0.46) + recoilX + attackShiftX;
+      const by = anchorY + s(4) + Math.round(pose.bob) + recoilY + attackShiftY + attackLean;
       const legShiftA = Math.round(pose.legSwing);
       const legShiftB = -legShiftA;
+      const footLiftA = Math.round(pose.footLiftA);
+      const footLiftB = Math.round(pose.footLiftB);
 
       ctx.fillStyle = palette.boots;
       if (facing === "left" || facing === "right") {
-        ctx.fillRect(bx + s(4), by + s(22) + legShiftA, s(4), s(6));
-        ctx.fillRect(bx + s(10), by + s(22) + legShiftB, s(4), s(6));
+        ctx.fillRect(bx + s(4), by + s(22) + legShiftA + footLiftA, s(4), s(6));
+        ctx.fillRect(bx + s(10), by + s(22) + legShiftB + footLiftB, s(4), s(6));
       } else {
-        ctx.fillRect(bx + s(3), by + s(22) + legShiftA, s(4), s(6));
-        ctx.fillRect(bx + s(10), by + s(22) + legShiftB, s(4), s(6));
+        ctx.fillRect(bx + s(3), by + s(22) + legShiftA + footLiftA, s(4), s(6));
+        ctx.fillRect(bx + s(10), by + s(22) + legShiftB + footLiftB, s(4), s(6));
       }
 
       const breathLift = Math.round(pose.breath);
@@ -1229,13 +1249,13 @@ const html = String.raw`<!DOCTYPE html>
         const swingY = Math.round(attackData.swing);
         ctx.fillStyle = "#a7b2c2";
         if (facing === "left") {
-          ctx.fillRect(bx - s(3), by + s(13) + swingY, s(7), s(2));
+          ctx.fillRect(bx - s(4), by + s(13) + swingY, s(9), s(2));
         } else if (facing === "right") {
-          ctx.fillRect(bx + s(14), by + s(13) - swingY, s(7), s(2));
+          ctx.fillRect(bx + s(13), by + s(13) - swingY, s(9), s(2));
         } else if (facing === "up") {
-          ctx.fillRect(bx + s(7), by + s(6) + swingY, s(2), s(8));
+          ctx.fillRect(bx + s(7), by + s(5) + swingY, s(2), s(10));
         } else {
-          ctx.fillRect(bx + s(7), by + s(13) - swingY, s(2), s(8));
+          ctx.fillRect(bx + s(7), by + s(12) - swingY, s(2), s(10));
         }
       }
 
@@ -1298,16 +1318,16 @@ const html = String.raw`<!DOCTYPE html>
       }
 
       if (hitAlpha > 0) {
-        ctx.fillStyle = "rgba(255,72,72," + Math.min(0.38, hitAlpha).toFixed(3) + ")";
+        ctx.fillStyle = "rgba(255,72,72," + Math.min(0.42, hitAlpha).toFixed(3) + ")";
         ctx.fillRect(bx + s(1), by + s(1), s(15), s(27));
-        ctx.fillStyle = "rgba(255,255,255," + Math.min(0.3, hitAlpha * 0.9).toFixed(3) + ")";
+        ctx.fillStyle = "rgba(255,255,255," + Math.min(0.36, hitAlpha).toFixed(3) + ")";
         ctx.fillRect(bx + s(3), by + s(3), s(11), s(20));
       }
     }
 
     function drawWolfSprite(tileX, tileY, facing, scale = 1, isMoving = false, attackData = null, hitAlpha = 0, recoil = null) {
       const p = tileToScreen(tileX, tileY);
-      const pose = animationPose(isMoving, 170, 1.05);
+      const pose = animationPose(isMoving, 165, 1.16, 0.81);
       const s = v => Math.round(v * scale);
       const anchorX = p.x + Math.round((TILE - TILE * scale) / 2);
       const anchorY = p.y + Math.round((TILE - TILE * scale));
@@ -1316,9 +1336,10 @@ const html = String.raw`<!DOCTYPE html>
 
       const recoilX = recoil ? Math.round(recoil.x) : 0;
       const recoilY = recoil ? Math.round(recoil.y) : 0;
-      const attackShiftX = attackData && attackData.active ? Math.round(attackData.thrust * 0.85) : 0;
+      const attackShiftX = attackData && attackData.active ? Math.round(attackData.thrust * 0.95) : 0;
+      const attackShiftY = attackData && attackData.active ? Math.round(attackData.lean * 0.6) : 0;
       const bx = anchorX + s(5) + Math.round(pose.stance * 0.4) + recoilX + attackShiftX;
-      const by = anchorY + s(9) + Math.round(pose.bob) + recoilY;
+      const by = anchorY + s(9) + Math.round(pose.bob) + recoilY + attackShiftY;
 
       ctx.fillStyle = "#8f98a5";
       ctx.fillRect(bx + s(3), by + s(4), s(16), s(9));
@@ -1341,8 +1362,8 @@ const html = String.raw`<!DOCTYPE html>
       const legA = Math.round(pose.legSwing);
       const legB = -legA;
       ctx.fillStyle = "#747d88";
-      ctx.fillRect(bx + s(6), by + s(13) + legA, s(3), s(6));
-      ctx.fillRect(bx + s(14), by + s(13) + legB, s(3), s(6));
+      ctx.fillRect(bx + s(6), by + s(13) + legA + Math.round(pose.footLiftA), s(3), s(6));
+      ctx.fillRect(bx + s(14), by + s(13) + legB + Math.round(pose.footLiftB), s(3), s(6));
       ctx.fillStyle = "rgba(16,20,27,0.42)";
       ctx.strokeRect(bx + s(3), by + s(1), s(23), s(18));
 
@@ -1352,9 +1373,9 @@ const html = String.raw`<!DOCTYPE html>
       ctx.fillRect(p.x + 2, p.y - 10, Math.max(22, s(22)) * (wolf.hp / wolf.maxHp), 4);
 
       if (hitAlpha > 0) {
-        ctx.fillStyle = "rgba(255,255,255," + Math.min(0.35, hitAlpha).toFixed(3) + ")";
+        ctx.fillStyle = "rgba(255,255,255," + Math.min(0.4, hitAlpha).toFixed(3) + ")";
         ctx.fillRect(bx + s(2), by + s(1), s(24), s(18));
-        ctx.fillStyle = "rgba(255,84,84," + Math.min(0.28, hitAlpha * 0.8).toFixed(3) + ")";
+        ctx.fillStyle = "rgba(255,84,84," + Math.min(0.32, hitAlpha * 0.9).toFixed(3) + ")";
         ctx.fillRect(bx + s(3), by + s(2), s(22), s(15));
       }
     }
@@ -1460,7 +1481,7 @@ const html = String.raw`<!DOCTYPE html>
       if (zoneName === "Forest Edge") drawZoneLabel("Forest Edge", 30, 4);
 
       // NPC
-      const npcPulse = Math.sin(performance.now() / 850) > 0.42;
+      const npcIdlePhase = npc.idleSeed + Math.sin(performance.now() / 1200 + npc.animationPulse) * 0.6;
       drawHumanoidSprite(
         npc.x,
         npc.y,
@@ -1468,7 +1489,11 @@ const html = String.raw`<!DOCTYPE html>
         npc.palette,
         Math.abs(player.targetX - npc.x) + Math.abs(player.targetY - npc.y) <= 5 ? npc.name : "",
         1.5,
-        npcPulse
+        false,
+        null,
+        0,
+        null,
+        npcIdlePhase
       );
 
       // wolf
@@ -1493,7 +1518,7 @@ const html = String.raw`<!DOCTYPE html>
       {
         const sx = player.px / TILE;
         const sy = player.py / TILE;
-        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.58, player.moving, attackPose(player), hitVisualAlpha(player), { x: player.recoilX, y: player.recoilY });
+        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.58, player.moving, attackPose(player), hitVisualAlpha(player), { x: player.recoilX, y: player.recoilY }, 0.26);
       }
 
       // subtle atmospheric tint
@@ -1535,6 +1560,10 @@ const html = String.raw`<!DOCTYPE html>
       player.recoilY *= 0.8;
       wolf.recoilX *= 0.82;
       wolf.recoilY *= 0.82;
+      if (now >= npc.animationPulse) {
+        npc.animationPulse = now + 900 + Math.random() * 1800;
+        npc.idleSeed = (npc.idleSeed + 0.38 + Math.random() * 0.6) % (Math.PI * 2);
+      }
       updateInput();
       tryPlayerAttack(now);
       smoothMove(player, dt);
