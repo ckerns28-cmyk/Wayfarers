@@ -379,28 +379,53 @@ const html = String.raw`<!DOCTYPE html>
     }
     world.fences.forEach(f => world.blocked.add(keyOf(f.x, f.y)));
 
-    // trees - more intentional framing
+    // trees - dense edge containment with open town center
     const treeData = [
-      // west / northwest border clusters
-      [1,3,"a",1.18], [3,4,"b",1.1], [5,3,"a",1.16], [6,6,"c",1.02],
-      [2,8,"a",1.08], [4,10,"b",1.04], [1,20,"a",1.2], [3,21,"c",1.06], [6,22,"b",1.12],
+      // west outer wall (irregular clusters and lane openings)
+      [1,2,"a"], [2,2,"b"], [3,3,"a"], [2,5,"c"], [1,6,"a"],
+      [3,7,"b"], [2,9,"a"], [1,11,"c"], [3,12,"a"], [2,14,"b"],
+      [1,17,"a"], [2,19,"b"], [3,21,"a"], [1,22,"c"], [4,23,"a"],
 
-      // north framing (kept clear over center)
-      [10,2,"b",1.06], [14,3,"a",1.0], [29,3,"a",1.12], [33,2,"b",1.16], [36,4,"c",1.08],
+      // north boundary (heavier on corners, sparse above town center)
+      [2,1,"a"], [4,2,"c"], [7,1,"b"], [10,2,"a"], [13,2,"c"],
+      [27,2,"a"], [30,1,"b"], [33,2,"a"], [35,1,"c"], [37,2,"a"],
 
-      // east / southeast dense border
-      [35,8,"a",1.12], [36,11,"b",1.16], [35,14,"c",1.08], [36,18,"a",1.2],
-      [33,20,"b",1.14], [36,22,"a",1.18], [30,22,"c",1.06],
+      // east outer wall (dense, varied spacing)
+      [36,2,"a"], [35,4,"b"], [37,5,"a"], [36,7,"c"], [35,9,"a"],
+      [36,11,"b"], [37,13,"a"], [35,15,"c"], [36,17,"a"], [37,19,"b"],
+      [35,21,"a"], [36,23,"c"], [34,22,"a"],
 
-      // pond framing (partial ring, shore kept visible)
-      [21,15,"a",0.98], [29,16,"b",1.08], [28,19,"c",1.02]
+      // south boundary (broken wall feel, path pockets left clear)
+      [4,22,"b"], [6,23,"a"], [9,22,"c"], [12,23,"a"], [15,22,"b"],
+      [24,23,"a"], [27,22,"c"], [30,23,"a"], [33,22,"b"],
+
+      // medium-density mid-range containment bands
+      [5,5,"a"], [6,8,"b"], [7,19,"a"], [9,4,"c"],
+      [31,5,"a"], [32,8,"b"], [31,19,"a"], [29,21,"c"],
+
+      // pond framing clusters (shoreline stays readable)
+      [21,15,"a"], [22,18,"c"], [29,16,"b"], [28,19,"c"]
     ];
-    treeData.forEach(([x,y,type,scale]) => {
+
+    function scaledTree(x, y, type) {
+      const centerX = 19;
+      const centerY = 12;
+      const dx = x - centerX;
+      const dy = y - centerY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const edgeWeight = Math.min(1, dist / 16);
+      const rand = (((x * 97 + y * 57 + x * y * 13) % 1000) / 1000) - 0.5;
+      const scale = Math.max(0.9, Math.min(1.2, 0.95 + edgeWeight * 0.22 + rand * 0.12));
+      return { x, y, type, scale };
+    }
+
+    treeData.forEach(([x,y,type]) => {
+      const tree = scaledTree(x, y, type);
       world.trees.push({
-        x,
-        y,
-        type,
-        scale,
+        x: tree.x,
+        y: tree.y,
+        type: tree.type,
+        scale: tree.scale,
         jitterX: ((x * 37 + y * 19) % 7) - 3,
         jitterY: ((x * 11 + y * 23) % 5) - 2
       });
