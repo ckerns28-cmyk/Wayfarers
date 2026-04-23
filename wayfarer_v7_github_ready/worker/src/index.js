@@ -422,7 +422,8 @@ const html = String.raw`<!DOCTYPE html>
       const edgeWeight = Math.min(1, dist / 16);
       const rand = (((x * 97 + y * 57 + x * y * 13) % 1000) / 1000) - 0.5;
       const scale = Math.max(0.9, Math.min(1.2, 0.95 + edgeWeight * 0.22 + rand * 0.12));
-      return { x, y, type, scale };
+      const variantSeed = (x * 23 + y * 31 + x * y * 7) % 9;
+      return { x, y, type, scale, variantSeed };
     }
 
     treeData.forEach(([x,y,type]) => {
@@ -432,6 +433,8 @@ const html = String.raw`<!DOCTYPE html>
         y: tree.y,
         type: tree.type,
         scale: tree.scale,
+        variantSeed: tree.variantSeed,
+        toneShift: (((x * 61 + y * 41) % 9) - 4) / 100,
         jitterX: ((x * 37 + y * 19) % 7) - 3,
         jitterY: ((x * 11 + y * 23) % 5) - 2
       });
@@ -782,6 +785,12 @@ const html = String.raw`<!DOCTYPE html>
             ctx.fillRect(p.x, p.y, TILE, TILE);
           }
 
+          const deepCore = Math.max(0, Math.min(0.2, (0.52 - d) * 0.42));
+          if (deepCore > 0) {
+            ctx.fillStyle = "rgba(11,29,68," + deepCore.toFixed(3) + ")";
+            ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
+          }
+
           // interior animated depth pulse
           const pulse = Math.max(0, (Math.sin(t * 2.6 + x * 0.55 - y * 0.41) + 1) * 0.5 - 0.45);
           if (pulse > 0.015) {
@@ -798,6 +807,19 @@ const html = String.raw`<!DOCTYPE html>
           ctx.fillRect(p.x + 3, p.y + 7 + ((x + y) % 3), TILE - 10, 1);
           ctx.fillStyle = "rgba(143,190,241," + alphaB.toFixed(3) + ")";
           ctx.fillRect(p.x + 5, p.y + 18 + ((x * 2 + y) % 2), TILE - 13, 1);
+
+          const colorFlux = (Math.sin(t * 2.3 + x * 0.6 + y * 0.44) + 1) * 0.5;
+          const fluxAlpha = 0.02 + colorFlux * 0.035;
+          ctx.fillStyle = "rgba(98,163,224," + fluxAlpha.toFixed(3) + ")";
+          ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, TILE - 4);
+
+          if (world.pondNearEdge.has(key)) {
+            const edgeSweep = (Math.sin(t * 6.1 + x * 1.5 - y * 0.9) + 1) * 0.5;
+            const edgeAlpha = 0.04 + edgeSweep * 0.08;
+            ctx.fillStyle = "rgba(227,243,255," + edgeAlpha.toFixed(3) + ")";
+            ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, 1);
+            ctx.fillRect(p.x + 1, p.y + TILE - 2, TILE - 2, 1);
+          }
         }
       }
 
@@ -831,8 +853,16 @@ const html = String.raw`<!DOCTYPE html>
       for (let x = b.x; x < b.x + b.w; x++) {
         for (let y = b.y + 1; y < b.y + b.h; y++) {
           const p = tileToScreen(x, y);
+          const wallShift = ((x * 13 + y * 7) % 3) - 1;
           ctx.fillStyle = b.wall;
           ctx.fillRect(p.x, p.y, TILE, TILE);
+          if (wallShift === 1) {
+            ctx.fillStyle = "rgba(255,255,255,0.05)";
+            ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
+          } else if (wallShift === -1) {
+            ctx.fillStyle = "rgba(0,0,0,0.08)";
+            ctx.fillRect(p.x + 1, p.y + 1, TILE - 2, TILE - 2);
+          }
           ctx.fillStyle = "rgba(255,255,255,0.04)";
           ctx.fillRect(p.x + 2, p.y + 2, TILE - 4, 3);
           ctx.fillStyle = "rgba(0,0,0,0.14)";
@@ -857,6 +887,8 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fillRect(p.x, p.y + 10, TILE, 10);
         ctx.fillStyle = b.roofSide;
         ctx.fillRect(p.x, p.y + TILE - 7, TILE, 7);
+        ctx.fillStyle = "rgba(245,230,199,0.12)";
+        ctx.fillRect(p.x + 2, p.y + TILE - 6, TILE - 4, 1);
       }
 
       // stronger roof overhang shadow (directional)
@@ -886,15 +918,25 @@ const html = String.raw`<!DOCTYPE html>
       // window
       {
         const w = tileToScreen(b.x + 1, b.y + 1);
+        ctx.fillStyle = "#4b3e2f";
+        ctx.fillRect(w.x + 6, w.y + 7, 14, 12);
         ctx.fillStyle = "#d7c76d";
         ctx.fillRect(w.x + 8, w.y + 9, 10, 8);
+        ctx.fillStyle = "rgba(72,52,34,0.72)";
+        ctx.fillRect(w.x + 12, w.y + 9, 1, 8);
+        ctx.fillRect(w.x + 8, w.y + 12, 10, 1);
         ctx.fillStyle = "rgba(255,255,255,0.18)";
         ctx.fillRect(w.x + 9, w.y + 10, 8, 2);
       }
       if (b.w >= 4) {
         const w2 = tileToScreen(b.x + b.w - 2, b.y + 1);
+        ctx.fillStyle = "#4b3e2f";
+        ctx.fillRect(w2.x + 6, w2.y + 7, 13, 12);
         ctx.fillStyle = "#cabd72";
         ctx.fillRect(w2.x + 8, w2.y + 9, 9, 8);
+        ctx.fillStyle = "rgba(72,52,34,0.72)";
+        ctx.fillRect(w2.x + 12, w2.y + 9, 1, 8);
+        ctx.fillRect(w2.x + 8, w2.y + 12, 9, 1);
         ctx.fillStyle = "rgba(255,255,255,0.12)";
         ctx.fillRect(w2.x + 9, w2.y + 10, 7, 2);
       }
@@ -924,6 +966,19 @@ const html = String.raw`<!DOCTYPE html>
         ctx.fill();
         ctx.fillStyle = "#5a3d28";
         ctx.fillRect(p.x + 13, p.y + 16, 6, 10);
+      }
+
+      const variantPulse = 0.07 + (t.variantSeed % 4) * 0.02;
+      if (t.toneShift > 0) {
+        ctx.fillStyle = "rgba(190,225,168," + variantPulse.toFixed(3) + ")";
+      } else {
+        ctx.fillStyle = "rgba(34,63,41," + (variantPulse + 0.02).toFixed(3) + ")";
+      }
+      ctx.fillRect(drawX + 2, drawY + 2, drawW - 4, drawH - 7);
+
+      if (t.variantSeed <= 2) {
+        ctx.fillStyle = "rgba(120,92,62,0.22)";
+        ctx.fillRect(p.x + 14, p.y + 18, 4, 11);
       }
     }
 
@@ -961,60 +1016,64 @@ const html = String.raw`<!DOCTYPE html>
 
       ctx.fillStyle = palette.boots;
       if (facing === "left" || facing === "right") {
-        ctx.fillRect(bx + s(4), by + s(21), s(4), s(6));
-        ctx.fillRect(bx + s(9), by + s(21), s(4), s(6));
+        ctx.fillRect(bx + s(4), by + s(22), s(4), s(6));
+        ctx.fillRect(bx + s(10), by + s(22), s(4), s(6));
       } else {
-        ctx.fillRect(bx + s(3), by + s(21), s(4), s(6));
-        ctx.fillRect(bx + s(9), by + s(21), s(4), s(6));
+        ctx.fillRect(bx + s(3), by + s(22), s(4), s(6));
+        ctx.fillRect(bx + s(10), by + s(22), s(4), s(6));
       }
 
       ctx.fillStyle = palette.tunic;
-      ctx.fillRect(bx + s(2), by + s(12), s(12), s(10));
+      ctx.fillRect(bx + s(2), by + s(11), s(13), s(12));
       ctx.fillStyle = palette.tunicShade;
-      ctx.fillRect(bx + s(2), by + s(19), s(12), s(3));
+      ctx.fillRect(bx + s(2), by + s(20), s(13), s(3));
 
       if (facing === "up") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + s(1), by + s(13), s(14), s(8));
+        ctx.fillRect(bx + s(1), by + s(12), s(15), s(9));
       } else if (facing === "left") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + s(1), by + s(13), s(3), s(8));
+        ctx.fillRect(bx + s(1), by + s(12), s(4), s(9));
       } else if (facing === "right") {
         ctx.fillStyle = palette.cloak;
-        ctx.fillRect(bx + s(12), by + s(13), s(3), s(8));
+        ctx.fillRect(bx + s(12), by + s(12), s(4), s(9));
       }
 
       ctx.fillStyle = palette.skin;
       if (facing === "left") {
-        ctx.fillRect(bx + s(2), by + s(5), s(8), s(8));
+        ctx.fillRect(bx + s(2), by + s(4), s(9), s(9));
       } else if (facing === "right") {
-        ctx.fillRect(bx + s(6), by + s(5), s(8), s(8));
+        ctx.fillRect(bx + s(6), by + s(4), s(9), s(9));
       } else {
-        ctx.fillRect(bx + s(4), by + s(4), s(8), s(8));
+        ctx.fillRect(bx + s(4), by + s(3), s(9), s(9));
       }
       ctx.fillStyle = palette.skinShade;
       if (facing === "up") {
-        ctx.fillRect(bx + s(4), by + s(9), s(8), s(3));
+        ctx.fillRect(bx + s(4), by + s(10), s(9), s(3));
       } else if (facing === "left") {
-        ctx.fillRect(bx + s(2), by + s(10), s(8), s(2));
+        ctx.fillRect(bx + s(2), by + s(11), s(9), s(2));
       } else if (facing === "right") {
-        ctx.fillRect(bx + s(6), by + s(10), s(8), s(2));
+        ctx.fillRect(bx + s(6), by + s(11), s(9), s(2));
       } else {
-        ctx.fillRect(bx + s(4), by + s(10), s(8), s(2));
+        ctx.fillRect(bx + s(4), by + s(11), s(9), s(2));
       }
 
       ctx.fillStyle = palette.hair;
       if (facing === "up") {
-        ctx.fillRect(bx + s(3), by + s(3), s(10), s(5));
+        ctx.fillRect(bx + s(3), by + s(2), s(11), s(5));
       } else if (facing === "left") {
-        ctx.fillRect(bx + s(2), by + s(4), s(7), s(4));
+        ctx.fillRect(bx + s(2), by + s(3), s(8), s(5));
       } else if (facing === "right") {
-        ctx.fillRect(bx + s(7), by + s(4), s(7), s(4));
+        ctx.fillRect(bx + s(7), by + s(3), s(8), s(5));
       } else {
-        ctx.fillRect(bx + s(3), by + s(3), s(10), s(4));
+        ctx.fillRect(bx + s(3), by + s(2), s(11), s(4));
       }
       ctx.fillStyle = palette.hairShade;
-      ctx.fillRect(bx + s(4), by + s(7), s(8), unit);
+      ctx.fillRect(bx + s(4), by + s(7), s(9), unit);
+
+      ctx.strokeStyle = "rgba(12,20,30,0.65)";
+      ctx.lineWidth = Math.max(1, Math.round(scale * 0.9));
+      ctx.strokeRect(bx + s(2), by + s(3), s(13), s(20));
 
       if (facing === "down") {
         ctx.fillStyle = "#1b1e28";
@@ -1056,15 +1115,15 @@ const html = String.raw`<!DOCTYPE html>
       const by = anchorY + s(9) + gait;
 
       ctx.fillStyle = "#8f98a5";
-      ctx.fillRect(bx + s(4), by + s(5), s(15), s(8));
+      ctx.fillRect(bx + s(3), by + s(4), s(16), s(9));
       ctx.fillStyle = "#757e89";
-      ctx.fillRect(bx + s(5), by + s(5), s(14), s(3));
+      ctx.fillRect(bx + s(4), by + s(4), s(15), s(3));
 
       const headOffset = facing === "right" ? s(18) : 0;
       ctx.fillStyle = "#909aa9";
-      ctx.fillRect(bx + headOffset, by + s(2), s(8), s(6));
+      ctx.fillRect(bx + headOffset, by + s(1), s(9), s(7));
       ctx.fillStyle = "#6f7783";
-      ctx.fillRect(bx + headOffset + (facing === "right" ? s(4) : 0), by + s(6), s(4), s(2));
+      ctx.fillRect(bx + headOffset + (facing === "right" ? s(5) : 0), by + s(6), s(4), s(2));
       ctx.fillStyle = "#9fa8b4";
       ctx.fillRect(bx + headOffset + s(1), by, s(2), s(3));
       ctx.fillRect(bx + headOffset + s(5), by, s(2), s(3));
@@ -1076,6 +1135,8 @@ const html = String.raw`<!DOCTYPE html>
       ctx.fillStyle = "#747d88";
       ctx.fillRect(bx + s(6), by + s(13), s(3), s(6));
       ctx.fillRect(bx + s(14), by + s(13), s(3), s(6));
+      ctx.fillStyle = "rgba(16,20,27,0.42)";
+      ctx.strokeRect(bx + s(3), by + s(1), s(23), s(18));
 
       ctx.fillStyle = "rgba(0,0,0,0.45)";
       ctx.fillRect(p.x + 2, p.y - 10, Math.max(22, s(22)), 4);
@@ -1178,14 +1239,14 @@ const html = String.raw`<!DOCTYPE html>
         npc.facing,
         npc.palette,
         Math.abs(player.targetX - npc.x) + Math.abs(player.targetY - npc.y) <= 5 ? npc.name : "",
-        1.34
+        1.5
       );
 
       // wolf
       {
         const sx = wolf.px / TILE;
         const sy = wolf.py / TILE;
-        drawWolfSprite(sx, sy, wolf.facing, 1.36);
+        drawWolfSprite(sx, sy, wolf.facing, 1.52);
       }
 
       const playerPalette = {
@@ -1203,7 +1264,7 @@ const html = String.raw`<!DOCTYPE html>
       {
         const sx = player.px / TILE;
         const sy = player.py / TILE;
-        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.38);
+        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer", 1.58);
       }
 
       // subtle atmospheric tint
@@ -1226,6 +1287,18 @@ const html = String.raw`<!DOCTYPE html>
       edgeFade.addColorStop(1, "rgba(2,7,12,0.44)");
       ctx.fillStyle = edgeFade;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const leftFog = ctx.createLinearGradient(0, 0, canvas.width * 0.2, 0);
+      leftFog.addColorStop(0, "rgba(4,10,16,0.35)");
+      leftFog.addColorStop(1, "rgba(4,10,16,0)");
+      ctx.fillStyle = leftFog;
+      ctx.fillRect(0, 0, canvas.width * 0.2, canvas.height);
+
+      const rightFog = ctx.createLinearGradient(canvas.width, 0, canvas.width * 0.8, 0);
+      rightFog.addColorStop(0, "rgba(4,10,16,0.35)");
+      rightFog.addColorStop(1, "rgba(4,10,16,0)");
+      ctx.fillStyle = rightFog;
+      ctx.fillRect(canvas.width * 0.8, 0, canvas.width * 0.2, canvas.height);
     }
 
     function update(dt, now) {
