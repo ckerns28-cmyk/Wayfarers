@@ -506,9 +506,9 @@ const html = String.raw`<!DOCTYPE html>
       objectiveText.textContent = "Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.";
 
       hud.textContent =
-        "Move: WASD / Arrows\\n" +
-        "Interact: Click Edrin Vale\\n" +
-        "Combat: Avoid or approach the wolf\\n" +
+        "Move: WASD / Arrows\n" +
+        "Interact: Click Edrin Vale\n" +
+        "Combat: Avoid or approach the wolf\n" +
         "Zone: " + currentZoneName();
     }
 
