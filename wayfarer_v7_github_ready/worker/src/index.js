@@ -66,12 +66,13 @@ const html = String.raw`<!DOCTYPE html>
     #sidebar {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       min-width: 0;
     }
 
     #brand, #stats, #objective, #logPanel {
-      padding: 18px;
+      padding: 16px 18px;
+      border: 1px solid rgba(255,255,255,0.04);
     }
 
     h1 {
@@ -98,9 +99,10 @@ const html = String.raw`<!DOCTYPE html>
     .stats {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 10px 12px;
+      gap: 12px 12px;
       align-items: center;
-      font-size: 15px;
+      font-size: 14px;
+      line-height: 1.3;
     }
 
     .muted { color: var(--muted); }
@@ -114,8 +116,9 @@ const html = String.raw`<!DOCTYPE html>
       overflow: auto;
       white-space: pre-line;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 13px;
-      line-height: 1.42;
+      font-size: 12px;
+      line-height: 1.55;
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
     #gamePanel {
@@ -137,15 +140,18 @@ const html = String.raw`<!DOCTYPE html>
       position: absolute;
       top: 16px;
       left: 16px;
-      background: rgba(0,0,0,0.34);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 10px 12px;
+      background: rgba(8,13,20,0.86);
+      border: 1px solid rgba(166,200,255,0.28);
+      border-radius: 10px;
+      padding: 12px 14px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 12px;
+      line-height: 1.6;
+      letter-spacing: 0.2px;
       pointer-events: none;
       white-space: pre-line;
+      max-width: 320px;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.5);
     }
 
     #dialogue {
@@ -154,11 +160,11 @@ const html = String.raw`<!DOCTYPE html>
       right: 24px;
       bottom: 24px;
       background: rgba(9, 11, 17, 0.97);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 18px;
-      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 12px;
+      padding: 14px 16px 12px;
       display: none;
-      box-shadow: 0 16px 44px rgba(0,0,0,0.42);
+      box-shadow: 0 16px 44px rgba(0,0,0,0.42), inset 0 0 0 2px rgba(83,100,138,0.4);
     }
 
     #dialogueName {
@@ -169,7 +175,7 @@ const html = String.raw`<!DOCTYPE html>
 
     #dialogueText {
       white-space: pre-line;
-      line-height: 1.48;
+      line-height: 1.56;
       min-height: 72px;
     }
 
@@ -460,8 +466,17 @@ const html = String.raw`<!DOCTYPE html>
       x: 21,
       y: 12,
       name: "Edrin Vale",
-      color: "#6f58df",
-      scale: 0.93
+      facing: "down",
+      palette: {
+        skin: "#d9c2a1",
+        skinShade: "#b89c7e",
+        hair: "#dbe6f8",
+        hairShade: "#8f9bb2",
+        tunic: "#5f4db1",
+        tunicShade: "#46378d",
+        cloak: "#3f2f72",
+        boots: "#35261d"
+      }
     };
 
     const wolf = {
@@ -476,7 +491,8 @@ const html = String.raw`<!DOCTYPE html>
       homeX: 31,
       homeY: 13,
       roam: 3,
-      speed: 110
+      speed: 110,
+      facing: "left"
     };
 
     let lastWolfDecision = 0;
@@ -538,10 +554,10 @@ const html = String.raw`<!DOCTYPE html>
       objectiveText.textContent = "Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.";
 
       hud.textContent =
-        "Move: WASD / Arrows\n" +
-        "Interact: Click Edrin Vale\n" +
-        "Combat: Avoid or approach the wolf\n" +
-        "Zone: " + currentZoneName();
+        "WASD / Arrows : Move\n" +
+        "Click Edrin Vale : Talk\n" +
+        "Wolf nearby : Keep distance\n" +
+        "Current Zone : " + currentZoneName();
     }
 
     function canMoveTo(x, y) {
@@ -688,6 +704,7 @@ const html = String.raw`<!DOCTYPE html>
         if (Math.abs(dx) >= Math.abs(dy) && canWolfMoveTo(optionA.x, optionA.y)) {
           wolf.targetX = optionA.x;
           wolf.targetY = optionA.y;
+          if (stepX !== 0) wolf.facing = stepX > 0 ? "right" : "left";
         } else if (canWolfMoveTo(optionB.x, optionB.y)) {
           wolf.targetX = optionB.x;
           wolf.targetY = optionB.y;
@@ -698,6 +715,7 @@ const html = String.raw`<!DOCTYPE html>
 
         if (Math.abs(wolf.targetX - wolf.homeX) > wolf.roam && canWolfMoveTo(wolf.targetX + backX, wolf.targetY)) {
           wolf.targetX += backX;
+          if (backX !== 0) wolf.facing = backX > 0 ? "right" : "left";
         }
         if (Math.abs(wolf.targetY - wolf.homeY) > wolf.roam && canWolfMoveTo(wolf.targetX, wolf.targetY + backY)) {
           wolf.targetY += backY;
@@ -876,11 +894,151 @@ const html = String.raw`<!DOCTYPE html>
 
     function drawZoneLabel(text, tx, ty) {
       const p = tileToScreen(tx, ty);
-      ctx.fillStyle = "rgba(0,0,0,0.42)";
-      ctx.fillRect(p.x - 2, p.y - 16, text.length * 7 + 10, 18);
-      ctx.fillStyle = "#eef2f7";
-      ctx.font = "bold 12px monospace";
-      ctx.fillText(text, p.x + 3, p.y - 3);
+      const nearPlayer = Math.abs(player.targetX - tx) + Math.abs(player.targetY - ty) <= 3;
+      const width = text.length * 7 + 12;
+      const labelY = nearPlayer ? p.y - 34 : p.y - 18;
+      ctx.fillStyle = "rgba(7,11,18,0.85)";
+      ctx.fillRect(p.x - 3, labelY - 13, width, 16);
+      ctx.strokeStyle = "rgba(204,216,236,0.62)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(p.x - 3.5, labelY - 13.5, width, 16);
+      ctx.fillStyle = "#eff4ff";
+      ctx.font = "bold 11px monospace";
+      ctx.fillText(text, p.x + 2, labelY - 1);
+    }
+
+    function drawHumanoidSprite(tileX, tileY, facing, palette, label) {
+      const p = tileToScreen(tileX, tileY);
+      const t = performance.now();
+      const idleBob = Math.round(Math.sin(t / 420) * 1.2);
+
+      ctx.fillStyle = "rgba(0,0,0,0.24)";
+      ctx.beginPath();
+      ctx.ellipse(p.x + 16, p.y + 29, 8, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const bx = p.x + 7;
+      const by = p.y + 4 + idleBob;
+
+      ctx.fillStyle = palette.boots;
+      if (facing === "left" || facing === "right") {
+        ctx.fillRect(bx + 4, by + 21, 4, 6);
+        ctx.fillRect(bx + 9, by + 21, 4, 6);
+      } else {
+        ctx.fillRect(bx + 3, by + 21, 4, 6);
+        ctx.fillRect(bx + 9, by + 21, 4, 6);
+      }
+
+      ctx.fillStyle = palette.tunic;
+      ctx.fillRect(bx + 2, by + 12, 12, 10);
+      ctx.fillStyle = palette.tunicShade;
+      ctx.fillRect(bx + 2, by + 19, 12, 3);
+
+      if (facing === "up") {
+        ctx.fillStyle = palette.cloak;
+        ctx.fillRect(bx + 1, by + 13, 14, 8);
+      } else if (facing === "left") {
+        ctx.fillStyle = palette.cloak;
+        ctx.fillRect(bx + 1, by + 13, 3, 8);
+      } else if (facing === "right") {
+        ctx.fillStyle = palette.cloak;
+        ctx.fillRect(bx + 12, by + 13, 3, 8);
+      }
+
+      ctx.fillStyle = palette.skin;
+      if (facing === "left") {
+        ctx.fillRect(bx + 2, by + 5, 8, 8);
+      } else if (facing === "right") {
+        ctx.fillRect(bx + 6, by + 5, 8, 8);
+      } else {
+        ctx.fillRect(bx + 4, by + 4, 8, 8);
+      }
+      ctx.fillStyle = palette.skinShade;
+      if (facing === "up") {
+        ctx.fillRect(bx + 4, by + 9, 8, 3);
+      } else if (facing === "left") {
+        ctx.fillRect(bx + 2, by + 10, 8, 2);
+      } else if (facing === "right") {
+        ctx.fillRect(bx + 6, by + 10, 8, 2);
+      } else {
+        ctx.fillRect(bx + 4, by + 10, 8, 2);
+      }
+
+      ctx.fillStyle = palette.hair;
+      if (facing === "up") {
+        ctx.fillRect(bx + 3, by + 3, 10, 5);
+      } else if (facing === "left") {
+        ctx.fillRect(bx + 2, by + 4, 7, 4);
+      } else if (facing === "right") {
+        ctx.fillRect(bx + 7, by + 4, 7, 4);
+      } else {
+        ctx.fillRect(bx + 3, by + 3, 10, 4);
+      }
+      ctx.fillStyle = palette.hairShade;
+      ctx.fillRect(bx + 4, by + 7, 8, 1);
+
+      if (facing === "down") {
+        ctx.fillStyle = "#1b1e28";
+        ctx.fillRect(bx + 6, by + 8, 1, 1);
+        ctx.fillRect(bx + 9, by + 8, 1, 1);
+      } else if (facing === "left") {
+        ctx.fillStyle = "#1b1e28";
+        ctx.fillRect(bx + 4, by + 8, 1, 1);
+      } else if (facing === "right") {
+        ctx.fillStyle = "#1b1e28";
+        ctx.fillRect(bx + 11, by + 8, 1, 1);
+      }
+
+      if (label) {
+        ctx.fillStyle = "rgba(7,11,18,0.86)";
+        ctx.fillRect(p.x - 12, p.y - 20, Math.max(56, label.length * 7 + 8), 14);
+        ctx.strokeStyle = "rgba(213,224,242,0.45)";
+        ctx.strokeRect(p.x - 12.5, p.y - 20.5, Math.max(56, label.length * 7 + 8), 14);
+        ctx.fillStyle = "#f5f8ff";
+        ctx.font = "bold 11px monospace";
+        ctx.fillText(label, p.x - 8, p.y - 10);
+      }
+    }
+
+    function drawWolfSprite(tileX, tileY, facing) {
+      const p = tileToScreen(tileX, tileY);
+      const t = performance.now();
+      const gait = Math.round(Math.sin(t / 220) * 1.2);
+
+      ctx.fillStyle = "rgba(0,0,0,0.2)";
+      ctx.beginPath();
+      ctx.ellipse(p.x + 16, p.y + 28, 10, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const bx = p.x + 5;
+      const by = p.y + 9 + gait;
+
+      ctx.fillStyle = "#8f98a5";
+      ctx.fillRect(bx + 4, by + 5, 15, 8);
+      ctx.fillStyle = "#757e89";
+      ctx.fillRect(bx + 5, by + 5, 14, 3);
+
+      const headOffset = facing === "right" ? 18 : 0;
+      ctx.fillStyle = "#909aa9";
+      ctx.fillRect(bx + headOffset, by + 2, 8, 6);
+      ctx.fillStyle = "#6f7783";
+      ctx.fillRect(bx + headOffset + (facing === "right" ? 4 : 0), by + 6, 4, 2);
+      ctx.fillStyle = "#9fa8b4";
+      ctx.fillRect(bx + headOffset + 1, by, 2, 3);
+      ctx.fillRect(bx + headOffset + 5, by, 2, 3);
+
+      ctx.fillStyle = "#7f8995";
+      if (facing === "right") ctx.fillRect(bx + 1, by + 7, 5, 2);
+      else ctx.fillRect(bx + 18, by + 7, 5, 2);
+
+      ctx.fillStyle = "#747d88";
+      ctx.fillRect(bx + 6, by + 13, 3, 6);
+      ctx.fillRect(bx + 14, by + 13, 3, 6);
+
+      ctx.fillStyle = "rgba(0,0,0,0.45)";
+      ctx.fillRect(p.x + 4, p.y - 8, 22, 4);
+      ctx.fillStyle = "#92de76";
+      ctx.fillRect(p.x + 4, p.y - 8, 22 * (wolf.hp / wolf.maxHp), 4);
     }
 
     function drawWorld() {
@@ -959,84 +1117,37 @@ const html = String.raw`<!DOCTYPE html>
       if (zoneName === "Forest Edge") drawZoneLabel("Forest Edge", 30, 4);
 
       // NPC
-      {
-        const p = tileToScreen(npc.x, npc.y);
-        ctx.fillStyle = "rgba(0,0,0,0.22)";
-        ctx.beginPath();
-        ctx.ellipse(p.x + 16, p.y + 29, 8, 4, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "#e1e4ee";
-        ctx.fillRect(p.x + 10, p.y + 2, 12, 10);
-        ctx.fillStyle = npc.color;
-        ctx.fillRect(p.x + 8, p.y + 12, 16, 17);
-        ctx.fillStyle = "#4a2f78";
-        ctx.fillRect(p.x + 8, p.y + 25, 16, 4);
-
-        if (Math.abs(player.targetX - npc.x) + Math.abs(player.targetY - npc.y) <= 5) {
-          ctx.fillStyle = "rgba(0,0,0,0.55)";
-          ctx.fillRect(p.x - 14, p.y - 16, 78, 14);
-          ctx.fillStyle = "#ffffff";
-          ctx.font = "bold 11px monospace";
-          ctx.fillText(npc.name, p.x - 10, p.y - 5);
-        }
-      }
+      drawHumanoidSprite(
+        npc.x,
+        npc.y,
+        npc.facing,
+        npc.palette,
+        Math.abs(player.targetX - npc.x) + Math.abs(player.targetY - npc.y) <= 5 ? npc.name : ""
+      );
 
       // wolf
       {
         const sx = wolf.px / TILE;
         const sy = wolf.py / TILE;
-        const p = tileToScreen(sx, sy);
-
-        ctx.fillStyle = "rgba(0,0,0,0.18)";
-        ctx.beginPath();
-        ctx.ellipse(p.x + 16, p.y + 28, 9, 4, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "#8f98a5";
-        ctx.fillRect(p.x + 5, p.y + 12, 18, 9);
-        ctx.fillRect(p.x + 18, p.y + 10, 8, 7);
-        ctx.fillStyle = "#737c88";
-        ctx.fillRect(p.x + 6, p.y + 13, 10, 3);
-        ctx.fillStyle = "#8f98a5";
-        ctx.fillRect(p.x + 8, p.y + 20, 3, 7);
-        ctx.fillRect(p.x + 17, p.y + 20, 3, 7);
-
-        ctx.fillStyle = "rgba(0,0,0,0.45)";
-        ctx.fillRect(p.x + 4, p.y - 8, 22, 4);
-        ctx.fillStyle = "#92de76";
-        ctx.fillRect(p.x + 4, p.y - 8, 22 * (wolf.hp / wolf.maxHp), 4);
+        drawWolfSprite(sx, sy, wolf.facing);
       }
 
-      // player (larger / clearer)
+      const playerPalette = {
+        skin: "#e3c7a4",
+        skinShade: "#c8a887",
+        hair: "#4d3d2f",
+        hairShade: "#2f241b",
+        tunic: "#2f67d2",
+        tunicShade: "#1f4d9c",
+        cloak: "#cad2db",
+        boots: "#5c4028"
+      };
+
+      // player
       {
         const sx = player.px / TILE;
         const sy = player.py / TILE;
-        const p = tileToScreen(sx, sy);
-
-        ctx.fillStyle = "rgba(0,0,0,0.22)";
-        ctx.beginPath();
-        ctx.ellipse(p.x + 16, p.y + 29, 8, 4, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "#e4e9f1";
-        ctx.fillRect(p.x + 10, p.y + 2, 12, 10);
-
-        ctx.fillStyle = "#2f67d2";
-        ctx.fillRect(p.x + 8, p.y + 12, 16, 17);
-
-        ctx.fillStyle = "#5c4028";
-        ctx.fillRect(p.x + 11, p.y + 29, 3, 5);
-        ctx.fillRect(p.x + 18, p.y + 29, 3, 5);
-
-        ctx.fillStyle = "#cad2db";
-        ctx.fillRect(p.x + 4, p.y + 14, 4, 12);
-
-        ctx.fillStyle = "rgba(0,0,0,0.52)";
-        ctx.fillRect(p.x - 10, p.y - 16, 62, 14);
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 11px monospace";
-        ctx.fillText("Wayfarer", p.x - 6, p.y - 5);
+        drawHumanoidSprite(sx, sy, player.facing, playerPalette, "Wayfarer");
       }
 
       // subtle atmospheric tint
