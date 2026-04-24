@@ -363,7 +363,7 @@ const ZONE_EXIT_SPAWNS = Object.freeze({
     southeast_path_exit: { x:26, y:18, w:1, h:5, spawnX:25, spawnY:20 }
   },
   eastern_woods: {
-    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:27, spawnY:12 },
+    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:28, spawnY:12 },
     southwest_path_exit: { x:27, y:18, w:1, h:5, spawnX:29, spawnY:20 }
   }
 });
