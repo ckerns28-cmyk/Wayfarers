@@ -359,11 +359,11 @@ const ZONE_DEFS = {
 };
 const ZONE_EXIT_SPAWNS = Object.freeze({
   hearthvale_square: {
-    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:26, spawnY:12 },
-    southeast_path_exit: { x:26, y:18, w:1, h:5, spawnX:25, spawnY:20 }
+    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:24, spawnY:12 },
+    southeast_path_exit: { x:26, y:18, w:1, h:5, spawnX:24, spawnY:20 }
   },
   eastern_woods: {
-    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:27, spawnY:12 },
+    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:29, spawnY:12 },
     southwest_path_exit: { x:27, y:18, w:1, h:5, spawnX:29, spawnY:20 }
   }
 });
@@ -384,7 +384,7 @@ const ZONE_TRANSITIONS = ZONE_TRANSITION_PAIRS.map((pair)=>{
     sourceExitId: pair.sourceExitId,
     destinationZone: pair.destinationZone,
     destinationSpawnId: pair.destinationSpawnId,
-    preserveAxis: pair.sourceExitId==="east_road_exit" || pair.sourceExitId==="west_road_entrance" ? "y" : null,
+    preserveAxis: "y",
     trigger:{ x:source.x, y:source.y, w:source.w, h:source.h },
     arrival:{ x:destination.spawnX, y:destination.spawnY }
   };
@@ -396,12 +396,16 @@ const TRANSITION_SAFE_BUFFERS = Object.freeze({
 let currentZoneId = "hearthvale_square";
 const ZONE_TRANSITION_DEBOUNCE_MS = 1000;
 let nextZoneTransitionAt = 0;
+const ZONE_TRANSITION_PAIR_COOLDOWN_MS = 1000;
 const ZONE_TRANSITION_LOCK_MS = 200;
 let zoneTransitionLockedUntil = 0;
-const ZONE_TRANSITION_INPUT_SUPPRESS_MS = 200;
+const ZONE_TRANSITION_INPUT_SUPPRESS_MS = 300;
 const DIRECTION_KEYS = Object.freeze(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"]);
 let movementSuppressedUntil = 0;
-let requireDirectionKeyRelease = false;
+let requireFreshDirectionalKeydown = false;
+let blockedDirectionalKeysUntilRelease = new Set();
+const transitionPairCooldownUntil = new Map();
+let blockedReturnTransition = null;
 const ZONE_TRANSITION_HOSTILE_GRACE_MS = 1500;
 let hostileAggroBlockedUntil = 0;
 let lastLoggedZoneEntryId = currentZoneId;
@@ -1627,6 +1631,11 @@ function loadGame(){
     setPlayerTilePosition(loadedX, loadedY);
     nextZoneTransitionAt=performance.now()+ZONE_TRANSITION_DEBOUNCE_MS;
     zoneTransitionLockedUntil=0;
+    movementSuppressedUntil=0;
+    requireFreshDirectionalKeydown=false;
+    blockedDirectionalKeysUntilRelease.clear();
+    transitionPairCooldownUntil.clear();
+    blockedReturnTransition=null;
     hostileAggroBlockedUntil=0;
     lastLoggedZoneEntryId=currentZoneId;
     player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
@@ -1783,10 +1792,17 @@ function isEasternWoodsActive(){
 }
 
 function findZoneTransitionAt(x,y){
-  return ZONE_TRANSITIONS.find((transition)=>
+  const transition=ZONE_TRANSITIONS.find((transition)=>
     transition.sourceZone===currentZoneId &&
     isWithinRect(x,y,transition.trigger)
   ) || null;
+  if(!transition) return null;
+  if(blockedReturnTransition &&
+    blockedReturnTransition.zoneId===transition.sourceZone &&
+    blockedReturnTransition.exitId===transition.sourceExitId){
+    return null;
+  }
+  return transition;
 }
 
 function setPlayerTilePosition(x,y){
@@ -1803,6 +1819,34 @@ function clearDirectionalInput(){
 
 function isDirectionalInputHeld(){
   return DIRECTION_KEYS.some((key)=>keys.has(key));
+}
+
+function getTransitionPairKey(transition){
+  return transition.sourceZone + ":" + transition.sourceExitId + "->" + transition.destinationZone + ":" + transition.destinationSpawnId;
+}
+
+function getReverseTransition(transition){
+  return ZONE_TRANSITIONS.find((candidate)=>
+    candidate.sourceZone===transition.destinationZone &&
+    candidate.destinationZone===transition.sourceZone &&
+    candidate.sourceExitId===transition.destinationSpawnId &&
+    candidate.destinationSpawnId===transition.sourceExitId
+  ) || null;
+}
+
+function updateBlockedReturnTransitionState(){
+  if(!blockedReturnTransition || blockedReturnTransition.zoneId!==currentZoneId) return;
+  const transition=ZONE_TRANSITIONS.find((candidate)=>
+    candidate.sourceZone===blockedReturnTransition.zoneId &&
+    candidate.sourceExitId===blockedReturnTransition.exitId
+  );
+  if(!transition){
+    blockedReturnTransition=null;
+    return;
+  }
+  if(!isWithinRect(player.targetX, player.targetY, transition.trigger)){
+    blockedReturnTransition=null;
+  }
 }
 
 function resolveTransitionArrival(transition, fromX, fromY){
@@ -1831,8 +1875,9 @@ function handleZoneTransitionIfNeeded(){
   if(now<nextZoneTransitionAt) return false;
   const transition=findZoneTransitionAt(player.targetX, player.targetY);
   if(!transition) return false;
-  const sourceZoneName=getCurrentZoneName();
-  const destinationZoneName=getZoneDefinition(transition.destinationZone).name;
+  const pairKey=getTransitionPairKey(transition);
+  const pairCooldownUntil=transitionPairCooldownUntil.get(pairKey) || 0;
+  if(now<pairCooldownUntil) return false;
   const preservedFacing=transition.sourceExitId==="east_road_exit"
     ? "right"
     : transition.sourceExitId==="west_road_entrance"
@@ -1843,9 +1888,24 @@ function handleZoneTransitionIfNeeded(){
     console.error("Invalid transition spawn.");
     return false;
   }
+  const destinationTrigger=ZONE_EXIT_SPAWNS[transition.destinationZone]?.[transition.destinationSpawnId];
+  if(!destinationTrigger){
+    console.error("Missing destination trigger for transition.", transition);
+    return false;
+  }
   currentZoneId=transition.destinationZone;
   const arrivalX=arrival.x;
   const arrivalY=arrival.y;
+  const overlapAfterSpawn=isWithinRect(arrivalX, arrivalY, destinationTrigger);
+  console.info(
+    "[ZoneTransition] Spawn=(" + arrivalX + "," + arrivalY + ")" +
+    " Trigger=(" + destinationTrigger.x + "," + destinationTrigger.y + "," + destinationTrigger.w + "," + destinationTrigger.h + ")" +
+    " Overlap=" + overlapAfterSpawn
+  );
+  if(overlapAfterSpawn){
+    console.error("[ZoneTransition] BUG: Spawn overlaps destination trigger.", transition);
+  }
+  blockedDirectionalKeysUntilRelease=new Set(DIRECTION_KEYS.filter((key)=>keys.has(key)));
   clearDirectionalInput();
   setPlayerTilePosition(arrivalX, arrivalY);
   player.moving=false;
@@ -1853,17 +1913,17 @@ function handleZoneTransitionIfNeeded(){
   nextZoneTransitionAt=now+ZONE_TRANSITION_DEBOUNCE_MS;
   zoneTransitionLockedUntil=now+ZONE_TRANSITION_LOCK_MS;
   movementSuppressedUntil=now+ZONE_TRANSITION_INPUT_SUPPRESS_MS;
-  requireDirectionKeyRelease=true;
+  requireFreshDirectionalKeydown=true;
   hostileAggroBlockedUntil=now+ZONE_TRANSITION_HOSTILE_GRACE_MS;
-  const transitionSummary="Transition: " + sourceZoneName + " \u2192 " + destinationZoneName;
-  const transitionSpawnDetails="Spawn: " + transition.destinationSpawnId;
-  const transitionPlayerDetails="Player: x=" + player.targetX + " y=" + player.targetY;
-  log(transitionSummary);
-  log(transitionSpawnDetails);
-  log(transitionPlayerDetails);
-  console.info(transitionSummary);
-  console.info(transitionSpawnDetails);
-  console.info(transitionPlayerDetails);
+  transitionPairCooldownUntil.set(pairKey, now+ZONE_TRANSITION_PAIR_COOLDOWN_MS);
+  const reverseTransition=getReverseTransition(transition);
+  if(reverseTransition){
+    const reversePairKey=getTransitionPairKey(reverseTransition);
+    transitionPairCooldownUntil.set(reversePairKey, now+ZONE_TRANSITION_PAIR_COOLDOWN_MS);
+    blockedReturnTransition={ zoneId:reverseTransition.sourceZone, exitId:reverseTransition.sourceExitId };
+  } else {
+    blockedReturnTransition=null;
+  }
   if(lastLoggedZoneEntryId!==currentZoneId){
     log("Entered " + getCurrentZoneName() + ".");
     lastLoggedZoneEntryId=currentZoneId;
@@ -1914,6 +1974,11 @@ function respawnPlayerAtSquare(){
   setPlayerTilePosition(18, 11);
   nextZoneTransitionAt=performance.now()+ZONE_TRANSITION_DEBOUNCE_MS;
   zoneTransitionLockedUntil=0;
+  movementSuppressedUntil=0;
+  requireFreshDirectionalKeydown=false;
+  blockedDirectionalKeysUntilRelease.clear();
+  transitionPairCooldownUntil.clear();
+  blockedReturnTransition=null;
   hostileAggroBlockedUntil=0;
   lastLoggedZoneEntryId=currentZoneId;
 }
@@ -2019,7 +2084,11 @@ let showGrid=false;
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
   if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","h","k","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
-  if(requireDirectionKeyRelease && DIRECTION_KEYS.includes(k)) return;
+  if(DIRECTION_KEYS.includes(k)){
+    if(performance.now()<movementSuppressedUntil) return;
+    if(blockedDirectionalKeysUntilRelease.has(k)) return;
+    if(requireFreshDirectionalKeydown) requireFreshDirectionalKeydown=false;
+  }
   if(k==="g") showGrid=!showGrid;
   if(k==="e") interactionManager.tryInteract();
   if(k==="h") useHealingConsumable();
@@ -2030,8 +2099,8 @@ addEventListener("keydown",(e)=>{
 addEventListener("keyup",(e)=>{
   const k=e.key.toLowerCase();
   keys.delete(k);
-  if(requireDirectionKeyRelease && DIRECTION_KEYS.includes(k) && !isDirectionalInputHeld()){
-    requireDirectionKeyRelease=false;
+  if(DIRECTION_KEYS.includes(k)){
+    blockedDirectionalKeysUntilRelease.delete(k);
   }
   if(k===" "||k==="space") missNoticeArmed=true;
 });
@@ -2089,13 +2158,10 @@ function updateInput(){
     moveIntent.dy=0;
     return;
   }
-  if(requireDirectionKeyRelease){
-    if(isDirectionalInputHeld()){
-      moveIntent.dx=0;
-      moveIntent.dy=0;
-      return;
-    }
-    requireDirectionKeyRelease=false;
+  if(requireFreshDirectionalKeydown){
+    moveIntent.dx=0;
+    moveIntent.dy=0;
+    return;
   }
   if(keys.has("w")||keys.has("arrowup")) tryPlayerStep(0,-1,"up");
   else if(keys.has("s")||keys.has("arrowdown")) tryPlayerStep(0,1,"down");
@@ -2479,6 +2545,7 @@ function update(dt,now){
   });
   if(now<hitStopUntil){ updateSidebar(); return; }
   eventSystem.update(currentLocalAreaName());
+  updateBlockedReturnTransitionState();
   const isTransitionLocked=now<zoneTransitionLockedUntil;
   if(!isTransitionLocked) updateInput();
   tryPlayerAttack(now);
