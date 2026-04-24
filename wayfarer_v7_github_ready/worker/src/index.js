@@ -801,13 +801,20 @@ world.zones.push(
 
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
-const wolf={x:31,y:13,px:31*TILE,py:13*TILE,targetX:31,targetY:13,hp:22,maxHp:22,homeX:31,homeY:13,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
+const WOLF_SPAWNS=[{id:1,x:31,y:13},{id:2,x:28,y:16},{id:3,x:33,y:16}];
+function createWolf(spawn){
+  return {id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:22,maxHp:22,homeX:spawn.x,homeY:spawn.y,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
+}
+const wolves=WOLF_SPAWNS.map(createWolf);
 
-let lastWolfDecision=0,lastWolfAttack=0,lastPlayerAttack=0,wolfRespawnAt=0,hitStopUntil=0,lastNoTargetLogAt=0;
+let lastPlayerAttack=0,hitStopUntil=0,lastNoTargetLogAt=0;
+const lastWolfDecisionAt={};
+const lastWolfAttackAt={};
+const wolfRespawnAtById={};
 let missNoticeArmed=true;
 const PLAYER_ATTACK_RANGE=1;
 const WOLF_ATTACK_COOLDOWN_MS=1800;
-const WOLF_RESPAWN_MS=12000;
+const WOLF_RESPAWN_MS=15000;
 const BASE_PLAYER_DAMAGE=6;
 
 function randomInt(min,max){ return min + Math.floor(Math.random() * (max-min+1)); }
@@ -1125,8 +1132,14 @@ function showSaveNotice(message){
 }
 function isFiniteNumber(value){ return typeof value==="number" && Number.isFinite(value); }
 function createSaveData(reason){
+  const wolvesSave=wolves.slice(0, WOLF_SPAWNS.length).map((wolf)=>({
+    id:wolf.id,
+    hp:wolf.hp,
+    defeated:wolf.defeated,
+    respawnRemainingMs:Math.max(0, wolfRespawnAtById[wolf.id] ? wolfRespawnAtById[wolf.id]-performance.now() : 0)
+  }));
   return {
-    version:4,
+    version:5,
     reason,
     savedAt:new Date().toISOString(),
     player:{
@@ -1146,17 +1159,13 @@ function createSaveData(reason){
       triggeredEvents:Array.from(worldTriggeredEvents),
       stateChanges:{ pondAwakened:worldEvents.pondAwakened },
       creatures:{
-        wolf:{
-          hp:wolf.hp,
-          defeated:wolf.defeated,
-          respawnRemainingMs:Math.max(0, wolfRespawnAt ? wolfRespawnAt-performance.now() : 0)
-        }
+        wolves:wolvesSave
       }
     }
   };
 }
 function validateSaveData(data){
-  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4)) return false;
+  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -1204,17 +1213,36 @@ function loadGame(){
     worldTriggeredEvents.clear();
     (data.world?.triggeredEvents||[]).forEach((eventName)=>{ if(typeof eventName==="string") worldTriggeredEvents.add(eventName); });
     worldEvents.pondAwakened=Boolean(data.world?.stateChanges?.pondAwakened);
-    const savedWolf=data.world?.creatures?.wolf;
-    if(savedWolf && typeof savedWolf==="object"){
-      wolf.hp=isFiniteNumber(savedWolf.hp) ? Math.max(0,Math.min(wolf.maxHp,savedWolf.hp)) : wolf.hp;
-      wolf.defeated=Boolean(savedWolf.defeated) || wolf.hp<=0;
-      const remaining=isFiniteNumber(savedWolf.respawnRemainingMs)?Math.max(0,savedWolf.respawnRemainingMs):0;
-      wolfRespawnAt=wolf.defeated ? performance.now()+remaining : 0;
-      if(!wolf.defeated && wolf.hp>0){
-        wolf.targetX=wolf.homeX;
-        wolf.targetY=wolf.homeY;
-        wolf.px=wolf.targetX*TILE;
-        wolf.py=wolf.targetY*TILE;
+    wolves.forEach((wolf)=>{
+      wolf.hp=wolf.maxHp;
+      wolf.defeated=false;
+      wolf.targetX=wolf.homeX;
+      wolf.targetY=wolf.homeY;
+      wolf.px=wolf.targetX*TILE;
+      wolf.py=wolf.targetY*TILE;
+      wolfRespawnAtById[wolf.id]=0;
+      lastWolfDecisionAt[wolf.id]=0;
+      lastWolfAttackAt[wolf.id]=0;
+    });
+    const savedWolves=Array.isArray(data.world?.creatures?.wolves) ? data.world.creatures.wolves : null;
+    if(savedWolves){
+      savedWolves.forEach((savedWolf)=>{
+        if(!savedWolf || typeof savedWolf!=="object") return;
+        const wolf=wolves.find((candidate)=>candidate.id===savedWolf.id);
+        if(!wolf) return;
+        wolf.hp=isFiniteNumber(savedWolf.hp) ? Math.max(0,Math.min(wolf.maxHp,savedWolf.hp)) : wolf.hp;
+        wolf.defeated=Boolean(savedWolf.defeated) || wolf.hp<=0;
+        const remaining=isFiniteNumber(savedWolf.respawnRemainingMs)?Math.max(0,savedWolf.respawnRemainingMs):0;
+        wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
+      });
+    } else {
+      const legacyWolf=data.world?.creatures?.wolf;
+      if(legacyWolf && typeof legacyWolf==="object"){
+        const wolf=wolves[0];
+        wolf.hp=isFiniteNumber(legacyWolf.hp) ? Math.max(0,Math.min(wolf.maxHp,legacyWolf.hp)) : wolf.hp;
+        wolf.defeated=Boolean(legacyWolf.defeated) || wolf.hp<=0;
+        const remaining=isFiniteNumber(legacyWolf.respawnRemainingMs)?Math.max(0,legacyWolf.respawnRemainingMs):0;
+        wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
       }
     }
     log("System: Save loaded.");
@@ -1256,13 +1284,16 @@ function getHostileDistance(hostile){
   return Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY);
 }
 
+function hostileLabel(hostile){
+  return hostile ? ("Wolf #" + hostile.id) : "None";
+}
+
 function getNearestHostile(range=Infinity){
-  const hostiles=[{ id:"wolf", name:"Wolf", entity:wolf }];
   let nearest=null;
-  for(const hostile of hostiles){
-    const distance=getHostileDistance(hostile.entity);
+  for(const wolf of wolves){
+    const distance=getHostileDistance(wolf);
     if(distance>range) continue;
-    if(!nearest || distance<nearest.distance) nearest={...hostile,distance};
+    if(!nearest || distance<nearest.distance) nearest={entity:wolf,distance};
   }
   return nearest;
 }
@@ -1315,15 +1346,22 @@ function updateSidebar(){
   equipmentList.innerHTML = "Weapon: " + weaponLine + "<br>Armor: <br>Trinket: ";
   const nearbyHostile=getNearestHostile(5);
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
-  const wolfCooldownMs=Math.max(0, WOLF_ATTACK_COOLDOWN_MS-(performance.now()-lastWolfAttack));
-  const wolfCooldownText=wolf.hp<=0 ? "Down" : (wolfCooldownMs<=0 ? "Ready" : (wolfCooldownMs/1000).toFixed(1)+"s");
+  const targetWolf=targetHostile?.entity || null;
+  const targetCooldownMs=targetWolf ? Math.max(0, WOLF_ATTACK_COOLDOWN_MS-(performance.now()-(lastWolfAttackAt[targetWolf.id]||0))) : 0;
+  const targetCooldownText=!targetWolf ? "N/A" : (targetWolf.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
   hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName +
-    "\nHostile nearby : " + (nearbyHostile ? "Yes (" + nearbyHostile.name + ")" : "No") +
-    "\nCurrent target : " + (targetHostile ? targetHostile.name : "None") +
-    "\nWolf bite cd : " + wolfCooldownText;
+    "\nHostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No") +
+    "\nCurrent target : " + hostileLabel(targetWolf) +
+    "\nTarget bite cd : " + targetCooldownText;
 }
 
-function canMoveTo(x,y){ if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false; if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false; if(x===npc.x&&y===npc.y) return false; if(wolf.hp>0&&x===wolf.targetX&&y===wolf.targetY) return false; return true; }
+function canMoveTo(x,y){
+  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
+  if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
+  if(x===npc.x&&y===npc.y) return false;
+  if(wolves.some((wolf)=>wolf.hp>0&&x===wolf.targetX&&y===wolf.targetY)) return false;
+  return true;
+}
 
 const keys=new Set();
 let showGrid=false;
@@ -1375,42 +1413,53 @@ function updateInput(){
   else if(keys.has("d")||keys.has("arrowright")){ moveIntent.dx=1; moveIntent.facing="right"; }
 }
 
-function canWolfMoveTo(x,y){ if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false; if(world.blocked.has(keyOf(x,y))) return false; if(x===npc.x&&y===npc.y) return false; return true; }
-function updateWolf(now){
+function canWolfMoveTo(x,y,selfId){
+  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
+  if(world.blocked.has(keyOf(x,y))) return false;
+  if(x===npc.x&&y===npc.y) return false;
+  if(wolves.some((wolf)=>wolf.id!==selfId && wolf.hp>0 && wolf.targetX===x && wolf.targetY===y)) return false;
+  return true;
+}
+function updateWolf(wolf,now){
   if(wolf.hp<=0){
-    if(wolfRespawnAt!==0&&now>=wolfRespawnAt){
+    const respawnAt=wolfRespawnAtById[wolf.id]||0;
+    if(respawnAt!==0&&now>=respawnAt){
       wolf.hp=wolf.maxHp;
       wolf.defeated=false;
       wolf.targetX=wolf.homeX; wolf.targetY=wolf.homeY; wolf.px=wolf.targetX*TILE; wolf.py=wolf.targetY*TILE;
-      wolfRespawnAt=0;
-      log("The wolf prowls back into the clearing.");
+      wolfRespawnAtById[wolf.id]=0;
+      log("Wolf #" + wolf.id + " prowls back into the clearing.");
     }
     return;
   }
-  if(now-lastWolfDecision<650) return; lastWolfDecision=now;
+  if(now-(lastWolfDecisionAt[wolf.id]||0)<650) return;
+  lastWolfDecisionAt[wolf.id]=now;
   const dx=player.targetX-wolf.targetX, dy=player.targetY-wolf.targetY, dist=Math.abs(dx)+Math.abs(dy);
   if(dist<=4){
     const sx=dx===0?0:dx>0?1:-1, sy=dy===0?0:dy>0?1:-1;
     const a={x:wolf.targetX+sx,y:wolf.targetY}, b={x:wolf.targetX,y:wolf.targetY+sy};
-    if(Math.abs(dx)>=Math.abs(dy)&&canWolfMoveTo(a.x,a.y)){ wolf.targetX=a.x; wolf.targetY=a.y; if(sx!==0) wolf.facing=sx>0?"right":"left"; }
-    else if(canWolfMoveTo(b.x,b.y)){ wolf.targetY=b.y; if(sy!==0) wolf.facing=sy>0?"down":"up"; }
+    if(Math.abs(dx)>=Math.abs(dy)&&canWolfMoveTo(a.x,a.y,wolf.id)){ wolf.targetX=a.x; wolf.targetY=a.y; if(sx!==0) wolf.facing=sx>0?"right":"left"; }
+    else if(canWolfMoveTo(b.x,b.y,wolf.id)){ wolf.targetY=b.y; if(sy!==0) wolf.facing=sy>0?"down":"up"; }
   } else {
     const backX=wolf.targetX<wolf.homeX?1:wolf.targetX>wolf.homeX?-1:0;
     const backY=wolf.targetY<wolf.homeY?1:wolf.targetY>wolf.homeY?-1:0;
-    if(Math.abs(wolf.targetX-wolf.homeX)>wolf.roam&&canWolfMoveTo(wolf.targetX+backX,wolf.targetY)){ wolf.targetX+=backX; if(backX!==0) wolf.facing=backX>0?"right":"left"; }
-    if(Math.abs(wolf.targetY-wolf.homeY)>wolf.roam&&canWolfMoveTo(wolf.targetX,wolf.targetY+backY)){ wolf.targetY+=backY; if(backY!==0) wolf.facing=backY>0?"down":"up"; }
+    if(Math.abs(wolf.targetX-wolf.homeX)>wolf.roam&&canWolfMoveTo(wolf.targetX+backX,wolf.targetY,wolf.id)){ wolf.targetX+=backX; if(backX!==0) wolf.facing=backX>0?"right":"left"; }
+    if(Math.abs(wolf.targetY-wolf.homeY)>wolf.roam&&canWolfMoveTo(wolf.targetX,wolf.targetY+backY,wolf.id)){ wolf.targetY+=backY; if(backY!==0) wolf.facing=backY>0?"down":"up"; }
   }
 }
 function wolfAttack(now){
-  if(wolf.hp<=0) return;
-  const dist=Math.abs(player.targetX-wolf.targetX)+Math.abs(player.targetY-wolf.targetY);
-  if(dist>1||now-lastWolfAttack<WOLF_ATTACK_COOLDOWN_MS) return;
-  lastWolfAttack=now; wolf.attackUntil=now+350;
-  player.hp=Math.max(0,player.hp-5); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
-  const wx=player.targetX-wolf.targetX, wy=player.targetY-wolf.targetY, len=Math.max(1,Math.hypot(wx,wy));
-  wolf.attackLungeX=(wx/len)*2; wolf.attackLungeY=(wy/len)*1.2; player.recoilX=(wx/len)*2.5; player.recoilY=(wy/len)*1.6;
-  log("Wolf bites you for 5 damage.");
-  if(player.hp<=0) handlePlayerDefeat();
+  for(const wolf of wolves){
+    if(wolf.hp<=0) continue;
+    const dist=Math.abs(player.targetX-wolf.targetX)+Math.abs(player.targetY-wolf.targetY);
+    if(dist>1||now-(lastWolfAttackAt[wolf.id]||0)<WOLF_ATTACK_COOLDOWN_MS) continue;
+    lastWolfAttackAt[wolf.id]=now;
+    wolf.attackUntil=now+350;
+    player.hp=Math.max(0,player.hp-5); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
+    const wx=player.targetX-wolf.targetX, wy=player.targetY-wolf.targetY, len=Math.max(1,Math.hypot(wx,wy));
+    wolf.attackLungeX=(wx/len)*2; wolf.attackLungeY=(wy/len)*1.2; player.recoilX=(wx/len)*2.5; player.recoilY=(wy/len)*1.6;
+    log("Wolf #" + wolf.id + " bites you for 5 damage.");
+    if(player.hp<=0){ handlePlayerDefeat(); break; }
+  }
 }
 function tryPlayerAttack(now){
   if(dialogueSystem.activeSession) return;
@@ -1439,15 +1488,15 @@ function tryPlayerAttack(now){
   targetHostile.entity.recoilX=(tx/len)*2.3;
   targetHostile.entity.recoilY=(ty/len)*1.5;
   hitStopUntil=now+65;
-  log("Hit: " + targetHostile.name + " takes " + totalDamage + " damage.");
+  log("Hit Wolf #" + targetHostile.entity.id + " for " + totalDamage + " damage.");
   if(targetHostile.entity.hp<=0 && !targetHostile.entity.defeated){
     targetHostile.entity.defeated=true;
     player.xp+=12;
     player.coins+=4;
     const lootDrops=rollWolfLoot();
     lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
-    wolfRespawnAt=now+WOLF_RESPAWN_MS;
-    log("Wolf defeated. Rewards: +12 XP, +4 coins.");
+    wolfRespawnAtById[targetHostile.entity.id]=now+WOLF_RESPAWN_MS;
+    log("Wolf #" + targetHostile.entity.id + " defeated. Rewards: +12 XP, +4 coins.");
     if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
     else log("No loot dropped this time.");
   }
@@ -1504,7 +1553,7 @@ function drawHumanoid(sheet, tx, ty, facing, moving, scale, label, hitAlpha, rec
   }
 }
 
-function drawWolf(tx,ty,facing,moving,scale,hitAlpha,recoil){
+function drawWolf(wolf,tx,ty,facing,moving,scale,hitAlpha,recoil){
   const row = ({down:0,left:1,right:2,up:3})[facing] ?? 0;
   const p=tileToScreen(tx,ty);
   const col=!moving?0:((Math.floor(performance.now()/120)%3)+1);
@@ -1634,7 +1683,10 @@ function drawWorld(){
   if(zoneName==="Forest Edge") zoneLabel("Forest Edge",30,4);
 
   drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
-  if(wolf.hp>0) drawWolf(wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+  wolves.forEach((wolf)=>{
+    if(wolf.hp<=0) return;
+    drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+  });
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
 
   const tint=0.08+Math.max(0,Math.sin(performance.now()/9000))*.07;
@@ -1646,12 +1698,16 @@ function drawWorld(){
 
 function update(dt,now){
   player.recoilX*=.8; player.recoilY*=.8; player.attackLungeX*=.74; player.attackLungeY*=.74;
-  wolf.recoilX*=.82; wolf.recoilY*=.82; wolf.attackLungeX*=.78; wolf.attackLungeY*=.78;
+  wolves.forEach((wolf)=>{
+    wolf.recoilX*=.82; wolf.recoilY*=.82; wolf.attackLungeX*=.78; wolf.attackLungeY*=.78;
+  });
   if(now<hitStopUntil){ updateSidebar(); return; }
   eventSystem.update(currentZoneName());
   updateInput(); tryPlayerAttack(now); smoothMove(player,dt);
   if(!player.moving&&(moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
-  updateWolf(now); smoothMove(wolf,dt); wolfAttack(now); updateSidebar();
+  wolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
+  wolfAttack(now);
+  updateSidebar();
 }
 
 let last=performance.now();
