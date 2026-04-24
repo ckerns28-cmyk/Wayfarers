@@ -193,6 +193,7 @@ function makeTile(drawFn){
 const assets = {
   grass: [], road: [], roadEdge: [], water: {}, shore: [], detail: [],
   tree: {}, propWell: null, fence: [],
+  props: { sheet:null, sprites:{}, meta:{} },
   building: {}, sprites: { player:null, npc:null, wolf:null }
 };
 
@@ -350,6 +351,88 @@ function makeFenceTiles(){
   }));
 }
 
+function makePropSprites(){
+  const sheet = document.createElement("canvas");
+  sheet.width = 320;
+  sheet.height = 32;
+  const p = sheet.getContext("2d");
+  p.imageSmoothingEnabled = false;
+  p.clearRect(0,0,320,32);
+
+  function cell(col, drawFn){
+    p.save();
+    p.translate(col*32,0);
+    drawFn(p);
+    p.restore();
+  }
+
+  cell(0,(q)=>{ // barrel
+    q.fillStyle="#6f4d31"; q.fillRect(8,7,16,20);
+    q.fillStyle="#8e6645"; q.fillRect(10,9,12,16);
+    q.fillStyle="#3f2b1c"; q.fillRect(8,11,16,2); q.fillRect(8,20,16,2);
+    q.fillStyle="rgba(255,225,184,.18)"; q.fillRect(11,10,3,12);
+    q.fillStyle="rgba(0,0,0,.2)"; q.fillRect(8,27,16,1);
+  });
+  cell(1,(q)=>{ // crate
+    q.fillStyle="#7a583a"; q.fillRect(7,9,18,16);
+    q.fillStyle="#9b7852"; q.fillRect(8,10,16,14);
+    q.fillStyle="#5e412a"; q.fillRect(7,9,18,1); q.fillRect(7,24,18,1);
+    q.fillStyle="#6b4a2f"; q.fillRect(15,10,2,14); q.fillRect(8,16,16,2);
+  });
+  cell(2,(q)=>{ // sack
+    q.fillStyle="#b59a72"; q.fillRect(9,10,14,15);
+    q.fillStyle="#d2bc95"; q.fillRect(10,11,12,13);
+    q.fillStyle="#8b7352"; q.fillRect(13,9,6,3); q.fillRect(14,12,4,1);
+    q.fillStyle="rgba(0,0,0,.15)"; q.fillRect(9,25,14,1);
+  });
+  cell(3,(q)=>{ // lantern post
+    q.fillStyle="#6a4c33"; q.fillRect(15,6,3,21);
+    q.fillStyle="#8f6c48"; q.fillRect(14,6,5,2);
+    q.fillStyle="#2b2622"; q.fillRect(11,9,11,8);
+    q.fillStyle="#d7b769"; q.fillRect(13,11,7,5);
+    q.fillStyle="rgba(255,232,152,.26)"; q.fillRect(12,10,9,1);
+  });
+  cell(4,(q)=>{ // sign post
+    q.fillStyle="#664a31"; q.fillRect(15,10,3,17);
+    q.fillStyle="#8a6445"; q.fillRect(8,8,16,7);
+    q.fillStyle="#b28963"; q.fillRect(9,9,14,5);
+    q.fillStyle="#5a3f2a"; q.fillRect(11,11,10,1);
+  });
+  cell(5,(q)=>{ // fence segment
+    q.fillStyle="#7a593b"; q.fillRect(4,14,24,3); q.fillRect(4,19,24,2);
+    q.fillStyle="#5d432b"; q.fillRect(7,9,3,16); q.fillRect(22,9,3,16);
+    q.fillStyle="#ad8960"; q.fillRect(4,13,24,1); q.fillRect(4,18,24,1);
+  });
+  cell(6,(q)=>{ // bush cluster
+    q.fillStyle="#4a6e3c"; q.fillRect(7,15,18,11);
+    q.fillStyle="#5c8448"; q.fillRect(9,13,14,8); q.fillRect(6,17,7,7); q.fillRect(19,17,7,7);
+    q.fillStyle="rgba(186,225,144,.2)"; q.fillRect(11,15,3,2); q.fillRect(17,16,3,2);
+  });
+  cell(7,(q)=>{ // grass tuft
+    q.fillStyle="#5d8747"; q.fillRect(12,18,2,8); q.fillRect(16,16,2,10); q.fillRect(20,19,2,7);
+    q.fillStyle="#84ad61"; q.fillRect(13,17,1,3); q.fillRect(17,15,1,3); q.fillRect(21,18,1,2);
+  });
+  cell(8,(q)=>{ // well
+    q.fillStyle="#6f7782"; q.fillRect(7,14,18,12);
+    q.fillStyle="#9099a4"; q.fillRect(9,15,14,10);
+    q.fillStyle="#2f557f"; q.fillRect(12,18,8,5);
+    q.fillStyle="#8b6f4d"; q.fillRect(9,8,2,8); q.fillRect(21,8,2,8); q.fillRect(10,8,12,2);
+  });
+  cell(9,(q)=>{ // stone pile
+    q.fillStyle="#70756f"; q.fillRect(10,20,4,3); q.fillRect(14,18,5,4); q.fillRect(19,20,3,3);
+    q.fillStyle="#8c928b"; q.fillRect(11,19,2,1); q.fillRect(15,17,2,1); q.fillRect(20,19,1,1);
+  });
+
+  const sheetImg = new Image();
+  sheetImg.src = sheet.toDataURL("image/png");
+  assets.props.sheet = sheetImg;
+
+  const names = ["barrel","crate","sack","lanternPost","signPost","fenceSeg","bush","grassTuft","well","stonePile"];
+  names.forEach((name, i)=>{
+    assets.props.sprites[name] = makeTile((q)=>{ q.drawImage(sheet, i*32, 0, 32, 32, 0, 0, 32, 32); });
+  });
+}
+
 function paintHumanoidSheet(colors, variant = "adventurer") {
   const size = 64;
   const c = document.createElement("canvas");
@@ -486,11 +569,12 @@ buildTerrainTiles();
 makeBuildingTiles();
 makeTreeSprites();
 makeFenceTiles();
+makePropSprites();
 assets.sprites.player = paintHumanoidSheet({ skin:"#e4c8a2", hair:"#4f3a2c", tunic:"#5f7890", tunicShade:"#3f5265", cloak:"#c2c7cf", boots:"#4f3826" }, "adventurer");
 assets.sprites.npc = paintHumanoidSheet({ skin:"#c9b093", hair:"#d9dde5", tunic:"#4d473f", tunicShade:"#322d28", cloak:"#262229", boots:"#2f2418" }, "elder");
 assets.sprites.wolf = paintWolfSheet();
 
-const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], roadTiles:new Set(), zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
+const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], roadTiles:new Set(), props:[], zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
 function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) world.blocked.add(keyOf(ix,iy)); }
 
 world.roads.push(
@@ -520,6 +604,18 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
 for(let x=29;x<=35;x++){ world.fences.push({x,y:6},{x,y:10}); }
 for(let y=7;y<=9;y++){ world.fences.push({x:29,y},{x:35,y}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
+
+world.props.push(
+  {x:9,y:8,type:"crate"},{x:9,y:9,type:"barrel"},{x:13,y:8,type:"crate"},{x:13,y:9,type:"bush"},{x:10,y:9,type:"fenceSeg"},
+  {x:19,y:8,type:"crate"},{x:24,y:8,type:"sack"},{x:24,y:9,type:"barrel"},{x:19,y:9,type:"bush"},
+  {x:11,y:17,type:"crate"},{x:16,y:17,type:"barrel"},{x:11,y:16,type:"fenceSeg"},{x:16,y:16,type:"bush"},{x:15,y:17,type:"sack"},
+  {x:16,y:10,type:"signPost"},{x:25,y:11,type:"signPost"},
+  {x:8,y:10,type:"lanternPost"},{x:28,y:10,type:"lanternPost"},
+  {x:21,y:14,type:"stonePile"},{x:21,y:16,type:"stonePile"},{x:29,y:15,type:"stonePile"},
+  {x:21,y:13,type:"grassTuft"},{x:29,y:17,type:"grassTuft"},{x:24,y:18,type:"grassTuft"},
+  {x:5,y:12,type:"bush"},{x:32,y:12,type:"bush"},{x:6,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
+  {x:18,y:11,type:"well"}
+);
 
 const treeData = [[1,2,"a"],[2,2,"b"],[3,3,"a"],[2,5,"c"],[1,6,"a"],[3,7,"b"],[2,9,"a"],[1,11,"c"],[3,12,"a"],[2,14,"b"],[1,17,"a"],[2,19,"b"],[3,21,"a"],[1,22,"c"],[4,23,"a"],[2,1,"a"],[4,2,"c"],[7,1,"b"],[10,2,"a"],[13,2,"c"],[27,2,"a"],[30,1,"b"],[33,2,"a"],[35,1,"c"],[37,2,"a"],[36,2,"a"],[35,4,"b"],[37,5,"a"],[36,7,"c"],[35,9,"a"],[36,11,"b"],[37,13,"a"],[35,15,"c"],[36,17,"a"],[37,19,"b"],[35,21,"a"],[36,23,"c"],[34,22,"a"],[4,22,"b"],[6,23,"a"],[9,22,"c"],[12,23,"a"],[15,22,"b"],[24,23,"a"],[27,22,"c"],[30,23,"a"],[33,22,"b"],[5,5,"a"],[6,8,"b"],[7,19,"a"],[9,4,"c"],[31,5,"a"],[32,8,"b"],[31,19,"a"],[29,21,"c"],[21,15,"a"],[22,18,"c"],[29,16,"b"],[28,19,"c"]];
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
@@ -754,10 +850,15 @@ function drawWorld(){
     b.tileRows.forEach((row,ry)=> row.forEach((key,rx)=> { const p=tileToScreen(b.x+rx,b.y+ry); const img=assets.building[key]; if(img&&img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32); }));
   });
 
-  const well = tileToScreen(18,11);
-  ctx.fillStyle="#6d7580"; ctx.beginPath(); ctx.arc(well.x+16,well.y+16,11,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle="#315685"; ctx.beginPath(); ctx.arc(well.x+16,well.y+16,6,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle="#8e7450"; ctx.fillRect(well.x+6,well.y+4,3,10); ctx.fillRect(well.x+23,well.y+4,3,10); ctx.fillRect(well.x+8,well.y+4,16,3);
+  world.props.forEach((prop)=>{
+    const p = tileToScreen(prop.x,prop.y);
+    const img = assets.props.sprites[prop.type];
+    if(!img || !img.complete || img.naturalWidth<=0) return;
+    if(prop.type==="barrel"||prop.type==="crate"||prop.type==="sack"||prop.type==="stonePile") drawSoftShadow(p.x+16,p.y+26,8,3,.16);
+    if(prop.type==="bush"||prop.type==="grassTuft") drawSoftShadow(p.x+16,p.y+26,9,4,.14);
+    if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
+    ctx.drawImage(img,p.x,p.y,32,32);
+  });
 
   world.fences.forEach((f,i)=>{ const p=tileToScreen(f.x,f.y); const img=assets.fence[i%assets.fence.length]; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32); });
   world.trees.forEach(t=>{ const p=tileToScreen(t.x,t.y); const sway=Math.sin(performance.now()*0.0012+t.seed*8)*0.8; drawSoftShadow(p.x+16,p.y+25,10,5,.2); const img=assets.tree[t.type]||assets.tree.a; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36); });
