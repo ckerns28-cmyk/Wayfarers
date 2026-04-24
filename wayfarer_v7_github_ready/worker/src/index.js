@@ -91,6 +91,7 @@ const html = String.raw`<!DOCTYPE html>
     }
     #dialogue {
       position:absolute;left:20px;right:20px;bottom:20px;display:none;
+      z-index:25;
       background:linear-gradient(#121a25,#0b1018);
       border:1px solid #51637d;
       border-radius:10px;
@@ -102,6 +103,7 @@ const html = String.raw`<!DOCTYPE html>
     #dialogueHint{margin-top:8px;color:var(--muted);font-size:12px}
     #vendorPanel{
       position:absolute;left:50%;transform:translateX(-50%);bottom:20px;display:none;
+      z-index:30;
       width:min(700px, calc(100% - 40px));
       background:linear-gradient(#121a25,#0b1018);
       border:1px solid #51637d;
@@ -1103,11 +1105,16 @@ function useHealingConsumable(){
   saveGame("consume_item");
   return true;
 }
+function getVendorBuyCost(item){
+  if(!item) return 0;
+  if(item.id==="leather_armor") return 25;
+  return Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+}
 function renderVendorMenu(){
   const buyRows = VENDOR_BUY_INVENTORY.map((itemId)=>{
     const item=getItemDefinition(itemId);
     if(!item) return "";
-    const cost=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+    const cost=getVendorBuyCost(item);
     const canBuy=player.coins>=cost;
     return "<div class=\"vendor-item\">" +
       "<div>" + item.name + "</div>" +
@@ -1135,6 +1142,38 @@ function renderVendorMenu(){
     (buyRows || "<div class=\"muted\">No items available.</div>") +
     "<div class=\"questTitle\" style=\"margin-top:8px;\">SELL</div>" +
     (sellRows || "<div class=\"muted\">Inventory is empty.</div>");
+  bindVendorButtons();
+}
+function handleVendorActionFromTarget(target){
+  if(!target) return false;
+  const buyButton=target.closest?.("button[data-buy-item]");
+  const buyItemId=buyButton?.dataset?.buyItem;
+  if(buyItemId){
+    console.debug("[Vendor] Buy click:", buyItemId);
+    return buyOneItemFromVendor(buyItemId);
+  }
+  const sellButton=target.closest?.("button[data-sell-item]");
+  const sellItemId=sellButton?.dataset?.sellItem;
+  if(!sellItemId) return false;
+  return sellOneItemToVendor(sellItemId);
+}
+function bindVendorButtons(){
+  const buyButtons=vendorList.querySelectorAll("button[data-buy-item]");
+  buyButtons.forEach((button)=>{
+    button.onclick=(event)=>{
+      event.preventDefault();
+      event.stopPropagation();
+      handleVendorActionFromTarget(event.currentTarget);
+    };
+  });
+  const sellButtons=vendorList.querySelectorAll("button[data-sell-item]");
+  sellButtons.forEach((button)=>{
+    button.onclick=(event)=>{
+      event.preventDefault();
+      event.stopPropagation();
+      handleVendorActionFromTarget(event.currentTarget);
+    };
+  });
 }
 function openVendorMenu(){
   if(dialogueSystem.activeSession) dialogueSystem.close();
@@ -1160,13 +1199,17 @@ function buyOneItemFromVendor(itemId){
   const item=getItemDefinition(itemId);
   if(!item) return false;
   if(!VENDOR_BUY_INVENTORY.includes(item.id)) return false;
-  const cost=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+  const cost=getVendorBuyCost(item);
   if(player.coins<cost){
     log("Not enough coins to buy " + item.name + ".");
     return false;
   }
   player.coins-=cost;
   addItemToInventory(item.id, 1);
+  const ownedCount=getItemQuantity(item.id);
+  log(item.name + " purchased.");
+  log("Coins after purchase: " + player.coins + ".");
+  log("Inventory update: " + item.name + " owned: " + ownedCount + ".");
   log("Bought " + item.name + " for " + cost + " coin" + (cost===1 ? "" : "s") + ".");
   renderVendorMenu();
   saveGame("vendor_purchase");
@@ -1628,16 +1671,9 @@ dialogue.addEventListener("click",()=>{
 });
 vendorClose.addEventListener("click", closeVendorMenu);
 vendorList.addEventListener("click",(e)=>{
-  const target=e.target;
-  if(!(target instanceof HTMLElement)) return;
-  const buyItemId=target.dataset?.buyItem;
-  if(buyItemId){
-    buyOneItemFromVendor(buyItemId);
-    return;
-  }
-  const itemId=target.dataset?.sellItem;
-  if(!itemId) return;
-  sellOneItemToVendor(itemId);
+  const target=e.target instanceof Element ? e.target : null;
+  if(!target) return;
+  handleVendorActionFromTarget(target);
 });
 
 function currentZoneName(){
