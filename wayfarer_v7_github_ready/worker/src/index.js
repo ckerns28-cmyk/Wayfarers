@@ -58,7 +58,7 @@ const html = String.raw`<!DOCTYPE html>
       box-shadow: 0 14px 40px rgba(0,0,0,.46), inset 0 0 0 1px rgba(255,255,255,.03);
     }
     #sidebar { display:flex; flex-direction:column; gap:10px; min-width:0; }
-    #brand,#stats,#objective,#logPanel{padding:14px;}
+    #brand,#stats,#objective,#inventoryPanel,#logPanel{padding:14px;}
     h1{margin:0 0 6px;font-size:24px;letter-spacing:.4px}
     .sub{font-size:13px;color:var(--muted)}
     .tag{display:inline-block;margin-top:8px;padding:5px 9px;border:1px solid #435065;border-radius:999px;font-size:11px;color:#c7d6ec}
@@ -135,6 +135,10 @@ const html = String.raw`<!DOCTYPE html>
       <section id="objective" class="panel">
         <div class="questTitle">Current Objective</div>
         <div id="objectiveText" class="muted">Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.</div>
+      </section>
+      <section id="inventoryPanel" class="panel">
+        <div class="questTitle">Inventory</div>
+        <div id="inventoryList" class="muted">Empty</div>
       </section>
       <section id="logPanel" class="panel">
         <div class="questTitle">Chronicle</div>
@@ -237,6 +241,7 @@ const zoneVal = document.getElementById("zoneVal");
 const questVal = document.getElementById("questVal");
 const weaponVal = document.getElementById("weaponVal");
 const objectiveText = document.getElementById("objectiveText");
+const inventoryList = document.getElementById("inventoryList");
 const dialogue = document.getElementById("dialogue");
 const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
@@ -255,6 +260,16 @@ const WORLD_W = 38;
 const WORLD_H = 24;
 const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
+const ITEM_REGISTRY = Object.freeze({
+  wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:6 },
+  small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:4 },
+  old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
+  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, value:5 }
+});
+const WOLF_LOOT_TABLE = Object.freeze([
+  { itemId:"wolf_pelt", chance:0.85, min:1, max:1 },
+  { itemId:"small_fang", chance:0.65, min:1, max:2 }
+]);
 
 function resize() {
   const rect = document.getElementById("gamePanel").getBoundingClientRect();
@@ -780,7 +795,7 @@ world.zones.push(
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
 
-const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,weapon:{name:"Rusty Sword",bonus:2,durability:100},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
+const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],weapon:{name:"Rusty Sword",bonus:2,durability:100},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const wolf={x:31,y:13,px:31*TILE,py:13*TILE,targetX:31,targetY:13,hp:22,maxHp:22,homeX:31,homeY:13,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
 
@@ -789,6 +804,77 @@ let missNoticeArmed=true;
 const PLAYER_ATTACK_RANGE=1;
 const WOLF_ATTACK_COOLDOWN_MS=1800;
 const WOLF_RESPAWN_MS=12000;
+
+function randomInt(min,max){ return min + Math.floor(Math.random() * (max-min+1)); }
+function getItemDefinition(itemId){ return ITEM_REGISTRY[itemId] || null; }
+function normalizeInventoryEntry(entry){
+  if(!entry || typeof entry.itemId!=="string" || !Number.isFinite(entry.quantity)) return null;
+  const definition=getItemDefinition(entry.itemId);
+  if(!definition) return null;
+  const quantity=Math.max(0,Math.floor(entry.quantity));
+  if(quantity<=0) return null;
+  return { itemId:definition.id, quantity };
+}
+function normalizeInventory(entries){
+  const output=[];
+  if(!Array.isArray(entries)) return output;
+  entries.forEach((entry)=>{
+    const normalized=normalizeInventoryEntry(entry);
+    if(!normalized) return;
+    addItemToInventory(normalized.itemId, normalized.quantity, output);
+  });
+  return output;
+}
+function addItemToInventory(itemId, amount, targetInventory=player.inventory){
+  const definition=getItemDefinition(itemId);
+  if(!definition || !Number.isFinite(amount)) return 0;
+  const quantity=Math.max(0,Math.floor(amount));
+  if(quantity<=0) return 0;
+  if(definition.stackable){
+    const existing=targetInventory.find((entry)=>entry.itemId===itemId);
+    if(existing){ existing.quantity += quantity; return quantity; }
+  }
+  targetInventory.push({ itemId, quantity });
+  return quantity;
+}
+function getItemQuantity(itemId){
+  return player.inventory
+    .filter((entry)=>entry.itemId===itemId)
+    .reduce((sum,entry)=>sum + entry.quantity, 0);
+}
+function removeItemFromInventory(itemId, amount){
+  if(!Number.isFinite(amount)) return 0;
+  let remaining=Math.max(0,Math.floor(amount));
+  if(remaining<=0) return 0;
+  let removed=0;
+  for(let i=player.inventory.length-1; i>=0 && remaining>0; i--){
+    const entry=player.inventory[i];
+    if(entry.itemId!==itemId) continue;
+    const take=Math.min(entry.quantity, remaining);
+    entry.quantity-=take;
+    remaining-=take;
+    removed+=take;
+    if(entry.quantity<=0) player.inventory.splice(i,1);
+  }
+  return removed;
+}
+function rollWolfLoot(){
+  const drops=[];
+  WOLF_LOOT_TABLE.forEach((roll)=>{
+    const definition=getItemDefinition(roll.itemId);
+    if(!definition) return;
+    if(Math.random()>roll.chance) return;
+    const amount=randomInt(roll.min, roll.max);
+    if(amount>0) drops.push({ itemId:roll.itemId, quantity:amount });
+  });
+  return drops;
+}
+function formatDropText(drops){
+  return drops.map((drop)=>{
+    const item=getItemDefinition(drop.itemId);
+    return (item?.name || drop.itemId) + " x" + drop.quantity;
+  }).join(", ");
+}
 
 const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", COMPLETED:"Completed" });
 
@@ -1009,7 +1095,7 @@ function showSaveNotice(message){
 function isFiniteNumber(value){ return typeof value==="number" && Number.isFinite(value); }
 function createSaveData(reason){
   return {
-    version:2,
+    version:3,
     reason,
     savedAt:new Date().toISOString(),
     player:{
@@ -1017,6 +1103,7 @@ function createSaveData(reason){
       hp:player.hp,
       xp:player.xp,
       coins:player.coins,
+      inventory:player.inventory.map((entry)=>({ itemId:entry.itemId, quantity:entry.quantity })),
       weapon:{ ...player.weapon }
     },
     quests:{
@@ -1038,7 +1125,7 @@ function createSaveData(reason){
   };
 }
 function validateSaveData(data){
-  if(!data || (data.version!==1 && data.version!==2)) return false;
+  if(!data || (data.version!==1 && data.version!==2 && data.version!==3)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -1067,6 +1154,7 @@ function loadGame(){
     player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
     player.xp=Math.max(0,data.player.xp);
     player.coins=Math.max(0,data.player.coins);
+    player.inventory=normalizeInventory(data.player.inventory);
     if(data.player.weapon && typeof data.player.weapon==="object"){
       player.weapon={
         name:typeof data.player.weapon.name==="string"?data.player.weapon.name:"Rusty Sword",
@@ -1168,6 +1256,15 @@ function updateSidebar(){
   else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="go_to_pond") objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
   else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="heard_whispers") objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
   else objectiveText.textContent = "Quest complete: Listening at Mirror Pond.";
+  if(player.inventory.length===0){
+    inventoryList.textContent = "Empty";
+  } else {
+    inventoryList.innerHTML = player.inventory.map((entry)=>{
+      const item=getItemDefinition(entry.itemId);
+      const name=item?.name || entry.itemId;
+      return name + " x" + entry.quantity;
+    }).join("<br>");
+  }
   const nearbyHostile=getNearestHostile(5);
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   const wolfCooldownMs=Math.max(0, WOLF_ATTACK_COOLDOWN_MS-(performance.now()-lastWolfAttack));
@@ -1291,8 +1388,12 @@ function tryPlayerAttack(now){
     targetHostile.entity.defeated=true;
     player.xp+=12;
     player.coins+=4;
+    const lootDrops=rollWolfLoot();
+    lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
     wolfRespawnAt=now+WOLF_RESPAWN_MS;
     log("Wolf defeated. Rewards: +12 XP, +4 coins.");
+    if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
+    else log("No loot dropped this time.");
   }
 }
 
