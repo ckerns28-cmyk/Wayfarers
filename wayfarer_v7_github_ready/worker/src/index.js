@@ -100,6 +100,27 @@ const html = String.raw`<!DOCTYPE html>
     #dialogueName{font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.4px}
     #dialogueText{white-space:pre-line;min-height:62px;line-height:1.5}
     #dialogueHint{margin-top:8px;color:var(--muted);font-size:12px}
+    #vendorPanel{
+      position:absolute;left:50%;transform:translateX(-50%);bottom:20px;display:none;
+      width:min(700px, calc(100% - 40px));
+      background:linear-gradient(#121a25,#0b1018);
+      border:1px solid #51637d;
+      border-radius:10px;
+      box-shadow:0 12px 34px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);
+      padding:12px 14px;
+    }
+    #vendorHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    #vendorName{font-weight:700;color:var(--accent);letter-spacing:.4px}
+    #vendorList{max-height:210px;overflow:auto;line-height:1.5}
+    #vendorHint{margin-top:8px;color:var(--muted);font-size:12px}
+    .vendor-item{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(158,172,190,.18)}
+    .vendor-item:last-child{border-bottom:none}
+    .vendor-pill{font-size:11px;border:1px solid #435065;border-radius:999px;padding:2px 8px;color:#c7d6ec}
+    .vendor-btn,.vendor-close{
+      border:1px solid #4c6281;border-radius:6px;background:#162435;color:#e6ecf5;
+      font:12px ui-monospace,SFMono-Regular,Menlo,monospace;padding:4px 8px;cursor:pointer;
+    }
+    .vendor-btn:disabled{opacity:.55;cursor:not-allowed}
     #saveNotice{
       position:absolute;top:16px;right:16px;opacity:0;transform:translateY(-6px);
       transition:opacity .2s ease,transform .2s ease;
@@ -155,6 +176,14 @@ const html = String.raw`<!DOCTYPE html>
         <div id="dialogueName"></div>
         <div id="dialogueText"></div>
         <div id="dialogueHint">Click to continue. Press number keys for choices.</div>
+      </div>
+      <div id="vendorPanel">
+        <div id="vendorHeader">
+          <div id="vendorName">Merchant Rowan — Vendor Menu</div>
+          <button type="button" id="vendorClose" class="vendor-close">Close</button>
+        </div>
+        <div id="vendorList"></div>
+        <div id="vendorHint">Sell items for coins. Selling removes one item per click.</div>
       </div>
       <div id="saveNotice">Game Saved</div>
       <script id="dialogueData" type="application/json">
@@ -249,6 +278,9 @@ const dialogue = document.getElementById("dialogue");
 const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
 const dialogueHint = document.getElementById("dialogueHint");
+const vendorPanel = document.getElementById("vendorPanel");
+const vendorList = document.getElementById("vendorList");
+const vendorClose = document.getElementById("vendorClose");
 const saveNotice = document.getElementById("saveNotice");
 
 function parseJsonScript(id){
@@ -265,10 +297,10 @@ const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
   rusty_sword: { id:"rusty_sword", name:"Rusty Sword", type:"weapon", attackBonus:2, description:"A worn but dependable blade.", stackable:false, value:8 },
-  wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:6 },
-  small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:4 },
+  wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:5 },
+  small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:3 },
   old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
-  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, value:5 }
+  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, value:2 }
 });
 const WOLF_LOOT_TABLE = Object.freeze([
   { itemId:"wolf_pelt", chance:0.85, min:1, max:1 },
@@ -801,6 +833,7 @@ world.zones.push(
 
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
+const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
 const WOLF_SPAWNS=[{id:1,x:31,y:13},{id:2,x:28,y:16},{id:3,x:33,y:16}];
 function createWolf(spawn){
   return {id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:22,maxHp:22,homeX:spawn.x,homeY:spawn.y,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
@@ -912,6 +945,56 @@ function formatDropText(drops){
     const item=getItemDefinition(drop.itemId);
     return (item?.name || drop.itemId) + " x" + drop.quantity;
   }).join(", ");
+}
+function isVendorOpen(){ return vendorPanel.style.display==="block"; }
+function closeVendorMenu(){ vendorPanel.style.display="none"; }
+function canSellItem(item){
+  if(!item) return false;
+  if(item.type!=="weapon") return true;
+  const total=getItemQuantity(item.id);
+  const equipped=player.equipment.weapon===item.id;
+  return !equipped || total>1;
+}
+function renderVendorMenu(){
+  if(player.inventory.length===0){
+    vendorList.innerHTML="<div class=\"muted\">Inventory is empty.</div>";
+    return;
+  }
+  vendorList.innerHTML = player.inventory.map((entry)=>{
+    const item=getItemDefinition(entry.itemId);
+    if(!item) return "";
+    const sellValue=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+    const canSell=canSellItem(item);
+    const buttonLabel=canSell ? "Sell" : "Equipped";
+    const disabledAttr=canSell ? "" : " disabled";
+    return "<div class=\"vendor-item\">" +
+      "<div>" + item.name + "</div>" +
+      "<div class=\"vendor-pill\">Qty: " + entry.quantity + "</div>" +
+      "<div class=\"vendor-pill\">Value: " + sellValue + "</div>" +
+      "<button type=\"button\" class=\"vendor-btn\" data-sell-item=\"" + item.id + "\"" + disabledAttr + ">" + buttonLabel + "</button>" +
+    "</div>";
+  }).join("");
+}
+function openVendorMenu(){
+  if(dialogueSystem.activeSession) dialogueSystem.close();
+  renderVendorMenu();
+  vendorPanel.style.display="block";
+}
+function sellOneItemToVendor(itemId){
+  const item=getItemDefinition(itemId);
+  if(!item) return false;
+  if(getItemQuantity(itemId)<=0) return false;
+  if(!canSellItem(item)) return false;
+  const removed=removeItemFromInventory(itemId, 1);
+  if(removed<=0) return false;
+  const sellValue=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+  player.coins += sellValue;
+  log("Sold " + item.name + " for " + sellValue + " coin" + (sellValue===1 ? "" : "s") + ".");
+  updateSidebar();
+  renderVendorMenu();
+  if(player.inventory.length===0) closeVendorMenu();
+  saveGame("vendor_sale");
+  return true;
 }
 
 const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", COMPLETED:"Completed" });
@@ -1077,6 +1160,7 @@ class InteractionManager {
   }
   tryInteract(){
     if(dialogueSystem.activeSession){ dialogueSystem.advance(); return true; }
+    if(isVendorOpen()){ closeVendorMenu(); return true; }
     const target=this.getNearest();
     if(!target) return false;
     target.onInteract?.();
@@ -1261,6 +1345,10 @@ interactionManager.register({
   onInteract:()=>dialogueSystem.start("edrin")
 });
 interactionManager.register({
+  id:"npc_merchant_rowan", type:"npc", x:()=>vendorNpc.x, y:()=>vendorNpc.y,
+  onInteract:()=>openVendorMenu()
+});
+interactionManager.register({
   id:"obj_well", type:"object", x:()=>18, y:()=>11,
   onInteract:()=>{ log("The well water is cold and perfectly still."); eventSystem.emit("object:used:well",{}); }
 });
@@ -1272,6 +1360,14 @@ interactionManager.register({
 dialogue.addEventListener("click",()=>{
   if(dialogueSystem.activeSession?.pendingChoices) dialogueSystem.choose(0);
   else if(dialogueSystem.activeSession) dialogueSystem.advance();
+});
+vendorClose.addEventListener("click", closeVendorMenu);
+vendorList.addEventListener("click",(e)=>{
+  const target=e.target;
+  if(!(target instanceof HTMLElement)) return;
+  const itemId=target.dataset?.sellItem;
+  if(!itemId) return;
+  sellOneItemToVendor(itemId);
 });
 
 function currentZoneName(){
@@ -1342,6 +1438,7 @@ function updateSidebar(){
       return name + " x" + entry.quantity;
     }).join("<br>");
   }
+  if(isVendorOpen()) renderVendorMenu();
   const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "";
   equipmentList.innerHTML = "Weapon: " + weaponLine + "<br>Armor: <br>Trinket: ";
   const nearbyHostile=getNearestHostile(5);
@@ -1359,6 +1456,7 @@ function canMoveTo(x,y){
   if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
   if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
   if(x===npc.x&&y===npc.y) return false;
+  if(x===vendorNpc.x&&y===vendorNpc.y) return false;
   if(wolves.some((wolf)=>wolf.hp>0&&x===wolf.targetX&&y===wolf.targetY)) return false;
   return true;
 }
@@ -1417,6 +1515,7 @@ function canWolfMoveTo(x,y,selfId){
   if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
   if(world.blocked.has(keyOf(x,y))) return false;
   if(x===npc.x&&y===npc.y) return false;
+  if(x===vendorNpc.x&&y===vendorNpc.y) return false;
   if(wolves.some((wolf)=>wolf.id!==selfId && wolf.hp>0 && wolf.targetX===x && wolf.targetY===y)) return false;
   return true;
 }
@@ -1683,6 +1782,7 @@ function drawWorld(){
   if(zoneName==="Forest Edge") zoneLabel("Forest Edge",30,4);
 
   drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
+  drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
   wolves.forEach((wolf)=>{
     if(wolf.hp<=0) return;
     drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
@@ -1720,6 +1820,7 @@ if(loadedFromSave) log("System: Continuing from saved progress.");
 else log("System: New journey started.");
 log("System: Press K at any time to save manually.");
 log("System: Speak to Edrin Vale and use E to interact with nearby objects.");
+log("System: Merchant Rowan now trades coins for your goods.");
 updateSidebar();
 requestAnimationFrame(loop);
 </script>
