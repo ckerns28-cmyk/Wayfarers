@@ -244,8 +244,7 @@ const html = String.raw`<!DOCTYPE html>
         },
         "hunters_request_offer": {
           "lines": [
-            "I need warm hides before the next rain.",
-            "Bring me 3 Wolf Pelts."
+            "I need wolf pelts. Bring me three."
           ],
           "onCompleteEvents": ["quest:activate:hunters_request"],
           "next": "hunters_request_active"
@@ -1261,7 +1260,7 @@ class DialogueFramework {
       if(hunterQuest?.state===QuestState.COMPLETED) root="hunters_request_complete";
       else if(hunterQuest?.state===QuestState.ACTIVE && questSystem.hasRequiredItems("hunters_request")) root="hunters_request_turn_in_ready";
       else if(hunterQuest?.state===QuestState.ACTIVE) root="hunters_request_active";
-      else if(mirrorQuest?.state===QuestState.COMPLETED) root="post_quest";
+      else if(mirrorQuest?.state===QuestState.COMPLETED) root="hunters_request_offer";
       else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest?.progress==="heard_whispers") root="quest_turn_in";
       else if(mirrorQuest?.state===QuestState.ACTIVE) root="quest_active_followup";
     }
@@ -1610,8 +1609,9 @@ function updateSidebar(){
   if(huntersQuest?.state===QuestState.ACTIVE){
     const requirement=huntersQuest.itemRequirements?.[0];
     const requiredCount=Math.max(1, Math.floor(Number.isFinite(requirement?.count) ? requirement.count : 1));
-    const collected=Math.min(requiredCount, getItemQuantity(requirement?.itemId || "wolf_pelt"));
-    objectiveText.textContent = "Bring me 3 Wolf Pelts.\nWolf Pelts: " + collected + " / " + requiredCount + (collected>=requiredCount ? "\nReturn to Edrin Vale for turn-in." : "");
+    const trackedCount=Number.isFinite(huntersQuest.itemProgress?.[requirement?.itemId]) ? huntersQuest.itemProgress[requirement.itemId] : getItemQuantity(requirement?.itemId || "wolf_pelt");
+    const collected=Math.min(requiredCount, trackedCount);
+    objectiveText.textContent = "Hunter's Request\nWolf Pelts: " + collected + " / " + requiredCount + (collected>=requiredCount ? "\nReturn to Edrin Vale for turn-in." : "");
   } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="go_to_pond"){
     objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
   } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="heard_whispers"){
