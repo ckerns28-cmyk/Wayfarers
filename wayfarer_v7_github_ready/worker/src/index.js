@@ -191,57 +191,96 @@ function makeTile(drawFn){
 }
 
 const assets = {
-  grass: [], road: [], water: {}, shore: [],
+  grass: [], road: [], roadEdge: [], water: {}, shore: [], detail: [],
   tree: {}, propWell: null, fence: [],
   building: {}, sprites: { player:null, npc:null, wolf:null }
 };
 
 function buildTerrainTiles() {
-  for (let i=0;i<4;i++) {
+  const grassBases = ["#44663a", "#3f6035", "#4a6f40", "#3a5a31", "#507747", "#35542e"];
+  for (let i=0;i<6;i++) {
     assets.grass.push(makeTile((p)=>{
-      p.fillStyle = palette.grass[i%palette.grass.length]; p.fillRect(0,0,32,32);
+      p.fillStyle = grassBases[i]; p.fillRect(0,0,32,32);
       for (let y=0;y<32;y+=2){
         for (let x=0;x<32;x+=2){
-          const n=rng(x+i*9,y+i*5,13+i);
-          p.fillStyle = n>0.72?"rgba(171,205,131,.22)":n<0.14?"rgba(34,57,26,.28)":"rgba(0,0,0,0)";
-          if (n>0.72||n<0.14) p.fillRect(x,y,2,2);
+          const n=rng(x+i*11,y+i*7,13+i);
+          p.fillStyle = n>0.76?"rgba(178,214,138,.2)":n<0.15?"rgba(31,53,24,.3)":"rgba(0,0,0,0)";
+          if (n>0.76||n<0.15) p.fillRect(x,y,2,2);
         }
       }
-      p.fillStyle="rgba(255,255,255,.04)"; p.fillRect(0,0,32,2);
-      p.fillStyle="rgba(0,0,0,.12)"; p.fillRect(0,30,32,2);
+      p.fillStyle = "rgba(204,235,168,.1)";
+      for (let k=0;k<8;k++) {
+        const gx = ((k*7+i*5)%28)+2, gy = ((k*13+i*3)%25)+3;
+        p.fillRect(gx,gy,1,3);
+      }
+      p.fillStyle="rgba(255,255,255,.03)"; p.fillRect(0,0,32,2);
+      p.fillStyle="rgba(0,0,0,.11)"; p.fillRect(0,30,32,2);
     }));
 
+    if(i<5) {
     assets.road.push(makeTile((p)=>{
-      p.fillStyle = palette.road[0]; p.fillRect(0,0,32,32);
-      p.fillStyle = palette.road[1];
-      for(let y=0;y<32;y+=4){ for(let x=((y+i)%3);x<32;x+=6) p.fillRect(x,y,2,2); }
-      p.fillStyle = palette.road[2];
-      for(let k=0;k<7;k++){ const x=((k*11+i*7)%26)+2; const y=((k*13+i*5)%26)+2; p.fillRect(x,y,3,2); }
-      p.fillStyle = "rgba(0,0,0,.14)"; p.fillRect(0,29,32,3);
+      p.fillStyle = i%2? "#8b7350" : "#836b49"; p.fillRect(0,0,32,32);
+      p.fillStyle = i%2? "#785f43" : "#6f583e";
+      for(let y=0;y<32;y+=4){ for(let x=((y+i*2)%5);x<32;x+=7) p.fillRect(x,y,2,2); }
+      p.fillStyle = i%2? "#a28a67" : "#9a815f";
+      for(let k=0;k<8;k++){ const x=((k*9+i*7)%24)+3; const y=((k*11+i*5)%24)+3; p.fillRect(x,y,3,2); }
+      p.fillStyle = "rgba(0,0,0,.18)"; p.fillRect(0,29,32,3);
       p.fillStyle = "rgba(255,255,255,.06)"; p.fillRect(0,0,32,2);
     }));
+    }
 
     assets.shore.push(makeTile((p)=>{
-      p.fillStyle = i%2?"#5f7648":"#6f8452"; p.fillRect(0,0,32,32);
-      p.fillStyle = "rgba(146,114,74,.4)"; p.fillRect(0,24,32,8);
-      p.fillStyle = "rgba(102,130,85,.4)"; p.fillRect(0,0,32,10);
-      p.fillStyle = "rgba(223,201,150,.2)"; p.fillRect(0,21,32,2);
-      for(let x=4;x<30;x+=6){ p.fillStyle="#486d3f"; p.fillRect(x,16+(x%3),2,8); }
+      p.fillStyle = i%2?"#5d7547":"#667e4d"; p.fillRect(0,0,32,32);
+      p.fillStyle = "rgba(147,117,78,.46)"; p.fillRect(0,22,32,10);
+      p.fillStyle = "rgba(108,140,90,.36)"; p.fillRect(0,0,32,10);
+      p.fillStyle = "rgba(230,216,175,.22)"; p.fillRect(0,20,32,2);
+      for(let x=3;x<30;x+=5){ p.fillStyle="#4a7140"; p.fillRect(x,15+(x%4),2,8); }
     }));
   }
 
+  for(let i=0;i<4;i++) {
+    assets.roadEdge.push(makeTile((p)=>{
+      p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32);
+      p.fillStyle=i%2? "rgba(121,101,74,.72)" : "rgba(134,112,84,.68)";
+      for(let x=0;x<32;x+=2){
+        const h = 3 + Math.floor(rng(x,i,77) * 3);
+        p.fillRect(x,32-h,2,h);
+      }
+      p.fillStyle="rgba(66,96,52,.3)"; p.fillRect(0,0,32,2);
+    }));
+  }
+
+  assets.detail = [
+    makeTile((p)=>{ p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32); p.fillStyle="#7f7a71"; p.fillRect(12,18,2,2); p.fillRect(15,17,2,2); p.fillStyle="#9c988d"; p.fillRect(13,16,1,1); }),
+    makeTile((p)=>{ p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32); p.fillStyle="#704f35"; p.fillRect(8,20,7,3); p.fillRect(14,19,5,2); p.fillStyle="rgba(156,124,86,.42)"; p.fillRect(10,20,5,1); }),
+    makeTile((p)=>{ p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32); p.fillStyle="#587e45"; p.fillRect(18,17,1,5); p.fillRect(20,16,1,6); p.fillRect(22,18,1,4); p.fillStyle="#8fb871"; p.fillRect(19,16,1,2); p.fillRect(21,15,1,2); })
+  ];
+
   assets.water.deep = makeTile((p)=>{
     p.fillStyle = palette.water[1]; p.fillRect(0,0,32,32);
-    p.fillStyle = palette.water[0]; p.fillRect(0,22,32,10);
+    const g = p.createLinearGradient(0,0,0,32);
+    g.addColorStop(0,"#2f6291"); g.addColorStop(.55,palette.water[1]); g.addColorStop(1,palette.water[0]);
+    p.fillStyle = g; p.fillRect(0,0,32,32);
     p.fillStyle = "rgba(98,164,214,.2)";
     for(let y=3;y<28;y+=5) p.fillRect(3+(y%4),y,24,1);
     p.fillStyle = "rgba(179,226,255,.13)"; p.fillRect(2,3,17,2);
   });
   assets.water.shallow = makeTile((p)=>{
-    p.fillStyle = palette.water[2]; p.fillRect(0,0,32,32);
-    p.fillStyle = "rgba(143,203,237,.24)"; p.fillRect(1,2,30,5);
-    p.fillStyle = "rgba(63,115,165,.3)"; p.fillRect(0,24,32,8);
-    p.fillStyle = "rgba(195,236,255,.23)"; p.fillRect(4,12,22,2);
+    const g = p.createLinearGradient(0,0,0,32);
+    g.addColorStop(0,"#5e9fca"); g.addColorStop(.35,palette.water[2]); g.addColorStop(1,"#346a99");
+    p.fillStyle = g; p.fillRect(0,0,32,32);
+    p.fillStyle = "rgba(170,220,245,.22)"; p.fillRect(1,1,30,5);
+    p.fillStyle = "rgba(63,115,165,.28)"; p.fillRect(0,24,32,8);
+    p.fillStyle = "rgba(210,242,255,.26)"; p.fillRect(3,12,24,2);
+  });
+  assets.water.edge = makeTile((p)=>{
+    p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32);
+    const g = p.createLinearGradient(0,0,0,32);
+    g.addColorStop(0,"rgba(236,225,179,.28)");
+    g.addColorStop(.4,"rgba(185,198,149,.18)");
+    g.addColorStop(1,"rgba(84,124,155,0)");
+    p.fillStyle=g; p.fillRect(0,0,32,32);
+    p.fillStyle="rgba(245,245,220,.2)"; p.fillRect(1,1,30,1);
   });
 }
 
@@ -301,10 +340,13 @@ function makeTreeSprites(){
 }
 
 function makeFenceTiles(){
-  for(let i=0;i<2;i++) assets.fence.push(makeTile((p)=>{
-    p.fillStyle = palette.fence[0]; p.fillRect(2,12,28,4);
-    p.fillStyle = palette.fence[1]; p.fillRect(5,5,4,22); p.fillRect(23,5,4,22);
-    p.fillStyle = palette.fence[2]; p.fillRect(2,11,28,1);
+  for(let i=0;i<3;i++) assets.fence.push(makeTile((p)=>{
+    const rail = i===1 ? "#876448" : i===2 ? "#7b5a3f" : palette.fence[0];
+    p.fillStyle = rail; p.fillRect(2,11,28,4); p.fillRect(2,17,28,3);
+    p.fillStyle = palette.fence[1]; p.fillRect(5,4,4,24); p.fillRect(23,4,4,24);
+    p.fillStyle = palette.fence[2]; p.fillRect(2,10,28,1); p.fillRect(2,16,28,1);
+    p.fillStyle = "rgba(255,229,189,.16)"; p.fillRect(3,11,26,1);
+    p.fillStyle = "rgba(0,0,0,.16)"; p.fillRect(2,20,28,1);
   }));
 }
 
@@ -448,13 +490,14 @@ assets.sprites.player = paintHumanoidSheet({ skin:"#e4c8a2", hair:"#4f3a2c", tun
 assets.sprites.npc = paintHumanoidSheet({ skin:"#c9b093", hair:"#d9dde5", tunic:"#4d473f", tunicShade:"#322d28", cloak:"#262229", boots:"#2f2418" }, "elder");
 assets.sprites.wolf = paintWolfSheet();
 
-const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
+const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], roadTiles:new Set(), zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
 function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) world.blocked.add(keyOf(ix,iy)); }
 
 world.roads.push(
   { x:6,y:11,w:26,h:2 },{ x:17,y:5,w:2,h:15 },{ x:10,y:8,w:2,h:8 },
   { x:24,y:7,w:2,h:8 },{ x:19,y:12,w:5,h:2 },{ x:26,y:12,w:3,h:2 }
 );
+world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
   { x:10,y:6,w:3,h:3,tileRows:[["roofL","roofC","roofR"],["window","wall","window"],["wall","door","wall"]] },
@@ -656,6 +699,14 @@ function hitVisualAlpha(e){ const now=performance.now(); if(now>=e.hitUntil) ret
 function attackPose(entity){ const now=performance.now(); const total=350; const left=Math.max(0,entity.attackUntil-now); if(left<=0) return {active:false,thrust:0}; const t=(total-left)/total; return {active:true,thrust:Math.sin(t*Math.PI)*3.5}; }
 
 function drawAlignmentGrid(){ const cam=getCamera(); const sx=cam.offsetX, sy=cam.offsetY, ex=sx+VIEW_TILES_X*TILE, ey=sy+VIEW_TILES_Y*TILE; ctx.save(); ctx.strokeStyle="rgba(221,233,255,.16)"; ctx.lineWidth=1; ctx.beginPath(); for(let x=0;x<=VIEW_TILES_X;x++){ const px=sx+x*TILE+.5; ctx.moveTo(px,sy); ctx.lineTo(px,ey);} for(let y=0;y<=VIEW_TILES_Y;y++){ const py=sy+y*TILE+.5; ctx.moveTo(sx,py); ctx.lineTo(ex,py);} ctx.stroke(); ctx.restore(); }
+function drawTileRotated(img, x, y, turns){
+  if(!img||!img.complete||img.naturalWidth<=0) return;
+  ctx.save();
+  ctx.translate(x+16,y+16);
+  ctx.rotate((Math.PI/2)*turns);
+  ctx.drawImage(img,-16,-16,32,32);
+  ctx.restore();
+}
 
 function drawWorld(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -667,7 +718,20 @@ function drawWorld(){
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
   }
 
-  world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){ const p=tileToScreen(x,y); const img=assets.road[Math.floor(rng(x,y,22)*assets.road.length)]; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);} });
+  world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){
+    const p=tileToScreen(x,y);
+    const img=assets.road[Math.floor(rng(x,y,22)*assets.road.length)];
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+
+    const north = world.roadTiles.has(keyOf(x,y-1));
+    const south = world.roadTiles.has(keyOf(x,y+1));
+    const east = world.roadTiles.has(keyOf(x+1,y));
+    const west = world.roadTiles.has(keyOf(x-1,y));
+    if(!north) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,62)*assets.roadEdge.length)], p.x, p.y, 0);
+    if(!east) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,64)*assets.roadEdge.length)], p.x, p.y, 1);
+    if(!south) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,66)*assets.roadEdge.length)], p.x, p.y, 2);
+    if(!west) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,68)*assets.roadEdge.length)], p.x, p.y, 3);
+  } });
 
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondWater.has(k)) continue;
@@ -675,7 +739,10 @@ function drawWorld(){
     const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     const t=performance.now()*0.002, rip=(Math.sin(t*3+x*1.1+y*.8)+1)*.5;
     ctx.fillStyle="rgba(188,228,255," + (.02+rip*.05).toFixed(3) + ")"; ctx.fillRect(p.x+3,p.y+6,TILE-10,1);
-    if(edge){ ctx.fillStyle="rgba(224,244,255," + (.05+rip*.05).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1); }
+    if(edge){
+      ctx.fillStyle="rgba(224,244,255," + (.05+rip*.05).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1);
+      if(assets.water.edge.complete&&assets.water.edge.naturalWidth>0) ctx.drawImage(assets.water.edge,p.x,p.y,32,32);
+    }
   }
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondShore.has(k)) continue;
@@ -694,6 +761,16 @@ function drawWorld(){
 
   world.fences.forEach((f,i)=>{ const p=tileToScreen(f.x,f.y); const img=assets.fence[i%assets.fence.length]; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32); });
   world.trees.forEach(t=>{ const p=tileToScreen(t.x,t.y); const sway=Math.sin(performance.now()*0.0012+t.seed*8)*0.8; drawSoftShadow(p.x+16,p.y+25,10,5,.2); const img=assets.tree[t.type]||assets.tree.a; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36); });
+
+  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
+    const k = keyOf(x,y);
+    if(world.roadTiles.has(k) || world.pondWater.has(k) || world.pondShore.has(k) || world.pondNearEdge.has(k) || world.blocked.has(k)) continue;
+    const chance = rng(x,y,131);
+    if(chance > 0.085) continue;
+    const p = tileToScreen(x,y);
+    const detail = assets.detail[Math.floor(rng(x,y,137)*assets.detail.length)];
+    if(detail && detail.complete && detail.naturalWidth>0) ctx.drawImage(detail,p.x,p.y,32,32);
+  }
 
   if(showGrid) drawAlignmentGrid();
 
