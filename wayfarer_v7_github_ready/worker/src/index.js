@@ -359,11 +359,11 @@ const ZONE_DEFS = {
 };
 const ZONE_EXIT_SPAWNS = Object.freeze({
   hearthvale_square: {
-    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:25, spawnY:12 },
+    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:26, spawnY:12 },
     southeast_path_exit: { x:26, y:18, w:1, h:5, spawnX:25, spawnY:20 }
   },
   eastern_woods: {
-    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:28, spawnY:12 },
+    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:27, spawnY:12 },
     southwest_path_exit: { x:27, y:18, w:1, h:5, spawnX:29, spawnY:20 }
   }
 });
@@ -1806,11 +1806,18 @@ function isDirectionalInputHeld(){
 }
 
 function resolveTransitionArrival(transition, fromX, fromY){
-  const baseX=transition.arrival?.x ?? fromX;
-  const baseY=transition.arrival?.y ?? fromY;
+  if(!transition.arrival || !isFiniteNumber(transition.arrival.x) || !isFiniteNumber(transition.arrival.y)){
+    console.error("Invalid transition spawn.", transition);
+    return null;
+  }
+  const baseX=transition.arrival.x;
+  const baseY=transition.arrival.y;
   if(transition.preserveAxis==="y"){
     const destinationTrigger=ZONE_EXIT_SPAWNS[transition.destinationZone]?.[transition.destinationSpawnId];
-    if(!destinationTrigger) return { x:baseX, y:baseY };
+    if(!destinationTrigger){
+      console.error("Invalid transition spawn.", transition);
+      return null;
+    }
     const minY=destinationTrigger.y;
     const maxY=destinationTrigger.y+destinationTrigger.h-1;
     const alignedY=Math.max(minY, Math.min(maxY, fromY));
@@ -1824,13 +1831,19 @@ function handleZoneTransitionIfNeeded(){
   if(now<nextZoneTransitionAt) return false;
   const transition=findZoneTransitionAt(player.targetX, player.targetY);
   if(!transition) return false;
+  const sourceZoneName=getCurrentZoneName();
+  const destinationZoneName=getZoneDefinition(transition.destinationZone).name;
   const preservedFacing=transition.sourceExitId==="east_road_exit"
     ? "right"
     : transition.sourceExitId==="west_road_entrance"
       ? "left"
       : player.facing;
-  currentZoneId=transition.destinationZone;
   const arrival=resolveTransitionArrival(transition, player.targetX, player.targetY);
+  if(!arrival){
+    console.error("Invalid transition spawn.");
+    return false;
+  }
+  currentZoneId=transition.destinationZone;
   const arrivalX=arrival.x;
   const arrivalY=arrival.y;
   clearDirectionalInput();
@@ -1842,6 +1855,15 @@ function handleZoneTransitionIfNeeded(){
   movementSuppressedUntil=now+ZONE_TRANSITION_INPUT_SUPPRESS_MS;
   requireDirectionKeyRelease=true;
   hostileAggroBlockedUntil=now+ZONE_TRANSITION_HOSTILE_GRACE_MS;
+  const transitionSummary="Transition: " + sourceZoneName + " \u2192 " + destinationZoneName;
+  const transitionSpawnDetails="Spawn: " + transition.destinationSpawnId;
+  const transitionPlayerDetails="Player: x=" + player.targetX + " y=" + player.targetY;
+  log(transitionSummary);
+  log(transitionSpawnDetails);
+  log(transitionPlayerDetails);
+  console.info(transitionSummary);
+  console.info(transitionSpawnDetails);
+  console.info(transitionPlayerDetails);
   if(lastLoggedZoneEntryId!==currentZoneId){
     log("Entered " + getCurrentZoneName() + ".");
     lastLoggedZoneEntryId=currentZoneId;
