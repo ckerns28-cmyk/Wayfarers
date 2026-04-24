@@ -782,9 +782,13 @@ world.zones.push(
 
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,weapon:{name:"Rusty Sword",bonus:2,durability:100},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
-const wolf={x:31,y:13,px:31*TILE,py:13*TILE,targetX:31,targetY:13,hp:22,maxHp:22,homeX:31,homeY:13,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false};
+const wolf={x:31,y:13,px:31*TILE,py:13*TILE,targetX:31,targetY:13,hp:22,maxHp:22,homeX:31,homeY:13,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
 
-let lastWolfDecision=0,lastWolfAttack=0,lastPlayerAttack=0,wolfRespawnAt=0,hitStopUntil=0;
+let lastWolfDecision=0,lastWolfAttack=0,lastPlayerAttack=0,wolfRespawnAt=0,hitStopUntil=0,lastNoTargetLogAt=0;
+let missNoticeArmed=true;
+const PLAYER_ATTACK_RANGE=1;
+const WOLF_ATTACK_COOLDOWN_MS=1800;
+const WOLF_RESPAWN_MS=12000;
 
 const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", COMPLETED:"Completed" });
 
@@ -1005,7 +1009,7 @@ function showSaveNotice(message){
 function isFiniteNumber(value){ return typeof value==="number" && Number.isFinite(value); }
 function createSaveData(reason){
   return {
-    version:1,
+    version:2,
     reason,
     savedAt:new Date().toISOString(),
     player:{
@@ -1022,12 +1026,19 @@ function createSaveData(reason){
     },
     world:{
       triggeredEvents:Array.from(worldTriggeredEvents),
-      stateChanges:{ pondAwakened:worldEvents.pondAwakened }
+      stateChanges:{ pondAwakened:worldEvents.pondAwakened },
+      creatures:{
+        wolf:{
+          hp:wolf.hp,
+          defeated:wolf.defeated,
+          respawnRemainingMs:Math.max(0, wolfRespawnAt ? wolfRespawnAt-performance.now() : 0)
+        }
+      }
     }
   };
 }
 function validateSaveData(data){
-  if(!data || data.version!==1) return false;
+  if(!data || (data.version!==1 && data.version!==2)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -1067,6 +1078,19 @@ function loadGame(){
     worldTriggeredEvents.clear();
     (data.world?.triggeredEvents||[]).forEach((eventName)=>{ if(typeof eventName==="string") worldTriggeredEvents.add(eventName); });
     worldEvents.pondAwakened=Boolean(data.world?.stateChanges?.pondAwakened);
+    const savedWolf=data.world?.creatures?.wolf;
+    if(savedWolf && typeof savedWolf==="object"){
+      wolf.hp=isFiniteNumber(savedWolf.hp) ? Math.max(0,Math.min(wolf.maxHp,savedWolf.hp)) : wolf.hp;
+      wolf.defeated=Boolean(savedWolf.defeated) || wolf.hp<=0;
+      const remaining=isFiniteNumber(savedWolf.respawnRemainingMs)?Math.max(0,savedWolf.respawnRemainingMs):0;
+      wolfRespawnAt=wolf.defeated ? performance.now()+remaining : 0;
+      if(!wolf.defeated && wolf.hp>0){
+        wolf.targetX=wolf.homeX;
+        wolf.targetY=wolf.homeY;
+        wolf.px=wolf.targetX*TILE;
+        wolf.py=wolf.targetY*TILE;
+      }
+    }
     log("System: Save loaded.");
     return true;
   } catch(err){
@@ -1101,6 +1125,36 @@ function currentZoneName(){
   return "Outer Road";
 }
 
+function getHostileDistance(hostile){
+  if(!hostile || hostile.hp<=0) return Infinity;
+  return Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY);
+}
+
+function getNearestHostile(range=Infinity){
+  const hostiles=[{ id:"wolf", name:"Wolf", entity:wolf }];
+  let nearest=null;
+  for(const hostile of hostiles){
+    const distance=getHostileDistance(hostile.entity);
+    if(distance>range) continue;
+    if(!nearest || distance<nearest.distance) nearest={...hostile,distance};
+  }
+  return nearest;
+}
+
+function respawnPlayerAtSquare(){
+  player.targetX=18;
+  player.targetY=11;
+  player.px=player.targetX*TILE;
+  player.py=player.targetY*TILE;
+}
+
+function handlePlayerDefeat(){
+  log("Defeat: You fall in battle.");
+  player.hp=player.maxHp;
+  respawnPlayerAtSquare();
+  log("System: You awaken at Hearthvale Square.");
+}
+
 function updateSidebar(){
   hpVal.textContent = player.hp + "/" + player.maxHp;
   xpVal.textContent = String(player.xp);
@@ -1114,7 +1168,14 @@ function updateSidebar(){
   else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="go_to_pond") objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
   else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="heard_whispers") objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
   else objectiveText.textContent = "Quest complete: Listening at Mirror Pond.";
-  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName;
+  const nearbyHostile=getNearestHostile(5);
+  const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
+  const wolfCooldownMs=Math.max(0, WOLF_ATTACK_COOLDOWN_MS-(performance.now()-lastWolfAttack));
+  const wolfCooldownText=wolf.hp<=0 ? "Down" : (wolfCooldownMs<=0 ? "Ready" : (wolfCooldownMs/1000).toFixed(1)+"s");
+  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName +
+    "\nHostile nearby : " + (nearbyHostile ? "Yes (" + nearbyHostile.name + ")" : "No") +
+    "\nCurrent target : " + (targetHostile ? targetHostile.name : "None") +
+    "\nWolf bite cd : " + wolfCooldownText;
 }
 
 function canMoveTo(x,y){ if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false; if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false; if(x===npc.x&&y===npc.y) return false; if(wolf.hp>0&&x===wolf.targetX&&y===wolf.targetY) return false; return true; }
@@ -1130,7 +1191,11 @@ addEventListener("keydown",(e)=>{
   if(dialogueSystem.activeSession?.pendingChoices && /^[1-9]$/.test(k)) dialogueSystem.choose(Number(k)-1);
   keys.add(k);
 });
-addEventListener("keyup",(e)=> keys.delete(e.key.toLowerCase()));
+addEventListener("keyup",(e)=>{
+  const k=e.key.toLowerCase();
+  keys.delete(k);
+  if(k===" "||k==="space") missNoticeArmed=true;
+});
 canvas.addEventListener("click",(e)=>{ const clicked=screenToWorld(e.clientX,e.clientY); interactionManager.interactAt(clicked.x, clicked.y); });
 
 function getCamera(){
@@ -1160,7 +1225,16 @@ function updateInput(){
 
 function canWolfMoveTo(x,y){ if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false; if(world.blocked.has(keyOf(x,y))) return false; if(x===npc.x&&y===npc.y) return false; return true; }
 function updateWolf(now){
-  if(wolf.hp<=0){ if(wolfRespawnAt!==0&&now>=wolfRespawnAt){ wolf.hp=wolf.maxHp; wolf.targetX=wolf.homeX; wolf.targetY=wolf.homeY; wolf.px=wolf.targetX*TILE; wolf.py=wolf.targetY*TILE; wolfRespawnAt=0; log("The wolf prowls back into the clearing."); } return; }
+  if(wolf.hp<=0){
+    if(wolfRespawnAt!==0&&now>=wolfRespawnAt){
+      wolf.hp=wolf.maxHp;
+      wolf.defeated=false;
+      wolf.targetX=wolf.homeX; wolf.targetY=wolf.homeY; wolf.px=wolf.targetX*TILE; wolf.py=wolf.targetY*TILE;
+      wolfRespawnAt=0;
+      log("The wolf prowls back into the clearing.");
+    }
+    return;
+  }
   if(now-lastWolfDecision<650) return; lastWolfDecision=now;
   const dx=player.targetX-wolf.targetX, dy=player.targetY-wolf.targetY, dist=Math.abs(dx)+Math.abs(dy);
   if(dist<=4){
@@ -1178,24 +1252,48 @@ function updateWolf(now){
 function wolfAttack(now){
   if(wolf.hp<=0) return;
   const dist=Math.abs(player.targetX-wolf.targetX)+Math.abs(player.targetY-wolf.targetY);
-  if(dist>1||now-lastWolfAttack<1100) return;
+  if(dist>1||now-lastWolfAttack<WOLF_ATTACK_COOLDOWN_MS) return;
   lastWolfAttack=now; wolf.attackUntil=now+350;
   player.hp=Math.max(0,player.hp-5); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
   const wx=player.targetX-wolf.targetX, wy=player.targetY-wolf.targetY, len=Math.max(1,Math.hypot(wx,wy));
   wolf.attackLungeX=(wx/len)*2; wolf.attackLungeY=(wy/len)*1.2; player.recoilX=(wx/len)*2.5; player.recoilY=(wy/len)*1.6;
-  log("A wolf bites you for 5.");
-  if(player.hp<=0){ player.hp=player.maxHp; player.targetX=18; player.targetY=11; player.px=player.targetX*TILE; player.py=player.targetY*TILE; log("System: You wake in Hearthvale Square."); }
+  log("Wolf bites you for 5 damage.");
+  if(player.hp<=0) handlePlayerDefeat();
 }
 function tryPlayerAttack(now){
-  if(dialogueSystem.activeSession||wolf.hp<=0) return; if(!(keys.has(" ")||keys.has("space"))) return; if(now-lastPlayerAttack<420) return;
+  if(dialogueSystem.activeSession) return;
+  if(!(keys.has(" ")||keys.has("space"))) return;
+  if(now-lastPlayerAttack<420) return;
   lastPlayerAttack=now; player.attackUntil=now+350;
-  const step={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}[player.facing]||{x:0,y:1};
-  const ax=player.targetX+step.x, ay=player.targetY+step.y;
-  if(ax!==wolf.targetX||ay!==wolf.targetY){ log("You swing at empty air."); return; }
-  wolf.hp=Math.max(0,wolf.hp-6); wolf.hitUntil=now+320; wolf.hitFlickerUntil=now+240; hitStopUntil=now+65;
-  player.attackLungeX=step.x*2.4; player.attackLungeY=step.y*1.4; wolf.recoilX=step.x*2.3; wolf.recoilY=step.y*1.5;
-  log("You strike the wolf for 6.");
-  if(wolf.hp<=0){ player.xp+=12; player.coins+=4; wolfRespawnAt=now+10000; log("The wolf collapses. (+12 XP, +4 coins)"); }
+  const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
+  if(!targetHostile){
+    if(missNoticeArmed && now-lastNoTargetLogAt>900){
+      log("Attack misses: no hostile in range.");
+      lastNoTargetLogAt=now;
+      missNoticeArmed=false;
+    }
+    return;
+  }
+  missNoticeArmed=false;
+  const tx=targetHostile.entity.targetX-player.targetX;
+  const ty=targetHostile.entity.targetY-player.targetY;
+  const len=Math.max(1,Math.hypot(tx,ty));
+  player.attackLungeX=(tx/len)*2.4;
+  player.attackLungeY=(ty/len)*1.4;
+  targetHostile.entity.hp=Math.max(0,targetHostile.entity.hp-6);
+  targetHostile.entity.hitUntil=now+320;
+  targetHostile.entity.hitFlickerUntil=now+240;
+  targetHostile.entity.recoilX=(tx/len)*2.3;
+  targetHostile.entity.recoilY=(ty/len)*1.5;
+  hitStopUntil=now+65;
+  log("Hit: " + targetHostile.name + " takes 6 damage.");
+  if(targetHostile.entity.hp<=0 && !targetHostile.entity.defeated){
+    targetHostile.entity.defeated=true;
+    player.xp+=12;
+    player.coins+=4;
+    wolfRespawnAt=now+WOLF_RESPAWN_MS;
+    log("Wolf defeated. Rewards: +12 XP, +4 coins.");
+  }
 }
 
 // Keep color construction backtick-free inside this String.raw payload to avoid
