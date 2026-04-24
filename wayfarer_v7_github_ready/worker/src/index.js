@@ -100,6 +100,18 @@ const html = String.raw`<!DOCTYPE html>
     #dialogueName{font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.4px}
     #dialogueText{white-space:pre-line;min-height:62px;line-height:1.5}
     #dialogueHint{margin-top:8px;color:var(--muted);font-size:12px}
+    #saveNotice{
+      position:absolute;top:16px;right:16px;opacity:0;transform:translateY(-6px);
+      transition:opacity .2s ease,transform .2s ease;
+      pointer-events:none;
+      font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;
+      background:rgba(14,24,36,.92);
+      border:1px solid #4c6281;
+      border-radius:8px;
+      padding:8px 10px;
+      box-shadow:0 8px 22px rgba(0,0,0,.45);
+    }
+    #saveNotice.visible{opacity:1;transform:translateY(0)}
   </style>
 </head>
 <body>
@@ -115,7 +127,7 @@ const html = String.raw`<!DOCTYPE html>
           <div class="muted">HP</div><div id="hpVal">50/50</div>
           <div class="muted">XP</div><div id="xpVal">0</div>
           <div class="muted">Coins</div><div id="coinsVal">0</div>
-          <div class="muted">Weapon</div><div>Rusty Sword (+2)</div>
+          <div class="muted">Weapon</div><div id="weaponVal">Rusty Sword (+2)</div>
           <div class="muted">Quest</div><div id="questVal">Town Slice</div>
           <div class="muted">Zone</div><div id="zoneVal">Hearthvale Square</div>
         </div>
@@ -138,6 +150,7 @@ const html = String.raw`<!DOCTYPE html>
         <div id="dialogueText"></div>
         <div id="dialogueHint">Click to continue. Press number keys for choices.</div>
       </div>
+      <div id="saveNotice">Game Saved</div>
       <script id="dialogueData" type="application/json">
 {
   "characters": {
@@ -222,11 +235,13 @@ const xpVal = document.getElementById("xpVal");
 const coinsVal = document.getElementById("coinsVal");
 const zoneVal = document.getElementById("zoneVal");
 const questVal = document.getElementById("questVal");
+const weaponVal = document.getElementById("weaponVal");
 const objectiveText = document.getElementById("objectiveText");
 const dialogue = document.getElementById("dialogue");
 const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
 const dialogueHint = document.getElementById("dialogueHint");
+const saveNotice = document.getElementById("saveNotice");
 
 function parseJsonScript(id){
   const node=document.getElementById(id);
@@ -765,7 +780,7 @@ world.zones.push(
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
 
-const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
+const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,weapon:{name:"Rusty Sword",bonus:2,durability:100},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const wolf={x:31,y:13,px:31*TILE,py:13*TILE,targetX:31,targetY:13,hp:22,maxHp:22,homeX:31,homeY:13,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false};
 
@@ -819,6 +834,32 @@ class QuestStateSystem {
     this.events.emit("quest:completed:" + questId,{questId});
   }
   getQuest(questId){ return this.quests.get(questId) || null; }
+  serializeState(){
+    const states=[];
+    for(const quest of this.quests.values()) states.push({id:quest.id,state:quest.state,progress:quest.progress});
+    return states;
+  }
+  getCompletedQuestIds(){
+    const ids=[];
+    for(const quest of this.quests.values()) if(quest.state===QuestState.COMPLETED) ids.push(quest.id);
+    return ids;
+  }
+  getActiveQuestIds(){
+    const ids=[];
+    for(const quest of this.quests.values()) if(quest.state===QuestState.ACTIVE) ids.push(quest.id);
+    return ids;
+  }
+  applyState(stateEntries){
+    if(!Array.isArray(stateEntries)) return;
+    const validStates=new Set(Object.values(QuestState));
+    stateEntries.forEach((entry)=>{
+      if(!entry || typeof entry.id!=="string") return;
+      const quest=this.quests.get(entry.id);
+      if(!quest) return;
+      if(typeof entry.state==="string" && validStates.has(entry.state)) quest.state=entry.state;
+      if(typeof entry.progress==="string") quest.progress=entry.progress;
+    });
+  }
 }
 
 class DialogueFramework {
@@ -945,11 +986,97 @@ eventSystem.on("quest:report:mirror_pond", ()=>{
 });
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
 let worldEvents={ pondAwakened:false };
+const worldTriggeredEvents=new Set();
 eventSystem.on("world:pond:awakened", ()=>{
   if(worldEvents.pondAwakened) return;
   worldEvents.pondAwakened=true;
+  worldTriggeredEvents.add("world:pond:awakened");
   log("World Event: Mirror Pond awakens and the air goes still.");
 });
+
+const SAVE_KEY="wayfarer.save.v1";
+let saveNoticeTimeout=0;
+function showSaveNotice(message){
+  saveNotice.textContent=message;
+  saveNotice.classList.add("visible");
+  if(saveNoticeTimeout) clearTimeout(saveNoticeTimeout);
+  saveNoticeTimeout=setTimeout(()=>saveNotice.classList.remove("visible"), 1400);
+}
+function isFiniteNumber(value){ return typeof value==="number" && Number.isFinite(value); }
+function createSaveData(reason){
+  return {
+    version:1,
+    reason,
+    savedAt:new Date().toISOString(),
+    player:{
+      position:{ x:player.targetX, y:player.targetY },
+      hp:player.hp,
+      xp:player.xp,
+      coins:player.coins,
+      weapon:{ ...player.weapon }
+    },
+    quests:{
+      questStates:questSystem.serializeState(),
+      completedQuests:questSystem.getCompletedQuestIds(),
+      activeQuests:questSystem.getActiveQuestIds()
+    },
+    world:{
+      triggeredEvents:Array.from(worldTriggeredEvents),
+      stateChanges:{ pondAwakened:worldEvents.pondAwakened }
+    }
+  };
+}
+function validateSaveData(data){
+  if(!data || data.version!==1) return false;
+  const px=data.player?.position?.x, py=data.player?.position?.y;
+  if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
+  if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
+  return true;
+}
+function saveGame(reason){
+  try {
+    const payload=createSaveData(reason);
+    localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+    showSaveNotice("Game Saved");
+  } catch(err){
+    console.error("Save failed", err);
+    log("System: Save failed.");
+  }
+}
+function loadGame(){
+  const raw=localStorage.getItem(SAVE_KEY);
+  if(!raw) return false;
+  try {
+    const data=JSON.parse(raw);
+    if(!validateSaveData(data)) throw new Error("Invalid save payload");
+    player.targetX=Math.max(0,Math.min(WORLD_W-1,data.player.position.x));
+    player.targetY=Math.max(0,Math.min(WORLD_H-1,data.player.position.y));
+    player.px=player.targetX*TILE;
+    player.py=player.targetY*TILE;
+    player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
+    player.xp=Math.max(0,data.player.xp);
+    player.coins=Math.max(0,data.player.coins);
+    if(data.player.weapon && typeof data.player.weapon==="object"){
+      player.weapon={
+        name:typeof data.player.weapon.name==="string"?data.player.weapon.name:"Rusty Sword",
+        bonus:isFiniteNumber(data.player.weapon.bonus)?data.player.weapon.bonus:2,
+        durability:isFiniteNumber(data.player.weapon.durability)?data.player.weapon.durability:100
+      };
+    }
+    questSystem.applyState(data.quests?.questStates||[]);
+    worldTriggeredEvents.clear();
+    (data.world?.triggeredEvents||[]).forEach((eventName)=>{ if(typeof eventName==="string") worldTriggeredEvents.add(eventName); });
+    worldEvents.pondAwakened=Boolean(data.world?.stateChanges?.pondAwakened);
+    log("System: Save loaded.");
+    return true;
+  } catch(err){
+    console.error("Load failed", err);
+    localStorage.removeItem(SAVE_KEY);
+    log("System: Save data was corrupted and has been reset.");
+    return false;
+  }
+}
+eventSystem.on("quest:completed:mirror_pond_listening", ()=>saveGame("quest_complete"));
 
 interactionManager.register({
   id:"npc_edrin", type:"npc", x:()=>npc.x, y:()=>npc.y,
@@ -978,6 +1105,7 @@ function updateSidebar(){
   hpVal.textContent = player.hp + "/" + player.maxHp;
   xpVal.textContent = String(player.xp);
   coinsVal.textContent = String(player.coins);
+  weaponVal.textContent = player.weapon.name + " (+" + player.weapon.bonus + ")";
   const zoneName=currentZoneName();
   zoneVal.textContent = zoneName;
   const mainQuest=questSystem.getQuest("mirror_pond_listening");
@@ -986,7 +1114,7 @@ function updateSidebar(){
   else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="go_to_pond") objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
   else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="heard_whispers") objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
   else objectiveText.textContent = "Quest complete: Listening at Mirror Pond.";
-  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName;
+  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName;
 }
 
 function canMoveTo(x,y){ if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false; if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false; if(x===npc.x&&y===npc.y) return false; if(wolf.hp>0&&x===wolf.targetX&&y===wolf.targetY) return false; return true; }
@@ -995,9 +1123,10 @@ const keys=new Set();
 let showGrid=false;
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","k","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
   if(k==="g") showGrid=!showGrid;
   if(k==="e") interactionManager.tryInteract();
+  if(k==="k") saveGame("manual");
   if(dialogueSystem.activeSession?.pendingChoices && /^[1-9]$/.test(k)) dialogueSystem.choose(Number(k)-1);
   keys.add(k);
 });
@@ -1273,7 +1402,11 @@ function update(dt,now){
 let last=performance.now();
 function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
 
+const loadedFromSave=loadGame();
 log("System: Artistic rebuild slice loaded.");
+if(loadedFromSave) log("System: Continuing from saved progress.");
+else log("System: New journey started.");
+log("System: Press K at any time to save manually.");
 log("System: Speak to Edrin Vale and use E to interact with nearby objects.");
 updateSidebar();
 requestAnimationFrame(loop);
