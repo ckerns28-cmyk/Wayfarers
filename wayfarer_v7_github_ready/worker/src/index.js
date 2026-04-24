@@ -1781,7 +1781,8 @@ function updateSidebar(){
       return name + " x" + entry.quantity;
     }).join("<br>");
   }
-  if(isVendorOpen()) renderVendorMenu();
+  // Do not re-render vendor rows every sidebar update; replacing DOM each frame
+  // can swallow button clicks before click events complete.
   const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "";
   const equippedArmor=getEquippedItem("armor");
   const armorDefense=getEquippedDefenseBonus();
