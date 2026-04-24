@@ -91,6 +91,7 @@ const html = String.raw`<!DOCTYPE html>
     }
     #dialogue {
       position:absolute;left:20px;right:20px;bottom:20px;display:none;
+      z-index:25;
       background:linear-gradient(#121a25,#0b1018);
       border:1px solid #51637d;
       border-radius:10px;
@@ -102,6 +103,7 @@ const html = String.raw`<!DOCTYPE html>
     #dialogueHint{margin-top:8px;color:var(--muted);font-size:12px}
     #vendorPanel{
       position:absolute;left:50%;transform:translateX(-50%);bottom:20px;display:none;
+      z-index:30;
       width:min(700px, calc(100% - 40px));
       background:linear-gradient(#121a25,#0b1018);
       border:1px solid #51637d;
@@ -1140,6 +1142,38 @@ function renderVendorMenu(){
     (buyRows || "<div class=\"muted\">No items available.</div>") +
     "<div class=\"questTitle\" style=\"margin-top:8px;\">SELL</div>" +
     (sellRows || "<div class=\"muted\">Inventory is empty.</div>");
+  bindVendorButtons();
+}
+function handleVendorActionFromTarget(target){
+  if(!target) return false;
+  const buyButton=target.closest?.("button[data-buy-item]");
+  const buyItemId=buyButton?.dataset?.buyItem;
+  if(buyItemId){
+    console.debug("[Vendor] Buy click:", buyItemId);
+    return buyOneItemFromVendor(buyItemId);
+  }
+  const sellButton=target.closest?.("button[data-sell-item]");
+  const sellItemId=sellButton?.dataset?.sellItem;
+  if(!sellItemId) return false;
+  return sellOneItemToVendor(sellItemId);
+}
+function bindVendorButtons(){
+  const buyButtons=vendorList.querySelectorAll("button[data-buy-item]");
+  buyButtons.forEach((button)=>{
+    button.onclick=(event)=>{
+      event.preventDefault();
+      event.stopPropagation();
+      handleVendorActionFromTarget(event.currentTarget);
+    };
+  });
+  const sellButtons=vendorList.querySelectorAll("button[data-sell-item]");
+  sellButtons.forEach((button)=>{
+    button.onclick=(event)=>{
+      event.preventDefault();
+      event.stopPropagation();
+      handleVendorActionFromTarget(event.currentTarget);
+    };
+  });
 }
 function openVendorMenu(){
   if(dialogueSystem.activeSession) dialogueSystem.close();
