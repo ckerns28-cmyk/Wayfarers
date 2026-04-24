@@ -136,8 +136,74 @@ const html = String.raw`<!DOCTYPE html>
       <div id="dialogue">
         <div id="dialogueName"></div>
         <div id="dialogueText"></div>
-        <div id="dialogueHint">Click dialogue panel to continue.</div>
+        <div id="dialogueHint">Click to continue. Press number keys for choices.</div>
       </div>
+      <script id="dialogueData" type="application/json">
+{
+  "characters": {
+    "edrin": {
+      "name": "Edrin Vale",
+      "root": "greeting",
+      "nodes": {
+        "greeting": {
+          "lines": [
+            "You are not from here.",
+            "Mirror Pond keeps old promises.",
+            "What do you seek, wayfarer?"
+          ],
+          "choices": [
+            { "text": "Any work for me?", "next": "quest_offer" },
+            { "text": "Tell me about this town.", "next": "town_lore" }
+          ]
+        },
+        "town_lore": {
+          "lines": [
+            "Hearthvale pretends to be quiet.",
+            "Listen long enough and the stones answer back."
+          ],
+          "next": "greeting"
+        },
+        "quest_offer": {
+          "lines": [
+            "Then hear me.",
+            "Stand by Mirror Pond and listen until the wind settles.",
+            "Return only after you feel the water acknowledge you."
+          ],
+          "onCompleteEvents": ["quest:activate:mirror_pond_listening"],
+          "next": "quest_active_followup"
+        },
+        "quest_active_followup": {
+          "lines": [
+            "The pond is waiting. Go there and be still."
+          ],
+          "next": "end"
+        },
+        "post_quest": {
+          "lines": [
+            "You heard it, didn't you?",
+            "Good. Hearthvale will remember your step."
+          ],
+          "onCompleteEvents": ["world:pond:awakened"],
+          "next": "end"
+        }
+      }
+    }
+  }
+}
+      </script>
+      <script id="questData" type="application/json">
+{
+  "quests": [
+    {
+      "id": "mirror_pond_listening",
+      "name": "Listening at Mirror Pond",
+      "description": "Travel to Mirror Pond and listen in silence.",
+      "startEvents": ["quest:activate:mirror_pond_listening"],
+      "completionEvents": ["zone:entered:mirror_pond"]
+    }
+  ]
+}
+      </script>
     </main>
   </div>
 <script>
@@ -154,6 +220,14 @@ const objectiveText = document.getElementById("objectiveText");
 const dialogue = document.getElementById("dialogue");
 const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
+const dialogueHint = document.getElementById("dialogueHint");
+
+function parseJsonScript(id){
+  const node=document.getElementById(id);
+  if(!node) return {};
+  try { return JSON.parse(node.textContent || "{}"); }
+  catch(err){ console.error("Invalid JSON in", id, err); return {}; }
+}
 
 const TILE = 32;
 const WORLD_W = 38;
@@ -690,12 +764,183 @@ const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const wolf={x:31,y:13,px:31*TILE,py:13*TILE,targetX:31,targetY:13,hp:22,maxHp:22,homeX:31,homeY:13,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false};
 
 let lastWolfDecision=0,lastWolfAttack=0,lastPlayerAttack=0,wolfRespawnAt=0,hitStopUntil=0;
-let activeDialogue=null,dialogueIndex=0;
-const edrinLines=["You are not from here.","...good.","This town is older than it lets itself appear.","Mirror Pond listens longer than most people do.","Walk slowly. Some places reveal themselves only when you stop trying to rush them."];
 
-function startDialogue(name,lines){ activeDialogue={name,lines}; dialogueIndex=0; renderDialogue(); }
-function renderDialogue(){ if(!activeDialogue) return; dialogue.style.display="block"; dialogueName.textContent=activeDialogue.name; dialogueText.textContent=activeDialogue.lines[dialogueIndex]; }
-dialogue.addEventListener("click",()=>{ if(!activeDialogue) return; dialogueIndex++; if(dialogueIndex>=activeDialogue.lines.length){ activeDialogue=null; dialogue.style.display="none"; return;} renderDialogue(); });
+const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", COMPLETED:"Completed" });
+
+class EventTriggerSystem {
+  constructor(){ this.handlers=new Map(); this.zoneWatchers=[]; this.lastZone=""; }
+  on(eventName, handler){ if(!this.handlers.has(eventName)) this.handlers.set(eventName, []); this.handlers.get(eventName).push(handler); }
+  emit(eventName, payload={}){ const handlers=this.handlers.get(eventName)||[]; handlers.forEach((handler)=>handler(payload)); }
+  registerZoneTrigger(zoneName, eventName){ this.zoneWatchers.push({zoneName,eventName}); }
+  update(zoneName){
+    if(zoneName===this.lastZone) return;
+    this.lastZone=zoneName;
+    this.zoneWatchers.forEach((watcher)=>{ if(watcher.zoneName===zoneName) this.emit(watcher.eventName,{zone:zoneName}); });
+  }
+}
+
+class QuestStateSystem {
+  constructor(definitions, events){
+    this.events=events;
+    this.quests=new Map(definitions.map((q)=>[q.id,{...q,state:QuestState.NOT_STARTED}]));
+    definitions.forEach((quest)=>{
+      (quest.startEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.activateQuest(quest.id)));
+      (quest.completionEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.completeQuest(quest.id)));
+    });
+  }
+  activateQuest(questId){
+    const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.NOT_STARTED) return;
+    quest.state=QuestState.ACTIVE;
+    log("Quest started: " + quest.name);
+    this.events.emit("quest:state-changed",{questId,state:quest.state});
+  }
+  completeQuest(questId){
+    const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.ACTIVE) return;
+    quest.state=QuestState.COMPLETED;
+    log("Quest complete: " + quest.name);
+    player.xp += 20;
+    player.coins += 6;
+    this.events.emit("quest:state-changed",{questId,state:quest.state});
+    this.events.emit("quest:completed:" + questId,{questId});
+  }
+  getQuest(questId){ return this.quests.get(questId) || null; }
+}
+
+class DialogueFramework {
+  constructor(data, events){
+    this.data=data;
+    this.events=events;
+    this.activeSession=null;
+  }
+  start(characterId){
+    const char=this.data.characters?.[characterId];
+    if(!char) return false;
+    let root=char.root;
+    if(characterId==="edrin"){
+      const quest=questSystem.getQuest("mirror_pond_listening");
+      if(quest?.state===QuestState.COMPLETED) root="post_quest";
+      else if(quest?.state===QuestState.ACTIVE) root="quest_active_followup";
+    }
+    this.activeSession={characterId,nodeId:root,lineIndex:0,pendingChoices:null};
+    this.render();
+    this.events.emit("dialogue:started:" + characterId,{characterId,nodeId:root});
+    return true;
+  }
+  getNode(){
+    if(!this.activeSession) return null;
+    const char=this.data.characters?.[this.activeSession.characterId];
+    return char?.nodes?.[this.activeSession.nodeId] || null;
+  }
+  advance(){
+    const node=this.getNode();
+    if(!node || !this.activeSession) return;
+    if(this.activeSession.pendingChoices) return;
+    this.activeSession.lineIndex += 1;
+    if(this.activeSession.lineIndex < (node.lines?.length||0)){ this.render(); return; }
+    if(node.choices?.length){ this.activeSession.pendingChoices=node.choices; this.render(); return; }
+    (node.onCompleteEvents||[]).forEach((eventName)=>this.events.emit(eventName,{characterId:this.activeSession.characterId,nodeId:this.activeSession.nodeId}));
+    if(node.next && node.next!=="end"){
+      this.activeSession.nodeId=node.next;
+      this.activeSession.lineIndex=0;
+      this.activeSession.pendingChoices=null;
+      this.render();
+      return;
+    }
+    this.close();
+  }
+  choose(index){
+    if(!this.activeSession?.pendingChoices) return;
+    const choice=this.activeSession.pendingChoices[index];
+    if(!choice) return;
+    if(choice.event) this.events.emit(choice.event,{characterId:this.activeSession.characterId});
+    this.activeSession.nodeId=choice.next;
+    this.activeSession.lineIndex=0;
+    this.activeSession.pendingChoices=null;
+    this.render();
+  }
+  close(){ this.activeSession=null; dialogue.style.display="none"; }
+  render(){
+    const session=this.activeSession;
+    const node=this.getNode();
+    if(!session || !node){ this.close(); return; }
+    const char=this.data.characters?.[session.characterId];
+    dialogue.style.display="block";
+    dialogueName.textContent=char?.name || "Unknown";
+    if(session.pendingChoices){
+      const options=session.pendingChoices.map((choice, idx)=>(idx+1)+") "+choice.text).join("\n");
+      dialogueText.textContent=(node.lines||[]).join("\n") + "\n\n" + options;
+      dialogueHint.textContent="Press 1-9 to choose, or click to continue with option 1.";
+    } else {
+      dialogueText.textContent=(node.lines||[])[session.lineIndex] || "...";
+      dialogueHint.textContent="Click to continue dialogue.";
+    }
+  }
+}
+
+class InteractionManager {
+  constructor(range){ this.range=range; this.interactables=[]; }
+  register(interactable){ this.interactables.push(interactable); }
+  isInRange(target){ return Math.abs(player.targetX-target.x()) + Math.abs(player.targetY-target.y()) <= this.range; }
+  getNearest(){
+    let nearest=null;
+    for(const target of this.interactables){
+      const distance=Math.abs(player.targetX-target.x()) + Math.abs(player.targetY-target.y());
+      if(distance>this.range) continue;
+      if(!nearest || distance<nearest.distance) nearest={target,distance};
+    }
+    return nearest?.target || null;
+  }
+  tryInteract(){
+    if(dialogueSystem.activeSession){ dialogueSystem.advance(); return true; }
+    const target=this.getNearest();
+    if(!target) return false;
+    target.onInteract?.();
+    eventSystem.emit("interaction:used",{id:target.id,type:target.type});
+    return true;
+  }
+  interactAt(x,y){
+    const target=this.interactables.find((candidate)=>candidate.x()===x && candidate.y()===y && this.isInRange(candidate));
+    if(!target) return false;
+    target.onInteract?.();
+    eventSystem.emit("interaction:used",{id:target.id,type:target.type});
+    return true;
+  }
+}
+
+const dialogueData=parseJsonScript("dialogueData");
+const questData=parseJsonScript("questData");
+const eventSystem=new EventTriggerSystem();
+const questSystem=new QuestStateSystem(questData.quests||[], eventSystem);
+const dialogueSystem=new DialogueFramework(dialogueData, eventSystem);
+const interactionManager=new InteractionManager(2);
+
+eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
+eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
+eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
+let worldEvents={ pondAwakened:false };
+eventSystem.on("world:pond:awakened", ()=>{
+  if(worldEvents.pondAwakened) return;
+  worldEvents.pondAwakened=true;
+  log("World Event: Mirror Pond awakens and the air goes still.");
+});
+
+interactionManager.register({
+  id:"npc_edrin", type:"npc", x:()=>npc.x, y:()=>npc.y,
+  onInteract:()=>dialogueSystem.start("edrin")
+});
+interactionManager.register({
+  id:"obj_well", type:"object", x:()=>18, y:()=>11,
+  onInteract:()=>{ log("The well water is cold and perfectly still."); eventSystem.emit("object:used:well",{}); }
+});
+interactionManager.register({
+  id:"obj_sign_pond", type:"object", x:()=>25, y:()=>11,
+  onInteract:()=>{ log("Signpost: Mirror Pond — Keep silence near the water."); eventSystem.emit("object:used:pond_sign",{}); }
+});
+
+dialogue.addEventListener("click",()=>{
+  if(dialogueSystem.activeSession?.pendingChoices) dialogueSystem.choose(0);
+  else if(dialogueSystem.activeSession) dialogueSystem.advance();
+});
 
 function currentZoneName(){
   for(const z of world.zones){ if(player.targetX>=z.x&&player.targetX<z.x+z.w&&player.targetY>=z.y&&player.targetY<z.y+z.h) return z.name; }
@@ -706,19 +951,30 @@ function updateSidebar(){
   hpVal.textContent = player.hp + "/" + player.maxHp;
   xpVal.textContent = String(player.xp);
   coinsVal.textContent = String(player.coins);
-  zoneVal.textContent = currentZoneName();
-  questVal.textContent = "Town Slice";
-  objectiveText.textContent = "Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.";
-  hud.textContent = "WASD / Arrows : Move\nSpace : Attack\nClick Edrin Vale : Talk\nWolf nearby : Keep distance\nG : Toggle grid\nCurrent Zone : " + currentZoneName();
+  const zoneName=currentZoneName();
+  zoneVal.textContent = zoneName;
+  const mainQuest=questSystem.getQuest("mirror_pond_listening");
+  questVal.textContent = mainQuest ? (mainQuest.name + " [" + mainQuest.state + "]") : "Town Slice";
+  if(!mainQuest || mainQuest.state===QuestState.NOT_STARTED) objectiveText.textContent = "Speak with Edrin Vale to begin a task.";
+  else if(mainQuest.state===QuestState.ACTIVE) objectiveText.textContent = "Visit Mirror Pond and listen in silence.";
+  else objectiveText.textContent = "Return to Edrin Vale or continue exploring Hearthvale.";
+  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName;
 }
 
 function canMoveTo(x,y){ if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false; if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false; if(x===npc.x&&y===npc.y) return false; if(wolf.hp>0&&x===wolf.targetX&&y===wolf.targetY) return false; return true; }
 
 const keys=new Set();
 let showGrid=false;
-addEventListener("keydown",(e)=>{ const k=e.key.toLowerCase(); if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(k)) e.preventDefault(); if(k==="g") showGrid=!showGrid; keys.add(k); });
+addEventListener("keydown",(e)=>{
+  const k=e.key.toLowerCase();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
+  if(k==="g") showGrid=!showGrid;
+  if(k==="e") interactionManager.tryInteract();
+  if(dialogueSystem.activeSession?.pendingChoices && /^[1-9]$/.test(k)) dialogueSystem.choose(Number(k)-1);
+  keys.add(k);
+});
 addEventListener("keyup",(e)=> keys.delete(e.key.toLowerCase()));
-canvas.addEventListener("click",(e)=>{ if(activeDialogue) return; const clicked=screenToWorld(e.clientX,e.clientY); if(clicked.x===npc.x&&clicked.y===npc.y) startDialogue(npc.name,edrinLines); });
+canvas.addEventListener("click",(e)=>{ const clicked=screenToWorld(e.clientX,e.clientY); interactionManager.interactAt(clicked.x, clicked.y); });
 
 function getCamera(){
   const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2),WORLD_W-VIEW_TILES_X));
@@ -731,7 +987,7 @@ function tileToScreen(tx,ty){ const cam=getCamera(); return {x:(tx-cam.tileX)*TI
 function screenToWorld(clientX,clientY){ const rect=canvas.getBoundingClientRect(); const mx=clientX-rect.left,my=clientY-rect.top; const cam=getCamera(); return {x:Math.floor((mx-cam.offsetX)/TILE)+cam.tileX,y:Math.floor((my-cam.offsetY)/TILE)+cam.tileY}; }
 
 function smoothMove(entity,dt){ const tx=entity.targetX*TILE, ty=entity.targetY*TILE; const dx=tx-entity.px, dy=ty-entity.py; const dist=Math.hypot(dx,dy); if(dist<.35){ entity.px=tx; entity.py=ty; entity.moving=false; return; } entity.moving=true; const step=entity.speed*dt; entity.px += (dx/dist)*Math.min(step,dist); entity.py += (dy/dist)*Math.min(step,dist); }
-function tryPlayerStep(dx,dy,facing){ if(player.moving||activeDialogue) return; const nx=player.targetX+dx, ny=player.targetY+dy; player.facing=facing; if(!canMoveTo(nx,ny)) return; player.targetX=nx; player.targetY=ny; }
+function tryPlayerStep(dx,dy,facing){ if(player.moving||dialogueSystem.activeSession) return; const nx=player.targetX+dx, ny=player.targetY+dy; player.facing=facing; if(!canMoveTo(nx,ny)) return; player.targetX=nx; player.targetY=ny; }
 const moveIntent={dx:0,dy:0,facing:"down"};
 function updateInput(){
   if(keys.has("w")||keys.has("arrowup")) tryPlayerStep(0,-1,"up");
@@ -774,7 +1030,7 @@ function wolfAttack(now){
   if(player.hp<=0){ player.hp=player.maxHp; player.targetX=18; player.targetY=11; player.px=player.targetX*TILE; player.py=player.targetY*TILE; log("System: You wake in Hearthvale Square."); }
 }
 function tryPlayerAttack(now){
-  if(activeDialogue||wolf.hp<=0) return; if(!(keys.has(" ")||keys.has("space"))) return; if(now-lastPlayerAttack<420) return;
+  if(dialogueSystem.activeSession||wolf.hp<=0) return; if(!(keys.has(" ")||keys.has("space"))) return; if(now-lastPlayerAttack<420) return;
   lastPlayerAttack=now; player.attackUntil=now+350;
   const step={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}[player.facing]||{x:0,y:1};
   const ax=player.targetX+step.x, ay=player.targetY+step.y;
@@ -980,6 +1236,7 @@ function update(dt,now){
   player.recoilX*=.8; player.recoilY*=.8; player.attackLungeX*=.74; player.attackLungeY*=.74;
   wolf.recoilX*=.82; wolf.recoilY*=.82; wolf.attackLungeX*=.78; wolf.attackLungeY*=.78;
   if(now<hitStopUntil){ updateSidebar(); return; }
+  eventSystem.update(currentZoneName());
   updateInput(); tryPlayerAttack(now); smoothMove(player,dt);
   if(!player.moving&&(moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
   updateWolf(now); smoothMove(wolf,dt); wolfAttack(now); updateSidebar();
@@ -989,7 +1246,7 @@ let last=performance.now();
 function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
 
 log("System: Artistic rebuild slice loaded.");
-log("System: Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.");
+log("System: Speak to Edrin Vale and use E to interact with nearby objects.");
 updateSidebar();
 requestAnimationFrame(loop);
 </script>
