@@ -319,33 +319,53 @@ function paintHumanoidSheet(colors) {
   const stepOffset = [0,1,-1];
 
   function drawFrame(baseX, baseY, dir, step){
-    const bx = baseX + 18;
-    const by = baseY + 14;
-    const legA = step*2;
-    const legB = -step*2;
-    p.fillStyle = colors.boots;
-    p.fillRect(bx+6, by+28+legA, 6, 8);
-    p.fillRect(bx+18, by+28+legB, 6, 8);
+    const px = 2;
+    const ox = baseX + 8;
+    const oy = baseY + 8;
+    const bob = Math.abs(step)===1 ? 1 : 0;
+    const legSwing = step*1;
+    const armSwing = -step;
+    const outline = "rgba(8,12,18,.82)";
 
-    p.fillStyle = colors.cloak;
-    p.fillRect(bx+4, by+16, 22, 14);
+    const dot = (x,y,w=1,h=1,color=outline) => { p.fillStyle=color; p.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
 
-    p.fillStyle = colors.tunic;
-    p.fillRect(bx+7, by+15, 16, 14);
-    p.fillStyle = colors.tunicShade; p.fillRect(bx+7, by+24, 16, 5);
+    // Boots / legs
+    dot(9,21+legSwing,3,2,colors.boots); dot(12,19+legSwing,2,3,colors.boots);
+    dot(15,21-legSwing,3,2,colors.boots); dot(16,19-legSwing,2,3,colors.boots);
+    dot(11,16+legSwing,3,4,colors.tunicShade); dot(16,16-legSwing,3,4,colors.tunicShade);
 
-    p.fillStyle = colors.skin;
-    if (dir === "left") p.fillRect(bx+6, by+4, 12, 12);
-    else if (dir === "right") p.fillRect(bx+12, by+4, 12, 12);
-    else p.fillRect(bx+9, by+3, 12, 12);
+    // Robe/tunic body
+    dot(9,11+bob,11,8,colors.tunic);
+    dot(10,15+bob,9,4,colors.tunicShade);
+    if (dir==="up") dot(8,11+bob,13,7,colors.cloak);
+    else dot(8,12+bob,13,8,colors.cloak);
+    dot(10,11+bob,9,1,"rgba(255,255,255,.15)");
 
-    p.fillStyle = colors.hair;
-    if (dir === "up") p.fillRect(bx+8, by+2, 14, 6);
-    else if (dir === "left") p.fillRect(bx+6, by+3, 10, 6);
-    else if (dir === "right") p.fillRect(bx+13, by+3, 10, 6);
-    else p.fillRect(bx+8, by+2, 14, 5);
+    // Arms
+    if (dir==="left"){
+      dot(8,13+armSwing,2,4,colors.skin); dot(7,14+armSwing,1,3,colors.tunicShade);
+    } else if (dir==="right"){
+      dot(19,13+armSwing,2,4,colors.skin); dot(21,14+armSwing,1,3,colors.tunicShade);
+    } else {
+      dot(8,13+armSwing,2,4,colors.skin); dot(19,13-armSwing,2,4,colors.skin);
+      dot(7,14+armSwing,1,3,colors.tunicShade); dot(21,14-armSwing,1,3,colors.tunicShade);
+    }
 
-    p.strokeStyle = "rgba(10,16,24,.7)"; p.strokeRect(bx+6.5, by+3.5, 18, 33);
+    // Head / hair
+    if (dir==="left"){
+      dot(10,6+bob,6,5,colors.skin); dot(9,5+bob,5,3,colors.hair); dot(12,9+bob,1,1,"#1f2b3e");
+    } else if (dir==="right"){
+      dot(13,6+bob,6,5,colors.skin); dot(15,5+bob,5,3,colors.hair); dot(16,9+bob,1,1,"#1f2b3e");
+    } else if (dir==="up"){
+      dot(11,6+bob,7,5,colors.skin); dot(10,5+bob,9,4,colors.hair);
+    } else {
+      dot(11,6+bob,7,5,colors.skin); dot(10,5+bob,9,3,colors.hair);
+      dot(13,9+bob,1,1,"#1f2b3e"); dot(15,9+bob,1,1,"#1f2b3e");
+    }
+
+    // Readable outline
+    dot(10,6+bob,1,5); dot(18,6+bob,1,5); dot(11,5+bob,7,1); dot(11,11+bob,7,1);
+    dot(8,12+bob,1,8); dot(20,12+bob,1,8); dot(9,20+bob,11,1);
   }
 
   dirs.forEach((d,row)=> stepOffset.forEach((s,col)=> drawFrame(col*size,row*size,d,s)));
@@ -354,22 +374,48 @@ function paintHumanoidSheet(colors) {
 
 function paintWolfSheet() {
   const size = 64;
-  const c = document.createElement("canvas"); c.width = size*3; c.height = size*2;
+  const c = document.createElement("canvas"); c.width = size*3; c.height = size*4;
   const p = c.getContext("2d"); p.imageSmoothingEnabled=false;
 
   function frame(baseX,baseY,dir,step){
-    const bx=baseX+12, by=baseY+20;
-    const swing = step*2;
-    p.fillStyle="#8f99a8"; p.fillRect(bx+10, by+8, 28, 12);
-    p.fillStyle="#747f8e"; p.fillRect(bx+10, by+8, 28, 4);
-    const hx = dir==="right"?30:4;
-    p.fillStyle="#99a4b5"; p.fillRect(bx+hx, by+2, 14, 10);
-    p.fillStyle="#6f7987"; p.fillRect(bx+hx+(dir==="right"?8:0), by+8, 6,3);
-    p.fillStyle="#7c8796"; p.fillRect(bx+14, by+20+swing, 5,8); p.fillRect(bx+26, by+20-swing,5,8);
-    p.fillStyle="#6f7987"; if(dir==="right") p.fillRect(bx+6,by+12,8,3); else p.fillRect(bx+34,by+12,8,3);
-    p.strokeStyle="rgba(8,12,18,.7)"; p.strokeRect(bx+9.5,by+1.5,35,27);
+    const px = 2;
+    const ox = baseX + 8;
+    const oy = baseY + 10;
+    const trot = step;
+    const dot = (x,y,w=1,h=1,color="rgba(8,12,18,.82)") => { p.fillStyle=color; p.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
+
+    const fur = "#8b97a2";
+    const furShade = "#73808c";
+    const furHi = "#a5b0ba";
+    const muzzle = "#c8c2b7";
+    const nose = "#2a3340";
+
+    if (dir==="left" || dir==="right") {
+      const left = dir==="left";
+      const headX = left ? 7 : 16;
+      const tailX = left ? 20 : 7;
+      dot(9,12,10,6,fur); dot(10,12,8,2,furHi); dot(9,15,10,3,furShade);
+      dot(11,18+trot,2,4,furShade); dot(15,18-trot,2,4,furShade);
+      dot(8,18-trot,2,4,fur); dot(17,18+trot,2,4,fur);
+      dot(headX,9,4,4,fur); dot(headX+1,10,3,2,muzzle); dot(headX+3,11,1,1,nose);
+      dot(headX+1,7,1,2,furShade); dot(headX+3,7,1,2,furShade);
+      dot(tailX,13,3,2,furShade); dot(tailX+(left?2:-1),12,2,1,furShade);
+      dot(left?8:17,10,1,1,nose);
+      dot(8,12,1,6); dot(19,12,1,6); dot(9,11,10,1); dot(9,18,10,1);
+    } else {
+      const back = dir==="up";
+      dot(10,10,8,3,back ? furShade : furHi);
+      dot(9,13,10,6,fur);
+      dot(11,19+trot,2,3,furShade); dot(15,19-trot,2,3,furShade);
+      dot(9,19-trot,2,3,fur); dot(17,19+trot,2,3,fur);
+      dot(11,8,6,3,back ? furShade : muzzle);
+      if (!back){ dot(12,9,1,1,nose); dot(14,9,1,1,nose); }
+      dot(10,7,1,2,furShade); dot(16,7,1,2,furShade);
+      dot(9,12,1,7); dot(18,12,1,7); dot(10,11,8,1); dot(10,19,8,1);
+      if(back){ dot(8,14,1,2,furShade); dot(19,14,1,2,furShade); }
+    }
   }
-  ["left","right"].forEach((dir,row)=>[-1,0,1].forEach((s,col)=>frame(col*size,row*size,dir,s)));
+  ["down","left","right","up"].forEach((dir,row)=>[-1,0,1].forEach((s,col)=>frame(col*size,row*size,dir,s)));
   const img = new Image(); img.src = c.toDataURL("image/png"); return img;
 }
 
@@ -377,8 +423,8 @@ buildTerrainTiles();
 makeBuildingTiles();
 makeTreeSprites();
 makeFenceTiles();
-assets.sprites.player = paintHumanoidSheet({ skin:"#e5c9a5", hair:"#4f3d30", tunic:"#3f77d2", tunicShade:"#2b549b", cloak:"#cad2db", boots:"#5d4029" });
-assets.sprites.npc = paintHumanoidSheet({ skin:"#dbc39f", hair:"#d8e2ef", tunic:"#6c57b8", tunicShade:"#4f3f8d", cloak:"#46347a", boots:"#433124" });
+assets.sprites.player = paintHumanoidSheet({ skin:"#e5c9a5", hair:"#4f3d30", tunic:"#6a7b8a", tunicShade:"#4e5c69", cloak:"#b8c2ce", boots:"#5d4029" });
+assets.sprites.npc = paintHumanoidSheet({ skin:"#dbc39f", hair:"#e5e8ef", tunic:"#7d6648", tunicShade:"#5d4a35", cloak:"#4a3f30", boots:"#433124" });
 assets.sprites.wolf = paintWolfSheet();
 
 const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
@@ -490,12 +536,12 @@ function updateWolf(now){
     const sx=dx===0?0:dx>0?1:-1, sy=dy===0?0:dy>0?1:-1;
     const a={x:wolf.targetX+sx,y:wolf.targetY}, b={x:wolf.targetX,y:wolf.targetY+sy};
     if(Math.abs(dx)>=Math.abs(dy)&&canWolfMoveTo(a.x,a.y)){ wolf.targetX=a.x; wolf.targetY=a.y; if(sx!==0) wolf.facing=sx>0?"right":"left"; }
-    else if(canWolfMoveTo(b.x,b.y)) wolf.targetY=b.y;
+    else if(canWolfMoveTo(b.x,b.y)){ wolf.targetY=b.y; if(sy!==0) wolf.facing=sy>0?"down":"up"; }
   } else {
     const backX=wolf.targetX<wolf.homeX?1:wolf.targetX>wolf.homeX?-1:0;
     const backY=wolf.targetY<wolf.homeY?1:wolf.targetY>wolf.homeY?-1:0;
     if(Math.abs(wolf.targetX-wolf.homeX)>wolf.roam&&canWolfMoveTo(wolf.targetX+backX,wolf.targetY)){ wolf.targetX+=backX; if(backX!==0) wolf.facing=backX>0?"right":"left"; }
-    if(Math.abs(wolf.targetY-wolf.homeY)>wolf.roam&&canWolfMoveTo(wolf.targetX,wolf.targetY+backY)) wolf.targetY+=backY;
+    if(Math.abs(wolf.targetY-wolf.homeY)>wolf.roam&&canWolfMoveTo(wolf.targetX,wolf.targetY+backY)){ wolf.targetY+=backY; if(backY!==0) wolf.facing=backY>0?"down":"up"; }
   }
 }
 function wolfAttack(now){
@@ -573,7 +619,8 @@ function drawHumanoid(sheet, tx, ty, facing, moving, scale, label, hitAlpha, rec
 }
 
 function drawWolf(tx,ty,facing,moving,scale,hitAlpha,recoil){
-  const p=tileToScreen(tx,ty), row=facing==="right"?1:0;
+  const row = ({down:0,left:1,right:2,up:3})[facing] ?? 0;
+  const p=tileToScreen(tx,ty);
   const col=!moving?1:(Math.floor(performance.now()/140)%2===0?0:2);
   const drawW=Math.round(64*scale),drawH=Math.round(64*scale);
   const dx=p.x+Math.round((32-drawW)/2)+Math.round(recoil?.x||0), dy=p.y-Math.round(drawH-32)+Math.round(recoil?.y||0);
