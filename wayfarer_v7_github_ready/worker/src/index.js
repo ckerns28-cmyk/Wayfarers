@@ -521,9 +521,13 @@ function tryPlayerAttack(now){
   if(wolf.hp<=0){ player.xp+=12; player.coins+=4; wolfRespawnAt=now+10000; log("The wolf collapses. (+12 XP, +4 coins)"); }
 }
 
+// Keep color construction backtick-free inside this String.raw payload to avoid
+// terminating the outer template literal used for the HTML document.
+function rgba(r,g,b,a){ return "rgba(" + r + "," + g + "," + b + "," + a + ")"; }
+
 function drawSoftShadow(cx,cy,rx,ry,a=.2){
   const g=ctx.createRadialGradient(cx+3,cy+3,Math.max(1,rx*.35),cx+3,cy+3,Math.max(rx,ry)*1.3);
-  g.addColorStop(0,`rgba(0,0,0,${(a*.86).toFixed(3)})`); g.addColorStop(1,"rgba(0,0,0,0)");
+  g.addColorStop(0,rgba(0,0,0,(a*.86).toFixed(3))); g.addColorStop(1,rgba(0,0,0,0));
   ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(cx+3,cy+3,rx,ry,0,0,Math.PI*2); ctx.fill();
 }
 
@@ -555,7 +559,7 @@ function drawHumanoid(sheet, tx, ty, facing, moving, scale, label, hitAlpha, rec
     ctx.fillStyle = "#f6fbff"; ctx.font = "bold 11px monospace"; ctx.fillText(label,p.x-8,p.y-10);
   }
   if (hitAlpha>0) {
-    ctx.fillStyle=`rgba(255,86,86,${Math.min(.45,hitAlpha).toFixed(3)})`; ctx.fillRect(dx+8,dy+7,drawW-16,drawH-12);
+    ctx.fillStyle=rgba(255,86,86,Math.min(.45,hitAlpha).toFixed(3)); ctx.fillRect(dx+8,dy+7,drawW-16,drawH-12);
   }
   if (attackData && attackData.active) {
     ctx.strokeStyle = "rgba(231,247,255,.35)"; ctx.lineWidth = 2;
@@ -575,9 +579,9 @@ function drawWolf(tx,ty,facing,moving,scale,hitAlpha,recoil){
   const dx=p.x+Math.round((32-drawW)/2)+Math.round(recoil?.x||0), dy=p.y-Math.round(drawH-32)+Math.round(recoil?.y||0);
   drawSoftShadow(p.x+16,p.y+28,9*scale,4*scale,.24);
   if(assets.sprites.wolf.complete&&assets.sprites.wolf.naturalWidth>0) ctx.drawImage(assets.sprites.wolf,col*64,row*64,64,64,dx,dy,drawW,drawH);
-  ctx.fillStyle="rgba(0,0,0,.5)"; ctx.fillRect(p.x+2,p.y-10,24,4);
+  ctx.fillStyle=rgba(0,0,0,.5); ctx.fillRect(p.x+2,p.y-10,24,4);
   ctx.fillStyle="#8fdb73"; ctx.fillRect(p.x+2,p.y-10,24*(wolf.hp/wolf.maxHp),4);
-  if(hitAlpha>0){ ctx.fillStyle=`rgba(255,255,255,${Math.min(.4,hitAlpha).toFixed(3)})`; ctx.fillRect(dx+8,dy+8,drawW-14,drawH-16); }
+  if(hitAlpha>0){ ctx.fillStyle=rgba(255,255,255,Math.min(.4,hitAlpha).toFixed(3)); ctx.fillRect(dx+8,dy+8,drawW-14,drawH-16); }
 }
 
 function hitVisualAlpha(e){ const now=performance.now(); if(now>=e.hitUntil) return 0; const left=e.hitUntil-now; const base=Math.min(.52,.2+left/300); const flick=now<e.hitFlickerUntil&&Math.floor(now/36)%2===0?.24:0; return Math.max(0,base+flick); }
@@ -602,8 +606,8 @@ function drawWorld(){
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
     const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     const t=performance.now()*0.002, rip=(Math.sin(t*3+x*1.1+y*.8)+1)*.5;
-    ctx.fillStyle=`rgba(188,228,255,${(.02+rip*.05).toFixed(3)})`; ctx.fillRect(p.x+3,p.y+6,TILE-10,1);
-    if(edge){ ctx.fillStyle=`rgba(224,244,255,${(.05+rip*.05).toFixed(3)})`; ctx.fillRect(p.x+1,p.y+1,TILE-2,1); }
+    ctx.fillStyle=rgba(188,228,255,(.02+rip*.05).toFixed(3)); ctx.fillRect(p.x+3,p.y+6,TILE-10,1);
+    if(edge){ ctx.fillStyle=rgba(224,244,255,(.05+rip*.05).toFixed(3)); ctx.fillRect(p.x+1,p.y+1,TILE-2,1); }
   }
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondShore.has(k)) continue;
@@ -636,7 +640,7 @@ function drawWorld(){
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
 
   const tint=0.08+Math.max(0,Math.sin(performance.now()/9000))*.07;
-  ctx.fillStyle=`rgba(9,16,26,${tint.toFixed(3)})`; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle=rgba(9,16,26,tint.toFixed(3)); ctx.fillRect(0,0,canvas.width,canvas.height);
   const edge=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,Math.min(canvas.width,canvas.height)*.35,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.68);
   edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.78,"rgba(1,6,10,.1)"); edge.addColorStop(1,"rgba(1,6,10,.46)");
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
