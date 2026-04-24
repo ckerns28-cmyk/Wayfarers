@@ -139,6 +139,8 @@ const html = String.raw`<!DOCTYPE html>
       <section id="inventoryPanel" class="panel">
         <div class="questTitle">Inventory</div>
         <div id="inventoryList" class="muted">Empty</div>
+        <div class="questTitle" style="margin-top:10px;">Equipment</div>
+        <div id="equipmentList" class="muted"></div>
       </section>
       <section id="logPanel" class="panel">
         <div class="questTitle">Chronicle</div>
@@ -242,6 +244,7 @@ const questVal = document.getElementById("questVal");
 const weaponVal = document.getElementById("weaponVal");
 const objectiveText = document.getElementById("objectiveText");
 const inventoryList = document.getElementById("inventoryList");
+const equipmentList = document.getElementById("equipmentList");
 const dialogue = document.getElementById("dialogue");
 const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
@@ -261,6 +264,7 @@ const WORLD_H = 24;
 const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
+  rusty_sword: { id:"rusty_sword", name:"Rusty Sword", type:"weapon", attackBonus:2, description:"A worn but dependable blade.", stackable:false, value:8 },
   wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:6 },
   small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:4 },
   old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
@@ -795,7 +799,7 @@ world.zones.push(
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
 
-const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],weapon:{name:"Rusty Sword",bonus:2,durability:100},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
+const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const wolf={x:31,y:13,px:31*TILE,py:13*TILE,targetX:31,targetY:13,hp:22,maxHp:22,homeX:31,homeY:13,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
 
@@ -804,6 +808,7 @@ let missNoticeArmed=true;
 const PLAYER_ATTACK_RANGE=1;
 const WOLF_ATTACK_COOLDOWN_MS=1800;
 const WOLF_RESPAWN_MS=12000;
+const BASE_PLAYER_DAMAGE=6;
 
 function randomInt(min,max){ return min + Math.floor(Math.random() * (max-min+1)); }
 function getItemDefinition(itemId){ return ITEM_REGISTRY[itemId] || null; }
@@ -841,6 +846,32 @@ function getItemQuantity(itemId){
   return player.inventory
     .filter((entry)=>entry.itemId===itemId)
     .reduce((sum,entry)=>sum + entry.quantity, 0);
+}
+function getEquippedItem(slotName){
+  const itemId=player.equipment?.[slotName];
+  return itemId ? getItemDefinition(itemId) : null;
+}
+function getEquippedWeaponBonus(){
+  const weapon=getEquippedItem("weapon");
+  if(!weapon || weapon.type!=="weapon") return 0;
+  return Number.isFinite(weapon.attackBonus) ? weapon.attackBonus : 0;
+}
+function ensureStarterEquipment(){
+  if(getItemQuantity("rusty_sword")<=0) addItemToInventory("rusty_sword", 1);
+  const currentWeapon=getEquippedItem("weapon");
+  if(!currentWeapon || currentWeapon.type!=="weapon") player.equipment.weapon="rusty_sword";
+  if(!("armor" in player.equipment)) player.equipment.armor=null;
+  if(!("trinket" in player.equipment)) player.equipment.trinket=null;
+}
+function equipWeapon(itemId){
+  const item=getItemDefinition(itemId);
+  if(!item || item.type!=="weapon") return false;
+  if(getItemQuantity(itemId)<=0) return false;
+  const previous=getEquippedItem("weapon");
+  player.equipment.weapon=itemId;
+  if(previous && previous.id!==itemId) log("Equipped " + item.name + ". Replaced " + previous.name + ".");
+  else log("Equipped " + item.name + ".");
+  return true;
 }
 function removeItemFromInventory(itemId, amount){
   if(!Number.isFinite(amount)) return 0;
@@ -1095,7 +1126,7 @@ function showSaveNotice(message){
 function isFiniteNumber(value){ return typeof value==="number" && Number.isFinite(value); }
 function createSaveData(reason){
   return {
-    version:3,
+    version:4,
     reason,
     savedAt:new Date().toISOString(),
     player:{
@@ -1104,7 +1135,7 @@ function createSaveData(reason){
       xp:player.xp,
       coins:player.coins,
       inventory:player.inventory.map((entry)=>({ itemId:entry.itemId, quantity:entry.quantity })),
-      weapon:{ ...player.weapon }
+      equipment:{ ...player.equipment }
     },
     quests:{
       questStates:questSystem.serializeState(),
@@ -1125,7 +1156,7 @@ function createSaveData(reason){
   };
 }
 function validateSaveData(data){
-  if(!data || (data.version!==1 && data.version!==2 && data.version!==3)) return false;
+  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -1155,13 +1186,20 @@ function loadGame(){
     player.xp=Math.max(0,data.player.xp);
     player.coins=Math.max(0,data.player.coins);
     player.inventory=normalizeInventory(data.player.inventory);
-    if(data.player.weapon && typeof data.player.weapon==="object"){
-      player.weapon={
-        name:typeof data.player.weapon.name==="string"?data.player.weapon.name:"Rusty Sword",
-        bonus:isFiniteNumber(data.player.weapon.bonus)?data.player.weapon.bonus:2,
-        durability:isFiniteNumber(data.player.weapon.durability)?data.player.weapon.durability:100
+    if(data.player.equipment && typeof data.player.equipment==="object"){
+      player.equipment={
+        weapon:typeof data.player.equipment.weapon==="string" ? data.player.equipment.weapon : null,
+        armor:typeof data.player.equipment.armor==="string" ? data.player.equipment.armor : null,
+        trinket:typeof data.player.equipment.trinket==="string" ? data.player.equipment.trinket : null
+      };
+    } else if(data.player.weapon && typeof data.player.weapon==="object"){
+      player.equipment={
+        weapon:"rusty_sword",
+        armor:null,
+        trinket:null
       };
     }
+    ensureStarterEquipment();
     questSystem.applyState(data.quests?.questStates||[]);
     worldTriggeredEvents.clear();
     (data.world?.triggeredEvents||[]).forEach((eventName)=>{ if(typeof eventName==="string") worldTriggeredEvents.add(eventName); });
@@ -1247,7 +1285,8 @@ function updateSidebar(){
   hpVal.textContent = player.hp + "/" + player.maxHp;
   xpVal.textContent = String(player.xp);
   coinsVal.textContent = String(player.coins);
-  weaponVal.textContent = player.weapon.name + " (+" + player.weapon.bonus + ")";
+  const equippedWeapon=getEquippedItem("weapon");
+  weaponVal.textContent = equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
   const zoneName=currentZoneName();
   zoneVal.textContent = zoneName;
   const mainQuest=questSystem.getQuest("mirror_pond_listening");
@@ -1262,9 +1301,18 @@ function updateSidebar(){
     inventoryList.innerHTML = player.inventory.map((entry)=>{
       const item=getItemDefinition(entry.itemId);
       const name=item?.name || entry.itemId;
+      const canEquip=item?.type==="weapon";
+      const equipped=item?.id && item.id===player.equipment.weapon;
+      if(canEquip){
+        const actionLabel=equipped ? "Equipped" : "Equip";
+        const disabledAttr=equipped ? " disabled" : "";
+        return name + " x" + entry.quantity + " <button type=\"button\" data-equip-item=\"" + item.id + "\"" + disabledAttr + ">" + actionLabel + "</button>";
+      }
       return name + " x" + entry.quantity;
     }).join("<br>");
   }
+  const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "";
+  equipmentList.innerHTML = "Weapon: " + weaponLine + "<br>Armor: <br>Trinket: ";
   const nearbyHostile=getNearestHostile(5);
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   const wolfCooldownMs=Math.max(0, WOLF_ATTACK_COOLDOWN_MS-(performance.now()-lastWolfAttack));
@@ -1294,6 +1342,13 @@ addEventListener("keyup",(e)=>{
   if(k===" "||k==="space") missNoticeArmed=true;
 });
 canvas.addEventListener("click",(e)=>{ const clicked=screenToWorld(e.clientX,e.clientY); interactionManager.interactAt(clicked.x, clicked.y); });
+inventoryList.addEventListener("click",(e)=>{
+  const target=e.target;
+  if(!(target instanceof HTMLElement)) return;
+  const itemId=target.dataset?.equipItem;
+  if(!itemId) return;
+  if(equipWeapon(itemId)) updateSidebar();
+});
 
 function getCamera(){
   const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2),WORLD_W-VIEW_TILES_X));
@@ -1377,13 +1432,14 @@ function tryPlayerAttack(now){
   const len=Math.max(1,Math.hypot(tx,ty));
   player.attackLungeX=(tx/len)*2.4;
   player.attackLungeY=(ty/len)*1.4;
-  targetHostile.entity.hp=Math.max(0,targetHostile.entity.hp-6);
+  const totalDamage=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus();
+  targetHostile.entity.hp=Math.max(0,targetHostile.entity.hp-totalDamage);
   targetHostile.entity.hitUntil=now+320;
   targetHostile.entity.hitFlickerUntil=now+240;
   targetHostile.entity.recoilX=(tx/len)*2.3;
   targetHostile.entity.recoilY=(ty/len)*1.5;
   hitStopUntil=now+65;
-  log("Hit: " + targetHostile.name + " takes 6 damage.");
+  log("Hit: " + targetHostile.name + " takes " + totalDamage + " damage.");
   if(targetHostile.entity.hp<=0 && !targetHostile.entity.defeated){
     targetHostile.entity.defeated=true;
     player.xp+=12;
@@ -1602,6 +1658,7 @@ let last=performance.now();
 function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
 
 const loadedFromSave=loadGame();
+ensureStarterEquipment();
 log("System: Artistic rebuild slice loaded.");
 if(loadedFromSave) log("System: Continuing from saved progress.");
 else log("System: New journey started.");
