@@ -368,10 +368,10 @@ const ZONE_EXIT_SPAWNS = Object.freeze({
   }
 });
 const ZONE_TRANSITION_PAIRS = Object.freeze([
-  { sourceZone:"hearthvale_square", sourceExitId:"east_road_exit", destinationZone:"eastern_woods", destinationSpawnId:"west_road_entrance", preserveAxis:"y" },
-  { sourceZone:"eastern_woods", sourceExitId:"west_road_entrance", destinationZone:"hearthvale_square", destinationSpawnId:"east_road_exit", preserveAxis:"y" },
-  { sourceZone:"hearthvale_square", sourceExitId:"southeast_path_exit", destinationZone:"eastern_woods", destinationSpawnId:"southwest_path_exit", preserveAxis:"y" },
-  { sourceZone:"eastern_woods", sourceExitId:"southwest_path_exit", destinationZone:"hearthvale_square", destinationSpawnId:"southeast_path_exit", preserveAxis:"y" }
+  { sourceZone:"hearthvale_square", sourceExitId:"east_road_exit", destinationZone:"eastern_woods", destinationSpawnId:"west_road_entrance" },
+  { sourceZone:"eastern_woods", sourceExitId:"west_road_entrance", destinationZone:"hearthvale_square", destinationSpawnId:"east_road_exit" },
+  { sourceZone:"hearthvale_square", sourceExitId:"southeast_path_exit", destinationZone:"eastern_woods", destinationSpawnId:"southwest_path_exit" },
+  { sourceZone:"eastern_woods", sourceExitId:"southwest_path_exit", destinationZone:"hearthvale_square", destinationSpawnId:"southeast_path_exit" }
 ]);
 const ZONE_TRANSITIONS = ZONE_TRANSITION_PAIRS.map((pair)=>{
   const source=ZONE_EXIT_SPAWNS[pair.sourceZone]?.[pair.sourceExitId];
@@ -384,7 +384,6 @@ const ZONE_TRANSITIONS = ZONE_TRANSITION_PAIRS.map((pair)=>{
     sourceExitId: pair.sourceExitId,
     destinationZone: pair.destinationZone,
     destinationSpawnId: pair.destinationSpawnId,
-    preserveAxis: pair.preserveAxis || null,
     trigger:{ x:source.x, y:source.y, w:source.w, h:source.h },
     arrival:{ x:destination.spawnX, y:destination.spawnY }
   };
@@ -1800,12 +1799,9 @@ function handleZoneTransitionIfNeeded(){
   if(now<nextZoneTransitionAt) return false;
   const transition=findZoneTransitionAt(player.targetX, player.targetY);
   if(!transition) return false;
-  const previousX=player.targetX;
-  const previousY=player.targetY;
   currentZoneId=transition.destinationZone;
-  const arrival=resolveTransitionArrival(transition, previousX, previousY);
-  const arrivalX=arrival.x;
-  const arrivalY=arrival.y;
+  const arrivalX=transition.arrival?.x ?? player.targetX;
+  const arrivalY=transition.arrival?.y ?? player.targetY;
   setPlayerTilePosition(arrivalX, arrivalY);
   nextZoneTransitionAt=now+ZONE_TRANSITION_DEBOUNCE_MS;
   zoneTransitionLockedUntil=now+ZONE_TRANSITION_LOCK_MS;
