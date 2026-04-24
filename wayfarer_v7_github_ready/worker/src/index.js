@@ -347,6 +347,7 @@ const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
   rusty_sword: { id:"rusty_sword", name:"Rusty Sword", type:"weapon", attackBonus:2, description:"A worn but dependable blade.", stackable:false, value:8 },
+  leather_armor: { id:"leather_armor", name:"Leather Armor", type:"armor", defenseBonus:2, description:"Sturdy leather armor that softens incoming blows.", stackable:false, value:25 },
   wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:5 },
   small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:3 },
   old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
@@ -362,7 +363,7 @@ const BANDIT_LOOT_TABLE = Object.freeze([
   { itemId:"old_coin", chance:0.9, min:1, max:2 },
   { itemId:"cloth_scrap", chance:0.8, min:1, max:2 }
 ]);
-const VENDOR_BUY_INVENTORY = Object.freeze(["healing_herb","small_potion"]);
+const VENDOR_BUY_INVENTORY = Object.freeze(["healing_herb","small_potion","leather_armor"]);
 
 function resize() {
   const rect = document.getElementById("gamePanel").getBoundingClientRect();
@@ -974,6 +975,11 @@ function getEquippedWeaponBonus(){
   if(!weapon || weapon.type!=="weapon") return 0;
   return Number.isFinite(weapon.attackBonus) ? weapon.attackBonus : 0;
 }
+function getEquippedDefenseBonus(){
+  const armor=getEquippedItem("armor");
+  if(!armor || armor.type!=="armor") return 0;
+  return Number.isFinite(armor.defenseBonus) ? armor.defenseBonus : 0;
+}
 function ensureStarterEquipment(){
   if(getItemQuantity("rusty_sword")<=0) addItemToInventory("rusty_sword", 1);
   const currentWeapon=getEquippedItem("weapon");
@@ -990,6 +996,31 @@ function equipWeapon(itemId){
   if(previous && previous.id!==itemId) log("Equipped " + item.name + ". Replaced " + previous.name + ".");
   else log("Equipped " + item.name + ".");
   return true;
+}
+function equipArmor(itemId){
+  const item=getItemDefinition(itemId);
+  if(!item || item.type!=="armor") return false;
+  if(getItemQuantity(itemId)<=0) return false;
+  const previous=getEquippedItem("armor");
+  player.equipment.armor=itemId;
+  if(previous && previous.id!==itemId) log("Equipped " + item.name + ". Replaced " + previous.name + ".");
+  else log("Equipped " + item.name + ".");
+  return true;
+}
+function unequipSlot(slotName){
+  if(!["weapon","armor","trinket"].includes(slotName)) return false;
+  if(slotName==="weapon") return false;
+  const currentItem=getEquippedItem(slotName);
+  if(!currentItem) return false;
+  player.equipment[slotName]=null;
+  log("Removed " + currentItem.name + ".");
+  return true;
+}
+function applyIncomingDamage(rawDamage){
+  const defense=Math.max(0, getEquippedDefenseBonus());
+  const reducedDamage=Math.max(1, Math.floor(rawDamage)-defense);
+  player.hp=Math.max(0, player.hp-reducedDamage);
+  return reducedDamage;
 }
 function removeItemFromInventory(itemId, amount){
   if(!Number.isFinite(amount)) return 0;
@@ -1035,9 +1066,10 @@ function isVendorOpen(){ return vendorPanel.style.display==="block"; }
 function closeVendorMenu(){ vendorPanel.style.display="none"; }
 function canSellItem(item){
   if(!item) return false;
-  if(item.type!=="weapon") return true;
+  const equippableSlot=item.type==="weapon" ? "weapon" : (item.type==="armor" ? "armor" : null);
+  if(!equippableSlot) return true;
   const total=getItemQuantity(item.id);
-  const equipped=player.equipment.weapon===item.id;
+  const equipped=player.equipment[equippableSlot]===item.id;
   return !equipped || total>1;
 }
 function getFirstUsableHealingItem(){
@@ -1692,19 +1724,25 @@ function updateSidebar(){
     inventoryList.innerHTML = player.inventory.map((entry)=>{
       const item=getItemDefinition(entry.itemId);
       const name=item?.name || entry.itemId;
-      const canEquip=item?.type==="weapon";
-      const equipped=item?.id && item.id===player.equipment.weapon;
+      const equipSlot=item?.type==="weapon" ? "weapon" : (item?.type==="armor" ? "armor" : null);
+      const canEquip=Boolean(equipSlot);
+      const equipped=Boolean(item?.id && equipSlot && item.id===player.equipment[equipSlot]);
       if(canEquip){
         const actionLabel=equipped ? "Equipped" : "Equip";
         const disabledAttr=equipped ? " disabled" : "";
-        return name + " x" + entry.quantity + " <button type=\"button\" data-equip-item=\"" + item.id + "\"" + disabledAttr + ">" + actionLabel + "</button>";
+        return name + " x" + entry.quantity + " <button type=\"button\" data-equip-item=\"" + item.id + "\" data-equip-slot=\"" + equipSlot + "\"" + disabledAttr + ">" + actionLabel + "</button>";
       }
       return name + " x" + entry.quantity;
     }).join("<br>");
   }
   if(isVendorOpen()) renderVendorMenu();
   const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "";
-  equipmentList.innerHTML = "Weapon: " + weaponLine + "<br>Armor: <br>Trinket: ";
+  const equippedArmor=getEquippedItem("armor");
+  const armorDefense=getEquippedDefenseBonus();
+  const armorLine=equippedArmor
+    ? (equippedArmor.name + " (-" + armorDefense + " dmg) <span class=\"muted\">Armor active.</span> <button type=\"button\" data-unequip-slot=\"armor\">Remove</button>")
+    : "None";
+  equipmentList.innerHTML = "Weapon: " + weaponLine + "<br>Armor: " + armorLine + "<br>Trinket: ";
   const nearbyHostile=getNearestHostile(5);
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   const currentTarget=targetHostile?.entity || null;
@@ -1747,8 +1785,17 @@ inventoryList.addEventListener("click",(e)=>{
   const target=e.target;
   if(!(target instanceof HTMLElement)) return;
   const itemId=target.dataset?.equipItem;
-  if(!itemId) return;
-  if(equipWeapon(itemId)) updateSidebar();
+  const slotName=target.dataset?.equipSlot;
+  if(!itemId || !slotName) return;
+  if(slotName==="weapon" && equipWeapon(itemId)) updateSidebar();
+  if(slotName==="armor" && equipArmor(itemId)) updateSidebar();
+});
+equipmentList.addEventListener("click",(e)=>{
+  const target=e.target;
+  if(!(target instanceof HTMLElement)) return;
+  const slotName=target.dataset?.unequipSlot;
+  if(!slotName) return;
+  if(unequipSlot(slotName)) updateSidebar();
 });
 
 function getCamera(){
@@ -1845,10 +1892,10 @@ function wolfAttack(now){
     if(dist>1||now-(lastWolfAttackAt[wolf.id]||0)<WOLF_ATTACK_COOLDOWN_MS) continue;
     lastWolfAttackAt[wolf.id]=now;
     wolf.attackUntil=now+350;
-    player.hp=Math.max(0,player.hp-5); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
+    const damageDealt=applyIncomingDamage(5); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
     const wx=player.targetX-wolf.targetX, wy=player.targetY-wolf.targetY, len=Math.max(1,Math.hypot(wx,wy));
     wolf.attackLungeX=(wx/len)*2; wolf.attackLungeY=(wy/len)*1.2; player.recoilX=(wx/len)*2.5; player.recoilY=(wy/len)*1.6;
-    log("Wolf #" + wolf.id + " bites you for 5 damage.");
+    log("Wolf #" + wolf.id + " bites you for " + damageDealt + " damage.");
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
 }
@@ -1859,10 +1906,10 @@ function banditAttack(now){
     if(dist>1||now-(lastBanditAttackAt[bandit.id]||0)<BANDIT_ATTACK_COOLDOWN_MS) continue;
     lastBanditAttackAt[bandit.id]=now;
     bandit.attackUntil=now+350;
-    player.hp=Math.max(0,player.hp-7); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
+    const damageDealt=applyIncomingDamage(7); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
     const wx=player.targetX-bandit.targetX, wy=player.targetY-bandit.targetY, len=Math.max(1,Math.hypot(wx,wy));
     bandit.attackLungeX=(wx/len)*2.2; bandit.attackLungeY=(wy/len)*1.3; player.recoilX=(wx/len)*2.8; player.recoilY=(wy/len)*1.8;
-    log("Bandit #" + bandit.id + " slashes you for 7 damage.");
+    log("Bandit #" + bandit.id + " slashes you for " + damageDealt + " damage.");
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
 }
