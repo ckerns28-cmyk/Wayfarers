@@ -358,10 +358,14 @@ const ZONE_DEFS = {
   }
 };
 const ZONE_TRANSITIONS = [
-  { from:"hearthvale_square", to:"eastern_woods", x:26, y:0, w:1, h:WORLD_H, arrival:{ x:28 }, preserveY:true, label:"Eastern Woods" },
-  { from:"eastern_woods", to:"hearthvale_square", x:27, y:0, w:1, h:WORLD_H, arrival:{ x:25 }, preserveY:true, label:"Hearthvale Square" }
+  { from:"hearthvale_square", to:"eastern_woods", x:26, y:0, w:1, h:WORLD_H, arrival:{ x:29, y:12 }, preserveY:false, label:"Eastern Woods" },
+  { from:"eastern_woods", to:"hearthvale_square", x:27, y:0, w:1, h:WORLD_H, arrival:{ x:24, y:12 }, preserveY:false, label:"Hearthvale Square" }
 ];
 let currentZoneId = "hearthvale_square";
+const ZONE_TRANSITION_DEBOUNCE_MS = 1000;
+const ZONE_TRANSITION_FADE_MS = 220;
+let nextZoneTransitionAt = 0;
+let zoneTransitionFadeUntil = 0;
 const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
@@ -1582,6 +1586,7 @@ function loadGame(){
     const loadedX=Math.max(zoneBounds.x,Math.min(zoneBounds.x+zoneBounds.w-1,data.player.position.x));
     const loadedY=Math.max(zoneBounds.y,Math.min(zoneBounds.y+zoneBounds.h-1,data.player.position.y));
     setPlayerTilePosition(loadedX, loadedY);
+    nextZoneTransitionAt=performance.now()+ZONE_TRANSITION_DEBOUNCE_MS;
     player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
     player.xp=Math.max(0,data.player.xp);
     player.coins=Math.max(0,data.player.coins);
@@ -1746,13 +1751,17 @@ function setPlayerTilePosition(x,y){
 }
 
 function handleZoneTransitionIfNeeded(){
+  const now=performance.now();
+  if(now<nextZoneTransitionAt) return false;
   const transition=findZoneTransitionAt(player.targetX, player.targetY);
   if(!transition) return false;
   currentZoneId=transition.to;
   const arrivalX=transition.arrival?.x ?? player.targetX;
   const arrivalY=transition.preserveY ? player.targetY : (transition.arrival?.y ?? player.targetY);
   setPlayerTilePosition(arrivalX, arrivalY);
-  log("System: Entered " + getCurrentZoneName() + ".");
+  nextZoneTransitionAt=now+ZONE_TRANSITION_DEBOUNCE_MS;
+  zoneTransitionFadeUntil=now+ZONE_TRANSITION_FADE_MS;
+  log("Entered " + getCurrentZoneName() + ".");
   saveGame("zone_transition");
   return true;
 }
@@ -2317,6 +2326,12 @@ function drawWorld(){
   const edge=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,Math.min(canvas.width,canvas.height)*.35,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.68);
   edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.78,"rgba(1,6,10,.1)"); edge.addColorStop(1,"rgba(1,6,10,.46)");
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
+  if(zoneTransitionFadeUntil>performance.now()){
+    const progress=(zoneTransitionFadeUntil-performance.now())/ZONE_TRANSITION_FADE_MS;
+    const alpha=Math.max(0,Math.min(1,progress))*0.45;
+    ctx.fillStyle="rgba(4,7,12," + alpha.toFixed(3) + ")";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+  }
 }
 
 function update(dt,now){
