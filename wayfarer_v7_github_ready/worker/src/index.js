@@ -1739,6 +1739,8 @@ function handlePlayerDefeat(){
   log("System: You awaken at Hearthvale Square.");
 }
 
+let sidebarInventoryMarkup="";
+let sidebarEquipmentMarkup="";
 function updateSidebar(){
   hpVal.textContent = player.hp + "/" + player.maxHp;
   xpVal.textContent = String(player.xp);
@@ -1768,10 +1770,9 @@ function updateSidebar(){
   } else {
     objectiveText.textContent = "Speak with Edrin Vale to begin a task.";
   }
-  if(player.inventory.length===0){
-    inventoryList.textContent = "Empty";
-  } else {
-    inventoryList.innerHTML = player.inventory.map((entry)=>{
+  let nextInventoryMarkup="Empty";
+  if(player.inventory.length>0){
+    nextInventoryMarkup=player.inventory.map((entry)=>{
       const item=getItemDefinition(entry.itemId);
       const name=item?.name || entry.itemId;
       const equipSlot=item?.type==="weapon"
@@ -1789,6 +1790,10 @@ function updateSidebar(){
       return name + " x" + entry.quantity;
     }).join("<br>");
   }
+  if(nextInventoryMarkup!==sidebarInventoryMarkup){
+    inventoryList.innerHTML = nextInventoryMarkup;
+    sidebarInventoryMarkup=nextInventoryMarkup;
+  }
   // Do not re-render vendor rows every sidebar update; replacing DOM each frame
   // can swallow button clicks before click events complete.
   const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "";
@@ -1797,7 +1802,11 @@ function updateSidebar(){
   const armorLine=equippedArmor
     ? (equippedArmor.name + " (+" + armorDefense + " DEF) <span class=\"muted\">Armor active.</span> <button type=\"button\" data-unequip-slot=\"armor\">Remove</button>")
     : "None";
-  equipmentList.innerHTML = "Weapon: " + weaponLine + "<br>Armor: " + armorLine + "<br>Trinket: ";
+  const nextEquipmentMarkup="Weapon: " + weaponLine + "<br>Armor: " + armorLine + "<br>Trinket: ";
+  if(nextEquipmentMarkup!==sidebarEquipmentMarkup){
+    equipmentList.innerHTML = nextEquipmentMarkup;
+    sidebarEquipmentMarkup=nextEquipmentMarkup;
+  }
   const nearbyHostile=getNearestHostile(5);
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   const currentTarget=targetHostile?.entity || null;
