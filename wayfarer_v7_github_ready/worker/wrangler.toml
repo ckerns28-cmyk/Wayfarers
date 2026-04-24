@@ -3,5 +3,5 @@ main = "src/index.js"
 compatibility_date = "2026-04-22"
 
 [assets]
-directory = "./"
+directory = "./assets"
 not_found_handling = "single-page-application"
