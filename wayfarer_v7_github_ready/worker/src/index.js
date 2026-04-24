@@ -135,6 +135,10 @@ const html = String.raw`<!DOCTYPE html>
       box-shadow:0 8px 22px rgba(0,0,0,.45);
     }
     #saveNotice.visible{opacity:1;transform:translateY(0)}
+    #transitionFade{
+      position:absolute;inset:0;pointer-events:none;z-index:35;
+      background:rgba(2,6,10,0);
+    }
   </style>
 </head>
 <body>
@@ -188,6 +192,7 @@ const html = String.raw`<!DOCTYPE html>
         <div id="vendorHint">Buy supplies and sell loot. Buying and selling happen one item per click.</div>
       </div>
       <div id="saveNotice">Game Saved</div>
+      <div id="transitionFade"></div>
       <script id="dialogueData" type="application/json">
 {
   "characters": {
@@ -334,6 +339,7 @@ const vendorPanel = document.getElementById("vendorPanel");
 const vendorList = document.getElementById("vendorList");
 const vendorClose = document.getElementById("vendorClose");
 const saveNotice = document.getElementById("saveNotice");
+const transitionFade = document.getElementById("transitionFade");
 
 function parseJsonScript(id){
   const node=document.getElementById(id);
@@ -357,6 +363,12 @@ const OUTDOOR_REGION_DEFS = {
     bounds: { x:27, y:0, w:WORLD_W-27, h:WORLD_H }
   }
 };
+const INTERIOR_REGION_DEFS = {
+  mirror_cave: {
+    id:"mirror_cave",
+    name:"Mirror Cave"
+  }
+};
 const HARD_ZONE_TRANSITIONS = Object.freeze([]);
 let currentZoneId = "hearthvale_square";
 let zoneTransitionLockedUntil = 0;
@@ -367,6 +379,7 @@ const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
   rusty_sword: { id:"rusty_sword", name:"Rusty Sword", type:"weapon", attackBonus:2, description:"A worn but dependable blade.", stackable:false, value:8 },
+  iron_sword: { id:"iron_sword", name:"Iron Sword", type:"weapon", attackBonus:4, description:"A sharpened iron blade forged for close cave fights.", stackable:false, value:20 },
   leather_armor: { id:"leather_armor", name:"Leather Armor", type:"armor", defenseBonus:2, description:"Sturdy leather armor that softens incoming blows.", stackable:false, value:25 },
   wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:5 },
   small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:3 },
@@ -858,6 +871,44 @@ assets.sprites.wolf = paintWolfSheet();
 
 const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], roadTiles:new Set(), props:[], zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
 function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) world.blocked.add(keyOf(ix,iy)); }
+const OVERWORLD_CAVE_ENTRY = Object.freeze({ x:30, y:13 });
+const MIRROR_CAVE_EXIT = Object.freeze({ x:13, y:16 });
+const MIRROR_CAVE_CHEST_TILE = Object.freeze({ x:13, y:2 });
+const mirrorCave = {
+  width:26,
+  height:18,
+  floor:new Set(),
+  blocked:new Set(),
+  walls:new Set(),
+  spawn:{ x:13, y:16 },
+  exit:{ ...MIRROR_CAVE_EXIT },
+  chest:{ ...MIRROR_CAVE_CHEST_TILE, opened:false },
+  cleared:false,
+  returnTile:{ ...OVERWORLD_CAVE_ENTRY }
+};
+function carveMirrorCaveRoom(x,y,w,h){
+  for(let tx=x;tx<x+w;tx++){
+    for(let ty=y;ty<y+h;ty++){
+      mirrorCave.floor.add(keyOf(tx,ty));
+      mirrorCave.blocked.delete(keyOf(tx,ty));
+    }
+  }
+}
+for(let x=0;x<mirrorCave.width;x++) for(let y=0;y<mirrorCave.height;y++) mirrorCave.blocked.add(keyOf(x,y));
+carveMirrorCaveRoom(11,14,5,3);
+carveMirrorCaveRoom(12,11,3,3);
+carveMirrorCaveRoom(12,8,3,3);
+carveMirrorCaveRoom(11,5,5,3);
+carveMirrorCaveRoom(8,5,3,2);
+carveMirrorCaveRoom(13,3,2,2);
+carveMirrorCaveRoom(9,2,9,3);
+for(let x=0;x<mirrorCave.width;x++){
+  for(let y=0;y<mirrorCave.height;y++){
+    if(!mirrorCave.blocked.has(keyOf(x,y))) continue;
+    const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
+    if(neighbors.some(([dx,dy])=>!mirrorCave.blocked.has(keyOf(x+dx,y+dy)))) mirrorCave.walls.add(keyOf(x,y));
+  }
+}
 
 world.roads.push(
   { x:6,y:11,w:26,h:2 },{ x:17,y:5,w:2,h:15 },{ x:10,y:8,w:2,h:8 },
@@ -898,6 +949,7 @@ world.props.push(
   {x:5,y:12,type:"bush"},{x:32,y:12,type:"bush"},{x:6,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
   {x:18,y:11,type:"well"}
 );
+world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
 const treeData = [[1,2,"a"],[2,2,"b"],[3,3,"a"],[2,5,"c"],[1,6,"a"],[3,7,"b"],[2,9,"a"],[1,11,"c"],[3,12,"a"],[2,14,"b"],[1,17,"a"],[2,19,"b"],[3,21,"a"],[1,22,"c"],[4,23,"a"],[2,1,"a"],[4,2,"c"],[7,1,"b"],[10,2,"a"],[13,2,"c"],[27,2,"a"],[30,1,"b"],[33,2,"a"],[35,1,"c"],[37,2,"a"],[36,2,"a"],[35,4,"b"],[37,5,"a"],[36,7,"c"],[35,9,"a"],[36,11,"b"],[37,13,"a"],[35,15,"c"],[36,17,"a"],[37,19,"b"],[35,21,"a"],[36,23,"c"],[34,22,"a"],[4,22,"b"],[6,23,"a"],[9,22,"c"],[12,23,"a"],[15,22,"b"],[24,23,"a"],[27,22,"c"],[30,23,"a"],[33,22,"b"],[5,5,"a"],[6,8,"b"],[7,19,"a"],[9,4,"c"],[31,5,"a"],[32,8,"b"],[31,19,"a"],[29,21,"c"],[21,15,"a"],[22,18,"c"],[29,16,"b"],[28,19,"c"]];
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
@@ -914,6 +966,12 @@ const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15}];
+const MIRROR_CAVE_WOLF_SPAWNS=[
+  {id:101,x:13,y:13},
+  {id:102,x:12,y:9},
+  {id:103,x:11,y:6},
+  {id:104,x:9,y:3}
+];
 function createWolf(spawn){
   return {kind:"wolf",id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:22,maxHp:22,homeX:spawn.x,homeY:spawn.y,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
 }
@@ -922,7 +980,10 @@ function createBandit(spawn){
 }
 const wolves=WOLF_SPAWNS.map(createWolf);
 const bandits=BANDIT_SPAWNS.map(createBandit);
-const hostiles=[...wolves, ...bandits];
+const mirrorCaveWolves=MIRROR_CAVE_WOLF_SPAWNS.map(createWolf);
+const hostiles=[...wolves, ...bandits, ...mirrorCaveWolves];
+let isInMirrorCave=false;
+let transitionState={ active:false, start:0, duration:0, switched:false, onSwitch:null };
 
 let lastPlayerAttack=0,hitStopUntil=0,lastNoTargetLogAt=0;
 const lastWolfDecisionAt={};
@@ -1528,7 +1589,7 @@ function createSaveData(reason){
     respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
   }));
   return {
-    version:7,
+    version:8,
     reason,
     savedAt:new Date().toISOString(),
     player:{
@@ -1548,15 +1609,25 @@ function createSaveData(reason){
     world:{
       triggeredEvents:Array.from(worldTriggeredEvents),
       stateChanges:{ pondAwakened:worldEvents.pondAwakened },
+      mirrorCave:{
+        chestOpened:mirrorCave.chest.opened,
+        cleared:mirrorCave.cleared
+      },
       creatures:{
         wolves:wolvesSave,
-        bandits:banditsSave
+        bandits:banditsSave,
+        mirrorCaveWolves:mirrorCaveWolves.map((wolf)=>({
+          id:wolf.id,
+          hp:wolf.hp,
+          defeated:wolf.defeated,
+          respawnRemainingMs:Math.max(0, wolfRespawnAtById[wolf.id] ? wolfRespawnAtById[wolf.id]-performance.now() : 0)
+        }))
       }
     }
   };
 }
 function validateSaveData(data){
-  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5 && data.version!==6 && data.version!==7)) return false;
+  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5 && data.version!==6 && data.version!==7 && data.version!==8)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -1578,12 +1649,16 @@ function loadGame(){
   try {
     const data=JSON.parse(raw);
     if(!validateSaveData(data)) throw new Error("Invalid save payload");
-    const loadedX=Math.max(0,Math.min(WORLD_W-1,data.player.position.x));
-    const loadedY=Math.max(0,Math.min(WORLD_H-1,data.player.position.y));
+    const savedZoneId=typeof data.player.zoneId==="string" ? data.player.zoneId : getOutdoorRegionIdAt(data.player.position.x, data.player.position.y);
+    isInMirrorCave=savedZoneId==="mirror_cave";
+    const mapW=isInMirrorCave ? mirrorCave.width : WORLD_W;
+    const mapH=isInMirrorCave ? mirrorCave.height : WORLD_H;
+    const loadedX=Math.max(0,Math.min(mapW-1,data.player.position.x));
+    const loadedY=Math.max(0,Math.min(mapH-1,data.player.position.y));
     setPlayerTilePosition(loadedX, loadedY);
     zoneTransitionLockedUntil=0;
     blockedDirectionalKeysUntilRelease.clear();
-    currentZoneId=getOutdoorRegionIdAt(loadedX, loadedY);
+    currentZoneId=isInMirrorCave ? "mirror_cave" : getOutdoorRegionIdAt(loadedX, loadedY);
     lastLoggedZoneEntryId=currentZoneId;
     player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
     player.xp=Math.max(0,data.player.xp);
@@ -1629,6 +1704,17 @@ function loadGame(){
       lastBanditDecisionAt[bandit.id]=0;
       lastBanditAttackAt[bandit.id]=0;
     });
+    mirrorCaveWolves.forEach((wolf)=>{
+      wolf.hp=wolf.maxHp;
+      wolf.defeated=false;
+      wolf.targetX=wolf.homeX;
+      wolf.targetY=wolf.homeY;
+      wolf.px=wolf.targetX*TILE;
+      wolf.py=wolf.targetY*TILE;
+      wolfRespawnAtById[wolf.id]=0;
+      lastWolfDecisionAt[wolf.id]=0;
+      lastWolfAttackAt[wolf.id]=0;
+    });
     const savedWolves=Array.isArray(data.world?.creatures?.wolves) ? data.world.creatures.wolves : null;
     if(savedWolves){
       savedWolves.forEach((savedWolf)=>{
@@ -1662,6 +1748,20 @@ function loadGame(){
         banditRespawnAtById[bandit.id]=bandit.defeated ? performance.now()+remaining : 0;
       });
     }
+    const savedMirrorCaveWolves=Array.isArray(data.world?.creatures?.mirrorCaveWolves) ? data.world.creatures.mirrorCaveWolves : null;
+    if(savedMirrorCaveWolves){
+      savedMirrorCaveWolves.forEach((savedWolf)=>{
+        if(!savedWolf || typeof savedWolf!=="object") return;
+        const wolf=mirrorCaveWolves.find((candidate)=>candidate.id===savedWolf.id);
+        if(!wolf) return;
+        wolf.hp=isFiniteNumber(savedWolf.hp) ? Math.max(0,Math.min(wolf.maxHp,savedWolf.hp)) : wolf.hp;
+        wolf.defeated=Boolean(savedWolf.defeated) || wolf.hp<=0;
+        const remaining=isFiniteNumber(savedWolf.respawnRemainingMs)?Math.max(0,savedWolf.respawnRemainingMs):0;
+        wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
+      });
+    }
+    mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened);
+    mirrorCave.cleared=Boolean(data.world?.mirrorCave?.cleared);
     log("System: Save loaded.");
     return true;
   } catch(err){
@@ -1691,6 +1791,25 @@ interactionManager.register({
   id:"obj_sign_pond", type:"object", x:()=>25, y:()=>11,
   onInteract:()=>{ log("Signpost: Mirror Pond — Keep silence near the water."); eventSystem.emit("object:used:pond_sign",{}); }
 });
+interactionManager.register({
+  id:"obj_mirror_cave_entrance", type:"object", x:()=>isInMirrorCave ? -999 : OVERWORLD_CAVE_ENTRY.x, y:()=>isInMirrorCave ? -999 : OVERWORLD_CAVE_ENTRY.y,
+  onInteract:()=>enterMirrorCave()
+});
+interactionManager.register({
+  id:"obj_mirror_cave_exit", type:"object", x:()=>isInMirrorCave ? mirrorCave.exit.x : -999, y:()=>isInMirrorCave ? mirrorCave.exit.y : -999,
+  onInteract:()=>exitMirrorCave()
+});
+interactionManager.register({
+  id:"obj_mirror_cave_chest", type:"object", x:()=>isInMirrorCave && !mirrorCave.chest.opened ? mirrorCave.chest.x : -999, y:()=>isInMirrorCave && !mirrorCave.chest.opened ? mirrorCave.chest.y : -999,
+  onInteract:()=>{
+    if(mirrorCave.chest.opened) return;
+    mirrorCave.chest.opened=true;
+    addItemToInventory("iron_sword", 1);
+    log("You obtained Iron Sword.");
+    mirrorCave.cleared=true;
+    log("Mirror Cave cleared.");
+  }
+});
 
 dialogue.addEventListener("click",()=>{
   if(dialogueSystem.activeSession?.pendingChoices) dialogueSystem.choose(0);
@@ -1714,7 +1833,7 @@ vendorList.addEventListener("click",(e)=>{
 });
 
 function getZoneDefinition(zoneId){
-  return OUTDOOR_REGION_DEFS[zoneId] || OUTDOOR_REGION_DEFS.hearthvale_square;
+  return OUTDOOR_REGION_DEFS[zoneId] || INTERIOR_REGION_DEFS[zoneId] || OUTDOOR_REGION_DEFS.hearthvale_square;
 }
 
 function getCurrentZoneName(){
@@ -1726,7 +1845,9 @@ function isWithinRect(x,y,rect){
 }
 
 function isTileInCurrentZone(x,y){
-  return x>=0 && y>=0 && x<WORLD_W && y<WORLD_H;
+  const width=isInMirrorCave ? mirrorCave.width : WORLD_W;
+  const height=isInMirrorCave ? mirrorCave.height : WORLD_H;
+  return x>=0 && y>=0 && x<width && y<height;
 }
 
 function isInTransitionSafeBuffer(zoneId,x,y){
@@ -1734,10 +1855,48 @@ function isInTransitionSafeBuffer(zoneId,x,y){
 }
 
 function isEasternWoodsActive(){
-  return true;
+  return !isInMirrorCave;
 }
 
 function findZoneTransitionAt(){ return null; }
+
+function getActiveHostiles(){
+  return isInMirrorCave ? mirrorCaveWolves : [...wolves, ...bandits];
+}
+
+function runHardTransition(onSwitch, durationMs=320){
+  const now=performance.now();
+  zoneTransitionLockedUntil=now+durationMs+80;
+  clearDirectionalInput();
+  blockedDirectionalKeysUntilRelease = new Set(DIRECTION_KEYS.filter((key)=>keys.has(key)));
+  transitionState={
+    active:true,
+    start:now,
+    duration:durationMs,
+    switched:false,
+    onSwitch
+  };
+}
+
+function enterMirrorCave(){
+  runHardTransition(()=>{
+    isInMirrorCave=true;
+    currentZoneId="mirror_cave";
+    setPlayerTilePosition(mirrorCave.spawn.x, mirrorCave.spawn.y);
+    lastLoggedZoneEntryId=currentZoneId;
+    log("Entered Mirror Cave.");
+  }, 320);
+}
+
+function exitMirrorCave(){
+  runHardTransition(()=>{
+    isInMirrorCave=false;
+    currentZoneId="eastern_woods";
+    setPlayerTilePosition(mirrorCave.returnTile.x, mirrorCave.returnTile.y);
+    lastLoggedZoneEntryId=currentZoneId;
+    log("Returned to Eastern Woods.");
+  }, 320);
+}
 
 function setPlayerTilePosition(x,y){
   player.targetX=Math.max(0,Math.min(WORLD_W-1,x));
@@ -1768,6 +1927,7 @@ function getOutdoorRegionIdAt(x,y){
 }
 
 function updateOutdoorRegionFromPosition(logEntry){
+  if(isInMirrorCave) return;
   const nextZoneId=getOutdoorRegionIdAt(player.targetX, player.targetY);
   if(nextZoneId===currentZoneId) return;
   currentZoneId=nextZoneId;
@@ -1778,6 +1938,7 @@ function updateOutdoorRegionFromPosition(logEntry){
 }
 
 function currentLocalAreaName(){
+  if(isInMirrorCave) return "Mirror Cave";
   for(const z of world.zones){
     if(player.targetX>=z.x&&player.targetX<z.x+z.w&&player.targetY>=z.y&&player.targetY<z.y+z.h) return z.name;
   }
@@ -1806,7 +1967,7 @@ function getHostileLastAttackAt(hostile){
 
 function getNearestHostile(range=Infinity){
   let nearest=null;
-  for(const hostile of hostiles){
+  for(const hostile of getActiveHostiles()){
     const distance=getHostileDistance(hostile);
     if(distance>range) continue;
     if(!nearest || distance<nearest.distance) nearest={entity:hostile,distance};
@@ -1815,6 +1976,7 @@ function getNearestHostile(range=Infinity){
 }
 
 function respawnPlayerAtSquare(){
+  isInMirrorCave=false;
   currentZoneId="hearthvale_square";
   setPlayerTilePosition(18, 11);
   zoneTransitionLockedUntil=0;
@@ -1909,11 +2071,15 @@ function updateSidebar(){
 }
 
 function canMoveTo(x,y){
-  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
-  if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
-  if(x===npc.x&&y===npc.y) return false;
-  if(x===vendorNpc.x&&y===vendorNpc.y) return false;
-  if(hostiles.some((hostile)=>hostile.hp>0&&x===hostile.targetX&&y===hostile.targetY)) return false;
+  if(!isTileInCurrentZone(x,y)) return false;
+  if(isInMirrorCave){
+    if(mirrorCave.blocked.has(keyOf(x,y))) return false;
+  } else {
+    if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
+    if(x===npc.x&&y===npc.y) return false;
+    if(x===vendorNpc.x&&y===vendorNpc.y) return false;
+  }
+  if(getActiveHostiles().some((hostile)=>hostile.hp>0&&x===hostile.targetX&&y===hostile.targetY)) return false;
   return true;
 }
 
@@ -1967,8 +2133,10 @@ equipmentList.addEventListener("click",(e)=>{
 });
 
 function getCamera(){
-  const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2),WORLD_W-VIEW_TILES_X));
-  const tileY=Math.max(0,Math.min(player.targetY-Math.floor(VIEW_TILES_Y/2),WORLD_H-VIEW_TILES_Y));
+  const mapW=isInMirrorCave ? mirrorCave.width : WORLD_W;
+  const mapH=isInMirrorCave ? mirrorCave.height : WORLD_H;
+  const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2),Math.max(0,mapW-VIEW_TILES_X)));
+  const tileY=Math.max(0,Math.min(player.targetY-Math.floor(VIEW_TILES_Y/2),Math.max(0,mapH-VIEW_TILES_Y)));
   const viewPxW=VIEW_TILES_X*TILE, viewPxH=VIEW_TILES_Y*TILE;
   const offsetX=Math.floor((canvas.width-viewPxW)/2), offsetY=Math.floor((canvas.height-viewPxH)/2);
   return {tileX,tileY,offsetX,offsetY};
@@ -2000,11 +2168,15 @@ function updateInput(){
 }
 
 function canHostileMoveTo(x,y,self){
-  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
-  if(world.blocked.has(keyOf(x,y))) return false;
-  if(x===npc.x&&y===npc.y) return false;
-  if(x===vendorNpc.x&&y===vendorNpc.y) return false;
-  if(hostiles.some((hostile)=>hostile!==self && hostile.hp>0 && hostile.targetX===x && hostile.targetY===y)) return false;
+  if(!isTileInCurrentZone(x,y)) return false;
+  if(isInMirrorCave){
+    if(mirrorCave.blocked.has(keyOf(x,y))) return false;
+  } else {
+    if(world.blocked.has(keyOf(x,y))) return false;
+    if(x===npc.x&&y===npc.y) return false;
+    if(x===vendorNpc.x&&y===vendorNpc.y) return false;
+  }
+  if(getActiveHostiles().some((hostile)=>hostile!==self && hostile.hp>0 && hostile.targetX===x && hostile.targetY===y)) return false;
   return true;
 }
 function isHostileAggroBlocked(now){
@@ -2068,7 +2240,7 @@ function updateBandit(bandit,now){
 }
 function wolfAttack(now){
   if(isHostileAggroBlocked(now)) return;
-  for(const wolf of wolves){
+  for(const wolf of getActiveHostiles().filter((hostile)=>hostile.kind==="wolf")){
     if(wolf.hp<=0) continue;
     const dist=Math.abs(player.targetX-wolf.targetX)+Math.abs(player.targetY-wolf.targetY);
     if(dist>1||now-(lastWolfAttackAt[wolf.id]||0)<WOLF_ATTACK_COOLDOWN_MS) continue;
@@ -2238,7 +2410,66 @@ function drawShadowTile(img, x, y, alpha=1){
   ctx.globalAlpha = oldAlpha;
 }
 
+function drawTransitionFade(now){
+  if(!transitionFade) return;
+  if(!transitionState.active){
+    transitionFade.style.background="rgba(2,6,10,0)";
+    return;
+  }
+  const elapsed=now-transitionState.start;
+  const half=Math.max(1, transitionState.duration/2);
+  const t=Math.min(1, elapsed/half);
+  let alpha=transitionState.switched ? (1-t) : t;
+  alpha=Math.max(0,Math.min(1,alpha));
+  transitionFade.style.background="rgba(2,6,10," + alpha.toFixed(3) + ")";
+}
+
+function drawMirrorCaveScene(now){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cam=getCamera();
+  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
+    const p=tileToScreen(x,y);
+    const k=keyOf(x,y);
+    if(!isTileInCurrentZone(x,y)) continue;
+    const noise=rng(x,y,222);
+    if(mirrorCave.blocked.has(k)){
+      ctx.fillStyle=noise>0.5 ? "#1b1f28" : "#161a22";
+    } else {
+      ctx.fillStyle=noise>0.5 ? "#3c4048" : "#353941";
+    }
+    ctx.fillRect(p.x,p.y,32,32);
+    if(mirrorCave.walls.has(k)){
+      ctx.fillStyle="rgba(112,119,133,.22)";
+      ctx.fillRect(p.x,p.y,32,6);
+    }
+  }
+  if(!mirrorCave.chest.opened){
+    const cp=tileToScreen(mirrorCave.chest.x, mirrorCave.chest.y);
+    drawSoftShadow(cp.x+16,cp.y+26,10,4,.2);
+    ctx.fillStyle="#6b4c2f"; ctx.fillRect(cp.x+6,cp.y+10,20,14);
+    ctx.fillStyle="#b58f56"; ctx.fillRect(cp.x+6,cp.y+10,20,4);
+    ctx.fillStyle="#d6bc7f"; ctx.fillRect(cp.x+14,cp.y+14,4,6);
+  }
+  const ep=tileToScreen(mirrorCave.exit.x, mirrorCave.exit.y);
+  ctx.fillStyle="rgba(155,170,189,.2)"; ctx.fillRect(ep.x+4,ep.y+4,24,24);
+  ctx.strokeStyle="rgba(199,214,236,.5)"; ctx.strokeRect(ep.x+4.5,ep.y+4.5,23,23);
+  ctx.fillStyle="#c7d6ec"; ctx.font="bold 10px monospace"; ctx.fillText("EXIT", ep.x+6, ep.y+19);
+
+  mirrorCaveWolves.forEach((wolf)=>{
+    if(wolf.hp<=0) return;
+    drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+  });
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  ctx.fillStyle="rgba(8,10,14,.2)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+  drawTransitionFade(now);
+}
+
 function drawWorld(){
+  const now=performance.now();
+  if(isInMirrorCave){
+    drawMirrorCaveScene(now);
+    return;
+  }
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const cam=getCamera();
   for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
@@ -2301,6 +2532,16 @@ function drawWorld(){
     if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
     ctx.drawImage(img,p.x,p.y,32,32);
   });
+  const caveEntrancePos=tileToScreen(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y);
+  ctx.fillStyle="rgba(26,30,38,.86)";
+  ctx.beginPath();
+  ctx.moveTo(caveEntrancePos.x+6,caveEntrancePos.y+26);
+  ctx.lineTo(caveEntrancePos.x+16,caveEntrancePos.y+8);
+  ctx.lineTo(caveEntrancePos.x+26,caveEntrancePos.y+26);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle="rgba(151,164,182,.65)";
+  ctx.stroke();
 
   world.fences.forEach((f,i)=>{
     const p=tileToScreen(f.x,f.y);
@@ -2351,9 +2592,20 @@ function drawWorld(){
   const edge=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,Math.min(canvas.width,canvas.height)*.35,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.68);
   edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.78,"rgba(1,6,10,.1)"); edge.addColorStop(1,"rgba(1,6,10,.46)");
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
+  drawTransitionFade(now);
 }
 
 function update(dt,now){
+  if(transitionState.active){
+    const elapsed=now-transitionState.start;
+    if(!transitionState.switched && elapsed>=transitionState.duration/2){
+      transitionState.switched=true;
+      transitionState.onSwitch?.();
+    }
+    if(elapsed>=transitionState.duration){
+      transitionState.active=false;
+    }
+  }
   player.recoilX*=.8; player.recoilY*=.8; player.attackLungeX*=.74; player.attackLungeY*=.74;
   wolves.forEach((wolf)=>{
     wolf.recoilX*=.82; wolf.recoilY*=.82; wolf.attackLungeX*=.78; wolf.attackLungeY*=.78;
@@ -2371,10 +2623,14 @@ function update(dt,now){
   if(!isTransitionLocked && !player.moving && (moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
   updateOutdoorRegionFromPosition(true);
   if(!isTransitionLocked){
-    wolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
-    bandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
+    if(isInMirrorCave){
+      mirrorCaveWolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
+    } else {
+      wolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
+      bandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
+      banditAttack(now);
+    }
     wolfAttack(now);
-    banditAttack(now);
   }
   updateSidebar();
 }
