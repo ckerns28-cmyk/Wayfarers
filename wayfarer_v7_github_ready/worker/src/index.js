@@ -357,15 +357,44 @@ const ZONE_DEFS = {
     bounds: { x:27, y:0, w:WORLD_W-27, h:WORLD_H }
   }
 };
-const ZONE_TRANSITIONS = [
-  { from:"hearthvale_square", to:"eastern_woods", x:26, y:0, w:1, h:WORLD_H, arrival:{ x:29, y:12 }, preserveY:false, label:"Eastern Woods" },
-  { from:"eastern_woods", to:"hearthvale_square", x:27, y:0, w:1, h:WORLD_H, arrival:{ x:24, y:12 }, preserveY:false, label:"Hearthvale Square" }
-];
+const ZONE_EXIT_SPAWNS = Object.freeze({
+  hearthvale_square: {
+    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:25, spawnY:12 },
+    southeast_path_exit: { x:26, y:18, w:1, h:5, spawnX:25, spawnY:20 }
+  },
+  eastern_woods: {
+    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:29, spawnY:12 },
+    southwest_path_exit: { x:27, y:18, w:1, h:5, spawnX:29, spawnY:20 }
+  }
+});
+const ZONE_TRANSITION_PAIRS = Object.freeze([
+  { sourceZone:"hearthvale_square", sourceExitId:"east_road_exit", destinationZone:"eastern_woods", destinationSpawnId:"west_road_entrance", preserveAxis:"y" },
+  { sourceZone:"eastern_woods", sourceExitId:"west_road_entrance", destinationZone:"hearthvale_square", destinationSpawnId:"east_road_exit", preserveAxis:"y" },
+  { sourceZone:"hearthvale_square", sourceExitId:"southeast_path_exit", destinationZone:"eastern_woods", destinationSpawnId:"southwest_path_exit", preserveAxis:"y" },
+  { sourceZone:"eastern_woods", sourceExitId:"southwest_path_exit", destinationZone:"hearthvale_square", destinationSpawnId:"southeast_path_exit", preserveAxis:"y" }
+]);
+const ZONE_TRANSITIONS = ZONE_TRANSITION_PAIRS.map((pair)=>{
+  const source=ZONE_EXIT_SPAWNS[pair.sourceZone]?.[pair.sourceExitId];
+  const destination=ZONE_EXIT_SPAWNS[pair.destinationZone]?.[pair.destinationSpawnId];
+  if(!source || !destination){
+    throw new Error("Invalid zone transition mapping: " + pair.sourceZone + "/" + pair.sourceExitId + " -> " + pair.destinationZone + "/" + pair.destinationSpawnId);
+  }
+  return {
+    sourceZone: pair.sourceZone,
+    sourceExitId: pair.sourceExitId,
+    destinationZone: pair.destinationZone,
+    destinationSpawnId: pair.destinationSpawnId,
+    preserveAxis: pair.preserveAxis || null,
+    trigger:{ x:source.x, y:source.y, w:source.w, h:source.h },
+    arrival:{ x:destination.spawnX, y:destination.spawnY }
+  };
+});
 let currentZoneId = "hearthvale_square";
 const ZONE_TRANSITION_DEBOUNCE_MS = 1000;
-const ZONE_TRANSITION_FADE_MS = 220;
 let nextZoneTransitionAt = 0;
-let zoneTransitionFadeUntil = 0;
+const ZONE_TRANSITION_LOCK_MS = 180;
+let zoneTransitionLockedUntil = 0;
+let lastLoggedZoneEntryId = currentZoneId;
 const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
@@ -1587,6 +1616,8 @@ function loadGame(){
     const loadedY=Math.max(zoneBounds.y,Math.min(zoneBounds.y+zoneBounds.h-1,data.player.position.y));
     setPlayerTilePosition(loadedX, loadedY);
     nextZoneTransitionAt=performance.now()+ZONE_TRANSITION_DEBOUNCE_MS;
+    zoneTransitionLockedUntil=0;
+    lastLoggedZoneEntryId=currentZoneId;
     player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
     player.xp=Math.max(0,data.player.xp);
     player.coins=Math.max(0,data.player.coins);
@@ -1737,8 +1768,8 @@ function isEasternWoodsActive(){
 
 function findZoneTransitionAt(x,y){
   return ZONE_TRANSITIONS.find((transition)=>
-    transition.from===currentZoneId &&
-    isWithinRect(x,y,transition)
+    transition.sourceZone===currentZoneId &&
+    isWithinRect(x,y,transition.trigger)
   ) || null;
 }
 
@@ -1750,18 +1781,38 @@ function setPlayerTilePosition(x,y){
   player.moving=false;
 }
 
+function resolveTransitionArrival(transition, fromX, fromY){
+  const baseX=transition.arrival?.x ?? fromX;
+  const baseY=transition.arrival?.y ?? fromY;
+  if(transition.preserveAxis==="y"){
+    const destinationTrigger=ZONE_EXIT_SPAWNS[transition.destinationZone]?.[transition.destinationSpawnId];
+    if(!destinationTrigger) return { x:baseX, y:baseY };
+    const minY=destinationTrigger.y;
+    const maxY=destinationTrigger.y+destinationTrigger.h-1;
+    const alignedY=Math.max(minY, Math.min(maxY, fromY));
+    return { x:baseX, y:alignedY };
+  }
+  return { x:baseX, y:baseY };
+}
+
 function handleZoneTransitionIfNeeded(){
   const now=performance.now();
   if(now<nextZoneTransitionAt) return false;
   const transition=findZoneTransitionAt(player.targetX, player.targetY);
   if(!transition) return false;
-  currentZoneId=transition.to;
-  const arrivalX=transition.arrival?.x ?? player.targetX;
-  const arrivalY=transition.preserveY ? player.targetY : (transition.arrival?.y ?? player.targetY);
+  const previousX=player.targetX;
+  const previousY=player.targetY;
+  currentZoneId=transition.destinationZone;
+  const arrival=resolveTransitionArrival(transition, previousX, previousY);
+  const arrivalX=arrival.x;
+  const arrivalY=arrival.y;
   setPlayerTilePosition(arrivalX, arrivalY);
   nextZoneTransitionAt=now+ZONE_TRANSITION_DEBOUNCE_MS;
-  zoneTransitionFadeUntil=now+ZONE_TRANSITION_FADE_MS;
-  log("Entered " + getCurrentZoneName() + ".");
+  zoneTransitionLockedUntil=now+ZONE_TRANSITION_LOCK_MS;
+  if(lastLoggedZoneEntryId!==currentZoneId){
+    log("Entered " + getCurrentZoneName() + ".");
+    lastLoggedZoneEntryId=currentZoneId;
+  }
   saveGame("zone_transition");
   return true;
 }
@@ -1806,6 +1857,9 @@ function getNearestHostile(range=Infinity){
 function respawnPlayerAtSquare(){
   currentZoneId="hearthvale_square";
   setPlayerTilePosition(18, 11);
+  nextZoneTransitionAt=performance.now()+ZONE_TRANSITION_DEBOUNCE_MS;
+  zoneTransitionLockedUntil=0;
+  lastLoggedZoneEntryId=currentZoneId;
 }
 
 function handlePlayerDefeat(){
@@ -1958,7 +2012,15 @@ function tileToScreen(tx,ty){ const cam=getCamera(); return {x:(tx-cam.tileX)*TI
 function screenToWorld(clientX,clientY){ const rect=canvas.getBoundingClientRect(); const mx=clientX-rect.left,my=clientY-rect.top; const cam=getCamera(); return {x:Math.floor((mx-cam.offsetX)/TILE)+cam.tileX,y:Math.floor((my-cam.offsetY)/TILE)+cam.tileY}; }
 
 function smoothMove(entity,dt){ const tx=entity.targetX*TILE, ty=entity.targetY*TILE; const dx=tx-entity.px, dy=ty-entity.py; const dist=Math.hypot(dx,dy); if(dist<.35){ entity.px=tx; entity.py=ty; entity.moving=false; return; } entity.moving=true; const step=entity.speed*dt; entity.px += (dx/dist)*Math.min(step,dist); entity.py += (dy/dist)*Math.min(step,dist); }
-function tryPlayerStep(dx,dy,facing){ if(player.moving||dialogueSystem.activeSession) return; const nx=player.targetX+dx, ny=player.targetY+dy; player.facing=facing; if(!canMoveTo(nx,ny)) return; player.targetX=nx; player.targetY=ny; }
+function tryPlayerStep(dx,dy,facing){
+  if(player.moving||dialogueSystem.activeSession) return;
+  if(performance.now()<zoneTransitionLockedUntil) return;
+  const nx=player.targetX+dx, ny=player.targetY+dy;
+  player.facing=facing;
+  if(!canMoveTo(nx,ny)) return;
+  player.targetX=nx;
+  player.targetY=ny;
+}
 const moveIntent={dx:0,dy:0,facing:"down"};
 function updateInput(){
   if(keys.has("w")||keys.has("arrowup")) tryPlayerStep(0,-1,"up");
@@ -2091,6 +2153,7 @@ function defeatBandit(bandit,now){
 }
 function tryPlayerAttack(now){
   if(dialogueSystem.activeSession) return;
+  if(now<zoneTransitionLockedUntil) return;
   if(!isEasternWoodsActive()) return;
   if(!(keys.has(" ")||keys.has("space"))) return;
   if(now-lastPlayerAttack<420) return;
@@ -2305,10 +2368,8 @@ function drawWorld(){
   if(zoneName==="Mirror Pond") zoneLabel("Mirror Pond",23,12);
   if(zoneName==="Eastern Woods") zoneLabel("Eastern Woods",30,4);
 
-  if(currentZoneId==="hearthvale_square"){
-    drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
-    drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
-  }
+  drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
+  drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
   if(isEasternWoodsActive()){
     wolves.forEach((wolf)=>{
       if(wolf.hp<=0) return;
@@ -2326,12 +2387,6 @@ function drawWorld(){
   const edge=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,Math.min(canvas.width,canvas.height)*.35,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.68);
   edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.78,"rgba(1,6,10,.1)"); edge.addColorStop(1,"rgba(1,6,10,.46)");
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
-  if(zoneTransitionFadeUntil>performance.now()){
-    const progress=(zoneTransitionFadeUntil-performance.now())/ZONE_TRANSITION_FADE_MS;
-    const alpha=Math.max(0,Math.min(1,progress))*0.45;
-    ctx.fillStyle="rgba(4,7,12," + alpha.toFixed(3) + ")";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-  }
 }
 
 function update(dt,now){
@@ -2344,13 +2399,18 @@ function update(dt,now){
   });
   if(now<hitStopUntil){ updateSidebar(); return; }
   eventSystem.update(currentLocalAreaName());
-  updateInput(); tryPlayerAttack(now); smoothMove(player,dt);
+  const isTransitionLocked=now<zoneTransitionLockedUntil;
+  if(!isTransitionLocked) updateInput();
+  tryPlayerAttack(now);
+  smoothMove(player,dt);
   if(!player.moving) handleZoneTransitionIfNeeded();
-  if(!player.moving&&(moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
-  wolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
-  bandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
-  wolfAttack(now);
-  banditAttack(now);
+  if(!isTransitionLocked && !player.moving && (moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
+  if(!isTransitionLocked){
+    wolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
+    bandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
+    wolfAttack(now);
+    banditAttack(now);
+  }
   updateSidebar();
 }
 
