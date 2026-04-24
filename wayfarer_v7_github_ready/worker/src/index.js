@@ -1068,7 +1068,11 @@ function isVendorOpen(){ return vendorPanel.style.display==="block"; }
 function closeVendorMenu(){ vendorPanel.style.display="none"; }
 function canSellItem(item){
   if(!item) return false;
-  const equippableSlot=item.type==="weapon" ? "weapon" : (item.type==="armor" ? "armor" : null);
+  const equippableSlot=item.type==="weapon"
+    ? "weapon"
+    : (item.type==="armor"
+      ? "armor"
+      : (item.type==="trinket" ? "trinket" : null));
   if(!equippableSlot) return true;
   const total=getItemQuantity(item.id);
   const equipped=player.equipment[equippableSlot]===item.id;
@@ -1770,11 +1774,15 @@ function updateSidebar(){
     inventoryList.innerHTML = player.inventory.map((entry)=>{
       const item=getItemDefinition(entry.itemId);
       const name=item?.name || entry.itemId;
-      const equipSlot=item?.type==="weapon" ? "weapon" : (item?.type==="armor" ? "armor" : null);
+      const equipSlot=item?.type==="weapon"
+        ? "weapon"
+        : (item?.type==="armor"
+          ? "armor"
+          : (item?.type==="trinket" ? "trinket" : null));
       const canEquip=Boolean(equipSlot);
       const equipped=Boolean(item?.id && equipSlot && item.id===player.equipment[equipSlot]);
       if(canEquip){
-        const actionLabel=equipped ? "Equipped" : "Equip";
+        const actionLabel=equipped ? "[Equipped]" : "Equip";
         const disabledAttr=equipped ? " disabled" : "";
         return name + " x" + entry.quantity + " <button type=\"button\" data-equip-item=\"" + item.id + "\" data-equip-slot=\"" + equipSlot + "\"" + disabledAttr + ">" + actionLabel + "</button>";
       }
@@ -1787,7 +1795,7 @@ function updateSidebar(){
   const equippedArmor=getEquippedItem("armor");
   const armorDefense=getEquippedDefenseBonus();
   const armorLine=equippedArmor
-    ? (equippedArmor.name + " (-" + armorDefense + " dmg) <span class=\"muted\">Armor active.</span> <button type=\"button\" data-unequip-slot=\"armor\">Remove</button>")
+    ? (equippedArmor.name + " (+" + armorDefense + " DEF) <span class=\"muted\">Armor active.</span> <button type=\"button\" data-unequip-slot=\"armor\">Remove</button>")
     : "None";
   equipmentList.innerHTML = "Weapon: " + weaponLine + "<br>Armor: " + armorLine + "<br>Trinket: ";
   const nearbyHostile=getNearestHostile(5);
@@ -1829,16 +1837,24 @@ addEventListener("keyup",(e)=>{
 });
 canvas.addEventListener("click",(e)=>{ const clicked=screenToWorld(e.clientX,e.clientY); interactionManager.interactAt(clicked.x, clicked.y); });
 inventoryList.addEventListener("click",(e)=>{
-  const target=e.target;
+  const target=e.target instanceof Element ? e.target.closest("button[data-equip-item]") : null;
   if(!(target instanceof HTMLElement)) return;
   const itemId=target.dataset?.equipItem;
   const slotName=target.dataset?.equipSlot;
   if(!itemId || !slotName) return;
   if(slotName==="weapon" && equipWeapon(itemId)) updateSidebar();
   if(slotName==="armor" && equipArmor(itemId)) updateSidebar();
+  if(slotName==="trinket"){
+    const item=getItemDefinition(itemId);
+    if(item && item.type==="trinket" && getItemQuantity(itemId)>0){
+      player.equipment.trinket=itemId;
+      log("Equipped " + item.name + ".");
+      updateSidebar();
+    }
+  }
 });
 equipmentList.addEventListener("click",(e)=>{
-  const target=e.target;
+  const target=e.target instanceof Element ? e.target.closest("button[data-unequip-slot]") : null;
   if(!(target instanceof HTMLElement)) return;
   const slotName=target.dataset?.unequipSlot;
   if(!slotName) return;
