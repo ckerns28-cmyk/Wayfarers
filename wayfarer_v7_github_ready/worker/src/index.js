@@ -359,7 +359,7 @@ const ZONE_DEFS = {
 };
 const ZONE_EXIT_SPAWNS = Object.freeze({
   hearthvale_square: {
-    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:26, spawnY:12 },
+    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:25, spawnY:12 },
     southeast_path_exit: { x:26, y:18, w:1, h:5, spawnX:25, spawnY:20 }
   },
   eastern_woods: {
@@ -396,8 +396,12 @@ const TRANSITION_SAFE_BUFFERS = Object.freeze({
 let currentZoneId = "hearthvale_square";
 const ZONE_TRANSITION_DEBOUNCE_MS = 1000;
 let nextZoneTransitionAt = 0;
-const ZONE_TRANSITION_LOCK_MS = 120;
+const ZONE_TRANSITION_LOCK_MS = 200;
 let zoneTransitionLockedUntil = 0;
+const ZONE_TRANSITION_INPUT_SUPPRESS_MS = 200;
+const DIRECTION_KEYS = Object.freeze(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"]);
+let movementSuppressedUntil = 0;
+let requireDirectionKeyRelease = false;
 const ZONE_TRANSITION_HOSTILE_GRACE_MS = 1500;
 let hostileAggroBlockedUntil = 0;
 let lastLoggedZoneEntryId = currentZoneId;
@@ -1793,6 +1797,14 @@ function setPlayerTilePosition(x,y){
   player.moving=false;
 }
 
+function clearDirectionalInput(){
+  DIRECTION_KEYS.forEach((key)=>keys.delete(key));
+}
+
+function isDirectionalInputHeld(){
+  return DIRECTION_KEYS.some((key)=>keys.has(key));
+}
+
 function resolveTransitionArrival(transition, fromX, fromY){
   const baseX=transition.arrival?.x ?? fromX;
   const baseY=transition.arrival?.y ?? fromY;
@@ -1821,10 +1833,14 @@ function handleZoneTransitionIfNeeded(){
   const arrival=resolveTransitionArrival(transition, player.targetX, player.targetY);
   const arrivalX=arrival.x;
   const arrivalY=arrival.y;
+  clearDirectionalInput();
   setPlayerTilePosition(arrivalX, arrivalY);
+  player.moving=false;
   player.facing=preservedFacing;
   nextZoneTransitionAt=now+ZONE_TRANSITION_DEBOUNCE_MS;
   zoneTransitionLockedUntil=now+ZONE_TRANSITION_LOCK_MS;
+  movementSuppressedUntil=now+ZONE_TRANSITION_INPUT_SUPPRESS_MS;
+  requireDirectionKeyRelease=true;
   hostileAggroBlockedUntil=now+ZONE_TRANSITION_HOSTILE_GRACE_MS;
   if(lastLoggedZoneEntryId!==currentZoneId){
     log("Entered " + getCurrentZoneName() + ".");
@@ -1981,6 +1997,7 @@ let showGrid=false;
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
   if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","h","k","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
+  if(requireDirectionKeyRelease && DIRECTION_KEYS.includes(k)) return;
   if(k==="g") showGrid=!showGrid;
   if(k==="e") interactionManager.tryInteract();
   if(k==="h") useHealingConsumable();
@@ -1991,6 +2008,9 @@ addEventListener("keydown",(e)=>{
 addEventListener("keyup",(e)=>{
   const k=e.key.toLowerCase();
   keys.delete(k);
+  if(requireDirectionKeyRelease && DIRECTION_KEYS.includes(k) && !isDirectionalInputHeld()){
+    requireDirectionKeyRelease=false;
+  }
   if(k===" "||k==="space") missNoticeArmed=true;
 });
 canvas.addEventListener("click",(e)=>{ const clicked=screenToWorld(e.clientX,e.clientY); interactionManager.interactAt(clicked.x, clicked.y); });
@@ -2041,6 +2061,20 @@ function tryPlayerStep(dx,dy,facing){
 }
 const moveIntent={dx:0,dy:0,facing:"down"};
 function updateInput(){
+  const now=performance.now();
+  if(now<movementSuppressedUntil){
+    moveIntent.dx=0;
+    moveIntent.dy=0;
+    return;
+  }
+  if(requireDirectionKeyRelease){
+    if(isDirectionalInputHeld()){
+      moveIntent.dx=0;
+      moveIntent.dy=0;
+      return;
+    }
+    requireDirectionKeyRelease=false;
+  }
   if(keys.has("w")||keys.has("arrowup")) tryPlayerStep(0,-1,"up");
   else if(keys.has("s")||keys.has("arrowdown")) tryPlayerStep(0,1,"down");
   else if(keys.has("a")||keys.has("arrowleft")) tryPlayerStep(-1,0,"left");
