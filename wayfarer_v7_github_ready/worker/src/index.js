@@ -359,11 +359,11 @@ const ZONE_DEFS = {
 };
 const ZONE_EXIT_SPAWNS = Object.freeze({
   hearthvale_square: {
-    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:25, spawnY:12 },
+    east_road_exit: { x:26, y:10, w:1, h:4, spawnX:26, spawnY:12 },
     southeast_path_exit: { x:26, y:18, w:1, h:5, spawnX:25, spawnY:20 }
   },
   eastern_woods: {
-    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:29, spawnY:12 },
+    west_road_entrance: { x:27, y:10, w:1, h:4, spawnX:28, spawnY:12 },
     southwest_path_exit: { x:27, y:18, w:1, h:5, spawnX:29, spawnY:20 }
   }
 });
@@ -384,15 +384,22 @@ const ZONE_TRANSITIONS = ZONE_TRANSITION_PAIRS.map((pair)=>{
     sourceExitId: pair.sourceExitId,
     destinationZone: pair.destinationZone,
     destinationSpawnId: pair.destinationSpawnId,
+    preserveAxis: pair.sourceExitId==="east_road_exit" || pair.sourceExitId==="west_road_entrance" ? "y" : null,
     trigger:{ x:source.x, y:source.y, w:source.w, h:source.h },
     arrival:{ x:destination.spawnX, y:destination.spawnY }
   };
+});
+const TRANSITION_SAFE_BUFFERS = Object.freeze({
+  hearthvale_square: [{ x:23, y:9, w:4, h:6 }],
+  eastern_woods: [{ x:27, y:9, w:4, h:6 }]
 });
 let currentZoneId = "hearthvale_square";
 const ZONE_TRANSITION_DEBOUNCE_MS = 1000;
 let nextZoneTransitionAt = 0;
 const ZONE_TRANSITION_LOCK_MS = 180;
 let zoneTransitionLockedUntil = 0;
+const ZONE_TRANSITION_HOSTILE_GRACE_MS = 1500;
+let hostileAggroBlockedUntil = 0;
 let lastLoggedZoneEntryId = currentZoneId;
 const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
@@ -943,8 +950,8 @@ world.zones.push(
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
-const WOLF_SPAWNS=[{id:1,x:29,y:14},{id:2,x:28,y:17}];
-const BANDIT_SPAWNS=[{id:1,x:31,y:15}];
+const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17}];
+const BANDIT_SPAWNS=[{id:1,x:34,y:15}];
 function createWolf(spawn){
   return {kind:"wolf",id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:22,maxHp:22,homeX:spawn.x,homeY:spawn.y,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
 }
@@ -1616,6 +1623,7 @@ function loadGame(){
     setPlayerTilePosition(loadedX, loadedY);
     nextZoneTransitionAt=performance.now()+ZONE_TRANSITION_DEBOUNCE_MS;
     zoneTransitionLockedUntil=0;
+    hostileAggroBlockedUntil=0;
     lastLoggedZoneEntryId=currentZoneId;
     player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
     player.xp=Math.max(0,data.player.xp);
@@ -1761,6 +1769,11 @@ function isTileInCurrentZone(x,y){
   return isWithinRect(x,y,getZoneDefinition(currentZoneId).bounds);
 }
 
+function isInTransitionSafeBuffer(zoneId,x,y){
+  const buffers=TRANSITION_SAFE_BUFFERS[zoneId] || [];
+  return buffers.some((buffer)=>isWithinRect(x,y,buffer));
+}
+
 function isEasternWoodsActive(){
   return currentZoneId==="eastern_woods";
 }
@@ -1799,12 +1812,20 @@ function handleZoneTransitionIfNeeded(){
   if(now<nextZoneTransitionAt) return false;
   const transition=findZoneTransitionAt(player.targetX, player.targetY);
   if(!transition) return false;
+  const preservedFacing=transition.sourceExitId==="east_road_exit"
+    ? "right"
+    : transition.sourceExitId==="west_road_entrance"
+      ? "left"
+      : player.facing;
   currentZoneId=transition.destinationZone;
-  const arrivalX=transition.arrival?.x ?? player.targetX;
-  const arrivalY=transition.arrival?.y ?? player.targetY;
+  const arrival=resolveTransitionArrival(transition, player.targetX, player.targetY);
+  const arrivalX=arrival.x;
+  const arrivalY=arrival.y;
   setPlayerTilePosition(arrivalX, arrivalY);
+  player.facing=preservedFacing;
   nextZoneTransitionAt=now+ZONE_TRANSITION_DEBOUNCE_MS;
   zoneTransitionLockedUntil=now+ZONE_TRANSITION_LOCK_MS;
+  hostileAggroBlockedUntil=now+ZONE_TRANSITION_HOSTILE_GRACE_MS;
   if(lastLoggedZoneEntryId!==currentZoneId){
     log("Entered " + getCurrentZoneName() + ".");
     lastLoggedZoneEntryId=currentZoneId;
@@ -1855,6 +1876,7 @@ function respawnPlayerAtSquare(){
   setPlayerTilePosition(18, 11);
   nextZoneTransitionAt=performance.now()+ZONE_TRANSITION_DEBOUNCE_MS;
   zoneTransitionLockedUntil=0;
+  hostileAggroBlockedUntil=0;
   lastLoggedZoneEntryId=currentZoneId;
 }
 
@@ -2033,11 +2055,15 @@ function updateInput(){
 function canHostileMoveTo(x,y,self){
   if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
   if(!isTileInCurrentZone(x,y)) return false;
+  if(isInTransitionSafeBuffer(currentZoneId,x,y)) return false;
   if(world.blocked.has(keyOf(x,y))) return false;
   if(x===npc.x&&y===npc.y) return false;
   if(x===vendorNpc.x&&y===vendorNpc.y) return false;
   if(hostiles.some((hostile)=>hostile!==self && hostile.hp>0 && hostile.targetX===x && hostile.targetY===y)) return false;
   return true;
+}
+function isHostileAggroBlocked(now){
+  return now<hostileAggroBlockedUntil;
 }
 function updateWolf(wolf,now){
   if(!isEasternWoodsActive()) return;
@@ -2054,6 +2080,7 @@ function updateWolf(wolf,now){
   }
   if(now-(lastWolfDecisionAt[wolf.id]||0)<650) return;
   lastWolfDecisionAt[wolf.id]=now;
+  if(isHostileAggroBlocked(now) || isInTransitionSafeBuffer(currentZoneId, player.targetX, player.targetY)) return;
   const dx=player.targetX-wolf.targetX, dy=player.targetY-wolf.targetY, dist=Math.abs(dx)+Math.abs(dy);
   if(dist<=4){
     const sx=dx===0?0:dx>0?1:-1, sy=dy===0?0:dy>0?1:-1;
@@ -2082,6 +2109,7 @@ function updateBandit(bandit,now){
   }
   if(now-(lastBanditDecisionAt[bandit.id]||0)<850) return;
   lastBanditDecisionAt[bandit.id]=now;
+  if(isHostileAggroBlocked(now) || isInTransitionSafeBuffer(currentZoneId, player.targetX, player.targetY)) return;
   const dx=player.targetX-bandit.targetX, dy=player.targetY-bandit.targetY, dist=Math.abs(dx)+Math.abs(dy);
   if(dist<=4){
     const sx=dx===0?0:dx>0?1:-1, sy=dy===0?0:dy>0?1:-1;
@@ -2097,6 +2125,7 @@ function updateBandit(bandit,now){
 }
 function wolfAttack(now){
   if(!isEasternWoodsActive()) return;
+  if(isHostileAggroBlocked(now) || isInTransitionSafeBuffer(currentZoneId, player.targetX, player.targetY)) return;
   for(const wolf of wolves){
     if(wolf.hp<=0) continue;
     const dist=Math.abs(player.targetX-wolf.targetX)+Math.abs(player.targetY-wolf.targetY);
@@ -2112,6 +2141,7 @@ function wolfAttack(now){
 }
 function banditAttack(now){
   if(!isEasternWoodsActive()) return;
+  if(isHostileAggroBlocked(now) || isInTransitionSafeBuffer(currentZoneId, player.targetX, player.targetY)) return;
   for(const bandit of bandits){
     if(bandit.hp<=0) continue;
     const dist=Math.abs(player.targetX-bandit.targetX)+Math.abs(player.targetY-bandit.targetY);
