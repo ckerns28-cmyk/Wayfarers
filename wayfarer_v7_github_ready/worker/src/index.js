@@ -201,7 +201,8 @@ const html = String.raw`<!DOCTYPE html>
           ],
           "choices": [
             { "text": "Any work for me?", "next": "quest_offer" },
-            { "text": "Tell me about this town.", "next": "town_lore" }
+            { "text": "Tell me about this town.", "next": "town_lore" },
+            { "text": "Need wolf pelts?", "next": "hunters_request_offer" }
           ]
         },
         "town_lore": {
@@ -240,6 +241,43 @@ const html = String.raw`<!DOCTYPE html>
             "Good. Hearthvale will remember your step."
           ],
           "next": "end"
+        },
+        "hunters_request_offer": {
+          "lines": [
+            "I need warm hides before the next rain.",
+            "Bring me 3 Wolf Pelts."
+          ],
+          "onCompleteEvents": ["quest:activate:hunters_request"],
+          "next": "hunters_request_active"
+        },
+        "hunters_request_active": {
+          "lines": [
+            "Bring me 3 Wolf Pelts."
+          ],
+          "next": "end"
+        },
+        "hunters_request_turn_in_ready": {
+          "lines": [
+            "You have what I asked for.",
+            "Will you turn in 3 Wolf Pelts now?"
+          ],
+          "choices": [
+            { "text": "Turn in pelts.", "next": "hunters_request_turn_in" },
+            { "text": "Not yet.", "next": "end" }
+          ]
+        },
+        "hunters_request_turn_in": {
+          "lines": [
+            "Good hunting. Hearthvale thanks you."
+          ],
+          "onCompleteEvents": ["quest:turn_in:hunters_request"],
+          "next": "hunters_request_complete"
+        },
+        "hunters_request_complete": {
+          "lines": [
+            "Quest Completed."
+          ],
+          "next": "end"
         }
       }
     }
@@ -253,7 +291,20 @@ const html = String.raw`<!DOCTYPE html>
       "id": "mirror_pond_listening",
       "name": "Listening at Mirror Pond",
       "description": "Travel to Mirror Pond and listen in silence.",
-      "startEvents": ["quest:activate:mirror_pond_listening"]
+      "startEvents": ["quest:activate:mirror_pond_listening"],
+      "initialProgress": "go_to_pond",
+      "rewards": { "xp": 20, "coins": 6 }
+    },
+    {
+      "id": "hunters_request",
+      "name": "Hunter's Request",
+      "description": "Collect and deliver 3 Wolf Pelts to Edrin Vale.",
+      "startEvents": ["quest:activate:hunters_request"],
+      "initialProgress": "collect_pelts",
+      "itemRequirements": [
+        { "itemId": "wolf_pelt", "count": 3, "label": "Wolf Pelts" }
+      ],
+      "rewards": { "xp": 25, "coins": 20 }
     }
   ]
 }
@@ -872,6 +923,11 @@ function normalizeInventory(entries){
   });
   return output;
 }
+function onInventoryChanged(reason){
+  if(typeof questSystem!=="undefined" && questSystem) questSystem.refreshAllItemProgress();
+  if(typeof updateSidebar==="function") updateSidebar();
+  if(typeof saveGame==="function") saveGame(reason || "inventory_update");
+}
 function addItemToInventory(itemId, amount, targetInventory=player.inventory){
   const definition=getItemDefinition(itemId);
   if(!definition || !Number.isFinite(amount)) return 0;
@@ -879,9 +935,14 @@ function addItemToInventory(itemId, amount, targetInventory=player.inventory){
   if(quantity<=0) return 0;
   if(definition.stackable){
     const existing=targetInventory.find((entry)=>entry.itemId===itemId);
-    if(existing){ existing.quantity += quantity; return quantity; }
+    if(existing){
+      existing.quantity += quantity;
+      if(targetInventory===player.inventory) onInventoryChanged("inventory_add");
+      return quantity;
+    }
   }
   targetInventory.push({ itemId, quantity });
+  if(targetInventory===player.inventory) onInventoryChanged("inventory_add");
   return quantity;
 }
 function getItemQuantity(itemId){
@@ -929,6 +990,7 @@ function removeItemFromInventory(itemId, amount){
     removed+=take;
     if(entry.quantity<=0) player.inventory.splice(i,1);
   }
+  if(removed>0) onInventoryChanged("inventory_remove");
   return removed;
 }
 function rollWolfLoot(){
@@ -985,7 +1047,6 @@ function useHealingConsumable(){
   player.hp=Math.min(player.maxHp, player.hp + healAmount);
   const restored=player.hp-hpBefore;
   log("Used " + item.name + ". Restored " + restored + " HP.");
-  updateSidebar();
   saveGame("consume_item");
   return true;
 }
@@ -1037,7 +1098,6 @@ function sellOneItemToVendor(itemId){
   const sellValue=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
   player.coins += sellValue;
   log("Sold " + item.name + " for " + sellValue + " coin" + (sellValue===1 ? "" : "s") + ".");
-  updateSidebar();
   renderVendorMenu();
   if(player.inventory.length===0) closeVendorMenu();
   saveGame("vendor_sale");
@@ -1055,7 +1115,6 @@ function buyOneItemFromVendor(itemId){
   player.coins-=cost;
   addItemToInventory(item.id, 1);
   log("Bought " + item.name + " for " + cost + " coin" + (cost===1 ? "" : "s") + ".");
-  updateSidebar();
   renderVendorMenu();
   saveGame("vendor_purchase");
   return true;
@@ -1078,7 +1137,7 @@ class EventTriggerSystem {
 class QuestStateSystem {
   constructor(definitions, events){
     this.events=events;
-    this.quests=new Map(definitions.map((q)=>[q.id,{...q,state:QuestState.NOT_STARTED,progress:"none"}]));
+    this.quests=new Map(definitions.map((q)=>[q.id,{...q,state:QuestState.NOT_STARTED,progress:"none",itemProgress:{}}]));
     definitions.forEach((quest)=>{
       (quest.startEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.activateQuest(quest.id)));
       (quest.completionEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.completeQuest(quest.id)));
@@ -1087,7 +1146,8 @@ class QuestStateSystem {
   activateQuest(questId){
     const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.NOT_STARTED) return;
     quest.state=QuestState.ACTIVE;
-    quest.progress="go_to_pond";
+    quest.progress=quest.initialProgress || "active";
+    this.refreshItemProgress(questId);
     log("Quest started: " + quest.name);
     this.events.emit("quest:state-changed",{questId,state:quest.state});
   }
@@ -1103,15 +1163,61 @@ class QuestStateSystem {
     quest.state=QuestState.COMPLETED;
     quest.progress="completed";
     log("Quest complete: " + quest.name);
-    player.xp += 20;
-    player.coins += 6;
+    const rewardXp=Math.max(0, Math.floor(Number.isFinite(quest.rewards?.xp) ? quest.rewards.xp : 0));
+    const rewardCoins=Math.max(0, Math.floor(Number.isFinite(quest.rewards?.coins) ? quest.rewards.coins : 0));
+    if(rewardXp>0) player.xp += rewardXp;
+    if(rewardCoins>0) player.coins += rewardCoins;
+    if(rewardXp>0 || rewardCoins>0) log("Rewards: +" + rewardXp + " XP, +" + rewardCoins + " Coins.");
+    log("Quest Completed.");
     this.events.emit("quest:state-changed",{questId,state:quest.state});
     this.events.emit("quest:completed:" + questId,{questId});
   }
   getQuest(questId){ return this.quests.get(questId) || null; }
+  refreshItemProgress(questId){
+    const quest=this.quests.get(questId);
+    if(!quest || quest.state!==QuestState.ACTIVE || !Array.isArray(quest.itemRequirements)) return false;
+    let changed=false;
+    quest.itemProgress=quest.itemProgress && typeof quest.itemProgress==="object" ? quest.itemProgress : {};
+    quest.itemRequirements.forEach((requirement)=>{
+      if(!requirement || typeof requirement.itemId!=="string") return;
+      const needed=Math.max(1, Math.floor(Number.isFinite(requirement.count) ? requirement.count : 1));
+      const collected=Math.min(needed, getItemQuantity(requirement.itemId));
+      if(quest.itemProgress[requirement.itemId]!==collected){
+        quest.itemProgress[requirement.itemId]=collected;
+        changed=true;
+      }
+    });
+    if(changed){
+      this.events.emit("quest:progressed",{questId,progress:quest.progress,itemProgress:{...quest.itemProgress}});
+      this.events.emit("quest:state-changed",{questId,state:quest.state,progress:quest.progress,itemProgress:{...quest.itemProgress}});
+    }
+    return changed;
+  }
+  refreshAllItemProgress(){
+    for(const quest of this.quests.values()) this.refreshItemProgress(quest.id);
+  }
+  hasRequiredItems(questId){
+    const quest=this.quests.get(questId);
+    if(!quest || quest.state!==QuestState.ACTIVE || !Array.isArray(quest.itemRequirements) || quest.itemRequirements.length===0) return false;
+    return quest.itemRequirements.every((requirement)=>{
+      const needed=Math.max(1, Math.floor(Number.isFinite(requirement.count) ? requirement.count : 1));
+      return getItemQuantity(requirement.itemId)>=needed;
+    });
+  }
+  turnInItems(questId){
+    const quest=this.quests.get(questId);
+    if(!quest || quest.state!==QuestState.ACTIVE || !Array.isArray(quest.itemRequirements) || quest.itemRequirements.length===0) return false;
+    if(!this.hasRequiredItems(questId)) return false;
+    quest.itemRequirements.forEach((requirement)=>{
+      const needed=Math.max(1, Math.floor(Number.isFinite(requirement.count) ? requirement.count : 1));
+      removeItemFromInventory(requirement.itemId, needed);
+    });
+    this.completeQuest(questId);
+    return true;
+  }
   serializeState(){
     const states=[];
-    for(const quest of this.quests.values()) states.push({id:quest.id,state:quest.state,progress:quest.progress});
+    for(const quest of this.quests.values()) states.push({id:quest.id,state:quest.state,progress:quest.progress,itemProgress:{...(quest.itemProgress||{})}});
     return states;
   }
   getCompletedQuestIds(){
@@ -1133,7 +1239,9 @@ class QuestStateSystem {
       if(!quest) return;
       if(typeof entry.state==="string" && validStates.has(entry.state)) quest.state=entry.state;
       if(typeof entry.progress==="string") quest.progress=entry.progress;
+      if(entry.itemProgress && typeof entry.itemProgress==="object") quest.itemProgress={...entry.itemProgress};
     });
+    this.refreshAllItemProgress();
   }
 }
 
@@ -1148,10 +1256,14 @@ class DialogueFramework {
     if(!char) return false;
     let root=char.root;
     if(characterId==="edrin"){
-      const quest=questSystem.getQuest("mirror_pond_listening");
-      if(quest?.state===QuestState.COMPLETED) root="post_quest";
-      else if(quest?.state===QuestState.ACTIVE && quest?.progress==="heard_whispers") root="quest_turn_in";
-      else if(quest?.state===QuestState.ACTIVE) root="quest_active_followup";
+      const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
+      const hunterQuest=questSystem.getQuest("hunters_request");
+      if(hunterQuest?.state===QuestState.COMPLETED) root="hunters_request_complete";
+      else if(hunterQuest?.state===QuestState.ACTIVE && questSystem.hasRequiredItems("hunters_request")) root="hunters_request_turn_in_ready";
+      else if(hunterQuest?.state===QuestState.ACTIVE) root="hunters_request_active";
+      else if(mirrorQuest?.state===QuestState.COMPLETED) root="post_quest";
+      else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest?.progress==="heard_whispers") root="quest_turn_in";
+      else if(mirrorQuest?.state===QuestState.ACTIVE) root="quest_active_followup";
     }
     this.activeSession={characterId,nodeId:root,lineIndex:0,pendingChoices:null};
     this.render();
@@ -1259,6 +1371,10 @@ eventSystem.on("quest:report:mirror_pond", ()=>{
   const quest=questSystem.getQuest("mirror_pond_listening");
   if(quest?.state!==QuestState.ACTIVE || quest.progress!=="heard_whispers") return;
   questSystem.completeQuest("mirror_pond_listening");
+});
+eventSystem.on("quest:turn_in:hunters_request", ()=>{
+  const completed=questSystem.turnInItems("hunters_request");
+  if(!completed) log("You still need more pelts before turning this in.");
 });
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
 let worldEvents={ pondAwakened:false };
@@ -1403,6 +1519,8 @@ function loadGame(){
   }
 }
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>saveGame("quest_complete"));
+eventSystem.on("quest:completed:hunters_request", ()=>saveGame("quest_complete"));
+eventSystem.on("quest:state-changed", ()=>saveGame("quest_state_change"));
 
 interactionManager.register({
   id:"npc_edrin", type:"npc", x:()=>npc.x, y:()=>npc.y,
@@ -1485,12 +1603,26 @@ function updateSidebar(){
   weaponVal.textContent = equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
   const zoneName=currentZoneName();
   zoneVal.textContent = zoneName;
-  const mainQuest=questSystem.getQuest("mirror_pond_listening");
-  questVal.textContent = mainQuest ? (mainQuest.name + " [" + mainQuest.state + "]") : "Town Slice";
-  if(!mainQuest || mainQuest.state===QuestState.NOT_STARTED) objectiveText.textContent = "Speak with Edrin Vale to begin a task.";
-  else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="go_to_pond") objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
-  else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="heard_whispers") objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
-  else objectiveText.textContent = "Quest complete: Listening at Mirror Pond.";
+  const huntersQuest=questSystem.getQuest("hunters_request");
+  const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
+  const activeQuest=(huntersQuest?.state===QuestState.ACTIVE) ? huntersQuest : ((mirrorQuest?.state===QuestState.ACTIVE) ? mirrorQuest : (huntersQuest?.state===QuestState.COMPLETED ? huntersQuest : mirrorQuest));
+  questVal.textContent = activeQuest ? (activeQuest.name + " [" + activeQuest.state + "]") : "Town Slice";
+  if(huntersQuest?.state===QuestState.ACTIVE){
+    const requirement=huntersQuest.itemRequirements?.[0];
+    const requiredCount=Math.max(1, Math.floor(Number.isFinite(requirement?.count) ? requirement.count : 1));
+    const collected=Math.min(requiredCount, getItemQuantity(requirement?.itemId || "wolf_pelt"));
+    objectiveText.textContent = "Bring me 3 Wolf Pelts.\nWolf Pelts: " + collected + " / " + requiredCount + (collected>=requiredCount ? "\nReturn to Edrin Vale for turn-in." : "");
+  } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="go_to_pond"){
+    objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
+  } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="heard_whispers"){
+    objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
+  } else if(huntersQuest?.state===QuestState.COMPLETED){
+    objectiveText.textContent = "Quest complete: Hunter's Request.";
+  } else if(mirrorQuest?.state===QuestState.COMPLETED){
+    objectiveText.textContent = "Quest complete: Listening at Mirror Pond.";
+  } else {
+    objectiveText.textContent = "Speak with Edrin Vale to begin a task.";
+  }
   if(player.inventory.length===0){
     inventoryList.textContent = "Empty";
   } else {
