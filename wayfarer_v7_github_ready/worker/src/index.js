@@ -1673,7 +1673,17 @@ vendorClose.addEventListener("click", closeVendorMenu);
 vendorList.addEventListener("click",(e)=>{
   const target=e.target instanceof Element ? e.target : null;
   if(!target) return;
-  handleVendorActionFromTarget(target);
+  const buyButton=target.closest("button[data-buy-item]");
+  const buyItemId=buyButton?.dataset?.buyItem;
+  if(buyItemId){
+    console.debug("[Vendor] Buy click:", buyItemId);
+    buyOneItemFromVendor(buyItemId);
+    return;
+  }
+  const sellButton=target.closest("button[data-sell-item]");
+  const itemId=sellButton?.dataset?.sellItem;
+  if(!itemId) return;
+  sellOneItemToVendor(itemId);
 });
 
 function currentZoneName(){
