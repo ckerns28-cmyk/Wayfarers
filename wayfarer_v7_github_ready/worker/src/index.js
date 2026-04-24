@@ -358,8 +358,8 @@ const ZONE_DEFS = {
   }
 };
 const ZONE_TRANSITIONS = [
-  { from:"hearthvale_square", to:"eastern_woods", x:26, y:12, w:1, h:1, arrival:{ x:28, y:12 }, label:"Eastern Woods" },
-  { from:"eastern_woods", to:"hearthvale_square", x:27, y:12, w:1, h:1, arrival:{ x:25, y:12 }, label:"Hearthvale Square" }
+  { from:"hearthvale_square", to:"eastern_woods", x:26, y:0, w:1, h:WORLD_H, arrival:{ x:28 }, preserveY:true, label:"Eastern Woods" },
+  { from:"eastern_woods", to:"hearthvale_square", x:27, y:0, w:1, h:WORLD_H, arrival:{ x:25 }, preserveY:true, label:"Hearthvale Square" }
 ];
 let currentZoneId = "hearthvale_square";
 const VIEW_TILES_X = 22;
@@ -1749,7 +1749,9 @@ function handleZoneTransitionIfNeeded(){
   const transition=findZoneTransitionAt(player.targetX, player.targetY);
   if(!transition) return false;
   currentZoneId=transition.to;
-  setPlayerTilePosition(transition.arrival.x, transition.arrival.y);
+  const arrivalX=transition.arrival?.x ?? player.targetX;
+  const arrivalY=transition.preserveY ? player.targetY : (transition.arrival?.y ?? player.targetY);
+  setPlayerTilePosition(arrivalX, arrivalY);
   log("System: Entered " + getCurrentZoneName() + ".");
   saveGame("zone_transition");
   return true;
