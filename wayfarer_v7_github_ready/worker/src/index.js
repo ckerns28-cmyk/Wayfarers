@@ -183,7 +183,7 @@ const html = String.raw`<!DOCTYPE html>
           <button type="button" id="vendorClose" class="vendor-close">Close</button>
         </div>
         <div id="vendorList"></div>
-        <div id="vendorHint">Sell items for coins. Selling removes one item per click.</div>
+        <div id="vendorHint">Buy supplies and sell loot. Buying and selling happen one item per click.</div>
       </div>
       <div id="saveNotice">Game Saved</div>
       <script id="dialogueData" type="application/json">
@@ -300,12 +300,14 @@ const ITEM_REGISTRY = Object.freeze({
   wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:5 },
   small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:3 },
   old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
-  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, value:2 }
+  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, healAmount:10, value:5 },
+  small_potion: { id:"small_potion", name:"Small Potion", type:"consumable", description:"A compact tonic that restores vitality.", stackable:true, healAmount:25, value:12 }
 });
 const WOLF_LOOT_TABLE = Object.freeze([
   { itemId:"wolf_pelt", chance:0.85, min:1, max:1 },
   { itemId:"small_fang", chance:0.65, min:1, max:2 }
 ]);
+const VENDOR_BUY_INVENTORY = Object.freeze(["healing_herb","small_potion"]);
 
 function resize() {
   const rect = document.getElementById("gamePanel").getBoundingClientRect();
@@ -955,12 +957,52 @@ function canSellItem(item){
   const equipped=player.equipment.weapon===item.id;
   return !equipped || total>1;
 }
-function renderVendorMenu(){
-  if(player.inventory.length===0){
-    vendorList.innerHTML="<div class=\"muted\">Inventory is empty.</div>";
-    return;
+function getFirstUsableHealingItem(){
+  for(const entry of player.inventory){
+    if(!entry || entry.quantity<=0) continue;
+    const item=getItemDefinition(entry.itemId);
+    if(!item || item.type!=="consumable") continue;
+    const healAmount=Number.isFinite(item.healAmount) ? Math.floor(item.healAmount) : 0;
+    if(healAmount<=0) continue;
+    return item;
   }
-  vendorList.innerHTML = player.inventory.map((entry)=>{
+  return null;
+}
+function useHealingConsumable(){
+  if(player.hp>=player.maxHp){
+    log("You are already at full health.");
+    return false;
+  }
+  const item=getFirstUsableHealingItem();
+  if(!item){
+    log("You have no healing consumables.");
+    return false;
+  }
+  const removed=removeItemFromInventory(item.id, 1);
+  if(removed<=0) return false;
+  const healAmount=Math.max(0, Math.floor(Number.isFinite(item.healAmount) ? item.healAmount : 0));
+  const hpBefore=player.hp;
+  player.hp=Math.min(player.maxHp, player.hp + healAmount);
+  const restored=player.hp-hpBefore;
+  log("Used " + item.name + ". Restored " + restored + " HP.");
+  updateSidebar();
+  saveGame("consume_item");
+  return true;
+}
+function renderVendorMenu(){
+  const buyRows = VENDOR_BUY_INVENTORY.map((itemId)=>{
+    const item=getItemDefinition(itemId);
+    if(!item) return "";
+    const cost=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+    const canBuy=player.coins>=cost;
+    return "<div class=\"vendor-item\">" +
+      "<div>" + item.name + "</div>" +
+      "<div class=\"vendor-pill\">Cost: " + cost + "</div>" +
+      "<div class=\"vendor-pill\">Owned: " + getItemQuantity(item.id) + "</div>" +
+      "<button type=\"button\" class=\"vendor-btn\" data-buy-item=\"" + item.id + "\"" + (canBuy ? "" : " disabled") + ">" + (canBuy ? "Buy" : "Need coins") + "</button>" +
+    "</div>";
+  }).join("");
+  const sellRows = player.inventory.map((entry)=>{
     const item=getItemDefinition(entry.itemId);
     if(!item) return "";
     const sellValue=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
@@ -974,6 +1016,11 @@ function renderVendorMenu(){
       "<button type=\"button\" class=\"vendor-btn\" data-sell-item=\"" + item.id + "\"" + disabledAttr + ">" + buttonLabel + "</button>" +
     "</div>";
   }).join("");
+  vendorList.innerHTML =
+    "<div class=\"questTitle\">BUY</div>" +
+    (buyRows || "<div class=\"muted\">No items available.</div>") +
+    "<div class=\"questTitle\" style=\"margin-top:8px;\">SELL</div>" +
+    (sellRows || "<div class=\"muted\">Inventory is empty.</div>");
 }
 function openVendorMenu(){
   if(dialogueSystem.activeSession) dialogueSystem.close();
@@ -994,6 +1041,23 @@ function sellOneItemToVendor(itemId){
   renderVendorMenu();
   if(player.inventory.length===0) closeVendorMenu();
   saveGame("vendor_sale");
+  return true;
+}
+function buyOneItemFromVendor(itemId){
+  const item=getItemDefinition(itemId);
+  if(!item) return false;
+  if(!VENDOR_BUY_INVENTORY.includes(item.id)) return false;
+  const cost=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+  if(player.coins<cost){
+    log("Not enough coins to buy " + item.name + ".");
+    return false;
+  }
+  player.coins-=cost;
+  addItemToInventory(item.id, 1);
+  log("Bought " + item.name + " for " + cost + " coin" + (cost===1 ? "" : "s") + ".");
+  updateSidebar();
+  renderVendorMenu();
+  saveGame("vendor_purchase");
   return true;
 }
 
@@ -1365,6 +1429,11 @@ vendorClose.addEventListener("click", closeVendorMenu);
 vendorList.addEventListener("click",(e)=>{
   const target=e.target;
   if(!(target instanceof HTMLElement)) return;
+  const buyItemId=target.dataset?.buyItem;
+  if(buyItemId){
+    buyOneItemFromVendor(buyItemId);
+    return;
+  }
   const itemId=target.dataset?.sellItem;
   if(!itemId) return;
   sellOneItemToVendor(itemId);
@@ -1446,7 +1515,7 @@ function updateSidebar(){
   const targetWolf=targetHostile?.entity || null;
   const targetCooldownMs=targetWolf ? Math.max(0, WOLF_ATTACK_COOLDOWN_MS-(performance.now()-(lastWolfAttackAt[targetWolf.id]||0))) : 0;
   const targetCooldownText=!targetWolf ? "N/A" : (targetWolf.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
-  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName +
+  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\nH : Use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName +
     "\nHostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No") +
     "\nCurrent target : " + hostileLabel(targetWolf) +
     "\nTarget bite cd : " + targetCooldownText;
@@ -1465,9 +1534,10 @@ const keys=new Set();
 let showGrid=false;
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","k","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","h","k","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
   if(k==="g") showGrid=!showGrid;
   if(k==="e") interactionManager.tryInteract();
+  if(k==="h") useHealingConsumable();
   if(k==="k") saveGame("manual");
   if(dialogueSystem.activeSession?.pendingChoices && /^[1-9]$/.test(k)) dialogueSystem.choose(Number(k)-1);
   keys.add(k);
@@ -1820,7 +1890,7 @@ if(loadedFromSave) log("System: Continuing from saved progress.");
 else log("System: New journey started.");
 log("System: Press K at any time to save manually.");
 log("System: Speak to Edrin Vale and use E to interact with nearby objects.");
-log("System: Merchant Rowan now trades coins for your goods.");
+log("System: Merchant Rowan now buys and sells survival goods.");
 updateSidebar();
 requestAnimationFrame(loop);
 </script>
