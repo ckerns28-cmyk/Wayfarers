@@ -345,6 +345,23 @@ function parseJsonScript(id){
 const TILE = 32;
 const WORLD_W = 38;
 const WORLD_H = 24;
+const ZONE_DEFS = {
+  hearthvale_square: {
+    id: "hearthvale_square",
+    name: "Hearthvale Square",
+    bounds: { x:0, y:0, w:27, h:WORLD_H }
+  },
+  eastern_woods: {
+    id: "eastern_woods",
+    name: "Eastern Woods",
+    bounds: { x:27, y:0, w:WORLD_W-27, h:WORLD_H }
+  }
+};
+const ZONE_TRANSITIONS = [
+  { from:"hearthvale_square", to:"eastern_woods", x:26, y:12, w:1, h:1, arrival:{ x:28, y:12 }, label:"Eastern Woods" },
+  { from:"eastern_woods", to:"hearthvale_square", x:27, y:12, w:1, h:1, arrival:{ x:25, y:12 }, label:"Hearthvale Square" }
+];
+let currentZoneId = "hearthvale_square";
 const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
@@ -887,7 +904,7 @@ treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); 
 world.zones.push(
   {name:"Hearthvale Square",x:9,y:7,w:18,h:11},
   {name:"Mirror Pond",x:21,y:12,w:10,h:8},
-  {name:"Forest Edge",x:27,y:3,w:11,h:19},
+  {name:"Eastern Woods",x:27,y:3,w:11,h:19},
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
 
@@ -1509,10 +1526,11 @@ function createSaveData(reason){
     respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
   }));
   return {
-    version:6,
+    version:7,
     reason,
     savedAt:new Date().toISOString(),
     player:{
+      zoneId:currentZoneId,
       position:{ x:player.targetX, y:player.targetY },
       hp:player.hp,
       xp:player.xp,
@@ -1536,7 +1554,7 @@ function createSaveData(reason){
   };
 }
 function validateSaveData(data){
-  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5 && data.version!==6)) return false;
+  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5 && data.version!==6 && data.version!==7)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -1558,10 +1576,12 @@ function loadGame(){
   try {
     const data=JSON.parse(raw);
     if(!validateSaveData(data)) throw new Error("Invalid save payload");
-    player.targetX=Math.max(0,Math.min(WORLD_W-1,data.player.position.x));
-    player.targetY=Math.max(0,Math.min(WORLD_H-1,data.player.position.y));
-    player.px=player.targetX*TILE;
-    player.py=player.targetY*TILE;
+    const hasSavedZone=typeof data.player?.zoneId==="string" && Boolean(ZONE_DEFS[data.player.zoneId]);
+    currentZoneId=hasSavedZone ? data.player.zoneId : (data.player.position.x>=27 ? "eastern_woods" : "hearthvale_square");
+    const zoneBounds=getZoneDefinition(currentZoneId).bounds;
+    const loadedX=Math.max(zoneBounds.x,Math.min(zoneBounds.x+zoneBounds.w-1,data.player.position.x));
+    const loadedY=Math.max(zoneBounds.y,Math.min(zoneBounds.y+zoneBounds.h-1,data.player.position.y));
+    setPlayerTilePosition(loadedX, loadedY);
     player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
     player.xp=Math.max(0,data.player.xp);
     player.coins=Math.max(0,data.player.coins);
@@ -1690,8 +1710,55 @@ vendorList.addEventListener("click",(e)=>{
   sellOneItemToVendor(itemId);
 });
 
-function currentZoneName(){
-  for(const z of world.zones){ if(player.targetX>=z.x&&player.targetX<z.x+z.w&&player.targetY>=z.y&&player.targetY<z.y+z.h) return z.name; }
+function getZoneDefinition(zoneId){
+  return ZONE_DEFS[zoneId] || ZONE_DEFS.hearthvale_square;
+}
+
+function getCurrentZoneName(){
+  return getZoneDefinition(currentZoneId).name;
+}
+
+function isWithinRect(x,y,rect){
+  return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+}
+
+function isTileInCurrentZone(x,y){
+  return isWithinRect(x,y,getZoneDefinition(currentZoneId).bounds);
+}
+
+function isEasternWoodsActive(){
+  return currentZoneId==="eastern_woods";
+}
+
+function findZoneTransitionAt(x,y){
+  return ZONE_TRANSITIONS.find((transition)=>
+    transition.from===currentZoneId &&
+    isWithinRect(x,y,transition)
+  ) || null;
+}
+
+function setPlayerTilePosition(x,y){
+  player.targetX=Math.max(0,Math.min(WORLD_W-1,x));
+  player.targetY=Math.max(0,Math.min(WORLD_H-1,y));
+  player.px=player.targetX*TILE;
+  player.py=player.targetY*TILE;
+  player.moving=false;
+}
+
+function handleZoneTransitionIfNeeded(){
+  const transition=findZoneTransitionAt(player.targetX, player.targetY);
+  if(!transition) return false;
+  currentZoneId=transition.to;
+  setPlayerTilePosition(transition.arrival.x, transition.arrival.y);
+  log("System: Entered " + getCurrentZoneName() + ".");
+  saveGame("zone_transition");
+  return true;
+}
+
+function currentLocalAreaName(){
+  for(const z of world.zones){
+    if(player.targetX>=z.x&&player.targetX<z.x+z.w&&player.targetY>=z.y&&player.targetY<z.y+z.h) return z.name;
+  }
   return "Outer Road";
 }
 
@@ -1726,10 +1793,8 @@ function getNearestHostile(range=Infinity){
 }
 
 function respawnPlayerAtSquare(){
-  player.targetX=18;
-  player.targetY=11;
-  player.px=player.targetX*TILE;
-  player.py=player.targetY*TILE;
+  currentZoneId="hearthvale_square";
+  setPlayerTilePosition(18, 11);
 }
 
 function handlePlayerDefeat(){
@@ -1747,7 +1812,7 @@ function updateSidebar(){
   coinsVal.textContent = String(player.coins);
   const equippedWeapon=getEquippedItem("weapon");
   weaponVal.textContent = equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
-  const zoneName=currentZoneName();
+  const zoneName=getCurrentZoneName();
   zoneVal.textContent = zoneName;
   const huntersQuest=questSystem.getQuest("hunters_request");
   const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
@@ -1820,10 +1885,11 @@ function updateSidebar(){
 
 function canMoveTo(x,y){
   if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
+  if(!isTileInCurrentZone(x,y)) return false;
   if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
   if(x===npc.x&&y===npc.y) return false;
   if(x===vendorNpc.x&&y===vendorNpc.y) return false;
-  if(hostiles.some((hostile)=>hostile.hp>0&&x===hostile.targetX&&y===hostile.targetY)) return false;
+  if(isEasternWoodsActive() && hostiles.some((hostile)=>hostile.hp>0&&x===hostile.targetX&&y===hostile.targetY)) return false;
   return true;
 }
 
@@ -1897,6 +1963,7 @@ function updateInput(){
 
 function canHostileMoveTo(x,y,self){
   if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
+  if(!isTileInCurrentZone(x,y)) return false;
   if(world.blocked.has(keyOf(x,y))) return false;
   if(x===npc.x&&y===npc.y) return false;
   if(x===vendorNpc.x&&y===vendorNpc.y) return false;
@@ -1904,6 +1971,7 @@ function canHostileMoveTo(x,y,self){
   return true;
 }
 function updateWolf(wolf,now){
+  if(!isEasternWoodsActive()) return;
   if(wolf.hp<=0){
     const respawnAt=wolfRespawnAtById[wolf.id]||0;
     if(respawnAt!==0&&now>=respawnAt){
@@ -1931,6 +1999,7 @@ function updateWolf(wolf,now){
   }
 }
 function updateBandit(bandit,now){
+  if(!isEasternWoodsActive()) return;
   if(bandit.hp<=0){
     const respawnAt=banditRespawnAtById[bandit.id]||0;
     if(respawnAt!==0&&now>=respawnAt){
@@ -1958,6 +2027,7 @@ function updateBandit(bandit,now){
   }
 }
 function wolfAttack(now){
+  if(!isEasternWoodsActive()) return;
   for(const wolf of wolves){
     if(wolf.hp<=0) continue;
     const dist=Math.abs(player.targetX-wolf.targetX)+Math.abs(player.targetY-wolf.targetY);
@@ -1972,6 +2042,7 @@ function wolfAttack(now){
   }
 }
 function banditAttack(now){
+  if(!isEasternWoodsActive()) return;
   for(const bandit of bandits){
     if(bandit.hp<=0) continue;
     const dist=Math.abs(player.targetX-bandit.targetX)+Math.abs(player.targetY-bandit.targetY);
@@ -2009,6 +2080,7 @@ function defeatBandit(bandit,now){
 }
 function tryPlayerAttack(now){
   if(dialogueSystem.activeSession) return;
+  if(!isEasternWoodsActive()) return;
   if(!(keys.has(" ")||keys.has("space"))) return;
   if(now-lastPlayerAttack<420) return;
   lastPlayerAttack=now; player.attackUntil=now+350;
@@ -2217,21 +2289,25 @@ function drawWorld(){
   if(showGrid) drawAlignmentGrid();
 
   function zoneLabel(text,tx,ty){ const p=tileToScreen(tx,ty); const w=text.length*7+12; ctx.fillStyle="rgba(7,11,18,.85)"; ctx.fillRect(p.x-3,p.y-31,w,16); ctx.strokeStyle="rgba(204,216,236,.62)"; ctx.strokeRect(p.x-3.5,p.y-31.5,w,16); ctx.fillStyle="#eff4ff"; ctx.font="bold 11px monospace"; ctx.fillText(text,p.x+2,p.y-19); }
-  const zoneName=currentZoneName();
+  const zoneName=currentLocalAreaName();
   if(zoneName==="Hearthvale Square") zoneLabel("Hearthvale Square",12,7);
   if(zoneName==="Mirror Pond") zoneLabel("Mirror Pond",23,12);
-  if(zoneName==="Forest Edge") zoneLabel("Forest Edge",30,4);
+  if(zoneName==="Eastern Woods") zoneLabel("Eastern Woods",30,4);
 
-  drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
-  drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
-  wolves.forEach((wolf)=>{
-    if(wolf.hp<=0) return;
-    drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
-  });
-  bandits.forEach((bandit)=>{
-    if(bandit.hp<=0) return;
-    drawWolf(bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.84, hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY});
-  });
+  if(currentZoneId==="hearthvale_square"){
+    drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
+    drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
+  }
+  if(isEasternWoodsActive()){
+    wolves.forEach((wolf)=>{
+      if(wolf.hp<=0) return;
+      drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+    });
+    bandits.forEach((bandit)=>{
+      if(bandit.hp<=0) return;
+      drawWolf(bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.84, hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY});
+    });
+  }
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
 
   const tint=0.08+Math.max(0,Math.sin(performance.now()/9000))*.07;
@@ -2250,8 +2326,9 @@ function update(dt,now){
     bandit.recoilX*=.82; bandit.recoilY*=.82; bandit.attackLungeX*=.78; bandit.attackLungeY*=.78;
   });
   if(now<hitStopUntil){ updateSidebar(); return; }
-  eventSystem.update(currentZoneName());
+  eventSystem.update(currentLocalAreaName());
   updateInput(); tryPlayerAttack(now); smoothMove(player,dt);
+  if(!player.moving) handleZoneTransitionIfNeeded();
   if(!player.moving&&(moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
   wolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
   bandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
