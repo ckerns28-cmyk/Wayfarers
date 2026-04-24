@@ -521,6 +521,10 @@ function tryPlayerAttack(now){
   if(wolf.hp<=0){ player.xp+=12; player.coins+=4; wolfRespawnAt=now+10000; log("The wolf collapses. (+12 XP, +4 coins)"); }
 }
 
+// Keep color construction backtick-free inside this String.raw payload to avoid
+// terminating the outer template literal used for the HTML document.
+function rgba(r,g,b,a){ return "rgba(" + r + "," + g + "," + b + "," + a + ")"; }
+
 function drawSoftShadow(cx,cy,rx,ry,a=.2){
   const g=ctx.createRadialGradient(cx+3,cy+3,Math.max(1,rx*.35),cx+3,cy+3,Math.max(rx,ry)*1.3);
   g.addColorStop(0,"rgba(0,0,0," + (a*.86).toFixed(3) + ")"); g.addColorStop(1,"rgba(0,0,0,0)");
@@ -575,7 +579,7 @@ function drawWolf(tx,ty,facing,moving,scale,hitAlpha,recoil){
   const dx=p.x+Math.round((32-drawW)/2)+Math.round(recoil?.x||0), dy=p.y-Math.round(drawH-32)+Math.round(recoil?.y||0);
   drawSoftShadow(p.x+16,p.y+28,9*scale,4*scale,.24);
   if(assets.sprites.wolf.complete&&assets.sprites.wolf.naturalWidth>0) ctx.drawImage(assets.sprites.wolf,col*64,row*64,64,64,dx,dy,drawW,drawH);
-  ctx.fillStyle="rgba(0,0,0,.5)"; ctx.fillRect(p.x+2,p.y-10,24,4);
+  ctx.fillStyle=rgba(0,0,0,.5); ctx.fillRect(p.x+2,p.y-10,24,4);
   ctx.fillStyle="#8fdb73"; ctx.fillRect(p.x+2,p.y-10,24*(wolf.hp/wolf.maxHp),4);
   if(hitAlpha>0){ ctx.fillStyle="rgba(255,255,255," + Math.min(.4,hitAlpha).toFixed(3) + ")"; ctx.fillRect(dx+8,dy+8,drawW-14,drawH-16); }
 }
