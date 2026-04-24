@@ -368,10 +368,10 @@ const ZONE_EXIT_SPAWNS = Object.freeze({
   }
 });
 const ZONE_TRANSITION_PAIRS = Object.freeze([
-  { sourceZone:"hearthvale_square", sourceExitId:"east_road_exit", destinationZone:"eastern_woods", destinationSpawnId:"west_road_entrance", preserveAxis:"y" },
-  { sourceZone:"eastern_woods", sourceExitId:"west_road_entrance", destinationZone:"hearthvale_square", destinationSpawnId:"east_road_exit", preserveAxis:"y" },
-  { sourceZone:"hearthvale_square", sourceExitId:"southeast_path_exit", destinationZone:"eastern_woods", destinationSpawnId:"southwest_path_exit", preserveAxis:"y" },
-  { sourceZone:"eastern_woods", sourceExitId:"southwest_path_exit", destinationZone:"hearthvale_square", destinationSpawnId:"southeast_path_exit", preserveAxis:"y" }
+  { sourceZone:"hearthvale_square", sourceExitId:"east_road_exit", destinationZone:"eastern_woods", destinationSpawnId:"west_road_entrance" },
+  { sourceZone:"eastern_woods", sourceExitId:"west_road_entrance", destinationZone:"hearthvale_square", destinationSpawnId:"east_road_exit" },
+  { sourceZone:"hearthvale_square", sourceExitId:"southeast_path_exit", destinationZone:"eastern_woods", destinationSpawnId:"southwest_path_exit" },
+  { sourceZone:"eastern_woods", sourceExitId:"southwest_path_exit", destinationZone:"hearthvale_square", destinationSpawnId:"southeast_path_exit" }
 ]);
 const ZONE_TRANSITIONS = ZONE_TRANSITION_PAIRS.map((pair)=>{
   const source=ZONE_EXIT_SPAWNS[pair.sourceZone]?.[pair.sourceExitId];
@@ -384,7 +384,6 @@ const ZONE_TRANSITIONS = ZONE_TRANSITION_PAIRS.map((pair)=>{
     sourceExitId: pair.sourceExitId,
     destinationZone: pair.destinationZone,
     destinationSpawnId: pair.destinationSpawnId,
-    preserveAxis: pair.preserveAxis || null,
     trigger:{ x:source.x, y:source.y, w:source.w, h:source.h },
     arrival:{ x:destination.spawnX, y:destination.spawnY }
   };
@@ -1800,12 +1799,9 @@ function handleZoneTransitionIfNeeded(){
   if(now<nextZoneTransitionAt) return false;
   const transition=findZoneTransitionAt(player.targetX, player.targetY);
   if(!transition) return false;
-  const previousX=player.targetX;
-  const previousY=player.targetY;
   currentZoneId=transition.destinationZone;
-  const arrival=resolveTransitionArrival(transition, previousX, previousY);
-  const arrivalX=arrival.x;
-  const arrivalY=arrival.y;
+  const arrivalX=transition.arrival?.x ?? player.targetX;
+  const arrivalY=transition.arrival?.y ?? player.targetY;
   setPlayerTilePosition(arrivalX, arrivalY);
   nextZoneTransitionAt=now+ZONE_TRANSITION_DEBOUNCE_MS;
   zoneTransitionLockedUntil=now+ZONE_TRANSITION_LOCK_MS;
@@ -2370,14 +2366,16 @@ function drawWorld(){
 
   drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
   drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
-  wolves.forEach((wolf)=>{
-    if(wolf.hp<=0) return;
-    drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
-  });
-  bandits.forEach((bandit)=>{
-    if(bandit.hp<=0) return;
-    drawWolf(bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.84, hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY});
-  });
+  if(isEasternWoodsActive()){
+    wolves.forEach((wolf)=>{
+      if(wolf.hp<=0) return;
+      drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+    });
+    bandits.forEach((bandit)=>{
+      if(bandit.hp<=0) return;
+      drawWolf(bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.84, hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY});
+    });
+  }
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
 
   const tint=0.08+Math.max(0,Math.sin(performance.now()/9000))*.07;
