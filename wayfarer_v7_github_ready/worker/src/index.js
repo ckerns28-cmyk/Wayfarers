@@ -251,30 +251,30 @@ const html = String.raw`<!DOCTYPE html>
         },
         "hunters_request_offer": {
           "lines": [
-            "I need wolf pelts. Bring me three."
+            "I need you to thin the wolves, search Mirror Cave, and recover the relic chest."
           ],
           "onCompleteEvents": ["quest:activate:hunters_request"],
           "next": "hunters_request_active"
         },
         "hunters_request_active": {
           "lines": [
-            "Bring me 3 Wolf Pelts."
+            "Defeat 3 wolves, enter Mirror Cave, and open the cave chest."
           ],
           "next": "end"
         },
         "hunters_request_turn_in_ready": {
           "lines": [
-            "You have what I asked for.",
-            "Will you turn in 3 Wolf Pelts now?"
+            "You made it back. Did you complete everything?",
+            "Ready to report and collect your reward?"
           ],
           "choices": [
-            { "text": "Turn in pelts.", "next": "hunters_request_turn_in" },
+            { "text": "Yes, report complete.", "next": "hunters_request_turn_in" },
             { "text": "Not yet.", "next": "end" }
           ]
         },
         "hunters_request_turn_in": {
           "lines": [
-            "Good hunting. Hearthvale thanks you."
+            "Excellent work. Hearthvale is safer because of you."
           ],
           "onCompleteEvents": ["quest:turn_in:hunters_request"],
           "next": "hunters_request_complete"
@@ -303,14 +303,19 @@ const html = String.raw`<!DOCTYPE html>
     },
     {
       "id": "hunters_request",
-      "name": "Hunter's Request",
-      "description": "Collect and deliver 3 Wolf Pelts to Edrin Vale.",
+      "questId": "hunters_request",
+      "title": "Hunter's Request — Expanded",
+      "name": "Hunter's Request — Expanded",
+      "description": "Defeat wolves, enter Mirror Cave, recover the cave relic, then report back to Edrin Vale.",
       "startEvents": ["quest:activate:hunters_request"],
-      "initialProgress": "collect_pelts",
-      "itemRequirements": [
-        { "itemId": "wolf_pelt", "count": 3, "label": "Wolf Pelts" }
+      "status": "Not Started",
+      "objectives": [
+        { "id": "wolves", "label": "Defeat Wolves", "summaryLabel": "Wolves defeated", "type": "kill", "targetId": "wolf", "requiredAmount": 3, "currentAmount": 0, "completed": false },
+        { "id": "enter_cave", "label": "Enter Mirror Cave", "type": "reach", "targetId": "mirror_cave", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "open_chest", "label": "Retrieve Cave Relic", "type": "interact", "targetId": "mirror_cave_chest", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "return_hunter", "label": "Return to Hunter", "type": "interact", "targetId": "npc_edrin", "requiredAmount": 1, "currentAmount": 0, "completed": false }
       ],
-      "rewards": { "xp": 25, "coins": 20 }
+      "rewards": { "xp": 60, "coins": 50, "items": [{ "itemId": "small_potion", "count": 2 }] }
     }
   ]
 }
@@ -1299,7 +1304,7 @@ function buyOneItemFromVendor(itemId){
   return true;
 }
 
-const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", COMPLETED:"Completed" });
+const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", READY_TO_TURN_IN:"Ready To Turn In", COMPLETED:"Completed" });
 
 class EventTriggerSystem {
   constructor(){ this.handlers=new Map(); this.zoneWatchers=[]; this.lastZone=""; }
@@ -1316,7 +1321,16 @@ class EventTriggerSystem {
 class QuestStateSystem {
   constructor(definitions, events){
     this.events=events;
-    this.quests=new Map(definitions.map((q)=>[q.id,{...q,state:QuestState.NOT_STARTED,progress:"none",itemProgress:{}}]));
+    this.quests=new Map(definitions.map((q)=>[q.id,{
+      ...q,
+      questId:q.questId || q.id,
+      title:q.title || q.name,
+      state:QuestState.NOT_STARTED,
+      status:QuestState.NOT_STARTED,
+      progress:"none",
+      objectives:this.normalizeObjectives(q.objectives||[]),
+      itemProgress:{}
+    }]));
     definitions.forEach((quest)=>{
       (quest.startEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.activateQuest(quest.id)));
       (quest.completionEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.completeQuest(quest.id)));
@@ -1325,9 +1339,10 @@ class QuestStateSystem {
   activateQuest(questId){
     const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.NOT_STARTED) return;
     quest.state=QuestState.ACTIVE;
+    quest.status=quest.state;
     quest.progress=quest.initialProgress || "active";
-    this.refreshItemProgress(questId);
-    log("Quest started: " + quest.name);
+    quest.objectives=this.normalizeObjectives(quest.objectives||[]);
+    log("Quest started: " + (quest.title || quest.name));
     this.events.emit("quest:state-changed",{questId,state:quest.state});
   }
   updateProgress(questId, progressId){
@@ -1338,65 +1353,132 @@ class QuestStateSystem {
     this.events.emit("quest:state-changed",{questId,state:quest.state,progress:progressId});
   }
   completeQuest(questId){
-    const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.ACTIVE) return;
+    const quest=this.quests.get(questId); if(!quest||(quest.state!==QuestState.ACTIVE && quest.state!==QuestState.READY_TO_TURN_IN)) return;
+    const turnInObjective=this.getObjective(questId, "return_hunter");
+    if(turnInObjective && !turnInObjective.completed) this.completeObjective(questId, "return_hunter");
     quest.state=QuestState.COMPLETED;
+    quest.status=quest.state;
     quest.progress="completed";
-    log("Quest complete: " + quest.name);
+    log("Quest complete: " + (quest.title || quest.name));
     const rewardXp=Math.max(0, Math.floor(Number.isFinite(quest.rewards?.xp) ? quest.rewards.xp : 0));
     const rewardCoins=Math.max(0, Math.floor(Number.isFinite(quest.rewards?.coins) ? quest.rewards.coins : 0));
+    const rewardItems=Array.isArray(quest.rewards?.items) ? quest.rewards.items : [];
     if(rewardXp>0) player.xp += rewardXp;
     if(rewardCoins>0) player.coins += rewardCoins;
+    rewardItems.forEach((reward)=>{
+      if(!reward || typeof reward.itemId!=="string") return;
+      const count=Math.max(1, Math.floor(Number.isFinite(reward.count) ? reward.count : 1));
+      addItemToInventory(reward.itemId, count);
+    });
     if(rewardXp>0 || rewardCoins>0) log("Rewards: +" + rewardXp + " XP, +" + rewardCoins + " Coins.");
+    if(rewardItems.length){
+      const text=rewardItems.map((reward)=>{
+        const itemDef=getItemDefinition(reward.itemId);
+        const itemName=itemDef?.name || reward.itemId;
+        const count=Math.max(1, Math.floor(Number.isFinite(reward.count) ? reward.count : 1));
+        return itemName + " x" + count;
+      }).join(", ");
+      log("Item Rewards: " + text + ".");
+    }
+    if(quest.id==="hunters_request") log("Hunter's Request completed.");
     log("Quest Completed.");
     this.events.emit("quest:state-changed",{questId,state:quest.state});
     this.events.emit("quest:completed:" + questId,{questId});
   }
   getQuest(questId){ return this.quests.get(questId) || null; }
-  refreshItemProgress(questId){
-    const quest=this.quests.get(questId);
-    if(!quest || quest.state!==QuestState.ACTIVE || !Array.isArray(quest.itemRequirements)) return false;
-    let changed=false;
-    quest.itemProgress=quest.itemProgress && typeof quest.itemProgress==="object" ? quest.itemProgress : {};
-    quest.itemRequirements.forEach((requirement)=>{
-      if(!requirement || typeof requirement.itemId!=="string") return;
-      const needed=Math.max(1, Math.floor(Number.isFinite(requirement.count) ? requirement.count : 1));
-      const collected=Math.min(needed, getItemQuantity(requirement.itemId));
-      if(quest.itemProgress[requirement.itemId]!==collected){
-        quest.itemProgress[requirement.itemId]=collected;
-        changed=true;
-      }
-    });
-    if(changed){
-      this.events.emit("quest:progressed",{questId,progress:quest.progress,itemProgress:{...quest.itemProgress}});
-      this.events.emit("quest:state-changed",{questId,state:quest.state,progress:quest.progress,itemProgress:{...quest.itemProgress}});
+  normalizeObjectives(objectives){
+    if(!Array.isArray(objectives)) return [];
+    return objectives.map((objective)=>({
+      ...objective,
+      requiredAmount:Math.max(1, Math.floor(Number.isFinite(objective?.requiredAmount) ? objective.requiredAmount : 1)),
+      currentAmount:Math.max(0, Math.floor(Number.isFinite(objective?.currentAmount) ? objective.currentAmount : 0)),
+      completed:Boolean(objective?.completed)
+    })).map((objective)=>({
+      ...objective,
+      currentAmount:Math.min(objective.requiredAmount, objective.currentAmount),
+      completed:Boolean(objective.completed || objective.currentAmount>=objective.requiredAmount)
+    }));
+  }
+  getObjective(questId, objectiveId){
+    const quest=this.getQuest(questId);
+    if(!quest || !Array.isArray(quest.objectives)) return null;
+    return quest.objectives.find((objective)=>objective.id===objectiveId) || null;
+  }
+  isObjectiveLocked(questId, objectiveId){
+    if(objectiveId!=="return_hunter") return false;
+    const quest=this.getQuest(questId);
+    if(!quest) return true;
+    return (quest.objectives||[]).some((objective)=>objective.id!=="return_hunter" && !objective.completed);
+  }
+  incrementObjective(questId, objectiveId, amount=1){
+    const quest=this.getQuest(questId);
+    if(!quest || quest.state!==QuestState.ACTIVE) return false;
+    const objective=this.getObjective(questId, objectiveId);
+    if(!objective || objective.completed || this.isObjectiveLocked(questId, objectiveId)) return false;
+    const step=Math.max(1, Math.floor(Number.isFinite(amount) ? amount : 1));
+    const prev=objective.currentAmount;
+    objective.currentAmount=Math.min(objective.requiredAmount, objective.currentAmount + step);
+    if(objective.currentAmount===prev) return false;
+    if(objective.summaryLabel){
+      log("Objective Updated: " + objective.summaryLabel + " (" + objective.currentAmount + "/" + objective.requiredAmount + ")");
     }
-    return changed;
-  }
-  refreshAllItemProgress(){
-    for(const quest of this.quests.values()) this.refreshItemProgress(quest.id);
-  }
-  hasRequiredItems(questId){
-    const quest=this.quests.get(questId);
-    if(!quest || quest.state!==QuestState.ACTIVE || !Array.isArray(quest.itemRequirements) || quest.itemRequirements.length===0) return false;
-    return quest.itemRequirements.every((requirement)=>{
-      const needed=Math.max(1, Math.floor(Number.isFinite(requirement.count) ? requirement.count : 1));
-      return getItemQuantity(requirement.itemId)>=needed;
-    });
-  }
-  turnInItems(questId){
-    const quest=this.quests.get(questId);
-    if(!quest || quest.state!==QuestState.ACTIVE || !Array.isArray(quest.itemRequirements) || quest.itemRequirements.length===0) return false;
-    if(!this.hasRequiredItems(questId)) return false;
-    quest.itemRequirements.forEach((requirement)=>{
-      const needed=Math.max(1, Math.floor(Number.isFinite(requirement.count) ? requirement.count : 1));
-      removeItemFromInventory(requirement.itemId, needed);
-    });
-    this.completeQuest(questId);
+    if(objective.currentAmount>=objective.requiredAmount) this.completeObjective(questId, objectiveId);
+    else this.events.emit("quest:state-changed",{questId,state:quest.state});
     return true;
   }
+  completeObjective(questId, objectiveId){
+    const quest=this.getQuest(questId);
+    if(!quest || (quest.state!==QuestState.ACTIVE && quest.state!==QuestState.READY_TO_TURN_IN)) return false;
+    const objective=this.getObjective(questId, objectiveId);
+    if(!objective || objective.completed || this.isObjectiveLocked(questId, objectiveId)) return false;
+    objective.currentAmount=objective.requiredAmount;
+    objective.completed=true;
+    this.events.emit("quest:objective-completed",{questId,objectiveId});
+    this.evaluateQuestReadiness(questId);
+    this.events.emit("quest:state-changed",{questId,state:quest.state});
+    return true;
+  }
+  evaluateQuestReadiness(questId){
+    const quest=this.getQuest(questId);
+    if(!quest || !Array.isArray(quest.objectives)) return false;
+    const allNonTurnInComplete=quest.objectives.every((objective)=>objective.id==="return_hunter" || objective.completed);
+    if(allNonTurnInComplete && quest.state===QuestState.ACTIVE){
+      quest.state=QuestState.READY_TO_TURN_IN;
+      quest.status=quest.state;
+      log((quest.title || quest.name) + " is ready to turn in.");
+      return true;
+    }
+    if(!allNonTurnInComplete && quest.state===QuestState.READY_TO_TURN_IN){
+      quest.state=QuestState.ACTIVE;
+      quest.status=quest.state;
+      return true;
+    }
+    return false;
+  }
+  isReadyToTurnIn(questId){
+    const quest=this.getQuest(questId);
+    return Boolean(quest && quest.state===QuestState.READY_TO_TURN_IN);
+  }
+  tryTurnInQuest(questId){
+    const quest=this.getQuest(questId);
+    if(!quest || quest.state!==QuestState.READY_TO_TURN_IN) return false;
+    return this.completeQuest(questId), true;
+  }
+  refreshAllItemProgress(){ return false; }
   serializeState(){
     const states=[];
-    for(const quest of this.quests.values()) states.push({id:quest.id,state:quest.state,progress:quest.progress,itemProgress:{...(quest.itemProgress||{})}});
+    for(const quest of this.quests.values()) states.push({
+      id:quest.id,
+      state:quest.state,
+      status:quest.state,
+      progress:quest.progress,
+      objectives:(quest.objectives||[]).map((objective)=>({
+        id:objective.id,
+        currentAmount:objective.currentAmount,
+        completed:objective.completed
+      })),
+      itemProgress:{...(quest.itemProgress||{})}
+    });
     return states;
   }
   getCompletedQuestIds(){
@@ -1406,7 +1488,7 @@ class QuestStateSystem {
   }
   getActiveQuestIds(){
     const ids=[];
-    for(const quest of this.quests.values()) if(quest.state===QuestState.ACTIVE) ids.push(quest.id);
+    for(const quest of this.quests.values()) if(quest.state===QuestState.ACTIVE || quest.state===QuestState.READY_TO_TURN_IN) ids.push(quest.id);
     return ids;
   }
   applyState(stateEntries){
@@ -1417,10 +1499,23 @@ class QuestStateSystem {
       const quest=this.quests.get(entry.id);
       if(!quest) return;
       if(typeof entry.state==="string" && validStates.has(entry.state)) quest.state=entry.state;
+      if(typeof entry.status==="string" && validStates.has(entry.status)) quest.state=entry.status;
       if(typeof entry.progress==="string") quest.progress=entry.progress;
+      if(Array.isArray(entry.objectives)){
+        entry.objectives.forEach((savedObjective)=>{
+          const objective=quest.objectives.find((candidate)=>candidate.id===savedObjective.id);
+          if(!objective) return;
+          if(Number.isFinite(savedObjective.currentAmount)){
+            objective.currentAmount=Math.max(0,Math.min(objective.requiredAmount,Math.floor(savedObjective.currentAmount)));
+          }
+          if(typeof savedObjective.completed==="boolean") objective.completed=savedObjective.completed;
+          if(objective.currentAmount>=objective.requiredAmount) objective.completed=true;
+        });
+      }
       if(entry.itemProgress && typeof entry.itemProgress==="object") quest.itemProgress={...entry.itemProgress};
+      quest.status=quest.state;
+      this.evaluateQuestReadiness(quest.id);
     });
-    this.refreshAllItemProgress();
   }
 }
 
@@ -1438,7 +1533,7 @@ class DialogueFramework {
       const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
       const hunterQuest=questSystem.getQuest("hunters_request");
       if(hunterQuest?.state===QuestState.COMPLETED) root="hunters_request_complete";
-      else if(hunterQuest?.state===QuestState.ACTIVE && questSystem.hasRequiredItems("hunters_request")) root="hunters_request_turn_in_ready";
+      else if(hunterQuest?.state===QuestState.READY_TO_TURN_IN) root="hunters_request_turn_in_ready";
       else if(hunterQuest?.state===QuestState.ACTIVE) root="hunters_request_active";
       else if(mirrorQuest?.state===QuestState.COMPLETED) root="hunters_request_offer";
       else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest?.progress==="heard_whispers") root="quest_turn_in";
@@ -1546,14 +1641,34 @@ eventSystem.on("zone:entered:mirror_pond", ()=>{
   log("You hear strange whispers in the water.");
   questSystem.updateProgress("mirror_pond_listening", "heard_whispers");
 });
+eventSystem.on("combat:enemy-defeated", ({enemyType})=>{
+  const quest=questSystem.getQuest("hunters_request");
+  if(quest?.state!==QuestState.ACTIVE || enemyType!=="wolf") return;
+  questSystem.incrementObjective("hunters_request", "wolves", 1);
+});
+eventSystem.on("zone:entered:mirror_cave", ()=>{
+  const quest=questSystem.getQuest("hunters_request");
+  if(quest?.state!==QuestState.ACTIVE) return;
+  if(questSystem.completeObjective("hunters_request", "enter_cave")) log("Objective Complete: Entered Mirror Cave");
+});
+eventSystem.on("object:opened:mirror_cave_chest", ()=>{
+  const quest=questSystem.getQuest("hunters_request");
+  if(quest?.state!==QuestState.ACTIVE) return;
+  if(questSystem.completeObjective("hunters_request", "open_chest")) log("Objective Complete: Recovered the relic from Mirror Cave");
+});
+eventSystem.on("npc:interacted:edrin", ()=>{
+  const quest=questSystem.getQuest("hunters_request");
+  if(quest?.state!==QuestState.READY_TO_TURN_IN) return;
+  questSystem.completeObjective("hunters_request", "return_hunter");
+});
 eventSystem.on("quest:report:mirror_pond", ()=>{
   const quest=questSystem.getQuest("mirror_pond_listening");
   if(quest?.state!==QuestState.ACTIVE || quest.progress!=="heard_whispers") return;
   questSystem.completeQuest("mirror_pond_listening");
 });
 eventSystem.on("quest:turn_in:hunters_request", ()=>{
-  const completed=questSystem.turnInItems("hunters_request");
-  if(!completed) log("You still need more pelts before turning this in.");
+  const completed=questSystem.tryTurnInQuest("hunters_request");
+  if(!completed) log("Finish all Hunter's Request objectives before turning this in.");
 });
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
 let worldEvents={ pondAwakened:false };
@@ -1589,7 +1704,7 @@ function createSaveData(reason){
     respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
   }));
   return {
-    version:8,
+    version:9,
     reason,
     savedAt:new Date().toISOString(),
     player:{
@@ -1627,7 +1742,7 @@ function createSaveData(reason){
   };
 }
 function validateSaveData(data){
-  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5 && data.version!==6 && data.version!==7 && data.version!==8)) return false;
+  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5 && data.version!==6 && data.version!==7 && data.version!==8 && data.version!==9)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -1808,6 +1923,7 @@ interactionManager.register({
     log("You obtained Iron Sword.");
     mirrorCave.cleared=true;
     log("Mirror Cave cleared.");
+    eventSystem.emit("object:opened:mirror_cave_chest");
   }
 });
 
@@ -1885,6 +2001,7 @@ function enterMirrorCave(){
     setPlayerTilePosition(mirrorCave.spawn.x, mirrorCave.spawn.y);
     lastLoggedZoneEntryId=currentZoneId;
     log("Entered Mirror Cave.");
+    eventSystem.emit("zone:entered:mirror_cave");
   }, 320);
 }
 
@@ -2003,14 +2120,16 @@ function updateSidebar(){
   zoneVal.textContent = zoneName;
   const huntersQuest=questSystem.getQuest("hunters_request");
   const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
-  const activeQuest=(huntersQuest?.state===QuestState.ACTIVE) ? huntersQuest : ((mirrorQuest?.state===QuestState.ACTIVE) ? mirrorQuest : (huntersQuest?.state===QuestState.COMPLETED ? huntersQuest : mirrorQuest));
+  const activeQuest=((huntersQuest?.state===QuestState.ACTIVE || huntersQuest?.state===QuestState.READY_TO_TURN_IN) ? huntersQuest : ((mirrorQuest?.state===QuestState.ACTIVE) ? mirrorQuest : (huntersQuest?.state===QuestState.COMPLETED ? huntersQuest : mirrorQuest)));
   questVal.textContent = activeQuest ? (activeQuest.name + " [" + activeQuest.state + "]") : "Town Slice";
-  if(huntersQuest?.state===QuestState.ACTIVE){
-    const requirement=huntersQuest.itemRequirements?.[0];
-    const requiredCount=Math.max(1, Math.floor(Number.isFinite(requirement?.count) ? requirement.count : 1));
-    const trackedCount=Number.isFinite(huntersQuest.itemProgress?.[requirement?.itemId]) ? huntersQuest.itemProgress[requirement.itemId] : getItemQuantity(requirement?.itemId || "wolf_pelt");
-    const collected=Math.min(requiredCount, trackedCount);
-    objectiveText.textContent = "Hunter's Request\nWolf Pelts: " + collected + " / " + requiredCount + (collected>=requiredCount ? "\nReturn to Edrin Vale for turn-in." : "");
+  if(huntersQuest?.state===QuestState.ACTIVE || huntersQuest?.state===QuestState.READY_TO_TURN_IN){
+    const objectiveLines=(huntersQuest.objectives||[]).map((objective)=>{
+      const checked=objective.completed ? "✔" : " ";
+      const hasCounter=objective.requiredAmount>1;
+      const counter=hasCounter ? (" (" + objective.currentAmount + "/" + objective.requiredAmount + ")") : "";
+      return "[" + checked + "] " + objective.label + counter;
+    }).join("\n");
+    objectiveText.textContent = "Hunter's Request\n" + objectiveLines;
   } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="go_to_pond"){
     objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
   } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="heard_whispers"){
@@ -2276,6 +2395,7 @@ function defeatWolf(wolf,now){
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
   wolfRespawnAtById[wolf.id]=now+WOLF_RESPAWN_MS;
   log("Wolf #" + wolf.id + " defeated. Rewards: +12 XP, +4 coins.");
+  eventSystem.emit("combat:enemy-defeated",{ enemyType:"wolf", enemyId:wolf.id });
   if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
   else log("No loot dropped this time.");
 }
