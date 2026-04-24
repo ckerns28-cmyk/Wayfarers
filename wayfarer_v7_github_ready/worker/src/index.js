@@ -1103,11 +1103,16 @@ function useHealingConsumable(){
   saveGame("consume_item");
   return true;
 }
+function getVendorBuyCost(item){
+  if(!item) return 0;
+  if(item.id==="leather_armor") return 25;
+  return Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+}
 function renderVendorMenu(){
   const buyRows = VENDOR_BUY_INVENTORY.map((itemId)=>{
     const item=getItemDefinition(itemId);
     if(!item) return "";
-    const cost=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+    const cost=getVendorBuyCost(item);
     const canBuy=player.coins>=cost;
     return "<div class=\"vendor-item\">" +
       "<div>" + item.name + "</div>" +
@@ -1160,13 +1165,17 @@ function buyOneItemFromVendor(itemId){
   const item=getItemDefinition(itemId);
   if(!item) return false;
   if(!VENDOR_BUY_INVENTORY.includes(item.id)) return false;
-  const cost=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+  const cost=getVendorBuyCost(item);
   if(player.coins<cost){
     log("Not enough coins to buy " + item.name + ".");
     return false;
   }
   player.coins-=cost;
   addItemToInventory(item.id, 1);
+  const ownedCount=getItemQuantity(item.id);
+  log(item.name + " purchased.");
+  log("Coins after purchase: " + player.coins + ".");
+  log("Inventory update: " + item.name + " owned: " + ownedCount + ".");
   log("Bought " + item.name + " for " + cost + " coin" + (cost===1 ? "" : "s") + ".");
   renderVendorMenu();
   saveGame("vendor_purchase");
@@ -1628,14 +1637,17 @@ dialogue.addEventListener("click",()=>{
 });
 vendorClose.addEventListener("click", closeVendorMenu);
 vendorList.addEventListener("click",(e)=>{
-  const target=e.target;
-  if(!(target instanceof HTMLElement)) return;
-  const buyItemId=target.dataset?.buyItem;
+  const target=e.target instanceof Element ? e.target : null;
+  if(!target) return;
+  const buyButton=target.closest("button[data-buy-item]");
+  const buyItemId=buyButton?.dataset?.buyItem;
   if(buyItemId){
+    console.debug("[Vendor] Buy click:", buyItemId);
     buyOneItemFromVendor(buyItemId);
     return;
   }
-  const itemId=target.dataset?.sellItem;
+  const sellButton=target.closest("button[data-sell-item]");
+  const itemId=sellButton?.dataset?.sellItem;
   if(!itemId) return;
   sellOneItemToVendor(itemId);
 });
