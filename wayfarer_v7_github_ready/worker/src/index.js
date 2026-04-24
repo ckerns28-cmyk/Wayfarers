@@ -165,9 +165,8 @@ const html = String.raw`<!DOCTYPE html>
         },
         "quest_offer": {
           "lines": [
-            "Then hear me.",
-            "Stand by Mirror Pond and listen until the wind settles.",
-            "Return only after you feel the water acknowledge you."
+            "Go to Mirror Pond and listen carefully.",
+            "Something is wrong."
           ],
           "onCompleteEvents": ["quest:activate:mirror_pond_listening"],
           "next": "quest_active_followup"
@@ -178,12 +177,20 @@ const html = String.raw`<!DOCTYPE html>
           ],
           "next": "end"
         },
+        "quest_turn_in": {
+          "lines": [
+            "You hear them too, then.",
+            "Good. The pond is warning us.",
+            "You have done well, wayfarer."
+          ],
+          "onCompleteEvents": ["quest:report:mirror_pond"],
+          "next": "post_quest"
+        },
         "post_quest": {
           "lines": [
             "You heard it, didn't you?",
             "Good. Hearthvale will remember your step."
           ],
-          "onCompleteEvents": ["world:pond:awakened"],
           "next": "end"
         }
       }
@@ -198,8 +205,7 @@ const html = String.raw`<!DOCTYPE html>
       "id": "mirror_pond_listening",
       "name": "Listening at Mirror Pond",
       "description": "Travel to Mirror Pond and listen in silence.",
-      "startEvents": ["quest:activate:mirror_pond_listening"],
-      "completionEvents": ["zone:entered:mirror_pond"]
+      "startEvents": ["quest:activate:mirror_pond_listening"]
     }
   ]
 }
@@ -782,7 +788,7 @@ class EventTriggerSystem {
 class QuestStateSystem {
   constructor(definitions, events){
     this.events=events;
-    this.quests=new Map(definitions.map((q)=>[q.id,{...q,state:QuestState.NOT_STARTED}]));
+    this.quests=new Map(definitions.map((q)=>[q.id,{...q,state:QuestState.NOT_STARTED,progress:"none"}]));
     definitions.forEach((quest)=>{
       (quest.startEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.activateQuest(quest.id)));
       (quest.completionEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.completeQuest(quest.id)));
@@ -791,12 +797,21 @@ class QuestStateSystem {
   activateQuest(questId){
     const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.NOT_STARTED) return;
     quest.state=QuestState.ACTIVE;
+    quest.progress="go_to_pond";
     log("Quest started: " + quest.name);
     this.events.emit("quest:state-changed",{questId,state:quest.state});
+  }
+  updateProgress(questId, progressId){
+    const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.ACTIVE) return;
+    if(quest.progress===progressId) return;
+    quest.progress=progressId;
+    this.events.emit("quest:progressed",{questId,progress:progressId});
+    this.events.emit("quest:state-changed",{questId,state:quest.state,progress:progressId});
   }
   completeQuest(questId){
     const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.ACTIVE) return;
     quest.state=QuestState.COMPLETED;
+    quest.progress="completed";
     log("Quest complete: " + quest.name);
     player.xp += 20;
     player.coins += 6;
@@ -819,6 +834,7 @@ class DialogueFramework {
     if(characterId==="edrin"){
       const quest=questSystem.getQuest("mirror_pond_listening");
       if(quest?.state===QuestState.COMPLETED) root="post_quest";
+      else if(quest?.state===QuestState.ACTIVE && quest?.progress==="heard_whispers") root="quest_turn_in";
       else if(quest?.state===QuestState.ACTIVE) root="quest_active_followup";
     }
     this.activeSession={characterId,nodeId:root,lineIndex:0,pendingChoices:null};
@@ -916,6 +932,17 @@ const interactionManager=new InteractionManager(2);
 
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
 eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
+eventSystem.on("zone:entered:mirror_pond", ()=>{
+  const quest=questSystem.getQuest("mirror_pond_listening");
+  if(quest?.state!==QuestState.ACTIVE || quest.progress!=="go_to_pond") return;
+  log("You hear strange whispers in the water.");
+  questSystem.updateProgress("mirror_pond_listening", "heard_whispers");
+});
+eventSystem.on("quest:report:mirror_pond", ()=>{
+  const quest=questSystem.getQuest("mirror_pond_listening");
+  if(quest?.state!==QuestState.ACTIVE || quest.progress!=="heard_whispers") return;
+  questSystem.completeQuest("mirror_pond_listening");
+});
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
 let worldEvents={ pondAwakened:false };
 eventSystem.on("world:pond:awakened", ()=>{
@@ -956,8 +983,9 @@ function updateSidebar(){
   const mainQuest=questSystem.getQuest("mirror_pond_listening");
   questVal.textContent = mainQuest ? (mainQuest.name + " [" + mainQuest.state + "]") : "Town Slice";
   if(!mainQuest || mainQuest.state===QuestState.NOT_STARTED) objectiveText.textContent = "Speak with Edrin Vale to begin a task.";
-  else if(mainQuest.state===QuestState.ACTIVE) objectiveText.textContent = "Visit Mirror Pond and listen in silence.";
-  else objectiveText.textContent = "Return to Edrin Vale or continue exploring Hearthvale.";
+  else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="go_to_pond") objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
+  else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="heard_whispers") objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
+  else objectiveText.textContent = "Quest complete: Listening at Mirror Pond.";
   hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName;
 }
 
