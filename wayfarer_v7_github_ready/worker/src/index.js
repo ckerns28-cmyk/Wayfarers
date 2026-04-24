@@ -308,7 +308,7 @@ function makeFenceTiles(){
   }));
 }
 
-function paintHumanoidSheet(colors) {
+function paintHumanoidSheet(colors, variant = "adventurer") {
   const size = 64;
   const c = document.createElement("canvas");
   c.width = size * 3;
@@ -321,51 +321,53 @@ function paintHumanoidSheet(colors) {
   function drawFrame(baseX, baseY, dir, step){
     const px = 2;
     const ox = baseX + 8;
-    const oy = baseY + 8;
+    const oy = baseY + 7;
     const bob = Math.abs(step)===1 ? 1 : 0;
     const legSwing = step*1;
-    const armSwing = -step;
+    const elderLean = variant === "elder" ? 1 : 0;
+    const armSwing = variant === "elder" ? -Math.max(-1, step - 1) : -step;
     const outline = "rgba(8,12,18,.82)";
 
     const dot = (x,y,w=1,h=1,color=outline) => { p.fillStyle=color; p.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
 
-    // Boots / legs
-    dot(9,21+legSwing,3,2,colors.boots); dot(12,19+legSwing,2,3,colors.boots);
-    dot(15,21-legSwing,3,2,colors.boots); dot(16,19-legSwing,2,3,colors.boots);
-    dot(11,16+legSwing,3,4,colors.tunicShade); dot(16,16-legSwing,3,4,colors.tunicShade);
+    // Boots / legs with cleaner posture and readable silhouette
+    dot(10,22+legSwing,3,2,colors.boots); dot(12,20+legSwing,2,3,colors.boots);
+    dot(16,22-legSwing,3,2,colors.boots); dot(17,20-legSwing,2,3,colors.boots);
+    dot(12,17+legSwing,3,4,colors.tunicShade); dot(17,17-legSwing,3,4,colors.tunicShade);
 
-    // Robe/tunic body
-    dot(9,11+bob,11,8,colors.tunic);
-    dot(10,15+bob,9,4,colors.tunicShade);
-    if (dir==="up") dot(8,11+bob,13,7,colors.cloak);
-    else dot(8,12+bob,13,8,colors.cloak);
-    dot(10,11+bob,9,1,"rgba(255,255,255,.15)");
+    // Tunic / robe body with clear shoulder shape
+    dot(10,11+bob+elderLean,11,8,colors.tunic);
+    dot(11,15+bob+elderLean,9,4,colors.tunicShade);
+    dot(10,11+bob+elderLean,11,1,"rgba(255,255,255,.17)");
+    if (dir==="up") dot(9,11+bob+elderLean,13,8,colors.cloak);
+    else dot(9,12+bob+elderLean,13,8,colors.cloak);
+    if (variant === "elder") dot(13,14+bob+elderLean,5,5,"rgba(41,28,25,.4)");
 
     // Arms
     if (dir==="left"){
-      dot(8,13+armSwing,2,4,colors.skin); dot(7,14+armSwing,1,3,colors.tunicShade);
+      dot(9,13+armSwing+elderLean,2,4,colors.skin); dot(8,14+armSwing+elderLean,1,3,colors.tunicShade);
     } else if (dir==="right"){
-      dot(19,13+armSwing,2,4,colors.skin); dot(21,14+armSwing,1,3,colors.tunicShade);
+      dot(20,13+armSwing+elderLean,2,4,colors.skin); dot(22,14+armSwing+elderLean,1,3,colors.tunicShade);
     } else {
-      dot(8,13+armSwing,2,4,colors.skin); dot(19,13-armSwing,2,4,colors.skin);
-      dot(7,14+armSwing,1,3,colors.tunicShade); dot(21,14-armSwing,1,3,colors.tunicShade);
+      dot(9,13+armSwing+elderLean,2,4,colors.skin); dot(20,13-armSwing+elderLean,2,4,colors.skin);
+      dot(8,14+armSwing+elderLean,1,3,colors.tunicShade); dot(22,14-armSwing+elderLean,1,3,colors.tunicShade);
     }
 
-    // Head / hair
+    // Head / hair with larger head for better readability
     if (dir==="left"){
-      dot(10,6+bob,6,5,colors.skin); dot(9,5+bob,5,3,colors.hair); dot(12,9+bob,1,1,"#1f2b3e");
+      dot(11,5+bob+elderLean,7,6,colors.skin); dot(10,4+bob+elderLean,6,3,colors.hair); dot(13,9+bob+elderLean,1,1,"#1f2b3e");
     } else if (dir==="right"){
-      dot(13,6+bob,6,5,colors.skin); dot(15,5+bob,5,3,colors.hair); dot(16,9+bob,1,1,"#1f2b3e");
+      dot(13,5+bob+elderLean,7,6,colors.skin); dot(15,4+bob+elderLean,6,3,colors.hair); dot(17,9+bob+elderLean,1,1,"#1f2b3e");
     } else if (dir==="up"){
-      dot(11,6+bob,7,5,colors.skin); dot(10,5+bob,9,4,colors.hair);
+      dot(12,5+bob+elderLean,7,6,colors.skin); dot(11,4+bob+elderLean,9,4,colors.hair);
     } else {
-      dot(11,6+bob,7,5,colors.skin); dot(10,5+bob,9,3,colors.hair);
-      dot(13,9+bob,1,1,"#1f2b3e"); dot(15,9+bob,1,1,"#1f2b3e");
+      dot(12,5+bob+elderLean,7,6,colors.skin); dot(11,4+bob+elderLean,9,3,colors.hair);
+      dot(14,9+bob+elderLean,1,1,"#1f2b3e"); dot(16,9+bob+elderLean,1,1,"#1f2b3e");
     }
 
     // Readable outline
-    dot(10,6+bob,1,5); dot(18,6+bob,1,5); dot(11,5+bob,7,1); dot(11,11+bob,7,1);
-    dot(8,12+bob,1,8); dot(20,12+bob,1,8); dot(9,20+bob,11,1);
+    dot(11,5+bob+elderLean,1,6); dot(19,5+bob+elderLean,1,6); dot(12,4+bob+elderLean,7,1); dot(12,11+bob+elderLean,7,1);
+    dot(9,12+bob+elderLean,1,8); dot(21,12+bob+elderLean,1,8); dot(10,20+bob+elderLean,11,1);
   }
 
   dirs.forEach((d,row)=> stepOffset.forEach((s,col)=> drawFrame(col*size,row*size,d,s)));
@@ -384,35 +386,45 @@ function paintWolfSheet() {
     const trot = step;
     const dot = (x,y,w=1,h=1,color="rgba(8,12,18,.82)") => { p.fillStyle=color; p.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
 
-    const fur = "#8b97a2";
-    const furShade = "#73808c";
-    const furHi = "#a5b0ba";
-    const muzzle = "#c8c2b7";
+    const fur = "#7f8b95";
+    const furShade = "#62707c";
+    const furHi = "#a4afb9";
+    const muzzle = "#c9c2b4";
     const nose = "#2a3340";
 
     if (dir==="left" || dir==="right") {
       const left = dir==="left";
-      const headX = left ? 7 : 16;
-      const tailX = left ? 20 : 7;
-      dot(9,12,10,6,fur); dot(10,12,8,2,furHi); dot(9,15,10,3,furShade);
-      dot(11,18+trot,2,4,furShade); dot(15,18-trot,2,4,furShade);
-      dot(8,18-trot,2,4,fur); dot(17,18+trot,2,4,fur);
-      dot(headX,9,4,4,fur); dot(headX+1,10,3,2,muzzle); dot(headX+3,11,1,1,nose);
-      dot(headX+1,7,1,2,furShade); dot(headX+3,7,1,2,furShade);
-      dot(tailX,13,3,2,furShade); dot(tailX+(left?2:-1),12,2,1,furShade);
-      dot(left?8:17,10,1,1,nose);
-      dot(8,12,1,6); dot(19,12,1,6); dot(9,11,10,1); dot(9,18,10,1);
+      const headX = left ? 5 : 18;
+      const neckX = left ? 9 : 15;
+      const tailBaseX = left ? 22 : 6;
+      const legLead = left ? -1 : 1;
+
+      dot(10,12,10,6,fur); dot(11,12,7,2,furHi); dot(10,15,10,3,furShade);
+      dot(neckX,12,3,3,furShade);
+      dot(12,18+trot,2,4,furShade); dot(16,18-trot,2,4,furShade);
+      dot(9,18-trot,2,4,fur); dot(19,18+trot,2,4,fur);
+
+      dot(headX,9,5,5,fur); dot(headX+(left?0:1),8,1,2,furShade); dot(headX+(left?3:4),8,1,2,furShade);
+      dot(headX+(left?1:1),11,3,2,muzzle); dot(headX+(left?0:4),11,1,1,nose);
+      dot(headX+(left?1:3),10,1,1,nose);
+
+      dot(tailBaseX,13,3,2,furShade);
+      dot(tailBaseX+(left?2:-2),12,2,1,furShade);
+      dot(tailBaseX+(left?3:-3),11,1,1,furShade);
+
+      dot(9,12,1,6); dot(20,12,1,6); dot(10,11,10,1); dot(10,18,10,1);
+      dot(8+legLead,20,1,2,furShade); dot(20+legLead,20,1,2,furShade);
     } else {
       const back = dir==="up";
-      dot(10,10,8,3,back ? furShade : furHi);
-      dot(9,13,10,6,fur);
-      dot(11,19+trot,2,3,furShade); dot(15,19-trot,2,3,furShade);
-      dot(9,19-trot,2,3,fur); dot(17,19+trot,2,3,fur);
-      dot(11,8,6,3,back ? furShade : muzzle);
-      if (!back){ dot(12,9,1,1,nose); dot(14,9,1,1,nose); }
-      dot(10,7,1,2,furShade); dot(16,7,1,2,furShade);
-      dot(9,12,1,7); dot(18,12,1,7); dot(10,11,8,1); dot(10,19,8,1);
-      if(back){ dot(8,14,1,2,furShade); dot(19,14,1,2,furShade); }
+      dot(11,10,8,3,back ? furShade : furHi);
+      dot(10,13,10,6,fur);
+      dot(12,19+trot,2,3,furShade); dot(16,19-trot,2,3,furShade);
+      dot(10,19-trot,2,3,fur); dot(18,19+trot,2,3,fur);
+      dot(12,8,6,3,back ? furShade : muzzle);
+      if (!back){ dot(13,9,1,1,nose); dot(15,9,1,1,nose); }
+      dot(11,7,1,2,furShade); dot(17,7,1,2,furShade);
+      dot(10,12,1,7); dot(19,12,1,7); dot(11,11,8,1); dot(11,19,8,1);
+      if(back){ dot(9,14,1,2,furShade); dot(20,14,1,2,furShade); dot(14,20,2,1,furShade); }
     }
   }
   ["down","left","right","up"].forEach((dir,row)=>[-1,0,1].forEach((s,col)=>frame(col*size,row*size,dir,s)));
@@ -423,8 +435,8 @@ buildTerrainTiles();
 makeBuildingTiles();
 makeTreeSprites();
 makeFenceTiles();
-assets.sprites.player = paintHumanoidSheet({ skin:"#e5c9a5", hair:"#4f3d30", tunic:"#6a7b8a", tunicShade:"#4e5c69", cloak:"#b8c2ce", boots:"#5d4029" });
-assets.sprites.npc = paintHumanoidSheet({ skin:"#dbc39f", hair:"#e5e8ef", tunic:"#7d6648", tunicShade:"#5d4a35", cloak:"#4a3f30", boots:"#433124" });
+assets.sprites.player = paintHumanoidSheet({ skin:"#e4c8a2", hair:"#4f3a2c", tunic:"#5f7890", tunicShade:"#3f5265", cloak:"#c2c7cf", boots:"#4f3826" }, "adventurer");
+assets.sprites.npc = paintHumanoidSheet({ skin:"#c9b093", hair:"#d9dde5", tunic:"#4d473f", tunicShade:"#322d28", cloak:"#262229", boots:"#2f2418" }, "elder");
 assets.sprites.wolf = paintWolfSheet();
 
 const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
