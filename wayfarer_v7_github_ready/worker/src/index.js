@@ -1780,6 +1780,20 @@ function setPlayerTilePosition(x,y){
   player.moving=false;
 }
 
+function resolveTransitionArrival(transition, fromX, fromY){
+  const baseX=transition.arrival?.x ?? fromX;
+  const baseY=transition.arrival?.y ?? fromY;
+  if(transition.preserveAxis==="y"){
+    const destinationTrigger=ZONE_EXIT_SPAWNS[transition.destinationZone]?.[transition.destinationSpawnId];
+    if(!destinationTrigger) return { x:baseX, y:baseY };
+    const minY=destinationTrigger.y;
+    const maxY=destinationTrigger.y+destinationTrigger.h-1;
+    const alignedY=Math.max(minY, Math.min(maxY, fromY));
+    return { x:baseX, y:alignedY };
+  }
+  return { x:baseX, y:baseY };
+}
+
 function handleZoneTransitionIfNeeded(){
   const now=performance.now();
   if(now<nextZoneTransitionAt) return false;
@@ -2350,10 +2364,8 @@ function drawWorld(){
   if(zoneName==="Mirror Pond") zoneLabel("Mirror Pond",23,12);
   if(zoneName==="Eastern Woods") zoneLabel("Eastern Woods",30,4);
 
-  if(currentZoneId==="hearthvale_square"){
-    drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
-    drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
-  }
+  drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
+  drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
   if(isEasternWoodsActive()){
     wolves.forEach((wolf)=>{
       if(wolf.hp<=0) return;
