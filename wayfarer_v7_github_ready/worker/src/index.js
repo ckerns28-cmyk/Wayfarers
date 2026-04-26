@@ -90,8 +90,10 @@ const html = String.raw`<!DOCTYPE html>
       text-shadow:0 1px 0 #000;
     }
     #dialogue {
-      position:absolute;left:20px;right:20px;bottom:20px;display:none;
+      position:absolute;left:20px;right:20px;bottom:56px;display:none;
       z-index:25;
+      max-height:min(42%, 280px);
+      overflow:auto;
       background:linear-gradient(#121a25,#0b1018);
       border:1px solid #51637d;
       border-radius:10px;
@@ -208,8 +210,7 @@ const html = String.raw`<!DOCTYPE html>
           ],
           "choices": [
             { "text": "Any work for me?", "next": "quest_offer" },
-            { "text": "Tell me about this town.", "next": "town_lore" },
-            { "text": "Need wolf pelts?", "next": "hunters_request_offer" }
+            { "text": "Tell me about this town.", "next": "town_lore" }
           ]
         },
         "town_lore": {
@@ -248,17 +249,24 @@ const html = String.raw`<!DOCTYPE html>
             "Good. Hearthvale will remember your step."
           ],
           "next": "end"
-        },
-        "hunters_request_offer": {
+        }
+      }
+    },
+    "hunter_garran": {
+      "name": "Hunter Garran",
+      "root": "greeting",
+      "nodes": {
+        "greeting": {
           "lines": [
-            "I need you to thin the wolves, search Mirror Cave, and recover the relic chest."
+            "Tracks have been thick near Mirror Pond. Bring me proof you can handle yourself."
           ],
           "onCompleteEvents": ["quest:activate:hunters_request"],
           "next": "hunters_request_active"
         },
         "hunters_request_active": {
           "lines": [
-            "Defeat 3 wolves, enter Mirror Cave, and open the cave chest."
+            "Hunter's Request.",
+            "Defeat 3 wolves, enter Mirror Cave, open Mirror Cave chest, then return to Hunter Garran."
           ],
           "next": "end"
         },
@@ -274,14 +282,14 @@ const html = String.raw`<!DOCTYPE html>
         },
         "hunters_request_turn_in": {
           "lines": [
-            "Excellent work. Hearthvale is safer because of you."
+            "Good work. You’ve got the makings of a real wayfarer."
           ],
           "onCompleteEvents": ["quest:turn_in:hunters_request"],
           "next": "hunters_request_complete"
         },
         "hunters_request_complete": {
           "lines": [
-            "Quest Completed."
+            "Good work. You’ve got the makings of a real wayfarer."
           ],
           "next": "end"
         }
@@ -304,16 +312,16 @@ const html = String.raw`<!DOCTYPE html>
     {
       "id": "hunters_request",
       "questId": "hunters_request",
-      "title": "Hunter's Request — Expanded",
-      "name": "Hunter's Request — Expanded",
-      "description": "Defeat wolves, enter Mirror Cave, recover the cave relic, then report back to Edrin Vale.",
+      "title": "Hunter's Request",
+      "name": "Hunter's Request",
+      "description": "Defeat wolves, enter Mirror Cave, recover the cave relic, then report back to Hunter Garran.",
       "startEvents": ["quest:activate:hunters_request"],
       "status": "Not Started",
       "objectives": [
-        { "id": "wolves", "label": "Defeat Wolves", "summaryLabel": "Wolves defeated", "type": "kill", "targetId": "wolf", "requiredAmount": 3, "currentAmount": 0, "completed": false },
+        { "id": "wolves", "label": "Defeat 3 wolves", "summaryLabel": "Wolves defeated", "type": "kill", "targetId": "wolf", "requiredAmount": 3, "currentAmount": 0, "completed": false },
         { "id": "enter_cave", "label": "Enter Mirror Cave", "type": "reach", "targetId": "mirror_cave", "requiredAmount": 1, "currentAmount": 0, "completed": false },
-        { "id": "open_chest", "label": "Retrieve Cave Relic", "type": "interact", "targetId": "mirror_cave_chest", "requiredAmount": 1, "currentAmount": 0, "completed": false },
-        { "id": "return_hunter", "label": "Return to Hunter", "type": "interact", "targetId": "npc_edrin", "requiredAmount": 1, "currentAmount": 0, "completed": false }
+        { "id": "open_chest", "label": "Open Mirror Cave chest", "type": "interact", "targetId": "mirror_cave_chest", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "return_hunter", "label": "Return to Hunter Garran", "type": "interact", "targetId": "npc_hunter_garran", "requiredAmount": 1, "currentAmount": 0, "completed": false }
       ],
       "rewards": { "xp": 60, "coins": 50, "items": [{ "itemId": "small_potion", "count": 2 }] }
     }
@@ -968,6 +976,7 @@ world.zones.push(
 
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
+const hunterNpc={x:26,y:9,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"down"};
 const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15}];
@@ -1531,13 +1540,13 @@ class DialogueFramework {
     let root=char.root;
     if(characterId==="edrin"){
       const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
+      if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest?.progress==="heard_whispers") root="quest_turn_in";
+      else if(mirrorQuest?.state===QuestState.ACTIVE) root="quest_active_followup";
+    } else if(characterId==="hunter_garran"){
       const hunterQuest=questSystem.getQuest("hunters_request");
       if(hunterQuest?.state===QuestState.COMPLETED) root="hunters_request_complete";
       else if(hunterQuest?.state===QuestState.READY_TO_TURN_IN) root="hunters_request_turn_in_ready";
       else if(hunterQuest?.state===QuestState.ACTIVE) root="hunters_request_active";
-      else if(mirrorQuest?.state===QuestState.COMPLETED) root="hunters_request_offer";
-      else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest?.progress==="heard_whispers") root="quest_turn_in";
-      else if(mirrorQuest?.state===QuestState.ACTIVE) root="quest_active_followup";
     }
     this.activeSession={characterId,nodeId:root,lineIndex:0,pendingChoices:null};
     this.render();
@@ -1635,6 +1644,7 @@ const interactionManager=new InteractionManager(2);
 
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
 eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
+eventSystem.on("dialogue:started:hunter_garran", ()=>eventSystem.emit("npc:interacted:hunter_garran"));
 eventSystem.on("zone:entered:mirror_pond", ()=>{
   const quest=questSystem.getQuest("mirror_pond_listening");
   if(quest?.state!==QuestState.ACTIVE || quest.progress!=="go_to_pond") return;
@@ -1656,7 +1666,7 @@ eventSystem.on("object:opened:mirror_cave_chest", ()=>{
   if(quest?.state!==QuestState.ACTIVE) return;
   if(questSystem.completeObjective("hunters_request", "open_chest")) log("Objective Complete: Recovered the relic from Mirror Cave");
 });
-eventSystem.on("npc:interacted:edrin", ()=>{
+eventSystem.on("npc:interacted:hunter_garran", ()=>{
   const quest=questSystem.getQuest("hunters_request");
   if(quest?.state!==QuestState.READY_TO_TURN_IN) return;
   questSystem.completeObjective("hunters_request", "return_hunter");
@@ -1893,6 +1903,10 @@ eventSystem.on("quest:state-changed", ()=>saveGame("quest_state_change"));
 interactionManager.register({
   id:"npc_edrin", type:"npc", x:()=>npc.x, y:()=>npc.y,
   onInteract:()=>dialogueSystem.start("edrin")
+});
+interactionManager.register({
+  id:"npc_hunter_garran", type:"npc", x:()=>hunterNpc.x, y:()=>hunterNpc.y,
+  onInteract:()=>dialogueSystem.start("hunter_garran")
 });
 interactionManager.register({
   id:"npc_merchant_rowan", type:"npc", x:()=>vendorNpc.x, y:()=>vendorNpc.y,
@@ -2137,7 +2151,7 @@ function updateSidebar(){
   } else if(huntersQuest?.state===QuestState.COMPLETED){
     objectiveText.textContent = "Quest complete: Hunter's Request.";
   } else if(mirrorQuest?.state===QuestState.COMPLETED){
-    objectiveText.textContent = "Quest complete: Listening at Mirror Pond.";
+    objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
   } else {
     objectiveText.textContent = "Speak with Edrin Vale to begin a task.";
   }
@@ -2197,6 +2211,7 @@ function canMoveTo(x,y){
     if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
     if(x===npc.x&&y===npc.y) return false;
     if(x===vendorNpc.x&&y===vendorNpc.y) return false;
+    if(x===hunterNpc.x&&y===hunterNpc.y) return false;
   }
   if(getActiveHostiles().some((hostile)=>hostile.hp>0&&x===hostile.targetX&&y===hostile.targetY)) return false;
   return true;
@@ -2294,6 +2309,7 @@ function canHostileMoveTo(x,y,self){
     if(world.blocked.has(keyOf(x,y))) return false;
     if(x===npc.x&&y===npc.y) return false;
     if(x===vendorNpc.x&&y===vendorNpc.y) return false;
+    if(x===hunterNpc.x&&y===hunterNpc.y) return false;
   }
   if(getActiveHostiles().some((hostile)=>hostile!==self && hostile.hp>0 && hostile.targetX===x && hostile.targetY===y)) return false;
   return true;
@@ -2696,6 +2712,7 @@ function drawWorld(){
   if(zoneName==="Eastern Woods") zoneLabel("Eastern Woods",30,4);
 
   drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
+  drawHumanoid(assets.sprites.npc, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.78, Math.abs(player.targetX-hunterNpc.x)+Math.abs(player.targetY-hunterNpc.y)<=5?hunterNpc.displayLabel:"", 0, null, null);
   drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
   wolves.forEach((wolf)=>{
     if(wolf.hp<=0) return;
@@ -2765,6 +2782,7 @@ if(loadedFromSave) log("System: Continuing from saved progress.");
 else log("System: New journey started.");
 log("System: Press K at any time to save manually.");
 log("System: Speak to Edrin Vale and use E to interact with nearby objects.");
+log("System: Hunter Garran waits near Hearthvale's eastern road.");
 log("System: Merchant Rowan now buys and sells survival goods.");
 updateSidebar();
 requestAnimationFrame(loop);
