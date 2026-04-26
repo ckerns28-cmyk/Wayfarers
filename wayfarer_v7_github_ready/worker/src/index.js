@@ -90,8 +90,10 @@ const html = String.raw`<!DOCTYPE html>
       text-shadow:0 1px 0 #000;
     }
     #dialogue {
-      position:absolute;left:20px;right:20px;bottom:20px;display:none;
+      position:absolute;left:20px;right:20px;bottom:56px;display:none;
       z-index:25;
+      max-height:min(42%, 280px);
+      overflow:auto;
       background:linear-gradient(#121a25,#0b1018);
       border:1px solid #51637d;
       border-radius:10px;
