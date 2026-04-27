@@ -25,6 +25,24 @@ Mythic, grounded, moody, old-school RPG.
 - Every system should support save/load.
 - Every new feature must preserve the vertical slice.
 
+## Combat Feedback Principles (Phase 31)
+
+- Every successful player hit should produce at least two readable signals (combat log + visual feedback).
+- Every meaningful incoming hit should be visible without requiring HP-number-only interpretation.
+- Miss feedback should be explicit but throttled to avoid Chronicle noise.
+- Target priority should stay clear in close multi-enemy fights (active target readability > ambient labels).
+- Feedback intensity should scale with impact (normal hits subtle, heavy hits slightly stronger shake/beat).
+- Avoid VFX overload; readability is preferred over spectacle.
+
+## Reward Feedback Principles (Phase 31)
+
+- Important rewards should always be surfaced immediately at pickup/award time.
+- Reward communication should use clear additive language (`+ Item`, `+ XP`, `+ Coins`).
+- Chronicle is the persistent source of truth; toasts/floating text provide moment-to-moment emphasis.
+- Level-up moments should list what changed, not only that a level changed.
+- Skill-up moments should be brief and specific (skill name + new level), with low spam risk.
+- Boss defeats and one-time chest rewards must feel distinct from regular enemy kills.
+
 ## Hearthvale NPC Roles (Phase 18)
 
 ### Edrin Vale — Story / Mystery NPC

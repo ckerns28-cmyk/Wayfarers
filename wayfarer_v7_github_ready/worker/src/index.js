@@ -969,7 +969,7 @@ const BALANCE = Object.freeze({
     repeatWindowMs:1200
   },
   death: {
-    respawnSafetyMs:1800
+    respawnSafetyMs:2600
   }
 });
 const SKILL_LEVEL_THRESHOLDS = Object.freeze([0,50,125,250,450]);
@@ -1026,13 +1026,26 @@ const palette = {
 
 let lastCombatLog={ message:"", at:0 };
 let lastLogMessage="";
+let lastLogRepeatCount=1;
+let lastLogRepeatElement=null;
 let rewardToastTimeout=0;
+const floatingTexts=[];
+let cameraShakeUntil=0;
+let cameraShakeStrength=0;
 function log(message){
-  if(!message || message===lastLogMessage) return;
+  if(!message) return;
+  if(message===lastLogMessage && lastLogRepeatElement){
+    lastLogRepeatCount+=1;
+    lastLogRepeatElement.textContent=message + " (x" + lastLogRepeatCount + ")";
+    chat.scrollTop=chat.scrollHeight;
+    return;
+  }
   lastLogMessage=message;
+  lastLogRepeatCount=1;
   const line=document.createElement("div");
   line.textContent=message;
   chat.appendChild(line);
+  lastLogRepeatElement=line;
   while(chat.childElementCount>220){
     chat.removeChild(chat.firstElementChild);
   }
@@ -1055,6 +1068,38 @@ function showRewardToasts(messages){
     setTimeout(()=>showRewardToast(message), delay);
     delay+=750;
   });
+}
+function spawnFloatingText(tx,ty,text,{color="#f4f8ff",durationMs=850,rise=14,size=12}={}){
+  if(!text && text!==0) return;
+  floatingTexts.push({ tx, ty, text:String(text), color, size, durationMs, rise, startedAt:performance.now() });
+}
+function triggerCameraShake(durationMs=120,strength=2){
+  cameraShakeUntil=Math.max(cameraShakeUntil, performance.now()+Math.max(60,durationMs));
+  cameraShakeStrength=Math.max(cameraShakeStrength, Math.max(0.5,strength));
+}
+function drawFloatingTexts(now){
+  for(let i=floatingTexts.length-1;i>=0;i--){
+    const entry=floatingTexts[i];
+    const age=now-entry.startedAt;
+    if(age>=entry.durationMs){
+      floatingTexts.splice(i,1);
+      continue;
+    }
+    const progress=Math.max(0, Math.min(1, age/entry.durationMs));
+    const alpha=(1-progress);
+    const p=tileToScreen(entry.tx, entry.ty);
+    const yOffset=Math.round(progress*entry.rise);
+    ctx.save();
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle="rgba(10,12,18,.85)";
+    const textW=Math.max(24, entry.text.length*7+8);
+    ctx.fillRect(p.x+16-Math.floor(textW/2), p.y-20-yOffset, textW, 13);
+    ctx.fillStyle=entry.color;
+    ctx.font="bold " + entry.size + "px monospace";
+    ctx.textAlign="center";
+    ctx.fillText(entry.text, p.x+16, p.y-10-yOffset);
+    ctx.restore();
+  }
 }
 function logCombat(message){
   const now=performance.now();
@@ -1883,7 +1928,7 @@ function gainSkillXp(skillId, amount){
   skill.level=getSkillLevelFromXp(skill.xp);
   if(skill.level>beforeLevel){
     log(SKILL_DISPLAY_NAMES[skillId] + " increased to Level " + skill.level + ".");
-    showRewardToast("Skill Up: " + SKILL_DISPLAY_NAMES[skillId], 1500);
+    showRewardToast("Skill Up: " + SKILL_DISPLAY_NAMES[skillId] + " Lv " + skill.level, 1500);
   }
   return gained;
 }
@@ -1965,11 +2010,21 @@ function applyProgressionForLevel(targetLevel,{announce=false}={}){
   const gainedMaxHp=Math.max(0, player.maxHp-beforeMaxHp);
   if(gainedMaxHp>0) player.hp=Math.min(player.maxHp, player.hp + gainedMaxHp);
   if(announce && player.level>beforeLevel){
-    log("Level up! You reached Level " + player.level + ".");
-    showRewardToast("Level Up! Lv " + player.level, 1900);
-    if(player.maxHp>beforeProfile.maxHp) log("Max HP increased.");
-    if(player.baseAttackBonus>beforeAttack) log("Attack increased.");
-    if(player.baseDefenseBonus>beforeDefense) log("Defense increased.");
+    const levelUpLines=["LEVEL UP — Level " + player.level];
+    log(levelUpLines[0] + ".");
+    if(player.maxHp>beforeProfile.maxHp){
+      log("Max HP increased.");
+      levelUpLines.push("Max HP +" + (player.maxHp-beforeProfile.maxHp));
+    }
+    if(player.baseAttackBonus>beforeAttack){
+      log("Attack increased.");
+      levelUpLines.push("Attack +" + (player.baseAttackBonus-beforeAttack));
+    }
+    if(player.baseDefenseBonus>beforeDefense){
+      log("Defense increased.");
+      levelUpLines.push("Defense +" + (player.baseDefenseBonus-beforeDefense));
+    }
+    showRewardToasts(levelUpLines);
   }
 }
 function syncLevelFromXp({announce=false}={}){
@@ -2213,9 +2268,13 @@ function consumeHealingItem(item){
   player.hp=Math.min(player.maxHp, player.hp + healAmount);
   const restored=player.hp-hpBefore;
   if(restored<=0) return false;
-  if(item.id==="healing_herb") gainSkillXp("survival", 5);
-  if(item.id==="small_potion") gainSkillXp("survival", 8);
+  let survivalGain=0;
+  if(item.id==="healing_herb") survivalGain=gainSkillXp("survival", 5);
+  if(item.id==="small_potion") survivalGain=gainSkillXp("survival", 8);
   log("Used " + item.name + ". Restored " + restored + " HP.");
+  spawnFloatingText(player.px/TILE, player.py/TILE, "+" + restored, { color:"#7df7a2", durationMs:1000, rise:18 });
+  showRewardToast("Used " + item.name + "  +" + restored + " HP", 1300);
+  if(survivalGain>0) log("Survival experience gained.");
   saveGame("consume_item");
   return true;
 }
@@ -3998,7 +4057,7 @@ registerWorldObject({
     patchPersistentObject("mirror_cave_chest", { state:"open", opened:true }, false);
     if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
     log("You recovered the Mirror Relic.");
-    showRewardToast("Quest Item: Mirror Relic", 1800);
+    showRewardToast("+ Mirror Relic", 1800);
     eventSystem.emit("object:opened:mirror_cave_chest");
     saveGame("object_state_change");
   }
@@ -4030,7 +4089,7 @@ registerWorldObject({
     if(getItemQuantity("echo_fragment")<=0) addItemToInventory("echo_fragment", 1);
     patchPersistentObject("echo_fragment_object", { state:"collected", collected:true }, false);
     log("You recovered the Echo Fragment.");
-    showRewardToast("Quest Item: Echo Fragment", 1800);
+    showRewardToast("+ Echo Fragment", 1800);
     eventSystem.emit("object:collected:echo_fragment");
     saveGame("object_state_change");
   }
@@ -4050,6 +4109,7 @@ registerWorldObject({
     const state=syncTollhouseChestState(false);
     if(state==="locked"){
       log("The tollhouse chest is locked.");
+      showRewardToast("Chest locked — defeat Rook", 1200);
       return;
     }
     if(state==="open"){
@@ -4064,6 +4124,7 @@ registerWorldObject({
       log("Opened the tollhouse chest.");
       log("Loot acquired:");
       rewardResult.rewardsGranted.forEach((entry)=>log("- " + entry));
+      showRewardToast("Tollhouse chest opened", 1300);
       showRewardToasts(rewardResult.rewardToasts);
     }
     syncTollhouseChestState(false);
@@ -4310,6 +4371,10 @@ function getNearestHostile(range=Infinity){
   }
   return nearest;
 }
+function getCurrentCombatTarget(range=4){
+  const nearest=getNearestHostile(range);
+  return nearest?.entity || null;
+}
 
 function respawnPlayerAtSquare(){
   isInMirrorCave=false;
@@ -4322,12 +4387,13 @@ function respawnPlayerAtSquare(){
 }
 
 function handlePlayerDefeat(){
-  log("Defeat: You fall in battle.");
-  showRewardToast("Defeated - Respawning at Hearthvale", 1800);
+  log("You fall in battle. You awaken at Hearthvale Square.");
+  showRewardToast("Defeat — Returning to Hearthvale", 2200);
   player.hp=player.maxHp;
+  hitStopUntil=performance.now()+220;
   hostileAggroBlockedUntil=performance.now()+BALANCE.death.respawnSafetyMs;
   respawnPlayerAtSquare();
-  log("System: You awaken at Hearthvale Square.");
+  spawnFloatingText(player.px/TILE, player.py/TILE, "Recovered", { color:"#b9d3ff", durationMs:1200 });
 }
 
 let sidebarInventoryMarkup="";
@@ -4759,6 +4825,7 @@ function wolfAttack(now){
     const damageDealt=applyIncomingDamage(getEnemyConfig(wolf.enemyType || "wolf").damage); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
     const wx=player.targetX-wolf.targetX, wy=player.targetY-wolf.targetY, len=Math.max(1,Math.hypot(wx,wy));
     wolf.attackLungeX=(wx/len)*2; wolf.attackLungeY=(wy/len)*1.2; player.recoilX=(wx/len)*2.5; player.recoilY=(wy/len)*1.6;
+    spawnFloatingText(player.px/TILE, player.py/TILE, "-" + damageDealt, { color:"#ff9b9b", durationMs:900 });
     logCombat(hostileLabel(wolf) + " bites you for " + damageDealt + " damage.");
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
@@ -4774,6 +4841,7 @@ function banditAttack(now){
     const damageDealt=applyIncomingDamage(getEnemyConfig(bandit.enemyType || "bandit").damage); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
     const wx=player.targetX-bandit.targetX, wy=player.targetY-bandit.targetY, len=Math.max(1,Math.hypot(wx,wy));
     bandit.attackLungeX=(wx/len)*2.2; bandit.attackLungeY=(wy/len)*1.3; player.recoilX=(wx/len)*2.8; player.recoilY=(wy/len)*1.8;
+    spawnFloatingText(player.px/TILE, player.py/TILE, "-" + damageDealt, { color:"#ff8888", durationMs:900 });
     logCombat(hostileLabel(bandit) + " slashes you for " + damageDealt + " damage.");
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
@@ -4789,8 +4857,15 @@ function defeatWolf(wolf,now){
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
   wolfRespawnAtById[wolf.id]=now+enemyConfig.respawnMs;
   log(hostileLabel(wolf) + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");
+  showRewardToasts(["+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"]);
   eventSystem.emit("combat:enemy-defeated",{ enemyType:"wolf", enemyId:wolf.id });
-  if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
+  if(lootDrops.length){
+    log("Loot acquired: " + formatDropText(lootDrops) + ".");
+    showRewardToasts(lootDrops.map((drop)=>{
+      const item=getItemDefinition(drop.itemId);
+      return "+ " + (item?.name || drop.itemId) + " x" + drop.quantity;
+    }));
+  }
   else log("No loot dropped this time.");
 }
 function defeatBandit(bandit,now){
@@ -4806,19 +4881,27 @@ function defeatBandit(bandit,now){
   if(bandit.isMiniBoss){
     rookTollkeeperDefeated=true;
     patchPersistentObject("rook_tollkeeper_state", { defeated:true, state:"defeated" }, false);
-    const bossRewardLines=["- " + enemyConfig.xp + " XP", "- " + enemyConfig.coinReward + " coins"];
-    const bossRewardToasts=["Mini-Boss Defeated: Rook", "+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"];
-    log("Mini-Boss Defeated: Rook the Tollkeeper.");
+    const bossRewardLines=["+ " + enemyConfig.xp + " XP", "+ " + enemyConfig.coinReward + " Coins"];
+    const bossRewardToasts=["ROOK DEFEATED", "Rook the Tollkeeper falls.", "+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins", "Tollhouse chest unlocked"];
+    log("Rook the Tollkeeper falls. The old road is safer.");
     log("Boss rewards:");
     bossRewardLines.forEach((line)=>log(line));
     showRewardToasts(bossRewardToasts);
+    triggerCameraShake(220, 3.6);
     syncTollhouseChestState(false);
     syncAbandonedTollhouseClearedState(false, false);
     saveGame("rook_defeated");
   } else {
     log(hostileLabel(bandit) + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");
+    showRewardToasts(["+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"]);
   }
-  if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
+  if(lootDrops.length){
+    log("Loot acquired: " + formatDropText(lootDrops) + ".");
+    showRewardToasts(lootDrops.map((drop)=>{
+      const item=getItemDefinition(drop.itemId);
+      return "+ " + (item?.name || drop.itemId) + " x" + drop.quantity;
+    }));
+  }
   else log("No loot dropped this time.");
 }
 function tryPlayerAttack(now){
@@ -4830,9 +4913,10 @@ function tryPlayerAttack(now){
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   if(!targetHostile){
     if(missNoticeArmed && now-lastNoTargetLogAt>900){
-      logThrottled("combat:miss_no_target", "Attack misses: no hostile in range.", 1800);
+      logThrottled("combat:miss_no_target", "Attack misses — no hostile in range.", 1800);
       lastNoTargetLogAt=now;
       missNoticeArmed=false;
+      showRewardToast("Miss", 700);
     }
     return;
   }
@@ -4849,6 +4933,9 @@ function tryPlayerAttack(now){
   targetHostile.entity.recoilX=(tx/len)*2.3;
   targetHostile.entity.recoilY=(ty/len)*1.5;
   hitStopUntil=now+65;
+  if(totalDamage>=10) triggerCameraShake(95, 1.4);
+  if(totalDamage>=14) triggerCameraShake(130, 2.4);
+  spawnFloatingText(targetHostile.entity.px/TILE, targetHostile.entity.py/TILE, "-" + totalDamage, { color:"#ffe29b", durationMs:950 });
   if(getEquippedItem("weapon")?.type==="weapon") gainSkillXp("swordsmanship", 3);
   logCombat("Hit " + hostileLabel(targetHostile.entity) + " for " + totalDamage + " damage.");
   if(targetHostile.entity.hp<=0 && !targetHostile.entity.defeated){
@@ -5117,21 +5204,41 @@ function drawAbandonedTollhouseScene(now){
     drawWolf(rookTollkeeper, rookTollkeeper.px/TILE, rookTollkeeper.py/TILE, rookTollkeeper.facing, rookTollkeeper.moving, 0.9, hitVisualAlpha(rookTollkeeper), {x:rookTollkeeper.recoilX+rookTollkeeper.attackLungeX,y:rookTollkeeper.recoilY+rookTollkeeper.attackLungeY});
   }
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  const currentTarget=getCurrentCombatTarget(5);
   const hostileLabelEntries=[...tollhouseBandits, rookTollkeeper]
     .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
-    .map((hostile)=>({ text:hostileLabel(hostile), tx:hostile.px/TILE, ty:hostile.py/TILE, priority:1 }));
+    .map((hostile)=>({
+      text:(hostile===currentTarget ? "[Target] " : "") + hostileLabel(hostile) + " " + hostile.hp + "/" + hostile.maxHp,
+      tx:hostile.px/TILE,
+      ty:hostile.py/TILE,
+      priority:hostile===currentTarget ? 4 : 1
+    }));
   drawWorldLabels([{text:"Wayfarer", tx:player.px/TILE, ty:player.py/TILE, priority:2}, ...hostileLabelEntries, {text:"Abandoned Tollhouse", tx:12, ty:16, priority:0}]);
   drawTransitionFade(now);
 }
 
 function drawWorld(){
   const now=performance.now();
+  const shakeActive=now<cameraShakeUntil;
+  const shakeMagnitude=shakeActive ? cameraShakeStrength*Math.max(0.15, (cameraShakeUntil-now)/180) : 0;
+  const shakeX=shakeActive ? (Math.random()*2-1)*shakeMagnitude : 0;
+  const shakeY=shakeActive ? (Math.random()*2-1)*shakeMagnitude : 0;
+  ctx.save();
+  if(shakeActive){
+    ctx.translate(Math.round(shakeX), Math.round(shakeY));
+  } else {
+    cameraShakeStrength=0;
+  }
   if(isInMirrorCave){
     drawMirrorCaveScene(now);
+    drawFloatingTexts(now);
+    ctx.restore();
     return;
   }
   if(isInAbandonedTollhouse){
     drawAbandonedTollhouseScene(now);
+    drawFloatingTexts(now);
+    ctx.restore();
     return;
   }
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -5260,9 +5367,15 @@ function drawWorld(){
     drawWolf(bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.84, hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY});
   });
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  const currentTarget=getCurrentCombatTarget(5);
   const hostileLabelEntries=[...wolves, ...bandits]
     .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
-    .map((hostile)=>({ text:hostileLabel(hostile), tx:hostile.px/TILE, ty:hostile.py/TILE, priority:1 }));
+    .map((hostile)=>({
+      text:(hostile===currentTarget ? "[Target] " : "") + hostileLabel(hostile) + " " + hostile.hp + "/" + hostile.maxHp,
+      tx:hostile.px/TILE,
+      ty:hostile.py/TILE,
+      priority:hostile===currentTarget ? 4 : 1
+    }));
   drawWorldLabels([
     {text:Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5 ? npc.name : "", tx:npc.x, ty:npc.y, priority:3},
     {text:Math.abs(player.targetX-hunterNpc.x)+Math.abs(player.targetY-hunterNpc.y)<=5 ? hunterNpc.displayLabel : "", tx:hunterNpc.x, ty:hunterNpc.y, priority:3},
@@ -5278,6 +5391,8 @@ function drawWorld(){
   edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.78,"rgba(1,6,10,.1)"); edge.addColorStop(1,"rgba(1,6,10,.46)");
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
   drawTransitionFade(now);
+  drawFloatingTexts(now);
+  ctx.restore();
 }
 
 function update(dt,now){
@@ -5329,6 +5444,7 @@ function update(dt,now){
         if(!rookEncounterAnnounced && Math.abs(player.targetX-rookTollkeeper.targetX)+Math.abs(player.targetY-rookTollkeeper.targetY)<=4){
           rookEncounterAnnounced=true;
           log("Rook the Tollkeeper blocks the old road.");
+          showRewardToast("Mini-Boss: Rook the Tollkeeper", 1700);
         }
       }
       banditAttack(now);
