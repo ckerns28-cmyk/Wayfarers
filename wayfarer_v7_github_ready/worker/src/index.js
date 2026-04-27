@@ -1259,60 +1259,114 @@ function buildTerrainTiles() {
 
 function makeBuildingTiles(){
   assets.building.roofL = makeTile((p)=>{
-    p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[1]; for(let y=0;y<30;y++) p.fillRect(0,y,Math.max(0,11-Math.floor(y/3)),1);
-    p.fillStyle=palette.roof[2]; for(let y=3;y<28;y+=4) p.fillRect(3,y,26,1);
-    p.fillStyle="rgba(255,226,199,.12)"; p.fillRect(2,3,20,2);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,24,32,8);
+    p.fillStyle="#835147"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6d4037"; for(let y=0;y<24;y++) p.fillRect(0,y,Math.max(0,12-Math.floor(y/2)),1);
+    p.fillStyle="#bf8774"; for(let y=3;y<24;y+=3) p.fillRect(4,y,25,1);
+    p.fillStyle="#3b251f"; p.fillRect(0,24,32,8);
+    p.fillStyle="rgba(255,231,206,.18)"; p.fillRect(3,3,15,2);
   });
   assets.building.roofC = makeTile((p)=>{
-    p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[2]; for(let y=3;y<28;y+=5) p.fillRect(3,y,26,1);
-    p.fillStyle="rgba(255,226,199,.08)"; p.fillRect(5,4,22,1);
-    p.fillStyle="rgba(64,37,26,.18)"; for(let x=4;x<30;x+=8) p.fillRect(x,7,1,15);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,24,32,8);
-    p.fillStyle="rgba(231,196,152,.14)"; p.fillRect(2,24,28,1);
-    p.fillStyle="rgba(0,0,0,.13)"; p.fillRect(0,25,32,2);
+    p.fillStyle="#87554a"; p.fillRect(0,0,32,32);
+    p.fillStyle="#bc816f"; for(let y=2;y<24;y+=3) p.fillRect(2,y,28,1);
+    p.fillStyle="rgba(73,42,33,.2)"; for(let x=3;x<29;x+=6) p.fillRect(x,5,1,17);
+    p.fillStyle="#4a2b24"; p.fillRect(0,23,32,9);
+    p.fillStyle="rgba(235,197,157,.16)"; p.fillRect(2,24,28,1);
   });
   assets.building.roofR = makeTile((p)=>{
-    p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[1]; for(let y=0;y<30;y++){const w=Math.max(0,11-Math.floor(y/3)); p.fillRect(32-w,y,w,1);}
-    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=4) p.fillRect(2,y,28,1);
-    p.fillStyle="rgba(255,226,199,.12)"; p.fillRect(10,3,20,2);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,24,32,8);
+    p.fillStyle="#835147"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6d4037"; for(let y=0;y<24;y++){const w=Math.max(0,12-Math.floor(y/2)); p.fillRect(32-w,y,w,1);}
+    p.fillStyle="#bf8774"; for(let y=3;y<24;y+=3) p.fillRect(3,y,25,1);
+    p.fillStyle="#3b251f"; p.fillRect(0,24,32,8);
+    p.fillStyle="rgba(255,231,206,.18)"; p.fillRect(14,3,15,2);
+  });
+  assets.building.roofSlate = makeTile((p)=>{
+    p.fillStyle="#6d6966"; p.fillRect(0,0,32,32);
+    p.fillStyle="#8a847f"; for(let y=2;y<24;y+=3) p.fillRect(3,y,26,1);
+    p.fillStyle="#4a4746"; for(let x=4;x<30;x+=7) p.fillRect(x,4,1,18);
+    p.fillStyle="#353334"; p.fillRect(0,23,32,9);
+    p.fillStyle="rgba(206,212,221,.16)"; p.fillRect(4,4,18,1);
+  });
+  assets.building.roofDormer = makeTile((p)=>{
+    p.drawImage(assets.building.roofC,0,0);
+    p.fillStyle="#6f4d35"; p.fillRect(9,8,14,10);
+    p.fillStyle="#4f3624"; p.fillRect(10,9,12,9);
+    p.fillStyle="#a6c2d6"; p.fillRect(12,10,8,6);
+    p.fillStyle="#2d3e4e"; p.fillRect(15,10,1,6);
+    p.fillStyle="rgba(232,246,255,.34)"; p.fillRect(12,10,7,1);
   });
   assets.building.wall = makeTile((p)=>{
-    p.fillStyle=palette.wall[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.wall[2]; p.fillRect(0,0,32,4);
-    p.fillStyle=palette.wall[1]; p.fillRect(0,28,32,4);
-    p.fillStyle="rgba(97,74,48,.11)"; for(let x=0;x<32;x+=10) p.fillRect(x,4,1,24);
-    p.fillStyle="rgba(255,255,255,.03)";
-    for(let y=7;y<28;y+=7) for(let x=(y%5)+4;x<28;x+=10){ p.fillRect(x,y,1,1); }
-    p.fillStyle="rgba(35,28,20,.14)"; p.fillRect(29,0,3,32);
-    p.fillStyle="rgba(255,232,189,.06)"; p.fillRect(2,5,2,20);
-    p.fillStyle="rgba(0,0,0,.08)"; p.fillRect(0,27,32,1);
+    p.fillStyle="#b8ad98"; p.fillRect(0,0,32,32);
+    p.fillStyle="#d4c8af"; p.fillRect(0,0,32,5);
+    p.fillStyle="#7b6d5b"; p.fillRect(0,28,32,4);
+    p.fillStyle="rgba(84,63,41,.16)"; for(let x=0;x<32;x+=8) p.fillRect(x,5,1,23);
+    p.fillStyle="rgba(255,250,236,.06)"; for(let y=8;y<28;y+=6) p.fillRect(2,y,28,1);
+    p.fillStyle="rgba(34,26,19,.14)"; p.fillRect(29,0,3,32);
+  });
+  assets.building.wallTimber = makeTile((p)=>{
+    p.fillStyle="#d4c3a8"; p.fillRect(0,0,32,32);
+    p.fillStyle="#8b6544"; p.fillRect(0,0,32,4); p.fillRect(0,28,32,4);
+    p.fillStyle="#7a5538"; p.fillRect(4,4,3,24); p.fillRect(25,4,3,24);
+    p.fillStyle="#7a5538"; p.fillRect(14,4,3,24);
+    p.fillStyle="#a9825b"; p.fillRect(7,4,7,24); p.fillRect(17,4,8,24);
+    p.fillStyle="rgba(255,243,218,.08)"; p.fillRect(8,7,6,1); p.fillRect(18,10,7,1);
+  });
+  assets.building.wallBrick = makeTile((p)=>{
+    p.fillStyle="#8f6552"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6e4a3a"; for(let y=4;y<28;y+=5) p.fillRect(0,y,32,1);
+    p.fillStyle="#a97b62"; for(let x=2;x<30;x+=8){ for(let y=1;y<29;y+=10) p.fillRect(x,y,1,3); }
+    p.fillStyle="#5a3a2f"; p.fillRect(0,28,32,4);
+    p.fillStyle="rgba(255,215,185,.08)"; p.fillRect(2,3,10,1);
   });
   assets.building.window = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
-    p.fillStyle="#5a3f28"; p.fillRect(8,8,16,13);
-    p.fillStyle="#37291d"; p.fillRect(9,9,14,11);
-    p.fillStyle="#9ab8cb"; p.fillRect(10,10,12,9);
-    p.fillStyle="rgba(231,248,255,.38)"; p.fillRect(11,10,10,1);
-    p.fillStyle="rgba(66,97,122,.34)"; p.fillRect(10,16,12,3);
-    p.fillStyle="#503822"; p.fillRect(15,10,2,9);
-    p.fillStyle="rgba(247,214,153,.24)"; p.fillRect(9,21,14,1);
+    p.fillStyle="#5d4330"; p.fillRect(8,8,16,13);
+    p.fillStyle="#2f241b"; p.fillRect(9,9,14,11);
+    p.fillStyle="#9fbfd5"; p.fillRect(10,10,12,9);
+    p.fillStyle="#42576a"; p.fillRect(15,10,2,9); p.fillRect(10,14,12,1);
+    p.fillStyle="rgba(240,248,255,.35)"; p.fillRect(11,10,9,1);
+  });
+  assets.building.windowTall = makeTile((p)=>{
+    p.drawImage(assets.building.wallTimber,0,0);
+    p.fillStyle="#5d4330"; p.fillRect(10,6,12,18);
+    p.fillStyle="#2f241b"; p.fillRect(11,7,10,16);
+    p.fillStyle="#a8c8dc"; p.fillRect(12,8,8,14);
+    p.fillStyle="#456074"; p.fillRect(15,8,1,14); p.fillRect(12,15,8,1);
+    p.fillStyle="rgba(248,253,255,.4)"; p.fillRect(13,8,6,1);
+  });
+  assets.building.windowWide = makeTile((p)=>{
+    p.drawImage(assets.building.wallBrick,0,0);
+    p.fillStyle="#513726"; p.fillRect(6,10,20,11);
+    p.fillStyle="#2b2018"; p.fillRect(7,11,18,9);
+    p.fillStyle="#98b8ce"; p.fillRect(8,12,16,7);
+    p.fillStyle="#3f586e"; p.fillRect(15,12,1,7);
+    p.fillStyle="rgba(240,248,255,.32)"; p.fillRect(9,12,11,1);
   });
   assets.building.door = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
-    p.fillStyle="#664531"; p.fillRect(8,7,16,24);
-    p.fillStyle="#3c291b"; p.fillRect(9,8,14,22);
-    p.fillStyle="#916746"; p.fillRect(8,7,16,2);
-    p.fillStyle="#b98856"; p.fillRect(15,10,2,20);
-    p.fillStyle="#e3ba86"; p.fillRect(20,21,2,2);
+    p.fillStyle="#6a4a35"; p.fillRect(8,7,16,24);
+    p.fillStyle="#3a291d"; p.fillRect(9,8,14,22);
+    p.fillStyle="#ba8a58"; p.fillRect(15,10,2,20);
+    p.fillStyle="#e5bd89"; p.fillRect(20,21,2,2);
     p.fillStyle="rgba(246,222,171,.2)"; p.fillRect(10,10,4,18);
-    p.fillStyle="rgba(0,0,0,.25)"; p.fillRect(8,30,16,1);
-    p.fillStyle="rgba(246,211,162,.18)"; p.fillRect(9,9,3,20);
-    p.fillStyle="rgba(15,10,7,.18)"; p.fillRect(21,8,1,22);
+    p.fillStyle="rgba(0,0,0,.23)"; p.fillRect(8,30,16,1);
+  });
+  assets.building.doorPorch = makeTile((p)=>{
+    p.drawImage(assets.building.wallTimber,0,0);
+    p.fillStyle="#6a4b34"; p.fillRect(9,8,14,19);
+    p.fillStyle="#33261c"; p.fillRect(10,9,12,17);
+    p.fillStyle="#b98754"; p.fillRect(15,11,1,14);
+    p.fillStyle="#8a6444"; p.fillRect(6,24,20,2);
+    p.fillStyle="#a67c57"; p.fillRect(5,26,22,3);
+    p.fillStyle="rgba(236,213,181,.22)"; p.fillRect(11,10,3,14);
+  });
+  assets.building.doorShop = makeTile((p)=>{
+    p.drawImage(assets.building.wallBrick,0,0);
+    p.fillStyle="#6f4d36"; p.fillRect(7,10,18,18);
+    p.fillStyle="#32241a"; p.fillRect(8,11,16,16);
+    p.fillStyle="#b58959"; p.fillRect(15,12,1,13);
+    p.fillStyle="#9f744f"; p.fillRect(6,27,20,3);
+    p.fillStyle="#c89d6f"; p.fillRect(9,8,14,2);
+    p.fillStyle="rgba(234,206,170,.2)"; p.fillRect(10,12,3,13);
   });
 }
 
@@ -1759,25 +1813,74 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  { x:8,y:11,w:21,h:1 },
-  { x:16,y:4,w:1,h:15 },
-  { x:11,y:8,w:12,h:1 },
-  { x:10,y:15,w:17,h:1 },
-  { x:24,y:14,w:9,h:1 },
-  { x:24,y:15,w:1,h:4 },
-  { x:20,y:10,w:1,h:6 },
-  { x:13,y:11,w:1,h:6 },
-  { x:28,y:11,w:1,h:4 }
+  { x:8,y:11,w:23,h:1 },
+  { x:16,y:4,w:1,h:16 },
+  { x:10,y:8,w:15,h:1 },
+  { x:9,y:15,w:21,h:1 },
+  { x:24,y:11,w:1,h:8 },
+  { x:28,y:15,w:1,h:8 },
+  { x:21,y:18,w:9,h:1 },
+  { x:12,y:11,w:1,h:7 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { x:8,y:6,w:8,h:5,role:"tavern",tileRows:[["roofL","roofC","roofC","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","window","wall","window","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall"],["wall","window","wall","door","wall","window","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall"]] },
-  { x:18,y:6,w:7,h:5,role:"mercantile",tileRows:[["roofL","roofC","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","window","wall","window","wall"],["wall","wall","wall","wall","wall","wall","wall"],["wall","window","wall","door","wall","window","wall"],["wall","wall","wall","wall","wall","wall","wall"]] },
-  { x:12,y:13,w:8,h:5,role:"village_hall",tileRows:[["roofL","roofC","roofC","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","window","wall","window","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall"],["wall","window","wall","door","wall","window","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall"]] },
-  { x:8,y:14,w:4,h:4,role:"home",tileRows:[["roofL","roofC","roofC","roofR"],["wall","window","wall","wall"],["wall","door","wall","window"],["wall","wall","wall","wall"]] },
-  { x:21,y:13,w:4,h:4,role:"home",tileRows:[["roofL","roofC","roofC","roofR"],["wall","window","wall","wall"],["wall","door","wall","window"],["wall","wall","wall","wall"]] },
-  { x:26,y:16,w:6,h:3,role:"waterside_utility",tileRows:[["roofL","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","door","wall","wall"],["wall","wall","wall","wall","wall","wall"]] }
+  { x:8,y:5,w:7,h:6,role:"tavern",tileRows:[
+    ["roofL","roofC","roofDormer","roofC","roofDormer","roofC","roofR"],
+    ["roofL","roofC","roofC","roofC","roofC","roofC","roofR"],
+    ["wallTimber","windowTall","wallTimber","windowTall","wallTimber","windowTall","wallTimber"],
+    ["wallTimber","wall","wallTimber","wall","wallTimber","wall","wallTimber"],
+    ["wallTimber","windowWide","wallTimber","doorPorch","wallTimber","windowWide","wallTimber"],
+    ["wall","wall","wall","wall","wall","wall","wall"]
+  ]},
+  { x:17,y:5,w:6,h:6,role:"mercantile",tileRows:[
+    ["roofL","roofSlate","roofSlate","roofSlate","roofSlate","roofR"],
+    ["roofL","roofSlate","roofDormer","roofDormer","roofSlate","roofR"],
+    ["wallBrick","windowWide","wallBrick","windowWide","wallBrick","wallBrick"],
+    ["wallBrick","wall","wallBrick","wall","wallBrick","wallBrick"],
+    ["wallBrick","windowWide","wallBrick","doorShop","wallBrick","windowWide"],
+    ["wall","wall","wall","wall","wall","wall"]
+  ]},
+  { x:11,y:12,w:7,h:6,role:"village_hall",tileRows:[
+    ["roofL","roofC","roofC","roofDormer","roofC","roofC","roofR"],
+    ["roofL","roofC","roofC","roofC","roofC","roofC","roofR"],
+    ["wall","windowTall","wall","windowTall","wall","windowTall","wall"],
+    ["wallTimber","wall","wallTimber","wall","wallTimber","wall","wallTimber"],
+    ["wall","windowWide","wall","door","wall","windowWide","wall"],
+    ["wall","wall","wall","wall","wall","wall","wall"]
+  ]},
+  { x:7,y:13,w:4,h:5,role:"home",tileRows:[
+    ["roofL","roofC","roofDormer","roofR"],
+    ["roofL","roofC","roofC","roofR"],
+    ["wallTimber","windowTall","wall","wallTimber"],
+    ["wall","doorPorch","wall","windowWide"],
+    ["wall","wall","wall","wall"]
+  ]},
+  { x:19,y:13,w:5,h:5,role:"home",tileRows:[
+    ["roofL","roofSlate","roofDormer","roofSlate","roofR"],
+    ["roofL","roofSlate","roofSlate","roofSlate","roofR"],
+    ["wallBrick","windowWide","wallBrick","windowWide","wallBrick"],
+    ["wall","door","wall","windowTall","wall"],
+    ["wall","wall","wall","wall","wall"]
+  ]},
+  { x:25,y:12,w:4,h:5,role:"home",tileRows:[
+    ["roofL","roofC","roofDormer","roofR"],
+    ["roofL","roofC","roofC","roofR"],
+    ["wall","windowTall","wall","wallTimber"],
+    ["wallTimber","doorPorch","wall","windowWide"],
+    ["wall","wall","wall","wall"]
+  ]},
+  { x:25,y:19,w:7,h:4,role:"waterside_utility",tileRows:[
+    ["roofL","roofSlate","roofSlate","roofDormer","roofSlate","roofSlate","roofR"],
+    ["wallBrick","windowWide","wallBrick","doorShop","wallBrick","windowWide","wallBrick"],
+    ["wall","wall","wall","wall","wall","wall","wall"],
+    ["wall","wall","wall","wall","wall","wall","wall"]
+  ]},
+  { x:21,y:16,w:3,h:3,role:"storage",tileRows:[
+    ["roofL","roofC","roofR"],
+    ["wallTimber","doorShop","wallTimber"],
+    ["wall","wall","wall"]
+  ]}
 );
 world.buildings.forEach(b=>blockRect(b.x,b.y,b.w,b.h));
 
@@ -1794,31 +1897,32 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
   }
 }
 
-for(let x=7;x<=15;x++){ world.fences.push({x,y:5}); }
-for(let x=18;x<=25;x++){ world.fences.push({x,y:5}); }
-for(let y=6;y<=10;y++){ world.fences.push({x:26,y}); }
-for(let x=7;x<=10;x++){ world.fences.push({x,y:18}); }
-for(let y=16;y<=18;y++){ world.fences.push({x:7,y}); }
-for(let x=22;x<=25;x++){ world.fences.push({x,y:18}); }
-for(let y=17;y<=19;y++){ world.fences.push({x:32,y}); }
-for(let x=25;x<=31;x++){ world.fences.push({x,y:19}); }
+for(let x=8;x<=15;x++){ world.fences.push({x,y:4}); }
+for(let x=17;x<=24;x++){ world.fences.push({x,y:4}); }
+for(let y=5;y<=10;y++){ world.fences.push({x:24,y}); }
+for(let x=6;x<=10;x++){ world.fences.push({x,y:18}); }
+for(let y=14;y<=18;y++){ world.fences.push({x:6,y}); }
+for(let x=25;x<=32;x++){ world.fences.push({x,y:23}); }
+for(let y=19;y<=23;y++){ world.fences.push({x:24,y}); }
+for(let x=21;x<=24;x++){ world.fences.push({x,y:19}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
-  {x:9,y:11,type:"signPost"},{x:10,y:11,type:"bench"},{x:11,y:11,type:"barrel"},
-  {x:17,y:11,type:"noticeBoard"},{x:18,y:11,type:"well"},{x:19,y:11,type:"bench"},
-  {x:21,y:11,type:"handcart"},{x:22,y:11,type:"crate"},{x:23,y:11,type:"sack"},
-  {x:8,y:13,type:"barrel"},{x:9,y:13,type:"crate"},{x:10,y:13,type:"woodpile"},
-  {x:23,y:12,type:"lanternPost"},{x:24,y:12,type:"crate"},{x:25,y:12,type:"sack"},
-  {x:14,y:12,type:"lanternPost"},{x:16,y:12,type:"bench"},
-  {x:11,y:16,type:"smallGarden"},{x:10,y:17,type:"woodpile"},{x:9,y:17,type:"barrel"},
-  {x:20,y:16,type:"smallGarden"},{x:24,y:17,type:"crate"},{x:23,y:17,type:"barrel"},
-  {x:26,y:15,type:"signPost"},{x:27,y:15,type:"stonePile"},{x:28,y:15,type:"grassTuft"},
-  {x:29,y:17,type:"crate"},{x:30,y:17,type:"barrel"},{x:31,y:17,type:"woodpile"},
-  {x:26,y:18,type:"fenceSeg"},{x:27,y:18,type:"fenceSeg"},{x:28,y:18,type:"fenceSeg"},
-  {x:16,y:4,type:"signPost"},{x:22,y:4,type:"signPost"},{x:24,y:4,type:"fenceSeg"},
-  {x:8,y:5,type:"bush"},{x:19,y:5,type:"bush"},
-  {x:12,y:3,type:"stonePile"},{x:24,y:2,type:"stonePile"}
+  {x:10,y:11,type:"signPost"},{x:11,y:11,type:"bench"},{x:12,y:11,type:"barrel"},
+  {x:15,y:11,type:"noticeBoard"},{x:17,y:11,type:"well"},{x:18,y:11,type:"bench"},
+  {x:20,y:11,type:"handcart"},{x:21,y:11,type:"crate"},{x:22,y:12,type:"sack"},
+  {x:8,y:12,type:"barrel"},{x:9,y:12,type:"crate"},{x:10,y:12,type:"woodpile"},
+  {x:13,y:9,type:"lanternPost"},{x:19,y:9,type:"lanternPost"},{x:20,y:9,type:"bench"},
+  {x:8,y:17,type:"smallGarden"},{x:9,y:17,type:"smallGarden"},{x:10,y:17,type:"woodpile"},
+  {x:19,y:17,type:"smallGarden"},{x:20,y:17,type:"smallGarden"},{x:24,y:16,type:"barrel"},
+  {x:25,y:17,type:"crate"},{x:23,y:18,type:"barrel"},{x:22,y:18,type:"sack"},
+  {x:25,y:18,type:"signPost"},{x:26,y:18,type:"stonePile"},{x:27,y:18,type:"grassTuft"},
+  {x:27,y:22,type:"crate"},{x:28,y:22,type:"barrel"},{x:29,y:22,type:"woodpile"},
+  {x:30,y:21,type:"fenceSeg"},{x:31,y:21,type:"fenceSeg"},
+  {x:14,y:4,type:"signPost"},{x:21,y:4,type:"signPost"},{x:23,y:4,type:"fenceSeg"},
+  {x:7,y:5,type:"bush"},{x:18,y:5,type:"bush"},{x:26,y:11,type:"bush"},
+  {x:26,y:12,type:"grassTuft"},{x:27,y:12,type:"grassTuft"},{x:28,y:12,type:"stonePile"},
+  {x:12,y:3,type:"stonePile"},{x:22,y:2,type:"stonePile"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -1843,9 +1947,9 @@ world.zones.push(
 const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
-const npc={x:17,y:13,name:"Edrin Vale",facing:"down"};
-const hunterNpc={x:28,y:11,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
-const vendorNpc={x:22,y:11,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
+const npc={x:18,y:12,name:"Edrin Vale",facing:"down"};
+const hunterNpc={x:30,y:10,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
+const vendorNpc={x:23,y:11,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
