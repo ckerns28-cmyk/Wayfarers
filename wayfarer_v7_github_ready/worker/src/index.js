@@ -1203,9 +1203,39 @@ const atlasManifests = {
   }
 };
 const atlasImages = {};
+const missingAssetWarnings=new Set();
+function warnMissingAssetOnce(kind,key){
+  const token=kind+":"+key;
+  if(missingAssetWarnings.has(token)) return;
+  missingAssetWarnings.add(token);
+  console.warn("[Asset Missing] " + kind + " " + key);
+}
+function drawMissingSpritePlaceholder(dx,dy,dw,dh,label="MISSING"){
+  const width=Math.max(8,Math.floor(dw||32));
+  const height=Math.max(8,Math.floor(dh||32));
+  ctx.save();
+  ctx.fillStyle="rgba(93,35,35,.52)";
+  ctx.fillRect(dx,dy,width,height);
+  ctx.strokeStyle="rgba(255,210,210,.82)";
+  ctx.lineWidth=1;
+  ctx.strokeRect(dx+0.5,dy+0.5,width-1,height-1);
+  ctx.beginPath();
+  ctx.moveTo(dx+2,dy+2);
+  ctx.lineTo(dx+width-2,dy+height-2);
+  ctx.moveTo(dx+width-2,dy+2);
+  ctx.lineTo(dx+2,dy+height-2);
+  ctx.stroke();
+  if(DEV_MODE){
+    ctx.fillStyle="rgba(255,240,224,.9)";
+    ctx.font="bold 9px monospace";
+    ctx.fillText(label,dx+3,dy+Math.min(height-3,12));
+  }
+  ctx.restore();
+}
 function initAtlasImages(){
   Object.entries(atlasManifests).forEach(([atlasId, manifest])=>{
     const img=new Image();
+    img.onerror=()=>warnMissingAssetOnce("atlas", atlasId+"@"+manifest.imagePath);
     img.src=manifest.imagePath;
     atlasImages[atlasId]=img;
   });
@@ -1214,8 +1244,14 @@ function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
   const manifest=atlasManifests[atlasId];
   const sheet=atlasImages[atlasId];
   const sprite=manifest?.sprites?.[spriteId];
-  if(!manifest||!sheet||!sprite) return false;
-  if(!(sheet.complete&&sheet.naturalWidth>0)) return false;
+  if(!manifest||!sheet||!sprite){
+    warnMissingAssetOnce("atlas_sprite", atlasId+":"+spriteId);
+    return false;
+  }
+  if(!(sheet.complete&&sheet.naturalWidth>0)){
+    warnMissingAssetOnce("atlas_image", atlasId);
+    return false;
+  }
   ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, dw ?? sprite.sw, dh ?? sprite.sh);
   return true;
 }
@@ -2157,7 +2193,6 @@ function enforceAllVillageNpcTerrainValidation(alignImmediately=false){
   rebuildNpcTerrainForbiddenTiles();
   [...namedVillageNpcs, ...ambientVillageNpcs].forEach((npcEntity)=>ensureNpcAnchorAndPositionValid(npcEntity, alignImmediately));
 }
-enforceAllVillageNpcTerrainValidation(true);
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
@@ -4236,8 +4271,9 @@ function loadGame(){
     return true;
   } catch(err){
     console.error("Load failed", err);
-    localStorage.removeItem(SAVE_KEY);
-    log("System: Save data was corrupted and has been reset.");
+    const rawSnapshot=localStorage.getItem(SAVE_KEY);
+    if(rawSnapshot) localStorage.setItem(SAVE_BACKUP_KEY, rawSnapshot);
+    log("System: Save load failed. Existing save was preserved in backup.");
     return false;
   }
 }
@@ -5407,8 +5443,11 @@ function drawHumanoid(sheet, tx, ty, facing, moving, scale, label, hitAlpha, rec
   drawShadowTile(assets.shadow.oval, p.x+3, p.y+4, .82);
 
   const fr = frameFromSprite(facing, moving);
-  if (sheet.complete && sheet.naturalWidth>0) {
+  if (sheet?.complete && sheet.naturalWidth>0) {
     ctx.drawImage(sheet, fr.sx, fr.sy, 64, 64, dx, dy, drawW, drawH);
+  } else {
+    warnMissingAssetOnce("sprite", "humanoid:" + (label || "entity"));
+    drawMissingSpritePlaceholder(dx, dy, drawW, drawH, "HUM");
   }
 
   if (label) {
@@ -5468,7 +5507,11 @@ function drawWolf(wolf,tx,ty,facing,moving,scale,hitAlpha,recoil){
   const drawW=Math.round(64*scale),drawH=Math.round(64*scale);
   const dx=p.x+Math.round((32-drawW)/2)+Math.round(recoil?.x||0), dy=p.y-Math.round(drawH-32)+Math.round(recoil?.y||0);
   drawShadowTile(assets.shadow.oval, p.x+4, p.y+4, .76);
-  if(assets.sprites.wolf.complete&&assets.sprites.wolf.naturalWidth>0) ctx.drawImage(assets.sprites.wolf,col*64,row*64,64,64,dx,dy,drawW,drawH);
+  if(assets.sprites.wolf?.complete&&assets.sprites.wolf.naturalWidth>0) ctx.drawImage(assets.sprites.wolf,col*64,row*64,64,64,dx,dy,drawW,drawH);
+  else {
+    warnMissingAssetOnce("sprite", "wolf");
+    drawMissingSpritePlaceholder(dx, dy, drawW, drawH, "WOLF");
+  }
   ctx.fillStyle=rgba(0,0,0,.5); ctx.fillRect(p.x+2,p.y-10,24,4);
   ctx.fillStyle="#8fdb73"; ctx.fillRect(p.x+2,p.y-10,24*(wolf.hp/wolf.maxHp),4);
   if(hitAlpha>0){ ctx.fillStyle="rgba(255,255,255," + Math.min(.4,hitAlpha).toFixed(3) + ")"; ctx.fillRect(dx+8,dy+8,drawW-14,drawH-16); }
@@ -5862,6 +5905,7 @@ function drawWorld(){
 
     const didDraw=drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh);
     if(!didDraw){
+      warnMissingAssetOnce("building_sprite", b.spriteId);
       ctx.fillStyle=DEV_MODE ? "rgba(133,72,61,.55)" : "rgba(74,62,55,.22)";
       ctx.fillRect(tileToScreen(b.x,b.y).x,tileToScreen(b.x,b.y).y,b.w*TILE,b.h*TILE);
       ctx.strokeStyle=DEV_MODE ? "rgba(255,207,180,.75)" : "rgba(220,205,184,.3)";
@@ -5883,7 +5927,11 @@ function drawWorld(){
   propsBehind.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const img = assets.props.sprites[prop.type];
-    if(!img || !img.complete || img.naturalWidth<=0) return;
+    if(!img || !img.complete || img.naturalWidth<=0){
+      warnMissingAssetOnce("prop_sprite", prop.type);
+      drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
+      return;
+    }
     if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
     if(prop.type==="handcart"||prop.type==="bench"||prop.type==="noticeBoard") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
     if(prop.type==="sack"||prop.type==="stonePile") drawSoftShadow(p.x+16,p.y+26,8,3,.16);
@@ -5971,7 +6019,11 @@ function drawWorld(){
   propsAbove.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const img = assets.props.sprites[prop.type];
-    if(!img || !img.complete || img.naturalWidth<=0) return;
+    if(!img || !img.complete || img.naturalWidth<=0){
+      warnMissingAssetOnce("prop_sprite", prop.type);
+      drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
+      return;
+    }
     drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.65);
     ctx.drawImage(img,p.x,p.y,32,32);
   });
@@ -6079,6 +6131,7 @@ let last=performance.now();
 function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
 
 const loadedFromSave=loadGame();
+enforceAllVillageNpcTerrainValidation(true);
 updateDialogueViewportConstraints();
 ensureStarterEquipment();
 maybeAnnounceVerticalSliceEndpoint();
