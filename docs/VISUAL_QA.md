@@ -40,3 +40,24 @@
 
 ## Screenshot quality gate
 - [ ] Before/after screenshot pair shows clear visible improvement from Phase 31 to Phase 32.
+
+## Phase 32H Sprite Pipeline QA
+
+### Atlas and rendering checks
+- [ ] Building sheet loads from `/assets/wayfarer/buildings/hearthvale_buildings_sheet.png`.
+- [ ] Character sheet loads from `/assets/wayfarer/characters/character_sheet.png`.
+- [ ] Prop sheet loads from `/assets/wayfarer/props/props_sheet.png`.
+- [ ] Missing sprite sheet produces clear placeholder rendering (not silent failure).
+- [ ] Pixel rendering remains crisp (`imageSmoothingEnabled = false`, no blur).
+
+### Layering checks
+- [ ] Ground terrain draws beneath roads/water.
+- [ ] Props behind entities stay behind.
+- [ ] Buildings render before entities and preserve silhouettes.
+- [ ] Optional tall props render above entities when `layer="above_entities"`.
+- [ ] Labels/UI remain top-most.
+
+### Gameplay safety checks
+- [ ] Building collision uses configured bounds, not full sprite rectangle.
+- [ ] NPC positions still match role locations (market / pond / wilderness edge).
+- [ ] Combat hit flashes and damage numbers still visible on sprite characters.
