@@ -63,3 +63,30 @@ Focus:
 - cleaner reward message hierarchy (quest vs loot vs progression),
 - reduced non-critical log spam,
 - stronger completion cadence for the first 20-minute journey.
+
+---
+
+## Phase 31 implementation notes (Combat Feel & Reward Polish)
+
+### Improvements added
+
+- Combat hit readability now includes short floating damage numbers and stronger on-hit distinction for both outgoing and incoming damage.
+- Miss feedback now remains clear but restrained (`Attack misses — no hostile in range.` with throttled cadence + compact toast).
+- Chronicle duplicate spam is compressed into repeat counters for back-to-back identical lines.
+- Target readability improved with prioritized `[Target]` labels and inline enemy HP values in world labels.
+- Mini-boss presentation upgraded:
+  - Encounter toast when Rook is engaged.
+  - Stronger defeat line (`Rook the Tollkeeper falls. The old road is safer.`).
+  - Stronger reward toast chain and explicit tollhouse chest unlock callout.
+- Loot clarity improved across enemy kills and key pickups with explicit `+ Item xN` style toasts.
+- Level-up feedback now surfaces a stacked reward moment (`LEVEL UP — Level X`, then stat deltas).
+- Skill-up feedback now includes level in toast (`Skill Up: <Skill> Lv N`).
+- Defeat/respawn clarity improved with consolidated Chronicle line and stronger defeat toast.
+- Respawn safety window increased modestly to reduce immediate re-hit loops.
+- Healing feedback improved with visible heal floating text, use toast, and Survival XP callout.
+
+### Remaining polish gaps
+
+- No dedicated audio layer yet for hit confirm, miss, level-up, or boss defeat beats.
+- Floating text layering is intentionally conservative and may still overlap in very dense melee clusters.
+- Boss-specific animation and bespoke telegraphing are still deferred (mechanics unchanged by design).

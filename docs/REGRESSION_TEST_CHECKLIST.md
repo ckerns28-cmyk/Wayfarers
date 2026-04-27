@@ -173,3 +173,47 @@
 ### G. Save/load regression
 - [ ] Save after major milestones (quest completion, chest opens, Rook defeat).
 - [ ] Reload and confirm zone, quest, rewards, inventory, skills, and objective text remain correct.
+
+## P. Combat Feel & Reward Polish (Phase 31)
+
+### A. Wolf fight feel
+- [ ] Fight wolf and confirm player-hit feedback is visible (damage number + readable combat log).
+- [ ] Confirm enemy hit on player is clearly communicated (damage number + HP movement + Chronicle).
+- [ ] Confirm Chronicle remains readable during repeated exchanges (no excessive duplicate spam).
+
+### B. Bandit fight feel
+- [ ] Fight bandit and confirm current target label is clear when multiple enemies are nearby.
+- [ ] Confirm enemy HP readability in labels remains legible during movement/combat.
+
+### C. Rook mini-boss moment
+- [ ] Enter Rook range and confirm first-encounter callout appears.
+- [ ] Defeat Rook and confirm strong defeat line + reward toasts.
+- [ ] Confirm chest unlock feedback is visible and understandable.
+
+### D. Chest/loot feedback
+- [ ] Open tollhouse chest and verify clear per-reward feedback.
+- [ ] Confirm no duplicate chest rewards after chest is already open.
+
+### E. Level-up feedback
+- [ ] Gain a level and confirm level-up callout appears.
+- [ ] Confirm stat changes are listed clearly (HP/Attack/Defense where applicable).
+
+### F. Skill-up feedback
+- [ ] Trigger skill level gain and verify `Skill Up` notification includes skill level.
+- [ ] Confirm Skills panel reflects the upgraded level/progress.
+
+### G. Healing feedback
+- [ ] Use potion/herb while damaged and verify use + HP restored feedback is explicit.
+- [ ] Confirm full-HP healing use is blocked (no item consumed, clear message).
+- [ ] Confirm Survival XP gain messaging appears when applicable.
+
+### H. Death/respawn clarity
+- [ ] Die in combat and confirm defeat messaging is explicit.
+- [ ] Confirm respawn is safe and avoids immediate attack loop.
+
+### I. Full regression sweep after feel pass
+- [ ] Sidebar tabs remain functional.
+- [ ] Save/load remains stable with existing saves.
+- [ ] Merchant Rowan, Hunter Garran, and Edrin Vale interactions remain functional.
+- [ ] Mirror Cave flow remains functional.
+- [ ] Tollhouse cleared state remains preserved if previously cleared.
