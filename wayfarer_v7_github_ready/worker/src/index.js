@@ -94,14 +94,14 @@ const html = String.raw`<!DOCTYPE html>
       text-shadow:0 1px 0 #000;
     }
     #dialogue {
-      position:absolute;
+      position:fixed;
       left:50%;
       transform:translateX(-50%);
       bottom:max(24px, env(safe-area-inset-bottom));
-      width:min(860px, calc(100% - 32px));
+      width:min(860px, 78vw);
       display:none;
       z-index:25;
-      max-height:min(44vh, calc(100% - 96px));
+      max-height:min(220px, 30vh);
       overflow:auto;
       overscroll-behavior:contain;
       background:linear-gradient(#121a25,#0b1018);
@@ -109,18 +109,6 @@ const html = String.raw`<!DOCTYPE html>
       border-radius:10px;
       box-shadow:0 12px 34px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);
       padding:12px 14px;
-    }
-    @media (max-height: 820px) {
-      #dialogue{
-        bottom:max(32px, env(safe-area-inset-bottom));
-        max-height:min(48vh, calc(100% - 120px));
-      }
-    }
-    @media (max-height: 680px) {
-      #dialogue{
-        bottom:max(40px, env(safe-area-inset-bottom));
-        max-height:min(54vh, calc(100% - 136px));
-      }
     }
     #dialogueName{font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.4px}
     #dialogueText{white-space:pre-wrap;overflow-wrap:anywhere;min-height:62px;line-height:1.5}
@@ -384,14 +372,39 @@ function parseJsonScript(id){
 }
 
 function updateDialogueViewportConstraints(){
-  const panelHeight=gamePanel?.clientHeight || 0;
-  if(panelHeight<=0) return;
-  const isShortViewport=window.innerHeight<760 || panelHeight<520;
-  const bottomPadding=isShortViewport ? 40 : 24;
-  const topReserve=isShortViewport ? 112 : 92;
-  const maxHeight=Math.max(150, Math.min(Math.floor(panelHeight*0.54), panelHeight-bottomPadding-topReserve));
-  dialogue.style.bottom=bottomPadding + "px";
+  const panelRect=gamePanel?.getBoundingClientRect();
+  if(!panelRect || panelRect.width<=0 || panelRect.height<=0) return;
+  const viewportHeight=window.innerHeight || document.documentElement.clientHeight || 0;
+  const safeBottomPadding=24;
+  const safeTopPadding=24;
+  const bottomOffsetFromViewport=Math.max(safeBottomPadding, Math.round(viewportHeight-panelRect.bottom+safeBottomPadding));
+  const availableWidth=Math.max(220, Math.floor(panelRect.width-24));
+  const maxWidth=Math.min(860, Math.floor(panelRect.width*0.78));
+  const preferredWidth=Math.min(760, Math.floor(panelRect.width*0.74));
+  const width=Math.min(availableWidth, Math.max(220, Math.min(maxWidth, preferredWidth)));
+  const viewportBasedMaxHeight=Math.min(220, Math.floor(viewportHeight*0.30));
+  const panelBasedMaxHeight=Math.max(140, Math.floor(panelRect.height-safeTopPadding-bottomOffsetFromViewport-36));
+  let maxHeight=Math.max(130, Math.min(viewportBasedMaxHeight, panelBasedMaxHeight));
+
+  dialogue.style.left=Math.round(panelRect.left+(panelRect.width/2)) + "px";
+  dialogue.style.bottom=bottomOffsetFromViewport + "px";
+  dialogue.style.width=width + "px";
   dialogue.style.maxHeight=maxHeight + "px";
+  dialogue.style.overflowY="auto";
+
+  if(dialogue.style.display==="none") return;
+  let rect=dialogue.getBoundingClientRect();
+  if(rect.bottom>viewportHeight-safeBottomPadding){
+    const overlap=Math.ceil(rect.bottom-(viewportHeight-safeBottomPadding));
+    dialogue.style.bottom=(bottomOffsetFromViewport+overlap) + "px";
+    rect=dialogue.getBoundingClientRect();
+  }
+  if(rect.top<safeTopPadding){
+    const currentBottom=parseFloat(dialogue.style.bottom || "0");
+    const safeHeight=Math.max(120, Math.floor(viewportHeight-currentBottom-safeTopPadding));
+    maxHeight=Math.min(maxHeight, safeHeight);
+    dialogue.style.maxHeight=maxHeight + "px";
+  }
 }
 
 const TILE = 32;
@@ -1657,6 +1670,7 @@ class DialogueFramework {
       dialogueText.textContent=displayLines[session.lineIndex] || "...";
       dialogueHint.textContent="Click to continue dialogue.";
     }
+    updateDialogueViewportConstraints();
   }
 }
 
