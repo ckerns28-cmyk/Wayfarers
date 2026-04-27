@@ -85,3 +85,13 @@
 - [ ] Fight North Road enemies and confirm combat/XP/loot balance remains modest.
 - [ ] Confirm no enemy spawns directly on the North Road entrance path.
 - [ ] Save/load while standing in North Road and verify player position + HUD zone text remain correct.
+
+## L. Second Dungeon / Mini-Boss — Abandoned Tollhouse (Phase 26)
+- [ ] Enter North Road and confirm region remains stable.
+- [ ] Enter Abandoned Tollhouse and verify hard transition (no bounce loop, safe spawn, cooldown behavior).
+- [ ] Fight interior bandits and confirm encounter difficulty feels fair for Level 3–5 loadouts.
+- [ ] Confirm Rook the Tollkeeper appears clearly named and feels stronger than normal bandits.
+- [ ] Defeat Rook and verify one-time mini-boss rewards (XP/coins/Old Toll Key, Traveler's Charm path).
+- [ ] Open tollhouse chest after Rook defeat and verify one-time loot behavior.
+- [ ] Save/reload after Rook defeat and verify: Rook stays defeated, chest state persists, rewards do not duplicate.
+- [ ] Regression sweep: Hearthvale, North Road, Mirror Cave, Merchant Rowan, Hunter Garran, Edrin Vale, inventory/equipment, and level/XP all remain functional.

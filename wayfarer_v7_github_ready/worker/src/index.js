@@ -790,6 +790,10 @@ const INTERIOR_REGION_DEFS = {
   mirror_cave: {
     id:"mirror_cave",
     name:"Mirror Cave"
+  },
+  abandoned_tollhouse: {
+    id:"abandoned_tollhouse",
+    name:"Abandoned Tollhouse"
   }
 };
 const BALANCE = Object.freeze({
@@ -809,7 +813,8 @@ const BALANCE = Object.freeze({
     smallPotionHealAmount: 25,
     leatherArmorDefense: 2,
     rustySwordAttack: 2,
-    ironSwordAttack: 5
+    ironSwordAttack: 5,
+    travelersCharmDefense: 1
   },
   enemies: {
     wolf: {
@@ -835,6 +840,15 @@ const BALANCE = Object.freeze({
         { itemId:"old_coin", chance:0.85, min:1, max:2 },
         { itemId:"cloth_scrap", chance:0.55, min:1, max:1 }
       ])
+    },
+    rook_tollkeeper: {
+      hp:72,
+      damage:11,
+      xp:62,
+      coinReward:22,
+      attackCooldownMs:3000,
+      respawnMs:0,
+      lootTable: Object.freeze([])
     },
     cave_wolf: {
       hp:28,
@@ -870,7 +884,9 @@ const ITEM_REGISTRY = Object.freeze({
   leather_armor: { id:"leather_armor", name:"Leather Armor", type:"armor", defenseBonus:BALANCE.items.leatherArmorDefense, description:"Sturdy leather armor that softens incoming blows.", stackable:false, value:28 },
   wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:3 },
   small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:2 },
-  old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
+  old_coin: { id:"old_coin", name:"Old Coin", type:"material", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
+  old_toll_key: { id:"old_toll_key", name:"Old Toll Key", type:"quest", description:"A heavy iron key stamped with the old tollhouse seal.", stackable:false, value:0 },
+  travelers_charm: { id:"travelers_charm", name:"Traveler's Charm", type:"trinket", defenseBonus:BALANCE.items.travelersCharmDefense, description:"A weathered charm favored by caravan guards. Grants +1 DEF.", stackable:false, value:32 },
   mirror_relic: { id:"mirror_relic", name:"Mirror Relic", type:"quest", description:"An old relic recovered from the Mirror Cave chest.", stackable:false, value:0 },
   echo_fragment: { id:"echo_fragment", name:"Echo Fragment", type:"quest", description:"A dim fragment that seems to hold a delayed reflection.", stackable:false, value:0 },
   cloth_scrap: { id:"cloth_scrap", name:"Cloth Scrap", type:"material", description:"Rough cloth torn from worn travel gear.", stackable:true, value:2 },
@@ -1383,6 +1399,9 @@ function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) 
 const OVERWORLD_CAVE_ENTRY = Object.freeze({ x:30, y:13 });
 const MIRROR_CAVE_EXIT = Object.freeze({ x:13, y:16 });
 const MIRROR_CAVE_CHEST_TILE = Object.freeze({ x:13, y:2 });
+const NORTH_ROAD_TOLLHOUSE_ENTRY = Object.freeze({ x:22, y:2 });
+const TOLLHOUSE_EXIT = Object.freeze({ x:13, y:18 });
+const TOLLHOUSE_CHEST_TILE = Object.freeze({ x:22, y:4 });
 const WORLD_OBJECT_TYPE = Object.freeze({
   CAVE_ENTRANCE:"caveEntrance",
   DUNGEON_EXIT:"dungeonExit",
@@ -1403,11 +1422,30 @@ const mirrorCave = {
   cleared:false,
   returnTile:{ x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y+1 }
 };
+const abandonedTollhouse = {
+  width:24,
+  height:20,
+  floor:new Set(),
+  blocked:new Set(),
+  walls:new Set(),
+  spawn:{ x:13, y:17 },
+  exit:{ ...TOLLHOUSE_EXIT },
+  chest:{ ...TOLLHOUSE_CHEST_TILE },
+  returnTile:{ x:NORTH_ROAD_TOLLHOUSE_ENTRY.x, y:NORTH_ROAD_TOLLHOUSE_ENTRY.y+1 }
+};
 function carveMirrorCaveRoom(x,y,w,h){
   for(let tx=x;tx<x+w;tx++){
     for(let ty=y;ty<y+h;ty++){
       mirrorCave.floor.add(keyOf(tx,ty));
       mirrorCave.blocked.delete(keyOf(tx,ty));
+    }
+  }
+}
+function carveTollhouseRoom(x,y,w,h){
+  for(let tx=x;tx<x+w;tx++){
+    for(let ty=y;ty<y+h;ty++){
+      abandonedTollhouse.floor.add(keyOf(tx,ty));
+      abandonedTollhouse.blocked.delete(keyOf(tx,ty));
     }
   }
 }
@@ -1424,6 +1462,21 @@ for(let x=0;x<mirrorCave.width;x++){
     if(!mirrorCave.blocked.has(keyOf(x,y))) continue;
     const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
     if(neighbors.some(([dx,dy])=>!mirrorCave.blocked.has(keyOf(x+dx,y+dy)))) mirrorCave.walls.add(keyOf(x,y));
+  }
+}
+for(let x=0;x<abandonedTollhouse.width;x++) for(let y=0;y<abandonedTollhouse.height;y++) abandonedTollhouse.blocked.add(keyOf(x,y));
+carveTollhouseRoom(12,17,3,2);
+carveTollhouseRoom(12,14,3,3);
+carveTollhouseRoom(11,10,5,4);
+carveTollhouseRoom(7,8,4,4);
+carveTollhouseRoom(11,6,10,4);
+carveTollhouseRoom(20,4,3,2);
+carveTollhouseRoom(17,8,4,2);
+for(let x=0;x<abandonedTollhouse.width;x++){
+  for(let y=0;y<abandonedTollhouse.height;y++){
+    if(!abandonedTollhouse.blocked.has(keyOf(x,y))) continue;
+    const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
+    if(neighbors.some(([dx,dy])=>!abandonedTollhouse.blocked.has(keyOf(x+dx,y+dy)))) abandonedTollhouse.walls.add(keyOf(x,y));
   }
 }
 
@@ -1500,6 +1553,12 @@ const MIRROR_CAVE_WOLF_SPAWNS=[
   {id:103,x:11,y:6},
   {id:104,x:9,y:3}
 ];
+const TOLLHOUSE_BANDIT_SPAWNS=[
+  {id:201,x:9,y:9},
+  {id:202,x:19,y:8},
+  {id:203,x:21,y:5}
+];
+const ROOK_TOLLKEEPER_SPAWN={id:301,x:21,y:8};
 function getEnemyConfig(enemyType){
   return BALANCE.enemies[enemyType] || BALANCE.enemies.wolf;
 }
@@ -1507,15 +1566,47 @@ function createWolf(spawn,enemyType="wolf"){
   const enemyConfig=getEnemyConfig(enemyType);
   return {kind:"wolf",enemyType,id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:enemyConfig.hp,maxHp:enemyConfig.hp,homeX:spawn.x,homeY:spawn.y,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
 }
-function createBandit(spawn){
-  const enemyConfig=getEnemyConfig("bandit");
-  return {kind:"bandit",enemyType:"bandit",id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:enemyConfig.hp,maxHp:enemyConfig.hp,homeX:spawn.x,homeY:spawn.y,roam:2,speed:95,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
+function createBandit(spawn,enemyType="bandit",extras={}){
+  const enemyConfig=getEnemyConfig(enemyType);
+  return {
+    kind:"bandit",
+    enemyType,
+    id:spawn.id,
+    x:spawn.x,
+    y:spawn.y,
+    px:spawn.x*TILE,
+    py:spawn.y*TILE,
+    targetX:spawn.x,
+    targetY:spawn.y,
+    hp:enemyConfig.hp,
+    maxHp:enemyConfig.hp,
+    homeX:spawn.x,
+    homeY:spawn.y,
+    roam:extras.roam ?? 2,
+    speed:extras.speed ?? 95,
+    facing:extras.facing || "left",
+    attackUntil:0,
+    hitUntil:0,
+    hitFlickerUntil:0,
+    attackLungeX:0,
+    attackLungeY:0,
+    recoilX:0,
+    recoilY:0,
+    moving:false,
+    defeated:false,
+    isMiniBoss:Boolean(extras.isMiniBoss),
+    displayName:extras.displayName || null,
+    noRespawn:Boolean(extras.noRespawn)
+  };
 }
 const wolves=WOLF_SPAWNS.map(createWolf);
-const bandits=BANDIT_SPAWNS.map(createBandit);
+const bandits=BANDIT_SPAWNS.map((spawn)=>createBandit(spawn,"bandit"));
 const mirrorCaveWolves=MIRROR_CAVE_WOLF_SPAWNS.map((spawn)=>createWolf(spawn, "cave_wolf"));
-const hostiles=[...wolves, ...bandits, ...mirrorCaveWolves];
+const tollhouseBandits=TOLLHOUSE_BANDIT_SPAWNS.map((spawn)=>createBandit(spawn,"bandit",{ roam:1, speed:92 }));
+const rookTollkeeper=createBandit(ROOK_TOLLKEEPER_SPAWN,"rook_tollkeeper",{ roam:1, speed:88, isMiniBoss:true, displayName:"Rook the Tollkeeper", noRespawn:true });
 let isInMirrorCave=false;
+let isInAbandonedTollhouse=false;
+let rookEncounterAnnounced=false;
 let transitionState={ active:false, start:0, duration:0, switched:false, onSwitch:null };
 const worldObjects=[];
 const worldObjectsById=new Map();
@@ -1564,7 +1655,8 @@ function getWorldObjectTile(object){
 }
 function isWorldObjectInCurrentZone(object){
   if(object.zone==="mirror_cave") return isInMirrorCave;
-  if(object.zone==="overworld") return !isInMirrorCave;
+  if(object.zone==="abandoned_tollhouse") return isInAbandonedTollhouse;
+  if(object.zone==="overworld") return !isInMirrorCave && !isInAbandonedTollhouse;
   return true;
 }
 function getActiveWorldObjects(){
@@ -1709,8 +1801,10 @@ function getEquippedWeaponBonus(){
 }
 function getEquippedDefenseBonus(){
   const armor=getEquippedItem("armor");
-  if(!armor || armor.type!=="armor") return 0;
-  return Number.isFinite(armor.defenseBonus) ? armor.defenseBonus : 0;
+  const trinket=getEquippedItem("trinket");
+  const armorDefense=(!armor || armor.type!=="armor") ? 0 : (Number.isFinite(armor.defenseBonus) ? armor.defenseBonus : 0);
+  const trinketDefense=(!trinket || trinket.type!=="trinket") ? 0 : (Number.isFinite(trinket.defenseBonus) ? trinket.defenseBonus : 0);
+  return armorDefense + trinketDefense;
 }
 function ensureStarterEquipment(){
   if(getItemQuantity("rusty_sword")<=0) addItemToInventory("rusty_sword", 1);
@@ -1997,6 +2091,7 @@ const StillWaterQuestStage = Object.freeze({
   COMPLETED:"completed"
 });
 let mirrorCaveChestDiscovered=false;
+let rookTollkeeperDefeated=false;
 let hunterQuestRewardClaimed=false;
 
 class EventTriggerSystem {
@@ -2372,6 +2467,20 @@ function syncMirrorCaveChestState(shouldSave=false){
   }, shouldSave);
   return state;
 }
+function getTollhouseChestState(){
+  const persistent=getPersistentObject("tollhouse_reward_chest");
+  if(persistent.opened) return "open";
+  if(rookTollkeeperDefeated) return "closed";
+  return "locked";
+}
+function syncTollhouseChestState(shouldSave=false){
+  const state=getTollhouseChestState();
+  patchPersistentObject("tollhouse_reward_chest", {
+    state,
+    opened:state==="open"
+  }, shouldSave);
+  return state;
+}
 function openWorldInfoPanel(title,text){
   worldInfoPanel={ title, text };
   dialogue.style.display="block";
@@ -2710,7 +2819,7 @@ eventSystem.on("world:pond:awakened", ()=>{
 
 const SAVE_KEY="wayfarer.save.v1";
 const SAVE_SCHEMA_VERSION=1;
-const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10]);
+const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10,11]);
 const DEFAULT_DEV_MODE=false;
 let DEV_MODE=DEFAULT_DEV_MODE;
 let saveNoticeTimeout=0;
@@ -2724,6 +2833,7 @@ function isFiniteNumber(value){ return typeof value==="number" && Number.isFinit
 function createSaveData(reason){
   updateOutdoorRegionFromPosition(false);
   syncMirrorCaveChestState(false);
+  syncTollhouseChestState(false);
   syncEchoFragmentState(false);
   const wolvesSave=wolves.slice(0, WOLF_SPAWNS.length).map((wolf)=>({
     id:wolf.id,
@@ -2737,8 +2847,14 @@ function createSaveData(reason){
     defeated:bandit.defeated,
     respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
   }));
+  const tollhouseBanditsSave=tollhouseBandits.map((bandit)=>({
+    id:bandit.id,
+    hp:bandit.hp,
+    defeated:bandit.defeated,
+    respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
+  }));
   return {
-    version:10,
+    version:11,
     saveSchemaVersion:SAVE_SCHEMA_VERSION,
     reason,
     savedAt:new Date().toISOString(),
@@ -2769,6 +2885,10 @@ function createSaveData(reason){
         chestOpened:mirrorCave.chest.opened,
         cleared:mirrorCave.cleared
       },
+      tollhouse:{
+        rookTollkeeperDefeated:rookTollkeeperDefeated,
+        chestState:getTollhouseChestState()
+      },
       hunterQuest:{
         hunterQuestStage:getHunterQuestStage(),
         hunterQuestRewardClaimed:hunterQuestRewardClaimed
@@ -2776,6 +2896,11 @@ function createSaveData(reason){
       creatures:{
         wolves:wolvesSave,
         bandits:banditsSave,
+        tollhouseBandits:tollhouseBanditsSave,
+        rookTollkeeper:{
+          hp:rookTollkeeper.hp,
+          defeated:rookTollkeeperDefeated || rookTollkeeper.defeated
+        },
         mirrorCaveWolves:mirrorCaveWolves.map((wolf)=>({
           id:wolf.id,
           hp:wolf.hp,
@@ -2813,14 +2938,15 @@ function loadGame(){
     if(saveSchemaVersion>SAVE_SCHEMA_VERSION) log("System: Save schema is newer than this build. Attempting safe load.");
     const savedZoneId=typeof data.player.zoneId==="string" ? data.player.zoneId : getOutdoorRegionIdAt(data.player.position.x, data.player.position.y);
     isInMirrorCave=savedZoneId==="mirror_cave";
-    const mapW=isInMirrorCave ? mirrorCave.width : WORLD_W;
-    const mapH=isInMirrorCave ? mirrorCave.height : WORLD_H;
+    isInAbandonedTollhouse=savedZoneId==="abandoned_tollhouse";
+    const mapW=isInMirrorCave ? mirrorCave.width : (isInAbandonedTollhouse ? abandonedTollhouse.width : WORLD_W);
+    const mapH=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
     const loadedX=Math.max(0,Math.min(mapW-1,data.player.position.x));
     const loadedY=Math.max(0,Math.min(mapH-1,data.player.position.y));
     setPlayerTilePosition(loadedX, loadedY);
     zoneTransitionLockedUntil=0;
     blockedDirectionalKeysUntilRelease.clear();
-    currentZoneId=isInMirrorCave ? "mirror_cave" : getOutdoorRegionIdAt(loadedX, loadedY);
+    currentZoneId=isInMirrorCave ? "mirror_cave" : (isInAbandonedTollhouse ? "abandoned_tollhouse" : getOutdoorRegionIdAt(loadedX, loadedY));
     lastLoggedZoneEntryId=currentZoneId;
     player.xp=Math.max(0,Math.floor(Number.isFinite(data.player.xp) ? data.player.xp : 0));
     const xpResolvedLevel=getLevelFromXp(player.xp);
@@ -2882,6 +3008,25 @@ function loadGame(){
       lastBanditDecisionAt[bandit.id]=0;
       lastBanditAttackAt[bandit.id]=0;
     });
+    tollhouseBandits.forEach((bandit)=>{
+      bandit.hp=bandit.maxHp;
+      bandit.defeated=false;
+      bandit.targetX=bandit.homeX;
+      bandit.targetY=bandit.homeY;
+      bandit.px=bandit.targetX*TILE;
+      bandit.py=bandit.targetY*TILE;
+      banditRespawnAtById[bandit.id]=0;
+      lastBanditDecisionAt[bandit.id]=0;
+      lastBanditAttackAt[bandit.id]=0;
+    });
+    rookTollkeeper.hp=rookTollkeeper.maxHp;
+    rookTollkeeper.defeated=false;
+    rookTollkeeper.targetX=rookTollkeeper.homeX;
+    rookTollkeeper.targetY=rookTollkeeper.homeY;
+    rookTollkeeper.px=rookTollkeeper.targetX*TILE;
+    rookTollkeeper.py=rookTollkeeper.targetY*TILE;
+    banditRespawnAtById[rookTollkeeper.id]=0;
+    rookTollkeeperDefeated=false;
     mirrorCaveWolves.forEach((wolf)=>{
       wolf.hp=wolf.maxHp;
       wolf.defeated=false;
@@ -2926,6 +3071,18 @@ function loadGame(){
         banditRespawnAtById[bandit.id]=bandit.defeated ? performance.now()+remaining : 0;
       });
     }
+    const savedTollhouseBandits=Array.isArray(data.world?.creatures?.tollhouseBandits) ? data.world.creatures.tollhouseBandits : null;
+    if(savedTollhouseBandits){
+      savedTollhouseBandits.forEach((savedBandit)=>{
+        if(!savedBandit || typeof savedBandit!=="object") return;
+        const bandit=tollhouseBandits.find((candidate)=>candidate.id===savedBandit.id);
+        if(!bandit) return;
+        bandit.hp=isFiniteNumber(savedBandit.hp) ? Math.max(0,Math.min(bandit.maxHp,savedBandit.hp)) : bandit.hp;
+        bandit.defeated=Boolean(savedBandit.defeated) || bandit.hp<=0;
+        const remaining=isFiniteNumber(savedBandit.respawnRemainingMs)?Math.max(0,savedBandit.respawnRemainingMs):0;
+        banditRespawnAtById[bandit.id]=bandit.defeated ? performance.now()+remaining : 0;
+      });
+    }
     const savedMirrorCaveWolves=Array.isArray(data.world?.creatures?.mirrorCaveWolves) ? data.world.creatures.mirrorCaveWolves : null;
     if(savedMirrorCaveWolves){
       savedMirrorCaveWolves.forEach((savedWolf)=>{
@@ -2941,6 +3098,12 @@ function loadGame(){
     mirrorCaveChestDiscovered=Boolean(data.world?.mirrorCave?.chestDiscovered || persistentObjects?.mirror_cave_chest?.discovered);
     mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened || persistentObjects?.mirror_cave_chest?.opened);
     mirrorCave.cleared=Boolean(data.world?.mirrorCave?.cleared);
+    rookTollkeeperDefeated=Boolean(data.world?.tollhouse?.rookTollkeeperDefeated || persistentObjects?.rook_tollkeeper_state?.defeated);
+    rookTollkeeper.defeated=rookTollkeeperDefeated;
+    if(rookTollkeeperDefeated){
+      rookTollkeeper.hp=0;
+      if(getItemQuantity("old_toll_key")<=0) addItemToInventory("old_toll_key", 1);
+    }
     hunterQuestRewardClaimed=Boolean(data.world?.hunterQuest?.hunterQuestRewardClaimed);
     const hunterQuest=questSystem.getQuest("hunters_request");
     if(hunterQuest?.state===QuestState.COMPLETED){
@@ -2962,6 +3125,7 @@ function loadGame(){
       }
     }
     syncMirrorCaveChestState(false);
+    syncTollhouseChestState(false);
     syncEchoFragmentState(false);
     migrateStillWaterStateFromSave();
     log("System: Save loaded.");
@@ -3142,6 +3306,20 @@ registerWorldObject({
   onInteract:()=>enterMirrorCave()
 });
 registerWorldObject({
+  objectId:"abandoned_tollhouse_entrance",
+  type:WORLD_OBJECT_TYPE.DOOR,
+  zone:"overworld",
+  region:"north_road",
+  x:NORTH_ROAD_TOLLHOUSE_ENTRY.x, y:NORTH_ROAD_TOLLHOUSE_ENTRY.y,
+  state:"active",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  walkInTrigger:true,
+  promptLabel:"Enter Abandoned Tollhouse",
+  onInteract:()=>enterAbandonedTollhouse()
+});
+registerWorldObject({
   objectId:"mirror_cave_exit",
   type:WORLD_OBJECT_TYPE.DUNGEON_EXIT,
   zone:"mirror_cave",
@@ -3154,6 +3332,20 @@ registerWorldObject({
   walkInTrigger:true,
   promptLabel:"Exit Mirror Cave",
   onInteract:()=>exitMirrorCave()
+});
+registerWorldObject({
+  objectId:"abandoned_tollhouse_exit",
+  type:WORLD_OBJECT_TYPE.DUNGEON_EXIT,
+  zone:"abandoned_tollhouse",
+  dungeon:"abandoned_tollhouse",
+  x:abandonedTollhouse.exit.x, y:abandonedTollhouse.exit.y,
+  state:"active",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  walkInTrigger:true,
+  promptLabel:"Exit Abandoned Tollhouse",
+  onInteract:()=>exitAbandonedTollhouse()
 });
 registerWorldObject({
   objectId:"mirror_cave_chest",
@@ -3217,6 +3409,37 @@ registerWorldObject({
     patchPersistentObject("echo_fragment", { state:"collected", collected:true }, false);
     log("You recovered the Echo Fragment.");
     eventSystem.emit("object:collected:echo_fragment");
+    saveGame("object_state_change");
+  }
+});
+registerWorldObject({
+  objectId:"tollhouse_reward_chest",
+  type:WORLD_OBJECT_TYPE.CHEST,
+  zone:"abandoned_tollhouse",
+  dungeon:"abandoned_tollhouse",
+  x:abandonedTollhouse.chest.x, y:abandonedTollhouse.chest.y,
+  state:"locked",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Open tollhouse chest",
+  onInteract:()=>{
+    const state=syncTollhouseChestState(false);
+    if(state==="locked"){
+      log("The tollhouse chest is locked.");
+      return;
+    }
+    if(state==="open"){
+      log("The tollhouse chest stands open and empty.");
+      return;
+    }
+    patchPersistentObject("tollhouse_reward_chest", { state:"open", opened:true }, false);
+    addItemToInventory("small_potion", 1);
+    player.coins += 14;
+    if(getItemQuantity("travelers_charm")<=0 && player.equipment.trinket!=="travelers_charm"){
+      addItemToInventory("travelers_charm", 1);
+    }
+    log("Opened the tollhouse chest.");
     saveGame("object_state_change");
   }
 });
@@ -3284,8 +3507,8 @@ function isWithinRect(x,y,rect){
 }
 
 function isTileInCurrentZone(x,y){
-  const width=isInMirrorCave ? mirrorCave.width : WORLD_W;
-  const height=isInMirrorCave ? mirrorCave.height : WORLD_H;
+  const width=isInMirrorCave ? mirrorCave.width : (isInAbandonedTollhouse ? abandonedTollhouse.width : WORLD_W);
+  const height=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
   return x>=0 && y>=0 && x<width && y<height;
 }
 
@@ -3294,13 +3517,15 @@ function isInTransitionSafeBuffer(zoneId,x,y){
 }
 
 function isEasternWoodsActive(){
-  return !isInMirrorCave;
+  return !isInMirrorCave && !isInAbandonedTollhouse;
 }
 
 function findZoneTransitionAt(){ return null; }
 
 function getActiveHostiles(){
-  return isInMirrorCave ? mirrorCaveWolves : [...wolves, ...bandits];
+  if(isInMirrorCave) return mirrorCaveWolves;
+  if(isInAbandonedTollhouse) return rookTollkeeperDefeated ? tollhouseBandits : [...tollhouseBandits, rookTollkeeper];
+  return [...wolves, ...bandits];
 }
 
 function runHardTransition(onSwitch, durationMs=320){
@@ -3319,6 +3544,7 @@ function runHardTransition(onSwitch, durationMs=320){
 
 function enterMirrorCave(){
   runHardTransition(()=>{
+    isInAbandonedTollhouse=false;
     isInMirrorCave=true;
     currentZoneId="mirror_cave";
     setPlayerTilePosition(mirrorCave.spawn.x, mirrorCave.spawn.y);
@@ -3327,14 +3553,37 @@ function enterMirrorCave(){
     eventSystem.emit("zone:entered:mirror_cave");
   }, 320);
 }
+function enterAbandonedTollhouse(){
+  runHardTransition(()=>{
+    isInMirrorCave=false;
+    isInAbandonedTollhouse=true;
+    currentZoneId="abandoned_tollhouse";
+    setPlayerTilePosition(abandonedTollhouse.spawn.x, abandonedTollhouse.spawn.y);
+    lastLoggedZoneEntryId=currentZoneId;
+    rookEncounterAnnounced=false;
+    hostileAggroBlockedUntil=performance.now()+900;
+    logThrottled("transition:entered_abandoned_tollhouse", "Entered Abandoned Tollhouse.", 1200);
+  }, 320);
+}
 
 function exitMirrorCave(){
   runHardTransition(()=>{
     isInMirrorCave=false;
+    isInAbandonedTollhouse=false;
     currentZoneId="eastern_woods";
     setPlayerTilePosition(mirrorCave.returnTile.x, mirrorCave.returnTile.y);
     lastLoggedZoneEntryId=currentZoneId;
     logThrottled("transition:exit_mirror_cave", "Returned to Eastern Woods.", 1200);
+  }, 320);
+}
+function exitAbandonedTollhouse(){
+  runHardTransition(()=>{
+    isInAbandonedTollhouse=false;
+    isInMirrorCave=false;
+    currentZoneId="north_road";
+    setPlayerTilePosition(abandonedTollhouse.returnTile.x, abandonedTollhouse.returnTile.y);
+    lastLoggedZoneEntryId=currentZoneId;
+    logThrottled("transition:exit_abandoned_tollhouse", "Returned to North Road.", 1200);
   }, 320);
 }
 
@@ -3378,7 +3627,7 @@ function getOutdoorRegionIdAt(x,y){
 }
 
 function updateOutdoorRegionFromPosition(logEntry){
-  if(isInMirrorCave) return;
+  if(isInMirrorCave || isInAbandonedTollhouse) return;
   const nextZoneId=getOutdoorRegionIdAt(player.targetX, player.targetY);
   if(nextZoneId===currentZoneId) return;
   currentZoneId=nextZoneId;
@@ -3392,6 +3641,7 @@ function updateOutdoorRegionFromPosition(logEntry){
 
 function currentLocalAreaName(){
   if(isInMirrorCave) return "Mirror Cave";
+  if(isInAbandonedTollhouse) return "Abandoned Tollhouse";
   for(const z of world.zones){
     if(player.targetX>=z.x&&player.targetX<z.x+z.w&&player.targetY>=z.y&&player.targetY<z.y+z.h) return z.name;
   }
@@ -3405,6 +3655,7 @@ function getHostileDistance(hostile){
 
 function hostileLabel(hostile){
   if(!hostile) return "None";
+  if(hostile.displayName) return hostile.displayName;
   if(hostile.kind==="bandit") return "Bandit #" + hostile.id;
   if(hostile.enemyType==="cave_wolf") return "Cave Wolf #" + hostile.id;
   return "Wolf #" + hostile.id;
@@ -3432,6 +3683,7 @@ function getNearestHostile(range=Infinity){
 
 function respawnPlayerAtSquare(){
   isInMirrorCave=false;
+  isInAbandonedTollhouse=false;
   currentZoneId="hearthvale_square";
   setPlayerTilePosition(18, 11);
   zoneTransitionLockedUntil=0;
@@ -3585,6 +3837,8 @@ function canMoveTo(x,y){
   if(isWorldObjectBlockingTile(x,y)) return false;
   if(isInMirrorCave){
     if(mirrorCave.blocked.has(keyOf(x,y))) return false;
+  } else if(isInAbandonedTollhouse){
+    if(abandonedTollhouse.blocked.has(keyOf(x,y))) return false;
   } else {
     if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
     if(x===npc.x&&y===npc.y) return false;
@@ -3633,15 +3887,18 @@ function healPlayerToFullForDebug(){
 function teleportToZoneForDebug(zoneId){
   if(zoneId==="hearthvale_square"){
     isInMirrorCave=false;
+    isInAbandonedTollhouse=false;
     currentZoneId="hearthvale_square";
     setPlayerTilePosition(18, 11);
     log("[Debug] Teleported to Hearthvale Square.");
   } else if(zoneId==="eastern_woods"){
     isInMirrorCave=false;
+    isInAbandonedTollhouse=false;
     currentZoneId="eastern_woods";
     setPlayerTilePosition(mirrorCave.returnTile.x, mirrorCave.returnTile.y);
     log("[Debug] Teleported to Eastern Woods.");
   } else if(zoneId==="mirror_cave"){
+    isInAbandonedTollhouse=false;
     isInMirrorCave=true;
     currentZoneId="mirror_cave";
     setPlayerTilePosition(mirrorCave.spawn.x, mirrorCave.spawn.y);
@@ -3728,8 +3985,8 @@ equipmentList.addEventListener("click",(e)=>{
 });
 
 function getCamera(){
-  const mapW=isInMirrorCave ? mirrorCave.width : WORLD_W;
-  const mapH=isInMirrorCave ? mirrorCave.height : WORLD_H;
+  const mapW=isInMirrorCave ? mirrorCave.width : (isInAbandonedTollhouse ? abandonedTollhouse.width : WORLD_W);
+  const mapH=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
   const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2),Math.max(0,mapW-VIEW_TILES_X)));
   const tileY=Math.max(0,Math.min(player.targetY-Math.floor(VIEW_TILES_Y/2),Math.max(0,mapH-VIEW_TILES_Y)));
   const viewPxW=VIEW_TILES_X*TILE, viewPxH=VIEW_TILES_Y*TILE;
@@ -3767,6 +4024,8 @@ function canHostileMoveTo(x,y,self){
   if(isWorldObjectBlockingTile(x,y)) return false;
   if(isInMirrorCave){
     if(mirrorCave.blocked.has(keyOf(x,y))) return false;
+  } else if(isInAbandonedTollhouse){
+    if(abandonedTollhouse.blocked.has(keyOf(x,y))) return false;
   } else {
     if(world.blocked.has(keyOf(x,y))) return false;
     if(x===npc.x&&y===npc.y) return false;
@@ -3809,6 +4068,7 @@ function updateWolf(wolf,now){
 }
 function updateBandit(bandit,now){
   if(bandit.hp<=0){
+    if(bandit.noRespawn) return;
     const respawnAt=banditRespawnAtById[bandit.id]||0;
     if(respawnAt!==0&&now>=respawnAt){
       bandit.hp=bandit.maxHp;
@@ -3852,16 +4112,16 @@ function wolfAttack(now){
 }
 function banditAttack(now){
   if(isHostileAggroBlocked(now)) return;
-  for(const bandit of bandits){
+  for(const bandit of getActiveHostiles().filter((hostile)=>hostile.kind==="bandit")){
     if(bandit.hp<=0) continue;
     const dist=Math.abs(player.targetX-bandit.targetX)+Math.abs(player.targetY-bandit.targetY);
     if(dist>1||now-(lastBanditAttackAt[bandit.id]||0)<getHostileAttackCooldownMs(bandit)) continue;
     lastBanditAttackAt[bandit.id]=now;
     bandit.attackUntil=now+350;
-    const damageDealt=applyIncomingDamage(getEnemyConfig("bandit").damage); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
+    const damageDealt=applyIncomingDamage(getEnemyConfig(bandit.enemyType || "bandit").damage); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
     const wx=player.targetX-bandit.targetX, wy=player.targetY-bandit.targetY, len=Math.max(1,Math.hypot(wx,wy));
     bandit.attackLungeX=(wx/len)*2.2; bandit.attackLungeY=(wy/len)*1.3; player.recoilX=(wx/len)*2.8; player.recoilY=(wy/len)*1.8;
-    logCombat("Bandit #" + bandit.id + " slashes you for " + damageDealt + " damage.");
+    logCombat(hostileLabel(bandit) + " slashes you for " + damageDealt + " damage.");
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
 }
@@ -3879,14 +4139,25 @@ function defeatWolf(wolf,now){
   else log("No loot dropped this time.");
 }
 function defeatBandit(bandit,now){
-  const enemyConfig=getEnemyConfig("bandit");
+  const enemyConfig=getEnemyConfig(bandit.enemyType || "bandit");
   bandit.defeated=true;
   grantPlayerXp(enemyConfig.xp);
   player.coins+=enemyConfig.coinReward;
-  const lootDrops=rollEnemyLoot("bandit");
+  const lootDrops=rollEnemyLoot(bandit.enemyType || "bandit");
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
-  banditRespawnAtById[bandit.id]=now+enemyConfig.respawnMs;
-  log("Bandit #" + bandit.id + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");
+  banditRespawnAtById[bandit.id]=bandit.noRespawn ? 0 : now+enemyConfig.respawnMs;
+  if(bandit.isMiniBoss){
+    rookTollkeeperDefeated=true;
+    patchPersistentObject("rook_tollkeeper_state", { defeated:true, state:"defeated" }, false);
+    if(getItemQuantity("old_toll_key")<=0) addItemToInventory("old_toll_key", 1);
+    if(getItemQuantity("travelers_charm")<=0 && player.equipment.trinket!=="travelers_charm") addItemToInventory("travelers_charm", 1);
+    log("Rook the Tollkeeper defeated.");
+    log("Recovered the Old Toll Key.");
+    syncTollhouseChestState(false);
+    saveGame("rook_defeated");
+  } else {
+    log(hostileLabel(bandit) + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");
+  }
   if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
   else log("No loot dropped this time.");
 }
@@ -4135,11 +4406,71 @@ function drawMirrorCaveScene(now){
   ctx.fillStyle="rgba(8,10,14,.2)"; ctx.fillRect(0,0,canvas.width,canvas.height);
   drawTransitionFade(now);
 }
+function drawAbandonedTollhouseScene(now){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cam=getCamera();
+  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
+    const p=tileToScreen(x,y);
+    const k=keyOf(x,y);
+    if(!isTileInCurrentZone(x,y)) continue;
+    const noise=rng(x,y,377);
+    if(abandonedTollhouse.blocked.has(k)){
+      ctx.fillStyle=noise>0.5 ? "#2b2522" : "#241f1c";
+    } else {
+      ctx.fillStyle=noise>0.5 ? "#6f5138" : "#624930";
+    }
+    ctx.fillRect(p.x,p.y,32,32);
+    if(abandonedTollhouse.walls.has(k)){
+      ctx.fillStyle="rgba(42,30,21,.38)";
+      ctx.fillRect(p.x,p.y,32,6);
+    }
+  }
+  const barrelTiles=[{x:8,y:9},{x:9,y:11},{x:18,y:7},{x:20,y:6},{x:14,y:11}];
+  barrelTiles.forEach((tile,idx)=>{
+    const bp=tileToScreen(tile.x,tile.y);
+    const type=idx%2===0 ? "barrel" : "crate";
+    const sprite=assets.props.sprites[type];
+    if(sprite && sprite.complete && sprite.naturalWidth>0) ctx.drawImage(sprite,bp.x,bp.y,32,32);
+  });
+  const chestState=getTollhouseChestState();
+  const cp=tileToScreen(abandonedTollhouse.chest.x, abandonedTollhouse.chest.y);
+  drawSoftShadow(cp.x+16,cp.y+26,10,4,.2);
+  ctx.fillStyle="#5f4228"; ctx.fillRect(cp.x+6,cp.y+10,20,14);
+  if(chestState==="open"){
+    ctx.fillStyle="#3f2e20"; ctx.fillRect(cp.x+6,cp.y+8,20,4);
+  } else {
+    ctx.fillStyle="#b58f56"; ctx.fillRect(cp.x+6,cp.y+10,20,4);
+    if(chestState==="locked"){
+      ctx.fillStyle="#d9d0af"; ctx.fillRect(cp.x+14,cp.y+14,4,6);
+    }
+  }
+  const ep=tileToScreen(abandonedTollhouse.exit.x, abandonedTollhouse.exit.y);
+  ctx.fillStyle="rgba(190,162,133,.2)"; ctx.fillRect(ep.x+4,ep.y+4,24,24);
+  ctx.strokeStyle="rgba(226,208,186,.6)"; ctx.strokeRect(ep.x+4.5,ep.y+4.5,23,23);
+  ctx.fillStyle="#efdac2"; ctx.font="bold 10px monospace"; ctx.fillText("EXIT", ep.x+6, ep.y+19);
+  tollhouseBandits.forEach((bandit)=>{
+    if(bandit.hp<=0) return;
+    drawWolf(bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.84, hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY});
+  });
+  if(!rookTollkeeperDefeated && rookTollkeeper.hp>0){
+    drawWolf(rookTollkeeper, rookTollkeeper.px/TILE, rookTollkeeper.py/TILE, rookTollkeeper.facing, rookTollkeeper.moving, 0.9, hitVisualAlpha(rookTollkeeper), {x:rookTollkeeper.recoilX+rookTollkeeper.attackLungeX,y:rookTollkeeper.recoilY+rookTollkeeper.attackLungeY});
+  }
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  const hostileLabelEntries=[...tollhouseBandits, rookTollkeeper]
+    .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
+    .map((hostile)=>({ text:hostileLabel(hostile), tx:hostile.px/TILE, ty:hostile.py/TILE, priority:1 }));
+  drawWorldLabels([{text:"Wayfarer", tx:player.px/TILE, ty:player.py/TILE, priority:2}, ...hostileLabelEntries, {text:"Abandoned Tollhouse", tx:12, ty:16, priority:0}]);
+  drawTransitionFade(now);
+}
 
 function drawWorld(){
   const now=performance.now();
   if(isInMirrorCave){
     drawMirrorCaveScene(now);
+    return;
+  }
+  if(isInAbandonedTollhouse){
+    drawAbandonedTollhouseScene(now);
     return;
   }
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -4217,6 +4548,11 @@ function drawWorld(){
   ctx.fill();
   ctx.strokeStyle="rgba(151,164,182,.65)";
   ctx.stroke();
+  const tollhouseDoorPos=tileToScreen(NORTH_ROAD_TOLLHOUSE_ENTRY.x, NORTH_ROAD_TOLLHOUSE_ENTRY.y);
+  ctx.fillStyle="rgba(68,46,30,.9)";
+  ctx.fillRect(tollhouseDoorPos.x+7,tollhouseDoorPos.y+6,18,22);
+  ctx.strokeStyle="rgba(196,164,128,.75)";
+  ctx.strokeRect(tollhouseDoorPos.x+7.5,tollhouseDoorPos.y+6.5,17,21);
 
   world.fences.forEach((f,i)=>{
     const p=tileToScreen(f.x,f.y);
@@ -4301,6 +4637,10 @@ function update(dt,now){
   bandits.forEach((bandit)=>{
     bandit.recoilX*=.82; bandit.recoilY*=.82; bandit.attackLungeX*=.78; bandit.attackLungeY*=.78;
   });
+  tollhouseBandits.forEach((bandit)=>{
+    bandit.recoilX*=.82; bandit.recoilY*=.82; bandit.attackLungeX*=.78; bandit.attackLungeY*=.78;
+  });
+  rookTollkeeper.recoilX*=.82; rookTollkeeper.recoilY*=.82; rookTollkeeper.attackLungeX*=.78; rookTollkeeper.attackLungeY*=.78;
   if(now<hitStopUntil){ updateSidebar(); return; }
   eventSystem.update(currentLocalAreaName());
   const isTransitionLocked=now<zoneTransitionLockedUntil;
@@ -4316,6 +4656,17 @@ function update(dt,now){
   if(!isTransitionLocked){
     if(isInMirrorCave){
       mirrorCaveWolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
+    } else if(isInAbandonedTollhouse){
+      tollhouseBandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
+      if(!rookTollkeeperDefeated){
+        updateBandit(rookTollkeeper,now);
+        smoothMove(rookTollkeeper,dt);
+        if(!rookEncounterAnnounced && Math.abs(player.targetX-rookTollkeeper.targetX)+Math.abs(player.targetY-rookTollkeeper.targetY)<=4){
+          rookEncounterAnnounced=true;
+          log("Rook the Tollkeeper blocks the way.");
+        }
+      }
+      banditAttack(now);
     } else {
       wolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
       bandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
