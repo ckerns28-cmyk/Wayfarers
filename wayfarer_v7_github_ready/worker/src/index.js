@@ -1123,6 +1123,12 @@ function logThrottled(key,message,cooldownMs){
 }
 function keyOf(x,y){ return x + "," + y; }
 function rng(x,y,s=1){ return (((x*73856093)^(y*19349663)^(s*83492791))>>>0)%1000/1000; }
+function layeredNoise(x,y){
+  const broad = rng(Math.floor(x*0.22), Math.floor(y*0.22), 401);
+  const medium = rng(Math.floor(x*0.48), Math.floor(y*0.48), 487);
+  const fine = rng(x,y,509);
+  return broad*0.52 + medium*0.33 + fine*0.15;
+}
 
 function makeTile(drawFn){
   const c = document.createElement("canvas"); c.width = TILE; c.height = TILE;
@@ -1139,34 +1145,34 @@ const assets = {
 };
 
 function buildTerrainTiles() {
-  const grassBases = [palette.grass[0], palette.grass[1], palette.grass[2], "#4b6d43", "#52744a", "#46673f"];
-  const forestBases = [palette.forestGrass[0], palette.forestGrass[1], palette.forestGrass[2], "#355537"];
+  const grassBases = [palette.grass[0], "#587d4e", palette.grass[1], "#4f7346", palette.grass[2], "#45673f"];
+  const forestBases = [palette.forestGrass[0], "#3f6540", palette.forestGrass[1], "#314f34"];
   for (let i=0;i<6;i++) {
     assets.grass.push(makeTile((p)=>{
       p.fillStyle = grassBases[i]; p.fillRect(0,0,32,32);
-      for (let y=0;y<32;y+=3){
-        for (let x=0;x<32;x+=3){
-          const n=rng(x+i*9,y+i*5,31+i);
-          if(n>0.86){ p.fillStyle = "rgba(196,226,161,.12)"; p.fillRect(x,y,2,1); }
-          else if(n<0.11){ p.fillStyle = "rgba(31,50,28,.12)"; p.fillRect(x,y+1,2,1); }
+      for (let y=0;y<32;y+=2){
+        for (let x=0;x<32;x+=2){
+          const n=rng(x+i*7,y+i*5,31+i);
+          if(n>0.88){ p.fillStyle = "rgba(198,226,162,.08)"; p.fillRect(x,y,2,1); }
+          else if(n<0.08){ p.fillStyle = "rgba(29,47,28,.12)"; p.fillRect(x,y+1,2,1); }
         }
       }
-      p.fillStyle = "rgba(214,238,178,.08)";
-      for (let k=0;k<9;k++) {
-        const gx = ((k*7+i*4)%28)+1, gy = ((k*9+i*2)%24)+3;
-        p.fillRect(gx,gy,1,2);
+      p.fillStyle = "rgba(220,239,180,.06)";
+      for (let k=0;k<11;k++) {
+        const gx = ((k*5+i*6)%30)+1, gy = ((k*7+i*3)%25)+3;
+        p.fillRect(gx,gy,1,1);
       }
-      p.fillStyle="rgba(255,255,255,.025)"; p.fillRect(0,0,32,1);
-      p.fillStyle="rgba(0,0,0,.1)"; p.fillRect(0,30,32,2);
+      p.fillStyle="rgba(255,255,255,.022)"; p.fillRect(0,0,32,1);
+      p.fillStyle="rgba(0,0,0,.09)"; p.fillRect(0,30,32,2);
     }));
     if(i<4){
       assets.forestGrass.push(makeTile((p)=>{
         p.fillStyle=forestBases[i]; p.fillRect(0,0,32,32);
-        for(let y=0;y<32;y+=3){
-          for(let x=0;x<32;x+=3){
+        for(let y=0;y<32;y+=2){
+          for(let x=0;x<32;x+=2){
             const n=rng(x+i*8,y+i*6,53+i);
-            if(n>0.8){ p.fillStyle="rgba(112,152,96,.12)"; p.fillRect(x,y,2,2); }
-            else if(n<0.18){ p.fillStyle="rgba(18,31,20,.22)"; p.fillRect(x,y,2,2); }
+            if(n>0.83){ p.fillStyle="rgba(112,152,96,.1)"; p.fillRect(x,y,2,1); }
+            else if(n<0.14){ p.fillStyle="rgba(18,31,20,.2)"; p.fillRect(x,y,2,1); }
           }
         }
         p.fillStyle="rgba(0,0,0,.15)"; p.fillRect(0,29,32,3);
@@ -1251,7 +1257,9 @@ function makeBuildingTiles(){
     p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
     p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=4) p.fillRect(2,y,28,1);
     p.fillStyle="rgba(255,226,199,.1)"; p.fillRect(5,3,22,2);
+    p.fillStyle="rgba(64,37,26,.28)"; for(let x=3;x<30;x+=6) p.fillRect(x,6,2,16);
     p.fillStyle=palette.roof[3]; p.fillRect(0,24,32,8);
+    p.fillStyle="rgba(231,196,152,.2)"; p.fillRect(2,24,28,1);
   });
   assets.building.roofR = makeTile((p)=>{
     p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
@@ -1262,29 +1270,32 @@ function makeBuildingTiles(){
   });
   assets.building.wall = makeTile((p)=>{
     p.fillStyle=palette.wall[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.wall[2]; p.fillRect(0,0,32,3);
-    p.fillStyle=palette.wall[1]; p.fillRect(0,29,32,3);
+    p.fillStyle=palette.wall[2]; p.fillRect(0,0,32,4);
+    p.fillStyle=palette.wall[1]; p.fillRect(0,28,32,4);
+    p.fillStyle="rgba(97,74,48,.16)"; for(let x=0;x<32;x+=8) p.fillRect(x,4,1,24);
     p.fillStyle="rgba(255,255,255,.05)";
     for(let y=5;y<29;y+=5) for(let x=(y%5)+2;x<30;x+=7){ p.fillRect(x,y,1,1); }
     p.fillStyle="rgba(35,28,20,.14)"; p.fillRect(29,0,3,32);
   });
   assets.building.window = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
-    p.fillStyle="#4b3826"; p.fillRect(7,6,18,16);
-    p.fillStyle="#2d2218"; p.fillRect(8,7,16,14);
-    p.fillStyle="#88a9bf"; p.fillRect(9,8,14,12);
-    p.fillStyle="rgba(214,240,255,.35)"; p.fillRect(10,9,12,2);
-    p.fillStyle="rgba(67,96,119,.36)"; p.fillRect(9,16,14,4);
-    p.fillStyle="#4a3321"; p.fillRect(15,8,2,12); p.fillRect(9,13,14,2);
-    p.fillStyle="rgba(245,217,156,.15)"; p.fillRect(9,20,14,1);
+    p.fillStyle="#5a3f28"; p.fillRect(6,6,20,17);
+    p.fillStyle="#37291d"; p.fillRect(7,7,18,15);
+    p.fillStyle="#98b7ca"; p.fillRect(9,9,14,11);
+    p.fillStyle="rgba(231,248,255,.42)"; p.fillRect(10,10,12,2);
+    p.fillStyle="rgba(66,97,122,.4)"; p.fillRect(9,16,14,4);
+    p.fillStyle="#503822"; p.fillRect(15,9,2,11); p.fillRect(9,14,14,2);
+    p.fillStyle="rgba(247,214,153,.32)"; p.fillRect(8,22,16,1);
+    p.fillStyle="rgba(255,243,203,.24)"; p.fillRect(9,8,14,1);
   });
   assets.building.door = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
-    p.fillStyle="#5e412d"; p.fillRect(8,8,16,23);
-    p.fillStyle="#372518"; p.fillRect(9,9,14,21);
-    p.fillStyle="#8a643f"; p.fillRect(8,8,16,2);
-    p.fillStyle="#ac7f53"; p.fillRect(15,10,2,20);
-    p.fillStyle="#ddb981"; p.fillRect(20,21,2,2);
+    p.fillStyle="#664531"; p.fillRect(8,7,16,24);
+    p.fillStyle="#3c291b"; p.fillRect(9,8,14,22);
+    p.fillStyle="#916746"; p.fillRect(8,7,16,2);
+    p.fillStyle="#b98856"; p.fillRect(15,10,2,20);
+    p.fillStyle="#e3ba86"; p.fillRect(20,21,2,2);
+    p.fillStyle="rgba(246,222,171,.2)"; p.fillRect(10,10,4,18);
     p.fillStyle="rgba(0,0,0,.25)"; p.fillRect(8,30,16,1);
   });
 }
@@ -1687,62 +1698,82 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  { x:6,y:11,w:26,h:2 },{ x:17,y:0,w:2,h:20 },{ x:10,y:8,w:2,h:8 },
-  { x:24,y:7,w:2,h:8 },{ x:19,y:12,w:5,h:2 },{ x:26,y:12,w:3,h:2 }
+  { x:7,y:11,w:24,h:2 },
+  { x:17,y:0,w:3,h:21 },
+  { x:13,y:8,w:11,h:3 },
+  { x:15,y:13,w:8,h:3 },
+  { x:24,y:10,w:3,h:8 },
+  { x:10,y:11,w:3,h:7 },
+  { x:26,y:11,w:5,h:2 },
+  { x:20,y:3,w:3,h:5 },
+  { x:28,y:13,w:3,h:2 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { x:10,y:6,w:3,h:3,tileRows:[["roofL","roofC","roofR"],["window","wall","window"],["wall","door","wall"]] },
-  { x:20,y:6,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","window"],["wall","wall","door","wall"]] },
-  { x:12,y:14,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","wall"],["wall","door","wall","window"]] }
+  { x:11,y:6,w:5,h:3,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["window","wall","window","wall","window"],["wall","wall","door","wall","wall"]] },
+  { x:20,y:6,w:5,h:3,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["window","wall","window","wall","window"],["wall","door","wall","window","wall"]] },
+  { x:11,y:15,w:5,h:3,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["window","wall","window","wall","window"],["wall","wall","door","wall","wall"]] },
+  { x:20,y:15,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","window"],["wall","door","wall","wall"]] }
 );
 world.buildings.forEach(b=>blockRect(b.x,b.y,b.w,b.h));
 
-const pond={x:22,y:13,w:7,h:5,cx:25.5,cy:15.5};
+const pond={x:24,y:12,w:8,h:6,cx:28,cy:15};
 for(let x=pond.x;x<pond.x+pond.w;x++){
   for(let y=pond.y;y<pond.y+pond.h;y++){
     const dx=(x+.5-pond.cx)/(pond.w/2), dy=(y+.5-pond.cy)/(pond.h/2);
-    const d=dx*dx+dy*dy, wob=(rng(x,y,17)-.5)*.18, lim=.9+wob;
+    const d=dx*dx+dy*dy, wob=(rng(x,y,17)-.5)*.15, lim=.88+wob;
     if(d<=lim){ world.pondWater.add(keyOf(x,y)); world.pondBlocked.add(keyOf(x,y)); }
-    if(d>=lim-.16&&d<=lim+.16) world.pondShore.add(keyOf(x,y));
-    if(d>=lim-.22&&d<=lim+.05) world.pondNearEdge.add(keyOf(x,y));
+    if(d>=lim-.2&&d<=lim+.2) world.pondShore.add(keyOf(x,y));
+    if(d>=lim-.26&&d<=lim+.08) world.pondNearEdge.add(keyOf(x,y));
   }
 }
 
-for(let x=29;x<=35;x++){ world.fences.push({x,y:6},{x,y:10}); }
-for(let y=7;y<=9;y++){ world.fences.push({x:29,y},{x:35,y}); }
-for(let x=11;x<=14;x++){ world.fences.push({x,y:3}); }
-for(let x=22;x<=25;x++){ world.fences.push({x,y:4}); }
+for(let x=8;x<=14;x++){ world.fences.push({x,y:19}); }
+for(let y=16;y<=19;y++){ world.fences.push({x:8,y}); }
+for(let x=24;x<=33;x++){ world.fences.push({x,y:7}); }
+for(let y=8;y<=11;y++){ world.fences.push({x:33,y}); }
+for(let x=24;x<=31;x++){ world.fences.push({x,y:18}); }
+for(let y=15;y<=18;y++){ world.fences.push({x:31,y}); }
+for(let x=13;x<=17;x++){ world.fences.push({x,y:3}); }
+for(let x=20;x<=24;x++){ world.fences.push({x,y:3}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
-  {x:9,y:8,type:"crate"},{x:9,y:9,type:"barrel"},{x:13,y:8,type:"crate"},{x:13,y:9,type:"bush"},{x:10,y:9,type:"fenceSeg"},
-  {x:19,y:8,type:"crate"},{x:24,y:8,type:"sack"},{x:24,y:9,type:"barrel"},{x:19,y:9,type:"bush"},
-  {x:11,y:17,type:"crate"},{x:16,y:17,type:"barrel"},{x:11,y:16,type:"fenceSeg"},{x:16,y:16,type:"bush"},{x:15,y:17,type:"sack"},
-  {x:10,y:10,type:"grassTuft"},{x:12,y:10,type:"grassTuft"},{x:20,y:10,type:"grassTuft"},{x:23,y:10,type:"grassTuft"},
-  {x:16,y:10,type:"signPost"},{x:25,y:11,type:"signPost"},{x:26,y:11,type:"signPost"},{x:31,y:12,type:"signPost"},
-  {x:8,y:10,type:"lanternPost"},{x:28,y:10,type:"lanternPost"},
-  {x:21,y:14,type:"stonePile"},{x:21,y:16,type:"stonePile"},{x:29,y:15,type:"stonePile"},
-  {x:21,y:13,type:"grassTuft"},{x:29,y:17,type:"grassTuft"},{x:24,y:18,type:"grassTuft"},
-  {x:5,y:12,type:"bush"},{x:32,y:12,type:"bush"},{x:6,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
-  {x:17,y:11,type:"well"},{x:18,y:10,type:"crate"},{x:19,y:10,type:"sack"},
-  {x:14,y:13,type:"fenceSeg"},{x:15,y:13,type:"fenceSeg"},{x:12,y:13,type:"bush"},
-  {x:16,y:4,type:"signPost"},{x:20,y:2,type:"signPost"},{x:21,y:2,type:"fenceSeg"},
-  {x:13,y:5,type:"fenceSeg"},{x:14,y:5,type:"fenceSeg"},{x:23,y:4,type:"fenceSeg"},
-  {x:14,y:2,type:"bush"},{x:24,y:2,type:"bush"},
-  {x:12,y:1,type:"stonePile"},{x:25,y:1,type:"stonePile"},
-  {x:22,y:1,type:"crate"}
+  {x:12,y:9,type:"crate"},{x:13,y:9,type:"barrel"},{x:14,y:9,type:"sack"},{x:11,y:9,type:"bush"},
+  {x:21,y:9,type:"crate"},{x:22,y:9,type:"barrel"},{x:23,y:9,type:"sack"},{x:24,y:9,type:"bush"},
+  {x:12,y:18,type:"crate"},{x:13,y:18,type:"sack"},{x:14,y:18,type:"barrel"},{x:11,y:18,type:"bush"},
+  {x:21,y:18,type:"crate"},{x:22,y:18,type:"sack"},{x:23,y:18,type:"barrel"},
+  {x:15,y:12,type:"grassTuft"},{x:16,y:12,type:"grassTuft"},{x:20,y:12,type:"grassTuft"},
+  {x:17,y:12,type:"well"},
+  {x:16,y:11,type:"lanternPost"},{x:19,y:11,type:"lanternPost"},
+  {x:12,y:12,type:"signPost"},{x:23,y:12,type:"signPost"},{x:27,y:11,type:"signPost"},
+  {x:25,y:13,type:"stonePile"},{x:24,y:15,type:"stonePile"},{x:30,y:17,type:"stonePile"},
+  {x:26,y:18,type:"grassTuft"},{x:29,y:18,type:"grassTuft"},{x:31,y:14,type:"grassTuft"},
+  {x:8,y:12,type:"bush"},{x:30,y:12,type:"bush"},{x:7,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
+  {x:16,y:14,type:"fenceSeg"},{x:17,y:14,type:"fenceSeg"},{x:18,y:14,type:"fenceSeg"},
+  {x:18,y:4,type:"signPost"},{x:21,y:4,type:"signPost"},{x:22,y:2,type:"fenceSeg"},
+  {x:14,y:4,type:"fenceSeg"},{x:24,y:4,type:"fenceSeg"},
+  {x:14,y:2,type:"bush"},{x:23,y:2,type:"bush"},
+  {x:12,y:1,type:"stonePile"},{x:24,y:1,type:"stonePile"},
+  {x:10,y:15,type:"barrel"},{x:25,y:15,type:"crate"},{x:27,y:10,type:"sack"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
-const treeData = [[1,2,"a"],[2,2,"b"],[3,3,"a"],[2,5,"c"],[1,6,"a"],[3,7,"b"],[2,9,"a"],[1,11,"c"],[3,12,"a"],[2,14,"b"],[1,17,"a"],[2,19,"b"],[3,21,"a"],[1,22,"c"],[4,23,"a"],[2,1,"a"],[4,2,"c"],[7,1,"b"],[10,2,"a"],[13,2,"c"],[27,2,"a"],[30,1,"b"],[33,2,"a"],[35,1,"c"],[37,2,"a"],[36,2,"a"],[35,4,"b"],[37,5,"a"],[36,7,"c"],[35,9,"a"],[36,11,"b"],[37,13,"a"],[35,15,"c"],[36,17,"a"],[37,19,"b"],[35,21,"a"],[36,23,"c"],[34,22,"a"],[4,22,"b"],[6,23,"a"],[9,22,"c"],[12,23,"a"],[15,22,"b"],[24,23,"a"],[27,22,"c"],[30,23,"a"],[33,22,"b"],[5,5,"a"],[6,8,"b"],[7,19,"a"],[9,4,"c"],[31,5,"a"],[32,8,"b"],[31,19,"a"],[29,21,"c"],[21,15,"a"],[22,18,"c"],[29,16,"b"],[28,19,"c"]];
+const treeData = [
+  [1,1,"a"],[2,2,"b"],[3,3,"a"],[1,5,"c"],[2,7,"a"],[3,9,"b"],[1,11,"a"],[2,14,"c"],[1,17,"a"],[2,20,"b"],[3,22,"a"],
+  [5,2,"a"],[7,2,"c"],[9,1,"b"],[11,2,"a"],[26,1,"c"],[28,2,"a"],[31,1,"b"],[34,2,"a"],[36,3,"c"],[37,6,"a"],[36,9,"b"],
+  [37,12,"a"],[35,14,"c"],[36,17,"a"],[37,20,"b"],[35,22,"a"],[32,22,"c"],[29,23,"a"],[26,22,"b"],[22,23,"a"],[17,23,"c"],
+  [13,23,"a"],[10,22,"b"],[7,23,"a"],[5,22,"c"],
+  [30,5,"a"],[31,7,"b"],[30,9,"a"],[32,10,"c"],[31,16,"a"],[29,20,"c"],
+  [6,6,"a"],[7,8,"b"],[6,18,"a"],[8,20,"c"],[9,5,"c"],[27,19,"b"],[24,20,"c"],[22,19,"a"],[19,21,"b"]
+];
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
 
 world.zones.push(
   {name:"North Road",x:10,y:0,w:14,h:7},
-  {name:"Hearthvale Square",x:9,y:7,w:18,h:11},
-  {name:"Mirror Pond",x:21,y:12,w:10,h:8},
+  {name:"Hearthvale Square",x:9,y:6,w:18,h:13},
+  {name:"Mirror Pond",x:23,y:11,w:10,h:9},
   {name:"Eastern Woods",x:27,y:3,w:11,h:19},
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
@@ -1750,9 +1781,9 @@ world.zones.push(
 const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
-const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
-const hunterNpc={x:26,y:9,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"down"};
-const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
+const npc={x:20,y:12,name:"Edrin Vale",facing:"down"};
+const hunterNpc={x:25,y:11,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"down"};
+const vendorNpc={x:15,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
@@ -3928,7 +3959,7 @@ registerWorldObject({
   objectId:"mirror_pond_sign",
   type:WORLD_OBJECT_TYPE.SIGN,
   zone:"overworld",
-  x:25, y:11,
+  x:26, y:11,
   state:"unread",
   interactable:true,
   collision:true,
@@ -3943,7 +3974,7 @@ registerWorldObject({
   objectId:"mirror_pond",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
-  x:21, y:13,
+  x:27, y:14,
   state:"still",
   interactable:true,
   collision:false,
@@ -5093,7 +5124,7 @@ function drawShadowTile(img, x, y, alpha=1){
   ctx.globalAlpha = oldAlpha;
 }
 function drawMirrorPondInspectionMarker(now){
-  const screenPos=tileToScreen(21,13);
+  const screenPos=tileToScreen(Math.floor(pond.cx), Math.floor(pond.cy)-1);
   const pulse=(Math.sin(now*0.006)+1)*0.5;
   ctx.save();
   ctx.strokeStyle="rgba(161,210,255," + (0.35 + pulse*0.25).toFixed(3) + ")";
@@ -5345,14 +5376,20 @@ function drawWorld(){
   for(let y=cam.tileY-padY;y<cam.tileY+VIEW_TILES_Y+padY;y++) for(let x=cam.tileX-padX;x<cam.tileX+VIEW_TILES_X+padX;x++){
     const p=tileToScreen(x,y);
     if(x<0 || y<0 || x>=WORLD_W || y>=WORLD_H) continue;
-    const mix=Math.floor(rng(Math.floor(x*.6),Math.floor(y*.6),4)*assets.grass.length);
+    const n=layeredNoise(x,y);
+    const mix=Math.min(assets.grass.length-1, Math.floor(n*assets.grass.length));
     const region=getOutdoorRegionIdAt(x,y);
     const inForest=region==="eastern_woods" || (region==="north_road" && rng(x,y,211)>0.45);
-    const img=inForest ? assets.forestGrass[Math.floor(rng(x,y,212)*assets.forestGrass.length)] : assets.grass[mix];
+    const forestMix=Math.min(assets.forestGrass.length-1, Math.floor((layeredNoise(x+5,y+3)+rng(x,y,212)*0.2)*assets.forestGrass.length)%assets.forestGrass.length);
+    const img=inForest ? assets.forestGrass[forestMix] : assets.grass[mix];
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
-    if(!inForest && rng(x,y,333)>0.8){
-      ctx.fillStyle="rgba(188,216,151,.045)";
+    if(!inForest && layeredNoise(x+13,y+7)>0.72){
+      ctx.fillStyle="rgba(188,216,151,.032)";
       ctx.fillRect(p.x+1,p.y+1,30,30);
+    }
+    if(world.roadTiles.has(keyOf(x,y))){
+      ctx.fillStyle="rgba(77,109,63,.09)";
+      ctx.fillRect(p.x,p.y,32,32);
     }
   }
 
@@ -5376,7 +5413,7 @@ function drawWorld(){
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
     const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     const t=performance.now()*0.002, rip=(Math.sin(t*3+x*1.1+y*.8)+1)*.5;
-    const mirrorAura=(x>=22&&x<=28&&y>=13&&y<=17) ? 0.06 : 0.01;
+    const mirrorAura=(x>=25&&x<=30&&y>=13&&y<=17) ? 0.075 : 0.02;
     ctx.fillStyle="rgba(188,228,255," + (.02+rip*.05+mirrorAura).toFixed(3) + ")"; ctx.fillRect(p.x+3,p.y+6,TILE-10,1);
     if(edge){
       ctx.fillStyle="rgba(224,244,255," + (.05+rip*.05).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1);
@@ -5395,6 +5432,10 @@ function drawWorld(){
       ctx.fillStyle="rgba(86,121,74,.55)";
       ctx.fillRect(p.x+5,p.y+14,2,8);
       ctx.fillRect(p.x+8,p.y+15,1,7);
+    }
+    if(rng(x,y,529)>0.72){
+      ctx.fillStyle="rgba(198,214,162,.18)";
+      ctx.fillRect(p.x+11,p.y+10,4,1);
     }
   }
 
@@ -5477,7 +5518,7 @@ function drawWorld(){
   const zoneLabelEntries=[];
   if(zoneName==="North Road") zoneLabelEntries.push({ text:"North Road", tx:13, ty:1, priority:0 });
   if(zoneName==="Hearthvale Square") zoneLabelEntries.push({ text:"Hearthvale Square", tx:12, ty:7, priority:0 });
-  if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:23, ty:12, priority:0 });
+  if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:26, ty:12, priority:0 });
   if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
 
   drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.33,8.5);
