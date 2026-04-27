@@ -5029,7 +5029,22 @@ function updateSidebar(){
   }
   let nextInventoryMarkup="Empty";
   if(player.inventory.length>0){
-    nextInventoryMarkup=player.inventory.map((entry)=>{
+    const groupOrder=["equipment","consumables","materials","quest","other"];
+    const groupTitles={
+      equipment:"Equipment",
+      consumables:"Consumables",
+      materials:"Materials",
+      quest:"Quest Items",
+      other:"Other"
+    };
+    const groupedEntries={
+      equipment:[],
+      consumables:[],
+      materials:[],
+      quest:[],
+      other:[]
+    };
+    for(const entry of player.inventory){
       const item=getItemDefinition(entry.itemId);
       const name=item?.name || entry.itemId;
       const equipSlot=item?.type==="weapon"
