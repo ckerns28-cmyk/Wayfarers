@@ -61,10 +61,10 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 24. UX Presentation Polish
 25. Second Outdoor Region
 26. Second Dungeon / Mini-Boss
+27. Skill Use Progression
 
 ## Upcoming Phases
 
-27. Skill Use Progression
 28. Save Schema Hardening
 29. Multiplayer Architecture Planning
 30. Shared World Prototype

@@ -80,6 +80,32 @@ Mythic, grounded, moody, old-school RPG.
 - Character progression is intentionally foundational: no skill tree yet.
 - Future expansion: **Skill Use Progression** will layer on top of this level baseline.
 
+## Skill Use Progression (Phase 27)
+
+- **Player Level** represents overall power growth from total XP.
+- **Skill Levels** represent practice-based growth from repeated action categories.
+- Skill levels are separate from player level and currently cap at **Level 5**.
+- Skill XP thresholds:
+  - Level 1: 0 XP
+  - Level 2: 50 XP
+  - Level 3: 125 XP
+  - Level 4: 250 XP
+  - Level 5: 450 XP
+
+### Current skills
+
+- **Swordsmanship**
+  - Gains XP from successful melee weapon hits and weapon defeats.
+  - Bonuses: +1 melee damage at Levels 2–3, +2 at Levels 4–5.
+- **Defense**
+  - Gains XP from taking real enemy damage while armor is equipped, plus small encounter-survival bonus on enemy defeat while armored.
+  - Bonuses: +1 defense at Levels 2–3, +2 at Levels 4–5.
+  - Minimum incoming damage remains 1.
+- **Survival**
+  - Gains XP from consuming healing items that restore HP.
+  - Bonuses to healing items: +2 / +4 / +6 / +8 HP at Levels 2/3/4/5.
+  - Healing use remains blocked at full HP (no consumption/no XP).
+
 ## Outdoor Region Identity (Phase 25)
 
 - **Hearthvale Square:** safe village hub where NPC utility, quest turn-ins, and vendors stay readable.
