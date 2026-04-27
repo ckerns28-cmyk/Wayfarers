@@ -182,8 +182,9 @@ const html = String.raw`<!DOCTYPE html>
       </section>
       <section id="stats" class="panel">
         <div class="stats">
+          <div class="muted">Level</div><div id="levelVal">1</div>
           <div class="muted">HP</div><div id="hpVal">50/50</div>
-          <div class="muted">XP</div><div id="xpVal">0</div>
+          <div class="muted">XP</div><div id="xpVal">0 / 100</div>
           <div class="muted">Coins</div><div id="coinsVal">0</div>
           <div class="muted">Weapon</div><div id="weaponVal">Rusty Sword (+2)</div>
           <div class="muted">Quest</div><div id="questVal">Town Slice</div>
@@ -488,7 +489,7 @@ const html = String.raw`<!DOCTYPE html>
         { "id": "open_chest", "label": "Open Mirror Cave chest", "type": "interact", "targetId": "mirror_cave_chest", "requiredAmount": 1, "currentAmount": 0, "completed": false },
         { "id": "return_hunter", "label": "Return to Hunter Garran", "type": "interact", "targetId": "npc_hunter_garran", "requiredAmount": 1, "currentAmount": 0, "completed": false }
       ],
-      "rewards": { "xp": 0, "coins": 0, "items": [] }
+      "rewards": { "xp": 50, "coins": 0, "items": [] }
     }
   ]
 }
@@ -501,6 +502,7 @@ const gamePanel = document.getElementById("gamePanel");
 const ctx = canvas.getContext("2d");
 const hud = document.getElementById("hud");
 const chat = document.getElementById("chat");
+const levelVal = document.getElementById("levelVal");
 const hpVal = document.getElementById("hpVal");
 const xpVal = document.getElementById("xpVal");
 const coinsVal = document.getElementById("coinsVal");
@@ -1197,7 +1199,15 @@ world.zones.push(
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
 
-const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
+const LEVEL_PROGRESSION=[
+  { level:1, xpRequired:0, maxHp:50, baseAttackBonus:0, baseDefenseBonus:0 },
+  { level:2, xpRequired:100, maxHp:60, baseAttackBonus:1, baseDefenseBonus:0 },
+  { level:3, xpRequired:250, maxHp:70, baseAttackBonus:1, baseDefenseBonus:1 },
+  { level:4, xpRequired:450, maxHp:80, baseAttackBonus:2, baseDefenseBonus:1 },
+  { level:5, xpRequired:700, maxHp:90, baseAttackBonus:2, baseDefenseBonus:2 }
+];
+const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
+const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const hunterNpc={x:26,y:9,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"down"};
 const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
@@ -1296,6 +1306,66 @@ const BANDIT_ATTACK_COOLDOWN_MS=2800;
 const WOLF_RESPAWN_MS=15000;
 const BANDIT_RESPAWN_MS=18000;
 const BASE_PLAYER_DAMAGE=6;
+
+function getLevelProfile(level){
+  const normalized=Math.max(1, Math.floor(Number.isFinite(level) ? level : 1));
+  const found=LEVEL_PROGRESSION.find((entry)=>entry.level===normalized);
+  return found || LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1];
+}
+function getLevelFromXp(totalXp){
+  const normalizedXp=Math.max(0, Math.floor(Number.isFinite(totalXp) ? totalXp : 0));
+  let resolvedLevel=1;
+  for(const entry of LEVEL_PROGRESSION){
+    if(normalizedXp>=entry.xpRequired) resolvedLevel=entry.level;
+    else break;
+  }
+  return resolvedLevel;
+}
+function getNextLevelXpThreshold(level){
+  const next=LEVEL_PROGRESSION.find((entry)=>entry.level===level+1);
+  return next ? next.xpRequired : null;
+}
+function getXpProgressText(){
+  const nextThreshold=getNextLevelXpThreshold(player.level);
+  if(nextThreshold===null){
+    return player.xp + " / MAX";
+  }
+  return player.xp + " / " + nextThreshold;
+}
+function applyProgressionForLevel(targetLevel,{announce=false}={}){
+  const beforeLevel=player.level;
+  const beforeProfile=getLevelProfile(beforeLevel);
+  const beforeMaxHp=player.maxHp;
+  const beforeAttack=player.baseAttackBonus;
+  const beforeDefense=player.baseDefenseBonus;
+  const profile=getLevelProfile(targetLevel);
+  player.level=profile.level;
+  player.maxHp=profile.maxHp;
+  player.baseAttackBonus=profile.baseAttackBonus;
+  player.baseDefenseBonus=profile.baseDefenseBonus;
+  const gainedMaxHp=Math.max(0, player.maxHp-beforeMaxHp);
+  if(gainedMaxHp>0) player.hp=Math.min(player.maxHp, player.hp + gainedMaxHp);
+  if(announce && player.level>beforeLevel){
+    log("Level up! You reached Level " + player.level + ".");
+    if(player.maxHp>beforeProfile.maxHp) log("Max HP increased.");
+    if(player.baseAttackBonus>beforeAttack) log("Attack increased.");
+    if(player.baseDefenseBonus>beforeDefense) log("Defense increased.");
+  }
+}
+function syncLevelFromXp({announce=false}={}){
+  let targetLevel=getLevelFromXp(player.xp);
+  targetLevel=Math.min(MAX_DEFINED_LEVEL, targetLevel);
+  while(player.level<targetLevel){
+    applyProgressionForLevel(player.level+1,{announce});
+  }
+}
+function grantPlayerXp(amount){
+  const gained=Math.max(0, Math.floor(Number.isFinite(amount) ? amount : 0));
+  if(gained<=0) return 0;
+  player.xp += gained;
+  syncLevelFromXp({announce:true});
+  return gained;
+}
 
 function randomInt(min,max){ return min + Math.floor(Math.random() * (max-min+1)); }
 function getItemDefinition(itemId){ return ITEM_REGISTRY[itemId] || null; }
@@ -1396,7 +1466,7 @@ function unequipSlot(slotName){
   return true;
 }
 function applyIncomingDamage(rawDamage){
-  const defense=Math.max(0, getEquippedDefenseBonus());
+  const defense=Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0));
   const reducedDamage=Math.max(1, Math.floor(rawDamage)-defense);
   player.hp=Math.max(0, player.hp-reducedDamage);
   return reducedDamage;
@@ -1665,7 +1735,7 @@ class QuestStateSystem {
     const rewardXp=Math.max(0, Math.floor(Number.isFinite(quest.rewards?.xp) ? quest.rewards.xp : 0));
     const rewardCoins=Math.max(0, Math.floor(Number.isFinite(quest.rewards?.coins) ? quest.rewards.coins : 0));
     const rewardItems=Array.isArray(quest.rewards?.items) ? quest.rewards.items : [];
-    if(rewardXp>0) player.xp += rewardXp;
+    if(rewardXp>0) grantPlayerXp(rewardXp);
     if(rewardCoins>0) player.coins += rewardCoins;
     rewardItems.forEach((reward)=>{
       if(!reward || typeof reward.itemId!=="string") return;
@@ -2144,7 +2214,7 @@ eventSystem.on("quest:hunter:final_turn_in", ()=>{
       log("You obtained Iron Sword.");
     }
     player.coins += 50;
-    player.xp += 100;
+    grantPlayerXp(100);
     addItemToInventory("small_potion", 2);
     log("Rewards: +100 XP, +50 Coins, Small Potion x2.");
     hunterQuestRewardClaimed=true;
@@ -2169,7 +2239,7 @@ eventSystem.on("world:pond:awakened", ()=>{
 
 const SAVE_KEY="wayfarer.save.v1";
 const SAVE_SCHEMA_VERSION=1;
-const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9]);
+const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10]);
 const DEV_DEBUG_TOOLS_ENABLED=true;
 let saveNoticeTimeout=0;
 function showSaveNotice(message){
@@ -2195,15 +2265,19 @@ function createSaveData(reason){
     respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
   }));
   return {
-    version:9,
+    version:10,
     saveSchemaVersion:SAVE_SCHEMA_VERSION,
     reason,
     savedAt:new Date().toISOString(),
     player:{
       zoneId:currentZoneId,
       position:{ x:player.targetX, y:player.targetY },
+      level:player.level,
       hp:player.hp,
+      maxHp:player.maxHp,
       xp:player.xp,
+      baseAttackBonus:player.baseAttackBonus,
+      baseDefenseBonus:player.baseDefenseBonus,
       coins:player.coins,
       inventory:player.inventory.map((entry)=>({ itemId:entry.itemId, quantity:entry.quantity })),
       equipment:{ ...player.equipment }
@@ -2275,9 +2349,18 @@ function loadGame(){
     blockedDirectionalKeysUntilRelease.clear();
     currentZoneId=isInMirrorCave ? "mirror_cave" : getOutdoorRegionIdAt(loadedX, loadedY);
     lastLoggedZoneEntryId=currentZoneId;
-    player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
-    player.xp=Math.max(0,data.player.xp);
-    player.coins=Math.max(0,data.player.coins);
+    player.xp=Math.max(0,Math.floor(Number.isFinite(data.player.xp) ? data.player.xp : 0));
+    const xpResolvedLevel=getLevelFromXp(player.xp);
+    const hasSavedLevel=Number.isFinite(data.player.level);
+    const savedLevel=hasSavedLevel ? Math.max(1,Math.floor(data.player.level)) : xpResolvedLevel;
+    const targetLevel=Math.max(xpResolvedLevel, Math.min(MAX_DEFINED_LEVEL, savedLevel));
+    const targetProfile=getLevelProfile(targetLevel);
+    player.level=targetLevel;
+    player.maxHp=Math.max(targetProfile.maxHp, Math.floor(Number.isFinite(data.player.maxHp) ? data.player.maxHp : targetProfile.maxHp));
+    player.baseAttackBonus=Math.max(targetProfile.baseAttackBonus, Math.floor(Number.isFinite(data.player.baseAttackBonus) ? data.player.baseAttackBonus : targetProfile.baseAttackBonus));
+    player.baseDefenseBonus=Math.max(targetProfile.baseDefenseBonus, Math.floor(Number.isFinite(data.player.baseDefenseBonus) ? data.player.baseDefenseBonus : targetProfile.baseDefenseBonus));
+    player.hp=Math.max(0,Math.min(player.maxHp,Math.floor(Number.isFinite(data.player.hp) ? data.player.hp : player.maxHp)));
+    player.coins=Math.max(0,Math.floor(Number.isFinite(data.player.coins) ? data.player.coins : 0));
     player.inventory=normalizeInventory(data.player.inventory);
     if(data.player.equipment && typeof data.player.equipment==="object"){
       player.equipment={
@@ -2777,8 +2860,9 @@ function handlePlayerDefeat(){
 let sidebarInventoryMarkup="";
 let sidebarEquipmentMarkup="";
 function updateSidebar(){
+  levelVal.textContent = String(player.level);
   hpVal.textContent = player.hp + "/" + player.maxHp;
-  xpVal.textContent = String(player.xp);
+  xpVal.textContent = getXpProgressText();
   coinsVal.textContent = String(player.coins);
   const equippedWeapon=getEquippedItem("weapon");
   weaponVal.textContent = equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
@@ -3131,7 +3215,7 @@ function banditAttack(now){
 }
 function defeatWolf(wolf,now){
   wolf.defeated=true;
-  player.xp+=12;
+  grantPlayerXp(12);
   player.coins+=4;
   const lootDrops=rollWolfLoot();
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
@@ -3143,7 +3227,7 @@ function defeatWolf(wolf,now){
 }
 function defeatBandit(bandit,now){
   bandit.defeated=true;
-  player.xp+=16;
+  grantPlayerXp(16);
   player.coins+=6;
   const lootDrops=rollBanditLoot();
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
@@ -3173,7 +3257,7 @@ function tryPlayerAttack(now){
   const len=Math.max(1,Math.hypot(tx,ty));
   player.attackLungeX=(tx/len)*2.4;
   player.attackLungeY=(ty/len)*1.4;
-  const totalDamage=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus();
+  const totalDamage=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0);
   targetHostile.entity.hp=Math.max(0,targetHostile.entity.hp-totalDamage);
   targetHostile.entity.hitUntil=now+320;
   targetHostile.entity.hitFlickerUntil=now+240;

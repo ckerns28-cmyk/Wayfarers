@@ -54,3 +54,10 @@ Mythic, grounded, moody, old-school RPG.
 - Preserve the Hearthvale → Eastern Woods → Mirror Cave slice as the canonical path.
 - Prioritize reliability, data safety, and readability over net-new content.
 - Keep combat/inventory/vendor/quest flows interoperable with save/load at all times.
+
+## Character Progression Rules (Phase 20)
+- XP now feeds a level progression track instead of being cosmetic.
+- Levels increase core survivability and combat power (Max HP, base attack bonus, base defense bonus).
+- Level-up stat growth is immediate and persistent across save/load.
+- Character progression is intentionally foundational: no skill tree yet.
+- Future expansion: **Skill Use Progression** will layer on top of this level baseline.
