@@ -37,7 +37,7 @@ const html = String.raw`<!DOCTYPE html>
       --accent:#8fb6ff;
     }
     * { box-sizing: border-box; }
-    #gamePanel, #game, #hud, #dialogue, #vendorPanel, #inventoryPanel, #equipmentPanel, #stats, #objective, #logPanel, #brand {
+    #gamePanel, #game, #hud, #dialogue, #vendorPanel, #inventoryPanel, #equipmentPanel, #stats, #logPanel, #brand {
       user-select: none;
       -webkit-user-select: none;
     }
@@ -69,8 +69,10 @@ const html = String.raw`<!DOCTYPE html>
       min-height:0;
       height:100%;
       overflow:hidden;
+      position:relative;
+      z-index:5;
     }
-    #brand,#stats,#objective{padding:12px;}
+    #brand,#stats{padding:12px;}
     #sidebarLower{
       display:flex;
       flex-direction:column;
@@ -85,6 +87,8 @@ const html = String.raw`<!DOCTYPE html>
       grid-template-columns:repeat(4, minmax(0, 1fr));
       gap:6px;
       flex:0 0 auto;
+      position:relative;
+      z-index:2;
     }
     .sidebar-tab{
       border:1px solid #4c6281;
@@ -105,6 +109,8 @@ const html = String.raw`<!DOCTYPE html>
       flex:1 1 auto;
       min-height:0;
       overflow:hidden;
+      position:relative;
+      z-index:1;
     }
     .sidebar-tab-panel{
       display:none;
@@ -133,18 +139,12 @@ const html = String.raw`<!DOCTYPE html>
       color:#d2dded;
       flex:1 1 auto;
     }
-    #objective{
-      flex:0 0 auto;
-      min-height:64px;
-      overflow:visible;
-    }
     #objectiveText{
       line-height:1.4;
       white-space:normal;
       overflow-wrap:anywhere;
     }
     #inventoryPanel,#equipmentPanel,#skillsPanel,#logPanel{
-      display:flex;
       flex-direction:column;
       min-height:0;
       height:100%;
@@ -357,7 +357,11 @@ const html = String.raw`<!DOCTYPE html>
       <section id="brand" class="panel">
         <h1>Wayfarer</h1>
         <div class="sub">Artistic Rebuild — Hearthvale Slice</div>
-        <span class="tag">Mythic Pixel Vertical Slice</span>
+        <div class="stats" style="margin-top:10px;">
+          <div class="muted">Current Objective</div><div id="objectiveText">Explore Hearthvale and the surrounding roads.</div>
+          <div class="muted">Current Zone</div><div id="zoneVal">Hearthvale Square</div>
+          <div class="muted">Quest</div><div id="questVal">The Still Water [Completed]</div>
+        </div>
       </section>
       <section id="stats" class="panel">
         <div class="stats">
@@ -366,13 +370,9 @@ const html = String.raw`<!DOCTYPE html>
           <div class="muted">XP</div><div id="xpVal">0 / 100</div>
           <div class="muted">Coins</div><div id="coinsVal">0</div>
           <div class="muted">Weapon</div><div id="weaponVal">Rusty Sword (+2)</div>
-          <div class="muted">Quest</div><div id="questVal">Town Slice</div>
-          <div class="muted">Zone</div><div id="zoneVal">Hearthvale Square</div>
+          <div class="muted">Armor</div><div id="armorVal">None</div>
+          <div class="muted">Trinket</div><div id="trinketVal">None</div>
         </div>
-      </section>
-      <section id="objective" class="panel">
-        <div class="questTitle">Current Objective</div>
-        <div id="objectiveText" class="muted">Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.</div>
       </section>
       <section id="sidebarLower" class="panel">
         <div id="sidebarTabs" role="tablist" aria-label="Sidebar sections">
@@ -785,6 +785,8 @@ const coinsVal = document.getElementById("coinsVal");
 const zoneVal = document.getElementById("zoneVal");
 const questVal = document.getElementById("questVal");
 const weaponVal = document.getElementById("weaponVal");
+const armorVal = document.getElementById("armorVal");
+const trinketVal = document.getElementById("trinketVal");
 const objectiveText = document.getElementById("objectiveText");
 const inventoryList = document.getElementById("inventoryList");
 const equipmentList = document.getElementById("equipmentList");
@@ -2044,9 +2046,14 @@ function equipArmor(itemId){
 }
 function unequipSlot(slotName){
   if(!["weapon","armor","trinket"].includes(slotName)) return false;
-  if(slotName==="weapon") return false;
   const currentItem=getEquippedItem(slotName);
   if(!currentItem) return false;
+  if(slotName==="weapon"){
+    if(currentItem.id==="rusty_sword") return false;
+    player.equipment.weapon="rusty_sword";
+    log("Removed " + currentItem.name + ". Re-equipped Rusty Sword.");
+    return true;
+  }
   player.equipment[slotName]=null;
   log("Removed " + currentItem.name + ".");
   return true;
@@ -4019,6 +4026,12 @@ function updateSidebar(){
   coinsVal.textContent = String(player.coins);
   const equippedWeapon=getEquippedItem("weapon");
   weaponVal.textContent = equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
+  const equippedArmor=getEquippedItem("armor");
+  const armorDefense=getArmorDefenseBonus();
+  armorVal.textContent = equippedArmor ? (equippedArmor.name + " (+" + armorDefense + " DEF)") : "None";
+  const equippedTrinket=getEquippedItem("trinket");
+  const trinketDefense=getTrinketDefenseBonus();
+  trinketVal.textContent = equippedTrinket ? (equippedTrinket.name + (trinketDefense>0 ? " (+" + trinketDefense + " DEF)" : "")) : "None";
   const zoneName=getCurrentZoneName();
   zoneVal.textContent = zoneName;
   const huntersQuest=questSystem.getQuest("hunters_request");
@@ -4093,19 +4106,21 @@ function updateSidebar(){
   // Do not re-render vendor rows every sidebar update; replacing DOM each frame
   // can swallow button clicks before click events complete.
   const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
-  const equippedArmor=getEquippedItem("armor");
-  const armorDefense=getArmorDefenseBonus();
   const armorLine=equippedArmor ? (equippedArmor.name + " (+" + armorDefense + " DEF)") : "None";
-  const equippedTrinket=getEquippedItem("trinket");
-  const trinketDefense=getTrinketDefenseBonus();
   const trinketLine=equippedTrinket ? (equippedTrinket.name + (trinketDefense>0 ? " (+" + trinketDefense + " DEF)" : "")) : "None";
-  const weaponButton="";
+  const weaponButton=equippedWeapon && equippedWeapon.id!=="rusty_sword" ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"weapon\">Remove</button>" : "";
   const armorButton=equippedArmor ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"armor\">Remove</button>" : "";
   const trinketButton=equippedTrinket ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"trinket\">Remove</button>" : "";
+  const totalAttack=getTotalAttackDamage();
+  const totalDefense=getTotalDefenseRating();
+  const maxHp=player.maxHp;
   const nextEquipmentMarkup=
     "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Weapon:</span><span class=\"equipment-slot-value\">" + weaponLine + weaponButton + "</span></div>" +
     "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Armor:</span><span class=\"equipment-slot-value\">" + armorLine + armorButton + "</span></div>" +
-    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Trinket:</span><span class=\"equipment-slot-value\">" + trinketLine + trinketButton + "</span></div>";
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Trinket:</span><span class=\"equipment-slot-value\">" + trinketLine + trinketButton + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Total Attack:</span><span class=\"equipment-slot-value\">" + totalAttack + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Total Defense:</span><span class=\"equipment-slot-value\">" + totalDefense + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Max HP:</span><span class=\"equipment-slot-value\">" + maxHp + "</span></div>";
   if(nextEquipmentMarkup!==sidebarEquipmentMarkup){
     equipmentList.innerHTML = nextEquipmentMarkup;
     sidebarEquipmentMarkup=nextEquipmentMarkup;
@@ -4126,11 +4141,10 @@ function updateSidebar(){
   const currentTarget=targetHostile?.entity || null;
   const targetCooldownMs=currentTarget ? Math.max(0, getHostileAttackCooldownMs(currentTarget)-(performance.now()-getHostileLastAttackAt(currentTarget))) : 0;
   const targetCooldownText=!currentTarget ? "N/A" : (currentTarget.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
-  const totalAttack=getTotalAttackDamage();
-  const totalDefense=getTotalDefenseRating();
   const interactionPrompt=interactionManager.getPromptText();
   const hudLines=[
     "WASD / Arrows : Move",
+    "E : contextual action",
     "Space : Attack",
     "H : Quick-use healing item",
     "K : Manual Save",
