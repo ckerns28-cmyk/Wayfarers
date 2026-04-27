@@ -246,3 +246,41 @@ Phase 24 should prioritize **UX presentation polish and interaction clarity befo
 - **North Road:** colder mood tint + sparse roadside props to support exposed/ominous feel.
 - **Mirror Cave:** cooler enclosed value structure with clear chest/exit readability.
 - **Abandoned Tollhouse:** harsher interior contrast and clearer enemy/chest/exit readability.
+
+## Phase 32H — Hearthvale Newport 1760s Direction (Option B)
+
+### Acceptance bar
+- Phase 32 visuals are accepted only at **8.5+/10** quality.
+- Pipeline completion alone is not visual completion.
+
+### Hearthvale target mood
+Hearthvale should evoke **Newport, Rhode Island in the 1760s** with subtle mythic layering:
+- colonial New England settlement proportions
+- clapboard/timber facades with trim readability
+- gambrel and pitched roof silhouettes
+- chimneys, market frontage, tavern/inn identity
+- meeting house / village hall civic center
+- notice board + post rider mood
+- pond-side boathouse / utility wharf identity
+
+### Building role requirements
+Hearthvale must include these readable visual roles:
+- `inn_tavern`
+- `mercantile_shop`
+- `village_hall_meeting_house`
+- `residence_small`
+- `residence_large`
+- `hunter_lodge_or_outfitter`
+- `pond_boathouse_or_waterfront_shed`
+
+### Character direction
+Character sprites should prioritize readability and role identity:
+- `wayfarer`
+- `edrin_vale`
+- `merchant_rowan`
+- `hunter_garran`
+- `bandit`
+- `wolf`
+- `rook`
+
+No token/blob fallback should ship once final sheets are delivered.

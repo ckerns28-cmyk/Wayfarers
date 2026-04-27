@@ -1145,6 +1145,81 @@ const assets = {
   building: {}, sprites: { player:null, npc:null, edrin:null, hunter:null, merchant:null, wolf:null, bandit:null, rook:null }
 };
 
+const atlasManifests = {
+  terrain: {
+    imagePath: "/assets/wayfarer/terrain/terrain_sheet.png",
+    tileSize: 32,
+    sprites: {
+      grass_base:{ sx:0, sy:0, sw:32, sh:32 },
+      grass_variant:{ sx:32, sy:0, sw:32, sh:32 },
+      road_center:{ sx:64, sy:0, sw:32, sh:32 },
+      road_edge:{ sx:96, sy:0, sw:32, sh:32 },
+      road_corner:{ sx:128, sy:0, sw:32, sh:32 },
+      water:{ sx:160, sy:0, sw:32, sh:32 },
+      shoreline:{ sx:192, sy:0, sw:32, sh:32 },
+      dock_plank:{ sx:224, sy:0, sw:32, sh:32 }
+    }
+  },
+  buildings: {
+    imagePath: "/assets/wayfarer/buildings/hearthvale_buildings_sheet.png",
+    tileSize: 32,
+    sprites: {
+      inn_tavern:{ sx:0, sy:0, sw:224, sh:192, anchorX:96, anchorY:176 },
+      mercantile_shop:{ sx:224, sy:0, sw:192, sh:192, anchorX:80, anchorY:176 },
+      village_hall_meeting_house:{ sx:0, sy:192, sw:224, sh:192, anchorX:96, anchorY:176 },
+      residence_small:{ sx:224, sy:192, sw:128, sh:160, anchorX:48, anchorY:144 },
+      residence_large:{ sx:352, sy:192, sw:160, sh:160, anchorX:64, anchorY:144 },
+      hunter_lodge_or_outfitter:{ sx:0, sy:384, sw:160, sh:160, anchorX:64, anchorY:144 },
+      pond_boathouse_or_waterfront_shed:{ sx:160, sy:384, sw:224, sh:128, anchorX:96, anchorY:112 }
+    }
+  },
+  characters: {
+    imagePath: "/assets/wayfarer/characters/character_sheet.png",
+    tileSize: 64,
+    sprites: {
+      wayfarer:{ sx:0, sy:0, sw:256, sh:256 },
+      edrin_vale:{ sx:256, sy:0, sw:256, sh:256 },
+      merchant_rowan:{ sx:512, sy:0, sw:256, sh:256 },
+      hunter_garran:{ sx:768, sy:0, sw:256, sh:256 },
+      bandit:{ sx:0, sy:256, sw:256, sh:256 },
+      wolf:{ sx:256, sy:256, sw:256, sh:256 },
+      rook:{ sx:512, sy:256, sw:256, sh:256 }
+    }
+  },
+  props: {
+    imagePath: "/assets/wayfarer/props/props_sheet.png",
+    tileSize: 32,
+    sprites: {
+      notice_board:{ sx:0, sy:0, sw:32, sh:32 },
+      barrel:{ sx:32, sy:0, sw:32, sh:32 },
+      crate:{ sx:64, sy:0, sw:32, sh:32 },
+      bench:{ sx:96, sy:0, sw:32, sh:32 },
+      lantern_post:{ sx:128, sy:0, sw:32, sh:32 },
+      fence_horizontal:{ sx:160, sy:0, sw:32, sh:32 },
+      fence_vertical:{ sx:192, sy:0, sw:32, sh:32 },
+      dock_plank:{ sx:224, sy:0, sw:32, sh:32 },
+      signpost:{ sx:256, sy:0, sw:32, sh:32 }
+    }
+  }
+};
+const atlasImages = {};
+function initAtlasImages(){
+  Object.entries(atlasManifests).forEach(([atlasId, manifest])=>{
+    const img=new Image();
+    img.src=manifest.imagePath;
+    atlasImages[atlasId]=img;
+  });
+}
+function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
+  const manifest=atlasManifests[atlasId];
+  const sheet=atlasImages[atlasId];
+  const sprite=manifest?.sprites?.[spriteId];
+  if(!manifest||!sheet||!sprite) return false;
+  if(!(sheet.complete&&sheet.naturalWidth>0)) return false;
+  ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, dw ?? sprite.sw, dh ?? sprite.sh);
+  return true;
+}
+
 function buildTerrainTiles() {
   const grassBases = ["#4f7347", "#517548", "#4c7044", "#53774a"];
   const forestBases = [palette.forestGrass[0], "#3f6540", palette.forestGrass[1], "#314f34"];
@@ -1711,6 +1786,7 @@ function paintWolfSheet() {
   const img = new Image(); img.src = c.toDataURL("image/png"); return img;
 }
 
+initAtlasImages();
 buildTerrainTiles();
 makeBuildingTiles();
 makeTreeSprites();
@@ -1825,64 +1901,18 @@ world.roads.push(
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { x:8,y:5,w:7,h:6,role:"tavern",tileRows:[
-    ["roofL","roofC","roofDormer","roofC","roofDormer","roofC","roofR"],
-    ["roofL","roofC","roofC","roofC","roofC","roofC","roofR"],
-    ["wallTimber","windowTall","wallTimber","windowTall","wallTimber","windowTall","wallTimber"],
-    ["wallTimber","wall","wallTimber","wall","wallTimber","wall","wallTimber"],
-    ["wallTimber","windowWide","wallTimber","doorPorch","wallTimber","windowWide","wallTimber"],
-    ["wall","wall","wall","wall","wall","wall","wall"]
-  ]},
-  { x:17,y:5,w:6,h:6,role:"mercantile",tileRows:[
-    ["roofL","roofSlate","roofSlate","roofSlate","roofSlate","roofR"],
-    ["roofL","roofSlate","roofDormer","roofDormer","roofSlate","roofR"],
-    ["wallBrick","windowWide","wallBrick","windowWide","wallBrick","wallBrick"],
-    ["wallBrick","wall","wallBrick","wall","wallBrick","wallBrick"],
-    ["wallBrick","windowWide","wallBrick","doorShop","wallBrick","windowWide"],
-    ["wall","wall","wall","wall","wall","wall"]
-  ]},
-  { x:11,y:12,w:7,h:6,role:"village_hall",tileRows:[
-    ["roofL","roofC","roofC","roofDormer","roofC","roofC","roofR"],
-    ["roofL","roofC","roofC","roofC","roofC","roofC","roofR"],
-    ["wall","windowTall","wall","windowTall","wall","windowTall","wall"],
-    ["wallTimber","wall","wallTimber","wall","wallTimber","wall","wallTimber"],
-    ["wall","windowWide","wall","door","wall","windowWide","wall"],
-    ["wall","wall","wall","wall","wall","wall","wall"]
-  ]},
-  { x:7,y:13,w:4,h:5,role:"home",tileRows:[
-    ["roofL","roofC","roofDormer","roofR"],
-    ["roofL","roofC","roofC","roofR"],
-    ["wallTimber","windowTall","wall","wallTimber"],
-    ["wall","doorPorch","wall","windowWide"],
-    ["wall","wall","wall","wall"]
-  ]},
-  { x:19,y:13,w:5,h:5,role:"home",tileRows:[
-    ["roofL","roofSlate","roofDormer","roofSlate","roofR"],
-    ["roofL","roofSlate","roofSlate","roofSlate","roofR"],
-    ["wallBrick","windowWide","wallBrick","windowWide","wallBrick"],
-    ["wall","door","wall","windowTall","wall"],
-    ["wall","wall","wall","wall","wall"]
-  ]},
-  { x:25,y:12,w:4,h:5,role:"home",tileRows:[
-    ["roofL","roofC","roofDormer","roofR"],
-    ["roofL","roofC","roofC","roofR"],
-    ["wall","windowTall","wall","wallTimber"],
-    ["wallTimber","doorPorch","wall","windowWide"],
-    ["wall","wall","wall","wall"]
-  ]},
-  { x:25,y:19,w:7,h:4,role:"waterside_utility",tileRows:[
-    ["roofL","roofSlate","roofSlate","roofDormer","roofSlate","roofSlate","roofR"],
-    ["wallBrick","windowWide","wallBrick","doorShop","wallBrick","windowWide","wallBrick"],
-    ["wall","wall","wall","wall","wall","wall","wall"],
-    ["wall","wall","wall","wall","wall","wall","wall"]
-  ]},
-  { x:21,y:16,w:3,h:3,role:"storage",tileRows:[
-    ["roofL","roofC","roofR"],
-    ["wallTimber","doorShop","wallTimber"],
-    ["wall","wall","wall"]
-  ]}
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:8, y:5, w:7, h:6, anchorX:3, anchorY:5, collision:{x:8,y:8,w:7,h:3}, interaction:{x:11,y:10,w:1,h:1}, label:{x:11,y:6,text:"Inn & Tavern"} },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:17, y:5, w:6, h:6, anchorX:3, anchorY:5, collision:{x:17,y:8,w:6,h:3}, interaction:{x:20,y:10,w:1,h:1}, label:{x:20,y:6,text:"Mercantile Shop"} },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:11, y:12, w:7, h:6, anchorX:3, anchorY:5, collision:{x:11,y:15,w:7,h:3}, interaction:{x:14,y:17,w:1,h:1}, label:{x:14,y:13,text:"Village Hall"} },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:13, w:4, h:5, anchorX:2, anchorY:4, collision:{x:7,y:15,w:4,h:3}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:14,text:"Cottage"} },
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:13, w:5, h:5, anchorX:2, anchorY:4, collision:{x:19,y:15,w:5,h:3}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:14,text:"Residence"} },
+  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:25, y:12, w:4, h:5, anchorX:2, anchorY:4, collision:{x:25,y:14,w:4,h:3}, interaction:{x:26,y:16,w:1,h:1}, label:{x:26,y:13,text:"Hunter Lodge"} },
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:25, y:19, w:7, h:4, anchorX:3, anchorY:3, collision:{x:25,y:20,w:7,h:3}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"} }
 );
-world.buildings.forEach(b=>blockRect(b.x,b.y,b.w,b.h));
+world.buildings.forEach((b)=>{
+  const c=b.collision || {x:b.x,y:b.y,w:b.w,h:b.h};
+  blockRect(c.x,c.y,c.w,c.h);
+});
 
 const pond={x:24,y:12,w:9,h:7,cx:28,cy:15};
 for(let x=pond.x;x<pond.x+pond.w;x++){
@@ -1908,18 +1938,18 @@ for(let x=21;x<=24;x++){ world.fences.push({x,y:19}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
-  {x:10,y:11,type:"signPost"},{x:11,y:11,type:"bench"},{x:12,y:11,type:"barrel"},
-  {x:15,y:11,type:"noticeBoard"},{x:17,y:11,type:"well"},{x:18,y:11,type:"bench"},
+  {x:10,y:11,type:"signPost",layer:"above_entities"},{x:11,y:11,type:"bench"},{x:12,y:11,type:"barrel"},
+  {x:15,y:11,type:"noticeBoard",layer:"above_entities"},{x:17,y:11,type:"well"},{x:18,y:11,type:"bench"},
   {x:20,y:11,type:"handcart"},{x:21,y:11,type:"crate"},{x:22,y:12,type:"sack"},
   {x:8,y:12,type:"barrel"},{x:9,y:12,type:"crate"},{x:10,y:12,type:"woodpile"},
-  {x:13,y:9,type:"lanternPost"},{x:19,y:9,type:"lanternPost"},{x:20,y:9,type:"bench"},
+  {x:13,y:9,type:"lanternPost",layer:"above_entities"},{x:19,y:9,type:"lanternPost",layer:"above_entities"},{x:20,y:9,type:"bench"},
   {x:8,y:17,type:"smallGarden"},{x:9,y:17,type:"smallGarden"},{x:10,y:17,type:"woodpile"},
   {x:19,y:17,type:"smallGarden"},{x:20,y:17,type:"smallGarden"},{x:24,y:16,type:"barrel"},
   {x:25,y:17,type:"crate"},{x:23,y:18,type:"barrel"},{x:22,y:18,type:"sack"},
-  {x:25,y:18,type:"signPost"},{x:26,y:18,type:"stonePile"},{x:27,y:18,type:"grassTuft"},
+  {x:25,y:18,type:"signPost",layer:"above_entities"},{x:26,y:18,type:"stonePile"},{x:27,y:18,type:"grassTuft"},
   {x:27,y:22,type:"crate"},{x:28,y:22,type:"barrel"},{x:29,y:22,type:"woodpile"},
   {x:30,y:21,type:"fenceSeg"},{x:31,y:21,type:"fenceSeg"},
-  {x:14,y:4,type:"signPost"},{x:21,y:4,type:"signPost"},{x:23,y:4,type:"fenceSeg"},
+  {x:14,y:4,type:"signPost",layer:"above_entities"},{x:21,y:4,type:"signPost",layer:"above_entities"},{x:23,y:4,type:"fenceSeg"},
   {x:7,y:5,type:"bush"},{x:18,y:5,type:"bush"},{x:26,y:11,type:"bush"},
   {x:26,y:12,type:"grassTuft"},{x:27,y:12,type:"grassTuft"},{x:28,y:12,type:"stonePile"},
   {x:12,y:3,type:"stonePile"},{x:22,y:2,type:"stonePile"}
@@ -1947,9 +1977,9 @@ world.zones.push(
 const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
-const npc={x:18,y:12,name:"Edrin Vale",facing:"down"};
-const hunterNpc={x:30,y:10,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
-const vendorNpc={x:23,y:11,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
+const npc={x:24,y:14,name:"Edrin Vale",facing:"left"};
+const hunterNpc={x:27,y:14,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
+const vendorNpc={x:21,y:10,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
@@ -5382,6 +5412,8 @@ function drawOutdoorBackdrop(cam, now){
 }
 
 function drawMirrorCaveScene(now){
+  ctx.imageSmoothingEnabled=false;
+
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const cam=getCamera();
   for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
@@ -5449,6 +5481,8 @@ function drawMirrorCaveScene(now){
   drawTransitionFade(now);
 }
 function drawAbandonedTollhouseScene(now){
+  ctx.imageSmoothingEnabled=false;
+
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const cam=getCamera();
   for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
@@ -5515,6 +5549,8 @@ function drawAbandonedTollhouseScene(now){
 }
 
 function drawWorld(){
+  ctx.imageSmoothingEnabled=false;
+
   const now=performance.now();
   const shakeActive=now<cameraShakeUntil;
   const shakeMagnitude=shakeActive ? cameraShakeStrength*Math.max(0.15, (cameraShakeUntil-now)/180) : 0;
@@ -5635,6 +5671,12 @@ function drawWorld(){
   }
 
   world.buildings.forEach((b,bIndex)=>{
+    const sprite=atlasManifests.buildings.sprites[b.spriteId];
+    const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
+    const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
+    const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
+    const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
+
     for(let ry=0; ry<b.h; ry++){
       const right = tileToScreen(b.x+b.w, b.y+ry);
       drawShadowTile(assets.shadow.buildingRight, right.x+4, right.y+3, .9);
@@ -5643,34 +5685,26 @@ function drawWorld(){
       const bottom = tileToScreen(b.x+rx, b.y+b.h);
       drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
     }
-    b.tileRows.forEach((row,ry)=> row.forEach((key,rx)=> { const p=tileToScreen(b.x+rx,b.y+ry); const img=assets.building[key]; if(img&&img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32); }));
-    b.tileRows.forEach((row,ry)=>row.forEach((key,rx)=>{
-      if(key!=="door") return;
-      const p=tileToScreen(b.x+rx,b.y+ry+1);
-      ctx.fillStyle="rgba(96,74,49,.42)";
-      ctx.fillRect(p.x+7,p.y+1,18,5);
-      ctx.fillStyle="rgba(192,164,123,.28)";
-      ctx.fillRect(p.x+8,p.y+1,16,1);
-      ctx.fillStyle="rgba(63,44,28,.38)";
-      ctx.fillRect(p.x+6,p.y+5,20,2);
-    }));
+
+    const didDraw=drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh);
+    if(!didDraw){
+      ctx.fillStyle="rgba(133,72,61,.8)";
+      ctx.fillRect(tileToScreen(b.x,b.y).x,tileToScreen(b.x,b.y).y,b.w*TILE,b.h*TILE);
+      ctx.strokeStyle="rgba(255,207,180,.75)";
+      ctx.strokeRect(tileToScreen(b.x,b.y).x+.5,tileToScreen(b.x,b.y).y+.5,b.w*TILE-1,b.h*TILE-1);
+      ctx.fillStyle="rgba(255,232,197,.9)";
+      ctx.font="bold 10px monospace";
+      ctx.fillText("PLACEHOLDER", tileToScreen(b.x,b.y).x+6, tileToScreen(b.x,b.y).y+18);
+    }
+
     const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
     ctx.fillStyle="rgba(94,72,54,.9)";
     ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
-    ctx.fillStyle="rgba(138,113,88,.85)";
-    ctx.fillRect(chimney.x+9,chimney.y-8,8,2);
-    if(rng(b.x,b.y,602)>0.4){
-      ctx.fillStyle="rgba(255,244,226,.18)";
-      ctx.fillRect(chimney.x+13,chimney.y-11,2,2);
-    }
-    const planter=tileToScreen(b.x+1,b.y+b.h-1);
-    ctx.fillStyle="rgba(94,70,46,.7)";
-    ctx.fillRect(planter.x+7,planter.y+24,18,3);
-    ctx.fillStyle="rgba(121,157,90,.78)";
-    ctx.fillRect(planter.x+8,planter.y+22,16,2);
   });
 
-  world.props.forEach((prop)=>{
+  const propsBehind=world.props.filter((prop)=>prop.layer!=="above_entities");
+  const propsAbove=world.props.filter((prop)=>prop.layer==="above_entities");
+  propsBehind.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const img = assets.props.sprites[prop.type];
     if(!img || !img.complete || img.naturalWidth<=0) return;
@@ -5758,6 +5792,13 @@ function drawWorld(){
   });
   drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2);
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  propsAbove.forEach((prop)=>{
+    const p = tileToScreen(prop.x,prop.y);
+    const img = assets.props.sprites[prop.type];
+    if(!img || !img.complete || img.naturalWidth<=0) return;
+    drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.65);
+    ctx.drawImage(img,p.x,p.y,32,32);
+  });
   const currentTarget=getCurrentCombatTarget(5);
   const hostileLabelEntries=[...wolves, ...bandits]
     .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
