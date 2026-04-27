@@ -2281,12 +2281,23 @@ function closeWorldInfoPanel(){
 class InteractionManager {
   constructor(range){ this.range=range; this.interactables=[]; }
   register(interactable){ this.interactables.push(interactable); }
-  isInRange(target){ return Math.abs(player.targetX-target.x()) + Math.abs(player.targetY-target.y()) <= this.range; }
+  getRangeForTarget(target){
+    const configuredRange=Number.isFinite(target?.range) ? Math.max(1, Math.floor(target.range)) : this.range;
+    return configuredRange;
+  }
+  resolvePromptLabel(target){
+    if(!target) return "";
+    if(typeof target.promptLabel==="function") return target.promptLabel() || "";
+    return target.promptLabel || "";
+  }
+  isInRange(target){
+    return Math.abs(player.targetX-target.x()) + Math.abs(player.targetY-target.y()) <= this.getRangeForTarget(target);
+  }
   getNearest(){
     let nearest=null;
     for(const target of this.interactables){
       const distance=Math.abs(player.targetX-target.x()) + Math.abs(player.targetY-target.y());
-      if(distance>this.range) continue;
+      if(distance>this.getRangeForTarget(target)) continue;
       if(!nearest || distance<nearest.distance) nearest={target,distance};
     }
     return nearest?.target || null;
@@ -2294,7 +2305,8 @@ class InteractionManager {
   getPromptText(){
     const target=this.getNearest();
     if(!target) return "";
-    if(target.promptLabel) return "E : " + target.promptLabel;
+    const promptLabel=this.resolvePromptLabel(target);
+    if(promptLabel) return "E : " + promptLabel;
     return "";
   }
   tryInteract(){
@@ -2852,16 +2864,20 @@ registerWorldObject({
   objectId:"mirror_pond_interaction",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
-  x:24, y:14,
+  x:21, y:13,
   state:"still",
   interactable:true,
   collision:false,
   persistence:true,
-  promptLabel:"Inspect Mirror Pond",
+  promptLabel:()=>{
+    const stage=getStillWaterQuestStage();
+    return stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND ? "Inspect Mirror Pond" : "Inspect still water";
+  },
   onInteract:()=>{
     const stage=getStillWaterQuestStage();
     if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
       log("For a moment, your reflection moves half a breath late.");
+      log("Mirror Pond stirs beneath your reflection.");
       patchPersistentObject("mirror_pond_interaction", { inspected:true, state:"inspected" }, false);
       questSystem.completeObjective("the_still_water", "inspect_pond");
       setStillWaterQuestStage(StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN);
@@ -2869,7 +2885,11 @@ registerWorldObject({
       saveGame("object_state_change");
       return;
     }
-    if(stage===StillWaterQuestStage.COMPLETED){
+    if(stage===StillWaterQuestStage.NOT_STARTED || stage===StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN){
+      log("The water is still.");
+      return;
+    }
+    if(stage===StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN || stage===StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE || stage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT || stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN || stage===StillWaterQuestStage.COMPLETED){
       log("The pond is still again, but not empty.");
       return;
     }
@@ -2992,6 +3012,7 @@ worldObjects
       type:object.type,
       x:()=>isWorldObjectInCurrentZone(object) ? getWorldObjectTile(object).x : -999,
       y:()=>isWorldObjectInCurrentZone(object) ? getWorldObjectTile(object).y : -999,
+      range:object.objectId==="mirror_pond_interaction" ? 3 : undefined,
       promptLabel:object.promptLabel || "Interact",
       onInteract:()=>object.onInteract?.()
     });
@@ -3799,6 +3820,23 @@ function drawShadowTile(img, x, y, alpha=1){
   ctx.drawImage(img, x, y, 32, 32);
   ctx.globalAlpha = oldAlpha;
 }
+function drawMirrorPondInspectionMarker(now){
+  const screenPos=tileToScreen(21,13);
+  const pulse=(Math.sin(now*0.006)+1)*0.5;
+  ctx.save();
+  ctx.strokeStyle="rgba(161,210,255," + (0.35 + pulse*0.25).toFixed(3) + ")";
+  ctx.fillStyle="rgba(142,202,255," + (0.12 + pulse*0.1).toFixed(3) + ")";
+  ctx.lineWidth=1.2;
+  ctx.beginPath();
+  ctx.ellipse(screenPos.x+16, screenPos.y+16, 8+pulse*2, 4+pulse*1.5, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle="rgba(217,241,255," + (0.52 + pulse*0.3).toFixed(3) + ")";
+  ctx.beginPath();
+  ctx.arc(screenPos.x+16, screenPos.y+12, 1.8+pulse*1.2, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
 
 function drawTransitionFade(now){
   if(!transitionFade) return;
@@ -3948,6 +3986,9 @@ function drawWorld(){
     if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
     ctx.drawImage(img,p.x,p.y,32,32);
   });
+  if(getStillWaterQuestStage()===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+    drawMirrorPondInspectionMarker(now);
+  }
   const caveEntrancePos=tileToScreen(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y);
   ctx.fillStyle="rgba(26,30,38,.86)";
   ctx.beginPath();
