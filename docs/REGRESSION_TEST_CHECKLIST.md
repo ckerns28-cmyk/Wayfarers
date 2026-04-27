@@ -130,12 +130,46 @@
 - [ ] Schema migration: load a save with missing `saveSchemaVersion` and confirm it migrates to `saveSchemaVersion: 2`.
 - [ ] Backup behavior: confirm `wayfarer.save.v1.backup` is written before migration overwrite/save writes.
 
-## O. Shared World Prototype (Phase 30)
-- [ ] Open two browser sessions against the same environment and confirm both connect successfully.
-- [ ] Spawn both players in **Hearthvale Square** and confirm each sees the other player's name label.
-- [ ] Move Player A and confirm Player B sees synchronized movement updates.
-- [ ] Move Player B and confirm Player A sees synchronized movement updates.
-- [ ] Leave/rejoin with Player A and confirm safe position restore from server-backed state.
-- [ ] Verify single-player combat, inventory, quests, and save/load loops still function in solo session mode.
-- [ ] Verify no trading UI, PvP interactions, party controls, guild systems, or chat features are exposed.
-- [ ] Verify Mirror Cave and Abandoned Tollhouse remain private/solo-instance behavior in this phase.
+## O. Vertical Slice Quality Gate (Phase 30)
+
+### A. New/fresh flow
+- [ ] Start game.
+- [ ] Confirm Current Objective is immediately readable.
+- [ ] Talk to Edrin, Hunter Garran, and Merchant Rowan.
+- [ ] Start Hunter's Request and confirm objective updates.
+- [ ] Progress naturally from Hearthvale to wolves without getting stuck.
+
+### B. Combat feel
+- [ ] Fight a wolf and confirm hit/miss readability in Chronicle.
+- [ ] Fight a bandit and confirm incoming damage is readable.
+- [ ] Use potion during combat.
+- [ ] Level up and confirm visible level-up feedback.
+- [ ] Skill up and confirm toast/log appears once per level gain.
+- [ ] Die and respawn; confirm defeat/respawn feedback is clear.
+
+### C. Quest progression
+- [ ] Complete Hunter's Request.
+- [ ] Complete The Still Water.
+- [ ] Confirm no duplicate quest rewards on repeated turn-ins.
+
+### D. Dungeon checks
+- [ ] Enter and exit Mirror Cave.
+- [ ] Confirm Mirror Cave chest gating (sealed/closed/open) behavior.
+- [ ] Confirm Mirror Cave chest and Echo Fragment states persist through save/load.
+
+### E. Tollhouse checks
+- [ ] Discover Abandoned Tollhouse from North Road.
+- [ ] Defeat Rook and confirm mini-boss defeat messaging.
+- [ ] Open tollhouse chest and verify reward feedback (Chronicle + toasts + inventory).
+- [ ] Confirm tollhouse cleared state persists after save/load.
+
+### F. UI readability
+- [ ] Sidebar tabs switch reliably (Inventory/Equipment/Skills/Chronicle).
+- [ ] No clipping in objective, dialogue, or vendor panels at normal desktop sizes.
+- [ ] Dialogue opens/closes without stuck modal behavior.
+- [ ] Vendor panel opens/closes and buy/sell actions remain usable.
+- [ ] Chronicle remains accessible during normal play flow.
+
+### G. Save/load regression
+- [ ] Save after major milestones (quest completion, chest opens, Rook defeat).
+- [ ] Reload and confirm zone, quest, rewards, inventory, skills, and objective text remain correct.
