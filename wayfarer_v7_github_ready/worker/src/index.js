@@ -1015,14 +1015,14 @@ resize();
 addEventListener("resize", resize);
 
 const palette = {
-  grass: ["#4b6d42", "#3f6137", "#597d4f", "#2f4d2a"],
-  forestGrass: ["#355236", "#2a432b", "#406344", "#1f3322"],
+  grass: ["#4e7045", "#4a6b42", "#55784d", "#43633d"],
+  forestGrass: ["#39583a", "#324f35", "#416444", "#2a452d"],
   road: ["#8b724d", "#755f40", "#9f8560", "#594733"],
   water: ["#2a4b73", "#1d3554", "#35628f", "#4d84b6", "#9bc8e6"],
   shore: ["#75835a", "#5c6c49", "#ccb78a"],
   wood: ["#7b5a3f", "#5a412c", "#9e7754", "#ccac7f"],
-  roof: ["#7d4742", "#62342f", "#9e665f", "#402520"],
-  wall: ["#8e8572", "#6c6555", "#aaa18f"],
+  roof: ["#875048", "#6c3d36", "#aa6f64", "#4b2c27"],
+  wall: ["#9b907c", "#746a58", "#b5ab97"],
   cave: ["#404753", "#313742", "#596474", "#222833"],
   tollhouse: ["#73573d", "#5d462f", "#8f6d4c", "#453222"],
   fence: ["#7b5d40", "#5d442d", "#b08c62"],
@@ -1139,25 +1139,25 @@ const assets = {
 };
 
 function buildTerrainTiles() {
-  const grassBases = [palette.grass[0], palette.grass[1], palette.grass[2], "#456a3f", "#5a8151", "#385733"];
-  const forestBases = [palette.forestGrass[0], palette.forestGrass[1], palette.forestGrass[2], "#2f4b31"];
+  const grassBases = [palette.grass[0], palette.grass[1], palette.grass[2], "#4b6d43", "#52744a", "#46673f"];
+  const forestBases = [palette.forestGrass[0], palette.forestGrass[1], palette.forestGrass[2], "#355537"];
   for (let i=0;i<6;i++) {
     assets.grass.push(makeTile((p)=>{
       p.fillStyle = grassBases[i]; p.fillRect(0,0,32,32);
-      for (let y=0;y<32;y+=4){
-        for (let x=0;x<32;x+=4){
+      for (let y=0;y<32;y+=3){
+        for (let x=0;x<32;x+=3){
           const n=rng(x+i*9,y+i*5,31+i);
-          if(n>0.84){ p.fillStyle = "rgba(187,218,149,.14)"; p.fillRect(x,y,4,2); }
-          else if(n<0.12){ p.fillStyle = "rgba(28,46,25,.16)"; p.fillRect(x,y+1,4,2); }
+          if(n>0.86){ p.fillStyle = "rgba(196,226,161,.12)"; p.fillRect(x,y,2,1); }
+          else if(n<0.11){ p.fillStyle = "rgba(31,50,28,.12)"; p.fillRect(x,y+1,2,1); }
         }
       }
-      p.fillStyle = "rgba(211,236,172,.09)";
-      for (let k=0;k<5;k++) {
-        const gx = ((k*11+i*4)%27)+2, gy = ((k*13+i*2)%23)+4;
-        p.fillRect(gx,gy,2,3);
+      p.fillStyle = "rgba(214,238,178,.08)";
+      for (let k=0;k<9;k++) {
+        const gx = ((k*7+i*4)%28)+1, gy = ((k*9+i*2)%24)+3;
+        p.fillRect(gx,gy,1,2);
       }
-      p.fillStyle="rgba(255,255,255,.03)"; p.fillRect(0,0,32,1);
-      p.fillStyle="rgba(0,0,0,.12)"; p.fillRect(0,30,32,2);
+      p.fillStyle="rgba(255,255,255,.025)"; p.fillRect(0,0,32,1);
+      p.fillStyle="rgba(0,0,0,.1)"; p.fillRect(0,30,32,2);
     }));
     if(i<4){
       assets.forestGrass.push(makeTile((p)=>{
@@ -1242,40 +1242,50 @@ function buildTerrainTiles() {
 function makeBuildingTiles(){
   assets.building.roofL = makeTile((p)=>{
     p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[1]; for(let y=0;y<32;y++) p.fillRect(0,y,Math.max(0,10-Math.floor(y/4)),1);
-    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=5) p.fillRect(3,y,26,1);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,25,32,7);
+    p.fillStyle=palette.roof[1]; for(let y=0;y<30;y++) p.fillRect(0,y,Math.max(0,11-Math.floor(y/3)),1);
+    p.fillStyle=palette.roof[2]; for(let y=3;y<28;y+=4) p.fillRect(3,y,26,1);
+    p.fillStyle="rgba(255,226,199,.12)"; p.fillRect(2,3,20,2);
+    p.fillStyle=palette.roof[3]; p.fillRect(0,24,32,8);
   });
   assets.building.roofC = makeTile((p)=>{
     p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=5) p.fillRect(2,y,28,1);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,25,32,7);
+    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=4) p.fillRect(2,y,28,1);
+    p.fillStyle="rgba(255,226,199,.1)"; p.fillRect(5,3,22,2);
+    p.fillStyle=palette.roof[3]; p.fillRect(0,24,32,8);
   });
   assets.building.roofR = makeTile((p)=>{
     p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[1]; for(let y=0;y<32;y++){const w=Math.max(0,10-Math.floor(y/4)); p.fillRect(32-w,y,w,1);} 
-    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=5) p.fillRect(2,y,28,1);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,25,32,7);
+    p.fillStyle=palette.roof[1]; for(let y=0;y<30;y++){const w=Math.max(0,11-Math.floor(y/3)); p.fillRect(32-w,y,w,1);}
+    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=4) p.fillRect(2,y,28,1);
+    p.fillStyle="rgba(255,226,199,.12)"; p.fillRect(10,3,20,2);
+    p.fillStyle=palette.roof[3]; p.fillRect(0,24,32,8);
   });
   assets.building.wall = makeTile((p)=>{
     p.fillStyle=palette.wall[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.wall[2]; p.fillRect(0,0,32,2);
-    p.fillStyle=palette.wall[1]; p.fillRect(0,30,32,2);
-    for(let y=4;y<30;y+=6) for(let x=(y%4);x<32;x+=8){ p.fillStyle="rgba(255,255,255,.06)"; p.fillRect(x,y,1,1); }
+    p.fillStyle=palette.wall[2]; p.fillRect(0,0,32,3);
+    p.fillStyle=palette.wall[1]; p.fillRect(0,29,32,3);
+    p.fillStyle="rgba(255,255,255,.05)";
+    for(let y=5;y<29;y+=5) for(let x=(y%5)+2;x<30;x+=7){ p.fillRect(x,y,1,1); }
+    p.fillStyle="rgba(35,28,20,.14)"; p.fillRect(29,0,3,32);
   });
   assets.building.window = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
-    p.fillStyle="#3a3026"; p.fillRect(8,7,16,14);
-    p.fillStyle="#ddb976"; p.fillRect(10,9,12,10); p.fillStyle="rgba(255,240,188,.18)"; p.fillRect(10,19,12,2);
-    p.fillStyle="rgba(255,246,200,.45)"; p.fillRect(11,10,10,2);
-    p.fillStyle="#2a2219"; p.fillRect(15,9,1,10); p.fillRect(10,13,12,1);
+    p.fillStyle="#4b3826"; p.fillRect(7,6,18,16);
+    p.fillStyle="#2d2218"; p.fillRect(8,7,16,14);
+    p.fillStyle="#88a9bf"; p.fillRect(9,8,14,12);
+    p.fillStyle="rgba(214,240,255,.35)"; p.fillRect(10,9,12,2);
+    p.fillStyle="rgba(67,96,119,.36)"; p.fillRect(9,16,14,4);
+    p.fillStyle="#4a3321"; p.fillRect(15,8,2,12); p.fillRect(9,13,14,2);
+    p.fillStyle="rgba(245,217,156,.15)"; p.fillRect(9,20,14,1);
   });
   assets.building.door = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
-    p.fillStyle="#4b3223"; p.fillRect(9,10,14,21);
-    p.fillStyle="#2f1f15"; p.fillRect(10,11,12,19);
-    p.fillStyle="#9d7748"; p.fillRect(9,10,14,2);
-    p.fillStyle="#d8a55f"; p.fillRect(20,21,1,1);
+    p.fillStyle="#5e412d"; p.fillRect(8,8,16,23);
+    p.fillStyle="#372518"; p.fillRect(9,9,14,21);
+    p.fillStyle="#8a643f"; p.fillRect(8,8,16,2);
+    p.fillStyle="#ac7f53"; p.fillRect(15,10,2,20);
+    p.fillStyle="#ddb981"; p.fillRect(20,21,2,2);
+    p.fillStyle="rgba(0,0,0,.25)"; p.fillRect(8,30,16,1);
   });
 }
 
@@ -1684,8 +1694,8 @@ world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y+
 
 world.buildings.push(
   { x:10,y:6,w:3,h:3,tileRows:[["roofL","roofC","roofR"],["window","wall","window"],["wall","door","wall"]] },
-  { x:20,y:6,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","wall","window"],["wall","wall","door","wall"]] },
-  { x:12,y:14,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","wall"],["wall","door","wall","wall"]] }
+  { x:20,y:6,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","window"],["wall","wall","door","wall"]] },
+  { x:12,y:14,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","wall"],["wall","door","wall","window"]] }
 );
 world.buildings.forEach(b=>blockRect(b.x,b.y,b.w,b.h));
 
@@ -1710,12 +1720,14 @@ world.props.push(
   {x:9,y:8,type:"crate"},{x:9,y:9,type:"barrel"},{x:13,y:8,type:"crate"},{x:13,y:9,type:"bush"},{x:10,y:9,type:"fenceSeg"},
   {x:19,y:8,type:"crate"},{x:24,y:8,type:"sack"},{x:24,y:9,type:"barrel"},{x:19,y:9,type:"bush"},
   {x:11,y:17,type:"crate"},{x:16,y:17,type:"barrel"},{x:11,y:16,type:"fenceSeg"},{x:16,y:16,type:"bush"},{x:15,y:17,type:"sack"},
+  {x:10,y:10,type:"grassTuft"},{x:12,y:10,type:"grassTuft"},{x:20,y:10,type:"grassTuft"},{x:23,y:10,type:"grassTuft"},
   {x:16,y:10,type:"signPost"},{x:25,y:11,type:"signPost"},{x:26,y:11,type:"signPost"},{x:31,y:12,type:"signPost"},
   {x:8,y:10,type:"lanternPost"},{x:28,y:10,type:"lanternPost"},
   {x:21,y:14,type:"stonePile"},{x:21,y:16,type:"stonePile"},{x:29,y:15,type:"stonePile"},
   {x:21,y:13,type:"grassTuft"},{x:29,y:17,type:"grassTuft"},{x:24,y:18,type:"grassTuft"},
   {x:5,y:12,type:"bush"},{x:32,y:12,type:"bush"},{x:6,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
-  {x:18,y:11,type:"well"},
+  {x:17,y:11,type:"well"},{x:18,y:10,type:"crate"},{x:19,y:10,type:"sack"},
+  {x:14,y:13,type:"fenceSeg"},{x:15,y:13,type:"fenceSeg"},{x:12,y:13,type:"bush"},
   {x:16,y:4,type:"signPost"},{x:20,y:2,type:"signPost"},{x:21,y:2,type:"fenceSeg"},
   {x:13,y:5,type:"fenceSeg"},{x:14,y:5,type:"fenceSeg"},{x:23,y:4,type:"fenceSeg"},
   {x:14,y:2,type:"bush"},{x:24,y:2,type:"bush"},
@@ -5112,6 +5124,62 @@ function drawTransitionFade(now){
   transitionFade.style.background="rgba(2,6,10," + alpha.toFixed(3) + ")";
 }
 
+function drawEntityRing(tx,ty,color,alpha=0.35,radius=9){
+  const p=tileToScreen(tx,ty);
+  ctx.save();
+  ctx.strokeStyle=color.replace("__A__", alpha.toFixed(3));
+  ctx.lineWidth=1.4;
+  ctx.beginPath();
+  ctx.ellipse(p.x+16,p.y+26,radius,radius*0.45,0,0,Math.PI*2);
+  ctx.stroke();
+  ctx.fillStyle=color.replace("__A__", (alpha*0.35).toFixed(3));
+  ctx.beginPath();
+  ctx.ellipse(p.x+16,p.y+26,radius*0.65,radius*0.24,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawOutdoorBackdrop(cam, now){
+  const sx=cam.offsetX;
+  const sy=cam.offsetY;
+  const ex=sx+VIEW_TILES_X*TILE;
+  const ey=sy+VIEW_TILES_Y*TILE;
+  const bg=ctx.createLinearGradient(0,0,0,canvas.height);
+  bg.addColorStop(0,"#203525");
+  bg.addColorStop(0.55,"#274332");
+  bg.addColorStop(1,"#17291f");
+  ctx.fillStyle=bg;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const padX=Math.ceil(Math.max(sx, canvas.width-ex)/TILE)+4;
+  const padY=Math.ceil(Math.max(sy, canvas.height-ey)/TILE)+4;
+  for(let y=cam.tileY-padY;y<cam.tileY+VIEW_TILES_Y+padY;y++){
+    for(let x=cam.tileX-padX;x<cam.tileX+VIEW_TILES_X+padX;x++){
+      if(x>=0&&x<WORLD_W&&y>=0&&y<WORLD_H) continue;
+      const p=tileToScreen(x,y);
+      const v=Math.floor(rng(x,y,603)*assets.forestGrass.length);
+      const img=assets.forestGrass[v];
+      if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+      if(rng(x,y,612)>0.92){
+        ctx.fillStyle="rgba(86,126,72,.18)";
+        ctx.fillRect(p.x+6,p.y+8,20,12);
+      }
+    }
+  }
+
+  const mist=ctx.createRadialGradient(canvas.width*.5,canvas.height*.46,Math.min(canvas.width,canvas.height)*.2,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.85);
+  mist.addColorStop(0,"rgba(196,219,184,0)");
+  mist.addColorStop(.7,"rgba(74,105,84,.08)");
+  mist.addColorStop(1,"rgba(8,14,12,.54)");
+  ctx.fillStyle=mist;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const pulse=(Math.sin(now*0.0005)+1)*0.5;
+  ctx.strokeStyle="rgba(43,65,48," + (0.45+pulse*0.1).toFixed(3) + ")";
+  ctx.lineWidth=2;
+  ctx.strokeRect(sx-1,sy-1,ex-sx+2,ey-sy+2);
+}
+
 function drawMirrorCaveScene(now){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const cam=getCamera();
@@ -5171,9 +5239,11 @@ function drawMirrorCaveScene(now){
 
   mirrorCaveWolves.forEach((wolf)=>{
     if(wolf.hp<=0) return;
+    drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.25,8);
     drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
   });
-  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.5,9.8);
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.88, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
   ctx.fillStyle="rgba(8,10,14,.2)"; ctx.fillRect(0,0,canvas.width,canvas.height);
   drawTransitionFade(now);
 }
@@ -5221,12 +5291,15 @@ function drawAbandonedTollhouseScene(now){
   ctx.fillStyle="#efdac2"; ctx.font="bold 10px monospace"; ctx.fillText("EXIT", ep.x+6, ep.y+19);
   tollhouseBandits.forEach((bandit)=>{
     if(bandit.hp<=0) return;
+    drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.28,8.5);
     drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.83, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit));
   });
   if(!rookTollkeeperDefeated && rookTollkeeper.hp>0){
+    drawEntityRing(rookTollkeeper.px/TILE,rookTollkeeper.py/TILE,"rgba(255,84,84,__A__)",0.45,10.5);
     drawHumanoid(assets.sprites.rook, rookTollkeeper.px/TILE, rookTollkeeper.py/TILE, rookTollkeeper.facing, rookTollkeeper.moving, 0.92, "", hitVisualAlpha(rookTollkeeper), {x:rookTollkeeper.recoilX+rookTollkeeper.attackLungeX,y:rookTollkeeper.recoilY+rookTollkeeper.attackLungeY}, attackPose(rookTollkeeper));
   }
-  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.5,9.8);
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.88, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
   const currentTarget=getCurrentCombatTarget(5);
   const hostileLabelEntries=[...tollhouseBandits, rookTollkeeper]
     .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
@@ -5266,13 +5339,21 @@ function drawWorld(){
   }
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const cam=getCamera();
-  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
-    const mix=Math.floor(rng(x,y,4)*assets.grass.length);
+  drawOutdoorBackdrop(cam, now);
+  const padX=Math.ceil(Math.max(cam.offsetX, canvas.width-(cam.offsetX+VIEW_TILES_X*TILE))/TILE)+3;
+  const padY=Math.ceil(Math.max(cam.offsetY, canvas.height-(cam.offsetY+VIEW_TILES_Y*TILE))/TILE)+3;
+  for(let y=cam.tileY-padY;y<cam.tileY+VIEW_TILES_Y+padY;y++) for(let x=cam.tileX-padX;x<cam.tileX+VIEW_TILES_X+padX;x++){
     const p=tileToScreen(x,y);
+    if(x<0 || y<0 || x>=WORLD_W || y>=WORLD_H) continue;
+    const mix=Math.floor(rng(Math.floor(x*.6),Math.floor(y*.6),4)*assets.grass.length);
     const region=getOutdoorRegionIdAt(x,y);
     const inForest=region==="eastern_woods" || (region==="north_road" && rng(x,y,211)>0.45);
     const img=inForest ? assets.forestGrass[Math.floor(rng(x,y,212)*assets.forestGrass.length)] : assets.grass[mix];
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    if(!inForest && rng(x,y,333)>0.8){
+      ctx.fillStyle="rgba(188,216,151,.045)";
+      ctx.fillRect(p.x+1,p.y+1,30,30);
+    }
   }
 
   world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){
@@ -5295,16 +5376,26 @@ function drawWorld(){
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
     const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     const t=performance.now()*0.002, rip=(Math.sin(t*3+x*1.1+y*.8)+1)*.5;
-    const mirrorAura=(x>=22&&x<=28&&y>=13&&y<=17) ? 0.03 : 0;
+    const mirrorAura=(x>=22&&x<=28&&y>=13&&y<=17) ? 0.06 : 0.01;
     ctx.fillStyle="rgba(188,228,255," + (.02+rip*.05+mirrorAura).toFixed(3) + ")"; ctx.fillRect(p.x+3,p.y+6,TILE-10,1);
     if(edge){
       ctx.fillStyle="rgba(224,244,255," + (.05+rip*.05).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1);
       if(assets.water.edge.complete&&assets.water.edge.naturalWidth>0) ctx.drawImage(assets.water.edge,p.x,p.y,32,32);
     }
+    if(rng(x,y,402)>0.84){
+      ctx.fillStyle="rgba(201,240,255,.25)";
+      ctx.fillRect(p.x+10,p.y+10,4,1);
+      ctx.fillRect(p.x+14,p.y+9,2,1);
+    }
   }
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondShore.has(k)) continue;
     const p=tileToScreen(x,y); const img=assets.shore[Math.floor(rng(x,y,33)*assets.shore.length)]; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(rng(x,y,491)>0.62){
+      ctx.fillStyle="rgba(86,121,74,.55)";
+      ctx.fillRect(p.x+5,p.y+14,2,8);
+      ctx.fillRect(p.x+8,p.y+15,1,7);
+    }
   }
 
   world.buildings.forEach(b=>{
@@ -5317,6 +5408,14 @@ function drawWorld(){
       drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
     }
     b.tileRows.forEach((row,ry)=> row.forEach((key,rx)=> { const p=tileToScreen(b.x+rx,b.y+ry); const img=assets.building[key]; if(img&&img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32); }));
+    b.tileRows.forEach((row,ry)=>row.forEach((key,rx)=>{
+      if(key!=="door") return;
+      const p=tileToScreen(b.x+rx,b.y+ry+1);
+      ctx.fillStyle="rgba(96,74,49,.42)";
+      ctx.fillRect(p.x+7,p.y+1,18,5);
+      ctx.fillStyle="rgba(192,164,123,.28)";
+      ctx.fillRect(p.x+8,p.y+1,16,1);
+    }));
   });
 
   world.props.forEach((prop)=>{
@@ -5381,18 +5480,24 @@ function drawWorld(){
   if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:23, ty:12, priority:0 });
   if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
 
-  drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.8, "", 0, null, null);
-  drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.8, "", 0, null, null);
-  drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.8, "", 0, null, null);
+  drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.33,8.5);
+  drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.82, "", 0, null, null);
+  drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.3,8.5);
+  drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.82, "", 0, null, null);
+  drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.3,8.5);
+  drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.82, "", 0, null, null);
   wolves.forEach((wolf)=>{
     if(wolf.hp<=0) return;
+    drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.25,8);
     drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
   });
   bandits.forEach((bandit)=>{
     if(bandit.hp<=0) return;
+    drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.28,8.5);
     drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.83, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit));
   });
-  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.5,9.8);
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.88, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
   const currentTarget=getCurrentCombatTarget(5);
   const hostileLabelEntries=[...wolves, ...bandits]
     .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
