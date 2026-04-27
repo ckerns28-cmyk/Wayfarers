@@ -90,15 +90,17 @@ Mythic, grounded, moody, old-school RPG.
 ## Second Dungeon / Mini-Boss (Phase 26)
 
 - **Abandoned Tollhouse:** a compact interior dungeon connected to North Road through a hard transition doorway.
+- Abandoned Tollhouse is a discoverable **Point of Interest (POI)**, not a formal NPC quest.
 - Theme: derelict roadside checkpoint reclaimed by bandits.
 - Intended role: first structured humanoid combat challenge before larger dungeon ambitions.
+- Design rule: not every dungeon needs a quest giver; some locations should purely reward exploration.
 - Layout rule: readable, small interior with one narrow entry hall, one side room, and one main chamber.
 - **Rook the Tollkeeper:** first named mini-boss encounter (bandit baseline behavior, elevated stats, no complex mechanics yet).
 - Mini-bosses are stronger named enemies with persistent defeat state and meaningful rewards.
-- Rook rewards include the **Old Toll Key** and access to tollhouse post-boss reward flow (including Traveler's Charm support).
+- Rook rewards should be surfaced explicitly in Chronicle as a mini-boss payout line (`Boss rewards: ...`), with chest rewards surfaced separately on chest open.
 - Chronicle mini-boss feedback: after defeating Rook, log `Rook the Tollkeeper defeated.` then log a separate `Boss rewards:` list (XP, coins, and any item rewards) rather than folding rewards into generic bandit lines.
 - Abandoned Tollhouse clear condition: set `abandonedTollhouseCleared=true` only when **both** conditions are met: (1) Rook defeated and (2) tollhouse chest opened.
-- Cleared-state persistence rule: once cleared, Rook remains defeated, the chest remains open, rewards do not duplicate, and contextual objectives can surface `Abandoned Tollhouse cleared.` while near North Road/tollhouse.
+- Cleared-state persistence rule: once cleared, Rook remains defeated, the chest remains open, rewards do not duplicate, and contextual objectives should return to broader exploration guidance.
 - Tollhouse chest reward clarity rule: first valid open logs `Opened the tollhouse chest.`, followed by `Loot acquired:` and one line per reward. Re-interaction logs `The tollhouse chest is empty.` and grants nothing.
 - Traveler's Charm behavior (Phase 26B): Charm is a trinket, grants **+1 DEF**, can be equipped from Inventory, and displays in Equipment under `Trinket`.
 

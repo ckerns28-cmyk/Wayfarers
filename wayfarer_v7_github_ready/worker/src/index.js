@@ -657,6 +657,7 @@ const html = String.raw`<!DOCTYPE html>
         "rowan_hearthvale": {
           "lines": [
             "Hearthvale looks peaceful until dusk. Then hunters hurry in and mystics get quiet.",
+            "Old tollhouse up north used to take coin from every wagon. Now it takes blood, from what I hear.",
             "If you need rumors, listen near the well at sundown."
           ],
           "next": "rowan_greeting"
@@ -2135,6 +2136,7 @@ const StillWaterQuestStage = Object.freeze({
 });
 let mirrorCaveChestDiscovered=false;
 let rookTollkeeperDefeated=false;
+let abandonedTollhouseDiscovered=false;
 let abandonedTollhouseCleared=false;
 let hunterQuestRewardClaimed=false;
 
@@ -2523,11 +2525,24 @@ function isTollhouseChestOpened(){
 function evaluateAbandonedTollhouseCleared(){
   return Boolean(rookTollkeeperDefeated && isTollhouseChestOpened());
 }
+function markAbandonedTollhouseDiscovered(shouldSave=false, showToast=false){
+  if(abandonedTollhouseDiscovered) return false;
+  abandonedTollhouseDiscovered=true;
+  patchPersistentObject("abandoned_tollhouse_state", { discovered:true, state:"discovered" }, false);
+  log("Discovered: Abandoned Tollhouse.");
+  if(showToast) showRewardToast("Abandoned Tollhouse discovered.");
+  if(shouldSave && typeof saveGame==="function") saveGame("object_state_change");
+  return true;
+}
 function syncAbandonedTollhouseClearedState(shouldSave=false, announce=false){
   const cleared=evaluateAbandonedTollhouseCleared();
   const wasCleared=abandonedTollhouseCleared;
   abandonedTollhouseCleared=cleared;
-  patchPersistentObject("abandoned_tollhouse_state", { cleared, state:cleared ? "cleared" : "active" }, shouldSave);
+  patchPersistentObject("abandoned_tollhouse_state", {
+    discovered:abandonedTollhouseDiscovered,
+    cleared,
+    state:cleared ? "cleared" : (abandonedTollhouseDiscovered ? "discovered" : "active")
+  }, shouldSave);
   if(announce && cleared && !wasCleared) log("Abandoned Tollhouse cleared.");
   return cleared;
 }
@@ -2751,10 +2766,8 @@ function hasActiveGuidedQuest(){
   return Boolean(hunterActive || stillWaterActive);
 }
 function getContextualObjectiveText(){
-  const nearTollhouse=isInAbandonedTollhouse || currentZoneId==="north_road";
-  if(!rookTollkeeperDefeated) return "Clear the Abandoned Tollhouse.";
+  if(!abandonedTollhouseDiscovered || !rookTollkeeperDefeated) return "Explore the Abandoned Tollhouse.";
   if(!isTollhouseChestOpened()) return "Open the tollhouse chest.";
-  if(abandonedTollhouseCleared && nearTollhouse) return "Abandoned Tollhouse cleared.";
   return "Explore Hearthvale and the surrounding roads.";
 }
 function handleNorthRoadArrivalAtmosphere(){
@@ -2974,6 +2987,7 @@ function createSaveData(reason){
         cleared:mirrorCave.cleared
       },
       tollhouse:{
+        abandonedTollhouseDiscovered:abandonedTollhouseDiscovered,
         rookTollkeeperDefeated:rookTollkeeperDefeated,
         chestState:getTollhouseChestState(),
         abandonedTollhouseCleared:abandonedTollhouseCleared
@@ -3116,6 +3130,7 @@ function loadGame(){
     rookTollkeeper.py=rookTollkeeper.targetY*TILE;
     banditRespawnAtById[rookTollkeeper.id]=0;
     rookTollkeeperDefeated=false;
+    abandonedTollhouseDiscovered=false;
     abandonedTollhouseCleared=false;
     mirrorCaveWolves.forEach((wolf)=>{
       wolf.hp=wolf.maxHp;
@@ -3188,13 +3203,17 @@ function loadGame(){
     mirrorCaveChestDiscovered=Boolean(data.world?.mirrorCave?.chestDiscovered || persistentObjects?.mirror_cave_chest?.discovered);
     mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened || persistentObjects?.mirror_cave_chest?.opened);
     mirrorCave.cleared=Boolean(data.world?.mirrorCave?.cleared);
+    abandonedTollhouseDiscovered=Boolean(
+      data.world?.tollhouse?.abandonedTollhouseDiscovered ||
+      persistentObjects?.abandoned_tollhouse_state?.discovered ||
+      savedZoneId==="abandoned_tollhouse" ||
+      data.world?.tollhouse?.rookTollkeeperDefeated ||
+      persistentObjects?.tollhouse_reward_chest?.opened
+    );
     rookTollkeeperDefeated=Boolean(data.world?.tollhouse?.rookTollkeeperDefeated || persistentObjects?.rook_tollkeeper_state?.defeated);
     abandonedTollhouseCleared=Boolean(data.world?.tollhouse?.abandonedTollhouseCleared || persistentObjects?.abandoned_tollhouse_state?.cleared);
     rookTollkeeper.defeated=rookTollkeeperDefeated;
-    if(rookTollkeeperDefeated){
-      rookTollkeeper.hp=0;
-      if(getItemQuantity("old_toll_key")<=0) addItemToInventory("old_toll_key", 1);
-    }
+    if(rookTollkeeperDefeated) rookTollkeeper.hp=0;
     hunterQuestRewardClaimed=Boolean(data.world?.hunterQuest?.hunterQuestRewardClaimed);
     const hunterQuest=questSystem.getQuest("hunters_request");
     if(hunterQuest?.state===QuestState.COMPLETED){
@@ -3396,6 +3415,22 @@ registerWorldObject({
   walkInTrigger:true,
   promptLabel:"Enter Mirror Cave",
   onInteract:()=>enterMirrorCave()
+});
+registerWorldObject({
+  objectId:"tollhouse_warning_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  region:"north_road",
+  x:21, y:2,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Read notice",
+  onInteract:()=>{
+    patchPersistentObject("tollhouse_warning_sign", { state:"read", read:true });
+    openWorldInfoPanel("Weathered Notice", "Old Toll Road — Closed by order of Hearthvale.");
+  }
 });
 registerWorldObject({
   objectId:"abandoned_tollhouse_entrance",
@@ -3659,6 +3694,7 @@ function enterAbandonedTollhouse(){
     lastLoggedZoneEntryId=currentZoneId;
     rookEncounterAnnounced=false;
     hostileAggroBlockedUntil=performance.now()+900;
+    markAbandonedTollhouseDiscovered(true, true);
     logThrottled("transition:entered_abandoned_tollhouse", "Entered Abandoned Tollhouse.", 1200);
   }, 320);
 }
@@ -4248,11 +4284,6 @@ function defeatBandit(bandit,now){
     patchPersistentObject("rook_tollkeeper_state", { defeated:true, state:"defeated" }, false);
     const bossRewardLines=["- " + enemyConfig.xp + " XP", "- " + enemyConfig.coinReward + " coins"];
     const bossRewardToasts=["+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"];
-    if(getItemQuantity("old_toll_key")<=0){
-      addItemToInventory("old_toll_key", 1);
-      bossRewardLines.push("- Old Toll Key x1");
-      bossRewardToasts.push("+ Old Toll Key");
-    }
     log("Rook the Tollkeeper defeated.");
     log("Boss rewards:");
     bossRewardLines.forEach((line)=>log(line));
@@ -4758,6 +4789,10 @@ function update(dt,now){
   }
   if(!isTransitionLocked && !player.moving && (moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
   updateOutdoorRegionFromPosition(true);
+  if(!isInMirrorCave && !isInAbandonedTollhouse && currentZoneId==="north_road"){
+    const tollhouseDistance=Math.abs(player.targetX-NORTH_ROAD_TOLLHOUSE_ENTRY.x)+Math.abs(player.targetY-NORTH_ROAD_TOLLHOUSE_ENTRY.y);
+    if(tollhouseDistance<=2) markAbandonedTollhouseDiscovered(true, true);
+  }
   if(!isTransitionLocked){
     if(isInMirrorCave){
       mirrorCaveWolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
@@ -4768,7 +4803,7 @@ function update(dt,now){
         smoothMove(rookTollkeeper,dt);
         if(!rookEncounterAnnounced && Math.abs(player.targetX-rookTollkeeper.targetX)+Math.abs(player.targetY-rookTollkeeper.targetY)<=4){
           rookEncounterAnnounced=true;
-          log("Rook the Tollkeeper blocks the way.");
+          log("Rook the Tollkeeper blocks the old road.");
         }
       }
       banditAttack(now);
