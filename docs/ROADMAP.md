@@ -1,0 +1,91 @@
+# Wayfarer Production Roadmap
+
+## Production Roadmap Audit (Pre-Phase 20)
+
+This audit was performed before beginning **Phase 20: Character Progression Foundation**.
+
+### Current system status
+
+| System | Status | Notes |
+|---|---|---|
+| Movement | working | Grid movement with interpolation, collision checks, and directional lock handling is in place. |
+| Interaction | working | Proximity + click interaction manager supports NPCs and world objects. |
+| Dialogue UI | working | Dialogue panel supports branch choices, number keys, click selection, and exit actions. |
+| NPC dialogue trees | working | JSON-driven node trees for Edrin, Hunter Garran, Merchant Rowan with condition-based roots. |
+| Quest objective system | working | Objective normalization, increment/complete, lock handling, and quest serialization exist. |
+| Hunter's Request staged quest flow | working | Stage progression from wolf/pelt loop to cave relic recovery and turn-in is implemented. |
+| Combat | working | Player and enemy attack cadence, damage resolution, and defeat handling are implemented. |
+| Death / respawn | working | Player defeat triggers respawn flow to Hearthvale square. |
+| Multi-enemy support | working | Arrays and respawn timers handle multiple wolves/bandits/mirror cave wolves. |
+| Enemy variants | working | Distinct enemy groups/behaviors/loot paths exist (wolf, bandit, cave wolf). |
+| Inventory | working | Registry-backed inventory supports stackable and non-stackable items. |
+| Equipment | working | Weapon/armor equip/unequip and stat effect wiring are in place. |
+| Armor / defense | working | Equipped armor contributes defense reduction through bonus helpers. |
+| Vendor buying | working | Merchant buy flow checks coins and item registry cost. |
+| Vendor selling | working | Sell flow supports per-item value and equip-safe restrictions. |
+| Consumables | working | Consumables heal and clamp to max HP with quantity decrement. |
+| Save/load | working | Schema versioning, centralized defaults, migration/repair, and backup-safe local storage paths are now in place. |
+| Continuous outdoor regions | working | Outdoor region definitions and boundary-based zone detection are active. |
+| Mirror Cave dungeon | working | Enter/exit transition flow and cave map state are implemented. |
+| Dungeon chest/reward gating | working | Chest supports sealed/closed/open state with quest-stage gating and one-time reward behavior. |
+| Persistent world objects | partially working | Object persistence exists via objectId state map, but serialization coupling risk remains. |
+| Object states: sealed / closed / open | working | Mirror Cave chest state resolver enforces staged state transitions. |
+| Walk-in cave entrance | working | Dedicated interactable cave entrance + hard transition is in place. |
+| Signs / interactable objects | working | Signposts and other non-NPC world interactables are registered and persisted. |
+
+## Completed Phases
+
+1. Movement
+2. Interaction
+3. Dialogue
+4. Quest system
+5. Combat
+6. Inventory
+7. Equipment
+8. Multi-enemy combat
+9. Vendor selling
+10. Vendor buying + consumables
+11. Item-based quest
+12. Enemy variants
+13. Armor
+14. Continuous outdoor regions
+15. Mirror Cave dungeon
+16. Staged quest progression
+17. Dialogue UI / NPC clarity
+18. NPC personality foundation
+19. Persistent World Objects
+20. Character Progression Foundation
+21. Combat Balance / Difficulty Curve
+22. Second Quest Chain / Main Story Thread
+23. Creative Direction / Art Direction Lock
+24. UX Presentation Polish
+25. Second Outdoor Region
+26. Second Dungeon / Mini-Boss
+27. Skill Use Progression
+28. Save Schema / Architecture Hardening
+29. Multiplayer Architecture Planning
+
+## Upcoming Phases
+
+30. Vertical Slice Quality Gate
+31. Combat Feel / Reward Polish
+32. Art Direction Application Pass
+33. Audio / Atmosphere Foundation
+34. First 20 Minutes Player Experience
+35. Shared World Prototype
+
+## Phase 29 outcome summary (Multiplayer Architecture Planning)
+
+- Added a concrete multiplayer architecture plan in `docs/MULTIPLAYER_ARCHITECTURE.md`.
+- Multiplayer implementation is intentionally paused until after the single-player vertical slice quality gates are complete.
+- Defined server-authoritative boundaries for combat, loot, object state, and save writes.
+- Selected Cloudflare baseline: Worker router + zone Durable Objects + D1 canonical persistence.
+- Marked private dungeon policy for Mirror Cave and Abandoned Tollhouse in early multiplayer.
+
+
+## Phase 32 outcome summary (Art Direction Application Pass)
+
+- Applied a major in-game art direction pass focused on terrain, region identity, entity readability, and UI cohesion in the playable slice.
+- Upgraded environmental readability for grass/road/water/cave/tollhouse surfaces without changing gameplay systems.
+- Improved actor differentiation (Wayfarer, NPC roles, wolves, bandits, and Rook mini-boss) to reduce label-only identification.
+- Added/updated visual QA checklist in `docs/VISUAL_QA.md` for ongoing regression-safe art polish.

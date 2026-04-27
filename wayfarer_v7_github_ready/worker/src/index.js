@@ -37,9 +37,13 @@ const html = String.raw`<!DOCTYPE html>
       --accent:#8fb6ff;
     }
     * { box-sizing: border-box; }
+    #gamePanel, #game, #hud, #dialogue, #vendorPanel, #inventoryPanel, #equipmentPanel, #stats, #logPanel, #brand {
+      user-select: none;
+      -webkit-user-select: none;
+    }
     body {
       margin:0;
-      background: radial-gradient(circle at 30% -10%, #1a2333 0%, #070d14 58%);
+      background: radial-gradient(circle at 26% -12%, #263248 0%, #0a1119 56%);
       color: var(--text);
       font-family: "Trebuchet MS", Verdana, sans-serif;
       overflow: hidden;
@@ -48,17 +52,74 @@ const html = String.raw`<!DOCTYPE html>
       display:grid;
       grid-template-columns: 320px 1fr;
       gap:14px;
-      height:100vh;
+      height:100dvh;
       padding:14px;
     }
     .panel {
-      background: linear-gradient(#111a27, #0c131d);
-      border: 1px solid #2f3b4e;
+      background: linear-gradient(#141f2f, #0e1621);
+      border: 1px solid #3b4d66;
       border-radius: 12px;
       box-shadow: 0 14px 40px rgba(0,0,0,.46), inset 0 0 0 1px rgba(255,255,255,.03);
     }
-    #sidebar { display:flex; flex-direction:column; gap:10px; min-width:0; }
-    #brand,#stats,#objective,#inventoryPanel,#logPanel{padding:14px;}
+    #sidebar {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width:0;
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+      position:relative;
+      z-index:5;
+    }
+    #brand,#stats{padding:12px;}
+    #sidebarLower{
+      display:flex;
+      flex-direction:column;
+      flex:1 1 auto;
+      min-height:0;
+      overflow:hidden;
+      padding:10px;
+      gap:10px;
+    }
+    #sidebarTabs{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:6px;
+      flex:0 0 auto;
+      position:relative;
+      z-index:2;
+    }
+    .sidebar-tab{
+      border:1px solid #607798;
+      border-radius:7px;
+      background:#172436;
+      color:#c7d6ec;
+      font:11px ui-monospace,SFMono-Regular,Menlo,monospace;
+      padding:5px 6px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .sidebar-tab.active{
+      background:#29415f;
+      color:#f0f6ff;
+      border-color:#6d87ab;
+    }
+    #sidebarTabPanels{
+      flex:1 1 auto;
+      min-height:0;
+      overflow:hidden;
+      position:relative;
+      z-index:1;
+    }
+    .sidebar-tab-panel{
+      display:none;
+      flex-direction:column;
+      min-height:0;
+      height:100%;
+      padding:2px;
+    }
+    .sidebar-tab-panel.active{display:flex;}
     h1{margin:0 0 6px;font-size:24px;letter-spacing:.4px}
     .sub{font-size:13px;color:var(--muted)}
     .tag{display:inline-block;margin-top:8px;padding:5px 9px;border:1px solid #435065;border-radius:999px;font-size:11px;color:#c7d6ec}
@@ -69,17 +130,104 @@ const html = String.raw`<!DOCTYPE html>
       background:#0a1018;
       border:1px solid #2e3b4f;
       border-radius:8px;
-      min-height:160px;
-      max-height:280px;
-      overflow:auto;
-      padding:10px;
+      min-height:0;
+      max-height:none;
+      overflow-y:auto;
+      padding:8px 9px;
       white-space:pre-line;
-      font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;
+      font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
       color:#d2dded;
+      flex:1 1 auto;
     }
+    #objectiveText{
+      line-height:1.4;
+      white-space:normal;
+      overflow-wrap:anywhere;
+    }
+    #inventoryPanel,#equipmentPanel,#skillsPanel,#logPanel{
+      flex-direction:column;
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+      padding:10px;
+    }
+    #inventoryList{
+      line-height:1.45;
+      flex:1 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      padding-right:2px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .inventory-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      border-bottom:1px solid rgba(158,172,190,.14);
+      padding-bottom:4px;
+    }
+    .inventory-row:last-child{border-bottom:none}
+    .inventory-item-name{
+      flex:1 1 auto;
+      min-width:0;
+      overflow-wrap:anywhere;
+      color:#d8e3f3;
+    }
+    .inventory-actions{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      flex:0 0 auto;
+    }
+    .inventory-btn{
+      border:1px solid #4c6281;
+      border-radius:6px;
+      background:#162435;
+      color:#e6ecf5;
+      font:11px ui-monospace,SFMono-Regular,Menlo,monospace;
+      padding:2px 7px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .inventory-btn:disabled{opacity:.55;cursor:not-allowed}
+    .equipped-tag{
+      border:1px solid #5d7899;
+      border-radius:999px;
+      padding:2px 7px;
+      color:#cfe1fb;
+      font-size:11px;
+      white-space:nowrap;
+    }
+    #equipmentList,#skillsList{
+      line-height:1.45;
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      flex:1 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      padding-right:2px;
+    }
+    .equipment-slot{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      border-bottom:1px solid rgba(158,172,190,.14);
+      padding-bottom:4px;
+    }
+    .equipment-slot:last-child{border-bottom:none}
+    .equipment-slot-label{color:#9eacbe}
+    .equipment-slot-value{color:#d8e3f3;flex:1 1 auto;overflow-wrap:anywhere}
+    .equipment-slot button{margin-left:8px}
+    #logPanel{padding:10px;}
     #gamePanel{position:relative;overflow:hidden}
     #game{width:100%;height:100%;display:block;border-radius:12px;image-rendering:pixelated;background:#081017}
     #hud {
+      box-shadow:0 8px 22px rgba(0,0,0,.32), inset 0 0 0 1px rgba(255,255,255,.05);
       position:absolute;top:12px;left:12px;white-space:pre-line;
       pointer-events:none;
       font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -88,9 +236,32 @@ const html = String.raw`<!DOCTYPE html>
       border-radius:8px;
       padding:10px 12px;
       text-shadow:0 1px 0 #000;
+      max-width:min(340px, calc(100% - 24px));
+    }
+    #debugPanel{
+      position:absolute;top:12px;right:12px;white-space:pre-line;
+      pointer-events:none;
+      font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;
+      background:rgba(31,16,16,.9);
+      border:1px solid #8d5964;
+      border-radius:8px;
+      padding:10px 12px;
+      text-shadow:0 1px 0 #000;
+      color:#f4d8de;
+      max-width:min(320px, calc(100% - 24px));
+      display:none;
     }
     #dialogue {
-      position:absolute;left:20px;right:20px;bottom:20px;display:none;
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:max(24px, env(safe-area-inset-bottom));
+      width:min(860px, 78vw);
+      display:none;
+      z-index:25;
+      max-height:min(220px, 30vh);
+      overflow:auto;
+      overscroll-behavior:contain;
       background:linear-gradient(#121a25,#0b1018);
       border:1px solid #51637d;
       border-radius:10px;
@@ -98,8 +269,49 @@ const html = String.raw`<!DOCTYPE html>
       padding:12px 14px;
     }
     #dialogueName{font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.4px}
-    #dialogueText{white-space:pre-line;min-height:62px;line-height:1.5}
+    #dialogueText{white-space:pre-wrap;overflow-wrap:anywhere;min-height:62px;line-height:1.5}
+    #dialogueChoices{
+      margin-top:10px;
+      display:grid;
+      gap:6px;
+    }
+    .dialogue-choice{
+      border:1px solid #4c6281;
+      border-radius:8px;
+      background:#162435;
+      color:#e6ecf5;
+      text-align:left;
+      font:12px ui-monospace,SFMono-Regular,Menlo,monospace;
+      padding:7px 9px;
+      cursor:pointer;
+    }
+    .dialogue-choice:hover{background:#1b2d44}
     #dialogueHint{margin-top:8px;color:var(--muted);font-size:12px}
+    #dialogueActions{margin-top:8px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+    .dialogue-action{border:1px solid #4c6281;border-radius:8px;background:#162435;color:#e6ecf5;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;padding:6px 10px;cursor:pointer}
+    .dialogue-action:hover{background:#1b2d44}
+    #vendorPanel{
+      position:absolute;left:50%;transform:translateX(-50%);bottom:20px;display:none;
+      z-index:30;
+      width:min(700px, calc(100% - 40px));
+      background:linear-gradient(#121a25,#0b1018);
+      border:1px solid #51637d;
+      border-radius:10px;
+      box-shadow:0 12px 34px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);
+      padding:12px 14px;
+    }
+    #vendorHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    #vendorName{font-weight:700;color:var(--accent);letter-spacing:.4px}
+    #vendorList{max-height:210px;overflow:auto;line-height:1.5}
+    #vendorHint{margin-top:8px;color:var(--muted);font-size:12px}
+    .vendor-item{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(158,172,190,.18)}
+    .vendor-item:last-child{border-bottom:none}
+    .vendor-pill{font-size:11px;border:1px solid #435065;border-radius:999px;padding:2px 8px;color:#c7d6ec}
+    .vendor-btn,.vendor-close{
+      border:1px solid #4c6281;border-radius:6px;background:#162435;color:#e6ecf5;
+      font:12px ui-monospace,SFMono-Regular,Menlo,monospace;padding:4px 8px;cursor:pointer;
+    }
+    .vendor-btn:disabled{opacity:.55;cursor:not-allowed}
     #saveNotice{
       position:absolute;top:16px;right:16px;opacity:0;transform:translateY(-6px);
       transition:opacity .2s ease,transform .2s ease;
@@ -112,6 +324,32 @@ const html = String.raw`<!DOCTYPE html>
       box-shadow:0 8px 22px rgba(0,0,0,.45);
     }
     #saveNotice.visible{opacity:1;transform:translateY(0)}
+    #rewardToast{
+      position:absolute;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%) translateY(8px);
+      opacity:0;
+      pointer-events:none;
+      z-index:36;
+      transition:opacity .18s ease, transform .18s ease;
+      font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;
+      background:rgba(10,18,27,.92);
+      border:1px solid #4d6888;
+      border-radius:8px;
+      padding:7px 10px;
+      box-shadow:0 8px 24px rgba(0,0,0,.4);
+      white-space:pre-wrap;
+      text-align:center;
+    }
+    #rewardToast.visible{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+    #transitionFade{
+      position:absolute;inset:0;pointer-events:none;z-index:35;
+      background:rgba(2,6,10,0);
+    }
   </style>
 </head>
 <body>
@@ -120,97 +358,363 @@ const html = String.raw`<!DOCTYPE html>
       <section id="brand" class="panel">
         <h1>Wayfarer</h1>
         <div class="sub">Artistic Rebuild — Hearthvale Slice</div>
-        <span class="tag">Mythic Pixel Vertical Slice</span>
+        <div class="stats" style="margin-top:10px;">
+          <div class="muted">Current Objective</div><div id="objectiveText">Explore Hearthvale and the surrounding roads.</div>
+          <div class="muted">Current Zone</div><div id="zoneVal">Hearthvale Square</div>
+          <div class="muted">Quest</div><div id="questVal">Town Slice</div>
+        </div>
       </section>
       <section id="stats" class="panel">
         <div class="stats">
+          <div class="muted">Level</div><div id="levelVal">1</div>
           <div class="muted">HP</div><div id="hpVal">50/50</div>
-          <div class="muted">XP</div><div id="xpVal">0</div>
+          <div class="muted">XP</div><div id="xpVal">0 / 100</div>
           <div class="muted">Coins</div><div id="coinsVal">0</div>
           <div class="muted">Weapon</div><div id="weaponVal">Rusty Sword (+2)</div>
-          <div class="muted">Quest</div><div id="questVal">Town Slice</div>
-          <div class="muted">Zone</div><div id="zoneVal">Hearthvale Square</div>
+          <div class="muted">Armor</div><div id="armorVal">None</div>
+          <div class="muted">Trinket</div><div id="trinketVal">None</div>
         </div>
       </section>
-      <section id="objective" class="panel">
-        <div class="questTitle">Current Objective</div>
-        <div id="objectiveText" class="muted">Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.</div>
-      </section>
-      <section id="inventoryPanel" class="panel">
-        <div class="questTitle">Inventory</div>
-        <div id="inventoryList" class="muted">Empty</div>
-        <div class="questTitle" style="margin-top:10px;">Equipment</div>
-        <div id="equipmentList" class="muted"></div>
-      </section>
-      <section id="logPanel" class="panel">
-        <div class="questTitle">Chronicle</div>
-        <div id="chat"></div>
+      <section id="sidebarLower" class="panel">
+        <div id="sidebarTabs" role="tablist" aria-label="Sidebar sections">
+          <button type="button" class="sidebar-tab active" data-sidebar-tab="inventory" role="tab" aria-selected="true">Inventory</button>
+          <button type="button" class="sidebar-tab" data-sidebar-tab="equipment" role="tab" aria-selected="false">Equipment</button>
+          <button type="button" class="sidebar-tab" data-sidebar-tab="skills" role="tab" aria-selected="false">Skills</button>
+          <button type="button" class="sidebar-tab" data-sidebar-tab="chronicle" role="tab" aria-selected="false">Chronicle</button>
+        </div>
+        <div id="sidebarTabPanels">
+          <section id="inventoryPanel" class="sidebar-tab-panel active" data-sidebar-panel="inventory" role="tabpanel">
+            <div class="questTitle">Inventory</div>
+            <div id="inventoryList" class="muted">Empty</div>
+          </section>
+          <section id="equipmentPanel" class="sidebar-tab-panel" data-sidebar-panel="equipment" role="tabpanel">
+            <div class="questTitle">Equipment</div>
+            <div id="equipmentList" class="muted">Weapon: Iron Sword (+5)<br>Armor: Leather Armor (+2 DEF)<br>Trinket: None</div>
+          </section>
+          <section id="skillsPanel" class="sidebar-tab-panel" data-sidebar-panel="skills" role="tabpanel">
+            <div class="questTitle">Skills</div>
+            <div id="skillsList" class="muted">Swordsmanship Lv 1 — 0 / 50<br>Defense Lv 1 — 0 / 50<br>Survival Lv 1 — 0 / 50</div>
+          </section>
+          <section id="logPanel" class="sidebar-tab-panel" data-sidebar-panel="chronicle" role="tabpanel">
+            <div class="questTitle">Chronicle</div>
+            <div id="chat"></div>
+          </section>
+        </div>
       </section>
     </aside>
 
     <main id="gamePanel" class="panel">
       <canvas id="game"></canvas>
       <div id="hud"></div>
+      <div id="debugPanel"></div>
       <div id="dialogue">
         <div id="dialogueName"></div>
         <div id="dialogueText"></div>
+        <div id="dialogueChoices"></div>
         <div id="dialogueHint">Click to continue. Press number keys for choices.</div>
+        <div id="dialogueActions"></div>
+      </div>
+      <div id="vendorPanel">
+        <div id="vendorHeader">
+          <div id="vendorName">Merchant Rowan — Vendor Menu</div>
+          <button type="button" id="vendorClose" class="vendor-close">Close</button>
+        </div>
+        <div id="vendorList"></div>
+        <div id="vendorHint">Buy supplies and sell loot. Buying and selling happen one item per click.</div>
       </div>
       <div id="saveNotice">Game Saved</div>
+      <div id="rewardToast" aria-live="polite"></div>
+      <div id="transitionFade"></div>
       <script id="dialogueData" type="application/json">
 {
   "characters": {
     "edrin": {
       "name": "Edrin Vale",
       "root": "greeting",
+      "rootByCondition": [
+        { "if": { "questId": "the_still_water", "state": "Completed" }, "next": "still_water_complete" },
+        { "if": { "questId": "the_still_water", "state": "Ready To Turn In", "progress": "stage_6_return_to_edrin" }, "next": "still_water_final_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_6_return_to_edrin" }, "next": "still_water_final_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_3_return_to_edrin" }, "next": "still_water_stage_3_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Ready To Turn In" }, "next": "still_water_active" },
+        { "if": { "questId": "the_still_water", "state": "Active" }, "next": "still_water_active" },
+        { "if": { "questId": "mirror_pond_listening", "state": "Completed" }, "next": "after_pond_rite" },
+        { "if": { "questId": "mirror_pond_listening", "state": "Active", "progress": "heard_whispers" }, "next": "pond_whispers_heard" },
+        { "if": { "objectiveId": "hunters_request:open_chest", "completed": true }, "next": "cave_relic_observed" },
+        { "if": { "questId": "mirror_pond_listening", "state": "Active" }, "next": "pond_listening_active" }
+      ],
       "nodes": {
         "greeting": {
           "lines": [
-            "You are not from here.",
-            "Mirror Pond keeps old promises.",
-            "What do you seek, wayfarer?"
+            "The pond has been still for years. Today, it moved."
           ],
           "choices": [
-            { "text": "Any work for me?", "next": "quest_offer" },
-            { "text": "Tell me about this town.", "next": "town_lore" }
+            { "text": "What do you mean?", "event": "quest:activate:the_still_water", "next": "still_water_begin" },
+            { "text": "What is Mirror Pond?", "next": "mirror_pond_lore" },
+            { "text": "What do you know about the cave?", "next": "mirror_cave_lore" },
+            { "text": "Why do people call me Wayfarer?", "next": "wayfarer_title" },
+            { "text": "Goodbye.", "next": "end" }
           ]
         },
-        "town_lore": {
+        "still_water_begin": {
           "lines": [
-            "Hearthvale pretends to be quiet.",
-            "Listen long enough and the stones answer back."
+            "Go to the water. Do not look only at the surface."
+          ],
+          "next": "end"
+        },
+        "still_water_active": {
+          "lines": [
+            "Go to the water. Do not look only at the surface."
+          ],
+          "choices": [
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "still_water_stage_3_turn_in": {
+          "lines": [
+            "Then the surface delayed itself for you.",
+            "The pond is not just water. It remembers."
+          ],
+          "choices": [
+            { "text": "I'll go into the cave.", "next": "still_water_stage_3_advance" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "still_water_stage_3_advance": {
+          "lines": [
+            "Enter Mirror Cave again. Bring back the fragment that answers to you."
+          ],
+          "onCompleteEvents": ["quest:still_water:report_pond"],
+          "next": "end"
+        },
+        "still_water_final_turn_in": {
+          "lines": [
+            "You brought the Echo Fragment."
+          ],
+          "choices": [
+            { "text": "Give Edrin the Echo Fragment", "next": "still_water_complete_turn_in" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "still_water_complete_turn_in": {
+          "lines": [
+            "Then it remembers you. That is not a gift given lightly."
+          ],
+          "onCompleteEvents": ["quest:still_water:final_turn_in"],
+          "next": "still_water_complete"
+        },
+        "still_water_complete": {
+          "lines": [
+            "Then it remembers you. That is not a gift given lightly."
+          ],
+          "choices": [
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "mirror_pond_lore": {
+          "lines": [
+            "Mirror Pond is older than Hearthvale, older than the roads, older than the names we use.",
+            "The surface reflects faces. The depths remember choices."
           ],
           "next": "greeting"
         },
-        "quest_offer": {
+        "mirror_cave_lore": {
           "lines": [
-            "Go to Mirror Pond and listen carefully.",
-            "Something is wrong."
+            "Mirror Cave was carved by fear and devotion in equal measure.",
+            "Most who enter hear only echoes. A few hear answers."
           ],
-          "onCompleteEvents": ["quest:activate:mirror_pond_listening"],
-          "next": "quest_active_followup"
+          "next": "greeting"
+        },
+        "wayfarer_title": {
+          "lines": [
+            "Wayfarer is not a rank. It is a warning.",
+            "Some arrive in Hearthvale by road. Others are brought by history."
+          ],
+          "next": "greeting"
+        },
+        "pond_listening_active": {
+          "lines": [
+            "The pond is waiting. Stand at the water in silence and listen."
+          ],
+          "choices": [
+            { "text": "What is Mirror Pond?", "next": "mirror_pond_lore" },
+            { "text": "What do you know about the cave?", "next": "mirror_cave_lore" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "pond_whispers_heard": {
+          "lines": [
+            "The water answered you.",
+            "Tell me what the stillness carried."
+          ],
+          "choices": [
+            { "text": "I heard the whispers.", "next": "pond_whispers_turn_in" },
+            { "text": "Not yet.", "next": "end" }
+          ]
+        },
+        "pond_whispers_turn_in": {
+          "lines": [
+            "Then the old vow is stirring again.",
+            "You have done what few could."
+          ],
+          "onCompleteEvents": ["quest:report:mirror_pond"],
+          "next": "after_pond_rite"
+        },
+        "cave_relic_observed": {
+          "lines": [
+            "You took something from Mirror Cave, didn't you?",
+            "The pond's surface has changed since that relic was disturbed."
+          ],
+          "choices": [
+            { "text": "What is Mirror Pond?", "next": "mirror_pond_lore" },
+            { "text": "Why do people call me Wayfarer?", "next": "wayfarer_title" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "after_pond_rite": {
+          "lines": [
+            "Hearthvale heard your step, Wayfarer.",
+            "The world is older than it looks, and now it knows you."
+          ],
+          "choices": [
+            { "text": "What do you know about the cave?", "next": "mirror_cave_lore" },
+            { "text": "Why do people call me Wayfarer?", "next": "wayfarer_title" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
         },
         "quest_active_followup": {
           "lines": [
             "The pond is waiting. Go there and be still."
           ],
           "next": "end"
-        },
-        "quest_turn_in": {
+        }
+      }
+    },
+    "hunter_garran": {
+      "name": "Hunter Garran",
+      "root": "hunters_request_offer",
+      "rootByCondition": [
+        { "if": { "questId": "hunters_request", "state": "Completed" }, "next": "hunters_request_complete" },
+        { "if": { "questId": "hunters_request", "progress": "stage_4_return_with_relic" }, "next": "hunters_request_final_turn_in_ready" },
+        { "if": { "questId": "hunters_request", "progress": "stage_3_mirror_cave" }, "next": "hunters_request_stage_3_active" },
+        { "if": { "questId": "hunters_request", "progress": "stage_2_return_to_hunter" }, "next": "hunters_request_stage_2_turn_in" },
+        { "if": { "questId": "hunters_request", "progress": "stage_1_prove_yourself" }, "next": "hunters_request_stage_1_active" }
+      ],
+      "nodes": {
+        "hunters_request_offer": {
           "lines": [
-            "You hear them too, then.",
-            "Good. The pond is warning us.",
-            "You have done well, wayfarer."
+            "You want to survive out there? Then earn it.",
+            "Wolves are ranging near the pond. Bring me proof you can hold your ground.",
+            "Take Hunter's Request: defeat 3 wolves and collect 3 Wolf Pelts."
           ],
-          "onCompleteEvents": ["quest:report:mirror_pond"],
-          "next": "post_quest"
+          "choices": [
+            { "text": "Accept Hunter's Request", "event": "quest:activate:hunters_request", "next": "end" },
+            { "text": "Not now.", "next": "end" }
+          ]
         },
-        "post_quest": {
+        "hunters_request_stage_1_active": {
           "lines": [
-            "You heard it, didn't you?",
-            "Good. Hearthvale will remember your step."
+            "Prove yourself first. Defeat 3 wolves and bring me 3 Wolf Pelts."
           ],
+          "choices": [
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "hunters_request_stage_2_turn_in": {
+          "lines": [
+            "You handled yourself. Good. Now there is something deeper I need you to see."
+          ],
+          "choices": [
+            { "text": "Hand over 3 Wolf Pelts", "next": "hunters_request_pelt_turn_in" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "hunters_request_pelt_turn_in": {
+          "lines": [
+            "Enter Mirror Cave and recover what waits inside. Bring it back to me."
+          ],
+          "onCompleteEvents": ["quest:hunter:turn_in_pelts"],
           "next": "end"
+        },
+        "hunters_request_stage_3_active": {
+          "lines": [
+            "Mirror Cave is waiting. Recover what rests in the old chest and come back."
+          ],
+          "choices": [
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "hunters_request_final_turn_in_ready": {
+          "lines": [
+            "You came back with it. Then Hearthvale may remember your name yet."
+          ],
+          "choices": [
+            { "text": "Give Hunter Garran the Mirror Relic", "next": "hunters_request_final_turn_in" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "hunters_request_final_turn_in": {
+          "lines": [
+            "Good. You did what I asked, in order, and you came back standing."
+          ],
+          "onCompleteEvents": ["quest:hunter:final_turn_in"],
+          "next": "hunters_request_complete"
+        },
+        "hunters_request_complete": {
+          "lines": [
+            "You came back with it. Then Hearthvale may remember your name yet."
+          ],
+          "choices": [
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        }
+      }
+    },
+    "merchant_rowan": {
+      "name": "Merchant Rowan",
+      "root": "rowan_greeting",
+      "rootByCondition": [
+        { "if": { "itemId": "iron_sword", "minimumOwned": 1 }, "next": "rowan_iron_sword_greeting" }
+      ],
+      "nodes": {
+        "rowan_greeting": {
+          "lines": [
+            "Welcome, friend. Coin, stories, and practical supplies — that's my trade.",
+            "What can I do for you?"
+          ],
+          "choices": [
+            { "text": "Show me your goods.", "event": "vendor:open", "next": "end" },
+            { "text": "Any advice?", "next": "rowan_advice" },
+            { "text": "Tell me about Hearthvale.", "next": "rowan_hearthvale" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "rowan_iron_sword_greeting": {
+          "lines": [
+            "That Iron Sword suits you. Hunter Garran doesn't hand out steel lightly.",
+            "Need fresh supplies?"
+          ],
+          "choices": [
+            { "text": "Show me your goods.", "event": "vendor:open", "next": "end" },
+            { "text": "Any advice?", "next": "rowan_advice" },
+            { "text": "Tell me about Hearthvale.", "next": "rowan_hearthvale" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "rowan_advice": {
+          "lines": [
+            "Keep at least one potion on hand and sell spare loot often.",
+            "If your pack gets heavy, your choices get expensive."
+          ],
+          "next": "rowan_greeting"
+        },
+        "rowan_hearthvale": {
+          "lines": [
+            "Hearthvale looks peaceful until dusk. Then hunters hurry in and mystics get quiet.",
+            "Old tollhouse up north used to take coin from every wagon. Now it takes blood, from what I hear.",
+            "If you need rumors, listen near the well at sundown."
+          ],
+          "next": "rowan_greeting"
         }
       }
     }
@@ -224,7 +728,44 @@ const html = String.raw`<!DOCTYPE html>
       "id": "mirror_pond_listening",
       "name": "Listening at Mirror Pond",
       "description": "Travel to Mirror Pond and listen in silence.",
-      "startEvents": ["quest:activate:mirror_pond_listening"]
+      "startEvents": ["quest:activate:mirror_pond_listening"],
+      "initialProgress": "go_to_pond",
+      "rewards": { "xp": 15, "coins": 5 }
+    },
+    {
+      "id": "the_still_water",
+      "questId": "the_still_water",
+      "title": "The Still Water",
+      "name": "The Still Water",
+      "description": "Follow Edrin Vale's guidance at Mirror Pond and recover the Echo Fragment from Mirror Cave.",
+      "startEvents": ["quest:activate:the_still_water"],
+      "initialProgress": "stage_1_speak_with_edrin",
+      "status": "Not Started",
+      "objectives": [
+        { "id": "inspect_pond", "label": "Inspect Mirror Pond", "type": "interact", "targetId": "mirror_pond", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "enter_cave", "label": "Enter Mirror Cave", "type": "reach", "targetId": "mirror_cave", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "recover_echo_fragment", "label": "Recover the Echo Fragment from Mirror Cave", "type": "interact", "targetId": "echo_fragment", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "return_edrin", "label": "Return to Edrin Vale", "type": "interact", "targetId": "npc_edrin", "requiredAmount": 1, "currentAmount": 0, "completed": false }
+      ],
+      "rewards": { "xp": 45, "coins": 4, "items": [{ "itemId": "small_potion", "count": 1 }] }
+    },
+    {
+      "id": "hunters_request",
+      "questId": "hunters_request",
+      "title": "Hunter's Request",
+      "name": "Hunter's Request",
+      "description": "Prove yourself to Hunter Garran, recover the Mirror Relic from Mirror Cave, then return for your reward.",
+      "startEvents": ["quest:activate:hunters_request"],
+      "initialProgress": "stage_1_prove_yourself",
+      "status": "Not Started",
+      "objectives": [
+        { "id": "wolves", "label": "Defeat 3 wolves", "summaryLabel": "Wolves defeated", "type": "kill", "targetId": "wolf", "requiredAmount": 3, "currentAmount": 0, "completed": false },
+        { "id": "pelts", "label": "Collect 3 Wolf Pelts", "summaryLabel": "Wolf Pelts", "type": "item", "targetId": "wolf_pelt", "requiredAmount": 3, "currentAmount": 0, "completed": false },
+        { "id": "enter_cave", "label": "Enter Mirror Cave", "type": "reach", "targetId": "mirror_cave", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "open_chest", "label": "Open Mirror Cave chest", "type": "interact", "targetId": "mirror_cave_chest", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "return_hunter", "label": "Return to Hunter Garran", "type": "interact", "targetId": "npc_hunter_garran", "requiredAmount": 1, "currentAmount": 0, "completed": false }
+      ],
+      "rewards": { "xp": 35, "coins": 0, "items": [] }
     }
   ]
 }
@@ -233,23 +774,57 @@ const html = String.raw`<!DOCTYPE html>
   </div>
 <script>
 const canvas = document.getElementById("game");
+const gamePanel = document.getElementById("gamePanel");
 const ctx = canvas.getContext("2d");
 const hud = document.getElementById("hud");
+const debugPanel = document.getElementById("debugPanel");
 const chat = document.getElementById("chat");
+const levelVal = document.getElementById("levelVal");
 const hpVal = document.getElementById("hpVal");
 const xpVal = document.getElementById("xpVal");
 const coinsVal = document.getElementById("coinsVal");
 const zoneVal = document.getElementById("zoneVal");
 const questVal = document.getElementById("questVal");
 const weaponVal = document.getElementById("weaponVal");
+const armorVal = document.getElementById("armorVal");
+const trinketVal = document.getElementById("trinketVal");
 const objectiveText = document.getElementById("objectiveText");
 const inventoryList = document.getElementById("inventoryList");
 const equipmentList = document.getElementById("equipmentList");
+const skillsList = document.getElementById("skillsList");
 const dialogue = document.getElementById("dialogue");
 const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
+const dialogueChoices = document.getElementById("dialogueChoices");
 const dialogueHint = document.getElementById("dialogueHint");
+const dialogueActions = document.getElementById("dialogueActions");
+const vendorPanel = document.getElementById("vendorPanel");
+const vendorList = document.getElementById("vendorList");
+const vendorClose = document.getElementById("vendorClose");
 const saveNotice = document.getElementById("saveNotice");
+const rewardToast = document.getElementById("rewardToast");
+const transitionFade = document.getElementById("transitionFade");
+const sidebarTabs = Array.from(document.querySelectorAll(".sidebar-tab"));
+const sidebarPanels = Array.from(document.querySelectorAll(".sidebar-tab-panel"));
+
+function setActiveSidebarTab(tabId){
+  sidebarTabs.forEach((tab)=>{
+    const isActive=tab.dataset.sidebarTab===tabId;
+    tab.classList.toggle("active", isActive);
+    tab.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+  sidebarPanels.forEach((panel)=>{
+    panel.classList.toggle("active", panel.dataset.sidebarPanel===tabId);
+  });
+}
+if(sidebarTabs.length>0){
+  const tabsHost=document.getElementById("sidebarTabs");
+  tabsHost?.addEventListener("click", (event)=>{
+    const tabButton=event.target.closest(".sidebar-tab");
+    if(!tabButton) return;
+    setActiveSidebarTab(tabButton.dataset.sidebarTab || "inventory");
+  });
+}
 
 function parseJsonScript(id){
   const node=document.getElementById(id);
@@ -258,45 +833,303 @@ function parseJsonScript(id){
   catch(err){ console.error("Invalid JSON in", id, err); return {}; }
 }
 
+function updateDialogueViewportConstraints(){
+  const panelRect=gamePanel?.getBoundingClientRect();
+  if(!panelRect || panelRect.width<=0 || panelRect.height<=0) return;
+  const viewportHeight=window.innerHeight || document.documentElement.clientHeight || 0;
+  const safeBottomPadding=24;
+  const safeTopPadding=24;
+  const bottomOffsetFromViewport=Math.max(safeBottomPadding, Math.round(viewportHeight-panelRect.bottom+safeBottomPadding));
+  const availableWidth=Math.max(220, Math.floor(panelRect.width-24));
+  const maxWidth=Math.min(860, Math.floor(panelRect.width*0.78));
+  const preferredWidth=Math.min(760, Math.floor(panelRect.width*0.74));
+  const width=Math.min(availableWidth, Math.max(220, Math.min(maxWidth, preferredWidth)));
+  const viewportBasedMaxHeight=Math.min(220, Math.floor(viewportHeight*0.30));
+  const panelBasedMaxHeight=Math.max(140, Math.floor(panelRect.height-safeTopPadding-bottomOffsetFromViewport-36));
+  let maxHeight=Math.max(130, Math.min(viewportBasedMaxHeight, panelBasedMaxHeight));
+
+  dialogue.style.left=Math.round(panelRect.left+(panelRect.width/2)) + "px";
+  dialogue.style.bottom=bottomOffsetFromViewport + "px";
+  dialogue.style.width=width + "px";
+  dialogue.style.maxHeight=maxHeight + "px";
+  dialogue.style.overflowY="auto";
+
+  if(dialogue.style.display==="none") return;
+  let rect=dialogue.getBoundingClientRect();
+  if(rect.bottom>viewportHeight-safeBottomPadding){
+    const overlap=Math.ceil(rect.bottom-(viewportHeight-safeBottomPadding));
+    dialogue.style.bottom=(bottomOffsetFromViewport+overlap) + "px";
+    rect=dialogue.getBoundingClientRect();
+  }
+  if(rect.top<safeTopPadding){
+    const currentBottom=parseFloat(dialogue.style.bottom || "0");
+    const safeHeight=Math.max(120, Math.floor(viewportHeight-currentBottom-safeTopPadding));
+    maxHeight=Math.min(maxHeight, safeHeight);
+    dialogue.style.maxHeight=maxHeight + "px";
+  }
+}
+
 const TILE = 32;
 const WORLD_W = 38;
 const WORLD_H = 24;
+const OUTDOOR_REGION_DEFS = {
+  north_road: {
+    id: "north_road",
+    name: "North Road",
+    bounds: { x:10, y:0, w:14, h:7 }
+  },
+  hearthvale_square: {
+    id: "hearthvale_square",
+    name: "Hearthvale Square",
+    bounds: { x:0, y:7, w:27, h:WORLD_H-7 }
+  },
+  eastern_woods: {
+    id: "eastern_woods",
+    name: "Eastern Woods",
+    bounds: { x:27, y:0, w:WORLD_W-27, h:WORLD_H }
+  }
+};
+const INTERIOR_REGION_DEFS = {
+  mirror_cave: {
+    id:"mirror_cave",
+    name:"Mirror Cave"
+  },
+  abandoned_tollhouse: {
+    id:"abandoned_tollhouse",
+    name:"Abandoned Tollhouse"
+  }
+};
+const BALANCE = Object.freeze({
+  player: {
+    startingMaxHp: 52,
+    baseDamage: 6,
+    levelProgression: Object.freeze([
+      { level:1, xpRequired:0, maxHp:52, baseAttackBonus:0, baseDefenseBonus:0 },
+      { level:2, xpRequired:90, maxHp:62, baseAttackBonus:1, baseDefenseBonus:0 },
+      { level:3, xpRequired:210, maxHp:74, baseAttackBonus:2, baseDefenseBonus:1 },
+      { level:4, xpRequired:420, maxHp:86, baseAttackBonus:3, baseDefenseBonus:1 },
+      { level:5, xpRequired:720, maxHp:98, baseAttackBonus:3, baseDefenseBonus:2 }
+    ])
+  },
+  items: {
+    healingHerbHealAmount: 10,
+    smallPotionHealAmount: 25,
+    leatherArmorDefense: 2,
+    rustySwordAttack: 2,
+    ironSwordAttack: 5,
+    travelersCharmDefense: 1
+  },
+  enemies: {
+    wolf: {
+      hp:24,
+      damage:6,
+      xp:9,
+      coinReward:2,
+      attackCooldownMs:2000,
+      respawnMs:14000,
+      lootTable: Object.freeze([
+        { itemId:"wolf_pelt", chance:0.55, min:1, max:1 },
+        { itemId:"small_fang", chance:0.4, min:1, max:1 }
+      ])
+    },
+    bandit: {
+      hp:34,
+      damage:8,
+      xp:18,
+      coinReward:7,
+      attackCooldownMs:2600,
+      respawnMs:18000,
+      lootTable: Object.freeze([
+        { itemId:"old_coin", chance:0.85, min:1, max:2 },
+        { itemId:"cloth_scrap", chance:0.55, min:1, max:1 }
+      ])
+    },
+    rook_tollkeeper: {
+      hp:72,
+      damage:11,
+      xp:62,
+      coinReward:22,
+      attackCooldownMs:3000,
+      respawnMs:0,
+      lootTable: Object.freeze([])
+    },
+    cave_wolf: {
+      hp:28,
+      damage:7,
+      xp:13,
+      coinReward:3,
+      attackCooldownMs:2200,
+      respawnMs:16000,
+      lootTable: Object.freeze([
+        { itemId:"wolf_pelt", chance:0.75, min:1, max:1 },
+        { itemId:"small_fang", chance:0.65, min:1, max:2 }
+      ])
+    }
+  },
+  combatLog: {
+    repeatWindowMs:1200
+  },
+  death: {
+    respawnSafetyMs:2600
+  }
+});
+const SKILL_LEVEL_THRESHOLDS = Object.freeze([0,50,125,250,450]);
+const SKILL_MAX_LEVEL = SKILL_LEVEL_THRESHOLDS.length;
+const SKILL_DISPLAY_NAMES = Object.freeze({
+  swordsmanship:"Swordsmanship",
+  defense:"Defense",
+  survival:"Survival"
+});
+const HARD_ZONE_TRANSITIONS = Object.freeze([]);
+let currentZoneId = "hearthvale_square";
+let zoneTransitionLockedUntil = 0;
+const DIRECTION_KEYS = Object.freeze(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"]);
+let blockedDirectionalKeysUntilRelease = new Set();
+let lastLoggedZoneEntryId = currentZoneId;
 const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
-  rusty_sword: { id:"rusty_sword", name:"Rusty Sword", type:"weapon", attackBonus:2, description:"A worn but dependable blade.", stackable:false, value:8 },
-  wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:6 },
-  small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:4 },
-  old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
-  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, value:5 }
+  rusty_sword: { id:"rusty_sword", name:"Rusty Sword", type:"weapon", attackBonus:BALANCE.items.rustySwordAttack, description:"A worn but dependable blade.", stackable:false, value:8 },
+  iron_sword: { id:"iron_sword", name:"Iron Sword", type:"weapon", attackBonus:BALANCE.items.ironSwordAttack, description:"A sharpened iron blade forged for close cave fights.", stackable:false, value:24 },
+  leather_armor: { id:"leather_armor", name:"Leather Armor", type:"armor", defenseBonus:BALANCE.items.leatherArmorDefense, description:"Sturdy leather armor that softens incoming blows.", stackable:false, value:28 },
+  wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:3 },
+  small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:2 },
+  old_coin: { id:"old_coin", name:"Old Coin", type:"material", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
+  old_toll_key: { id:"old_toll_key", name:"Old Toll Key", type:"quest", description:"A heavy iron key stamped with the old tollhouse seal.", stackable:false, value:0 },
+  travelers_charm: { id:"travelers_charm", name:"Traveler's Charm", type:"trinket", defenseBonus:BALANCE.items.travelersCharmDefense, description:"A weathered charm favored by caravan guards. Grants +1 DEF.", stackable:false, value:32 },
+  mirror_relic: { id:"mirror_relic", name:"Mirror Relic", type:"quest", description:"An old relic recovered from the Mirror Cave chest.", stackable:false, value:0 },
+  echo_fragment: { id:"echo_fragment", name:"Echo Fragment", type:"quest", description:"A dim fragment that seems to hold a delayed reflection.", stackable:false, value:0 },
+  cloth_scrap: { id:"cloth_scrap", name:"Cloth Scrap", type:"material", description:"Rough cloth torn from worn travel gear.", stackable:true, value:2 },
+  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, healAmount:BALANCE.items.healingHerbHealAmount, value:4 },
+  small_potion: { id:"small_potion", name:"Small Potion", type:"consumable", description:"A compact tonic that restores vitality.", stackable:true, healAmount:BALANCE.items.smallPotionHealAmount, value:10 }
 });
-const WOLF_LOOT_TABLE = Object.freeze([
-  { itemId:"wolf_pelt", chance:0.85, min:1, max:1 },
-  { itemId:"small_fang", chance:0.65, min:1, max:2 }
-]);
+const VENDOR_BUY_INVENTORY = Object.freeze(["healing_herb","small_potion","leather_armor"]);
 
 function resize() {
-  const rect = document.getElementById("gamePanel").getBoundingClientRect();
+  const rect = gamePanel.getBoundingClientRect();
   canvas.width = Math.floor(rect.width);
   canvas.height = Math.floor(rect.height);
+  updateDialogueViewportConstraints();
 }
 resize();
 addEventListener("resize", resize);
 
 const palette = {
-  grass: ["#415f35", "#39562e", "#4a6c3e", "#2f4828"],
-  road: ["#8f7651", "#7c6546", "#9b8260", "#624f37"],
-  water: ["#264a72", "#1f3e60", "#2f618f", "#3f7eb5", "#82b8dc"],
-  wood: ["#7a573b", "#5a3f2a", "#9b7450", "#c8a37a"],
-  roof: ["#7a3e3f", "#5e2d2f", "#9b5c5b", "#3f1f22"],
-  wall: ["#88806d", "#6a6354", "#a39a85"],
-  fence: ["#7a5b3d", "#5c432c", "#ad8960"],
+  grass: ["#4e7045", "#4a6b42", "#55784d", "#43633d"],
+  forestGrass: ["#39583a", "#324f35", "#416444", "#2a452d"],
+  road: ["#8b724d", "#755f40", "#9f8560", "#594733"],
+  water: ["#2a4b73", "#1d3554", "#35628f", "#4d84b6", "#9bc8e6"],
+  shore: ["#75835a", "#5c6c49", "#ccb78a"],
+  wood: ["#7b5a3f", "#5a412c", "#9e7754", "#ccac7f"],
+  roof: ["#875048", "#6c3d36", "#aa6f64", "#4b2c27"],
+  wall: ["#9b907c", "#746a58", "#b5ab97"],
+  cave: ["#404753", "#313742", "#596474", "#222833"],
+  tollhouse: ["#73573d", "#5d462f", "#8f6d4c", "#453222"],
+  fence: ["#7b5d40", "#5d442d", "#b08c62"],
   uiInk: "#0d141f",
 };
 
-function log(message){ chat.textContent = message + "\n" + chat.textContent; }
+let lastCombatLog={ message:"", at:0 };
+let lastLogMessage="";
+let lastLogRepeatCount=1;
+let lastLogRepeatElement=null;
+let rewardToastTimeout=0;
+const floatingTexts=[];
+let cameraShakeUntil=0;
+let cameraShakeStrength=0;
+function log(message){
+  if(!message) return;
+  if(message===lastLogMessage && lastLogRepeatElement){
+    lastLogRepeatCount+=1;
+    lastLogRepeatElement.textContent=message + " (x" + lastLogRepeatCount + ")";
+    chat.scrollTop=chat.scrollHeight;
+    return;
+  }
+  lastLogMessage=message;
+  lastLogRepeatCount=1;
+  const line=document.createElement("div");
+  line.textContent=message;
+  chat.appendChild(line);
+  lastLogRepeatElement=line;
+  while(chat.childElementCount>220){
+    chat.removeChild(chat.firstElementChild);
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+function showRewardToast(message, durationMs=1400){
+  if(!rewardToast || !message) return;
+  rewardToast.textContent=message;
+  rewardToast.classList.add("visible");
+  if(rewardToastTimeout) clearTimeout(rewardToastTimeout);
+  rewardToastTimeout=setTimeout(()=>{
+    rewardToast.classList.remove("visible");
+  }, Math.max(800, durationMs));
+}
+function showRewardToasts(messages){
+  if(!Array.isArray(messages) || !messages.length) return;
+  let delay=0;
+  messages.forEach((message)=>{
+    if(typeof message!=="string" || !message) return;
+    setTimeout(()=>showRewardToast(message), delay);
+    delay+=750;
+  });
+}
+function spawnFloatingText(tx,ty,text,{color="#f4f8ff",durationMs=850,rise=14,size=12}={}){
+  if(!text && text!==0) return;
+  floatingTexts.push({ tx, ty, text:String(text), color, size, durationMs, rise, startedAt:performance.now() });
+}
+function triggerCameraShake(durationMs=120,strength=2){
+  cameraShakeUntil=Math.max(cameraShakeUntil, performance.now()+Math.max(60,durationMs));
+  cameraShakeStrength=Math.max(cameraShakeStrength, Math.max(0.5,strength));
+}
+function drawFloatingTexts(now){
+  for(let i=floatingTexts.length-1;i>=0;i--){
+    const entry=floatingTexts[i];
+    const age=now-entry.startedAt;
+    if(age>=entry.durationMs){
+      floatingTexts.splice(i,1);
+      continue;
+    }
+    const progress=Math.max(0, Math.min(1, age/entry.durationMs));
+    const alpha=(1-progress);
+    const p=tileToScreen(entry.tx, entry.ty);
+    const yOffset=Math.round(progress*entry.rise);
+    ctx.save();
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle="rgba(10,12,18,.85)";
+    const textW=Math.max(24, entry.text.length*7+8);
+    ctx.fillRect(p.x+16-Math.floor(textW/2), p.y-20-yOffset, textW, 13);
+    ctx.fillStyle=entry.color;
+    ctx.font="bold " + entry.size + "px monospace";
+    ctx.textAlign="center";
+    ctx.fillText(entry.text, p.x+16, p.y-10-yOffset);
+    ctx.restore();
+  }
+}
+function logCombat(message){
+  const now=performance.now();
+  if(lastCombatLog.message===message && now-lastCombatLog.at<BALANCE.combatLog.repeatWindowMs) return;
+  lastCombatLog={ message, at:now };
+  log(message);
+}
+const logThrottleState=new Map();
+function logThrottled(key,message,cooldownMs){
+  const now=performance.now();
+  const lastAt=logThrottleState.get(key)||0;
+  if(now-lastAt<cooldownMs) return false;
+  logThrottleState.set(key, now);
+  log(message);
+  return true;
+}
 function keyOf(x,y){ return x + "," + y; }
 function rng(x,y,s=1){ return (((x*73856093)^(y*19349663)^(s*83492791))>>>0)%1000/1000; }
+function layeredNoise(x,y){
+  const broad = rng(Math.floor(x*0.34), Math.floor(y*0.34), 401);
+  const medium = rng(Math.floor(x*0.72), Math.floor(y*0.72), 487);
+  const fine = rng(x,y,509);
+  const micro = rng(Math.floor((x+13)*1.35), Math.floor((y+9)*1.35), 521);
+  return broad*0.36 + medium*0.31 + fine*0.18 + micro*0.15;
+}
 
 function makeTile(drawFn){
   const c = document.createElement("canvas"); c.width = TILE; c.height = TILE;
@@ -305,64 +1138,279 @@ function makeTile(drawFn){
 }
 
 const assets = {
-  grass: [], road: [], roadEdge: [], water: {}, shore: [], detail: [],
+  grass: [], forestGrass: [], road: [], roadEdge: [], water: {}, shore: [], detail: [],
   tree: {}, propWell: null, fence: [],
   shadow: {},
   props: { sheet:null, sprites:{}, meta:{} },
-  building: {}, sprites: { player:null, npc:null, wolf:null }
+  building: {}, sprites: { player:null, npc:null, edrin:null, hunter:null, merchant:null, wolf:null, bandit:null, rook:null }
 };
 
+const atlasManifests = {
+  terrain: {
+    imagePath: "/assets/wayfarer/terrain/terrain_sheet.png",
+    tileSize: 32,
+    sprites: {
+      grass_base:{ sx:0, sy:0, sw:32, sh:32 },
+      grass_variant:{ sx:32, sy:0, sw:32, sh:32 },
+      road_center:{ sx:64, sy:0, sw:32, sh:32 },
+      road_edge:{ sx:96, sy:0, sw:32, sh:32 },
+      road_corner:{ sx:128, sy:0, sw:32, sh:32 },
+      water:{ sx:160, sy:0, sw:32, sh:32 },
+      shoreline:{ sx:192, sy:0, sw:32, sh:32 },
+      dock_plank:{ sx:224, sy:0, sw:32, sh:32 }
+    }
+  },
+  buildings: {
+    imagePath: "/assets/wayfarer/buildings/hearthvale_buildings_sheet.png",
+    tileSize: 32,
+    sprites: {
+      inn_tavern:{ sx:0, sy:0, sw:224, sh:192, anchorX:96, anchorY:176 },
+      mercantile_shop:{ sx:224, sy:0, sw:192, sh:192, anchorX:80, anchorY:176 },
+      village_hall_meeting_house:{ sx:0, sy:192, sw:224, sh:192, anchorX:96, anchorY:176 },
+      residence_small:{ sx:224, sy:192, sw:128, sh:160, anchorX:48, anchorY:144 },
+      residence_large:{ sx:352, sy:192, sw:160, sh:160, anchorX:64, anchorY:144 },
+      hunter_lodge_or_outfitter:{ sx:0, sy:384, sw:160, sh:160, anchorX:64, anchorY:144 },
+      pond_boathouse_or_waterfront_shed:{ sx:160, sy:384, sw:224, sh:128, anchorX:96, anchorY:112 }
+    }
+  },
+  characters: {
+    imagePath: "/assets/wayfarer/characters/character_sheet.png",
+    tileSize: 64,
+    sprites: {
+      wayfarer:{ sx:0, sy:0, sw:256, sh:256 },
+      edrin_vale:{ sx:256, sy:0, sw:256, sh:256 },
+      merchant_rowan:{ sx:512, sy:0, sw:256, sh:256 },
+      hunter_garran:{ sx:768, sy:0, sw:256, sh:256 },
+      bandit:{ sx:0, sy:256, sw:256, sh:256 },
+      wolf:{ sx:256, sy:256, sw:256, sh:256 },
+      rook:{ sx:512, sy:256, sw:256, sh:256 }
+    }
+  },
+  props: {
+    imagePath: "/assets/wayfarer/props/props_sheet.png",
+    tileSize: 32,
+    sprites: {
+      notice_board:{ sx:0, sy:0, sw:32, sh:32 },
+      barrel:{ sx:32, sy:0, sw:32, sh:32 },
+      crate:{ sx:64, sy:0, sw:32, sh:32 },
+      bench:{ sx:96, sy:0, sw:32, sh:32 },
+      lantern_post:{ sx:128, sy:0, sw:32, sh:32 },
+      fence_horizontal:{ sx:160, sy:0, sw:32, sh:32 },
+      fence_vertical:{ sx:192, sy:0, sw:32, sh:32 },
+      dock_plank:{ sx:224, sy:0, sw:32, sh:32 },
+      signpost:{ sx:256, sy:0, sw:32, sh:32 }
+    }
+  }
+};
+const atlasImages = {};
+const missingAssetWarnings=new Set();
+const USE_PRODUCTION_BUILDING_ATLAS = false;
+function warnMissingAssetOnce(kind,key){
+  const token=kind+":"+key;
+  if(missingAssetWarnings.has(token)) return;
+  missingAssetWarnings.add(token);
+  console.warn("[Asset Missing] " + kind + " " + key);
+}
+function drawMissingSpritePlaceholder(dx,dy,dw,dh,label="MISSING"){
+  const width=Math.max(8,Math.floor(dw||32));
+  const height=Math.max(8,Math.floor(dh||32));
+  ctx.save();
+  ctx.fillStyle="rgba(93,35,35,.52)";
+  ctx.fillRect(dx,dy,width,height);
+  ctx.strokeStyle="rgba(255,210,210,.82)";
+  ctx.lineWidth=1;
+  ctx.strokeRect(dx+0.5,dy+0.5,width-1,height-1);
+  ctx.beginPath();
+  ctx.moveTo(dx+2,dy+2);
+  ctx.lineTo(dx+width-2,dy+height-2);
+  ctx.moveTo(dx+width-2,dy+2);
+  ctx.lineTo(dx+2,dy+height-2);
+  ctx.stroke();
+  if(DEV_MODE){
+    ctx.fillStyle="rgba(255,240,224,.9)";
+    ctx.font="bold 9px monospace";
+    ctx.fillText(label,dx+3,dy+Math.min(height-3,12));
+  }
+  ctx.restore();
+}
+function initAtlasImages(){
+  Object.entries(atlasManifests).forEach(([atlasId, manifest])=>{
+    const img=new Image();
+    img.onerror=()=>warnMissingAssetOnce("atlas", atlasId+"@"+manifest.imagePath);
+    img.src=manifest.imagePath;
+    atlasImages[atlasId]=img;
+  });
+}
+function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
+  const manifest=atlasManifests[atlasId];
+  const sheet=atlasImages[atlasId];
+  const sprite=manifest?.sprites?.[spriteId];
+  if(!manifest||!sheet||!sprite){
+    warnMissingAssetOnce("atlas_sprite", atlasId+":"+spriteId);
+    return false;
+  }
+  if(!(sheet.complete&&sheet.naturalWidth>0)){
+    warnMissingAssetOnce("atlas_image", atlasId);
+    return false;
+  }
+  ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, dw ?? sprite.sw, dh ?? sprite.sh);
+  return true;
+}
+const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
+  inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"TAVERN", windowCols:[1,3,4] },
+  mercantile_shop:{ roof:"roofSlate", wall:"wallBrick", door:"doorShop", window:"windowWide", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"SHOP", windowCols:[1,3] },
+  village_hall_meeting_house:{ roof:"roofSlate", wall:"wall", door:"door", window:"window", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"HALL", windowCols:[1,4] },
+  residence_small:{ roof:"roofL", wall:"wall", door:"door", window:"window", roofDepth:2, wallDepth:2, hasChimney:true, windowCols:[1,2] },
+  residence_large:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, windowCols:[1,3] },
+  hunter_lodge_or_outfitter:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:2, wallDepth:2, hasChimney:true, sign:true, signText:"HUNT", windowCols:[1,2] },
+  pond_boathouse_or_waterfront_shed:{ roof:"roofR", wall:"wallBrick", door:"doorShop", window:"windowWide", roofDepth:2, wallDepth:1, hasChimney:false, sign:true, signText:"DOCK", windowCols:[1] }
+});
+function drawBuildingFallbackSprite(building){
+  const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+  const style=BUILDING_FALLBACK_STYLE_BY_ROLE[building.role] || BUILDING_FALLBACK_STYLE_BY_ROLE.residence_small;
+  const roofTile=assets.building[style.roof] || assets.building.roofC;
+  const wallTile=assets.building[style.wall] || assets.building.wall;
+  const doorTile=assets.building[style.door] || assets.building.door;
+  const windowTile=assets.building[style.window] || assets.building.window;
+  const roofDepth=Math.max(2, Math.min(visual.h-1, style.roofDepth || 2));
+  const wallDepth=Math.max(1, Math.min(visual.h-1, style.wallDepth || 2));
+  const roofStartY=Math.max(0, visual.y-1);
+  const roofEndY=Math.min(visual.y+visual.h-2, roofStartY+roofDepth-1);
+  const wallStartY=Math.max(visual.y+1, visual.y+visual.h-wallDepth);
+  for(let ry=roofStartY;ry<=roofEndY;ry++){
+    for(let rx=0;rx<visual.w;rx++){
+      const roofX=visual.x+rx;
+      const roofP=tileToScreen(roofX, ry);
+      drawShadowTile(assets.shadow.softTile, roofP.x+2, roofP.y+5, .56);
+      const roofVariant=(rx===0&&assets.building.roofL)
+        ? assets.building.roofL
+        : (rx===visual.w-1&&assets.building.roofR)
+          ? assets.building.roofR
+          : roofTile;
+      if(roofVariant) ctx.drawImage(roofVariant, roofP.x, roofP.y, TILE, TILE);
+      if(ry===roofEndY){
+        ctx.fillStyle="rgba(52,36,30,.32)";
+        ctx.fillRect(roofP.x+1, roofP.y+25, TILE-2, 3);
+      }
+    }
+  }
+  for(let rx=0;rx<visual.w;rx++){
+    for(let ry=wallStartY;ry<visual.y+visual.h;ry++){
+      const tileX=visual.x+rx;
+      const tileY=ry;
+      const wallP=tileToScreen(tileX, tileY);
+      if(wallTile) ctx.drawImage(wallTile, wallP.x, wallP.y, TILE, TILE);
+    }
+  }
+  const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1, w:1, h:1 };
+  const doorY=Math.min(visual.y+visual.h-1, Math.max(wallStartY, interaction.y));
+  const doorX=Math.min(visual.x+visual.w-1, Math.max(visual.x, interaction.x));
+  const doorP=tileToScreen(doorX, doorY);
+  if(doorTile) ctx.drawImage(doorTile, doorP.x, doorP.y, TILE, TILE);
+  const windowY=Math.max(wallStartY, visual.y+visual.h-2);
+  const windowCols=(style.windowCols || [1, Math.max(1, visual.w-2)])
+    .map((col)=>visual.x + Math.min(Math.max(col, 0), visual.w-1));
+  [...new Set(windowCols)].forEach((wx)=>{
+    if(wx===doorX) return;
+    if(wx<visual.x||wx>=visual.x+visual.w||windowY<visual.y||windowY>=visual.y+visual.h) return;
+    const wp=tileToScreen(wx,windowY);
+    if(windowTile) ctx.drawImage(windowTile, wp.x, wp.y, TILE, TILE);
+  });
+  if(style.hasChimney){
+    const chimneyX=visual.x + (visual.w >= 5 ? visual.w-2 : 1);
+    const chimneyY=Math.max(roofStartY, roofEndY-1);
+    const chimney=tileToScreen(chimneyX, chimneyY);
+    ctx.fillStyle="rgba(96,72,53,.95)";
+    ctx.fillRect(chimney.x+10, chimney.y+2, 6, 12);
+  }
+  if(style.sign){
+    const signX=Math.max(visual.x, doorX-1);
+    const signP=tileToScreen(signX, doorY);
+    ctx.fillStyle="rgba(87,63,38,.92)";
+    ctx.fillRect(signP.x+6, signP.y+5, 20, 7);
+    if(style.signText){
+      ctx.fillStyle="rgba(232,216,168,.9)";
+      ctx.font="bold 6px monospace";
+      ctx.fillText(style.signText, signP.x+7, signP.y+11);
+    }
+  }
+}
+
 function buildTerrainTiles() {
-  const grassBases = ["#44663a", "#3f6035", "#4a6f40", "#3a5a31", "#507747", "#35542e"];
-  for (let i=0;i<6;i++) {
+  const grassBases = ["#4f7347", "#517548", "#4c7044", "#53774a"];
+  const forestBases = [palette.forestGrass[0], "#3f6540", palette.forestGrass[1], "#314f34"];
+  for (let i=0;i<4;i++) {
     assets.grass.push(makeTile((p)=>{
       p.fillStyle = grassBases[i]; p.fillRect(0,0,32,32);
-      for (let y=0;y<32;y+=2){
-        for (let x=0;x<32;x+=2){
-          const n=rng(x+i*11,y+i*7,13+i);
-          p.fillStyle = n>0.76?"rgba(178,214,138,.2)":n<0.15?"rgba(31,53,24,.3)":"rgba(0,0,0,0)";
-          if (n>0.76||n<0.15) p.fillRect(x,y,2,2);
+      for (let y=0;y<32;y+=4){
+        for (let x=0;x<32;x+=4){
+          const n=rng(x+i*7,y+i*5,31+i);
+          if(n>0.92){ p.fillStyle = "rgba(198,226,162,.03)"; p.fillRect(x,y,3,1); }
+          else if(n<0.06){ p.fillStyle = "rgba(29,47,28,.055)"; p.fillRect(x,y+1,3,1); }
         }
       }
-      p.fillStyle = "rgba(204,235,168,.1)";
+      p.fillStyle = "rgba(220,239,180,.028)";
       for (let k=0;k<8;k++) {
-        const gx = ((k*7+i*5)%28)+2, gy = ((k*13+i*3)%25)+3;
-        p.fillRect(gx,gy,1,3);
+        const gx = ((k*5+i*6)%30)+1;
+        const gy = ((k*7+i*3)%25)+3;
+        const dotW = rng(k+i,gy,145)>0.82 ? 2 : 1;
+        p.fillRect(gx,gy,dotW,1);
       }
-      p.fillStyle="rgba(255,255,255,.03)"; p.fillRect(0,0,32,2);
-      p.fillStyle="rgba(0,0,0,.11)"; p.fillRect(0,30,32,2);
+      p.fillStyle="rgba(255,255,255,.012)"; p.fillRect(0,0,32,1);
+      p.fillStyle="rgba(0,0,0,.048)"; p.fillRect(0,30,32,2);
     }));
+    if(i<4){
+      assets.forestGrass.push(makeTile((p)=>{
+        p.fillStyle=forestBases[i]; p.fillRect(0,0,32,32);
+        for(let y=0;y<32;y+=2){
+          for(let x=0;x<32;x+=2){
+            const n=rng(x+i*8,y+i*6,53+i);
+            if(n>0.83){ p.fillStyle="rgba(112,152,96,.1)"; p.fillRect(x,y,2,1); }
+            else if(n<0.14){ p.fillStyle="rgba(18,31,20,.2)"; p.fillRect(x,y,2,1); }
+          }
+        }
+        p.fillStyle="rgba(0,0,0,.15)"; p.fillRect(0,29,32,3);
+      }));
+    }
 
-    if(i<5) {
-    assets.road.push(makeTile((p)=>{
-      p.fillStyle = i%2? "#8b7350" : "#836b49"; p.fillRect(0,0,32,32);
-      p.fillStyle = i%2? "#785f43" : "#6f583e";
-      for(let y=0;y<32;y+=4){ for(let x=((y+i*2)%5);x<32;x+=7) p.fillRect(x,y,2,2); }
-      p.fillStyle = i%2? "#a28a67" : "#9a815f";
-      for(let k=0;k<8;k++){ const x=((k*9+i*7)%24)+3; const y=((k*11+i*5)%24)+3; p.fillRect(x,y,3,2); }
-      p.fillStyle = "rgba(0,0,0,.18)"; p.fillRect(0,29,32,3);
-      p.fillStyle = "rgba(255,255,255,.06)"; p.fillRect(0,0,32,2);
-    }));
+    if(i<4) {
+      assets.road.push(makeTile((p)=>{
+        const base = i%2? "#7f6847" : "#7a6344";
+        p.fillStyle = base; p.fillRect(0,0,32,32);
+        p.fillStyle = "rgba(98,78,53,.14)";
+        for(let y=0;y<32;y+=5){
+          const wob=Math.floor((Math.sin((y+i)*0.45)+1.3)*1.5);
+          p.fillRect((y+i*2)%11, y, 7+wob, 1);
+        }
+        p.fillStyle = "rgba(196,166,128,.09)";
+        for(let k=0;k<6;k++){
+          const x=((k*7+i*5)%26)+2;
+          const y=((k*6+i*8)%24)+4;
+          p.fillRect(x,y,2+(k%2),1);
+        }
+        p.fillStyle="rgba(0,0,0,.06)";
+        p.fillRect(0,0,32,2);
+        p.fillStyle = "rgba(0,0,0,.1)"; p.fillRect(0,29,32,3);
+      }));
     }
 
     assets.shore.push(makeTile((p)=>{
-      p.fillStyle = i%2?"#5d7547":"#667e4d"; p.fillRect(0,0,32,32);
-      p.fillStyle = "rgba(147,117,78,.46)"; p.fillRect(0,22,32,10);
-      p.fillStyle = "rgba(108,140,90,.36)"; p.fillRect(0,0,32,10);
-      p.fillStyle = "rgba(230,216,175,.22)"; p.fillRect(0,20,32,2);
-      for(let x=3;x<30;x+=5){ p.fillStyle="#4a7140"; p.fillRect(x,15+(x%4),2,8); }
+      p.fillStyle = i%2?palette.shore[0]:palette.shore[1]; p.fillRect(0,0,32,32);
+      p.fillStyle = "rgba(132,111,79,.46)"; p.fillRect(0,22,32,10);
+      p.fillStyle = "rgba(194,178,132,.22)"; p.fillRect(0,20,32,2);
+      for(let x=3;x<30;x+=6){ p.fillStyle="rgba(90,116,72,.45)"; p.fillRect(x,14+(x%5),2,8); }
     }));
   }
 
   for(let i=0;i<4;i++) {
     assets.roadEdge.push(makeTile((p)=>{
       p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32);
-      p.fillStyle=i%2? "rgba(121,101,74,.72)" : "rgba(134,112,84,.68)";
+      p.fillStyle=i%2? "rgba(123,102,74,.52)" : "rgba(138,114,84,.46)";
       for(let x=0;x<32;x+=2){
-        const h = 3 + Math.floor(rng(x,i,77) * 3);
+        const h = 2 + Math.floor(rng(x,i,77) * 3);
         p.fillRect(x,32-h,2,h);
       }
-      p.fillStyle="rgba(66,96,52,.3)"; p.fillRect(0,0,32,2);
+      p.fillStyle="rgba(78,104,57,.22)"; p.fillRect(0,0,32,2);
     }));
   }
 
@@ -375,68 +1423,141 @@ function buildTerrainTiles() {
   assets.water.deep = makeTile((p)=>{
     p.fillStyle = palette.water[1]; p.fillRect(0,0,32,32);
     const g = p.createLinearGradient(0,0,0,32);
-    g.addColorStop(0,"#2f6291"); g.addColorStop(.55,palette.water[1]); g.addColorStop(1,palette.water[0]);
+    g.addColorStop(0,"#3a6b99"); g.addColorStop(.55,palette.water[1]); g.addColorStop(1,palette.water[0]);
     p.fillStyle = g; p.fillRect(0,0,32,32);
-    p.fillStyle = "rgba(98,164,214,.2)";
+    p.fillStyle = "rgba(126,187,226,.17)";
     for(let y=3;y<28;y+=5) p.fillRect(3+(y%4),y,24,1);
-    p.fillStyle = "rgba(179,226,255,.13)"; p.fillRect(2,3,17,2);
+    p.fillStyle = "rgba(201,235,255,.12)"; p.fillRect(2,4,19,2);
   });
   assets.water.shallow = makeTile((p)=>{
     const g = p.createLinearGradient(0,0,0,32);
-    g.addColorStop(0,"#5e9fca"); g.addColorStop(.35,palette.water[2]); g.addColorStop(1,"#346a99");
+    g.addColorStop(0,"#79acd2"); g.addColorStop(.35,palette.water[2]); g.addColorStop(1,"#356996");
     p.fillStyle = g; p.fillRect(0,0,32,32);
-    p.fillStyle = "rgba(170,220,245,.22)"; p.fillRect(1,1,30,5);
+    p.fillStyle = "rgba(195,230,248,.24)"; p.fillRect(1,1,30,5);
     p.fillStyle = "rgba(63,115,165,.28)"; p.fillRect(0,24,32,8);
-    p.fillStyle = "rgba(210,242,255,.26)"; p.fillRect(3,12,24,2);
+    p.fillStyle = "rgba(225,246,255,.24)"; p.fillRect(3,12,24,2);
   });
   assets.water.edge = makeTile((p)=>{
     p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32);
     const g = p.createLinearGradient(0,0,0,32);
-    g.addColorStop(0,"rgba(236,225,179,.28)");
-    g.addColorStop(.4,"rgba(185,198,149,.18)");
+    g.addColorStop(0,"rgba(235,222,176,.32)");
+    g.addColorStop(.4,"rgba(185,198,149,.2)");
     g.addColorStop(1,"rgba(84,124,155,0)");
     p.fillStyle=g; p.fillRect(0,0,32,32);
-    p.fillStyle="rgba(245,245,220,.2)"; p.fillRect(1,1,30,1);
+    p.fillStyle="rgba(245,245,220,.22)"; p.fillRect(1,1,30,1);
   });
 }
 
 function makeBuildingTiles(){
   assets.building.roofL = makeTile((p)=>{
-    p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[1]; for(let y=0;y<32;y++) p.fillRect(0,y,Math.max(0,10-Math.floor(y/4)),1);
-    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=5) p.fillRect(3,y,26,1);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,25,32,7);
+    p.fillStyle="#835147"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6d4037"; for(let y=0;y<24;y++) p.fillRect(0,y,Math.max(0,12-Math.floor(y/2)),1);
+    p.fillStyle="#bf8774"; for(let y=3;y<24;y+=3) p.fillRect(4,y,25,1);
+    p.fillStyle="#3b251f"; p.fillRect(0,24,32,8);
+    p.fillStyle="rgba(255,231,206,.18)"; p.fillRect(3,3,15,2);
   });
   assets.building.roofC = makeTile((p)=>{
-    p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=5) p.fillRect(2,y,28,1);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,25,32,7);
+    p.fillStyle="#87554a"; p.fillRect(0,0,32,32);
+    p.fillStyle="#bc816f"; for(let y=2;y<24;y+=3) p.fillRect(2,y,28,1);
+    p.fillStyle="rgba(73,42,33,.2)"; for(let x=3;x<29;x+=6) p.fillRect(x,5,1,17);
+    p.fillStyle="#4a2b24"; p.fillRect(0,23,32,9);
+    p.fillStyle="rgba(235,197,157,.16)"; p.fillRect(2,24,28,1);
   });
   assets.building.roofR = makeTile((p)=>{
-    p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.roof[1]; for(let y=0;y<32;y++){const w=Math.max(0,10-Math.floor(y/4)); p.fillRect(32-w,y,w,1);} 
-    p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=5) p.fillRect(2,y,28,1);
-    p.fillStyle=palette.roof[3]; p.fillRect(0,25,32,7);
+    p.fillStyle="#835147"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6d4037"; for(let y=0;y<24;y++){const w=Math.max(0,12-Math.floor(y/2)); p.fillRect(32-w,y,w,1);}
+    p.fillStyle="#bf8774"; for(let y=3;y<24;y+=3) p.fillRect(3,y,25,1);
+    p.fillStyle="#3b251f"; p.fillRect(0,24,32,8);
+    p.fillStyle="rgba(255,231,206,.18)"; p.fillRect(14,3,15,2);
+  });
+  assets.building.roofSlate = makeTile((p)=>{
+    p.fillStyle="#6d6966"; p.fillRect(0,0,32,32);
+    p.fillStyle="#8a847f"; for(let y=2;y<24;y+=3) p.fillRect(3,y,26,1);
+    p.fillStyle="#4a4746"; for(let x=4;x<30;x+=7) p.fillRect(x,4,1,18);
+    p.fillStyle="#353334"; p.fillRect(0,23,32,9);
+    p.fillStyle="rgba(206,212,221,.16)"; p.fillRect(4,4,18,1);
+  });
+  assets.building.roofDormer = makeTile((p)=>{
+    p.drawImage(assets.building.roofC,0,0);
+    p.fillStyle="#6f4d35"; p.fillRect(9,8,14,10);
+    p.fillStyle="#4f3624"; p.fillRect(10,9,12,9);
+    p.fillStyle="#a6c2d6"; p.fillRect(12,10,8,6);
+    p.fillStyle="#2d3e4e"; p.fillRect(15,10,1,6);
+    p.fillStyle="rgba(232,246,255,.34)"; p.fillRect(12,10,7,1);
   });
   assets.building.wall = makeTile((p)=>{
-    p.fillStyle=palette.wall[0]; p.fillRect(0,0,32,32);
-    p.fillStyle=palette.wall[2]; p.fillRect(0,0,32,2);
-    p.fillStyle=palette.wall[1]; p.fillRect(0,30,32,2);
-    for(let y=4;y<30;y+=6) for(let x=(y%4);x<32;x+=8){ p.fillStyle="rgba(255,255,255,.06)"; p.fillRect(x,y,1,1); }
+    p.fillStyle="#b8ad98"; p.fillRect(0,0,32,32);
+    p.fillStyle="#d4c8af"; p.fillRect(0,0,32,5);
+    p.fillStyle="#7b6d5b"; p.fillRect(0,28,32,4);
+    p.fillStyle="rgba(84,63,41,.16)"; for(let x=0;x<32;x+=8) p.fillRect(x,5,1,23);
+    p.fillStyle="rgba(255,250,236,.06)"; for(let y=8;y<28;y+=6) p.fillRect(2,y,28,1);
+    p.fillStyle="rgba(34,26,19,.14)"; p.fillRect(29,0,3,32);
+  });
+  assets.building.wallTimber = makeTile((p)=>{
+    p.fillStyle="#d4c3a8"; p.fillRect(0,0,32,32);
+    p.fillStyle="#8b6544"; p.fillRect(0,0,32,4); p.fillRect(0,28,32,4);
+    p.fillStyle="#7a5538"; p.fillRect(4,4,3,24); p.fillRect(25,4,3,24);
+    p.fillStyle="#7a5538"; p.fillRect(14,4,3,24);
+    p.fillStyle="#a9825b"; p.fillRect(7,4,7,24); p.fillRect(17,4,8,24);
+    p.fillStyle="rgba(255,243,218,.08)"; p.fillRect(8,7,6,1); p.fillRect(18,10,7,1);
+  });
+  assets.building.wallBrick = makeTile((p)=>{
+    p.fillStyle="#8f6552"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6e4a3a"; for(let y=4;y<28;y+=5) p.fillRect(0,y,32,1);
+    p.fillStyle="#a97b62"; for(let x=2;x<30;x+=8){ for(let y=1;y<29;y+=10) p.fillRect(x,y,1,3); }
+    p.fillStyle="#5a3a2f"; p.fillRect(0,28,32,4);
+    p.fillStyle="rgba(255,215,185,.08)"; p.fillRect(2,3,10,1);
   });
   assets.building.window = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
-    p.fillStyle="#3b3025"; p.fillRect(8,7,16,14);
-    p.fillStyle="#d9bd79"; p.fillRect(10,9,12,10);
-    p.fillStyle="rgba(255,246,200,.45)"; p.fillRect(11,10,10,2);
-    p.fillStyle="#2a2219"; p.fillRect(15,9,1,10); p.fillRect(10,13,12,1);
+    p.fillStyle="#5d4330"; p.fillRect(8,8,16,13);
+    p.fillStyle="#2f241b"; p.fillRect(9,9,14,11);
+    p.fillStyle="#9fbfd5"; p.fillRect(10,10,12,9);
+    p.fillStyle="#42576a"; p.fillRect(15,10,2,9); p.fillRect(10,14,12,1);
+    p.fillStyle="rgba(240,248,255,.35)"; p.fillRect(11,10,9,1);
+  });
+  assets.building.windowTall = makeTile((p)=>{
+    p.drawImage(assets.building.wallTimber,0,0);
+    p.fillStyle="#5d4330"; p.fillRect(10,6,12,18);
+    p.fillStyle="#2f241b"; p.fillRect(11,7,10,16);
+    p.fillStyle="#a8c8dc"; p.fillRect(12,8,8,14);
+    p.fillStyle="#456074"; p.fillRect(15,8,1,14); p.fillRect(12,15,8,1);
+    p.fillStyle="rgba(248,253,255,.4)"; p.fillRect(13,8,6,1);
+  });
+  assets.building.windowWide = makeTile((p)=>{
+    p.drawImage(assets.building.wallBrick,0,0);
+    p.fillStyle="#513726"; p.fillRect(6,10,20,11);
+    p.fillStyle="#2b2018"; p.fillRect(7,11,18,9);
+    p.fillStyle="#98b8ce"; p.fillRect(8,12,16,7);
+    p.fillStyle="#3f586e"; p.fillRect(15,12,1,7);
+    p.fillStyle="rgba(240,248,255,.32)"; p.fillRect(9,12,11,1);
   });
   assets.building.door = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
-    p.fillStyle="#4b3223"; p.fillRect(9,10,14,21);
-    p.fillStyle="#2f1f15"; p.fillRect(10,11,12,19);
-    p.fillStyle="#9d7748"; p.fillRect(9,10,14,2);
-    p.fillStyle="#d8a55f"; p.fillRect(20,21,1,1);
+    p.fillStyle="#6a4a35"; p.fillRect(8,7,16,24);
+    p.fillStyle="#3a291d"; p.fillRect(9,8,14,22);
+    p.fillStyle="#ba8a58"; p.fillRect(15,10,2,20);
+    p.fillStyle="#e5bd89"; p.fillRect(20,21,2,2);
+    p.fillStyle="rgba(246,222,171,.2)"; p.fillRect(10,10,4,18);
+    p.fillStyle="rgba(0,0,0,.23)"; p.fillRect(8,30,16,1);
+  });
+  assets.building.doorPorch = makeTile((p)=>{
+    p.drawImage(assets.building.wallTimber,0,0);
+    p.fillStyle="#6a4b34"; p.fillRect(9,8,14,19);
+    p.fillStyle="#33261c"; p.fillRect(10,9,12,17);
+    p.fillStyle="#b98754"; p.fillRect(15,11,1,14);
+    p.fillStyle="#8a6444"; p.fillRect(6,24,20,2);
+    p.fillStyle="#a67c57"; p.fillRect(5,26,22,3);
+    p.fillStyle="rgba(236,213,181,.22)"; p.fillRect(11,10,3,14);
+  });
+  assets.building.doorShop = makeTile((p)=>{
+    p.drawImage(assets.building.wallBrick,0,0);
+    p.fillStyle="#6f4d36"; p.fillRect(7,10,18,18);
+    p.fillStyle="#32241a"; p.fillRect(8,11,16,16);
+    p.fillStyle="#b58959"; p.fillRect(15,12,1,13);
+    p.fillStyle="#9f744f"; p.fillRect(6,27,20,3);
+    p.fillStyle="#c89d6f"; p.fillRect(9,8,14,2);
+    p.fillStyle="rgba(234,206,170,.2)"; p.fillRect(10,12,3,13);
   });
 }
 
@@ -524,11 +1645,11 @@ function makeShadowTiles(){
 
 function makePropSprites(){
   const sheet = document.createElement("canvas");
-  sheet.width = 320;
+  sheet.width = 480;
   sheet.height = 32;
   const p = sheet.getContext("2d");
   p.imageSmoothingEnabled = false;
-  p.clearRect(0,0,320,32);
+  p.clearRect(0,0,480,32);
 
   function cell(col, drawFn){
     p.save();
@@ -593,12 +1714,42 @@ function makePropSprites(){
     q.fillStyle="#70756f"; q.fillRect(10,20,4,3); q.fillRect(14,18,5,4); q.fillRect(19,20,3,3);
     q.fillStyle="#8c928b"; q.fillRect(11,19,2,1); q.fillRect(15,17,2,1); q.fillRect(20,19,1,1);
   });
+  cell(10,(q)=>{ // bench
+    q.fillStyle="#6f5035"; q.fillRect(6,17,20,3); q.fillRect(8,12,16,2);
+    q.fillStyle="#9c734d"; q.fillRect(7,16,18,1); q.fillRect(9,11,14,1);
+    q.fillStyle="#4e3827"; q.fillRect(8,20,2,6); q.fillRect(22,20,2,6);
+  });
+  cell(11,(q)=>{ // notice board
+    q.fillStyle="#5f432d"; q.fillRect(8,8,2,19); q.fillRect(22,8,2,19);
+    q.fillStyle="#8f6948"; q.fillRect(9,8,14,12);
+    q.fillStyle="#d3be96"; q.fillRect(10,9,12,10);
+    q.fillStyle="#826247"; q.fillRect(12,11,7,1); q.fillRect(11,14,8,1); q.fillRect(13,16,6,1);
+  });
+  cell(12,(q)=>{ // handcart
+    q.fillStyle="#6f4e35"; q.fillRect(7,14,18,9);
+    q.fillStyle="#8f6847"; q.fillRect(8,15,16,7);
+    q.fillStyle="#523927"; q.fillRect(9,13,14,1); q.fillRect(9,23,14,1);
+    q.fillStyle="#503626"; q.fillRect(3,16,4,2); q.fillRect(25,16,4,2);
+    q.fillStyle="#3b2a1f"; q.fillRect(5,22,3,3); q.fillRect(24,22,3,3);
+    q.fillStyle="#9f9a8f"; q.fillRect(5,23,3,1); q.fillRect(24,23,3,1);
+  });
+
+  cell(13,(q)=>{ // woodpile
+    q.fillStyle="#6a4a30"; q.fillRect(6,16,20,8);
+    q.fillStyle="#8a6340"; q.fillRect(8,14,16,3);
+    q.fillStyle="#4e3523"; q.fillRect(9,18,2,6); q.fillRect(14,18,2,6); q.fillRect(19,18,2,6);
+  });
+  cell(14,(q)=>{ // small garden
+    q.fillStyle="#6d5137"; q.fillRect(7,20,18,4);
+    q.fillStyle="#557d45"; q.fillRect(8,17,16,3);
+    q.fillStyle="#7fa55e"; q.fillRect(10,15,3,2); q.fillRect(15,14,3,3); q.fillRect(20,15,2,2);
+  });
 
   const sheetImg = new Image();
   sheetImg.src = sheet.toDataURL("image/png");
   assets.props.sheet = sheetImg;
 
-  const names = ["barrel","crate","sack","lanternPost","signPost","fenceSeg","bush","grassTuft","well","stonePile"];
+  const names = ["barrel","crate","sack","lanternPost","signPost","fenceSeg","bush","grassTuft","well","stonePile","bench","noticeBoard","handcart","woodpile","smallGarden"];
   names.forEach((name, i)=>{
     assets.props.sprites[name] = makeTile((q)=>{ q.drawImage(sheet, i*32, 0, 32, 32, 0, 0, 32, 32); });
   });
@@ -616,73 +1767,69 @@ function paintHumanoidSheet(colors, variant = "adventurer") {
 
   function drawFrame(baseX, baseY, dir, step){
     const px = 2;
-    const ox = baseX + 10;
-    const oy = baseY + 8;
+    const ox = baseX + 8;
+    const oy = baseY + 7;
     const elder = variant === "elder";
-    const bob = step === 0 ? 0 : 1;
-    const lean = elder ? 1 : 0;
-    const armSwing = elder ? Math.round(step * .5) : -step;
+    const merchant = variant === "merchant";
+    const ranger = variant === "ranger";
+    const bob = Math.abs(step) > 0 ? 1 : 0;
+    const armSwing = elder ? Math.round(step * 0.5) : step;
     const outline = "rgba(8,12,18,.84)";
-    const skinShadow = elder ? "#b59a7a" : "#d3b38f";
+    const skinShadow = elder ? "#b59a7a" : "#cfad89";
+    const cloakShadow = "rgba(10,14,22,.35)";
+    const edge = (x,y,w=1,h=1)=>dot(x,y,w,h,outline);
 
     const dot = (x,y,w=1,h=1,color=outline) => { p.fillStyle=color; p.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
 
-    if (elder) {
-      dot(8,18+step,4,3,colors.boots);
-      dot(14,19-step,4,3,colors.boots);
-      dot(9,15,10,6,colors.tunicShade);
-      dot(8,11+lean+bob,12,9,colors.tunic);
-      dot(9,12+lean+bob,10,2,"rgba(255,255,255,.12)");
-      dot(7,13+lean+bob,13,8,colors.cloak);
-      dot(12,15+lean+bob,3,4,colors.tunicShade);
+    if (dir==="down" || dir==="up") {
+      const front = dir==="down";
+      dot(10,4+bob,8,6,colors.skin);
+      dot(10,3+bob,8,3,colors.hair);
+      if(ranger) dot(9,3+bob,10,2,"#4b5f2f");
+      if(merchant && front) dot(9,2+bob,10,2,colors.accent || "#d9bf84");
+      if(front){
+        dot(11,8+bob,1,1,"#1b2632");
+        dot(15,8+bob,1,1,"#1b2632");
+      }
+      if(elder && front) dot(12,9+bob,4,1,"#e7ecf7");
+      dot(10,10+bob,8,2,colors.tunicShade);
+      dot(10,12+bob,8,8,colors.tunic);
+      dot(11,12+bob,6,2,"rgba(255,255,255,.16)");
+      dot(9,13+bob,10,6,colors.cloak);
+      dot(10,16+bob,8,1,colors.accent || "#d8dfef");
+      dot(10,19+bob,3,3,colors.tunicShade);
+      dot(15,19+bob,3,3,colors.tunicShade);
+      dot(10,22+step,2,3,colors.boots);
+      dot(16,22-step,2,3,colors.boots);
+      dot(10,20+bob,1,2,cloakShadow);
+      dot(17,20+bob,1,2,cloakShadow);
+      dot(8,14+armSwing,2,4,skinShadow);
+      dot(18,14-armSwing,2,4,skinShadow);
+      if(ranger) dot(18,15+bob,1,5,"#5e422d");
+      if(merchant && front) dot(13,20+bob,2,2,"#b98952");
     } else {
-      dot(9,19+step,3,3,colors.boots);
-      dot(15,19-step,3,3,colors.boots);
-      dot(10,16+step,2,4,colors.tunicShade);
-      dot(16,16-step,2,4,colors.tunicShade);
-      dot(8,11+bob,12,8,colors.tunic);
-      dot(9,12+bob,10,2,"rgba(255,255,255,.16)");
-      dot(7,13+bob,13,7,colors.cloak);
-      dot(11,17+bob,6,2,colors.tunicShade);
+      const left = dir==="left";
+      const headX = left ? 9 : 14;
+      dot(headX,4+bob,6,6,colors.skin);
+      dot(left ? 8 : 14,3+bob,7,3,colors.hair);
+      if(merchant) dot(left ? 8 : 14,2+bob,7,2,colors.accent || "#d9bf84");
+      if(ranger) dot(left ? 7 : 15,3+bob,6,2,"#4b5f2f");
+      dot(left ? 11 : 15,8+bob,1,1,"#1b2632");
+      dot(left ? 11 : 14,8+bob,2,2,skinShadow);
+      dot(10,11+bob,8,2,colors.tunicShade);
+      dot(10,13+bob,8,7,colors.tunic);
+      dot(9,14+bob,10,5,colors.cloak);
+      dot(11,16+bob,6,1,colors.accent || "#d8dfef");
+      dot(left ? 7 : 19,14+armSwing,2,4,skinShadow);
+      dot(left ? 10 : 15,19+step,3,4,colors.tunicShade);
+      dot(left ? 15 : 10,21-step,2,3,colors.boots);
+      dot(left ? 11 : 14,22+step,2,2,colors.boots);
+      dot(left ? 9 : 17,13+bob,1,5,cloakShadow);
+      if(ranger) dot(left ? 18 : 9,15+bob,1,5,"#5e422d");
     }
 
-    if (dir==="left") {
-      dot(7,13+armSwing+lean,2,4,skinShadow);
-      dot(6,14+armSwing+lean,1,3,colors.tunicShade);
-    } else if (dir==="right") {
-      dot(19,13+armSwing+lean,2,4,skinShadow);
-      dot(21,14+armSwing+lean,1,3,colors.tunicShade);
-    } else {
-      dot(7,13+armSwing+lean,2,4,skinShadow);
-      dot(19,13-armSwing+lean,2,4,skinShadow);
-      dot(6,14+armSwing+lean,1,3,colors.tunicShade);
-      dot(21,14-armSwing+lean,1,3,colors.tunicShade);
-    }
-
-    if (dir==="left"){
-      dot(9,5+bob+lean,8,6,colors.skin);
-      dot(8,4+bob+lean,6,4,colors.hair);
-      dot(12,9+bob+lean,3,2,skinShadow);
-      dot(10,9+bob+lean,1,1,"#1b2632");
-    } else if (dir==="right"){
-      dot(11,5+bob+lean,8,6,colors.skin);
-      dot(14,4+bob+lean,6,4,colors.hair);
-      dot(13,9+bob+lean,3,2,skinShadow);
-      dot(17,9+bob+lean,1,1,"#1b2632");
-    } else if (dir==="up"){
-      dot(10,5+bob+lean,8,6,colors.skin);
-      dot(9,4+bob+lean,10,4,colors.hair);
-      if (elder) dot(12,9+bob+lean,4,2,"#ebeef5");
-    } else {
-      dot(10,5+bob+lean,8,6,colors.skin);
-      dot(9,4+bob+lean,10,3,colors.hair);
-      dot(11,9+bob+lean,1,1,"#1b2632");
-      dot(15,9+bob+lean,1,1,"#1b2632");
-      if (elder) dot(12,10+bob+lean,4,1,"#ebeef5");
-    }
-
-    dot(8,5+bob+lean,1,6); dot(18,5+bob+lean,1,6); dot(9,4+bob+lean,9,1); dot(9,11+bob+lean,9,1);
-    dot(7,12+bob+lean,1,8); dot(19,12+bob+lean,1,8); dot(8,20+lean,11,1);
+    edge(9,4+bob,1,7); edge(18,4+bob,1,7); edge(10,3+bob,8,1); edge(10,10+bob,8,1);
+    edge(8,12+bob,1,9); edge(19,12+bob,1,9); edge(9,20+bob,10,1);
   }
 
   dirs.forEach((d,row)=> gait.forEach((s,col)=> drawFrame(col*size,row*size,d,s)));
@@ -696,39 +1843,58 @@ function paintWolfSheet() {
 
   function frame(baseX,baseY,dir,step){
     const px = 2;
-    const ox = baseX + 8;
-    const oy = baseY + 11;
+    const ox = baseX + 6;
+    const oy = baseY + 10;
     const dot = (x,y,w=1,h=1,color="rgba(8,12,18,.82)") => { p.fillStyle=color; p.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
 
-    const fur = "#7a8590";
-    const furShade = "#5c6672";
-    const furHi = "#a2acb7";
-    const muzzle = "#cac2b3";
-    const nose = "#2a3340";
+    const fur = "#747f8a";
+    const furShade = "#56606d";
+    const furHi = "#a0aab5";
+    const muzzle = "#c9c1b2";
+    const nose = "#242d3a";
 
     if (dir==="left" || dir==="right") {
       const left = dir==="left";
-      const headX = left ? 6 : 18;
-      const neckX = left ? 10 : 14;
-      const tailBaseX = left ? 22 : 7;
-
-      dot(10,12,10,6,fur); dot(11,12,7,2,furHi); dot(10,15,10,3,furShade); dot(neckX,12,3,3,furShade); dot(11,17,8,1,furHi);
-      dot(10,18+step,2,4,furShade); dot(16,18-step,2,4,furShade); dot(8,18-step,2,4,fur); dot(19,18+step,2,4,fur);
-      dot(headX,9,5,5,fur); dot(headX+(left?0:1),8,1,2,furShade); dot(headX+(left?3:4),8,1,2,furShade);
-      dot(headX+1,11,3,2,muzzle); dot(headX+(left?0:4),11,1,1,nose); dot(headX+(left?1:3),10,1,1,nose);
-      dot(tailBaseX,13,3,2,furShade); dot(tailBaseX+(left?2:-2),12,2,1,furShade); dot(tailBaseX+(left?3:-3),11,1,1,furShade); dot(tailBaseX+(left?4:-4),10,1,1,furShade);
-      dot(9,12,1,6); dot(20,12,1,6); dot(10,11,10,1); dot(10,18,10,1);
+      const headX = left ? 7 : 19;
+      const tailBaseX = left ? 24 : 6;
+      dot(11,12,12,5,fur);
+      dot(12,11,9,2,furHi);
+      dot(12,15,10,3,furShade);
+      dot(11,17,12,1,furHi);
+      dot(10,18-step,2,4,fur);
+      dot(15,19+step,2,4,furShade);
+      dot(20,18+step,2,4,fur);
+      dot(23,19-step,2,4,furShade);
+      dot(headX,9,6,5,fur);
+      dot(headX+(left?0:1),8,1,2,furShade);
+      dot(headX+(left?4:5),8,1,2,furShade);
+      dot(headX+1,11,4,2,muzzle);
+      dot(headX+(left?0:5),11,1,1,nose);
+      dot(headX+(left?2:3),10,1,1,nose);
+      dot(tailBaseX,13,3,2,furShade);
+      dot(tailBaseX+(left?2:-2),12,2,1,furShade);
+      dot(tailBaseX+(left?4:-4),11,1,1,furShade);
+      dot(10,12,1,7);
+      dot(23,12,1,7);
+      dot(11,11,12,1);
+      dot(11,18,12,1);
     } else {
       const back = dir==="up";
-      dot(11,10,8,3,back ? furShade : furHi);
-      dot(10,13,10,6,fur);
-      dot(12,19+step,2,3,furShade); dot(16,19-step,2,3,furShade);
-      dot(10,19-step,2,3,fur); dot(18,19+step,2,3,fur);
-      dot(12,8,6,3,back ? furShade : muzzle);
-      if (!back){ dot(13,9,1,1,nose); dot(15,9,1,1,nose); }
-      dot(11,7,1,2,furShade); dot(17,7,1,2,furShade);
-      dot(10,12,1,7); dot(19,12,1,7); dot(11,11,8,1); dot(11,19,8,1);
-      if(back){ dot(9,14,1,2,furShade); dot(20,14,1,2,furShade); dot(14,20,2,1,furShade); }
+      dot(12,11,10,3,back ? furShade : furHi);
+      dot(11,14,12,6,fur);
+      dot(12,20+step,2,3,furShade);
+      dot(15,21-step,2,3,fur);
+      dot(18,20-step,2,3,furShade);
+      dot(21,21+step,2,3,fur);
+      dot(13,9,8,3,back ? furShade : muzzle);
+      if (!back){ dot(14,10,1,1,nose); dot(18,10,1,1,nose); }
+      dot(12,8,1,2,furShade);
+      dot(20,8,1,2,furShade);
+      dot(11,13,1,8);
+      dot(22,13,1,8);
+      dot(12,12,10,1);
+      dot(12,20,10,1);
+      if(back){ dot(10,15,1,2,furShade); dot(23,15,1,2,furShade); }
     }
   }
 
@@ -736,66 +1902,224 @@ function paintWolfSheet() {
   const img = new Image(); img.src = c.toDataURL("image/png"); return img;
 }
 
+initAtlasImages();
 buildTerrainTiles();
 makeBuildingTiles();
 makeTreeSprites();
 makeFenceTiles();
 makeShadowTiles();
 makePropSprites();
-assets.sprites.player = paintHumanoidSheet({ skin:"#e4c8a2", hair:"#4f3a2c", tunic:"#5f7890", tunicShade:"#3f5265", cloak:"#c2c7cf", boots:"#4f3826" }, "adventurer");
-assets.sprites.npc = paintHumanoidSheet({ skin:"#c9b093", hair:"#d9dde5", tunic:"#4d473f", tunicShade:"#322d28", cloak:"#262229", boots:"#2f2418" }, "elder");
+assets.sprites.player = paintHumanoidSheet({ skin:"#e4c8a2", hair:"#4f3a2c", tunic:"#3f719f", tunicShade:"#2d5275", cloak:"#e2e8f3", boots:"#4f3826", accent:"#f2d37c" }, "adventurer");
+assets.sprites.npc = paintHumanoidSheet({ skin:"#ccb79b", hair:"#dbe4f6", tunic:"#626a86", tunicShade:"#4b5167", cloak:"#2d3345", boots:"#2f2418", accent:"#c5cee3" }, "elder");
+assets.sprites.edrin = paintHumanoidSheet({ skin:"#c8ae8d", hair:"#f0f4fc", tunic:"#6c6b96", tunicShade:"#4f4d73", cloak:"#2a3148", boots:"#2f2418", accent:"#c9d0f0" }, "elder");
+assets.sprites.hunter = paintHumanoidSheet({ skin:"#d3b999", hair:"#4d3a2b", tunic:"#5f7948", tunicShade:"#425736", cloak:"#3a2f24", boots:"#312519", accent:"#b7c986" }, "ranger");
+assets.sprites.merchant = paintHumanoidSheet({ skin:"#dabf9e", hair:"#6d4a30", tunic:"#8b5537", tunicShade:"#633b27", cloak:"#b69458", boots:"#3b2a1d", accent:"#e5c57e" }, "merchant");
+assets.sprites.bandit = paintHumanoidSheet({ skin:"#b99b7b", hair:"#231d1a", tunic:"#6b3940", tunicShade:"#46262b", cloak:"#17141d", boots:"#21170f", accent:"#b4797f" }, "adventurer");
+assets.sprites.rook = paintHumanoidSheet({ skin:"#b4916c", hair:"#100d13", tunic:"#8a2e3b", tunicShade:"#651f2a", cloak:"#2b0e15", boots:"#1f1310", accent:"#cc8a8f" }, "adventurer");
 assets.sprites.wolf = paintWolfSheet();
 
 const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], roadTiles:new Set(), props:[], zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
 function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) world.blocked.add(keyOf(ix,iy)); }
+const HEARTHVALE_LANDMARKS = Object.freeze({
+  mirrorPond:{ x:27, y:14 },
+  caveEntrance:{ x:34, y:11 },
+  mainCrossroads:{ x:16, y:11 },
+  townCenterSpawn:{ x:18, y:11 },
+  merchantRowanArea:{ x:20, y:10 },
+  edrinValeArea:{ x:16, y:12 },
+  hunterGarranArea:{ x:30, y:11 },
+  noticeSignNode:{ x:26, y:11 },
+  zoneExits:Object.freeze({
+    mirrorCaveEntrance:{ x:34, y:11 },
+    abandonedTollhouseEntrance:{ x:22, y:2 },
+    northRoadBoundary:{ x:16, y:0 },
+    westLaneBoundary:{ x:0, y:12 },
+    easternWoodsBoundary:{ x:37, y:14 }
+  })
+});
+const OVERWORLD_CAVE_ENTRY = Object.freeze({ ...HEARTHVALE_LANDMARKS.caveEntrance });
+const MIRROR_CAVE_EXIT = Object.freeze({ x:13, y:16 });
+const MIRROR_CAVE_CHEST_TILE = Object.freeze({ x:13, y:2 });
+const NORTH_ROAD_TOLLHOUSE_ENTRY = Object.freeze({ x:22, y:2 });
+const TOLLHOUSE_EXIT = Object.freeze({ x:13, y:18 });
+const TOLLHOUSE_CHEST_TILE = Object.freeze({ x:22, y:4 });
+function createFootprint({
+  visual,
+  collision,
+  interaction,
+  label,
+  pathingBounds
+}){
+  return {
+    visual,
+    collision,
+    interaction,
+    label,
+    pathingBounds:pathingBounds || visual
+  };
+}
+const WORLD_OBJECT_TYPE = Object.freeze({
+  CAVE_ENTRANCE:"caveEntrance",
+  DUNGEON_EXIT:"dungeonExit",
+  CHEST:"chest",
+  SIGN:"sign",
+  DOOR:"door",
+  DECORATION:"decoration"
+});
+const mirrorCave = {
+  width:26,
+  height:18,
+  floor:new Set(),
+  blocked:new Set(),
+  walls:new Set(),
+  spawn:{ x:13, y:15 },
+  exit:{ ...MIRROR_CAVE_EXIT },
+  chest:{ ...MIRROR_CAVE_CHEST_TILE, opened:false },
+  cleared:false,
+  returnTile:{ x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y+1 }
+};
+const abandonedTollhouse = {
+  width:24,
+  height:20,
+  floor:new Set(),
+  blocked:new Set(),
+  walls:new Set(),
+  spawn:{ x:13, y:17 },
+  exit:{ ...TOLLHOUSE_EXIT },
+  chest:{ ...TOLLHOUSE_CHEST_TILE },
+  returnTile:{ x:NORTH_ROAD_TOLLHOUSE_ENTRY.x, y:NORTH_ROAD_TOLLHOUSE_ENTRY.y+1 }
+};
+function carveMirrorCaveRoom(x,y,w,h){
+  for(let tx=x;tx<x+w;tx++){
+    for(let ty=y;ty<y+h;ty++){
+      mirrorCave.floor.add(keyOf(tx,ty));
+      mirrorCave.blocked.delete(keyOf(tx,ty));
+    }
+  }
+}
+function carveTollhouseRoom(x,y,w,h){
+  for(let tx=x;tx<x+w;tx++){
+    for(let ty=y;ty<y+h;ty++){
+      abandonedTollhouse.floor.add(keyOf(tx,ty));
+      abandonedTollhouse.blocked.delete(keyOf(tx,ty));
+    }
+  }
+}
+for(let x=0;x<mirrorCave.width;x++) for(let y=0;y<mirrorCave.height;y++) mirrorCave.blocked.add(keyOf(x,y));
+carveMirrorCaveRoom(11,14,5,3);
+carveMirrorCaveRoom(12,11,3,3);
+carveMirrorCaveRoom(12,8,3,3);
+carveMirrorCaveRoom(11,5,5,3);
+carveMirrorCaveRoom(8,5,3,2);
+carveMirrorCaveRoom(13,3,2,2);
+carveMirrorCaveRoom(9,2,9,3);
+for(let x=0;x<mirrorCave.width;x++){
+  for(let y=0;y<mirrorCave.height;y++){
+    if(!mirrorCave.blocked.has(keyOf(x,y))) continue;
+    const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
+    if(neighbors.some(([dx,dy])=>!mirrorCave.blocked.has(keyOf(x+dx,y+dy)))) mirrorCave.walls.add(keyOf(x,y));
+  }
+}
+for(let x=0;x<abandonedTollhouse.width;x++) for(let y=0;y<abandonedTollhouse.height;y++) abandonedTollhouse.blocked.add(keyOf(x,y));
+carveTollhouseRoom(12,17,3,2);
+carveTollhouseRoom(12,14,3,3);
+carveTollhouseRoom(11,10,5,4);
+carveTollhouseRoom(7,8,4,4);
+carveTollhouseRoom(11,6,10,4);
+carveTollhouseRoom(20,4,3,2);
+carveTollhouseRoom(17,8,4,2);
+for(let x=0;x<abandonedTollhouse.width;x++){
+  for(let y=0;y<abandonedTollhouse.height;y++){
+    if(!abandonedTollhouse.blocked.has(keyOf(x,y))) continue;
+    const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
+    if(neighbors.some(([dx,dy])=>!abandonedTollhouse.blocked.has(keyOf(x+dx,y+dy)))) abandonedTollhouse.walls.add(keyOf(x,y));
+  }
+}
 
 world.roads.push(
-  { x:6,y:11,w:26,h:2 },{ x:17,y:5,w:2,h:15 },{ x:10,y:8,w:2,h:8 },
-  { x:24,y:7,w:2,h:8 },{ x:19,y:12,w:5,h:2 },{ x:26,y:12,w:3,h:2 }
+  { x:8,y:11,w:23,h:1 },
+  { x:16,y:4,w:1,h:16 },
+  { x:10,y:8,w:15,h:1 },
+  { x:9,y:15,w:21,h:1 },
+  { x:24,y:11,w:1,h:8 },
+  { x:28,y:15,w:1,h:8 },
+  { x:21,y:18,w:9,h:1 },
+  { x:12,y:11,w:1,h:7 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { x:10,y:6,w:3,h:3,tileRows:[["roofL","roofC","roofR"],["window","wall","window"],["wall","door","wall"]] },
-  { x:20,y:6,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","wall","window"],["wall","wall","door","wall"]] },
-  { x:12,y:14,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","wall"],["wall","door","wall","wall"]] }
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6} }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6} }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:11, y:13, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:11,y:13,w:6,h:5}, collision:{x:11,y:16,w:6,h:2}, interaction:{x:14,y:17,w:1,h:1}, label:{x:14,y:14,text:"Village Hall"}, pathingBounds:{x:10,y:13,w:8,h:6} }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:7,y:14,w:4,h:4}, collision:{x:7,y:16,w:4,h:2}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:15,text:"Cottage"}, pathingBounds:{x:6,y:14,w:6,h:5} }) },
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:14, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:19,y:14,w:5,h:4}, collision:{x:19,y:16,w:5,h:2}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:15,text:"Residence"}, pathingBounds:{x:18,y:14,w:7,h:5} }) },
+  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:25, y:13, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:25,y:13,w:4,h:4}, collision:{x:25,y:15,w:4,h:2}, interaction:{x:26,y:16,w:1,h:1}, label:{x:26,y:14,text:"Hunter Lodge"}, pathingBounds:{x:24,y:13,w:6,h:5} }) },
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:20, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:20,w:5,h:3}, collision:{x:26,y:21,w:5,h:2}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"}, pathingBounds:{x:25,y:20,w:7,h:4} }) }
 );
-world.buildings.forEach(b=>blockRect(b.x,b.y,b.w,b.h));
+world.buildings.forEach((b)=>{
+  const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
+  blockRect(c.x,c.y,c.w,c.h);
+});
 
-const pond={x:22,y:13,w:7,h:5,cx:25.5,cy:15.5};
+const pond={x:24,y:12,w:9,h:7,cx:28,cy:15};
 for(let x=pond.x;x<pond.x+pond.w;x++){
   for(let y=pond.y;y<pond.y+pond.h;y++){
     const dx=(x+.5-pond.cx)/(pond.w/2), dy=(y+.5-pond.cy)/(pond.h/2);
-    const d=dx*dx+dy*dy, wob=(rng(x,y,17)-.5)*.18, lim=.9+wob;
+    const d=dx*dx+dy*dy;
+    const wob=(rng(x,y,17)-.5)*.2 + (rng(x,y,19)-.5)*.08;
+    const lim=.84+wob;
     if(d<=lim){ world.pondWater.add(keyOf(x,y)); world.pondBlocked.add(keyOf(x,y)); }
-    if(d>=lim-.16&&d<=lim+.16) world.pondShore.add(keyOf(x,y));
-    if(d>=lim-.22&&d<=lim+.05) world.pondNearEdge.add(keyOf(x,y));
+    if(d>=lim-.18&&d<=lim+.2) world.pondShore.add(keyOf(x,y));
+    if(d>=lim-.25&&d<=lim+.1) world.pondNearEdge.add(keyOf(x,y));
   }
 }
 
-for(let x=29;x<=35;x++){ world.fences.push({x,y:6},{x,y:10}); }
-for(let y=7;y<=9;y++){ world.fences.push({x:29,y},{x:35,y}); }
+for(let x=8;x<=15;x++){ world.fences.push({x,y:4}); }
+for(let x=17;x<=24;x++){ world.fences.push({x,y:4}); }
+for(let y=5;y<=10;y++){ world.fences.push({x:24,y}); }
+for(let x=6;x<=10;x++){ world.fences.push({x,y:18}); }
+for(let y=14;y<=18;y++){ world.fences.push({x:6,y}); }
+for(let x=25;x<=32;x++){ world.fences.push({x,y:23}); }
+for(let y=19;y<=23;y++){ world.fences.push({x:24,y}); }
+for(let x=21;x<=24;x++){ world.fences.push({x,y:19}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
-  {x:9,y:8,type:"crate"},{x:9,y:9,type:"barrel"},{x:13,y:8,type:"crate"},{x:13,y:9,type:"bush"},{x:10,y:9,type:"fenceSeg"},
-  {x:19,y:8,type:"crate"},{x:24,y:8,type:"sack"},{x:24,y:9,type:"barrel"},{x:19,y:9,type:"bush"},
-  {x:11,y:17,type:"crate"},{x:16,y:17,type:"barrel"},{x:11,y:16,type:"fenceSeg"},{x:16,y:16,type:"bush"},{x:15,y:17,type:"sack"},
-  {x:16,y:10,type:"signPost"},{x:25,y:11,type:"signPost"},
-  {x:8,y:10,type:"lanternPost"},{x:28,y:10,type:"lanternPost"},
-  {x:21,y:14,type:"stonePile"},{x:21,y:16,type:"stonePile"},{x:29,y:15,type:"stonePile"},
-  {x:21,y:13,type:"grassTuft"},{x:29,y:17,type:"grassTuft"},{x:24,y:18,type:"grassTuft"},
-  {x:5,y:12,type:"bush"},{x:32,y:12,type:"bush"},{x:6,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
-  {x:18,y:11,type:"well"}
+  {x:10,y:11,type:"signPost",layer:"above_entities"},{x:11,y:11,type:"bench"},{x:12,y:11,type:"barrel"},
+  {x:15,y:11,type:"noticeBoard",layer:"above_entities"},{x:17,y:11,type:"well"},{x:18,y:11,type:"bench"},
+  {x:20,y:11,type:"handcart"},{x:21,y:11,type:"crate"},{x:22,y:12,type:"sack"},
+  {x:8,y:12,type:"barrel"},{x:9,y:12,type:"crate"},{x:10,y:12,type:"woodpile"},
+  {x:13,y:9,type:"lanternPost",layer:"above_entities"},{x:19,y:9,type:"lanternPost",layer:"above_entities"},{x:20,y:9,type:"bench"},
+  {x:8,y:17,type:"smallGarden"},{x:9,y:17,type:"smallGarden"},{x:10,y:17,type:"woodpile"},
+  {x:19,y:17,type:"smallGarden"},{x:20,y:17,type:"smallGarden"},{x:24,y:16,type:"barrel"},
+  {x:25,y:17,type:"crate"},{x:23,y:18,type:"barrel"},{x:22,y:18,type:"sack"},
+  {x:25,y:18,type:"signPost",layer:"above_entities"},{x:26,y:18,type:"stonePile"},{x:27,y:18,type:"grassTuft"},
+  {x:27,y:22,type:"crate"},{x:28,y:22,type:"barrel"},{x:29,y:22,type:"woodpile"},
+  {x:30,y:21,type:"fenceSeg"},{x:31,y:21,type:"fenceSeg"},
+  {x:14,y:4,type:"signPost",layer:"above_entities"},{x:21,y:4,type:"signPost",layer:"above_entities"},{x:23,y:4,type:"fenceSeg"},
+  {x:7,y:5,type:"bush"},{x:18,y:5,type:"bush"},{x:26,y:11,type:"bush"},
+  {x:26,y:12,type:"grassTuft"},{x:27,y:12,type:"grassTuft"},{x:28,y:12,type:"stonePile"},
+  {x:12,y:3,type:"stonePile"},{x:22,y:2,type:"stonePile"}
 );
+world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
-const treeData = [[1,2,"a"],[2,2,"b"],[3,3,"a"],[2,5,"c"],[1,6,"a"],[3,7,"b"],[2,9,"a"],[1,11,"c"],[3,12,"a"],[2,14,"b"],[1,17,"a"],[2,19,"b"],[3,21,"a"],[1,22,"c"],[4,23,"a"],[2,1,"a"],[4,2,"c"],[7,1,"b"],[10,2,"a"],[13,2,"c"],[27,2,"a"],[30,1,"b"],[33,2,"a"],[35,1,"c"],[37,2,"a"],[36,2,"a"],[35,4,"b"],[37,5,"a"],[36,7,"c"],[35,9,"a"],[36,11,"b"],[37,13,"a"],[35,15,"c"],[36,17,"a"],[37,19,"b"],[35,21,"a"],[36,23,"c"],[34,22,"a"],[4,22,"b"],[6,23,"a"],[9,22,"c"],[12,23,"a"],[15,22,"b"],[24,23,"a"],[27,22,"c"],[30,23,"a"],[33,22,"b"],[5,5,"a"],[6,8,"b"],[7,19,"a"],[9,4,"c"],[31,5,"a"],[32,8,"b"],[31,19,"a"],[29,21,"c"],[21,15,"a"],[22,18,"c"],[29,16,"b"],[28,19,"c"]];
+const treeData = [
+  [1,1,"a"],[2,2,"b"],[3,3,"a"],[1,5,"c"],[2,7,"a"],[3,9,"b"],[1,11,"a"],[2,14,"c"],[1,17,"a"],[2,20,"b"],[3,22,"a"],
+  [5,2,"a"],[7,2,"c"],[9,1,"b"],[11,2,"a"],[26,1,"c"],[28,2,"a"],[31,1,"b"],[34,2,"a"],[36,3,"c"],[37,6,"a"],[36,9,"b"],
+  [37,12,"a"],[35,14,"c"],[36,17,"a"],[37,20,"b"],[35,22,"a"],[32,22,"c"],[29,23,"a"],[26,22,"b"],[22,23,"a"],[17,23,"c"],
+  [13,23,"a"],[10,22,"b"],[7,23,"a"],[5,22,"c"],
+  [30,5,"a"],[31,7,"b"],[30,9,"a"],[32,10,"c"],[31,16,"a"],[29,20,"c"],
+  [6,6,"a"],[7,8,"b"],[6,18,"a"],[8,20,"c"],[9,5,"c"],[27,19,"b"],[24,20,"c"],[22,19,"a"],[19,21,"b"]
+];
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
+rebuildOverworldCollisionFromMap();
 
 world.zones.push(
-  {name:"Hearthvale Square",x:9,y:7,w:18,h:11},
-  {name:"Mirror Pond",x:21,y:12,w:10,h:8},
-  {name:"Forest Edge",x:27,y:3,w:11,h:19},
+  {name:"North Road",x:10,y:0,w:14,h:7},
+  {name:"Hearthvale Square",x:8,y:6,w:20,h:13},
+  {name:"Mirror Pond",x:23,y:11,w:10,h:9},
+  {name:"Eastern Woods",x:27,y:3,w:11,h:19},
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
 
@@ -839,6 +2163,7 @@ const wolves=WOLF_SPAWNS.map((spawn)=>createWolfFromSpawn(spawn));
 let lastWolfDecision=0,lastWolfDamageAt=0,lastPlayerAttack=0,hitStopUntil=0,lastNoTargetLogAt=0;
 const lastWolfAttackById={};
 let missNoticeArmed=true;
+let hostileAggroBlockedUntil=0;
 const PLAYER_ATTACK_RANGE=1;
 const WOLF_ATTACK_COOLDOWN_MS=1800;
 const WOLF_RESPAWN_MIN_MS=10000;
@@ -865,6 +2190,12 @@ function normalizeInventory(entries){
   });
   return output;
 }
+function onInventoryChanged(reason){
+  if(typeof questSystem!=="undefined" && questSystem) questSystem.refreshAllItemProgress();
+  if(typeof updateHunterStageOneReadiness==="function") updateHunterStageOneReadiness();
+  if(typeof updateSidebar==="function") updateSidebar();
+  if(typeof saveGame==="function") saveGame(reason || "inventory_update");
+}
 function addItemToInventory(itemId, amount, targetInventory=player.inventory){
   const definition=getItemDefinition(itemId);
   if(!definition || !Number.isFinite(amount)) return 0;
@@ -872,9 +2203,14 @@ function addItemToInventory(itemId, amount, targetInventory=player.inventory){
   if(quantity<=0) return 0;
   if(definition.stackable){
     const existing=targetInventory.find((entry)=>entry.itemId===itemId);
-    if(existing){ existing.quantity += quantity; return quantity; }
+    if(existing){
+      existing.quantity += quantity;
+      if(targetInventory===player.inventory) onInventoryChanged("inventory_add");
+      return quantity;
+    }
   }
   targetInventory.push({ itemId, quantity });
+  if(targetInventory===player.inventory) onInventoryChanged("inventory_add");
   return quantity;
 }
 function getItemQuantity(itemId){
@@ -890,6 +2226,17 @@ function getEquippedWeaponBonus(){
   const weapon=getEquippedItem("weapon");
   if(!weapon || weapon.type!=="weapon") return 0;
   return Number.isFinite(weapon.attackBonus) ? weapon.attackBonus : 0;
+}
+function getArmorDefenseBonus(){
+  const armor=getEquippedItem("armor");
+  return (!armor || armor.type!=="armor") ? 0 : (Number.isFinite(armor.defenseBonus) ? armor.defenseBonus : 0);
+}
+function getTrinketDefenseBonus(){
+  const trinket=getEquippedItem("trinket");
+  return (!trinket || trinket.type!=="trinket") ? 0 : (Number.isFinite(trinket.defenseBonus) ? trinket.defenseBonus : 0);
+}
+function getEquippedDefenseBonus(){
+  return getArmorDefenseBonus() + getTrinketDefenseBonus();
 }
 function ensureStarterEquipment(){
   if(getItemQuantity("rusty_sword")<=0) addItemToInventory("rusty_sword", 1);
@@ -908,6 +2255,39 @@ function equipWeapon(itemId){
   else log("Equipped " + item.name + ".");
   return true;
 }
+function equipArmor(itemId){
+  const item=getItemDefinition(itemId);
+  if(!item || item.type!=="armor") return false;
+  if(getItemQuantity(itemId)<=0) return false;
+  const previous=getEquippedItem("armor");
+  player.equipment.armor=itemId;
+  if(previous && previous.id!==itemId) log("Equipped " + item.name + ". Replaced " + previous.name + ".");
+  else log("Equipped " + item.name + ".");
+  return true;
+}
+function unequipSlot(slotName){
+  if(!["weapon","armor","trinket"].includes(slotName)) return false;
+  const currentItem=getEquippedItem(slotName);
+  if(!currentItem) return false;
+  if(slotName==="weapon"){
+    if(currentItem.id==="rusty_sword") return false;
+    player.equipment.weapon="rusty_sword";
+    log("Removed " + currentItem.name + ". Re-equipped Rusty Sword.");
+    return true;
+  }
+  player.equipment[slotName]=null;
+  log("Removed " + currentItem.name + ".");
+  return true;
+}
+function applyIncomingDamage(rawDamage){
+  const defense=getTotalDefenseRating();
+  const reducedDamage=Math.max(1, Math.floor(rawDamage)-defense);
+  player.hp=Math.max(0, player.hp-reducedDamage);
+  if(reducedDamage>0 && getArmorDefenseBonus()>0){
+    gainSkillXp("defense", 2);
+  }
+  return reducedDamage;
+}
 function removeItemFromInventory(itemId, amount){
   if(!Number.isFinite(amount)) return 0;
   let remaining=Math.max(0,Math.floor(amount));
@@ -922,11 +2302,12 @@ function removeItemFromInventory(itemId, amount){
     removed+=take;
     if(entry.quantity<=0) player.inventory.splice(i,1);
   }
+  if(removed>0) onInventoryChanged("inventory_remove");
   return removed;
 }
-function rollWolfLoot(){
+function rollLootFromTable(lootTable){
   const drops=[];
-  WOLF_LOOT_TABLE.forEach((roll)=>{
+  lootTable.forEach((roll)=>{
     const definition=getItemDefinition(roll.itemId);
     if(!definition) return;
     if(Math.random()>roll.chance) return;
@@ -935,14 +2316,232 @@ function rollWolfLoot(){
   });
   return drops;
 }
+function rollEnemyLoot(enemyType){
+  const config=getEnemyConfig(enemyType);
+  return rollLootFromTable(config.lootTable || []);
+}
 function formatDropText(drops){
   return drops.map((drop)=>{
     const item=getItemDefinition(drop.itemId);
     return (item?.name || drop.itemId) + " x" + drop.quantity;
   }).join(", ");
 }
+function isVendorOpen(){ return vendorPanel.style.display==="block"; }
+function closeVendorMenu(){ vendorPanel.style.display="none"; }
+function canSellItem(item){
+  if(!item) return false;
+  const equippableSlot=item.type==="weapon"
+    ? "weapon"
+    : (item.type==="armor"
+      ? "armor"
+      : (item.type==="trinket" ? "trinket" : null));
+  if(!equippableSlot) return true;
+  const total=getItemQuantity(item.id);
+  const equipped=player.equipment[equippableSlot]===item.id;
+  return !equipped || total>1;
+}
+function getBestUsableHealingItem(){
+  const missingHp=Math.max(0, player.maxHp-player.hp);
+  let herbCandidate=null;
+  let potionCandidate=null;
+  let fallbackCandidate=null;
+  for(const entry of player.inventory){
+    if(!entry || entry.quantity<=0) continue;
+    const item=getItemDefinition(entry.itemId);
+    if(!item || item.type!=="consumable") continue;
+    const healAmount=Number.isFinite(item.healAmount) ? Math.floor(item.healAmount) : 0;
+    if(healAmount<=0) continue;
+    const candidate={ item, healAmount };
+    if(item.id==="healing_herb"){
+      if(!herbCandidate || healAmount<herbCandidate.healAmount) herbCandidate=candidate;
+      continue;
+    }
+    if(item.id==="small_potion"){
+      if(!potionCandidate || healAmount>potionCandidate.healAmount) potionCandidate=candidate;
+      continue;
+    }
+    if(!fallbackCandidate || healAmount>fallbackCandidate.healAmount || (healAmount===fallbackCandidate.healAmount && item.value<fallbackCandidate.item.value)){
+      fallbackCandidate=candidate;
+    }
+  }
+  if(herbCandidate && missingHp<=herbCandidate.healAmount) return herbCandidate.item;
+  if(potionCandidate && missingHp>=potionCandidate.healAmount) return potionCandidate.item;
+  if(herbCandidate) return herbCandidate.item;
+  if(potionCandidate) return potionCandidate.item;
+  return fallbackCandidate?.item || null;
+}
+function useHealingConsumable(){
+  if(player.hp>=player.maxHp){
+    log("HP is already full.");
+    return false;
+  }
+  const item=getBestUsableHealingItem();
+  if(!item){
+    log("No healing items available.");
+    return false;
+  }
+  return consumeHealingItem(item);
+}
+function consumeHealingItem(item){
+  if(!item || item.type!=="consumable") return false;
+  if(player.hp>=player.maxHp){
+    log("HP is already full.");
+    return false;
+  }
+  const healAmount=Math.max(0, Math.floor(Number.isFinite(item.healAmount) ? item.healAmount : 0)) + getSurvivalHealingBonus();
+  if(healAmount<=0) return false;
+  const removed=removeItemFromInventory(item.id, 1);
+  if(removed<=0) return false;
+  const hpBefore=player.hp;
+  player.hp=Math.min(player.maxHp, player.hp + healAmount);
+  const restored=player.hp-hpBefore;
+  if(restored<=0) return false;
+  let survivalGain=0;
+  if(item.id==="healing_herb") survivalGain=gainSkillXp("survival", 5);
+  if(item.id==="small_potion") survivalGain=gainSkillXp("survival", 8);
+  log("Used " + item.name + ". Restored " + restored + " HP.");
+  spawnFloatingText(player.px/TILE, player.py/TILE, "+" + restored, { color:"#7df7a2", durationMs:1000, rise:18 });
+  showRewardToast("Used " + item.name + "  +" + restored + " HP", 1300);
+  if(survivalGain>0) log("Survival experience gained.");
+  saveGame("consume_item");
+  return true;
+}
+function getVendorBuyCost(item){
+  if(!item) return 0;
+  if(item.id==="leather_armor") return 30;
+  if(item.id==="small_potion") return 14;
+  if(item.id==="healing_herb") return 5;
+  return Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+}
+function renderVendorMenu(){
+  const buyRows = VENDOR_BUY_INVENTORY.map((itemId)=>{
+    const item=getItemDefinition(itemId);
+    if(!item) return "";
+    const cost=getVendorBuyCost(item);
+    const canBuy=player.coins>=cost;
+    return "<div class=\"vendor-item\">" +
+      "<div>" + item.name + "</div>" +
+      "<div class=\"vendor-pill\">Cost: " + cost + "</div>" +
+      "<div class=\"vendor-pill\">Owned: " + getItemQuantity(item.id) + "</div>" +
+      "<button type=\"button\" class=\"vendor-btn\" data-buy-item=\"" + item.id + "\"" + (canBuy ? "" : " disabled") + ">" + (canBuy ? "Buy" : "Need coins") + "</button>" +
+    "</div>";
+  }).join("");
+  const sellRows = player.inventory.map((entry)=>{
+    const item=getItemDefinition(entry.itemId);
+    if(!item) return "";
+    const sellValue=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+    const canSell=canSellItem(item);
+    const buttonLabel=canSell ? "Sell" : "Equipped";
+    const disabledAttr=canSell ? "" : " disabled";
+    return "<div class=\"vendor-item\">" +
+      "<div>" + item.name + "</div>" +
+      "<div class=\"vendor-pill\">Qty: " + entry.quantity + "</div>" +
+      "<div class=\"vendor-pill\">Value: " + sellValue + "</div>" +
+      "<button type=\"button\" class=\"vendor-btn\" data-sell-item=\"" + item.id + "\"" + disabledAttr + ">" + buttonLabel + "</button>" +
+    "</div>";
+  }).join("");
+  vendorList.innerHTML =
+    "<div class=\"questTitle\">BUY</div>" +
+    (buyRows || "<div class=\"muted\">No items available.</div>") +
+    "<div class=\"questTitle\" style=\"margin-top:8px;\">SELL</div>" +
+    (sellRows || "<div class=\"muted\">Inventory is empty.</div>");
+  bindVendorButtons();
+}
+function handleVendorActionFromTarget(target){
+  if(!target) return false;
+  const buyButton=target.closest?.("button[data-buy-item]");
+  const buyItemId=buyButton?.dataset?.buyItem;
+  if(buyItemId){
+    return buyOneItemFromVendor(buyItemId);
+  }
+  const sellButton=target.closest?.("button[data-sell-item]");
+  const sellItemId=sellButton?.dataset?.sellItem;
+  if(!sellItemId) return false;
+  return sellOneItemToVendor(sellItemId);
+}
+function bindVendorButtons(){
+  const buyButtons=vendorList.querySelectorAll("button[data-buy-item]");
+  buyButtons.forEach((button)=>{
+    button.onclick=(event)=>{
+      event.preventDefault();
+      event.stopPropagation();
+      handleVendorActionFromTarget(event.currentTarget);
+    };
+  });
+  const sellButtons=vendorList.querySelectorAll("button[data-sell-item]");
+  sellButtons.forEach((button)=>{
+    button.onclick=(event)=>{
+      event.preventDefault();
+      event.stopPropagation();
+      handleVendorActionFromTarget(event.currentTarget);
+    };
+  });
+}
+function openVendorMenu(){
+  if(dialogueSystem.activeSession) dialogueSystem.close();
+  renderVendorMenu();
+  vendorPanel.style.display="block";
+}
+function sellOneItemToVendor(itemId){
+  const item=getItemDefinition(itemId);
+  if(!item) return false;
+  if(getItemQuantity(itemId)<=0) return false;
+  if(!canSellItem(item)) return false;
+  const removed=removeItemFromInventory(itemId, 1);
+  if(removed<=0) return false;
+  const sellValue=Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
+  player.coins += sellValue;
+  log("Sold " + item.name + " for " + sellValue + " coin" + (sellValue===1 ? "" : "s") + ".");
+  renderVendorMenu();
+  if(player.inventory.length===0) closeVendorMenu();
+  saveGame("vendor_sale");
+  return true;
+}
+function buyOneItemFromVendor(itemId){
+  const item=getItemDefinition(itemId);
+  if(!item) return false;
+  if(!VENDOR_BUY_INVENTORY.includes(item.id)) return false;
+  const cost=getVendorBuyCost(item);
+  if(player.coins<cost){
+    log("Not enough coins to buy " + item.name + ".");
+    return false;
+  }
+  player.coins-=cost;
+  addItemToInventory(item.id, 1);
+  const ownedCount=getItemQuantity(item.id);
+  log(item.name + " purchased.");
+  log("Coins after purchase: " + player.coins + ".");
+  log("Inventory update: " + item.name + " owned: " + ownedCount + ".");
+  log("Bought " + item.name + " for " + cost + " coin" + (cost===1 ? "" : "s") + ".");
+  renderVendorMenu();
+  saveGame("vendor_purchase");
+  return true;
+}
 
-const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", COMPLETED:"Completed" });
+const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", READY_TO_TURN_IN:"Ready To Turn In", COMPLETED:"Completed" });
+const HunterQuestStage = Object.freeze({
+  NOT_STARTED:"not_started",
+  STAGE_1_PROVE_YOURSELF:"stage_1_prove_yourself",
+  STAGE_2_RETURN_TO_HUNTER:"stage_2_return_to_hunter",
+  STAGE_3_MIRROR_CAVE:"stage_3_mirror_cave",
+  STAGE_4_RETURN_WITH_RELIC:"stage_4_return_with_relic",
+  COMPLETED:"completed"
+});
+const StillWaterQuestStage = Object.freeze({
+  NOT_STARTED:"not_started",
+  STAGE_1_SPEAK_WITH_EDRIN:"stage_1_speak_with_edrin",
+  STAGE_2_INSPECT_MIRROR_POND:"stage_2_inspect_mirror_pond",
+  STAGE_3_RETURN_TO_EDRIN:"stage_3_return_to_edrin",
+  STAGE_4_ENTER_MIRROR_CAVE:"stage_4_enter_mirror_cave",
+  STAGE_5_RECOVER_ECHO_FRAGMENT:"stage_5_recover_echo_fragment",
+  STAGE_6_RETURN_TO_EDRIN:"stage_6_return_to_edrin",
+  COMPLETED:"completed"
+});
+let mirrorCaveChestDiscovered=false;
+let rookTollkeeperDefeated=false;
+let abandonedTollhouseDiscovered=false;
+let abandonedTollhouseCleared=false;
+let hunterQuestRewardClaimed=false;
 
 class EventTriggerSystem {
   constructor(){ this.handlers=new Map(); this.zoneWatchers=[]; this.lastZone=""; }
@@ -959,7 +2558,16 @@ class EventTriggerSystem {
 class QuestStateSystem {
   constructor(definitions, events){
     this.events=events;
-    this.quests=new Map(definitions.map((q)=>[q.id,{...q,state:QuestState.NOT_STARTED,progress:"none"}]));
+    this.quests=new Map(definitions.map((q)=>[q.id,{
+      ...q,
+      questId:q.questId || q.id,
+      title:q.title || q.name,
+      state:QuestState.NOT_STARTED,
+      status:QuestState.NOT_STARTED,
+      progress:"none",
+      objectives:this.normalizeObjectives(q.objectives||[]),
+      itemProgress:{}
+    }]));
     definitions.forEach((quest)=>{
       (quest.startEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.activateQuest(quest.id)));
       (quest.completionEvents||[]).forEach((eventName)=>this.events.on(eventName,()=>this.completeQuest(quest.id)));
@@ -968,8 +2576,10 @@ class QuestStateSystem {
   activateQuest(questId){
     const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.NOT_STARTED) return;
     quest.state=QuestState.ACTIVE;
-    quest.progress="go_to_pond";
-    log("Quest started: " + quest.name);
+    quest.status=quest.state;
+    quest.progress=quest.initialProgress || "active";
+    quest.objectives=this.normalizeObjectives(quest.objectives||[]);
+    log("Quest started: " + (quest.title || quest.name));
     this.events.emit("quest:state-changed",{questId,state:quest.state});
   }
   updateProgress(questId, progressId){
@@ -980,19 +2590,146 @@ class QuestStateSystem {
     this.events.emit("quest:state-changed",{questId,state:quest.state,progress:progressId});
   }
   completeQuest(questId){
-    const quest=this.quests.get(questId); if(!quest||quest.state!==QuestState.ACTIVE) return;
+    const quest=this.quests.get(questId); if(!quest||(quest.state!==QuestState.ACTIVE && quest.state!==QuestState.READY_TO_TURN_IN)) return;
+    const turnInObjective=this.getObjective(questId, "return_hunter");
+    if(turnInObjective && !turnInObjective.completed) this.completeObjective(questId, "return_hunter");
     quest.state=QuestState.COMPLETED;
+    quest.status=quest.state;
     quest.progress="completed";
-    log("Quest complete: " + quest.name);
-    player.xp += 20;
-    player.coins += 6;
+    log("Quest complete: " + (quest.title || quest.name));
+    const rewardXp=Math.max(0, Math.floor(Number.isFinite(quest.rewards?.xp) ? quest.rewards.xp : 0));
+    const rewardCoins=Math.max(0, Math.floor(Number.isFinite(quest.rewards?.coins) ? quest.rewards.coins : 0));
+    const rewardItems=Array.isArray(quest.rewards?.items) ? quest.rewards.items : [];
+    if(rewardXp>0) grantPlayerXp(rewardXp);
+    if(rewardCoins>0) player.coins += rewardCoins;
+    rewardItems.forEach((reward)=>{
+      if(!reward || typeof reward.itemId!=="string") return;
+      const count=Math.max(1, Math.floor(Number.isFinite(reward.count) ? reward.count : 1));
+      addItemToInventory(reward.itemId, count);
+    });
+    if(rewardXp>0 || rewardCoins>0) log("Rewards: +" + rewardXp + " XP, +" + rewardCoins + " Coins.");
+    if(rewardItems.length){
+      const text=rewardItems.map((reward)=>{
+        const itemDef=getItemDefinition(reward.itemId);
+        const itemName=itemDef?.name || reward.itemId;
+        const count=Math.max(1, Math.floor(Number.isFinite(reward.count) ? reward.count : 1));
+        return itemName + " x" + count;
+      }).join(", ");
+      log("Item Rewards: " + text + ".");
+    }
+    if(quest.id==="hunters_request") log("Hunter's Request completed.");
+    log("Quest Completed.");
     this.events.emit("quest:state-changed",{questId,state:quest.state});
     this.events.emit("quest:completed:" + questId,{questId});
   }
   getQuest(questId){ return this.quests.get(questId) || null; }
+  normalizeObjectives(objectives){
+    if(!Array.isArray(objectives)) return [];
+    return objectives.map((objective)=>({
+      ...objective,
+      requiredAmount:Math.max(1, Math.floor(Number.isFinite(objective?.requiredAmount) ? objective.requiredAmount : 1)),
+      currentAmount:Math.max(0, Math.floor(Number.isFinite(objective?.currentAmount) ? objective.currentAmount : 0)),
+      completed:Boolean(objective?.completed)
+    })).map((objective)=>({
+      ...objective,
+      currentAmount:Math.min(objective.requiredAmount, objective.currentAmount),
+      completed:Boolean(objective.completed || objective.currentAmount>=objective.requiredAmount)
+    }));
+  }
+  getObjective(questId, objectiveId){
+    const quest=this.getQuest(questId);
+    if(!quest || !Array.isArray(quest.objectives)) return null;
+    return quest.objectives.find((objective)=>objective.id===objectiveId) || null;
+  }
+  isObjectiveLocked(questId, objectiveId){
+    if(objectiveId!=="return_hunter") return false;
+    const quest=this.getQuest(questId);
+    if(!quest) return true;
+    return (quest.objectives||[]).some((objective)=>objective.id!=="return_hunter" && !objective.completed);
+  }
+  incrementObjective(questId, objectiveId, amount=1){
+    const quest=this.getQuest(questId);
+    if(!quest || quest.state!==QuestState.ACTIVE) return false;
+    const objective=this.getObjective(questId, objectiveId);
+    if(!objective || objective.completed || this.isObjectiveLocked(questId, objectiveId)) return false;
+    const step=Math.max(1, Math.floor(Number.isFinite(amount) ? amount : 1));
+    const prev=objective.currentAmount;
+    objective.currentAmount=Math.min(objective.requiredAmount, objective.currentAmount + step);
+    if(objective.currentAmount===prev) return false;
+    if(objective.summaryLabel){
+      log("Objective Updated: " + objective.summaryLabel + " (" + objective.currentAmount + "/" + objective.requiredAmount + ")");
+    }
+    if(objective.currentAmount>=objective.requiredAmount) this.completeObjective(questId, objectiveId);
+    else this.events.emit("quest:state-changed",{questId,state:quest.state});
+    return true;
+  }
+  completeObjective(questId, objectiveId){
+    const quest=this.getQuest(questId);
+    if(!quest || (quest.state!==QuestState.ACTIVE && quest.state!==QuestState.READY_TO_TURN_IN)) return false;
+    const objective=this.getObjective(questId, objectiveId);
+    if(!objective || objective.completed || this.isObjectiveLocked(questId, objectiveId)) return false;
+    objective.currentAmount=objective.requiredAmount;
+    objective.completed=true;
+    this.events.emit("quest:objective-completed",{questId,objectiveId});
+    this.evaluateQuestReadiness(questId);
+    this.events.emit("quest:state-changed",{questId,state:quest.state});
+    return true;
+  }
+  evaluateQuestReadiness(questId){
+    const quest=this.getQuest(questId);
+    if(!quest || !Array.isArray(quest.objectives)) return false;
+    const allNonTurnInComplete=quest.objectives.every((objective)=>objective.id==="return_hunter" || objective.completed);
+    if(allNonTurnInComplete && quest.state===QuestState.ACTIVE){
+      quest.state=QuestState.READY_TO_TURN_IN;
+      quest.status=quest.state;
+      log((quest.title || quest.name) + " is ready to turn in.");
+      return true;
+    }
+    if(!allNonTurnInComplete && quest.state===QuestState.READY_TO_TURN_IN){
+      quest.state=QuestState.ACTIVE;
+      quest.status=quest.state;
+      return true;
+    }
+    return false;
+  }
+  isReadyToTurnIn(questId){
+    const quest=this.getQuest(questId);
+    return Boolean(quest && quest.state===QuestState.READY_TO_TURN_IN);
+  }
+  tryTurnInQuest(questId){
+    const quest=this.getQuest(questId);
+    if(!quest || quest.state!==QuestState.READY_TO_TURN_IN) return false;
+    return this.completeQuest(questId), true;
+  }
+  refreshAllItemProgress(){
+    const quest=this.getQuest("hunters_request");
+    if(!quest || quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) return false;
+    const peltObjective=this.getObjective("hunters_request", "pelts");
+    if(!peltObjective) return false;
+    const before=peltObjective.currentAmount;
+    const currentPelts=Math.max(0, Math.min(peltObjective.requiredAmount, getItemQuantity("wolf_pelt")));
+    peltObjective.currentAmount=currentPelts;
+    peltObjective.completed=currentPelts>=peltObjective.requiredAmount;
+    if(before!==peltObjective.currentAmount){
+      this.events.emit("quest:state-changed",{questId:"hunters_request",state:quest.state,progress:quest.progress});
+      return true;
+    }
+    return false;
+  }
   serializeState(){
     const states=[];
-    for(const quest of this.quests.values()) states.push({id:quest.id,state:quest.state,progress:quest.progress});
+    for(const quest of this.quests.values()) states.push({
+      id:quest.id,
+      state:quest.state,
+      status:quest.state,
+      progress:quest.progress,
+      objectives:(quest.objectives||[]).map((objective)=>({
+        id:objective.id,
+        currentAmount:objective.currentAmount,
+        completed:objective.completed
+      })),
+      itemProgress:{...(quest.itemProgress||{})}
+    });
     return states;
   }
   getCompletedQuestIds(){
@@ -1002,7 +2739,7 @@ class QuestStateSystem {
   }
   getActiveQuestIds(){
     const ids=[];
-    for(const quest of this.quests.values()) if(quest.state===QuestState.ACTIVE) ids.push(quest.id);
+    for(const quest of this.quests.values()) if(quest.state===QuestState.ACTIVE || quest.state===QuestState.READY_TO_TURN_IN) ids.push(quest.id);
     return ids;
   }
   applyState(stateEntries){
@@ -1013,7 +2750,22 @@ class QuestStateSystem {
       const quest=this.quests.get(entry.id);
       if(!quest) return;
       if(typeof entry.state==="string" && validStates.has(entry.state)) quest.state=entry.state;
+      if(typeof entry.status==="string" && validStates.has(entry.status)) quest.state=entry.status;
       if(typeof entry.progress==="string") quest.progress=entry.progress;
+      if(Array.isArray(entry.objectives)){
+        entry.objectives.forEach((savedObjective)=>{
+          const objective=quest.objectives.find((candidate)=>candidate.id===savedObjective.id);
+          if(!objective) return;
+          if(Number.isFinite(savedObjective.currentAmount)){
+            objective.currentAmount=Math.max(0,Math.min(objective.requiredAmount,Math.floor(savedObjective.currentAmount)));
+          }
+          if(typeof savedObjective.completed==="boolean") objective.completed=savedObjective.completed;
+          if(objective.currentAmount>=objective.requiredAmount) objective.completed=true;
+        });
+      }
+      if(entry.itemProgress && typeof entry.itemProgress==="object") quest.itemProgress={...entry.itemProgress};
+      quest.status=quest.state;
+      this.evaluateQuestReadiness(quest.id);
     });
   }
 }
@@ -1024,16 +2776,60 @@ class DialogueFramework {
     this.events=events;
     this.activeSession=null;
   }
+  getHunterObjectiveSummaryLines(){
+    const stage=getHunterQuestStage();
+    const wolvesObjective=questSystem.getObjective("hunters_request", "wolves");
+    if(stage===HunterQuestStage.STAGE_1_PROVE_YOURSELF){
+      const wolves=Math.max(0, Math.min(3, wolvesObjective?.currentAmount || 0));
+      const pelts=Math.max(0, Math.min(3, getItemQuantity("wolf_pelt")));
+      return ["", "• Defeat Wolves: " + wolves + "/3", "• Wolf Pelts: " + pelts + "/3"];
+    }
+    if(stage===HunterQuestStage.STAGE_2_RETURN_TO_HUNTER) return ["", "• Return to Hunter Garran"];
+    if(stage===HunterQuestStage.STAGE_3_MIRROR_CAVE) return ["", "• Enter Mirror Cave", "• Recover the Mirror Relic"];
+    if(stage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC) return ["", "• Return to Hunter Garran"];
+    return [];
+  }
+  getDisplayLines(node){
+    const baseLines=Array.isArray(node?.lines) ? node.lines : [];
+    if(!this.activeSession) return baseLines;
+    if(this.activeSession.characterId==="hunter_garran" && (this.activeSession.nodeId==="hunters_request_stage_1_active" || this.activeSession.nodeId==="hunters_request_stage_3_active")){
+      return [...baseLines, ...this.getHunterObjectiveSummaryLines()];
+    }
+    return baseLines;
+  }
+  evaluateCondition(condition){
+    if(!condition || typeof condition!=="object") return false;
+    if(typeof condition.questId==="string"){
+      const quest=questSystem.getQuest(condition.questId);
+      if(!quest) return false;
+      if(typeof condition.state==="string" && quest.state!==condition.state) return false;
+      if(typeof condition.progress==="string" && quest.progress!==condition.progress) return false;
+    }
+    if(typeof condition.objectiveId==="string"){
+      const [questId, objectiveId]=condition.objectiveId.split(":");
+      if(!questId || !objectiveId) return false;
+      const objective=questSystem.getObjective(questId, objectiveId);
+      const needsCompleted=typeof condition.completed==="boolean" ? condition.completed : true;
+      if(!objective || objective.completed!==needsCompleted) return false;
+    }
+    if(typeof condition.itemId==="string"){
+      const minimum=Number.isFinite(condition.minimumOwned) ? Math.max(0, Math.floor(condition.minimumOwned)) : 1;
+      if(getItemQuantity(condition.itemId)<minimum) return false;
+    }
+    return true;
+  }
+  getRootNodeId(characterId, char){
+    const conditionalRoots=Array.isArray(char?.rootByCondition) ? char.rootByCondition : [];
+    for(const conditionalRoot of conditionalRoots){
+      if(!this.evaluateCondition(conditionalRoot?.if)) continue;
+      if(typeof conditionalRoot?.next==="string" && conditionalRoot.next) return conditionalRoot.next;
+    }
+    return char?.root;
+  }
   start(characterId){
     const char=this.data.characters?.[characterId];
     if(!char) return false;
-    let root=char.root;
-    if(characterId==="edrin"){
-      const quest=questSystem.getQuest("mirror_pond_listening");
-      if(quest?.state===QuestState.COMPLETED) root="post_quest";
-      else if(quest?.state===QuestState.ACTIVE && quest?.progress==="heard_whispers") root="quest_turn_in";
-      else if(quest?.state===QuestState.ACTIVE) root="quest_active_followup";
-    }
+    const root=this.getRootNodeId(characterId, char);
     this.activeSession={characterId,nodeId:root,lineIndex:0,pendingChoices:null};
     this.render();
     this.events.emit("dialogue:started:" + characterId,{characterId,nodeId:root});
@@ -1048,8 +2844,9 @@ class DialogueFramework {
     const node=this.getNode();
     if(!node || !this.activeSession) return;
     if(this.activeSession.pendingChoices) return;
+    const displayLines=this.getDisplayLines(node);
     this.activeSession.lineIndex += 1;
-    if(this.activeSession.lineIndex < (node.lines?.length||0)){ this.render(); return; }
+    if(this.activeSession.lineIndex < displayLines.length){ this.render(); return; }
     if(node.choices?.length){ this.activeSession.pendingChoices=node.choices; this.render(); return; }
     (node.onCompleteEvents||[]).forEach((eventName)=>this.events.emit(eventName,{characterId:this.activeSession.characterId,nodeId:this.activeSession.nodeId}));
     if(node.next && node.next!=="end"){
@@ -1071,40 +2868,169 @@ class DialogueFramework {
     this.activeSession.pendingChoices=null;
     this.render();
   }
-  close(){ this.activeSession=null; dialogue.style.display="none"; }
+  close(){
+    this.activeSession=null;
+    dialogueChoices.innerHTML="";
+    dialogueActions.innerHTML="";
+    dialogue.style.display="none";
+  }
   render(){
     const session=this.activeSession;
     const node=this.getNode();
     if(!session || !node){ this.close(); return; }
     const char=this.data.characters?.[session.characterId];
+    const displayLines=this.getDisplayLines(node);
+    updateDialogueViewportConstraints();
     dialogue.style.display="block";
     dialogueName.textContent=char?.name || "Unknown";
     if(session.pendingChoices){
-      const options=session.pendingChoices.map((choice, idx)=>(idx+1)+") "+choice.text).join("\n");
-      dialogueText.textContent=(node.lines||[]).join("\n") + "\n\n" + options;
-      dialogueHint.textContent="Press 1-9 to choose, or click to continue with option 1.";
+      dialogueText.textContent=displayLines.join("\n");
+      dialogueChoices.innerHTML=session.pendingChoices.map((choice, idx)=>(
+        "<button type=\"button\" class=\"dialogue-choice\" data-dialogue-choice=\"" + idx + "\">" + (idx+1) + ") " + choice.text + "</button>"
+      )).join("");
+      dialogueHint.textContent="Press 1-9 to choose an option. Press Esc or E to close.";
+      dialogueActions.innerHTML="<button type=\"button\" class=\"dialogue-action\" data-dialogue-close>Close</button>";
     } else {
-      dialogueText.textContent=(node.lines||[])[session.lineIndex] || "...";
-      dialogueHint.textContent="Click to continue dialogue.";
+      dialogueChoices.innerHTML="";
+      dialogueText.textContent=displayLines[session.lineIndex] || "...";
+      dialogueHint.textContent="Click Continue, click dialogue text, or press E. Press Esc to close.";
+      dialogueActions.innerHTML="<button type=\"button\" class=\"dialogue-action\" data-dialogue-advance>Continue</button><button type=\"button\" class=\"dialogue-action\" data-dialogue-close>Close</button>";
     }
+    updateDialogueViewportConstraints();
   }
+}
+
+function getMirrorCaveChestState(){
+  const persistent=getPersistentObject("mirror_cave_chest");
+  if(persistent.opened || mirrorCave.chest.opened) return "open";
+  const stage=getHunterQuestStage();
+  if(stage===HunterQuestStage.STAGE_3_MIRROR_CAVE) return "closed";
+  return "sealed";
+}
+function syncMirrorCaveChestState(shouldSave=false){
+  const state=getMirrorCaveChestState();
+  mirrorCave.chest.opened=state==="open";
+  patchPersistentObject("mirror_cave_chest", {
+    state,
+    opened:state==="open"
+  }, shouldSave);
+  return state;
+}
+function getTollhouseChestState(){
+  const persistent=getPersistentObject("tollhouse_chest");
+  if(persistent.opened) return "open";
+  if(rookTollkeeperDefeated) return "closed";
+  return "locked";
+}
+function isTollhouseChestOpened(){
+  return getTollhouseChestState()==="open";
+}
+function evaluateAbandonedTollhouseCleared(){
+  return Boolean(rookTollkeeperDefeated && isTollhouseChestOpened());
+}
+function markAbandonedTollhouseDiscovered(shouldSave=false, showToast=false){
+  if(abandonedTollhouseDiscovered) return false;
+  abandonedTollhouseDiscovered=true;
+  patchPersistentObject("abandoned_tollhouse_state", { discovered:true, state:"discovered" }, false);
+  log("Discovered: Abandoned Tollhouse.");
+  if(showToast) showRewardToast("Abandoned Tollhouse discovered.");
+  if(shouldSave && typeof saveGame==="function") saveGame("object_state_change");
+  return true;
+}
+function syncAbandonedTollhouseClearedState(shouldSave=false, announce=false){
+  const cleared=evaluateAbandonedTollhouseCleared();
+  const wasCleared=abandonedTollhouseCleared;
+  abandonedTollhouseCleared=cleared;
+  patchPersistentObject("abandoned_tollhouse_state", {
+    discovered:abandonedTollhouseDiscovered,
+    cleared,
+    state:cleared ? "cleared" : (abandonedTollhouseDiscovered ? "discovered" : "active")
+  }, shouldSave);
+  if(announce && cleared && !wasCleared) log("Abandoned Tollhouse cleared.");
+  return cleared;
+}
+function syncTollhouseChestState(shouldSave=false){
+  const state=getTollhouseChestState();
+  patchPersistentObject("tollhouse_chest", {
+    state,
+    opened:state==="open"
+  }, shouldSave);
+  syncAbandonedTollhouseClearedState(false, false);
+  return state;
+}
+function grantTollhouseChestRewards(){
+  const rewardsGranted=[];
+  const rewardToasts=[];
+  if(getItemQuantity("old_toll_key")<=0){
+    addItemToInventory("old_toll_key", 1);
+    rewardsGranted.push("Old Toll Key x1");
+    rewardToasts.push("+ Old Toll Key");
+  }
+  if(getItemQuantity("travelers_charm")<=0 && player.equipment.trinket!=="travelers_charm"){
+    addItemToInventory("travelers_charm", 1);
+    rewardsGranted.push("Traveler's Charm x1");
+    rewardToasts.push("+ Traveler's Charm");
+  }
+  addItemToInventory("small_potion", 1);
+  rewardsGranted.push("Small Potion x1");
+  rewardToasts.push("+ Small Potion");
+  player.coins += 25;
+  rewardsGranted.push("25 coins");
+  rewardToasts.push("+25 Coins");
+  return { rewardsGranted, rewardToasts };
+}
+function openWorldInfoPanel(title,text){
+  worldInfoPanel={ title, text };
+  dialogue.style.display="block";
+  dialogueName.textContent=title;
+  dialogueText.textContent=text;
+  dialogueChoices.innerHTML="";
+  dialogueHint.textContent="Press Esc or E to close.";
+  dialogueActions.innerHTML="<button type=\"button\" class=\"dialogue-action\" data-world-info-close>Close</button>";
+  updateDialogueViewportConstraints();
+}
+function closeWorldInfoPanel(){
+  worldInfoPanel=null;
+  dialogueChoices.innerHTML="";
+  dialogueActions.innerHTML="";
+  dialogue.style.display="none";
 }
 
 class InteractionManager {
   constructor(range){ this.range=range; this.interactables=[]; }
   register(interactable){ this.interactables.push(interactable); }
-  isInRange(target){ return Math.abs(player.targetX-target.x()) + Math.abs(player.targetY-target.y()) <= this.range; }
+  getRangeForTarget(target){
+    const configuredRange=Number.isFinite(target?.range) ? Math.max(1, Math.floor(target.range)) : this.range;
+    return configuredRange;
+  }
+  resolvePromptLabel(target){
+    if(!target) return "";
+    if(typeof target.promptLabel==="function") return target.promptLabel() || "";
+    return target.promptLabel || "";
+  }
+  isInRange(target){
+    return Math.abs(player.targetX-target.x()) + Math.abs(player.targetY-target.y()) <= this.getRangeForTarget(target);
+  }
   getNearest(){
     let nearest=null;
     for(const target of this.interactables){
       const distance=Math.abs(player.targetX-target.x()) + Math.abs(player.targetY-target.y());
-      if(distance>this.range) continue;
+      if(distance>this.getRangeForTarget(target)) continue;
       if(!nearest || distance<nearest.distance) nearest={target,distance};
     }
     return nearest?.target || null;
   }
+  getPromptText(){
+    const target=this.getNearest();
+    if(!target) return "";
+    const promptLabel=this.resolvePromptLabel(target);
+    if(promptLabel) return "E : " + promptLabel;
+    return "";
+  }
   tryInteract(){
-    if(dialogueSystem.activeSession){ dialogueSystem.advance(); return true; }
+    if(worldInfoPanel){ closeWorldInfoPanel(); return true; }
+    if(dialogueSystem.activeSession){ dialogueSystem.close(); return true; }
+    if(isVendorOpen()){ closeVendorMenu(); return true; }
     const target=this.getNearest();
     if(!target) return false;
     target.onInteract?.();
@@ -1112,6 +3038,7 @@ class InteractionManager {
     return true;
   }
   interactAt(x,y){
+    if(worldInfoPanel){ closeWorldInfoPanel(); return true; }
     const target=this.interactables.find((candidate)=>candidate.x()===x && candidate.y()===y && this.isInRange(candidate));
     if(!target) return false;
     target.onInteract?.();
@@ -1127,13 +3054,275 @@ const questSystem=new QuestStateSystem(questData.quests||[], eventSystem);
 const dialogueSystem=new DialogueFramework(dialogueData, eventSystem);
 const interactionManager=new InteractionManager(2);
 
+function getHunterQuestStage(){
+  const quest=questSystem.getQuest("hunters_request");
+  if(!quest) return HunterQuestStage.NOT_STARTED;
+  if(quest.state===QuestState.COMPLETED) return HunterQuestStage.COMPLETED;
+  const progress=typeof quest.progress==="string" ? quest.progress : "";
+  if(Object.values(HunterQuestStage).includes(progress)) return progress;
+  return quest.state===QuestState.NOT_STARTED ? HunterQuestStage.NOT_STARTED : HunterQuestStage.STAGE_1_PROVE_YOURSELF;
+}
+function setHunterQuestStage(stage){
+  const quest=questSystem.getQuest("hunters_request");
+  if(!quest) return;
+  if(stage===HunterQuestStage.NOT_STARTED){
+    quest.state=QuestState.NOT_STARTED;
+    quest.status=quest.state;
+    quest.progress=HunterQuestStage.NOT_STARTED;
+  } else if(stage===HunterQuestStage.COMPLETED){
+    quest.state=QuestState.COMPLETED;
+    quest.status=quest.state;
+    quest.progress=HunterQuestStage.COMPLETED;
+  } else {
+    if(quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) quest.state=QuestState.ACTIVE;
+    if(quest.state===QuestState.READY_TO_TURN_IN) quest.state=QuestState.ACTIVE;
+    quest.status=quest.state;
+    quest.progress=stage;
+  }
+  eventSystem.emit("quest:state-changed",{questId:"hunters_request",state:quest.state,progress:quest.progress});
+}
+function isHunterStageOneReady(){
+  const wolvesObjective=questSystem.getObjective("hunters_request", "wolves");
+  return Boolean(wolvesObjective && wolvesObjective.currentAmount>=3 && getItemQuantity("wolf_pelt")>=3);
+}
+function updateHunterStageOneReadiness(){
+  const stage=getHunterQuestStage();
+  if(stage!==HunterQuestStage.STAGE_1_PROVE_YOURSELF) return;
+  if(!isHunterStageOneReady()) return;
+  setHunterQuestStage(HunterQuestStage.STAGE_2_RETURN_TO_HUNTER);
+  log("Objective Complete: Return to Hunter Garran with 3 Wolf Pelts.");
+}
+function getStillWaterQuestStage(){
+  const quest=questSystem.getQuest("the_still_water");
+  if(!quest) return StillWaterQuestStage.NOT_STARTED;
+  if(quest.state===QuestState.COMPLETED) return StillWaterQuestStage.COMPLETED;
+  const progress=typeof quest.progress==="string" ? quest.progress : "";
+  if(Object.values(StillWaterQuestStage).includes(progress)) return progress;
+  return quest.state===QuestState.NOT_STARTED ? StillWaterQuestStage.NOT_STARTED : StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN;
+}
+function setStillWaterQuestStage(stage){
+  const quest=questSystem.getQuest("the_still_water");
+  if(!quest) return;
+  if(stage===StillWaterQuestStage.NOT_STARTED){
+    quest.state=QuestState.NOT_STARTED;
+    quest.status=quest.state;
+    quest.progress=StillWaterQuestStage.NOT_STARTED;
+  } else if(stage===StillWaterQuestStage.COMPLETED){
+    quest.state=QuestState.COMPLETED;
+    quest.status=quest.state;
+    quest.progress=StillWaterQuestStage.COMPLETED;
+  } else {
+    if(quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) quest.state=QuestState.ACTIVE;
+    if(quest.state===QuestState.READY_TO_TURN_IN) quest.state=QuestState.ACTIVE;
+    quest.status=quest.state;
+    quest.progress=stage;
+  }
+  eventSystem.emit("quest:state-changed",{questId:"the_still_water",state:quest.state,progress:quest.progress});
+}
+function isStillWaterEchoFragmentCollected(){
+  const persistent=getPersistentObject("echo_fragment_object");
+  return Boolean(persistent.collected) || getItemQuantity("echo_fragment")>0;
+}
+function syncEchoFragmentState(shouldSave=false){
+  const collected=isStillWaterEchoFragmentCollected();
+  patchPersistentObject("echo_fragment_object", { state:collected ? "collected" : "inert", collected }, shouldSave);
+  return collected;
+}
+function getStillWaterObjectiveText(){
+  const quest=questSystem.getQuest("the_still_water");
+  const stage=getStillWaterQuestStage();
+  const fallbackText="The Still Water\nObjective: Return to Edrin Vale";
+  if(stage===StillWaterQuestStage.COMPLETED || quest?.state===QuestState.COMPLETED){
+    return getContextualObjectiveText();
+  }
+  if(stage===StillWaterQuestStage.NOT_STARTED || stage===StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN){
+    return "The Still Water\nObjective: Speak with Edrin Vale";
+  }
+  if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+    return "The Still Water\nObjective: Inspect Mirror Pond";
+  }
+  if(stage===StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN){
+    return "The Still Water\nObjective: Return to Edrin Vale";
+  }
+  if(stage===StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE){
+    return "The Still Water\nObjective: Enter Mirror Cave";
+  }
+  if(stage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+    return "The Still Water\nObjective: Recover the Echo Fragment";
+  }
+  if(stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
+    if(quest?.state===QuestState.READY_TO_TURN_IN){
+      return "The Still Water\nObjective: Speak with Edrin Vale";
+    }
+    return "The Still Water\nObjective: Return to Edrin Vale with the Echo Fragment";
+  }
+  if((quest?.state===QuestState.ACTIVE || quest?.state===QuestState.READY_TO_TURN_IN) && DEV_MODE){
+    console.warn("Unknown objective stage for The Still Water: " + String(stage));
+  }
+  return fallbackText;
+}
+function hasActiveGuidedQuest(){
+  const hunterQuest=questSystem.getQuest("hunters_request");
+  const stillWaterQuest=questSystem.getQuest("the_still_water");
+  const hunterActive=hunterQuest && hunterQuest.state!==QuestState.NOT_STARTED && hunterQuest.state!==QuestState.COMPLETED;
+  const stillWaterActive=stillWaterQuest && stillWaterQuest.state!==QuestState.NOT_STARTED && stillWaterQuest.state!==QuestState.COMPLETED;
+  return Boolean(hunterActive || stillWaterActive);
+}
+function hasCompletedVerticalSliceCoreQuests(){
+  const hunterQuest=questSystem.getQuest("hunters_request");
+  const stillWaterQuest=questSystem.getQuest("the_still_water");
+  return hunterQuest?.state===QuestState.COMPLETED && stillWaterQuest?.state===QuestState.COMPLETED;
+}
+function isVerticalSliceCleared(){
+  return hasCompletedVerticalSliceCoreQuests() && abandonedTollhouseCleared && isTollhouseChestOpened();
+}
+function maybeAnnounceVerticalSliceEndpoint(){
+  if(!isVerticalSliceCleared()) return;
+  const persistent=getPersistentObject("vertical_slice_endpoint");
+  if(persistent.announced) return;
+  patchPersistentObject("vertical_slice_endpoint", { state:"announced", announced:true }, false);
+  log("For now, Hearthvale is safer. But Mirror Pond has not gone still.");
+  showRewardToast("Vertical Slice Complete", 2200);
+  saveGame("vertical_slice_endpoint");
+}
+function getContextualObjectiveText(){
+  if(isVerticalSliceCleared()) return "For now, Hearthvale is safer. But Mirror Pond has not gone still.";
+  if(!abandonedTollhouseDiscovered) return "Explore Hearthvale and the surrounding roads.";
+  if(!rookTollkeeperDefeated) return "Defeat Rook the Tollkeeper in the Abandoned Tollhouse.";
+  if(!isTollhouseChestOpened()) return "Open the tollhouse chest.";
+  return "Explore Hearthvale and the surrounding roads.";
+}
+function handleNorthRoadArrivalAtmosphere(){
+  const persistent=getPersistentObject("north_road_intro");
+  if(!persistent.entered){
+    patchPersistentObject("north_road_intro", { entered:true, state:"entered" }, false);
+    log("Entered North Road.");
+    if(!hasActiveGuidedQuest()) log("The road continues north, but Hearthvale feels far behind.");
+    saveGame("object_state_change");
+    return;
+  }
+  if(!hasActiveGuidedQuest()) logThrottled("north_road_atmosphere", "The road continues north, but Hearthvale feels far behind.", 3000);
+}
+function migrateStillWaterStateFromSave(){
+  const quest=questSystem.getQuest("the_still_water");
+  if(!quest || quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) return;
+  const stage=getStillWaterQuestStage();
+  const hasFragment=isStillWaterEchoFragmentCollected();
+  if(!hasFragment) return;
+  if(stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN) return;
+  questSystem.completeObjective("the_still_water", "recover_echo_fragment");
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN);
+}
+
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
+eventSystem.registerZoneTrigger("North Road", "zone:entered:north_road");
 eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
+eventSystem.on("dialogue:started:hunter_garran", ()=>eventSystem.emit("npc:interacted:hunter_garran"));
+eventSystem.on("dialogue:started:merchant_rowan", ()=>eventSystem.emit("npc:interacted:merchant_rowan"));
+eventSystem.on("vendor:open", ()=>openVendorMenu());
 eventSystem.on("zone:entered:mirror_pond", ()=>{
   const quest=questSystem.getQuest("mirror_pond_listening");
   if(quest?.state!==QuestState.ACTIVE || quest.progress!=="go_to_pond") return;
   log("You hear strange whispers in the water.");
   questSystem.updateProgress("mirror_pond_listening", "heard_whispers");
+});
+eventSystem.on("zone:entered:north_road", ()=>handleNorthRoadArrivalAtmosphere());
+eventSystem.on("combat:enemy-defeated", ({enemyType})=>{
+  const stage=getHunterQuestStage();
+  if((stage!==HunterQuestStage.STAGE_1_PROVE_YOURSELF && stage!==HunterQuestStage.STAGE_2_RETURN_TO_HUNTER) || enemyType!=="wolf") return;
+  questSystem.incrementObjective("hunters_request", "wolves", 1);
+  updateHunterStageOneReadiness();
+});
+eventSystem.on("zone:entered:mirror_cave", ()=>{
+  if(getHunterQuestStage()!==HunterQuestStage.STAGE_3_MIRROR_CAVE) return;
+  if(questSystem.completeObjective("hunters_request", "enter_cave")) log("Objective Complete: Entered Mirror Cave");
+});
+eventSystem.on("zone:entered:mirror_cave", ()=>{
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE) return;
+  questSystem.completeObjective("the_still_water", "enter_cave");
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT);
+  log("Objective Updated: Recover the Echo Fragment from Mirror Cave.");
+});
+eventSystem.on("object:opened:mirror_cave_chest", ()=>{
+  if(getHunterQuestStage()!==HunterQuestStage.STAGE_3_MIRROR_CAVE) return;
+  if(questSystem.completeObjective("hunters_request", "open_chest")) log("Objective Complete: Recovered the relic from Mirror Cave");
+  setHunterQuestStage(HunterQuestStage.STAGE_4_RETURN_WITH_RELIC);
+});
+eventSystem.on("quest:activate:hunters_request", ()=>{
+  const quest=questSystem.getQuest("hunters_request");
+  if(!quest || quest.state===QuestState.COMPLETED) return;
+  setHunterQuestStage(HunterQuestStage.STAGE_1_PROVE_YOURSELF);
+  questSystem.refreshAllItemProgress();
+  updateHunterStageOneReadiness();
+});
+eventSystem.on("quest:activate:the_still_water", ()=>{
+  const quest=questSystem.getQuest("the_still_water");
+  if(!quest || quest.state===QuestState.COMPLETED) return;
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND);
+  log("Edrin Vale sent you to inspect Mirror Pond.");
+});
+eventSystem.on("quest:still_water:report_pond", ()=>{
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN) return;
+  if(getHunterQuestStage()===HunterQuestStage.COMPLETED || mirrorCave.chest.opened){
+    log("Edrin: You already walked the cave once. Go again — now with eyes open.");
+  }
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE);
+});
+eventSystem.on("object:collected:echo_fragment", ()=>{
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT) return;
+  questSystem.completeObjective("the_still_water", "recover_echo_fragment");
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN);
+  log("Objective Updated: Return to Edrin Vale with the Echo Fragment.");
+});
+eventSystem.on("quest:still_water:final_turn_in", ()=>{
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
+    log("Return after recovering the Echo Fragment.");
+    return;
+  }
+  if(getItemQuantity("echo_fragment")<1 && !isStillWaterEchoFragmentCollected()){
+    log("You need the Echo Fragment first.");
+    return;
+  }
+  removeItemFromInventory("echo_fragment", 1);
+  questSystem.completeObjective("the_still_water", "return_edrin");
+  questSystem.completeQuest("the_still_water");
+});
+eventSystem.on("quest:hunter:turn_in_pelts", ()=>{
+  if(getHunterQuestStage()!==HunterQuestStage.STAGE_2_RETURN_TO_HUNTER) return;
+  if(getItemQuantity("wolf_pelt")<3){
+    log("Bring me 3 Wolf Pelts first.");
+    return;
+  }
+  removeItemFromInventory("wolf_pelt", 3);
+  if(mirrorCaveChestDiscovered) log("You found the old chest, then. Good. Now you know why I needed proof first.");
+  questSystem.completeObjective("hunters_request", "pelts");
+  setHunterQuestStage(HunterQuestStage.STAGE_3_MIRROR_CAVE);
+  log("Hunter Garran sent you to Mirror Cave to recover the Mirror Relic.");
+});
+eventSystem.on("quest:hunter:final_turn_in", ()=>{
+  if(getHunterQuestStage()!==HunterQuestStage.STAGE_4_RETURN_WITH_RELIC){
+    log("Recover the Mirror Relic from Mirror Cave first.");
+    return;
+  }
+  if(getItemQuantity("mirror_relic")<1){
+    log("You need the Mirror Relic before this can be completed.");
+    return;
+  }
+  removeItemFromInventory("mirror_relic", 1);
+  if(!hunterQuestRewardClaimed){
+    if(getItemQuantity("iron_sword")<=0){
+      addItemToInventory("iron_sword", 1);
+      log("You obtained Iron Sword.");
+    }
+    player.coins += 24;
+    grantPlayerXp(65);
+    addItemToInventory("small_potion", 2);
+    log("Rewards: +65 XP, +24 Coins, Small Potion x2.");
+    showRewardToasts(["Hunter's Request Complete", "+65 XP", "+24 Coins", "+ Iron Sword", "+ Small Potion x2"]);
+    hunterQuestRewardClaimed=true;
+  }
+  questSystem.completeObjective("hunters_request", "return_hunter");
+  questSystem.completeQuest("hunters_request");
 });
 eventSystem.on("quest:report:mirror_pond", ()=>{
   const quest=questSystem.getQuest("mirror_pond_listening");
@@ -1141,6 +3330,9 @@ eventSystem.on("quest:report:mirror_pond", ()=>{
   questSystem.completeQuest("mirror_pond_listening");
 });
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
+eventSystem.on("quest:completed:the_still_water", ()=>syncEchoFragmentState(false));
+eventSystem.on("quest:completed:hunters_request", ()=>maybeAnnounceVerticalSliceEndpoint());
+eventSystem.on("quest:completed:the_still_water", ()=>maybeAnnounceVerticalSliceEndpoint());
 let worldEvents={ pondAwakened:false };
 const worldTriggeredEvents=new Set();
 eventSystem.on("world:pond:awakened", ()=>{
@@ -1151,6 +3343,11 @@ eventSystem.on("world:pond:awakened", ()=>{
 });
 
 const SAVE_KEY="wayfarer.save.v1";
+const SAVE_BACKUP_KEY="wayfarer.save.v1.backup";
+const SAVE_SCHEMA_VERSION=2;
+const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10,11,12,13]);
+const DEFAULT_DEV_MODE=false;
+let DEV_MODE=DEFAULT_DEV_MODE;
 let saveNoticeTimeout=0;
 function showSaveNotice(message){
   saveNotice.textContent=message;
@@ -1159,16 +3356,269 @@ function showSaveNotice(message){
   saveNoticeTimeout=setTimeout(()=>saveNotice.classList.remove("visible"), 1400);
 }
 function isFiniteNumber(value){ return typeof value==="number" && Number.isFinite(value); }
+function cloneValue(value){
+  return JSON.parse(JSON.stringify(value));
+}
+function createDefaultSave(reason="default"){
+  const questStates=(questData.quests||[]).map((definition)=>({
+    id:definition.id,
+    state:QuestState.NOT_STARTED,
+    status:QuestState.NOT_STARTED,
+    progress:definition.initialProgress || "",
+    objectives:questSystem.normalizeObjectives(definition.objectives||[]).map((objective)=>({
+      id:objective.id,
+      currentAmount:0,
+      completed:false
+    }))
+  }));
+  return {
+    version:13,
+    saveSchemaVersion:SAVE_SCHEMA_VERSION,
+    reason,
+    savedAt:new Date().toISOString(),
+    player:{
+      zoneId:"hearthvale_square",
+      position:{ x:18, y:11 },
+      level:1,
+      hp:BALANCE.player.startingMaxHp,
+      maxHp:BALANCE.player.startingMaxHp,
+      xp:0,
+      baseAttackBonus:0,
+      baseDefenseBonus:0,
+      coins:0,
+      skills:createDefaultSkills(),
+      inventory:[{ itemId:"rusty_sword", quantity:1 }],
+      equipment:{ ...DEFAULT_EQUIPMENT }
+    },
+    quests:{
+      questStates,
+      completedQuests:[],
+      activeQuests:[]
+    },
+    world:{
+      triggeredEvents:[],
+      stateChanges:{ pondAwakened:false },
+      persistentObjects:normalizePersistentObjects({}),
+      mirrorCave:{ chestDiscovered:false, chestOpened:false, cleared:false },
+      tollhouse:{
+        abandonedTollhouseDiscovered:false,
+        rookTollkeeperDefeated:false,
+        chestState:"closed",
+        abandonedTollhouseCleared:false
+      },
+      hunterQuest:{
+        hunterQuestStage:HunterQuestStage.NOT_STARTED,
+        hunterQuestRewardClaimed:false
+      },
+      creatures:{
+        wolves:[],
+        bandits:[],
+        tollhouseBandits:[],
+        rookTollkeeper:{ hp:getEnemyConfig("rook_tollkeeper").hp, defeated:false },
+        mirrorCaveWolves:[]
+      }
+    },
+    systems:{
+      currentObjective:getContextualObjectiveText(),
+      discoveredLocations:["hearthvale_square"],
+      devMode:DEFAULT_DEV_MODE
+    }
+  };
+}
+function migrateSave(rawSave){
+  const base=createDefaultSave("migration");
+  const incoming=(rawSave && typeof rawSave==="object") ? rawSave : {};
+  const migrated=cloneValue(base);
+  migrated.version=SUPPORTED_SAVE_VERSIONS.has(incoming.version) ? incoming.version : base.version;
+  const incomingSchema=Number.isInteger(incoming.saveSchemaVersion) ? incoming.saveSchemaVersion : 1;
+  migrated.saveSchemaVersion=Math.max(1, Math.min(SAVE_SCHEMA_VERSION, incomingSchema));
+  migrated.savedAt=typeof incoming.savedAt==="string" ? incoming.savedAt : base.savedAt;
+  migrated.reason=typeof incoming.reason==="string" ? incoming.reason : base.reason;
+  const rawPlayer=incoming.player && typeof incoming.player==="object" ? incoming.player : {};
+  migrated.player.position={
+    x:Number.isInteger(rawPlayer.position?.x) ? rawPlayer.position.x : base.player.position.x,
+    y:Number.isInteger(rawPlayer.position?.y) ? rawPlayer.position.y : base.player.position.y
+  };
+  migrated.player.zoneId=typeof rawPlayer.zoneId==="string" ? rawPlayer.zoneId : base.player.zoneId;
+  migrated.player.xp=Math.max(0, Math.floor(Number.isFinite(rawPlayer.xp) ? rawPlayer.xp : base.player.xp));
+  const xpResolvedLevel=getLevelFromXp(migrated.player.xp);
+  const savedLevel=Math.max(1, Math.floor(Number.isFinite(rawPlayer.level) ? rawPlayer.level : xpResolvedLevel));
+  migrated.player.level=Math.max(xpResolvedLevel, Math.min(MAX_DEFINED_LEVEL, savedLevel));
+  const levelProfile=getLevelProfile(migrated.player.level);
+  migrated.player.maxHp=Math.max(levelProfile.maxHp, Math.floor(Number.isFinite(rawPlayer.maxHp) ? rawPlayer.maxHp : levelProfile.maxHp));
+  migrated.player.baseAttackBonus=Math.max(levelProfile.baseAttackBonus, Math.floor(Number.isFinite(rawPlayer.baseAttackBonus) ? rawPlayer.baseAttackBonus : levelProfile.baseAttackBonus));
+  migrated.player.baseDefenseBonus=Math.max(levelProfile.baseDefenseBonus, Math.floor(Number.isFinite(rawPlayer.baseDefenseBonus) ? rawPlayer.baseDefenseBonus : levelProfile.baseDefenseBonus));
+  migrated.player.hp=Math.max(0, Math.min(migrated.player.maxHp, Math.floor(Number.isFinite(rawPlayer.hp) ? rawPlayer.hp : migrated.player.maxHp)));
+  migrated.player.coins=Math.max(0, Math.floor(Number.isFinite(rawPlayer.coins) ? rawPlayer.coins : base.player.coins));
+  migrated.player.skills=normalizeSkills(rawPlayer.skills);
+  migrated.player.inventory=normalizeInventory(rawPlayer.inventory);
+  if(rawPlayer.equipment && typeof rawPlayer.equipment==="object"){
+    migrated.player.equipment={
+      weapon:typeof rawPlayer.equipment.weapon==="string" ? rawPlayer.equipment.weapon : DEFAULT_EQUIPMENT.weapon,
+      armor:typeof rawPlayer.equipment.armor==="string" ? rawPlayer.equipment.armor : DEFAULT_EQUIPMENT.armor,
+      trinket:typeof rawPlayer.equipment.trinket==="string" ? rawPlayer.equipment.trinket : DEFAULT_EQUIPMENT.trinket
+    };
+  } else if(rawPlayer.weapon && typeof rawPlayer.weapon==="object"){
+    migrated.player.equipment={ ...DEFAULT_EQUIPMENT };
+  }
+  const rawQuests=incoming.quests && typeof incoming.quests==="object" ? incoming.quests : {};
+  migrated.quests.questStates=Array.isArray(rawQuests.questStates) ? rawQuests.questStates : base.quests.questStates;
+  migrated.quests.completedQuests=Array.isArray(rawQuests.completedQuests) ? rawQuests.completedQuests : [];
+  migrated.quests.activeQuests=Array.isArray(rawQuests.activeQuests) ? rawQuests.activeQuests : [];
+  const rawWorld=incoming.world && typeof incoming.world==="object" ? incoming.world : {};
+  migrated.world.triggeredEvents=Array.isArray(rawWorld.triggeredEvents) ? rawWorld.triggeredEvents.filter((name)=>typeof name==="string") : [];
+  migrated.world.stateChanges.pondAwakened=Boolean(rawWorld.stateChanges?.pondAwakened);
+  migrated.world.persistentObjects=normalizePersistentObjects(rawWorld.persistentObjects);
+  migrated.world.mirrorCave.chestDiscovered=Boolean(rawWorld.mirrorCave?.chestDiscovered || migrated.world.persistentObjects?.mirror_cave_chest?.discovered);
+  migrated.world.mirrorCave.chestOpened=Boolean(rawWorld.mirrorCave?.chestOpened || migrated.world.persistentObjects?.mirror_cave_chest?.opened);
+  migrated.world.mirrorCave.cleared=Boolean(rawWorld.mirrorCave?.cleared);
+  const rookDefeated=Boolean(rawWorld.tollhouse?.rookTollkeeperDefeated || migrated.world.persistentObjects?.rook_tollkeeper_state?.defeated);
+  const tollhouseChestOpened=Boolean(rawWorld.tollhouse?.chestState==="open" || migrated.world.persistentObjects?.tollhouse_chest?.opened);
+  migrated.world.tollhouse.abandonedTollhouseDiscovered=Boolean(
+    rawWorld.tollhouse?.abandonedTollhouseDiscovered ||
+    migrated.world.persistentObjects?.abandoned_tollhouse_state?.discovered ||
+    migrated.player.zoneId==="abandoned_tollhouse" ||
+    rookDefeated ||
+    tollhouseChestOpened
+  );
+  migrated.world.tollhouse.rookTollkeeperDefeated=rookDefeated;
+  migrated.world.tollhouse.chestState=tollhouseChestOpened ? "open" : (rookDefeated ? "closed" : "sealed");
+  migrated.world.tollhouse.abandonedTollhouseCleared=Boolean(
+    rawWorld.tollhouse?.abandonedTollhouseCleared ||
+    migrated.world.persistentObjects?.abandoned_tollhouse_state?.cleared ||
+    (rookDefeated && tollhouseChestOpened)
+  );
+  migrated.world.hunterQuest.hunterQuestStage=typeof rawWorld.hunterQuest?.hunterQuestStage==="string" ? rawWorld.hunterQuest.hunterQuestStage : HunterQuestStage.NOT_STARTED;
+  migrated.world.hunterQuest.hunterQuestRewardClaimed=Boolean(rawWorld.hunterQuest?.hunterQuestRewardClaimed);
+  migrated.world.creatures.wolves=Array.isArray(rawWorld.creatures?.wolves) ? rawWorld.creatures.wolves : [];
+  migrated.world.creatures.bandits=Array.isArray(rawWorld.creatures?.bandits) ? rawWorld.creatures.bandits : [];
+  migrated.world.creatures.tollhouseBandits=Array.isArray(rawWorld.creatures?.tollhouseBandits) ? rawWorld.creatures.tollhouseBandits : [];
+  migrated.world.creatures.mirrorCaveWolves=Array.isArray(rawWorld.creatures?.mirrorCaveWolves) ? rawWorld.creatures.mirrorCaveWolves : [];
+  migrated.world.creatures.rookTollkeeper={
+    hp:Number.isFinite(rawWorld.creatures?.rookTollkeeper?.hp) ? rawWorld.creatures.rookTollkeeper.hp : base.world.creatures.rookTollkeeper.hp,
+    defeated:Boolean(rawWorld.creatures?.rookTollkeeper?.defeated || rookDefeated)
+  };
+  const rawSystems=incoming.systems && typeof incoming.systems==="object" ? incoming.systems : {};
+  migrated.systems.currentObjective=typeof rawSystems.currentObjective==="string" ? rawSystems.currentObjective : base.systems.currentObjective;
+  migrated.systems.discoveredLocations=Array.isArray(rawSystems.discoveredLocations) ? rawSystems.discoveredLocations : [migrated.player.zoneId];
+  migrated.systems.devMode=Boolean(rawSystems.devMode);
+  migrated.saveSchemaVersion=SAVE_SCHEMA_VERSION;
+  return migrated;
+}
+function repairSave(save){
+  const repaired=cloneValue(save);
+  let changed=false;
+  const warnings=[];
+  const zoneId=typeof repaired.player?.zoneId==="string" ? repaired.player.zoneId : "hearthvale_square";
+  const isMirror=zoneId==="mirror_cave";
+  const isTollhouse=zoneId==="abandoned_tollhouse";
+  const maxX=(isMirror ? mirrorCave.width : (isTollhouse ? abandonedTollhouse.width : WORLD_W)) - 1;
+  const maxY=(isMirror ? mirrorCave.height : (isTollhouse ? abandonedTollhouse.height : WORLD_H)) - 1;
+  const clampedX=Math.max(0, Math.min(maxX, Math.floor(Number.isFinite(repaired.player.position?.x) ? repaired.player.position.x : 18)));
+  const clampedY=Math.max(0, Math.min(maxY, Math.floor(Number.isFinite(repaired.player.position?.y) ? repaired.player.position.y : 11)));
+  if(clampedX!==repaired.player.position.x || clampedY!==repaired.player.position.y){
+    repaired.player.position={ x:clampedX, y:clampedY };
+    changed=true;
+    warnings.push("Player position was out of bounds and has been clamped.");
+  }
+  const xpResolvedLevel=getLevelFromXp(repaired.player.xp);
+  const safeLevel=Math.max(xpResolvedLevel, Math.min(MAX_DEFINED_LEVEL, Math.floor(Number.isFinite(repaired.player.level) ? repaired.player.level : xpResolvedLevel)));
+  if(safeLevel!==repaired.player.level){
+    repaired.player.level=safeLevel;
+    changed=true;
+    warnings.push("Player level did not match XP and was repaired.");
+  }
+  repaired.player.maxHp=Math.max(1, Math.floor(Number.isFinite(repaired.player.maxHp) ? repaired.player.maxHp : BALANCE.player.startingMaxHp));
+  const clampedHp=Math.max(0, Math.min(repaired.player.maxHp, Math.floor(Number.isFinite(repaired.player.hp) ? repaired.player.hp : repaired.player.maxHp)));
+  if(clampedHp!==repaired.player.hp){
+    repaired.player.hp=clampedHp;
+    changed=true;
+    warnings.push("Player HP was out of bounds and has been clamped.");
+  }
+  repaired.player.inventory=normalizeInventory(repaired.player.inventory);
+  repaired.player.equipment={
+    weapon:typeof repaired.player.equipment?.weapon==="string" ? repaired.player.equipment.weapon : "rusty_sword",
+    armor:typeof repaired.player.equipment?.armor==="string" ? repaired.player.equipment.armor : null,
+    trinket:typeof repaired.player.equipment?.trinket==="string" ? repaired.player.equipment.trinket : null
+  };
+  ["weapon","armor","trinket"].forEach((slotName)=>{
+    const itemId=repaired.player.equipment[slotName];
+    if(!itemId) return;
+    const definition=getItemDefinition(itemId);
+    if(!definition){
+      repaired.player.equipment[slotName]=slotName==="weapon" ? "rusty_sword" : null;
+      changed=true;
+      warnings.push("Invalid equipped " + slotName + " was repaired.");
+      return;
+    }
+    if(!repaired.player.inventory.some((entry)=>entry.itemId===itemId)){
+      repaired.player.inventory.push({ itemId, quantity:1 });
+      changed=true;
+      warnings.push("Missing equipped " + slotName + " was restored to inventory.");
+    }
+  });
+  repaired.world.persistentObjects=normalizePersistentObjects(repaired.world?.persistentObjects);
+  if(repaired.world?.tollhouse?.rookTollkeeperDefeated && repaired.world?.tollhouse?.chestState!=="open" && repaired.world?.tollhouse?.abandonedTollhouseCleared){
+    repaired.world.tollhouse.chestState="closed";
+    changed=true;
+  }
+  if(Array.isArray(repaired.quests?.questStates)){
+    repaired.quests.questStates=repaired.quests.questStates.map((questEntry)=>{
+      if(questEntry?.state!==QuestState.COMPLETED || !Array.isArray(questEntry.objectives)) return questEntry;
+      return {
+        ...questEntry,
+        objectives:questEntry.objectives.map((objective)=>({
+          ...objective,
+          completed:true
+        }))
+      };
+    });
+  }
+  return { save:repaired, changed, warnings };
+}
 function createSaveData(reason){
+  updateOutdoorRegionFromPosition(false);
+  syncMirrorCaveChestState(false);
+  syncTollhouseChestState(false);
+  syncAbandonedTollhouseClearedState(false, false);
+  syncEchoFragmentState(false);
+  const wolvesSave=wolves.slice(0, WOLF_SPAWNS.length).map((wolf)=>({
+    id:wolf.id,
+    hp:wolf.hp,
+    defeated:wolf.defeated,
+    respawnRemainingMs:Math.max(0, wolfRespawnAtById[wolf.id] ? wolfRespawnAtById[wolf.id]-performance.now() : 0)
+  }));
+  const banditsSave=bandits.slice(0, BANDIT_SPAWNS.length).map((bandit)=>({
+    id:bandit.id,
+    hp:bandit.hp,
+    defeated:bandit.defeated,
+    respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
+  }));
+  const tollhouseBanditsSave=tollhouseBandits.map((bandit)=>({
+    id:bandit.id,
+    hp:bandit.hp,
+    defeated:bandit.defeated,
+    respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
+  }));
   return {
     version:5,
     reason,
     savedAt:new Date().toISOString(),
     player:{
+      zoneId:currentZoneId,
       position:{ x:player.targetX, y:player.targetY },
+      level:player.level,
       hp:player.hp,
+      maxHp:player.maxHp,
       xp:player.xp,
+      baseAttackBonus:player.baseAttackBonus,
+      baseDefenseBonus:player.baseDefenseBonus,
       coins:player.coins,
+      skills:{
+        swordsmanship:{ ...player.skills.swordsmanship },
+        defense:{ ...player.skills.defense },
+        survival:{ ...player.skills.survival }
+      },
       inventory:player.inventory.map((entry)=>({ itemId:entry.itemId, quantity:entry.quantity })),
       equipment:{ ...player.equipment }
     },
@@ -1180,6 +3630,22 @@ function createSaveData(reason){
     world:{
       triggeredEvents:Array.from(worldTriggeredEvents),
       stateChanges:{ pondAwakened:worldEvents.pondAwakened },
+      persistentObjects:normalizePersistentObjects(persistentObjects),
+      mirrorCave:{
+        chestDiscovered:mirrorCaveChestDiscovered,
+        chestOpened:mirrorCave.chest.opened,
+        cleared:mirrorCave.cleared
+      },
+      tollhouse:{
+        abandonedTollhouseDiscovered:abandonedTollhouseDiscovered,
+        rookTollkeeperDefeated:rookTollkeeperDefeated,
+        chestState:getTollhouseChestState(),
+        abandonedTollhouseCleared:abandonedTollhouseCleared
+      },
+      hunterQuest:{
+        hunterQuestStage:getHunterQuestStage(),
+        hunterQuestRewardClaimed:hunterQuestRewardClaimed
+      },
       creatures:{
         wolves:wolves.map((wolf)=>({
           id:wolf.id,
@@ -1190,6 +3656,11 @@ function createSaveData(reason){
           respawnRemainingMs:Math.max(0, wolf.respawnAt ? wolf.respawnAt-performance.now() : 0)
         }))
       }
+    },
+    systems:{
+      currentObjective:getContextualObjectiveText(),
+      discoveredLocations:[currentZoneId],
+      devMode:DEV_MODE
     }
   };
 }
@@ -1203,6 +3674,8 @@ function validateSaveData(data){
 function saveGame(reason){
   try {
     const payload=createSaveData(reason);
+    const existingRaw=localStorage.getItem(SAVE_KEY);
+    if(existingRaw) localStorage.setItem(SAVE_BACKUP_KEY, existingRaw);
     localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
     showSaveNotice("Game Saved");
   } catch(err){
@@ -1214,15 +3687,52 @@ function loadGame(){
   const raw=localStorage.getItem(SAVE_KEY);
   if(!raw) return false;
   try {
-    const data=JSON.parse(raw);
+    let parsed;
+    try {
+      parsed=JSON.parse(raw);
+    } catch(parseError){
+      localStorage.setItem(SAVE_BACKUP_KEY, raw);
+      throw parseError;
+    }
+    const migrated=migrateSave(parsed);
+    const repaired=repairSave(migrated);
+    const data=repaired.save;
     if(!validateSaveData(data)) throw new Error("Invalid save payload");
-    player.targetX=Math.max(0,Math.min(WORLD_W-1,data.player.position.x));
-    player.targetY=Math.max(0,Math.min(WORLD_H-1,data.player.position.y));
-    player.px=player.targetX*TILE;
-    player.py=player.targetY*TILE;
-    player.hp=Math.max(0,Math.min(player.maxHp,data.player.hp));
-    player.xp=Math.max(0,data.player.xp);
-    player.coins=Math.max(0,data.player.coins);
+    if(repaired.changed){
+      repaired.warnings.forEach((message)=>console.warn("[Save Repair] " + message));
+    }
+    if(parsed.saveSchemaVersion!==SAVE_SCHEMA_VERSION || repaired.changed){
+      localStorage.setItem(SAVE_BACKUP_KEY, raw);
+      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+      log("System: Save migrated to schema v" + String(SAVE_SCHEMA_VERSION) + ".");
+    }
+    const saveSchemaVersion=Number.isInteger(parsed.saveSchemaVersion) ? parsed.saveSchemaVersion : 0;
+    if(saveSchemaVersion>SAVE_SCHEMA_VERSION) log("System: Save schema is newer than this build. Attempting safe load.");
+    const savedZoneId=typeof data.player.zoneId==="string" ? data.player.zoneId : getOutdoorRegionIdAt(data.player.position.x, data.player.position.y);
+    isInMirrorCave=savedZoneId==="mirror_cave";
+    isInAbandonedTollhouse=savedZoneId==="abandoned_tollhouse";
+    const mapW=isInMirrorCave ? mirrorCave.width : (isInAbandonedTollhouse ? abandonedTollhouse.width : WORLD_W);
+    const mapH=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
+    const loadedX=Math.max(0,Math.min(mapW-1,data.player.position.x));
+    const loadedY=Math.max(0,Math.min(mapH-1,data.player.position.y));
+    setPlayerTilePosition(loadedX, loadedY);
+    zoneTransitionLockedUntil=0;
+    blockedDirectionalKeysUntilRelease.clear();
+    currentZoneId=isInMirrorCave ? "mirror_cave" : (isInAbandonedTollhouse ? "abandoned_tollhouse" : getOutdoorRegionIdAt(loadedX, loadedY));
+    lastLoggedZoneEntryId=currentZoneId;
+    player.xp=Math.max(0,Math.floor(Number.isFinite(data.player.xp) ? data.player.xp : 0));
+    const xpResolvedLevel=getLevelFromXp(player.xp);
+    const hasSavedLevel=Number.isFinite(data.player.level);
+    const savedLevel=hasSavedLevel ? Math.max(1,Math.floor(data.player.level)) : xpResolvedLevel;
+    const targetLevel=Math.max(xpResolvedLevel, Math.min(MAX_DEFINED_LEVEL, savedLevel));
+    const targetProfile=getLevelProfile(targetLevel);
+    player.level=targetLevel;
+    player.maxHp=Math.max(targetProfile.maxHp, Math.floor(Number.isFinite(data.player.maxHp) ? data.player.maxHp : targetProfile.maxHp));
+    player.baseAttackBonus=Math.max(targetProfile.baseAttackBonus, Math.floor(Number.isFinite(data.player.baseAttackBonus) ? data.player.baseAttackBonus : targetProfile.baseAttackBonus));
+    player.baseDefenseBonus=Math.max(targetProfile.baseDefenseBonus, Math.floor(Number.isFinite(data.player.baseDefenseBonus) ? data.player.baseDefenseBonus : targetProfile.baseDefenseBonus));
+    player.hp=Math.max(0,Math.min(player.maxHp,Math.floor(Number.isFinite(data.player.hp) ? data.player.hp : player.maxHp)));
+    player.coins=Math.max(0,Math.floor(Number.isFinite(data.player.coins) ? data.player.coins : 0));
+    player.skills=normalizeSkills(data.player.skills);
     player.inventory=normalizeInventory(data.player.inventory);
     if(data.player.equipment && typeof data.player.equipment==="object"){
       player.equipment={
@@ -1240,6 +3750,13 @@ function loadGame(){
     ensureStarterEquipment();
     questSystem.applyState(data.quests?.questStates||[]);
     worldTriggeredEvents.clear();
+    Object.keys(persistentObjects).forEach((objectId)=>{ delete persistentObjects[objectId]; });
+    if(data.world?.persistentObjects && typeof data.world.persistentObjects==="object"){
+      Object.entries(data.world.persistentObjects).forEach(([objectId, objectState])=>{
+        if(!objectState || typeof objectState!=="object") return;
+        persistentObjects[objectId]={ ...objectState };
+      });
+    }
     (data.world?.triggeredEvents||[]).forEach((eventName)=>{ if(typeof eventName==="string") worldTriggeredEvents.add(eventName); });
     worldEvents.pondAwakened=Boolean(data.world?.stateChanges?.pondAwakened);
     wolves.splice(0,wolves.length,...WOLF_SPAWNS.map((spawn)=>createWolfFromSpawn(spawn)));
@@ -1270,37 +3787,557 @@ function loadGame(){
         wolf.respawnAt=wolf.defeated ? performance.now()+remaining : 0;
       }
     }
+    syncMirrorCaveChestState(false);
+    syncTollhouseChestState(false);
+    syncAbandonedTollhouseClearedState(false, false);
+    if(echoFragmentState.collected && getItemQuantity("echo_fragment")<=0) addItemToInventory("echo_fragment", 1);
+    syncEchoFragmentState(false);
+    migrateStillWaterStateFromSave();
     log("System: Save loaded.");
     return true;
   } catch(err){
     console.error("Load failed", err);
-    localStorage.removeItem(SAVE_KEY);
-    log("System: Save data was corrupted and has been reset.");
+    const rawSnapshot=localStorage.getItem(SAVE_KEY);
+    if(rawSnapshot) localStorage.setItem(SAVE_BACKUP_KEY, rawSnapshot);
+    log("System: Save load failed. Existing save was preserved in backup.");
     return false;
   }
 }
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>saveGame("quest_complete"));
+eventSystem.on("quest:completed:hunters_request", ()=>saveGame("quest_complete"));
+eventSystem.on("quest:completed:the_still_water", ()=>saveGame("quest_complete"));
+eventSystem.on("quest:state-changed", ()=>saveGame("quest_state_change"));
 
 interactionManager.register({
   id:"npc_edrin", type:"npc", x:()=>npc.x, y:()=>npc.y,
+  promptLabel:"Talk to Edrin Vale",
   onInteract:()=>dialogueSystem.start("edrin")
 });
 interactionManager.register({
-  id:"obj_well", type:"object", x:()=>18, y:()=>11,
-  onInteract:()=>{ log("The well water is cold and perfectly still."); eventSystem.emit("object:used:well",{}); }
+  id:"npc_hunter_garran", type:"npc", x:()=>hunterNpc.x, y:()=>hunterNpc.y,
+  promptLabel:"Talk to Hunter Garran",
+  onInteract:()=>dialogueSystem.start("hunter_garran")
 });
 interactionManager.register({
-  id:"obj_sign_pond", type:"object", x:()=>25, y:()=>11,
-  onInteract:()=>{ log("Signpost: Mirror Pond — Keep silence near the water."); eventSystem.emit("object:used:pond_sign",{}); }
+  id:"npc_merchant_rowan", type:"npc", x:()=>vendorNpc.x, y:()=>vendorNpc.y,
+  promptLabel:"Talk to Merchant Rowan",
+  onInteract:()=>dialogueSystem.start("merchant_rowan")
 });
+registerWorldObject({
+  objectId:"town_well",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  promptLabel:"Inspect well",
+  onInteract:()=>{ log("The well water is cold and perfectly still."); eventSystem.emit("object:used:well",{}); }
+});
+registerWorldObject({
+  objectId:"north_road_notice",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:HEARTHVALE_LANDMARKS.noticeSignNode.x, y:HEARTHVALE_LANDMARKS.noticeSignNode.y,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Read sign",
+  onInteract:()=>{
+    patchPersistentObject("north_road_notice", { state:"read", read:true });
+    openWorldInfoPanel("Signpost", "East Road — Eastern Woods");
+  }
+});
+registerWorldObject({
+  objectId:"north_road_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:16, y:4,
+  state:"unread",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Read sign",
+  onInteract:()=>{
+    patchPersistentObject("north_road_sign", { state:"read", read:true });
+    openWorldInfoPanel("Signpost", "North Road — Old stones, older paths.");
+  }
+});
+registerWorldObject({
+  objectId:"north_road_crate",
+  type:WORLD_OBJECT_TYPE.CHEST,
+  zone:"overworld",
+  region:"north_road",
+  x:22, y:1,
+  state:"closed",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:()=>{
+    const persistent=getPersistentObject("north_road_crate");
+    return persistent.opened ? "Inspect crate" : "Open roadside crate";
+  },
+  onInteract:()=>{
+    const persistent=getPersistentObject("north_road_crate");
+    if(persistent.opened){
+      log("The roadside crate hangs open and empty.");
+      return;
+    }
+    patchPersistentObject("north_road_crate", { state:"open", opened:true }, false);
+    addItemToInventory("small_potion", 1);
+    log("You found a Small Potion in the roadside crate.");
+    saveGame("object_state_change");
+  }
+});
+registerWorldObject({
+  objectId:"mirror_pond_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:HEARTHVALE_LANDMARKS.noticeSignNode.x, y:HEARTHVALE_LANDMARKS.noticeSignNode.y,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Read sign",
+  onInteract:()=>{
+    patchPersistentObject("mirror_pond_sign", { state:"read", read:true });
+    openWorldInfoPanel("Signpost", "Mirror Pond — Still water, old stories.");
+  }
+});
+registerWorldObject({
+  objectId:"mirror_pond",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:HEARTHVALE_LANDMARKS.mirrorPond.x, y:HEARTHVALE_LANDMARKS.mirrorPond.y,
+  state:"still",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:()=>{
+    const stage=getStillWaterQuestStage();
+    return stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND ? "Inspect Mirror Pond" : "Inspect still water";
+  },
+  onInteract:()=>{
+    const stage=getStillWaterQuestStage();
+    if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+      log("For a moment, your reflection moves half a breath late.");
+      log("Mirror Pond stirs beneath your reflection.");
+      patchPersistentObject("mirror_pond", { inspected:true, state:"inspected" }, false);
+      questSystem.completeObjective("the_still_water", "inspect_pond");
+      setStillWaterQuestStage(StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN);
+      eventSystem.emit("object:used:mirror_pond",{ stage });
+      saveGame("object_state_change");
+      return;
+    }
+    if(stage===StillWaterQuestStage.NOT_STARTED || stage===StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN){
+      log("The water is still.");
+      return;
+    }
+    if(stage===StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN || stage===StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE || stage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT || stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN || stage===StillWaterQuestStage.COMPLETED){
+      log("The pond is still again, but not empty.");
+      return;
+    }
+    log("The water is still.");
+  }
+});
+registerWorldObject({
+  objectId:"mirror_cave_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y+1,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Read sign",
+  onInteract:()=>{
+    patchPersistentObject("mirror_cave_sign", { state:"read", read:true });
+    openWorldInfoPanel("Signpost", "Mirror Cave");
+  }
+});
+registerWorldObject({
+  objectId:"mirror_cave_entrance",
+  type:WORLD_OBJECT_TYPE.CAVE_ENTRANCE,
+  zone:"overworld",
+  region:"eastern_woods",
+  x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y,
+  state:"active",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  walkInTrigger:true,
+  promptLabel:"Enter Mirror Cave",
+  onInteract:()=>enterMirrorCave()
+});
+registerWorldObject({
+  objectId:"tollhouse_warning_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  region:"north_road",
+  x:21, y:2,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Read notice",
+  onInteract:()=>{
+    patchPersistentObject("tollhouse_warning_sign", { state:"read", read:true });
+    openWorldInfoPanel("Weathered Notice", "Old Toll Road — Closed by order of Hearthvale.");
+  }
+});
+registerWorldObject({
+  objectId:"abandoned_tollhouse_entrance",
+  type:WORLD_OBJECT_TYPE.DOOR,
+  zone:"overworld",
+  region:"north_road",
+  x:NORTH_ROAD_TOLLHOUSE_ENTRY.x, y:NORTH_ROAD_TOLLHOUSE_ENTRY.y,
+  state:"active",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  walkInTrigger:true,
+  promptLabel:"Enter Abandoned Tollhouse",
+  onInteract:()=>enterAbandonedTollhouse()
+});
+registerWorldObject({
+  objectId:"mirror_cave_exit",
+  type:WORLD_OBJECT_TYPE.DUNGEON_EXIT,
+  zone:"mirror_cave",
+  dungeon:"mirror_cave",
+  x:mirrorCave.exit.x, y:mirrorCave.exit.y,
+  state:"active",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  walkInTrigger:true,
+  promptLabel:"Exit Mirror Cave",
+  onInteract:()=>exitMirrorCave()
+});
+registerWorldObject({
+  objectId:"abandoned_tollhouse_exit",
+  type:WORLD_OBJECT_TYPE.DUNGEON_EXIT,
+  zone:"abandoned_tollhouse",
+  dungeon:"abandoned_tollhouse",
+  x:abandonedTollhouse.exit.x, y:abandonedTollhouse.exit.y,
+  state:"active",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  walkInTrigger:true,
+  promptLabel:"Exit Abandoned Tollhouse",
+  onInteract:()=>exitAbandonedTollhouse()
+});
+registerWorldObject({
+  objectId:"mirror_cave_chest",
+  type:WORLD_OBJECT_TYPE.CHEST,
+  zone:"mirror_cave",
+  dungeon:"mirror_cave",
+  x:mirrorCave.chest.x, y:mirrorCave.chest.y,
+  state:"sealed",
+  interactable:true,
+  collision:true,
+  requiredQuestStage:HunterQuestStage.STAGE_3_MIRROR_CAVE,
+  persistence:true,
+  promptLabel:"Open chest",
+  onInteract:()=>{
+    const state=syncMirrorCaveChestState(false);
+    if(state==="open"){
+      log("The chest is empty.");
+      return;
+    }
+    if(state==="sealed"){
+      mirrorCaveChestDiscovered=true;
+      patchPersistentObject("mirror_cave_chest", { discovered:true }, false);
+      log("The chest is sealed.");
+      saveGame("object_state_change");
+      return;
+    }
+    mirrorCave.chest.opened=true;
+    mirrorCave.cleared=true;
+    patchPersistentObject("mirror_cave_chest", { state:"open", opened:true }, false);
+    if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
+    log("You recovered the Mirror Relic.");
+    showRewardToast("+ Mirror Relic", 1800);
+    eventSystem.emit("object:opened:mirror_cave_chest");
+    saveGame("object_state_change");
+  }
+});
+registerWorldObject({
+  objectId:"echo_fragment_object",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"mirror_cave",
+  dungeon:"mirror_cave",
+  x:12, y:5,
+  state:"inert",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Take Echo Fragment",
+  onInteract:()=>{
+    const persistent=getPersistentObject("echo_fragment_object");
+    const stage=getStillWaterQuestStage();
+    if(persistent.collected || getItemQuantity("echo_fragment")>0){
+      syncEchoFragmentState(false);
+      log("Only a faint chill remains where the fragment rested.");
+      saveGame("object_state_change");
+      return;
+    }
+    if(stage!==StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+      log("A pale shard rests in silence, as if waiting.");
+      return;
+    }
+    if(getItemQuantity("echo_fragment")<=0) addItemToInventory("echo_fragment", 1);
+    patchPersistentObject("echo_fragment_object", { state:"collected", collected:true }, false);
+    log("You recovered the Echo Fragment.");
+    showRewardToast("+ Echo Fragment", 1800);
+    eventSystem.emit("object:collected:echo_fragment");
+    saveGame("object_state_change");
+  }
+});
+registerWorldObject({
+  objectId:"tollhouse_chest",
+  type:WORLD_OBJECT_TYPE.CHEST,
+  zone:"abandoned_tollhouse",
+  dungeon:"abandoned_tollhouse",
+  x:abandonedTollhouse.chest.x, y:abandonedTollhouse.chest.y,
+  state:"locked",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Open tollhouse chest",
+  onInteract:()=>{
+    const state=syncTollhouseChestState(false);
+    if(state==="locked"){
+      log("The tollhouse chest is locked.");
+      showRewardToast("Chest locked — defeat Rook", 1200);
+      return;
+    }
+    if(state==="open"){
+      log("The tollhouse chest is empty.");
+      return;
+    }
+    patchPersistentObject("tollhouse_chest", { state:"open", opened:true }, false);
+    const rewardResult=grantTollhouseChestRewards();
+    if(!rewardResult.rewardsGranted.length){
+      log("The tollhouse chest is empty.");
+    } else {
+      log("Opened the tollhouse chest.");
+      log("Loot acquired:");
+      rewardResult.rewardsGranted.forEach((entry)=>log("- " + entry));
+      showRewardToast("Tollhouse chest opened", 1300);
+      showRewardToasts(rewardResult.rewardToasts);
+    }
+    syncTollhouseChestState(false);
+    syncAbandonedTollhouseClearedState(false, true);
+    maybeAnnounceVerticalSliceEndpoint();
+    saveGame("object_state_change");
+  }
+});
+worldObjects
+  .filter((object)=>object.interactable)
+  .forEach((object)=>{
+    interactionManager.register({
+      id:object.objectId,
+      type:object.type,
+      x:()=>isWorldObjectInCurrentZone(object) ? getWorldObjectTile(object).x : -999,
+      y:()=>isWorldObjectInCurrentZone(object) ? getWorldObjectTile(object).y : -999,
+      range:object.objectId==="mirror_pond" ? 3 : undefined,
+      promptLabel:object.promptLabel || "Interact",
+      onInteract:()=>object.onInteract?.()
+    });
+  });
 
 dialogue.addEventListener("click",()=>{
-  if(dialogueSystem.activeSession?.pendingChoices) dialogueSystem.choose(0);
-  else if(dialogueSystem.activeSession) dialogueSystem.advance();
+  if(dialogueSystem.activeSession?.pendingChoices) return;
+  if(dialogueSystem.activeSession) dialogueSystem.advance();
+});
+dialogueChoices.addEventListener("click",(event)=>{
+  const target=event.target instanceof Element ? event.target.closest("button[data-dialogue-choice]") : null;
+  if(!target) return;
+  event.preventDefault();
+  event.stopPropagation();
+  const index=Number.parseInt(target.getAttribute("data-dialogue-choice") || "-1", 10);
+  if(Number.isInteger(index) && index>=0) dialogueSystem.choose(index);
+});
+dialogueActions.addEventListener("click",(event)=>{
+  const target=event.target instanceof Element ? event.target.closest("button") : null;
+  if(!target) return;
+  event.preventDefault();
+  event.stopPropagation();
+  if(target.hasAttribute("data-world-info-close")){ closeWorldInfoPanel(); return; }
+  if(target.hasAttribute("data-dialogue-close")){ dialogueSystem.close(); return; }
+  if(target.hasAttribute("data-dialogue-advance")) dialogueSystem.advance();
+});
+vendorClose.addEventListener("click", closeVendorMenu);
+vendorList.addEventListener("click",(e)=>{
+  const target=e.target instanceof Element ? e.target : null;
+  if(!target) return;
+  const buyButton=target.closest("button[data-buy-item]");
+  const buyItemId=buyButton?.dataset?.buyItem;
+  if(buyItemId){
+    buyOneItemFromVendor(buyItemId);
+    return;
+  }
+  const sellButton=target.closest("button[data-sell-item]");
+  const itemId=sellButton?.dataset?.sellItem;
+  if(!itemId) return;
+  sellOneItemToVendor(itemId);
 });
 
-function currentZoneName(){
-  for(const z of world.zones){ if(player.targetX>=z.x&&player.targetX<z.x+z.w&&player.targetY>=z.y&&player.targetY<z.y+z.h) return z.name; }
+function getZoneDefinition(zoneId){
+  return OUTDOOR_REGION_DEFS[zoneId] || INTERIOR_REGION_DEFS[zoneId] || OUTDOOR_REGION_DEFS.hearthvale_square;
+}
+
+function getCurrentZoneName(){
+  return getZoneDefinition(currentZoneId).name;
+}
+
+function isWithinRect(x,y,rect){
+  return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+}
+
+function isTileInCurrentZone(x,y){
+  const width=isInMirrorCave ? mirrorCave.width : (isInAbandonedTollhouse ? abandonedTollhouse.width : WORLD_W);
+  const height=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
+  return x>=0 && y>=0 && x<width && y<height;
+}
+
+function isInTransitionSafeBuffer(zoneId,x,y){
+  return false;
+}
+
+function isEasternWoodsActive(){
+  return !isInMirrorCave && !isInAbandonedTollhouse;
+}
+
+function findZoneTransitionAt(){ return null; }
+
+function getActiveHostiles(){
+  if(isInMirrorCave) return mirrorCaveWolves;
+  if(isInAbandonedTollhouse) return rookTollkeeperDefeated ? tollhouseBandits : [...tollhouseBandits, rookTollkeeper];
+  return [...wolves, ...bandits];
+}
+
+function runHardTransition(onSwitch, durationMs=320){
+  const now=performance.now();
+  zoneTransitionLockedUntil=now+durationMs+80;
+  clearDirectionalInput();
+  blockedDirectionalKeysUntilRelease = new Set(DIRECTION_KEYS.filter((key)=>keys.has(key)));
+  transitionState={
+    active:true,
+    start:now,
+    duration:durationMs,
+    switched:false,
+    onSwitch
+  };
+}
+
+function enterMirrorCave(){
+  runHardTransition(()=>{
+    isInAbandonedTollhouse=false;
+    isInMirrorCave=true;
+    currentZoneId="mirror_cave";
+    setPlayerTilePosition(mirrorCave.spawn.x, mirrorCave.spawn.y);
+    lastLoggedZoneEntryId=currentZoneId;
+    logThrottled("transition:entered_mirror_cave", "Entered Mirror Cave.", 1200);
+    eventSystem.emit("zone:entered:mirror_cave");
+  }, 320);
+}
+function enterAbandonedTollhouse(){
+  runHardTransition(()=>{
+    isInMirrorCave=false;
+    isInAbandonedTollhouse=true;
+    currentZoneId="abandoned_tollhouse";
+    setPlayerTilePosition(abandonedTollhouse.spawn.x, abandonedTollhouse.spawn.y);
+    lastLoggedZoneEntryId=currentZoneId;
+    rookEncounterAnnounced=false;
+    hostileAggroBlockedUntil=performance.now()+900;
+    markAbandonedTollhouseDiscovered(true, true);
+    logThrottled("transition:entered_abandoned_tollhouse", "Entered Abandoned Tollhouse.", 1200);
+  }, 320);
+}
+
+function exitMirrorCave(){
+  runHardTransition(()=>{
+    isInMirrorCave=false;
+    isInAbandonedTollhouse=false;
+    currentZoneId="eastern_woods";
+    setPlayerTilePosition(mirrorCave.returnTile.x, mirrorCave.returnTile.y);
+    lastLoggedZoneEntryId=currentZoneId;
+    logThrottled("transition:exit_mirror_cave", "Returned to Eastern Woods.", 1200);
+  }, 320);
+}
+function exitAbandonedTollhouse(){
+  runHardTransition(()=>{
+    isInAbandonedTollhouse=false;
+    isInMirrorCave=false;
+    currentZoneId="north_road";
+    setPlayerTilePosition(abandonedTollhouse.returnTile.x, abandonedTollhouse.returnTile.y);
+    lastLoggedZoneEntryId=currentZoneId;
+    logThrottled("transition:exit_abandoned_tollhouse", "Returned to North Road.", 1200);
+  }, 320);
+}
+
+function setPlayerTilePosition(x,y){
+  player.targetX=Math.max(0,Math.min(WORLD_W-1,x));
+  player.targetY=Math.max(0,Math.min(WORLD_H-1,y));
+  player.px=player.targetX*TILE;
+  player.py=player.targetY*TILE;
+  player.moving=false;
+}
+
+function clearDirectionalInput(){
+  DIRECTION_KEYS.forEach((key)=>keys.delete(key));
+}
+
+function isDirectionalInputHeld(){
+  return DIRECTION_KEYS.some((key)=>keys.has(key));
+}
+
+function handleZoneTransitionIfNeeded(){
+  if(HARD_ZONE_TRANSITIONS.length===0) return false;
+  return true;
+}
+function triggerWalkInWorldObject(){
+  if(transitionState.active || performance.now()<zoneTransitionLockedUntil) return false;
+  return getActiveWorldObjects().some((object)=>{
+    if(!object.walkInTrigger || !object.interactable) return false;
+    const tile=getWorldObjectTile(object);
+    if(tile.x!==player.targetX || tile.y!==player.targetY) return false;
+    object.onInteract?.();
+    eventSystem.emit("interaction:used",{id:object.objectId,type:object.type});
+    return true;
+  });
+}
+
+function getOutdoorRegionIdAt(x,y){
+  for(const region of Object.values(OUTDOOR_REGION_DEFS)){
+    if(isWithinRect(x,y,region.bounds)) return region.id;
+  }
+  return "hearthvale_square";
+}
+
+function updateOutdoorRegionFromPosition(logEntry){
+  if(isInMirrorCave || isInAbandonedTollhouse) return;
+  const nextZoneId=getOutdoorRegionIdAt(player.targetX, player.targetY);
+  if(nextZoneId===currentZoneId) return;
+  currentZoneId=nextZoneId;
+  if(logEntry && currentZoneId!=="north_road" && lastLoggedZoneEntryId!==currentZoneId){
+    logThrottled("zone_entry:" + currentZoneId, "Entered " + getCurrentZoneName() + ".", 1200);
+    lastLoggedZoneEntryId=currentZoneId;
+  } else if(currentZoneId==="north_road"){
+    lastLoggedZoneEntryId=currentZoneId;
+  }
+}
+
+function currentLocalAreaName(){
+  if(isInMirrorCave) return "Mirror Cave";
+  if(isInAbandonedTollhouse) return "Abandoned Tollhouse";
+  for(const z of world.zones){
+    if(player.targetX>=z.x&&player.targetX<z.x+z.w&&player.targetY>=z.y&&player.targetY<z.y+z.h) return z.name;
+  }
   return "Outer Road";
 }
 function getZone(name){
@@ -1328,6 +4365,24 @@ function getHostileDistance(hostile){
   return Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY);
 }
 
+function hostileLabel(hostile){
+  if(!hostile) return "None";
+  if(hostile.displayName) return hostile.displayName;
+  if(hostile.kind==="bandit") return "Bandit #" + hostile.id;
+  if(hostile.enemyType==="cave_wolf") return "Cave Wolf #" + hostile.id;
+  return "Wolf #" + hostile.id;
+}
+
+function getHostileAttackCooldownMs(hostile){
+  if(!hostile) return 0;
+  return getEnemyConfig(hostile.enemyType || hostile.kind).attackCooldownMs;
+}
+
+function getHostileLastAttackAt(hostile){
+  if(!hostile) return 0;
+  return hostile.kind==="bandit" ? (lastBanditAttackAt[hostile.id]||0) : (lastWolfAttackAt[hostile.id]||0);
+}
+
 function getNearestHostile(range=Infinity){
   let nearest=null;
   for(const wolf of wolves){
@@ -1338,54 +4393,167 @@ function getNearestHostile(range=Infinity){
   }
   return nearest;
 }
+function getCurrentCombatTarget(range=4){
+  const nearest=getNearestHostile(range);
+  return nearest?.entity || null;
+}
 
 function respawnPlayerAtSquare(){
-  player.targetX=18;
-  player.targetY=11;
-  player.px=player.targetX*TILE;
-  player.py=player.targetY*TILE;
+  isInMirrorCave=false;
+  isInAbandonedTollhouse=false;
+  currentZoneId="hearthvale_square";
+  setPlayerTilePosition(HEARTHVALE_LANDMARKS.townCenterSpawn.x, HEARTHVALE_LANDMARKS.townCenterSpawn.y);
+  zoneTransitionLockedUntil=0;
+  blockedDirectionalKeysUntilRelease.clear();
+  lastLoggedZoneEntryId=currentZoneId;
 }
 
 function handlePlayerDefeat(){
-  log("Defeat: You fall in battle.");
+  log("You fall in battle. You awaken at Hearthvale Square.");
+  showRewardToast("Defeat — Returning to Hearthvale", 2200);
   player.hp=player.maxHp;
+  hitStopUntil=performance.now()+220;
+  hostileAggroBlockedUntil=performance.now()+BALANCE.death.respawnSafetyMs;
   respawnPlayerAtSquare();
-  log("System: You awaken at Hearthvale Square.");
+  spawnFloatingText(player.px/TILE, player.py/TILE, "Recovered", { color:"#b9d3ff", durationMs:1200 });
 }
 
+let sidebarInventoryMarkup="";
+let sidebarEquipmentMarkup="";
+let sidebarSkillsMarkup="";
 function updateSidebar(){
+  levelVal.textContent = String(player.level);
   hpVal.textContent = player.hp + "/" + player.maxHp;
-  xpVal.textContent = String(player.xp);
+  xpVal.textContent = getXpProgressText();
   coinsVal.textContent = String(player.coins);
   const equippedWeapon=getEquippedItem("weapon");
   weaponVal.textContent = equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
-  const zoneName=currentZoneName();
+  const equippedArmor=getEquippedItem("armor");
+  const armorDefense=getArmorDefenseBonus();
+  armorVal.textContent = equippedArmor ? (equippedArmor.name + " (+" + armorDefense + " DEF)") : "None";
+  const equippedTrinket=getEquippedItem("trinket");
+  const trinketDefense=getTrinketDefenseBonus();
+  trinketVal.textContent = equippedTrinket ? (equippedTrinket.name + (trinketDefense>0 ? " (+" + trinketDefense + " DEF)" : "")) : "None";
+  const zoneName=getCurrentZoneName();
   zoneVal.textContent = zoneName;
-  const mainQuest=questSystem.getQuest("mirror_pond_listening");
-  questVal.textContent = mainQuest ? (mainQuest.name + " [" + mainQuest.state + "]") : "Town Slice";
-  if(!mainQuest || mainQuest.state===QuestState.NOT_STARTED) objectiveText.textContent = "Speak with Edrin Vale to begin a task.";
-  else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="go_to_pond") objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
-  else if(mainQuest.state===QuestState.ACTIVE && mainQuest.progress==="heard_whispers") objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
-  else objectiveText.textContent = "Quest complete: Listening at Mirror Pond.";
-  if(player.inventory.length===0){
-    inventoryList.textContent = "Empty";
+  const huntersQuest=questSystem.getQuest("hunters_request");
+  const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
+  const stillWaterQuest=questSystem.getQuest("the_still_water");
+  const activeQuest=(
+    (stillWaterQuest?.state===QuestState.ACTIVE || stillWaterQuest?.state===QuestState.READY_TO_TURN_IN) ? stillWaterQuest :
+    ((huntersQuest?.state===QuestState.ACTIVE || huntersQuest?.state===QuestState.READY_TO_TURN_IN) ? huntersQuest :
+    ((mirrorQuest?.state===QuestState.ACTIVE) ? mirrorQuest :
+    (stillWaterQuest?.state===QuestState.COMPLETED ? stillWaterQuest :
+    (huntersQuest?.state===QuestState.COMPLETED ? huntersQuest : mirrorQuest))))
+  );
+  questVal.textContent = activeQuest ? (activeQuest.name + " [" + activeQuest.state + "]") : "Town Slice";
+  if(stillWaterQuest?.state===QuestState.ACTIVE || stillWaterQuest?.state===QuestState.READY_TO_TURN_IN || stillWaterQuest?.state===QuestState.COMPLETED){
+    objectiveText.textContent = getStillWaterObjectiveText();
   } else {
-    inventoryList.innerHTML = player.inventory.map((entry)=>{
+    const hunterStage=getHunterQuestStage();
+    if(hunterStage===HunterQuestStage.STAGE_1_PROVE_YOURSELF){
+      const wolves=Math.max(0, Math.min(3, questSystem.getObjective("hunters_request", "wolves")?.currentAmount || 0));
+      const pelts=Math.max(0, Math.min(3, getItemQuantity("wolf_pelt")));
+      objectiveText.textContent = "Hunter's Request\n- Defeat Wolves: " + wolves + "/3\n- Wolf Pelts: " + pelts + "/3";
+    } else if(hunterStage===HunterQuestStage.STAGE_2_RETURN_TO_HUNTER){
+      objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
+    } else if(hunterStage===HunterQuestStage.STAGE_3_MIRROR_CAVE){
+      objectiveText.textContent = "Hunter's Request\n- Enter Mirror Cave\n- Recover the Mirror Relic";
+    } else if(hunterStage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC){
+      objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
+    } else if(hunterStage===HunterQuestStage.COMPLETED){
+      objectiveText.textContent = getContextualObjectiveText();
+    } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="go_to_pond"){
+      objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
+    } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="heard_whispers"){
+      objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
+    } else if(mirrorQuest?.state===QuestState.COMPLETED){
+      objectiveText.textContent = getContextualObjectiveText();
+    } else {
+      objectiveText.textContent = getContextualObjectiveText();
+    }
+  }
+  let nextInventoryMarkup="Empty";
+  if(player.inventory.length>0){
+    const groupOrder=["equipment","consumables","materials","quest","other"];
+    const groupTitles={
+      equipment:"Equipment",
+      consumables:"Consumables",
+      materials:"Materials",
+      quest:"Quest Items",
+      other:"Other"
+    };
+    const groupedEntries={
+      equipment:[],
+      consumables:[],
+      materials:[],
+      quest:[],
+      other:[]
+    };
+    for(const entry of player.inventory){
       const item=getItemDefinition(entry.itemId);
       const name=item?.name || entry.itemId;
-      const canEquip=item?.type==="weapon";
-      const equipped=item?.id && item.id===player.equipment.weapon;
+      const equipSlot=item?.type==="weapon"
+        ? "weapon"
+        : (item?.type==="armor"
+          ? "armor"
+          : (item?.type==="trinket" ? "trinket" : null));
+      const canEquip=Boolean(equipSlot);
+      const equipped=Boolean(item?.id && equipSlot && item.id===player.equipment[equipSlot]);
+      const itemText="<span class=\"inventory-item-name\">" + name + " x" + entry.quantity + "</span>";
       if(canEquip){
-        const actionLabel=equipped ? "Equipped" : "Equip";
-        const disabledAttr=equipped ? " disabled" : "";
-        return name + " x" + entry.quantity + " <button type=\"button\" data-equip-item=\"" + item.id + "\"" + disabledAttr + ">" + actionLabel + "</button>";
+        const actionMarkup=equipped
+          ? "<span class=\"equipped-tag\">Equipped</span>"
+          : "<button type=\"button\" class=\"inventory-btn\" data-equip-item=\"" + item.id + "\" data-equip-slot=\"" + equipSlot + "\">Equip</button>";
+        return "<div class=\"inventory-row\">" + itemText + "<span class=\"inventory-actions\">" + actionMarkup + "</span></div>";
       }
-      return name + " x" + entry.quantity;
-    }).join("<br>");
+      const canUse=Boolean(item && item.type==="consumable" && Number.isFinite(item.healAmount) && Math.floor(item.healAmount)>0);
+      if(canUse){
+        return "<div class=\"inventory-row\">" + itemText + "<span class=\"inventory-actions\"><button type=\"button\" class=\"inventory-btn\" data-use-item=\"" + item.id + "\">Use</button></span></div>";
+      }
+      const trinketEquipped=Boolean(item?.id && item.type==="trinket" && player.equipment.trinket===item.id);
+      const trinketTag=trinketEquipped ? "<span class=\"inventory-actions\"><span class=\"equipped-tag\">Equipped</span></span>" : "";
+      return "<div class=\"inventory-row\">" + itemText + trinketTag + "</div>";
+    }).join("");
   }
-  const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "";
-  equipmentList.innerHTML = "Weapon: " + weaponLine + "<br>Armor: <br>Trinket: ";
-  const nearbyHostile=getNearestHostile(5);
+  if(nextInventoryMarkup!==sidebarInventoryMarkup){
+    inventoryList.innerHTML = nextInventoryMarkup;
+    sidebarInventoryMarkup=nextInventoryMarkup;
+  }
+  // Do not re-render vendor rows every sidebar update; replacing DOM each frame
+  // can swallow button clicks before click events complete.
+  const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
+  const armorLine=equippedArmor ? (equippedArmor.name + " (+" + armorDefense + " DEF)") : "None";
+  const trinketLine=equippedTrinket ? (equippedTrinket.name + (trinketDefense>0 ? " (+" + trinketDefense + " DEF)" : "")) : "None";
+  const weaponButton=equippedWeapon && equippedWeapon.id!=="rusty_sword" ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"weapon\">Remove</button>" : "";
+  const armorButton=equippedArmor ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"armor\">Remove</button>" : "";
+  const trinketButton=equippedTrinket ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"trinket\">Remove</button>" : "";
+  const totalAttack=getTotalAttackDamage();
+  const totalDefense=getTotalDefenseRating();
+  const maxHp=player.maxHp;
+  const nextEquipmentMarkup=
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Weapon:</span><span class=\"equipment-slot-value\">" + weaponLine + weaponButton + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Armor:</span><span class=\"equipment-slot-value\">" + armorLine + armorButton + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Trinket:</span><span class=\"equipment-slot-value\">" + trinketLine + trinketButton + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Total Attack:</span><span class=\"equipment-slot-value\">" + totalAttack + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Total Defense:</span><span class=\"equipment-slot-value\">" + totalDefense + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Max HP:</span><span class=\"equipment-slot-value\">" + maxHp + "</span></div>";
+  if(nextEquipmentMarkup!==sidebarEquipmentMarkup){
+    equipmentList.innerHTML = nextEquipmentMarkup;
+    sidebarEquipmentMarkup=nextEquipmentMarkup;
+  }
+  const nextSkillsMarkup=["swordsmanship","defense","survival"].map((skillId)=>{
+    const skill=player.skills?.[skillId] || { level:1, xp:0 };
+    const nextThreshold=getSkillXpThresholdForLevel(skill.level+1);
+    const progressText=skill.level>=SKILL_MAX_LEVEL
+      ? "MAX"
+      : (skill.xp + " / " + nextThreshold);
+    return "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">" + SKILL_DISPLAY_NAMES[skillId] + "</span><span class=\"equipment-slot-value\">Lv " + skill.level + " — " + progressText + "</span></div>";
+  }).join("");
+  if(nextSkillsMarkup!==sidebarSkillsMarkup){
+    skillsList.innerHTML=nextSkillsMarkup;
+    sidebarSkillsMarkup=nextSkillsMarkup;
+  }
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   const targetCooldownSource=nearbyHostile?.entity || null;
   const lastAttackAt=targetCooldownSource ? (lastWolfAttackById[targetCooldownSource.id]||0) : 0;
@@ -1407,32 +4575,146 @@ function canMoveTo(x,y){
 
 const keys=new Set();
 let showGrid=false;
+let showCollisionOverlay=false;
+
+const questDefinitionById=new Map((questData.quests||[]).map((quest)=>[quest.id, quest]));
+function resetQuestToNotStarted(questId){
+  const quest=questSystem.getQuest(questId);
+  const definition=questDefinitionById.get(questId);
+  if(!quest || !definition) return false;
+  quest.state=QuestState.NOT_STARTED;
+  quest.status=QuestState.NOT_STARTED;
+  quest.progress=definition.initialProgress || "";
+  quest.objectives=questSystem.normalizeObjectives(definition.objectives||[]);
+  eventSystem.emit("quest:state-changed",{questId,state:quest.state,progress:quest.progress});
+  return true;
+}
+function resetCurrentQuestForDebug(){
+  const priority=["the_still_water","hunters_request","mirror_pond_listening"];
+  const activeOrReady=priority.find((questId)=>{
+    const quest=questSystem.getQuest(questId);
+    return quest && (quest.state===QuestState.ACTIVE || quest.state===QuestState.READY_TO_TURN_IN || quest.state===QuestState.COMPLETED);
+  });
+  if(!activeOrReady){
+    log("[Debug] No quest state available to reset.");
+    return;
+  }
+  if(resetQuestToNotStarted(activeOrReady)){
+    log("[Debug] Reset quest state: " + activeOrReady + ".");
+    saveGame("debug_reset_quest");
+  }
+}
+function healPlayerToFullForDebug(){
+  player.hp=player.maxHp;
+  log("[Debug] Restored HP to full.");
+  saveGame("debug_heal");
+}
+function teleportToZoneForDebug(zoneId){
+  if(zoneId==="hearthvale_square"){
+    isInMirrorCave=false;
+    isInAbandonedTollhouse=false;
+    currentZoneId="hearthvale_square";
+    setPlayerTilePosition(HEARTHVALE_LANDMARKS.townCenterSpawn.x, HEARTHVALE_LANDMARKS.townCenterSpawn.y);
+    log("[Debug] Teleported to Hearthvale Square.");
+  } else if(zoneId==="eastern_woods"){
+    isInMirrorCave=false;
+    isInAbandonedTollhouse=false;
+    currentZoneId="eastern_woods";
+    setPlayerTilePosition(mirrorCave.returnTile.x, mirrorCave.returnTile.y);
+    log("[Debug] Teleported to Eastern Woods.");
+  } else if(zoneId==="mirror_cave"){
+    isInAbandonedTollhouse=false;
+    isInMirrorCave=true;
+    currentZoneId="mirror_cave";
+    setPlayerTilePosition(mirrorCave.spawn.x, mirrorCave.spawn.y);
+    log("[Debug] Teleported to Mirror Cave.");
+  }
+  lastLoggedZoneEntryId=currentZoneId;
+  zoneTransitionLockedUntil=0;
+  blockedDirectionalKeysUntilRelease.clear();
+  saveGame("debug_teleport");
+}
+function resetFullSaveForDebug(){
+  localStorage.removeItem(SAVE_KEY);
+  log("[Debug] Save data cleared. Reloading world state.");
+  setTimeout(()=>location.reload(), 120);
+}
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","k","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
+  const isDevToggleKey=e.code==="Backquote";
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","g","v","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k) || isDevToggleKey) e.preventDefault();
+  if(DIRECTION_KEYS.includes(k)){
+    if(blockedDirectionalKeysUntilRelease.has(k)) return;
+  }
+  if(isDevToggleKey){
+    DEV_MODE=!DEV_MODE;
+    log(DEV_MODE ? "Dev mode enabled" : "Dev mode disabled");
+    updateSidebar();
+  }
   if(k==="g") showGrid=!showGrid;
+  if(k==="v") showCollisionOverlay=!showCollisionOverlay;
+  if(k==="escape" && worldInfoPanel) closeWorldInfoPanel();
+  else if(k==="escape" && dialogueSystem.activeSession) dialogueSystem.close();
   if(k==="e") interactionManager.tryInteract();
+  if(k==="h") useHealingConsumable();
   if(k==="k") saveGame("manual");
+  if(DEV_MODE && k==="f6") healPlayerToFullForDebug();
+  if(DEV_MODE && k==="f7") teleportToZoneForDebug("hearthvale_square");
+  if(DEV_MODE && k==="f8") teleportToZoneForDebug("eastern_woods");
+  if(DEV_MODE && k==="f9") teleportToZoneForDebug("mirror_cave");
+  if(DEV_MODE && k==="f10" && e.shiftKey) resetFullSaveForDebug();
+  else if(DEV_MODE && k==="f10") resetCurrentQuestForDebug();
   if(dialogueSystem.activeSession?.pendingChoices && /^[1-9]$/.test(k)) dialogueSystem.choose(Number(k)-1);
   keys.add(k);
 });
 addEventListener("keyup",(e)=>{
   const k=e.key.toLowerCase();
   keys.delete(k);
+  if(DIRECTION_KEYS.includes(k)){
+    blockedDirectionalKeysUntilRelease.delete(k);
+  }
   if(k===" "||k==="space") missNoticeArmed=true;
 });
 canvas.addEventListener("click",(e)=>{ const clicked=screenToWorld(e.clientX,e.clientY); interactionManager.interactAt(clicked.x, clicked.y); });
 inventoryList.addEventListener("click",(e)=>{
-  const target=e.target;
+  const useTarget=e.target instanceof Element ? e.target.closest("button[data-use-item]") : null;
+  if(useTarget instanceof HTMLElement){
+    const itemId=useTarget.dataset?.useItem;
+    const item=getItemDefinition(itemId || "");
+    if(item && item.type==="consumable" && Number.isFinite(item.healAmount) && Math.floor(item.healAmount)>0){
+      consumeHealingItem(item);
+    }
+    return;
+  }
+  const target=e.target instanceof Element ? e.target.closest("button[data-equip-item]") : null;
   if(!(target instanceof HTMLElement)) return;
   const itemId=target.dataset?.equipItem;
-  if(!itemId) return;
-  if(equipWeapon(itemId)) updateSidebar();
+  const slotName=target.dataset?.equipSlot;
+  if(!itemId || !slotName) return;
+  if(slotName==="weapon" && equipWeapon(itemId)) updateSidebar();
+  if(slotName==="armor" && equipArmor(itemId)) updateSidebar();
+  if(slotName==="trinket"){
+    const item=getItemDefinition(itemId);
+    if(item && item.type==="trinket" && getItemQuantity(itemId)>0){
+      player.equipment.trinket=itemId;
+      log("Equipped " + item.name + ".");
+      updateSidebar();
+    }
+  }
+});
+equipmentList.addEventListener("click",(e)=>{
+  const target=e.target instanceof Element ? e.target.closest("button[data-unequip-slot]") : null;
+  if(!(target instanceof HTMLElement)) return;
+  const slotName=target.dataset?.unequipSlot;
+  if(!slotName) return;
+  if(unequipSlot(slotName)) updateSidebar();
 });
 
 function getCamera(){
-  const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2),WORLD_W-VIEW_TILES_X));
-  const tileY=Math.max(0,Math.min(player.targetY-Math.floor(VIEW_TILES_Y/2),WORLD_H-VIEW_TILES_Y));
+  const mapW=isInMirrorCave ? mirrorCave.width : (isInAbandonedTollhouse ? abandonedTollhouse.width : WORLD_W);
+  const mapH=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
+  const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2),Math.max(0,mapW-VIEW_TILES_X)));
+  const tileY=Math.max(0,Math.min(player.targetY-Math.floor(VIEW_TILES_Y/2),Math.max(0,mapH-VIEW_TILES_Y)));
   const viewPxW=VIEW_TILES_X*TILE, viewPxH=VIEW_TILES_Y*TILE;
   const offsetX=Math.floor((canvas.width-viewPxW)/2), offsetY=Math.floor((canvas.height-viewPxH)/2);
   return {tileX,tileY,offsetX,offsetY};
@@ -1441,7 +4723,15 @@ function tileToScreen(tx,ty){ const cam=getCamera(); return {x:(tx-cam.tileX)*TI
 function screenToWorld(clientX,clientY){ const rect=canvas.getBoundingClientRect(); const mx=clientX-rect.left,my=clientY-rect.top; const cam=getCamera(); return {x:Math.floor((mx-cam.offsetX)/TILE)+cam.tileX,y:Math.floor((my-cam.offsetY)/TILE)+cam.tileY}; }
 
 function smoothMove(entity,dt){ const tx=entity.targetX*TILE, ty=entity.targetY*TILE; const dx=tx-entity.px, dy=ty-entity.py; const dist=Math.hypot(dx,dy); if(dist<.35){ entity.px=tx; entity.py=ty; entity.moving=false; return; } entity.moving=true; const step=entity.speed*dt; entity.px += (dx/dist)*Math.min(step,dist); entity.py += (dy/dist)*Math.min(step,dist); }
-function tryPlayerStep(dx,dy,facing){ if(player.moving||dialogueSystem.activeSession) return; const nx=player.targetX+dx, ny=player.targetY+dy; player.facing=facing; if(!canMoveTo(nx,ny)) return; player.targetX=nx; player.targetY=ny; }
+function tryPlayerStep(dx,dy,facing){
+  if(player.moving||dialogueSystem.activeSession) return;
+  if(performance.now()<zoneTransitionLockedUntil) return;
+  const nx=player.targetX+dx, ny=player.targetY+dy;
+  player.facing=facing;
+  if(!canMoveTo(nx,ny)) return;
+  player.targetX=nx;
+  player.targetY=ny;
+}
 const moveIntent={dx:0,dy:0,facing:"down"};
 function updateInput(){
   if(keys.has("w")||keys.has("arrowup")) tryPlayerStep(0,-1,"up");
@@ -1532,15 +4822,17 @@ function wolvesAttack(now){
 }
 function tryPlayerAttack(now){
   if(dialogueSystem.activeSession) return;
+  if(now<zoneTransitionLockedUntil) return;
   if(!(keys.has(" ")||keys.has("space"))) return;
   if(now-lastPlayerAttack<420) return;
   lastPlayerAttack=now; player.attackUntil=now+350;
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   if(!targetHostile){
     if(missNoticeArmed && now-lastNoTargetLogAt>900){
-      log("Attack misses: no hostile in range.");
+      logThrottled("combat:miss_no_target", "Attack misses — no hostile in range.", 1800);
       lastNoTargetLogAt=now;
       missNoticeArmed=false;
+      showRewardToast("Miss", 700);
     }
     return;
   }
@@ -1550,14 +4842,18 @@ function tryPlayerAttack(now){
   const len=Math.max(1,Math.hypot(tx,ty));
   player.attackLungeX=(tx/len)*2.4;
   player.attackLungeY=(ty/len)*1.4;
-  const totalDamage=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus();
+  const totalDamage=getTotalAttackDamage();
   targetHostile.entity.hp=Math.max(0,targetHostile.entity.hp-totalDamage);
   targetHostile.entity.hitUntil=now+320;
   targetHostile.entity.hitFlickerUntil=now+240;
   targetHostile.entity.recoilX=(tx/len)*2.3;
   targetHostile.entity.recoilY=(ty/len)*1.5;
   hitStopUntil=now+65;
-  log("Hit: " + targetHostile.name + " takes " + totalDamage + " damage.");
+  if(totalDamage>=10) triggerCameraShake(95, 1.4);
+  if(totalDamage>=14) triggerCameraShake(130, 2.4);
+  spawnFloatingText(targetHostile.entity.px/TILE, targetHostile.entity.py/TILE, "-" + totalDamage, { color:"#ffe29b", durationMs:950 });
+  if(getEquippedItem("weapon")?.type==="weapon") gainSkillXp("swordsmanship", 3);
+  logCombat("Hit " + hostileLabel(targetHostile.entity) + " for " + totalDamage + " damage.");
   if(targetHostile.entity.hp<=0 && !targetHostile.entity.defeated){
     targetHostile.entity.defeated=true;
     targetHostile.entity.attackUntil=0;
@@ -1600,8 +4896,11 @@ function drawHumanoid(sheet, tx, ty, facing, moving, scale, label, hitAlpha, rec
   drawShadowTile(assets.shadow.oval, p.x+3, p.y+4, .82);
 
   const fr = frameFromSprite(facing, moving);
-  if (sheet.complete && sheet.naturalWidth>0) {
+  if (sheet?.complete && sheet.naturalWidth>0) {
     ctx.drawImage(sheet, fr.sx, fr.sy, 64, 64, dx, dy, drawW, drawH);
+  } else {
+    warnMissingAssetOnce("sprite", "humanoid:" + (label || "entity"));
+    drawMissingSpritePlaceholder(dx, dy, drawW, drawH, "HUM");
   }
 
   if (label) {
@@ -1631,7 +4930,11 @@ function drawWolf(wolf,tx,ty,facing,moving,scale,hitAlpha,recoil){
   const drawW=Math.round(64*scale),drawH=Math.round(64*scale);
   const dx=p.x+Math.round((32-drawW)/2)+Math.round(recoil?.x||0), dy=p.y-Math.round(drawH-32)+Math.round(recoil?.y||0);
   drawShadowTile(assets.shadow.oval, p.x+4, p.y+4, .76);
-  if(assets.sprites.wolf.complete&&assets.sprites.wolf.naturalWidth>0) ctx.drawImage(assets.sprites.wolf,col*64,row*64,64,64,dx,dy,drawW,drawH);
+  if(assets.sprites.wolf?.complete&&assets.sprites.wolf.naturalWidth>0) ctx.drawImage(assets.sprites.wolf,col*64,row*64,64,64,dx,dy,drawW,drawH);
+  else {
+    warnMissingAssetOnce("sprite", "wolf");
+    drawMissingSpritePlaceholder(dx, dy, drawW, drawH, "WOLF");
+  }
   ctx.fillStyle=rgba(0,0,0,.5); ctx.fillRect(p.x+2,p.y-10,24,4);
   ctx.fillStyle="#8fdb73"; ctx.fillRect(p.x+2,p.y-10,24*(wolf.hp/wolf.maxHp),4);
   if(hitAlpha>0){ ctx.fillStyle="rgba(255,255,255," + Math.min(.4,hitAlpha).toFixed(3) + ")"; ctx.fillRect(dx+8,dy+8,drawW-14,drawH-16); }
@@ -1641,6 +4944,75 @@ function hitVisualAlpha(e){ const now=performance.now(); if(now>=e.hitUntil) ret
 function attackPose(entity){ const now=performance.now(); const total=350; const left=Math.max(0,entity.attackUntil-now); if(left<=0) return {active:false,thrust:0}; const t=(total-left)/total; return {active:true,thrust:Math.sin(t*Math.PI)*3.5}; }
 
 function drawAlignmentGrid(){ const cam=getCamera(); const sx=cam.offsetX, sy=cam.offsetY, ex=sx+VIEW_TILES_X*TILE, ey=sy+VIEW_TILES_Y*TILE; ctx.save(); ctx.strokeStyle="rgba(221,233,255,.16)"; ctx.lineWidth=1; ctx.beginPath(); for(let x=0;x<=VIEW_TILES_X;x++){ const px=sx+x*TILE+.5; ctx.moveTo(px,sy); ctx.lineTo(px,ey);} for(let y=0;y<=VIEW_TILES_Y;y++){ const py=sy+y*TILE+.5; ctx.moveTo(sx,py); ctx.lineTo(ex,py);} ctx.stroke(); ctx.restore(); }
+function drawCollisionOverlay(){
+  const cam=getCamera();
+  ctx.save();
+  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++){
+    for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
+      if(!isTileInCurrentZone(x,y)) continue;
+      const p=tileToScreen(x,y);
+      const tileBlocked=isInMirrorCave
+        ? mirrorCave.blocked.has(keyOf(x,y))
+        : (isInAbandonedTollhouse
+          ? abandonedTollhouse.blocked.has(keyOf(x,y))
+          : isOverworldTerrainBlocked(x,y));
+      const blockedByObject=isWorldObjectBlockingTile(x,y);
+      if(tileBlocked || blockedByObject) ctx.fillStyle=blockedByObject ? "rgba(166,85,218,0.36)" : "rgba(220,76,76,0.28)";
+      else ctx.fillStyle="rgba(64,186,116,0.14)";
+      ctx.fillRect(p.x,p.y,TILE,TILE);
+    }
+  }
+  const drawWorldRect=(rect,stroke,fill)=>{
+    if(!rect) return;
+    const p=tileToScreen(rect.x, rect.y);
+    if(fill){
+      ctx.fillStyle=fill;
+      ctx.fillRect(p.x, p.y, rect.w*TILE, rect.h*TILE);
+    }
+    if(stroke){
+      ctx.strokeStyle=stroke;
+      ctx.lineWidth=1;
+      ctx.strokeRect(p.x+0.5, p.y+0.5, rect.w*TILE-1, rect.h*TILE-1);
+    }
+  };
+  if(!isInMirrorCave && !isInAbandonedTollhouse){
+    world.buildings.forEach((building)=>{
+      drawWorldRect(building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h }, "rgba(255,128,88,0.95)", "rgba(255,124,88,0.08)");
+      drawWorldRect(building.interaction, "rgba(108,206,255,0.95)", "rgba(108,206,255,0.15)");
+      drawWorldRect(building.pathingBounds, "rgba(239,199,111,0.55)", null);
+    });
+    getActiveWorldObjects().forEach((object)=>{
+      const tile=getWorldObjectTile(object);
+      drawWorldRect({ x:tile.x, y:tile.y, w:1, h:1 }, object.collision ? "rgba(192,128,255,0.95)" : "rgba(192,128,255,0.5)", object.collision ? "rgba(177,110,255,0.22)" : null);
+    });
+    const landmarkRects=[
+      { x:HEARTHVALE_LANDMARKS.mirrorPond.x, y:HEARTHVALE_LANDMARKS.mirrorPond.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.caveEntrance.x, y:HEARTHVALE_LANDMARKS.caveEntrance.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.mainCrossroads.x, y:HEARTHVALE_LANDMARKS.mainCrossroads.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.mirrorCaveEntrance.x, y:HEARTHVALE_LANDMARKS.zoneExits.mirrorCaveEntrance.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.abandonedTollhouseEntrance.x, y:HEARTHVALE_LANDMARKS.zoneExits.abandonedTollhouseEntrance.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.northRoadBoundary.x, y:HEARTHVALE_LANDMARKS.zoneExits.northRoadBoundary.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.westLaneBoundary.x, y:HEARTHVALE_LANDMARKS.zoneExits.westLaneBoundary.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.easternWoodsBoundary.x, y:HEARTHVALE_LANDMARKS.zoneExits.easternWoodsBoundary.y, w:1, h:1 }
+    ];
+    landmarkRects.forEach((rect)=>drawWorldRect(rect, "rgba(255,241,122,0.95)", "rgba(255,241,122,0.15)"));
+  }
+  const entityRects=[
+    { x:player.targetX, y:player.targetY, w:1, h:1, stroke:"rgba(96,188,255,0.98)", fill:"rgba(96,188,255,0.2)" }
+  ];
+  if(!isInMirrorCave && !isInAbandonedTollhouse){
+    namedVillageNpcs.forEach((villageNpc)=>{
+      entityRects.push({ x:villageNpc.targetX, y:villageNpc.targetY, w:1, h:1, stroke:"rgba(255,228,133,0.98)", fill:"rgba(255,228,133,0.2)" });
+    });
+  }
+  getActiveHostiles().forEach((hostile)=>{
+    if(hostile.hp<=0) return;
+    entityRects.push({ x:hostile.targetX, y:hostile.targetY, w:1, h:1, stroke:"rgba(255,110,110,0.98)", fill:"rgba(255,110,110,0.2)" });
+  });
+  entityRects.forEach((rect)=>drawWorldRect(rect, rect.stroke, rect.fill));
+  ctx.restore();
+}
 function drawTileRotated(img, x, y, turns){
   if(!img||!img.complete||img.naturalWidth<=0) return;
   ctx.save();
@@ -1656,15 +5028,286 @@ function drawShadowTile(img, x, y, alpha=1){
   ctx.drawImage(img, x, y, 32, 32);
   ctx.globalAlpha = oldAlpha;
 }
+function drawMirrorPondInspectionMarker(now){
+  const screenPos=tileToScreen(Math.floor(pond.cx), Math.floor(pond.cy)-1);
+  const pulse=(Math.sin(now*0.006)+1)*0.5;
+  ctx.save();
+  ctx.strokeStyle="rgba(161,210,255," + (0.35 + pulse*0.25).toFixed(3) + ")";
+  ctx.fillStyle="rgba(142,202,255," + (0.12 + pulse*0.1).toFixed(3) + ")";
+  ctx.lineWidth=1.2;
+  ctx.beginPath();
+  ctx.ellipse(screenPos.x+16, screenPos.y+16, 8+pulse*2, 4+pulse*1.5, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle="rgba(217,241,255," + (0.52 + pulse*0.3).toFixed(3) + ")";
+  ctx.beginPath();
+  ctx.arc(screenPos.x+16, screenPos.y+12, 1.8+pulse*1.2, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
 
-function drawWorld(){
+function drawTransitionFade(now){
+  if(!transitionFade) return;
+  if(!transitionState.active){
+    transitionFade.style.background="rgba(2,6,10,0)";
+    return;
+  }
+  const elapsed=now-transitionState.start;
+  const half=Math.max(1, transitionState.duration/2);
+  const t=Math.min(1, elapsed/half);
+  let alpha=transitionState.switched ? (1-t) : t;
+  alpha=Math.max(0,Math.min(1,alpha));
+  transitionFade.style.background="rgba(2,6,10," + alpha.toFixed(3) + ")";
+}
+
+function drawEntityRing(tx,ty,color,alpha=0.35,radius=9){
+  const p=tileToScreen(tx,ty);
+  ctx.save();
+  ctx.fillStyle=color.replace("__A__", (alpha*0.12).toFixed(3));
+  ctx.beginPath();
+  ctx.ellipse(p.x+16,p.y+23,radius*1.25,radius*0.72,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle=color.replace("__A__", alpha.toFixed(3));
+  ctx.lineWidth=1.4;
+  ctx.beginPath();
+  ctx.ellipse(p.x+16,p.y+26,radius,radius*0.45,0,0,Math.PI*2);
+  ctx.stroke();
+  ctx.fillStyle=color.replace("__A__", (alpha*0.35).toFixed(3));
+  ctx.beginPath();
+  ctx.ellipse(p.x+16,p.y+26,radius*0.65,radius*0.24,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawOutdoorBackdrop(cam, now){
+  const sx=cam.offsetX;
+  const sy=cam.offsetY;
+  const ex=sx+VIEW_TILES_X*TILE;
+  const ey=sy+VIEW_TILES_Y*TILE;
+  const bg=ctx.createLinearGradient(0,0,0,canvas.height);
+  bg.addColorStop(0,"#203525");
+  bg.addColorStop(0.55,"#274332");
+  bg.addColorStop(1,"#17291f");
+  ctx.fillStyle=bg;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const padX=Math.ceil(Math.max(sx, canvas.width-ex)/TILE)+4;
+  const padY=Math.ceil(Math.max(sy, canvas.height-ey)/TILE)+4;
+  for(let y=cam.tileY-padY;y<cam.tileY+VIEW_TILES_Y+padY;y++){
+    for(let x=cam.tileX-padX;x<cam.tileX+VIEW_TILES_X+padX;x++){
+      if(x>=0&&x<WORLD_W&&y>=0&&y<WORLD_H) continue;
+      const p=tileToScreen(x,y);
+      const v=Math.floor(rng(x,y,603)*assets.forestGrass.length);
+      const img=assets.forestGrass[v];
+      if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+      if(rng(x,y,612)>0.92){
+        ctx.fillStyle="rgba(86,126,72,.18)";
+        ctx.fillRect(p.x+6,p.y+8,20,12);
+      }
+    }
+  }
+
+  const mist=ctx.createRadialGradient(canvas.width*.5,canvas.height*.46,Math.min(canvas.width,canvas.height)*.2,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.85);
+  mist.addColorStop(0,"rgba(196,219,184,0)");
+  mist.addColorStop(.7,"rgba(74,105,84,.08)");
+  mist.addColorStop(1,"rgba(8,14,12,.54)");
+  ctx.fillStyle=mist;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const pulse=(Math.sin(now*0.0005)+1)*0.5;
+  ctx.strokeStyle="rgba(43,65,48," + (0.45+pulse*0.1).toFixed(3) + ")";
+  ctx.lineWidth=2;
+  ctx.strokeRect(sx-1,sy-1,ex-sx+2,ey-sy+2);
+}
+
+function drawMirrorCaveScene(now){
+  ctx.imageSmoothingEnabled=false;
+
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const cam=getCamera();
   for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
-    const mix=Math.floor(rng(x,y,4)*assets.grass.length);
     const p=tileToScreen(x,y);
-    const img=assets.grass[mix];
+    const k=keyOf(x,y);
+    if(!isTileInCurrentZone(x,y)) continue;
+    const noise=rng(x,y,222);
+    if(mirrorCave.blocked.has(k)){
+      ctx.fillStyle=noise>0.5 ? palette.cave[1] : palette.cave[3];
+    } else {
+      ctx.fillStyle=noise>0.5 ? palette.cave[0] : "#39414d";
+    }
+    ctx.fillRect(p.x,p.y,32,32);
+    if(mirrorCave.walls.has(k)){
+      ctx.fillStyle="rgba(144,156,176,.24)";
+      ctx.fillRect(p.x,p.y,32,6);
+    }
+  }
+  const cp=tileToScreen(mirrorCave.chest.x, mirrorCave.chest.y);
+  const chestState=getMirrorCaveChestState();
+  drawSoftShadow(cp.x+16,cp.y+26,10,4,.2);
+  ctx.fillStyle="#6b4c2f"; ctx.fillRect(cp.x+6,cp.y+10,20,14);
+  if(chestState==="open"){
+    ctx.fillStyle="#4c3927"; ctx.fillRect(cp.x+6,cp.y+8,20,4);
+    ctx.fillStyle="#d6bc7f"; ctx.fillRect(cp.x+6,cp.y+11,20,2);
+  } else {
+    ctx.fillStyle="#b58f56"; ctx.fillRect(cp.x+6,cp.y+10,20,4);
+    ctx.fillStyle="#d6bc7f"; ctx.fillRect(cp.x+14,cp.y+14,4,6);
+    if(chestState==="sealed"){
+      ctx.fillStyle="#7ea8dc";
+      ctx.fillRect(cp.x+9,cp.y+15,14,2);
+      ctx.fillRect(cp.x+15,cp.y+12,2,8);
+    }
+  }
+  const ep=tileToScreen(mirrorCave.exit.x, mirrorCave.exit.y);
+  ctx.fillStyle="rgba(155,170,189,.2)"; ctx.fillRect(ep.x+4,ep.y+4,24,24);
+  ctx.strokeStyle="rgba(199,214,236,.5)"; ctx.strokeRect(ep.x+4.5,ep.y+4.5,23,23);
+  ctx.fillStyle="#c7d6ec"; ctx.font="bold 10px monospace"; ctx.fillText("EXIT", ep.x+6, ep.y+19);
+  const echoPersistent=getPersistentObject("echo_fragment_object");
+  const echoCollected=Boolean(echoPersistent.collected) || getItemQuantity("echo_fragment")>0;
+  const stillWaterStage=getStillWaterQuestStage();
+  if(!echoCollected && stillWaterStage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+    const fp=tileToScreen(12,5);
+    const pulse=0.45+Math.sin(now*0.006)*0.2;
+    ctx.fillStyle="rgba(146,192,246," + pulse.toFixed(3) + ")";
+    ctx.beginPath();
+    ctx.moveTo(fp.x+16,fp.y+7);
+    ctx.lineTo(fp.x+22,fp.y+17);
+    ctx.lineTo(fp.x+16,fp.y+25);
+    ctx.lineTo(fp.x+10,fp.y+17);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle="rgba(214,234,255,.82)";
+    ctx.stroke();
+  }
+
+  mirrorCaveWolves.forEach((wolf)=>{
+    if(wolf.hp<=0) return;
+    drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.25,8);
+    drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+  });
+  drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2);
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  ctx.fillStyle="rgba(8,10,14,.2)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+  drawTransitionFade(now);
+}
+function drawAbandonedTollhouseScene(now){
+  ctx.imageSmoothingEnabled=false;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cam=getCamera();
+  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
+    const p=tileToScreen(x,y);
+    const k=keyOf(x,y);
+    if(!isTileInCurrentZone(x,y)) continue;
+    const noise=rng(x,y,377);
+    if(abandonedTollhouse.blocked.has(k)){
+      ctx.fillStyle=noise>0.5 ? palette.tollhouse[3] : "#392b1f";
+    } else {
+      ctx.fillStyle=noise>0.5 ? palette.tollhouse[0] : palette.tollhouse[1];
+    }
+    ctx.fillRect(p.x,p.y,32,32);
+    if(abandonedTollhouse.walls.has(k)){
+      ctx.fillStyle="rgba(34,25,18,.44)";
+      ctx.fillRect(p.x,p.y,32,6);
+    }
+  }
+  const barrelTiles=[{x:8,y:9},{x:9,y:11},{x:18,y:7},{x:20,y:6},{x:14,y:11}];
+  barrelTiles.forEach((tile,idx)=>{
+    const bp=tileToScreen(tile.x,tile.y);
+    const type=idx%2===0 ? "barrel" : "crate";
+    const sprite=assets.props.sprites[type];
+    if(sprite && sprite.complete && sprite.naturalWidth>0) ctx.drawImage(sprite,bp.x,bp.y,32,32);
+  });
+  const chestState=getTollhouseChestState();
+  const cp=tileToScreen(abandonedTollhouse.chest.x, abandonedTollhouse.chest.y);
+  drawSoftShadow(cp.x+16,cp.y+26,10,4,.2);
+  ctx.fillStyle="#5f4228"; ctx.fillRect(cp.x+6,cp.y+10,20,14);
+  if(chestState==="open"){
+    ctx.fillStyle="#3f2e20"; ctx.fillRect(cp.x+6,cp.y+8,20,4);
+  } else {
+    ctx.fillStyle="#b58f56"; ctx.fillRect(cp.x+6,cp.y+10,20,4);
+    if(chestState==="locked"){
+      ctx.fillStyle="#d9d0af"; ctx.fillRect(cp.x+14,cp.y+14,4,6);
+    }
+  }
+  const ep=tileToScreen(abandonedTollhouse.exit.x, abandonedTollhouse.exit.y);
+  ctx.fillStyle="rgba(190,162,133,.2)"; ctx.fillRect(ep.x+4,ep.y+4,24,24);
+  ctx.strokeStyle="rgba(226,208,186,.6)"; ctx.strokeRect(ep.x+4.5,ep.y+4.5,23,23);
+  ctx.fillStyle="#efdac2"; ctx.font="bold 10px monospace"; ctx.fillText("EXIT", ep.x+6, ep.y+19);
+  tollhouseBandits.forEach((bandit)=>{
+    if(bandit.hp<=0) return;
+    drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.28,8.5);
+    drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.83, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit));
+  });
+  if(!rookTollkeeperDefeated && rookTollkeeper.hp>0){
+    drawEntityRing(rookTollkeeper.px/TILE,rookTollkeeper.py/TILE,"rgba(255,84,84,__A__)",0.45,10.5);
+    drawHumanoid(assets.sprites.rook, rookTollkeeper.px/TILE, rookTollkeeper.py/TILE, rookTollkeeper.facing, rookTollkeeper.moving, 0.92, "", hitVisualAlpha(rookTollkeeper), {x:rookTollkeeper.recoilX+rookTollkeeper.attackLungeX,y:rookTollkeeper.recoilY+rookTollkeeper.attackLungeY}, attackPose(rookTollkeeper));
+  }
+  drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2);
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  const currentTarget=getCurrentCombatTarget(5);
+  const hostileLabelEntries=[...tollhouseBandits, rookTollkeeper]
+    .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
+    .map((hostile)=>({
+      text:(hostile===currentTarget ? "[Target] " : "") + hostileLabel(hostile) + " " + hostile.hp + "/" + hostile.maxHp,
+      tx:hostile.px/TILE,
+      ty:hostile.py/TILE,
+      priority:hostile===currentTarget ? 4 : 1
+    }));
+  drawWorldLabels([{text:"Wayfarer", tx:player.px/TILE, ty:player.py/TILE, priority:2}, ...hostileLabelEntries, {text:"Abandoned Tollhouse", tx:12, ty:16, priority:0}]);
+  drawTransitionFade(now);
+}
+
+function drawWorld(){
+  ctx.imageSmoothingEnabled=false;
+
+  const now=performance.now();
+  const shakeActive=now<cameraShakeUntil;
+  const shakeMagnitude=shakeActive ? cameraShakeStrength*Math.max(0.15, (cameraShakeUntil-now)/180) : 0;
+  const shakeX=shakeActive ? (Math.random()*2-1)*shakeMagnitude : 0;
+  const shakeY=shakeActive ? (Math.random()*2-1)*shakeMagnitude : 0;
+  ctx.save();
+  if(shakeActive){
+    ctx.translate(Math.round(shakeX), Math.round(shakeY));
+  } else {
+    cameraShakeStrength=0;
+  }
+  if(isInMirrorCave){
+    drawMirrorCaveScene(now);
+    drawFloatingTexts(now);
+    ctx.restore();
+    return;
+  }
+  if(isInAbandonedTollhouse){
+    drawAbandonedTollhouseScene(now);
+    drawFloatingTexts(now);
+    ctx.restore();
+    return;
+  }
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cam=getCamera();
+  drawOutdoorBackdrop(cam, now);
+  const padX=Math.ceil(Math.max(cam.offsetX, canvas.width-(cam.offsetX+VIEW_TILES_X*TILE))/TILE)+3;
+  const padY=Math.ceil(Math.max(cam.offsetY, canvas.height-(cam.offsetY+VIEW_TILES_Y*TILE))/TILE)+3;
+  for(let y=cam.tileY-padY;y<cam.tileY+VIEW_TILES_Y+padY;y++) for(let x=cam.tileX-padX;x<cam.tileX+VIEW_TILES_X+padX;x++){
+    const p=tileToScreen(x,y);
+    if(x<0 || y<0 || x>=WORLD_W || y>=WORLD_H) continue;
+    const n=layeredNoise(x,y);
+    const n2=layeredNoise(x+2.2,y+1.6)*0.35 + layeredNoise(x-3.4,y-0.8)*0.25;
+    const tone=Math.max(0, Math.min(0.999, n*0.62 + n2*0.75));
+    const mix=Math.min(assets.grass.length-1, Math.floor(tone*assets.grass.length));
+    const region=getOutdoorRegionIdAt(x,y);
+    const inForest=region==="eastern_woods" || (region==="north_road" && rng(x,y,211)>0.45);
+    const forestMix=Math.min(assets.forestGrass.length-1, Math.floor((layeredNoise(x+5,y+3)+rng(x,y,212)*0.2)*assets.forestGrass.length)%assets.forestGrass.length);
+    const img=inForest ? assets.forestGrass[forestMix] : assets.grass[mix];
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    if(!inForest && layeredNoise(x+13,y+7)>0.8){
+      ctx.fillStyle="rgba(188,216,151,.012)";
+      ctx.fillRect(p.x+1,p.y+1,30,30);
+    }
+    if(world.roadTiles.has(keyOf(x,y))){
+      ctx.fillStyle="rgba(77,109,63,.04)";
+      ctx.fillRect(p.x,p.y,32,32);
+    }
   }
 
   world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){
@@ -1680,25 +5323,69 @@ function drawWorld(){
     if(!east) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,64)*assets.roadEdge.length)], p.x, p.y, 1);
     if(!south) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,66)*assets.roadEdge.length)], p.x, p.y, 2);
     if(!west) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,68)*assets.roadEdge.length)], p.x, p.y, 3);
+
+    if(!north || !south || !east || !west){
+      ctx.fillStyle="rgba(84,118,64,.1)";
+      if(!north) ctx.fillRect(p.x+2,p.y+1,28,2);
+      if(!south) ctx.fillRect(p.x+2,p.y+29,28,2);
+      if(!east) ctx.fillRect(p.x+29,p.y+2,2,28);
+      if(!west) ctx.fillRect(p.x+1,p.y+2,2,28);
+    }
+    if((north&&south&&east&&west) || ((!north&&!south)&&(east||west)) || ((!east&&!west)&&(north||south))){
+      ctx.fillStyle="rgba(121,95,64,.11)";
+      ctx.fillRect(p.x+11,p.y+11,10,10);
+      ctx.fillStyle="rgba(203,176,138,.045)";
+      ctx.fillRect(p.x+13,p.y+13,6,2);
+    }
   } });
 
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondWater.has(k)) continue;
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
     const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
-    const t=performance.now()*0.002, rip=(Math.sin(t*3+x*1.1+y*.8)+1)*.5;
-    ctx.fillStyle="rgba(188,228,255," + (.02+rip*.05).toFixed(3) + ")"; ctx.fillRect(p.x+3,p.y+6,TILE-10,1);
+    const t=performance.now()*0.0014, rip=(Math.sin(t*2+x*0.8+y*.6)+1)*.5;
+    const mirrorAura=(x>=25&&x<=30&&y>=12&&y<=17) ? 0.065 : 0.016;
+    ctx.fillStyle="rgba(188,228,255," + (.014+rip*.03+mirrorAura).toFixed(3) + ")"; ctx.fillRect(p.x+4,p.y+7,TILE-12,1);
     if(edge){
-      ctx.fillStyle="rgba(224,244,255," + (.05+rip*.05).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1);
+      ctx.fillStyle="rgba(224,244,255," + (.035+rip*.03).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1);
       if(assets.water.edge.complete&&assets.water.edge.naturalWidth>0) ctx.drawImage(assets.water.edge,p.x,p.y,32,32);
+    }
+    if(rng(x,y,402)>0.92){
+      ctx.fillStyle="rgba(201,240,255,.25)";
+      ctx.fillRect(p.x+10,p.y+10,4,1);
+      ctx.fillRect(p.x+14,p.y+9,2,1);
+    }
+    if(rng(x,y,409)>0.9){
+      ctx.fillStyle="rgba(176,225,255,.2)";
+      ctx.fillRect(p.x+7,p.y+20,8,1);
     }
   }
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondShore.has(k)) continue;
     const p=tileToScreen(x,y); const img=assets.shore[Math.floor(rng(x,y,33)*assets.shore.length)]; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(rng(x,y,491)>0.78){
+      ctx.fillStyle="rgba(86,121,74,.42)";
+      ctx.fillRect(p.x+5,p.y+14,2,8);
+      ctx.fillRect(p.x+8,p.y+15,1,7);
+    }
+    if(rng(x,y,529)>0.83){
+      ctx.fillStyle="rgba(198,214,162,.14)";
+      ctx.fillRect(p.x+11,p.y+10,4,1);
+    }
+    if(rng(x,y,535)>0.9){
+      ctx.fillStyle="rgba(116,149,94,.52)";
+      ctx.fillRect(p.x+21,p.y+15,1,6);
+      ctx.fillRect(p.x+23,p.y+14,1,7);
+    }
   }
 
-  world.buildings.forEach(b=>{
+  world.buildings.forEach((b,bIndex)=>{
+    const sprite=atlasManifests.buildings.sprites[b.spriteId];
+    const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
+    const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
+    const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
+    const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
+
     for(let ry=0; ry<b.h; ry++){
       const right = tileToScreen(b.x+b.w, b.y+ry);
       drawShadowTile(assets.shadow.buildingRight, right.x+4, right.y+3, .9);
@@ -1707,23 +5394,67 @@ function drawWorld(){
       const bottom = tileToScreen(b.x+rx, b.y+b.h);
       drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
     }
-    b.tileRows.forEach((row,ry)=> row.forEach((key,rx)=> { const p=tileToScreen(b.x+rx,b.y+ry); const img=assets.building[key]; if(img&&img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32); }));
+
+    const didDraw=USE_PRODUCTION_BUILDING_ATLAS
+      ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh)
+      : false;
+    if(!didDraw){
+      warnMissingAssetOnce("building_sprite", b.spriteId);
+      drawBuildingFallbackSprite(b);
+      return;
+    }
+
+    const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
+    ctx.fillStyle="rgba(94,72,54,.9)";
+    ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
   });
 
-  world.props.forEach((prop)=>{
+  const propsBehind=world.props.filter((prop)=>prop.layer!=="above_entities");
+  const propsAbove=world.props.filter((prop)=>prop.layer==="above_entities");
+  propsBehind.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const img = assets.props.sprites[prop.type];
-    if(!img || !img.complete || img.naturalWidth<=0) return;
+    if(!img || !img.complete || img.naturalWidth<=0){
+      warnMissingAssetOnce("prop_sprite", prop.type);
+      drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
+      return;
+    }
     if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
+    if(prop.type==="handcart"||prop.type==="bench"||prop.type==="noticeBoard") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
     if(prop.type==="sack"||prop.type==="stonePile") drawSoftShadow(p.x+16,p.y+26,8,3,.16);
     if(prop.type==="bush"||prop.type==="grassTuft") drawSoftShadow(p.x+16,p.y+26,9,4,.14);
     if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
     ctx.drawImage(img,p.x,p.y,32,32);
   });
+  if(getStillWaterQuestStage()===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+    drawMirrorPondInspectionMarker(now);
+  }
+  const pondFocus=tileToScreen(pond.cx, pond.cy);
+  const pondGlow=ctx.createRadialGradient(pondFocus.x+16,pondFocus.y+12,8,pondFocus.x+16,pondFocus.y+12,92);
+  pondGlow.addColorStop(0,"rgba(173,214,255,.13)");
+  pondGlow.addColorStop(.55,"rgba(120,174,220,.07)");
+  pondGlow.addColorStop(1,"rgba(120,174,220,0)");
+  ctx.fillStyle=pondGlow;
+  ctx.fillRect(pondFocus.x-96,pondFocus.y-80,210,180);
+  const caveEntrancePos=tileToScreen(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y);
+  ctx.fillStyle="rgba(23,29,38,.9)";
+  ctx.beginPath();
+  ctx.moveTo(caveEntrancePos.x+6,caveEntrancePos.y+26);
+  ctx.lineTo(caveEntrancePos.x+16,caveEntrancePos.y+8);
+  ctx.lineTo(caveEntrancePos.x+26,caveEntrancePos.y+26);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle="rgba(168,186,204,.78)";
+  ctx.stroke();
+  const tollhouseDoorPos=tileToScreen(NORTH_ROAD_TOLLHOUSE_ENTRY.x, NORTH_ROAD_TOLLHOUSE_ENTRY.y);
+  ctx.fillStyle="rgba(71,49,32,.92)";
+  ctx.fillRect(tollhouseDoorPos.x+7,tollhouseDoorPos.y+6,18,22);
+  ctx.strokeStyle="rgba(196,164,128,.75)";
+  ctx.strokeRect(tollhouseDoorPos.x+7.5,tollhouseDoorPos.y+6.5,17,21);
 
   world.fences.forEach((f,i)=>{
     const p=tileToScreen(f.x,f.y);
-    drawShadowTile(assets.shadow.softTile,p.x+4,p.y+4,.56);
+    drawShadowTile(assets.shadow.softTile,p.x+4,p.y+4,.42);
     const img=assets.fence[i%assets.fence.length];
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
   });
@@ -1739,19 +5470,21 @@ function drawWorld(){
     const k = keyOf(x,y);
     if(world.roadTiles.has(k) || world.pondWater.has(k) || world.pondShore.has(k) || world.pondNearEdge.has(k) || world.blocked.has(k)) continue;
     const chance = rng(x,y,131);
-    if(chance > 0.085) continue;
+    if(chance > 0.045) continue;
     const p = tileToScreen(x,y);
     const detail = assets.detail[Math.floor(rng(x,y,137)*assets.detail.length)];
     if(detail && detail.complete && detail.naturalWidth>0) ctx.drawImage(detail,p.x,p.y,32,32);
   }
 
+  if(showCollisionOverlay) drawCollisionOverlay();
   if(showGrid) drawAlignmentGrid();
 
-  function zoneLabel(text,tx,ty){ const p=tileToScreen(tx,ty); const w=text.length*7+12; ctx.fillStyle="rgba(7,11,18,.85)"; ctx.fillRect(p.x-3,p.y-31,w,16); ctx.strokeStyle="rgba(204,216,236,.62)"; ctx.strokeRect(p.x-3.5,p.y-31.5,w,16); ctx.fillStyle="#eff4ff"; ctx.font="bold 11px monospace"; ctx.fillText(text,p.x+2,p.y-19); }
-  const zoneName=currentZoneName();
-  if(zoneName==="Hearthvale Square") zoneLabel("Hearthvale Square",12,7);
-  if(zoneName==="Mirror Pond") zoneLabel("Mirror Pond",23,12);
-  if(zoneName==="Forest Edge") zoneLabel("Forest Edge",30,4);
+  const zoneName=currentLocalAreaName();
+  const zoneLabelEntries=[];
+  if(zoneName==="North Road") zoneLabelEntries.push({ text:"North Road", tx:13, ty:1, priority:0 });
+  if(zoneName==="Hearthvale Square") zoneLabelEntries.push({ text:"Hearthvale Square", tx:12, ty:7, priority:0 });
+  if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:26, ty:12, priority:0 });
+  if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
 
   drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
   wolves.forEach((wolf)=>{
@@ -1760,14 +5493,30 @@ function drawWorld(){
   });
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
 
-  const tint=0.08+Math.max(0,Math.sin(performance.now()/9000))*.07;
-  ctx.fillStyle="rgba(9,16,26," + tint.toFixed(3) + ")"; ctx.fillRect(0,0,canvas.width,canvas.height);
+  const area=currentLocalAreaName();
+  const baseTint=area==="Hearthvale Square" ? 0.045 : area==="Mirror Pond" ? 0.065 : area==="Eastern Woods" ? 0.095 : area==="North Road" ? 0.09 : 0.08;
+  const tint=baseTint+Math.max(0,Math.sin(performance.now()/9000))*.04;
+  const tintColor=area==="Hearthvale Square" ? "rgba(35,24,14," : area==="Mirror Pond" ? "rgba(18,26,42," : "rgba(9,16,26,";
+  ctx.fillStyle=tintColor + tint.toFixed(3) + ")"; ctx.fillRect(0,0,canvas.width,canvas.height);
   const edge=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,Math.min(canvas.width,canvas.height)*.35,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.68);
   edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.78,"rgba(1,6,10,.1)"); edge.addColorStop(1,"rgba(1,6,10,.46)");
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
+  drawTransitionFade(now);
+  drawFloatingTexts(now);
+  ctx.restore();
 }
 
 function update(dt,now){
+  if(transitionState.active){
+    const elapsed=now-transitionState.start;
+    if(!transitionState.switched && elapsed>=transitionState.duration/2){
+      transitionState.switched=true;
+      transitionState.onSwitch?.();
+    }
+    if(elapsed>=transitionState.duration){
+      transitionState.active=false;
+    }
+  }
   player.recoilX*=.8; player.recoilY*=.8; player.attackLungeX*=.74; player.attackLungeY*=.74;
   wolves.forEach((wolf)=>{
     wolf.recoilX*=.82;
@@ -1789,12 +5538,17 @@ let last=performance.now();
 function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
 
 const loadedFromSave=loadGame();
+enforceAllVillageNpcTerrainValidation(true);
+updateDialogueViewportConstraints();
 ensureStarterEquipment();
+maybeAnnounceVerticalSliceEndpoint();
 log("System: Artistic rebuild slice loaded.");
 if(loadedFromSave) log("System: Continuing from saved progress.");
 else log("System: New journey started.");
 log("System: Press K at any time to save manually.");
 log("System: Speak to Edrin Vale and use E to interact with nearby objects.");
+log("System: Hunter Garran waits near Hearthvale's eastern road.");
+log("System: Merchant Rowan now buys and sells survival goods.");
 updateSidebar();
 requestAnimationFrame(loop);
 </script>
