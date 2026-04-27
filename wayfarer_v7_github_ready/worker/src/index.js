@@ -1810,8 +1810,8 @@ const HEARTHVALE_LANDMARKS = Object.freeze({
   mainCrossroads:{ x:16, y:11 },
   townCenterSpawn:{ x:18, y:11 },
   merchantRowanArea:{ x:20, y:10 },
-  edrinValeArea:{ x:24, y:14 },
-  hunterGarranArea:{ x:27, y:14 },
+  edrinValeArea:{ x:16, y:12 },
+  hunterGarranArea:{ x:30, y:11 },
   noticeSignNode:{ x:26, y:11 },
   zoneExits:Object.freeze({
     mirrorCaveEntrance:{ x:34, y:11 },
@@ -2015,9 +2015,149 @@ world.zones.push(
 const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
 const player={x:HEARTHVALE_LANDMARKS.townCenterSpawn.x,y:HEARTHVALE_LANDMARKS.townCenterSpawn.y,px:HEARTHVALE_LANDMARKS.townCenterSpawn.x*TILE,py:HEARTHVALE_LANDMARKS.townCenterSpawn.y*TILE,targetX:HEARTHVALE_LANDMARKS.townCenterSpawn.x,targetY:HEARTHVALE_LANDMARKS.townCenterSpawn.y,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
-const npc={x:HEARTHVALE_LANDMARKS.edrinValeArea.x,y:HEARTHVALE_LANDMARKS.edrinValeArea.y,name:"Edrin Vale",facing:"left"};
-const hunterNpc={x:HEARTHVALE_LANDMARKS.hunterGarranArea.x,y:HEARTHVALE_LANDMARKS.hunterGarranArea.y,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
-const vendorNpc={x:HEARTHVALE_LANDMARKS.merchantRowanArea.x,y:HEARTHVALE_LANDMARKS.merchantRowanArea.y,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
+const NAMED_NPC_ANCHORS = {
+  edrin_vale:{
+    role:"civic_narrative_focal",
+    home:{ x:HEARTHVALE_LANDMARKS.edrinValeArea.x, y:HEARTHVALE_LANDMARKS.edrinValeArea.y },
+    idleRadius:2,
+    interactionFacingZone:["left","down"],
+    collisionFootprint:{ w:1, h:1 },
+    landOnlyValidation:true
+  },
+  hunter_garran:{
+    role:"hunter_outdoorsman_eastern_road",
+    home:{ x:HEARTHVALE_LANDMARKS.hunterGarranArea.x, y:HEARTHVALE_LANDMARKS.hunterGarranArea.y },
+    idleRadius:2,
+    interactionFacingZone:["left","down"],
+    collisionFootprint:{ w:1, h:1 },
+    landOnlyValidation:true
+  },
+  merchant_rowan:{
+    role:"merchant_mercantile_frontage",
+    home:{ x:HEARTHVALE_LANDMARKS.merchantRowanArea.x, y:HEARTHVALE_LANDMARKS.merchantRowanArea.y },
+    idleRadius:1,
+    interactionFacingZone:["down","left","right"],
+    collisionFootprint:{ w:1, h:1 },
+    landOnlyValidation:true
+  }
+};
+const npc={id:"npc_edrin",anchorId:"edrin_vale",x:NAMED_NPC_ANCHORS.edrin_vale.home.x,y:NAMED_NPC_ANCHORS.edrin_vale.home.y,targetX:NAMED_NPC_ANCHORS.edrin_vale.home.x,targetY:NAMED_NPC_ANCHORS.edrin_vale.home.y,px:NAMED_NPC_ANCHORS.edrin_vale.home.x*TILE,py:NAMED_NPC_ANCHORS.edrin_vale.home.y*TILE,name:"Edrin Vale",displayLabel:"Edrin Vale",facing:"left",speed:92,moving:false,nextDecisionAt:0};
+const hunterNpc={id:"npc_hunter_garran",anchorId:"hunter_garran",x:NAMED_NPC_ANCHORS.hunter_garran.home.x,y:NAMED_NPC_ANCHORS.hunter_garran.home.y,targetX:NAMED_NPC_ANCHORS.hunter_garran.home.x,targetY:NAMED_NPC_ANCHORS.hunter_garran.home.y,px:NAMED_NPC_ANCHORS.hunter_garran.home.x*TILE,py:NAMED_NPC_ANCHORS.hunter_garran.home.y*TILE,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left",speed:94,moving:false,nextDecisionAt:0};
+const vendorNpc={id:"npc_merchant_rowan",anchorId:"merchant_rowan",x:NAMED_NPC_ANCHORS.merchant_rowan.home.x,y:NAMED_NPC_ANCHORS.merchant_rowan.home.y,targetX:NAMED_NPC_ANCHORS.merchant_rowan.home.x,targetY:NAMED_NPC_ANCHORS.merchant_rowan.home.y,px:NAMED_NPC_ANCHORS.merchant_rowan.home.x*TILE,py:NAMED_NPC_ANCHORS.merchant_rowan.home.y*TILE,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down",speed:86,moving:false,nextDecisionAt:0};
+const namedVillageNpcs=[npc,hunterNpc,vendorNpc];
+const ambientVillageNpcs=[];
+const npcTerrainForbiddenTiles=new Set();
+function fillSetRect(set,x,y,w,h){
+  for(let tx=x;tx<x+w;tx++){
+    for(let ty=y;ty<y+h;ty++){
+      set.add(keyOf(tx,ty));
+    }
+  }
+}
+function rebuildNpcTerrainForbiddenTiles(){
+  npcTerrainForbiddenTiles.clear();
+  world.blocked.forEach((tileKey)=>npcTerrainForbiddenTiles.add(tileKey));
+  world.pondBlocked.forEach((tileKey)=>npcTerrainForbiddenTiles.add(tileKey));
+  world.pondShore.forEach((tileKey)=>npcTerrainForbiddenTiles.add(tileKey));
+  world.props.forEach((prop)=>npcTerrainForbiddenTiles.add(keyOf(prop.x,prop.y)));
+  world.buildings.forEach((building)=>{
+    const area=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    fillSetRect(npcTerrainForbiddenTiles, area.x, area.y, area.w, area.h);
+  });
+  npcTerrainForbiddenTiles.add(keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y));
+}
+function isOverworldTerrainBlocked(x,y){
+  const tileKey=keyOf(x,y);
+  return world.blocked.has(tileKey) || world.pondBlocked.has(tileKey) || world.pondShore.has(tileKey);
+}
+function isNpcOnTile(x,y,excludeId){
+  return namedVillageNpcs.some((villageNpc)=>villageNpc.id!==excludeId && villageNpc.targetX===x && villageNpc.targetY===y);
+}
+function isValidNpcLandTile(x,y,excludeId){
+  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
+  if(npcTerrainForbiddenTiles.has(keyOf(x,y))) return false;
+  if(isWorldObjectBlockingTile(x,y)) return false;
+  if(isNpcOnTile(x,y,excludeId)) return false;
+  return true;
+}
+function findNearestValidNpcLandTile(startX,startY,excludeId,maxDepth=16){
+  if(isValidNpcLandTile(startX,startY,excludeId)) return { x:startX, y:startY };
+  const visited=new Set([keyOf(startX,startY)]);
+  const queue=[{ x:startX, y:startY, depth:0 }];
+  for(let cursor=0;cursor<queue.length;cursor++){
+    const node=queue[cursor];
+    if(node.depth>=maxDepth) continue;
+    const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
+    for(const [dx,dy] of neighbors){
+      const nx=node.x+dx;
+      const ny=node.y+dy;
+      const tileKey=keyOf(nx,ny);
+      if(visited.has(tileKey)) continue;
+      visited.add(tileKey);
+      if(isValidNpcLandTile(nx,ny,excludeId)) return { x:nx, y:ny };
+      queue.push({ x:nx, y:ny, depth:node.depth+1 });
+    }
+  }
+  return null;
+}
+function setNpcTile(npcEntity,x,y,alignImmediately=false){
+  npcEntity.x=x;
+  npcEntity.y=y;
+  npcEntity.targetX=x;
+  npcEntity.targetY=y;
+  if(alignImmediately){
+    npcEntity.px=x*TILE;
+    npcEntity.py=y*TILE;
+    npcEntity.moving=false;
+  }
+}
+function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
+  const anchor=NAMED_NPC_ANCHORS[npcEntity.anchorId];
+  if(!anchor) return;
+  if(!isValidNpcLandTile(anchor.home.x, anchor.home.y, npcEntity.id)){
+    const relocatedAnchor=findNearestValidNpcLandTile(anchor.home.x, anchor.home.y, npcEntity.id, 24);
+    if(relocatedAnchor){
+      anchor.home.x=relocatedAnchor.x;
+      anchor.home.y=relocatedAnchor.y;
+    }
+  }
+  if(!isValidNpcLandTile(npcEntity.targetX, npcEntity.targetY, npcEntity.id)){
+    const safeTile=findNearestValidNpcLandTile(anchor.home.x, anchor.home.y, npcEntity.id, 24);
+    if(safeTile) setNpcTile(npcEntity, safeTile.x, safeTile.y, alignImmediately);
+  }
+}
+function updateVillageNpcWander(npcEntity,now){
+  const anchor=NAMED_NPC_ANCHORS[npcEntity.anchorId];
+  if(!anchor) return;
+  ensureNpcAnchorAndPositionValid(npcEntity);
+  if(now<(npcEntity.nextDecisionAt||0)) return;
+  const directionOptions=[[0,0],[1,0],[-1,0],[0,1],[0,-1]];
+  for(let idx=directionOptions.length-1;idx>0;idx--){
+    const swapIndex=Math.floor(Math.random()*(idx+1));
+    const next=directionOptions[idx];
+    directionOptions[idx]=directionOptions[swapIndex];
+    directionOptions[swapIndex]=next;
+  }
+  for(const [dx,dy] of directionOptions){
+    const nextX=npcEntity.targetX+dx;
+    const nextY=npcEntity.targetY+dy;
+    const homeDistance=Math.abs(nextX-anchor.home.x)+Math.abs(nextY-anchor.home.y);
+    if(homeDistance>anchor.idleRadius) continue;
+    if(!isValidNpcLandTile(nextX,nextY,npcEntity.id)) continue;
+    setNpcTile(npcEntity, nextX, nextY, true);
+    if(dx>0) npcEntity.facing="right";
+    else if(dx<0) npcEntity.facing="left";
+    else if(dy>0) npcEntity.facing="down";
+    else if(dy<0) npcEntity.facing="up";
+    break;
+  }
+  npcEntity.nextDecisionAt=now+900+Math.random()*900;
+}
+function enforceAllVillageNpcTerrainValidation(alignImmediately=false){
+  rebuildNpcTerrainForbiddenTiles();
+  [...namedVillageNpcs, ...ambientVillageNpcs].forEach((npcEntity)=>ensureNpcAnchorAndPositionValid(npcEntity, alignImmediately));
+}
+enforceAllVillageNpcTerrainValidation(true);
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
@@ -4859,10 +4999,8 @@ function canMoveTo(x,y){
   } else if(isInAbandonedTollhouse){
     if(abandonedTollhouse.blocked.has(keyOf(x,y))) return false;
   } else {
-    if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
-    if(x===npc.x&&y===npc.y) return false;
-    if(x===vendorNpc.x&&y===vendorNpc.y) return false;
-    if(x===hunterNpc.x&&y===hunterNpc.y) return false;
+    if(isOverworldTerrainBlocked(x,y)) return false;
+    if(isNpcOnTile(x,y,null)) return false;
   }
   if(getActiveHostiles().some((hostile)=>hostile.hp>0&&x===hostile.targetX&&y===hostile.targetY)) return false;
   return true;
@@ -5046,10 +5184,8 @@ function canHostileMoveTo(x,y,self){
   } else if(isInAbandonedTollhouse){
     if(abandonedTollhouse.blocked.has(keyOf(x,y))) return false;
   } else {
-    if(world.blocked.has(keyOf(x,y))) return false;
-    if(x===npc.x&&y===npc.y) return false;
-    if(x===vendorNpc.x&&y===vendorNpc.y) return false;
-    if(x===hunterNpc.x&&y===hunterNpc.y) return false;
+    if(isOverworldTerrainBlocked(x,y)) return false;
+    if(isNpcOnTile(x,y,null)) return false;
   }
   if(getActiveHostiles().some((hostile)=>hostile!==self && hostile.hp>0 && hostile.targetX===x && hostile.targetY===y)) return false;
   return true;
@@ -5929,6 +6065,12 @@ function update(dt,now){
       banditAttack(now);
     }
     wolfAttack(now);
+    if(!isInMirrorCave && !isInAbandonedTollhouse){
+      enforceAllVillageNpcTerrainValidation(false);
+      namedVillageNpcs.forEach((villageNpc)=>{
+        updateVillageNpcWander(villageNpc, now);
+      });
+    }
   }
   updateSidebar();
 }
