@@ -37,7 +37,7 @@ const html = String.raw`<!DOCTYPE html>
       --accent:#8fb6ff;
     }
     * { box-sizing: border-box; }
-    #gamePanel, #game, #hud, #dialogue, #vendorPanel, #inventoryPanel, #stats, #objective, #logPanel, #brand {
+    #gamePanel, #game, #hud, #dialogue, #vendorPanel, #inventoryPanel, #equipmentPanel, #stats, #objective, #logPanel, #brand {
       user-select: none;
       -webkit-user-select: none;
     }
@@ -70,7 +70,7 @@ const html = String.raw`<!DOCTYPE html>
       height:100%;
       overflow:hidden;
     }
-    #brand,#stats,#objective,#inventoryPanel,#logPanel{padding:12px;}
+    #brand,#stats,#objective,#inventoryPanel,#equipmentPanel,#logPanel{padding:12px;}
     h1{margin:0 0 6px;font-size:24px;letter-spacing:.4px}
     .sub{font-size:13px;color:var(--muted)}
     .tag{display:inline-block;margin-top:8px;padding:5px 9px;border:1px solid #435065;border-radius:999px;font-size:11px;color:#c7d6ec}
@@ -90,16 +90,39 @@ const html = String.raw`<!DOCTYPE html>
       color:#d2dded;
       flex:1 1 auto;
     }
-    #objective,#inventoryPanel{
-      flex:0 1 auto;
-      overflow:auto;
+    #objective{
+      flex:0 0 auto;
+      min-height:64px;
+      overflow:visible;
     }
-    #inventoryList,#equipmentList{line-height:1.45}
+    #objectiveText{
+      line-height:1.4;
+      white-space:normal;
+      overflow-wrap:anywhere;
+    }
+    #inventoryPanel{
+      display:flex;
+      flex-direction:column;
+      flex:0 0 auto;
+      min-height:0;
+      overflow:hidden;
+    }
+    #inventoryList{
+      line-height:1.45;
+      max-height:170px;
+      overflow-y:auto;
+      padding-right:2px;
+    }
+    #equipmentPanel{
+      flex:0 0 auto;
+      overflow:visible;
+    }
+    #equipmentList{line-height:1.45}
     #logPanel{
       display:flex;
       flex-direction:column;
-      flex:1 1 auto;
-      min-height:190px;
+      flex:1 1 220px;
+      min-height:170px;
       overflow:hidden;
     }
     #gamePanel{position:relative;overflow:hidden}
@@ -233,8 +256,10 @@ const html = String.raw`<!DOCTYPE html>
       <section id="inventoryPanel" class="panel">
         <div class="questTitle">Inventory</div>
         <div id="inventoryList" class="muted">Empty</div>
-        <div class="questTitle" style="margin-top:10px;">Equipment</div>
-        <div id="equipmentList" class="muted"></div>
+      </section>
+      <section id="equipmentPanel" class="panel">
+        <div class="questTitle">Equipment</div>
+        <div id="equipmentList" class="muted">Weapon: Iron Sword (+5)<br>Armor: Leather Armor (+2 DEF)<br>Trinket: None</div>
       </section>
       <section id="logPanel" class="panel">
         <div class="questTitle">Chronicle</div>
@@ -3353,13 +3378,13 @@ function updateSidebar(){
   }
   // Do not re-render vendor rows every sidebar update; replacing DOM each frame
   // can swallow button clicks before click events complete.
-  const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "";
+  const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
   const equippedArmor=getEquippedItem("armor");
   const armorDefense=getEquippedDefenseBonus();
   const armorLine=equippedArmor
     ? (equippedArmor.name + " (+" + armorDefense + " DEF) <span class=\"muted\">Armor active.</span> <button type=\"button\" data-unequip-slot=\"armor\">Remove</button>")
     : "None";
-  const nextEquipmentMarkup="Weapon: " + weaponLine + "<br>Armor: " + armorLine + "<br>Trinket: ";
+  const nextEquipmentMarkup="Weapon: " + weaponLine + "<br>Armor: " + armorLine + "<br>Trinket: None";
   if(nextEquipmentMarkup!==sidebarEquipmentMarkup){
     equipmentList.innerHTML = nextEquipmentMarkup;
     sidebarEquipmentMarkup=nextEquipmentMarkup;
