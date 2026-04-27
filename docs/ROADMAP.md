@@ -55,11 +55,11 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 18. NPC personality foundation
 19. Persistent World Objects
 20. Character Progression Foundation
+21. Combat Balance / Difficulty Curve
+22. Second Quest Chain / Main Story Thread
 
 ## Upcoming Phases
 
-21. Combat Balance / Difficulty Curve
-22. Second Quest Chain
 23. Second Outdoor Region
 24. Second Dungeon / Mini-Boss
 25. Skill Use Progression
