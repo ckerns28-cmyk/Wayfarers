@@ -70,7 +70,7 @@ const html = String.raw`<!DOCTYPE html>
       height:100%;
       overflow:hidden;
     }
-    #brand,#stats,#objective,#inventoryPanel,#logPanel{padding:12px;}
+    #brand,#stats,#objective,#inventoryPanel,#equipmentPanel,#logPanel{padding:12px;}
     h1{margin:0 0 6px;font-size:24px;letter-spacing:.4px}
     .sub{font-size:13px;color:var(--muted)}
     .tag{display:inline-block;margin-top:8px;padding:5px 9px;border:1px solid #435065;border-radius:999px;font-size:11px;color:#c7d6ec}
@@ -90,11 +90,63 @@ const html = String.raw`<!DOCTYPE html>
       color:#d2dded;
       flex:1 1 auto;
     }
-    #objective,#inventoryPanel{
+    #objective{
       flex:0 1 auto;
       overflow:auto;
     }
-    #inventoryList,#equipmentList{line-height:1.45}
+    #inventoryPanel{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      flex:0 0 auto;
+      min-height:0;
+      overflow:hidden;
+    }
+    #inventoryList{
+      line-height:1.45;
+      max-height:clamp(140px, 27vh, 280px);
+      overflow-y:auto;
+      padding-right:4px;
+    }
+    #equipmentPanel{
+      flex:0 0 auto;
+      overflow:hidden;
+    }
+    #equipmentList{
+      line-height:1.45;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .inventory-group{margin:0 0 8px}
+    .inventory-group:last-child{margin-bottom:0}
+    .inventory-group-title{
+      color:var(--gold);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      margin:0 0 4px;
+    }
+    .inventory-entry{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:2px 0;
+    }
+    .inventory-item-actions{display:inline-flex;gap:6px;flex-shrink:0}
+    .sidebar-btn{
+      border:1px solid #4c6281;border-radius:6px;background:#162435;color:#e6ecf5;
+      font:11px ui-monospace,SFMono-Regular,Menlo,monospace;padding:2px 7px;cursor:pointer;
+    }
+    .sidebar-btn:disabled{opacity:.55;cursor:not-allowed}
+    .equipment-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .equipment-text{min-width:0}
     #logPanel{
       display:flex;
       flex-direction:column;
@@ -233,8 +285,10 @@ const html = String.raw`<!DOCTYPE html>
       <section id="inventoryPanel" class="panel">
         <div class="questTitle">Inventory</div>
         <div id="inventoryList" class="muted">Empty</div>
-        <div class="questTitle" style="margin-top:10px;">Equipment</div>
-        <div id="equipmentList" class="muted"></div>
+      </section>
+      <section id="equipmentPanel" class="panel">
+        <div class="questTitle">Equipment</div>
+        <div id="equipmentList" class="muted">Weapon: None<br>Armor: None<br>Trinket: None</div>
       </section>
       <section id="logPanel" class="panel">
         <div class="questTitle">Chronicle</div>
@@ -3325,7 +3379,22 @@ function updateSidebar(){
   }
   let nextInventoryMarkup="Empty";
   if(player.inventory.length>0){
-    nextInventoryMarkup=player.inventory.map((entry)=>{
+    const groupOrder=["equipment","consumables","materials","quest","other"];
+    const groupTitles={
+      equipment:"Equipment",
+      consumables:"Consumables",
+      materials:"Materials",
+      quest:"Quest Items",
+      other:"Other"
+    };
+    const groupedEntries={
+      equipment:[],
+      consumables:[],
+      materials:[],
+      quest:[],
+      other:[]
+    };
+    for(const entry of player.inventory){
       const item=getItemDefinition(entry.itemId);
       const name=item?.name || entry.itemId;
       const equipSlot=item?.type==="weapon"
@@ -3335,17 +3404,32 @@ function updateSidebar(){
           : (item?.type==="trinket" ? "trinket" : null));
       const canEquip=Boolean(equipSlot);
       const equipped=Boolean(item?.id && equipSlot && item.id===player.equipment[equipSlot]);
+      let actionMarkup="";
       if(canEquip){
         const actionLabel=equipped ? "[Equipped]" : "Equip";
         const disabledAttr=equipped ? " disabled" : "";
-        return name + " x" + entry.quantity + " <button type=\"button\" data-equip-item=\"" + item.id + "\" data-equip-slot=\"" + equipSlot + "\"" + disabledAttr + ">" + actionLabel + "</button>";
+        actionMarkup="<button class=\"sidebar-btn\" type=\"button\" data-equip-item=\"" + item.id + "\" data-equip-slot=\"" + equipSlot + "\"" + disabledAttr + ">" + actionLabel + "</button>";
+      } else {
+        const canUse=Boolean(item && item.type==="consumable" && Number.isFinite(item.healAmount) && Math.floor(item.healAmount)>0);
+        if(canUse){
+          actionMarkup="<button class=\"sidebar-btn\" type=\"button\" data-use-item=\"" + item.id + "\">Use</button>";
+        }
       }
-      const canUse=Boolean(item && item.type==="consumable" && Number.isFinite(item.healAmount) && Math.floor(item.healAmount)>0);
-      if(canUse){
-        return name + " x" + entry.quantity + " <button type=\"button\" data-use-item=\"" + item.id + "\">Use</button>";
-      }
-      return name + " x" + entry.quantity;
-    }).join("<br>");
+      let groupKey="other";
+      if(canEquip) groupKey="equipment";
+      else if(item?.type==="consumable") groupKey="consumables";
+      else if(item?.type==="material") groupKey="materials";
+      else if(item?.type==="quest") groupKey="quest";
+      groupedEntries[groupKey].push(
+        "<div class=\"inventory-entry\"><span>" + name + " x" + entry.quantity + "</span>" +
+        (actionMarkup ? "<span class=\"inventory-item-actions\">" + actionMarkup + "</span>" : "") +
+        "</div>"
+      );
+    }
+    nextInventoryMarkup=groupOrder
+      .filter((groupKey)=>groupedEntries[groupKey].length>0)
+      .map((groupKey)=>"<div class=\"inventory-group\"><div class=\"inventory-group-title\">" + groupTitles[groupKey] + "</div>" + groupedEntries[groupKey].join("") + "</div>")
+      .join("");
   }
   if(nextInventoryMarkup!==sidebarInventoryMarkup){
     inventoryList.innerHTML = nextInventoryMarkup;
@@ -3353,13 +3437,20 @@ function updateSidebar(){
   }
   // Do not re-render vendor rows every sidebar update; replacing DOM each frame
   // can swallow button clicks before click events complete.
-  const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "";
+  const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
   const equippedArmor=getEquippedItem("armor");
   const armorDefense=getEquippedDefenseBonus();
   const armorLine=equippedArmor
-    ? (equippedArmor.name + " (+" + armorDefense + " DEF) <span class=\"muted\">Armor active.</span> <button type=\"button\" data-unequip-slot=\"armor\">Remove</button>")
+    ? (equippedArmor.name + " (+" + armorDefense + " DEF) <button class=\"sidebar-btn\" type=\"button\" data-unequip-slot=\"armor\">Remove</button>")
     : "None";
-  const nextEquipmentMarkup="Weapon: " + weaponLine + "<br>Armor: " + armorLine + "<br>Trinket: ";
+  const equippedTrinket=getEquippedItem("trinket");
+  const trinketLine=equippedTrinket
+    ? (equippedTrinket.name + " <button class=\"sidebar-btn\" type=\"button\" data-unequip-slot=\"trinket\">Remove</button>")
+    : "None";
+  const nextEquipmentMarkup=
+    "<div class=\"equipment-row\"><span class=\"equipment-text\">Weapon: " + weaponLine + "</span></div>" +
+    "<div class=\"equipment-row\"><span class=\"equipment-text\">Armor: " + armorLine + "</span></div>" +
+    "<div class=\"equipment-row\"><span class=\"equipment-text\">Trinket: " + trinketLine + "</span></div>";
   if(nextEquipmentMarkup!==sidebarEquipmentMarkup){
     equipmentList.innerHTML = nextEquipmentMarkup;
     sidebarEquipmentMarkup=nextEquipmentMarkup;
