@@ -478,6 +478,15 @@ const palette = {
 };
 
 function log(message){ chat.textContent = message + "\n" + chat.textContent; }
+const logThrottleState=new Map();
+function logThrottled(key,message,cooldownMs){
+  const now=performance.now();
+  const lastAt=logThrottleState.get(key)||0;
+  if(now-lastAt<cooldownMs) return false;
+  logThrottleState.set(key, now);
+  log(message);
+  return true;
+}
 function keyOf(x,y){ return x + "," + y; }
 function rng(x,y,s=1){ return (((x*73856093)^(y*19349663)^(s*83492791))>>>0)%1000/1000; }
 
@@ -1293,7 +1302,6 @@ function handleVendorActionFromTarget(target){
   const buyButton=target.closest?.("button[data-buy-item]");
   const buyItemId=buyButton?.dataset?.buyItem;
   if(buyItemId){
-    console.debug("[Vendor] Buy click:", buyItemId);
     return buyOneItemFromVendor(buyItemId);
   }
   const sellButton=target.closest?.("button[data-sell-item]");
@@ -1767,6 +1775,9 @@ eventSystem.on("world:pond:awakened", ()=>{
 });
 
 const SAVE_KEY="wayfarer.save.v1";
+const SAVE_SCHEMA_VERSION=1;
+const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9]);
+const DEV_DEBUG_TOOLS_ENABLED=true;
 let saveNoticeTimeout=0;
 function showSaveNotice(message){
   saveNotice.textContent=message;
@@ -1791,6 +1802,7 @@ function createSaveData(reason){
   }));
   return {
     version:9,
+    saveSchemaVersion:SAVE_SCHEMA_VERSION,
     reason,
     savedAt:new Date().toISOString(),
     player:{
@@ -1828,7 +1840,7 @@ function createSaveData(reason){
   };
 }
 function validateSaveData(data){
-  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5 && data.version!==6 && data.version!==7 && data.version!==8 && data.version!==9)) return false;
+  if(!data || !SUPPORTED_SAVE_VERSIONS.has(data.version)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -1850,6 +1862,8 @@ function loadGame(){
   try {
     const data=JSON.parse(raw);
     if(!validateSaveData(data)) throw new Error("Invalid save payload");
+    const saveSchemaVersion=Number.isInteger(data.saveSchemaVersion) ? data.saveSchemaVersion : 0;
+    if(saveSchemaVersion>SAVE_SCHEMA_VERSION) log("System: Save schema is newer than this build. Attempting safe load.");
     const savedZoneId=typeof data.player.zoneId==="string" ? data.player.zoneId : getOutdoorRegionIdAt(data.player.position.x, data.player.position.y);
     isInMirrorCave=savedZoneId==="mirror_cave";
     const mapW=isInMirrorCave ? mirrorCave.width : WORLD_W;
@@ -2036,7 +2050,6 @@ vendorList.addEventListener("click",(e)=>{
   const buyButton=target.closest("button[data-buy-item]");
   const buyItemId=buyButton?.dataset?.buyItem;
   if(buyItemId){
-    console.debug("[Vendor] Buy click:", buyItemId);
     buyOneItemFromVendor(buyItemId);
     return;
   }
@@ -2098,7 +2111,7 @@ function enterMirrorCave(){
     currentZoneId="mirror_cave";
     setPlayerTilePosition(mirrorCave.spawn.x, mirrorCave.spawn.y);
     lastLoggedZoneEntryId=currentZoneId;
-    log("Entered Mirror Cave.");
+    logThrottled("transition:entered_mirror_cave", "Entered Mirror Cave.", 1200);
     eventSystem.emit("zone:entered:mirror_cave");
   }, 320);
 }
@@ -2109,7 +2122,7 @@ function exitMirrorCave(){
     currentZoneId="eastern_woods";
     setPlayerTilePosition(mirrorCave.returnTile.x, mirrorCave.returnTile.y);
     lastLoggedZoneEntryId=currentZoneId;
-    log("Returned to Eastern Woods.");
+    logThrottled("transition:exit_mirror_cave", "Returned to Eastern Woods.", 1200);
   }, 320);
 }
 
@@ -2147,7 +2160,7 @@ function updateOutdoorRegionFromPosition(logEntry){
   if(nextZoneId===currentZoneId) return;
   currentZoneId=nextZoneId;
   if(logEntry && lastLoggedZoneEntryId!==currentZoneId){
-    log("Entered " + getCurrentZoneName() + ".");
+    logThrottled("zone_entry:" + currentZoneId, "Entered " + getCurrentZoneName() + ".", 1200);
     lastLoggedZoneEntryId=currentZoneId;
   }
 }
@@ -2282,7 +2295,7 @@ function updateSidebar(){
   const targetCooldownMs=currentTarget ? Math.max(0, getHostileAttackCooldownMs(currentTarget)-(performance.now()-getHostileLastAttackAt(currentTarget))) : 0;
   const targetCooldownText=!currentTarget ? "N/A" : (currentTarget.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
   const interactionPrompt=interactionManager.getPromptText();
-  hud.textContent = "WASD / Arrows : Move\n" + interactionPrompt + "\nSpace : Attack\nH : Use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName +
+  hud.textContent = "WASD / Arrows : Move\n" + interactionPrompt + "\nSpace : Attack\nH : Use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nF6 : Debug Heal\nF7/F8/F9 : Debug Teleport\nF10 : Debug Reset Quest\nShift+F10 : Debug Reset Save\nCurrent Zone : " + zoneName +
     "\nHostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No") +
     "\nCurrent target : " + hostileLabel(currentTarget) +
     "\nTarget strike cd : " + targetCooldownText;
@@ -2304,9 +2317,69 @@ function canMoveTo(x,y){
 
 const keys=new Set();
 let showGrid=false;
+
+const questDefinitionById=new Map((questData.quests||[]).map((quest)=>[quest.id, quest]));
+function resetQuestToNotStarted(questId){
+  const quest=questSystem.getQuest(questId);
+  const definition=questDefinitionById.get(questId);
+  if(!quest || !definition) return false;
+  quest.state=QuestState.NOT_STARTED;
+  quest.status=QuestState.NOT_STARTED;
+  quest.progress=definition.initialProgress || "";
+  quest.objectives=questSystem.normalizeObjectives(definition.objectives||[]);
+  eventSystem.emit("quest:state-changed",{questId,state:quest.state,progress:quest.progress});
+  return true;
+}
+function resetCurrentQuestForDebug(){
+  const priority=["hunters_request","mirror_pond_listening"];
+  const activeOrReady=priority.find((questId)=>{
+    const quest=questSystem.getQuest(questId);
+    return quest && (quest.state===QuestState.ACTIVE || quest.state===QuestState.READY_TO_TURN_IN || quest.state===QuestState.COMPLETED);
+  });
+  if(!activeOrReady){
+    log("[Debug] No quest state available to reset.");
+    return;
+  }
+  if(resetQuestToNotStarted(activeOrReady)){
+    log("[Debug] Reset quest state: " + activeOrReady + ".");
+    saveGame("debug_reset_quest");
+  }
+}
+function healPlayerToFullForDebug(){
+  player.hp=player.maxHp;
+  log("[Debug] Restored HP to full.");
+  saveGame("debug_heal");
+}
+function teleportToZoneForDebug(zoneId){
+  if(zoneId==="hearthvale_square"){
+    isInMirrorCave=false;
+    currentZoneId="hearthvale_square";
+    setPlayerTilePosition(18, 11);
+    log("[Debug] Teleported to Hearthvale Square.");
+  } else if(zoneId==="eastern_woods"){
+    isInMirrorCave=false;
+    currentZoneId="eastern_woods";
+    setPlayerTilePosition(mirrorCave.returnTile.x, mirrorCave.returnTile.y);
+    log("[Debug] Teleported to Eastern Woods.");
+  } else if(zoneId==="mirror_cave"){
+    isInMirrorCave=true;
+    currentZoneId="mirror_cave";
+    setPlayerTilePosition(mirrorCave.spawn.x, mirrorCave.spawn.y);
+    log("[Debug] Teleported to Mirror Cave.");
+  }
+  lastLoggedZoneEntryId=currentZoneId;
+  zoneTransitionLockedUntil=0;
+  blockedDirectionalKeysUntilRelease.clear();
+  saveGame("debug_teleport");
+}
+function resetFullSaveForDebug(){
+  localStorage.removeItem(SAVE_KEY);
+  log("[Debug] Save data cleared. Reloading world state.");
+  setTimeout(()=>location.reload(), 120);
+}
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","h","k","1","2","3","4","5","6","7","8","9"].includes(k)) e.preventDefault();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","h","k","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k)) e.preventDefault();
   if(DIRECTION_KEYS.includes(k)){
     if(blockedDirectionalKeysUntilRelease.has(k)) return;
   }
@@ -2314,6 +2387,12 @@ addEventListener("keydown",(e)=>{
   if(k==="e") interactionManager.tryInteract();
   if(k==="h") useHealingConsumable();
   if(k==="k") saveGame("manual");
+  if(DEV_DEBUG_TOOLS_ENABLED && k==="f6") healPlayerToFullForDebug();
+  if(DEV_DEBUG_TOOLS_ENABLED && k==="f7") teleportToZoneForDebug("hearthvale_square");
+  if(DEV_DEBUG_TOOLS_ENABLED && k==="f8") teleportToZoneForDebug("eastern_woods");
+  if(DEV_DEBUG_TOOLS_ENABLED && k==="f9") teleportToZoneForDebug("mirror_cave");
+  if(DEV_DEBUG_TOOLS_ENABLED && k==="f10" && e.shiftKey) resetFullSaveForDebug();
+  else if(DEV_DEBUG_TOOLS_ENABLED && k==="f10") resetCurrentQuestForDebug();
   if(dialogueSystem.activeSession?.pendingChoices && /^[1-9]$/.test(k)) dialogueSystem.choose(Number(k)-1);
   keys.add(k);
 });
@@ -2469,7 +2548,7 @@ function wolfAttack(now){
     const damageDealt=applyIncomingDamage(5); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
     const wx=player.targetX-wolf.targetX, wy=player.targetY-wolf.targetY, len=Math.max(1,Math.hypot(wx,wy));
     wolf.attackLungeX=(wx/len)*2; wolf.attackLungeY=(wy/len)*1.2; player.recoilX=(wx/len)*2.5; player.recoilY=(wy/len)*1.6;
-    log("Wolf #" + wolf.id + " bites you for " + damageDealt + " damage.");
+    logThrottled("combat:wolf_bite:" + wolf.id, "Wolf #" + wolf.id + " bites you for " + damageDealt + " damage.", 1500);
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
 }
@@ -2484,7 +2563,7 @@ function banditAttack(now){
     const damageDealt=applyIncomingDamage(7); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
     const wx=player.targetX-bandit.targetX, wy=player.targetY-bandit.targetY, len=Math.max(1,Math.hypot(wx,wy));
     bandit.attackLungeX=(wx/len)*2.2; bandit.attackLungeY=(wy/len)*1.3; player.recoilX=(wx/len)*2.8; player.recoilY=(wy/len)*1.8;
-    log("Bandit #" + bandit.id + " slashes you for " + damageDealt + " damage.");
+    logThrottled("combat:bandit_slash:" + bandit.id, "Bandit #" + bandit.id + " slashes you for " + damageDealt + " damage.", 1700);
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
 }
@@ -2520,7 +2599,7 @@ function tryPlayerAttack(now){
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   if(!targetHostile){
     if(missNoticeArmed && now-lastNoTargetLogAt>900){
-      log("Attack misses: no hostile in range.");
+      logThrottled("combat:miss_no_target", "Attack misses: no hostile in range.", 1800);
       lastNoTargetLogAt=now;
       missNoticeArmed=false;
     }
