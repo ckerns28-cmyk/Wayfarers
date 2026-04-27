@@ -7,14 +7,21 @@
 
 ## B. Combat loop
 - [ ] Fight wolf.
+- [ ] Level 1 + Rusty Sword vs wolf feels threatening but fair (no instant deletion).
+- [ ] Level 2 + Leather Armor vs wolf shows meaningful damage reduction.
 - [ ] Fight bandit.
+- [ ] Bandit with Leather Armor equipped feels dangerous but not unfair.
 - [ ] Die and respawn.
+- [ ] Respawn occurs in safe position with restored HP and no immediate attack chain.
 - [ ] Enemies respawn.
 
 ## C. Economy loop
 - [ ] Loot item.
+- [ ] Wolf pelt/fang accumulation does not spike too quickly during normal quest routing.
 - [ ] Sell item.
 - [ ] Buy potion.
+- [ ] Buy healing herb.
+- [ ] Confirm potion/herb prices feel meaningful against normal coin gain.
 - [ ] Use potion.
 
 ## D. Equipment loop
@@ -34,6 +41,7 @@
 ## F. Dungeon loop
 - [ ] Walk into Mirror Cave entrance.
 - [ ] Exit Mirror Cave.
+- [ ] Fight cave wolf and confirm cave threat > overworld wolf threat.
 - [ ] Chest sealed/closed/open behavior.
 - [ ] Save/reload in or around cave.
 
@@ -48,4 +56,10 @@
 - [ ] Save in Eastern Woods.
 - [ ] Save after quest completion.
 - [ ] Save after chest state changes.
+- [ ] Save/load preserves level, XP, max HP/current HP, equipment, and inventory values.
+- [ ] Save/load preserves zone and quest progression while in Mirror Cave flow.
 - [ ] Reload and confirm state.
+
+## I. Progression pacing (Phase 21)
+- [ ] Complete Hunter's Request + several wolf kills + Mirror Cave clear.
+- [ ] Confirm end state is typically Level 2 or Level 3 (not Level 5 without heavy grinding).

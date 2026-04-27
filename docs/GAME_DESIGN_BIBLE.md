@@ -61,3 +61,28 @@ Mythic, grounded, moody, old-school RPG.
 - Level-up stat growth is immediate and persistent across save/load.
 - Character progression is intentionally foundational: no skill tree yet.
 - Future expansion: **Skill Use Progression** will layer on top of this level baseline.
+
+## Combat Balance & Difficulty Curve (Phase 21)
+
+### Early-game combat goals
+- **Level 1:** wolves are dangerous but manageable 1v1, bandits are scary, cave wolves are risky.
+- **Level 2:** wolves should feel noticeably easier, bandits should be manageable with gear and consumables, cave wolves still demand respect.
+- **Level 3:** player should feel clearly stronger and capable of clearing Mirror Cave with good play.
+- **Level 4+:** current slice should feel safer and act as onboarding for future harder zones.
+
+### Enemy role definitions
+- **Wolf:** baseline outdoor pressure enemy. Moderate HP, moderate damage, lower XP/coin payouts.
+- **Bandit:** higher-threat humanoid encounter in overworld. Hits harder than wolves and pays better XP/coins.
+- **Cave Wolf:** upgraded wolf for Mirror Cave. Stronger than overworld wolves, better rewards, and tuned to make cave runs tense without immediate death loops.
+
+### Leveling impact on combat
+- Max HP, base attack bonus, and base defense bonus scale per level.
+- Early breakpoints are tuned so Level 2 is reachable quickly through normal questing/combat, while Level 3 typically requires cave progress and/or additional fights.
+- The slice should avoid accidental fast-tracking to Level 5 unless players intentionally grind.
+
+### Item and economy notes
+- Healing Herb is the cheap, small sustain option.
+- Small Potion is the stronger, pricier combat recovery option.
+- Leather Armor remains an early gear goal, with meaningful survivability impact.
+- Iron Sword remains a notable damage upgrade over Rusty Sword.
+- Wolf material drop/value tuning should limit runaway early sell income while still making hunting worthwhile.
