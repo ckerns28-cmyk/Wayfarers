@@ -75,3 +75,13 @@
 - [ ] Confirm Mirror Cave chest/relic behavior remains unchanged.
 - [ ] Save/load during each stage preserves quest stage, Echo Fragment state, and inventory.
 - [ ] Confirm dialogue panel close behavior still works during Edrin conversations.
+
+## K. Second Outdoor Region — North Road (Phase 25)
+- [ ] Walk north from Hearthvale without teleport/screen snap and confirm zone updates to **North Road**.
+- [ ] Walk back south to Hearthvale and confirm smooth return and correct zone label.
+- [ ] Read North Road sign and verify prompt, sign text, and clean close behavior.
+- [ ] Open roadside crate/chest and verify one-time minor loot behavior.
+- [ ] Save/reload after opening crate/chest and confirm opened state persists.
+- [ ] Fight North Road enemies and confirm combat/XP/loot balance remains modest.
+- [ ] Confirm no enemy spawns directly on the North Road entrance path.
+- [ ] Save/load while standing in North Road and verify player position + HUD zone text remain correct.

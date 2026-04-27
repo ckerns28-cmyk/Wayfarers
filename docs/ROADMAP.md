@@ -58,11 +58,11 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 21. Combat Balance / Difficulty Curve
 22. Second Quest Chain / Main Story Thread
 23. Creative Direction / Art Direction Lock
+24. UX Presentation Polish
+25. Second Outdoor Region
 
 ## Upcoming Phases
 
-24. UX Presentation Polish
-25. Second Outdoor Region
 26. Second Dungeon / Mini-Boss
 27. Skill Use Progression
 28. Save Schema Hardening

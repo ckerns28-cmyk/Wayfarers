@@ -770,10 +770,15 @@ const TILE = 32;
 const WORLD_W = 38;
 const WORLD_H = 24;
 const OUTDOOR_REGION_DEFS = {
+  north_road: {
+    id: "north_road",
+    name: "North Road",
+    bounds: { x:10, y:0, w:14, h:7 }
+  },
   hearthvale_square: {
     id: "hearthvale_square",
     name: "Hearthvale Square",
-    bounds: { x:0, y:0, w:27, h:WORLD_H }
+    bounds: { x:0, y:7, w:27, h:WORLD_H-7 }
   },
   eastern_woods: {
     id: "eastern_woods",
@@ -1423,7 +1428,7 @@ for(let x=0;x<mirrorCave.width;x++){
 }
 
 world.roads.push(
-  { x:6,y:11,w:26,h:2 },{ x:17,y:5,w:2,h:15 },{ x:10,y:8,w:2,h:8 },
+  { x:6,y:11,w:26,h:2 },{ x:17,y:0,w:2,h:20 },{ x:10,y:8,w:2,h:8 },
   { x:24,y:7,w:2,h:8 },{ x:19,y:12,w:5,h:2 },{ x:26,y:12,w:3,h:2 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
@@ -1448,6 +1453,8 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
 
 for(let x=29;x<=35;x++){ world.fences.push({x,y:6},{x,y:10}); }
 for(let y=7;y<=9;y++){ world.fences.push({x:29,y},{x:35,y}); }
+for(let x=11;x<=14;x++){ world.fences.push({x,y:3}); }
+for(let x=22;x<=25;x++){ world.fences.push({x,y:4}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
@@ -1459,7 +1466,12 @@ world.props.push(
   {x:21,y:14,type:"stonePile"},{x:21,y:16,type:"stonePile"},{x:29,y:15,type:"stonePile"},
   {x:21,y:13,type:"grassTuft"},{x:29,y:17,type:"grassTuft"},{x:24,y:18,type:"grassTuft"},
   {x:5,y:12,type:"bush"},{x:32,y:12,type:"bush"},{x:6,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
-  {x:18,y:11,type:"well"}
+  {x:18,y:11,type:"well"},
+  {x:16,y:4,type:"signPost"},{x:20,y:2,type:"signPost"},{x:21,y:2,type:"fenceSeg"},
+  {x:13,y:5,type:"fenceSeg"},{x:14,y:5,type:"fenceSeg"},{x:23,y:4,type:"fenceSeg"},
+  {x:14,y:2,type:"bush"},{x:24,y:2,type:"bush"},
+  {x:12,y:1,type:"stonePile"},{x:25,y:1,type:"stonePile"},
+  {x:22,y:1,type:"crate"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -1467,6 +1479,7 @@ const treeData = [[1,2,"a"],[2,2,"b"],[3,3,"a"],[2,5,"c"],[1,6,"a"],[3,7,"b"],[2
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
 
 world.zones.push(
+  {name:"North Road",x:10,y:0,w:14,h:7},
   {name:"Hearthvale Square",x:9,y:7,w:18,h:11},
   {name:"Mirror Pond",x:21,y:12,w:10,h:8},
   {name:"Eastern Woods",x:27,y:3,w:11,h:19},
@@ -1479,8 +1492,8 @@ const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.p
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const hunterNpc={x:26,y:9,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"down"};
 const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
-const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17}];
-const BANDIT_SPAWNS=[{id:1,x:34,y:15}];
+const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
+const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
   {id:101,x:13,y:13},
   {id:102,x:12,y:9},
@@ -2541,6 +2554,24 @@ function getStillWaterObjectiveText(){
   }
   return fallbackText;
 }
+function hasActiveGuidedQuest(){
+  const hunterQuest=questSystem.getQuest("hunters_request");
+  const stillWaterQuest=questSystem.getQuest("the_still_water");
+  const hunterActive=hunterQuest && hunterQuest.state!==QuestState.NOT_STARTED && hunterQuest.state!==QuestState.COMPLETED;
+  const stillWaterActive=stillWaterQuest && stillWaterQuest.state!==QuestState.NOT_STARTED && stillWaterQuest.state!==QuestState.COMPLETED;
+  return Boolean(hunterActive || stillWaterActive);
+}
+function handleNorthRoadArrivalAtmosphere(){
+  const persistent=getPersistentObject("north_road_intro");
+  if(!persistent.entered){
+    patchPersistentObject("north_road_intro", { entered:true, state:"entered" }, false);
+    log("Entered North Road.");
+    if(!hasActiveGuidedQuest()) log("The road continues north, but Hearthvale feels far behind.");
+    saveGame("object_state_change");
+    return;
+  }
+  if(!hasActiveGuidedQuest()) logThrottled("north_road_atmosphere", "The road continues north, but Hearthvale feels far behind.", 3000);
+}
 function migrateStillWaterStateFromSave(){
   const quest=questSystem.getQuest("the_still_water");
   if(!quest || quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) return;
@@ -2553,6 +2584,7 @@ function migrateStillWaterStateFromSave(){
 }
 
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
+eventSystem.registerZoneTrigger("North Road", "zone:entered:north_road");
 eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
 eventSystem.on("dialogue:started:hunter_garran", ()=>eventSystem.emit("npc:interacted:hunter_garran"));
 eventSystem.on("dialogue:started:merchant_rowan", ()=>eventSystem.emit("npc:interacted:merchant_rowan"));
@@ -2563,6 +2595,7 @@ eventSystem.on("zone:entered:mirror_pond", ()=>{
   log("You hear strange whispers in the water.");
   questSystem.updateProgress("mirror_pond_listening", "heard_whispers");
 });
+eventSystem.on("zone:entered:north_road", ()=>handleNorthRoadArrivalAtmosphere());
 eventSystem.on("combat:enemy-defeated", ({enemyType})=>{
   const stage=getHunterQuestStage();
   if((stage!==HunterQuestStage.STAGE_1_PROVE_YOURSELF && stage!==HunterQuestStage.STAGE_2_RETURN_TO_HUNTER) || enemyType!=="wolf") return;
@@ -2988,6 +3021,47 @@ registerWorldObject({
   }
 });
 registerWorldObject({
+  objectId:"north_road_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:16, y:4,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Read sign",
+  onInteract:()=>{
+    patchPersistentObject("north_road_sign", { state:"read", read:true });
+    openWorldInfoPanel("Signpost", "North Road — Old stones, older paths.");
+  }
+});
+registerWorldObject({
+  objectId:"north_road_crate",
+  type:WORLD_OBJECT_TYPE.CHEST,
+  zone:"overworld",
+  region:"north_road",
+  x:22, y:1,
+  state:"closed",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:()=>{
+    const persistent=getPersistentObject("north_road_crate");
+    return persistent.opened ? "Inspect crate" : "Open roadside crate";
+  },
+  onInteract:()=>{
+    const persistent=getPersistentObject("north_road_crate");
+    if(persistent.opened){
+      log("The roadside crate hangs open and empty.");
+      return;
+    }
+    patchPersistentObject("north_road_crate", { state:"open", opened:true }, false);
+    addItemToInventory("small_potion", 1);
+    log("You found a Small Potion in the roadside crate.");
+    saveGame("object_state_change");
+  }
+});
+registerWorldObject({
   objectId:"mirror_pond_sign",
   type:WORLD_OBJECT_TYPE.SIGN,
   zone:"overworld",
@@ -3308,8 +3382,10 @@ function updateOutdoorRegionFromPosition(logEntry){
   const nextZoneId=getOutdoorRegionIdAt(player.targetX, player.targetY);
   if(nextZoneId===currentZoneId) return;
   currentZoneId=nextZoneId;
-  if(logEntry && lastLoggedZoneEntryId!==currentZoneId){
+  if(logEntry && currentZoneId!=="north_road" && lastLoggedZoneEntryId!==currentZoneId){
     logThrottled("zone_entry:" + currentZoneId, "Entered " + getCurrentZoneName() + ".", 1200);
+    lastLoggedZoneEntryId=currentZoneId;
+  } else if(currentZoneId==="north_road"){
     lastLoggedZoneEntryId=currentZoneId;
   }
 }
@@ -4170,6 +4246,7 @@ function drawWorld(){
 
   const zoneName=currentLocalAreaName();
   const zoneLabelEntries=[];
+  if(zoneName==="North Road") zoneLabelEntries.push({ text:"North Road", tx:13, ty:1, priority:0 });
   if(zoneName==="Hearthvale Square") zoneLabelEntries.push({ text:"Hearthvale Square", tx:12, ty:7, priority:0 });
   if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:23, ty:12, priority:0 });
   if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
