@@ -63,9 +63,17 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 26. Second Dungeon / Mini-Boss
 27. Skill Use Progression
 28. Save Schema / Architecture Hardening
+29. Multiplayer Architecture Planning
 
 ## Upcoming Phases
 
-29. Multiplayer Architecture Planning
 30. Shared World Prototype
 31. Full Production Art Replacement Pass
+
+## Phase 29 outcome summary (Multiplayer Architecture Planning)
+
+- Added a concrete multiplayer architecture plan in `docs/MULTIPLAYER_ARCHITECTURE.md`.
+- Locked Phase 30 to a limited shared-world prototype (presence + movement sync, no social/PvP/trade systems).
+- Defined server-authoritative boundaries for combat, loot, object state, and save writes.
+- Selected Cloudflare baseline: Worker router + zone Durable Objects + D1 canonical persistence.
+- Marked private dungeon policy for Mirror Cave and Abandoned Tollhouse in early multiplayer.

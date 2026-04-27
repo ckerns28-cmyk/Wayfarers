@@ -15,3 +15,8 @@
 | Combat balance constants are script-local | medium | Combat/economy tuning pipeline | 24 + 25 | Balance is centralized in one object but still embedded in the runtime script; external data authoring/validation is not in place yet. |
 | Chronicle log compression is lightweight | low | Combat readability/UI | 24 | Duplicate-combat suppression is simple and message-based; richer batching may be needed if enemy counts increase. |
 | Economy tuning is handcrafted | medium | Vendor/loot economy | 25 | Prices and drop rates are manually tuned and can drift without simulation tooling or telemetry feedback. |
+| Simulation + rendering are tightly coupled | high | Core runtime architecture | 30 (blocker) | Update, input, quest/object mutations, and DOM/HUD updates are interleaved in one runtime path; server-authoritative reuse is blocked until state mutation layers are extracted. |
+| Client-authoritative combat/reward pipeline | high | Multiplayer trust boundary | 30 (blocker) | Damage, enemy death, XP/coins, and loot rolls are computed on client, enabling tampering in multiplayer mode without server authority. |
+| localStorage-only canonical save path | high | Persistence architecture | 30 (blocker) | Save/load currently assumes browser-local canonical ownership; needs persistence adapter for D1/server writes + reconnect safety. |
+| Entity identity normalization gaps | medium | Networking/state sync | 30 (recommended) | Player/enemy/object identity is not yet normalized for network snapshots and event reconciliation. |
+| Quest/object mutation idempotency under concurrency | high | Multiplayer rewards/state | 30 (blocker) | Chest/object/quest rewards need idempotency keys + transactional writes before shared-zone concurrent interaction. |

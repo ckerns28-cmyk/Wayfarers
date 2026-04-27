@@ -129,3 +129,13 @@
 - [ ] Dungeon consistency: Mirror Cave chest + Tollhouse chest + Rook defeated states persist through save/load.
 - [ ] Schema migration: load a save with missing `saveSchemaVersion` and confirm it migrates to `saveSchemaVersion: 2`.
 - [ ] Backup behavior: confirm `wayfarer.save.v1.backup` is written before migration overwrite/save writes.
+
+## O. Shared World Prototype (Phase 30)
+- [ ] Open two browser sessions against the same environment and confirm both connect successfully.
+- [ ] Spawn both players in **Hearthvale Square** and confirm each sees the other player's name label.
+- [ ] Move Player A and confirm Player B sees synchronized movement updates.
+- [ ] Move Player B and confirm Player A sees synchronized movement updates.
+- [ ] Leave/rejoin with Player A and confirm safe position restore from server-backed state.
+- [ ] Verify single-player combat, inventory, quests, and save/load loops still function in solo session mode.
+- [ ] Verify no trading UI, PvP interactions, party controls, guild systems, or chat features are exposed.
+- [ ] Verify Mirror Cave and Abandoned Tollhouse remain private/solo-instance behavior in this phase.
