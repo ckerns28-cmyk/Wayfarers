@@ -112,12 +112,72 @@ const html = String.raw`<!DOCTYPE html>
       max-height:170px;
       overflow-y:auto;
       padding-right:2px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .inventory-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      border-bottom:1px solid rgba(158,172,190,.14);
+      padding-bottom:4px;
+    }
+    .inventory-row:last-child{border-bottom:none}
+    .inventory-item-name{
+      flex:1 1 auto;
+      min-width:0;
+      overflow-wrap:anywhere;
+      color:#d8e3f3;
+    }
+    .inventory-actions{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      flex:0 0 auto;
+    }
+    .inventory-btn{
+      border:1px solid #4c6281;
+      border-radius:6px;
+      background:#162435;
+      color:#e6ecf5;
+      font:11px ui-monospace,SFMono-Regular,Menlo,monospace;
+      padding:2px 7px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .inventory-btn:disabled{opacity:.55;cursor:not-allowed}
+    .equipped-tag{
+      border:1px solid #5d7899;
+      border-radius:999px;
+      padding:2px 7px;
+      color:#cfe1fb;
+      font-size:11px;
+      white-space:nowrap;
     }
     #equipmentPanel{
       flex:0 0 auto;
       overflow:visible;
     }
-    #equipmentList{line-height:1.45}
+    #equipmentList{
+      line-height:1.45;
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+    .equipment-slot{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      border-bottom:1px solid rgba(158,172,190,.14);
+      padding-bottom:4px;
+    }
+    .equipment-slot:last-child{border-bottom:none}
+    .equipment-slot-label{color:#9eacbe}
+    .equipment-slot-value{color:#d8e3f3;flex:1 1 auto;overflow-wrap:anywhere}
+    .equipment-slot button{margin-left:8px}
     #logPanel{
       display:flex;
       flex-direction:column;
@@ -835,7 +895,18 @@ const palette = {
 };
 
 let lastCombatLog={ message:"", at:0 };
-function log(message){ chat.textContent = message + "\n" + chat.textContent; }
+let lastLogMessage="";
+function log(message){
+  if(!message || message===lastLogMessage) return;
+  lastLogMessage=message;
+  const line=document.createElement("div");
+  line.textContent=message;
+  chat.appendChild(line);
+  while(chat.childElementCount>220){
+    chat.removeChild(chat.firstElementChild);
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
 function logCombat(message){
   const now=performance.now();
   if(lastCombatLog.message===message && now-lastCombatLog.at<BALANCE.combatLog.repeatWindowMs) return;
@@ -2910,7 +2981,7 @@ registerWorldObject({
   interactable:true,
   collision:true,
   persistence:true,
-  promptLabel:"Read signpost",
+  promptLabel:"Read sign",
   onInteract:()=>{
     patchPersistentObject("east_road_sign", { state:"read", read:true });
     openWorldInfoPanel("Signpost", "East Road — Eastern Woods");
@@ -2925,7 +2996,7 @@ registerWorldObject({
   interactable:true,
   collision:true,
   persistence:true,
-  promptLabel:"Read signpost",
+  promptLabel:"Read sign",
   onInteract:()=>{
     patchPersistentObject("mirror_pond_sign", { state:"read", read:true });
     openWorldInfoPanel("Signpost", "Mirror Pond — Still water, old stories.");
@@ -2976,7 +3047,7 @@ registerWorldObject({
   interactable:true,
   collision:true,
   persistence:true,
-  promptLabel:"Read signpost",
+  promptLabel:"Read sign",
   onInteract:()=>{
     patchPersistentObject("mirror_cave_sign", { state:"read", read:true });
     openWorldInfoPanel("Signpost", "Mirror Cave");
@@ -3360,17 +3431,21 @@ function updateSidebar(){
           : (item?.type==="trinket" ? "trinket" : null));
       const canEquip=Boolean(equipSlot);
       const equipped=Boolean(item?.id && equipSlot && item.id===player.equipment[equipSlot]);
+      const itemText="<span class=\"inventory-item-name\">" + name + " x" + entry.quantity + "</span>";
       if(canEquip){
-        const actionLabel=equipped ? "[Equipped]" : "Equip";
-        const disabledAttr=equipped ? " disabled" : "";
-        return name + " x" + entry.quantity + " <button type=\"button\" data-equip-item=\"" + item.id + "\" data-equip-slot=\"" + equipSlot + "\"" + disabledAttr + ">" + actionLabel + "</button>";
+        const actionMarkup=equipped
+          ? "<span class=\"equipped-tag\">Equipped</span>"
+          : "<button type=\"button\" class=\"inventory-btn\" data-equip-item=\"" + item.id + "\" data-equip-slot=\"" + equipSlot + "\">Equip</button>";
+        return "<div class=\"inventory-row\">" + itemText + "<span class=\"inventory-actions\">" + actionMarkup + "</span></div>";
       }
       const canUse=Boolean(item && item.type==="consumable" && Number.isFinite(item.healAmount) && Math.floor(item.healAmount)>0);
       if(canUse){
-        return name + " x" + entry.quantity + " <button type=\"button\" data-use-item=\"" + item.id + "\">Use</button>";
+        return "<div class=\"inventory-row\">" + itemText + "<span class=\"inventory-actions\"><button type=\"button\" class=\"inventory-btn\" data-use-item=\"" + item.id + "\">Use</button></span></div>";
       }
-      return name + " x" + entry.quantity;
-    }).join("<br>");
+      const trinketEquipped=Boolean(item?.id && item.type==="trinket" && player.equipment.trinket===item.id);
+      const trinketTag=trinketEquipped ? "<span class=\"inventory-actions\"><span class=\"equipped-tag\">Equipped</span></span>" : "";
+      return "<div class=\"inventory-row\">" + itemText + trinketTag + "</div>";
+    }).join("");
   }
   if(nextInventoryMarkup!==sidebarInventoryMarkup){
     inventoryList.innerHTML = nextInventoryMarkup;
@@ -3381,10 +3456,16 @@ function updateSidebar(){
   const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
   const equippedArmor=getEquippedItem("armor");
   const armorDefense=getEquippedDefenseBonus();
-  const armorLine=equippedArmor
-    ? (equippedArmor.name + " (+" + armorDefense + " DEF) <span class=\"muted\">Armor active.</span> <button type=\"button\" data-unequip-slot=\"armor\">Remove</button>")
-    : "None";
-  const nextEquipmentMarkup="Weapon: " + weaponLine + "<br>Armor: " + armorLine + "<br>Trinket: None";
+  const armorLine=equippedArmor ? (equippedArmor.name + " (+" + armorDefense + " DEF)") : "None";
+  const equippedTrinket=getEquippedItem("trinket");
+  const trinketLine=equippedTrinket ? equippedTrinket.name : "None";
+  const weaponButton="";
+  const armorButton=equippedArmor ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"armor\">Remove</button>" : "";
+  const trinketButton=equippedTrinket ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"trinket\">Remove</button>" : "";
+  const nextEquipmentMarkup=
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Weapon:</span><span class=\"equipment-slot-value\">" + weaponLine + weaponButton + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Armor:</span><span class=\"equipment-slot-value\">" + armorLine + armorButton + "</span></div>" +
+    "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">Trinket:</span><span class=\"equipment-slot-value\">" + trinketLine + trinketButton + "</span></div>";
   if(nextEquipmentMarkup!==sidebarEquipmentMarkup){
     equipmentList.innerHTML = nextEquipmentMarkup;
     sidebarEquipmentMarkup=nextEquipmentMarkup;
@@ -3395,20 +3476,21 @@ function updateSidebar(){
   const targetCooldownText=!currentTarget ? "N/A" : (currentTarget.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
   const totalAttack=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0);
   const totalDefense=Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0));
-  const interactionPrompt=interactionManager.getPromptText() || "E : Context Action";
+  const interactionPrompt=interactionManager.getPromptText();
   const hudLines=[
     "WASD / Arrows : Move",
-    interactionPrompt,
     "Space : Attack",
     "H : Quick-use healing item",
     "K : Manual Save",
     "1-9 : Dialogue Choices",
     "G : Toggle grid"
   ];
+  if(interactionPrompt) hudLines.splice(1, 0, interactionPrompt);
   hud.textContent=hudLines.join("\n");
   if(DEV_MODE){
     debugPanel.style.display="block";
     debugPanel.textContent = "DEV TOOLS\n" +
+      "~ : Toggle Debug Panel\n" +
       "F6 : Debug Heal\n" +
       "F7/F8/F9 : Debug Teleport\n" +
       "F10 : Debug Reset Quest\n" +
@@ -4086,11 +4168,11 @@ function drawWorld(){
 
   if(showGrid) drawAlignmentGrid();
 
-  function zoneLabel(text,tx,ty){ const p=tileToScreen(tx,ty); const w=text.length*7+12; ctx.fillStyle="rgba(7,11,18,.85)"; ctx.fillRect(p.x-3,p.y-31,w,16); ctx.strokeStyle="rgba(204,216,236,.62)"; ctx.strokeRect(p.x-3.5,p.y-31.5,w,16); ctx.fillStyle="#eff4ff"; ctx.font="bold 11px monospace"; ctx.fillText(text,p.x+2,p.y-19); }
   const zoneName=currentLocalAreaName();
-  if(zoneName==="Hearthvale Square") zoneLabel("Hearthvale Square",12,7);
-  if(zoneName==="Mirror Pond") zoneLabel("Mirror Pond",23,12);
-  if(zoneName==="Eastern Woods") zoneLabel("Eastern Woods",30,4);
+  const zoneLabelEntries=[];
+  if(zoneName==="Hearthvale Square") zoneLabelEntries.push({ text:"Hearthvale Square", tx:12, ty:7, priority:0 });
+  if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:23, ty:12, priority:0 });
+  if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
 
   drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, "", 0, null, null);
   drawHumanoid(assets.sprites.npc, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.78, "", 0, null, null);
@@ -4104,11 +4186,16 @@ function drawWorld(){
     drawWolf(bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.84, hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY});
   });
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  const hostileLabelEntries=[...wolves, ...bandits]
+    .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
+    .map((hostile)=>({ text:hostileLabel(hostile), tx:hostile.px/TILE, ty:hostile.py/TILE, priority:1 }));
   drawWorldLabels([
     {text:Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5 ? npc.name : "", tx:npc.x, ty:npc.y, priority:3},
     {text:Math.abs(player.targetX-hunterNpc.x)+Math.abs(player.targetY-hunterNpc.y)<=5 ? hunterNpc.displayLabel : "", tx:hunterNpc.x, ty:hunterNpc.y, priority:3},
     {text:Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5 ? vendorNpc.displayLabel : "", tx:vendorNpc.x, ty:vendorNpc.y, priority:3},
-    {text:"Wayfarer", tx:player.px/TILE, ty:player.py/TILE, priority:1}
+    {text:"Wayfarer", tx:player.px/TILE, ty:player.py/TILE, priority:2},
+    ...hostileLabelEntries,
+    ...zoneLabelEntries
   ]);
 
   const tint=0.08+Math.max(0,Math.sin(performance.now()/9000))*.07;
