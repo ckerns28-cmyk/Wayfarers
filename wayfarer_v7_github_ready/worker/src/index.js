@@ -113,6 +113,20 @@ const html = String.raw`<!DOCTYPE html>
       border-radius:8px;
       padding:10px 12px;
       text-shadow:0 1px 0 #000;
+      max-width:min(340px, calc(100% - 24px));
+    }
+    #debugPanel{
+      position:absolute;top:12px;right:12px;white-space:pre-line;
+      pointer-events:none;
+      font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;
+      background:rgba(31,16,16,.9);
+      border:1px solid #8d5964;
+      border-radius:8px;
+      padding:10px 12px;
+      text-shadow:0 1px 0 #000;
+      color:#f4d8de;
+      max-width:min(320px, calc(100% - 24px));
+      display:none;
     }
     #dialogue {
       position:fixed;
@@ -231,6 +245,7 @@ const html = String.raw`<!DOCTYPE html>
     <main id="gamePanel" class="panel">
       <canvas id="game"></canvas>
       <div id="hud"></div>
+      <div id="debugPanel"></div>
       <div id="dialogue">
         <div id="dialogueName"></div>
         <div id="dialogueText"></div>
@@ -597,6 +612,7 @@ const canvas = document.getElementById("game");
 const gamePanel = document.getElementById("gamePanel");
 const ctx = canvas.getContext("2d");
 const hud = document.getElementById("hud");
+const debugPanel = document.getElementById("debugPanel");
 const chat = document.getElementById("chat");
 const levelVal = document.getElementById("levelVal");
 const hpVal = document.getElementById("hpVal");
@@ -2277,9 +2293,9 @@ class InteractionManager {
   }
   getPromptText(){
     const target=this.getNearest();
-    if(!target) return "E : Interact";
+    if(!target) return "";
     if(target.promptLabel) return "E : " + target.promptLabel;
-    return "E : Interact";
+    return "";
   }
   tryInteract(){
     if(worldInfoPanel){ closeWorldInfoPanel(); return true; }
@@ -2509,7 +2525,13 @@ eventSystem.on("world:pond:awakened", ()=>{
 const SAVE_KEY="wayfarer.save.v1";
 const SAVE_SCHEMA_VERSION=1;
 const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10]);
-const DEV_DEBUG_TOOLS_ENABLED=true;
+const DEV_MODE = (() => {
+  const queryDev = new URLSearchParams(location.search).get("dev");
+  if(queryDev==="1") return true;
+  if(queryDev==="0") return false;
+  return localStorage.getItem("wayfarer.dev_mode")==="true";
+})();
+const DEV_DEBUG_TOOLS_ENABLED=DEV_MODE;
 let saveNoticeTimeout=0;
 function showSaveNotice(message){
   saveNotice.textContent=message;
@@ -2840,7 +2862,7 @@ registerWorldObject({
   interactable:true,
   collision:false,
   persistence:true,
-  promptLabel:"Inspect water",
+  promptLabel:"Inspect Mirror Pond",
   onInteract:()=>{
     const stage=getStillWaterQuestStage();
     if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
@@ -3299,12 +3321,35 @@ function updateSidebar(){
   const totalAttack=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0);
   const totalDefense=Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0));
   const interactionPrompt=interactionManager.getPromptText();
-  hud.textContent = "WASD / Arrows : Move\n" + interactionPrompt + "\nSpace : Attack\nH : Quick-use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nF6 : Debug Heal\nF7/F8/F9 : Debug Teleport\nF10 : Debug Reset Quest\nShift+F10 : Debug Reset Save\nCurrent Zone : " + zoneName +
-    "\nHostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No") +
-    "\nCurrent target : " + hostileLabel(currentTarget) +
-    "\nTarget HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") +
-    "\nTarget strike cd : " + targetCooldownText +
-    "\nDebug Lv/ATK/DEF : " + player.level + " / " + totalAttack + " / " + totalDefense;
+  const hudLines=[
+    "WASD / Arrows : Move",
+    "Space : Attack",
+    "H : Quick-use healing item",
+    "K : Manual Save",
+    "1-9 : Dialogue Choices",
+    "G : Toggle grid"
+  ];
+  if(interactionPrompt) hudLines.splice(1, 0, interactionPrompt);
+  hudLines.push(
+    "Current Zone : " + zoneName,
+    "Hostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No"),
+    "Current target : " + hostileLabel(currentTarget),
+    "Target HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A"),
+    "Target strike cd : " + targetCooldownText
+  );
+  hud.textContent=hudLines.join("\n");
+  if(DEV_MODE){
+    debugPanel.style.display="block";
+    debugPanel.textContent = "DEV TOOLS\n" +
+      "F6 : Debug Heal\n" +
+      "F7/F8/F9 : Debug Teleport\n" +
+      "F10 : Debug Reset Quest\n" +
+      "Shift+F10 : Debug Reset Save\n" +
+      "Debug Lv/ATK/DEF : " + player.level + " / " + totalAttack + " / " + totalDefense;
+  } else {
+    debugPanel.style.display="none";
+    debugPanel.textContent="";
+  }
 }
 
 function canMoveTo(x,y){
