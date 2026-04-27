@@ -80,6 +80,13 @@ Mythic, grounded, moody, old-school RPG.
 - Character progression is intentionally foundational: no skill tree yet.
 - Future expansion: **Skill Use Progression** will layer on top of this level baseline.
 
+## Outdoor Region Identity (Phase 25)
+
+- **Hearthvale Square:** safe village hub where NPC utility, quest turn-ins, and vendors stay readable.
+- **Eastern Woods:** active wilderness combat lane with regular wolf/bandit pressure and cave access.
+- **North Road:** quieter road leaving Hearthvale; more open space, worn travel markers, sparse trees, and lightly ominous roadside clutter.
+- North Road should stay **continuous** with Hearthvale movement (no hard transition), use existing systems/art language, and remain balanced for roughly **Level 2–5** travelers.
+
 ## Combat Balance & Difficulty Curve (Phase 21)
 
 ### Early-game combat goals
