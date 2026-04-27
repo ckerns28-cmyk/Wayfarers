@@ -63,3 +63,15 @@
 ## I. Progression pacing (Phase 21)
 - [ ] Complete Hunter's Request + several wolf kills + Mirror Cave clear.
 - [ ] Confirm end state is typically Level 2 or Level 3 (not Level 5 without heavy grinding).
+
+## J. Main story thread — The Still Water (Phase 22)
+- [ ] Talk to Edrin Vale and start **The Still Water**.
+- [ ] Inspect Mirror Pond and confirm delayed-reflection message appears.
+- [ ] Return to Edrin and advance to Mirror Cave objective.
+- [ ] Enter Mirror Cave and confirm objective advances.
+- [ ] Recover Echo Fragment and confirm no duplicate can be obtained.
+- [ ] Return to Edrin and complete **The Still Water**.
+- [ ] Confirm Hunter's Request remains functional/completable in same save.
+- [ ] Confirm Mirror Cave chest/relic behavior remains unchanged.
+- [ ] Save/load during each stage preserves quest stage, Echo Fragment state, and inventory.
+- [ ] Confirm dialogue panel close behavior still works during Edrin conversations.

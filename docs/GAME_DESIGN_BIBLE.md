@@ -34,6 +34,24 @@ Mythic, grounded, moody, old-school RPG.
 - Dialogue reacts to:
   - Mirror Pond listening progression.
   - Mirror Cave relic disturbance (opened chest).
+  - **The Still Water** main-story progression.
+
+## Main Story Thread (Phase 22)
+
+### The Still Water (Edrin Vale)
+- Edrin initiates the first true main-story chain and serves as the guiding voice for Wayfarer identity.
+- Mirror Pond is now treated as an active mystery point, not only ambient lore.
+- Quest flow:
+  1) Speak with Edrin.
+  2) Inspect Mirror Pond and witness delayed reflection.
+  3) Return to Edrin for interpretation.
+  4) Enter Mirror Cave.
+  5) Recover the Echo Fragment (persistent object, no duplication).
+  6) Return to Edrin for completion.
+- Design intent:
+  - Narrative progression first, power progression second.
+  - Reward is modest and should not overshadow Hunter's Request.
+  - Must stay compatible with existing Mirror Cave chest/relic flow.
 
 ### Hunter Garran — Combat / Wilderness NPC
 - Direct and practical wilderness mentor.

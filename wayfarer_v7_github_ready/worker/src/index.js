@@ -234,6 +234,10 @@ const html = String.raw`<!DOCTYPE html>
       "name": "Edrin Vale",
       "root": "greeting",
       "rootByCondition": [
+        { "if": { "questId": "the_still_water", "state": "Completed" }, "next": "still_water_complete" },
+        { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_6_return_to_edrin" }, "next": "still_water_final_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_3_return_to_edrin" }, "next": "still_water_stage_3_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Active" }, "next": "still_water_active" },
         { "if": { "questId": "mirror_pond_listening", "state": "Completed" }, "next": "after_pond_rite" },
         { "if": { "questId": "mirror_pond_listening", "state": "Active", "progress": "heard_whispers" }, "next": "pond_whispers_heard" },
         { "if": { "objectiveId": "hunters_request:open_chest", "completed": true }, "next": "cave_relic_observed" },
@@ -242,14 +246,68 @@ const html = String.raw`<!DOCTYPE html>
       "nodes": {
         "greeting": {
           "lines": [
-            "You walk like someone called by old water.",
-            "I am Edrin Vale. Mirror Pond remembers names before they are spoken.",
-            "What do you seek, Wayfarer?"
+            "The pond has been still for years. Today, it moved."
           ],
           "choices": [
+            { "text": "What do you mean?", "event": "quest:activate:the_still_water", "next": "still_water_begin" },
             { "text": "What is Mirror Pond?", "next": "mirror_pond_lore" },
             { "text": "What do you know about the cave?", "next": "mirror_cave_lore" },
             { "text": "Why do people call me Wayfarer?", "next": "wayfarer_title" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "still_water_begin": {
+          "lines": [
+            "Go to the water. Do not look only at the surface."
+          ],
+          "next": "end"
+        },
+        "still_water_active": {
+          "lines": [
+            "Go to the water. Do not look only at the surface."
+          ],
+          "choices": [
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "still_water_stage_3_turn_in": {
+          "lines": [
+            "Then the surface delayed itself for you.",
+            "The pond is not just water. It remembers."
+          ],
+          "choices": [
+            { "text": "I'll go into the cave.", "next": "still_water_stage_3_advance" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "still_water_stage_3_advance": {
+          "lines": [
+            "Enter Mirror Cave again. Bring back the fragment that answers to you."
+          ],
+          "onCompleteEvents": ["quest:still_water:report_pond"],
+          "next": "end"
+        },
+        "still_water_final_turn_in": {
+          "lines": [
+            "You brought the Echo Fragment."
+          ],
+          "choices": [
+            { "text": "Give Edrin the Echo Fragment", "next": "still_water_complete_turn_in" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "still_water_complete_turn_in": {
+          "lines": [
+            "Then it remembers you. That is not a gift given lightly."
+          ],
+          "onCompleteEvents": ["quest:still_water:final_turn_in"],
+          "next": "still_water_complete"
+        },
+        "still_water_complete": {
+          "lines": [
+            "Then it remembers you. That is not a gift given lightly."
+          ],
+          "choices": [
             { "text": "Goodbye.", "next": "end" }
           ]
         },
@@ -474,6 +532,23 @@ const html = String.raw`<!DOCTYPE html>
       "rewards": { "xp": 15, "coins": 5 }
     },
     {
+      "id": "the_still_water",
+      "questId": "the_still_water",
+      "title": "The Still Water",
+      "name": "The Still Water",
+      "description": "Follow Edrin Vale's guidance at Mirror Pond and recover the Echo Fragment from Mirror Cave.",
+      "startEvents": ["quest:activate:the_still_water"],
+      "initialProgress": "stage_1_speak_with_edrin",
+      "status": "Not Started",
+      "objectives": [
+        { "id": "inspect_pond", "label": "Inspect Mirror Pond", "type": "interact", "targetId": "mirror_pond", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "enter_cave", "label": "Enter Mirror Cave", "type": "reach", "targetId": "mirror_cave", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "recover_echo_fragment", "label": "Recover the Echo Fragment from Mirror Cave", "type": "interact", "targetId": "echo_fragment", "requiredAmount": 1, "currentAmount": 0, "completed": false },
+        { "id": "return_edrin", "label": "Return to Edrin Vale", "type": "interact", "targetId": "npc_edrin", "requiredAmount": 1, "currentAmount": 0, "completed": false }
+      ],
+      "rewards": { "xp": 45, "coins": 4, "items": [{ "itemId": "small_potion", "count": 1 }] }
+    },
+    {
       "id": "hunters_request",
       "questId": "hunters_request",
       "title": "Hunter's Request",
@@ -668,6 +743,7 @@ const ITEM_REGISTRY = Object.freeze({
   small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:2 },
   old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
   mirror_relic: { id:"mirror_relic", name:"Mirror Relic", type:"quest", description:"An old relic recovered from the Mirror Cave chest.", stackable:false, value:0 },
+  echo_fragment: { id:"echo_fragment", name:"Echo Fragment", type:"quest", description:"A dim fragment that seems to hold a delayed reflection.", stackable:false, value:0 },
   cloth_scrap: { id:"cloth_scrap", name:"Cloth Scrap", type:"material", description:"Rough cloth torn from worn travel gear.", stackable:true, value:2 },
   healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, healAmount:BALANCE.items.healingHerbHealAmount, value:4 },
   small_potion: { id:"small_potion", name:"Small Potion", type:"consumable", description:"A compact tonic that restores vitality.", stackable:true, healAmount:BALANCE.items.smallPotionHealAmount, value:10 }
@@ -1737,6 +1813,16 @@ const HunterQuestStage = Object.freeze({
   STAGE_4_RETURN_WITH_RELIC:"stage_4_return_with_relic",
   COMPLETED:"completed"
 });
+const StillWaterQuestStage = Object.freeze({
+  NOT_STARTED:"not_started",
+  STAGE_1_SPEAK_WITH_EDRIN:"stage_1_speak_with_edrin",
+  STAGE_2_INSPECT_MIRROR_POND:"stage_2_inspect_mirror_pond",
+  STAGE_3_RETURN_TO_EDRIN:"stage_3_return_to_edrin",
+  STAGE_4_ENTER_MIRROR_CAVE:"stage_4_enter_mirror_cave",
+  STAGE_5_RECOVER_ECHO_FRAGMENT:"stage_5_recover_echo_fragment",
+  STAGE_6_RETURN_TO_EDRIN:"stage_6_return_to_edrin",
+  COMPLETED:"completed"
+});
 let mirrorCaveChestDiscovered=false;
 let hunterQuestRewardClaimed=false;
 
@@ -2214,6 +2300,42 @@ function updateHunterStageOneReadiness(){
   setHunterQuestStage(HunterQuestStage.STAGE_2_RETURN_TO_HUNTER);
   log("Objective Complete: Return to Hunter Garran with 3 Wolf Pelts.");
 }
+function getStillWaterQuestStage(){
+  const quest=questSystem.getQuest("the_still_water");
+  if(!quest) return StillWaterQuestStage.NOT_STARTED;
+  if(quest.state===QuestState.COMPLETED) return StillWaterQuestStage.COMPLETED;
+  const progress=typeof quest.progress==="string" ? quest.progress : "";
+  if(Object.values(StillWaterQuestStage).includes(progress)) return progress;
+  return quest.state===QuestState.NOT_STARTED ? StillWaterQuestStage.NOT_STARTED : StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN;
+}
+function setStillWaterQuestStage(stage){
+  const quest=questSystem.getQuest("the_still_water");
+  if(!quest) return;
+  if(stage===StillWaterQuestStage.NOT_STARTED){
+    quest.state=QuestState.NOT_STARTED;
+    quest.status=quest.state;
+    quest.progress=StillWaterQuestStage.NOT_STARTED;
+  } else if(stage===StillWaterQuestStage.COMPLETED){
+    quest.state=QuestState.COMPLETED;
+    quest.status=quest.state;
+    quest.progress=StillWaterQuestStage.COMPLETED;
+  } else {
+    if(quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) quest.state=QuestState.ACTIVE;
+    if(quest.state===QuestState.READY_TO_TURN_IN) quest.state=QuestState.ACTIVE;
+    quest.status=quest.state;
+    quest.progress=stage;
+  }
+  eventSystem.emit("quest:state-changed",{questId:"the_still_water",state:quest.state,progress:quest.progress});
+}
+function isStillWaterEchoFragmentCollected(){
+  const persistent=getPersistentObject("echo_fragment");
+  return Boolean(persistent.collected) || getItemQuantity("echo_fragment")>0;
+}
+function syncEchoFragmentState(shouldSave=false){
+  const collected=isStillWaterEchoFragmentCollected();
+  patchPersistentObject("echo_fragment", { state:collected ? "collected" : "inert", collected }, shouldSave);
+  return collected;
+}
 
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
 eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
@@ -2236,6 +2358,12 @@ eventSystem.on("zone:entered:mirror_cave", ()=>{
   if(getHunterQuestStage()!==HunterQuestStage.STAGE_3_MIRROR_CAVE) return;
   if(questSystem.completeObjective("hunters_request", "enter_cave")) log("Objective Complete: Entered Mirror Cave");
 });
+eventSystem.on("zone:entered:mirror_cave", ()=>{
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE) return;
+  questSystem.completeObjective("the_still_water", "enter_cave");
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT);
+  log("Objective Updated: Recover the Echo Fragment from Mirror Cave.");
+});
 eventSystem.on("object:opened:mirror_cave_chest", ()=>{
   if(getHunterQuestStage()!==HunterQuestStage.STAGE_3_MIRROR_CAVE) return;
   if(questSystem.completeObjective("hunters_request", "open_chest")) log("Objective Complete: Recovered the relic from Mirror Cave");
@@ -2247,6 +2375,38 @@ eventSystem.on("quest:activate:hunters_request", ()=>{
   setHunterQuestStage(HunterQuestStage.STAGE_1_PROVE_YOURSELF);
   questSystem.refreshAllItemProgress();
   updateHunterStageOneReadiness();
+});
+eventSystem.on("quest:activate:the_still_water", ()=>{
+  const quest=questSystem.getQuest("the_still_water");
+  if(!quest || quest.state===QuestState.COMPLETED) return;
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND);
+  log("Edrin Vale sent you to inspect Mirror Pond.");
+});
+eventSystem.on("quest:still_water:report_pond", ()=>{
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN) return;
+  if(getHunterQuestStage()===HunterQuestStage.COMPLETED || mirrorCave.chest.opened){
+    log("Edrin: You already walked the cave once. Go again — now with eyes open.");
+  }
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE);
+});
+eventSystem.on("object:collected:echo_fragment", ()=>{
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT) return;
+  questSystem.completeObjective("the_still_water", "recover_echo_fragment");
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN);
+  log("Objective Updated: Return to Edrin Vale.");
+});
+eventSystem.on("quest:still_water:final_turn_in", ()=>{
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
+    log("Return after recovering the Echo Fragment.");
+    return;
+  }
+  if(getItemQuantity("echo_fragment")<1 && !isStillWaterEchoFragmentCollected()){
+    log("You need the Echo Fragment first.");
+    return;
+  }
+  removeItemFromInventory("echo_fragment", 1);
+  questSystem.completeObjective("the_still_water", "return_edrin");
+  questSystem.completeQuest("the_still_water");
 });
 eventSystem.on("quest:hunter:turn_in_pelts", ()=>{
   if(getHunterQuestStage()!==HunterQuestStage.STAGE_2_RETURN_TO_HUNTER) return;
@@ -2290,6 +2450,7 @@ eventSystem.on("quest:report:mirror_pond", ()=>{
   questSystem.completeQuest("mirror_pond_listening");
 });
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
+eventSystem.on("quest:completed:the_still_water", ()=>syncEchoFragmentState(false));
 let worldEvents={ pondAwakened:false };
 const worldTriggeredEvents=new Set();
 eventSystem.on("world:pond:awakened", ()=>{
@@ -2314,6 +2475,7 @@ function isFiniteNumber(value){ return typeof value==="number" && Number.isFinit
 function createSaveData(reason){
   updateOutdoorRegionFromPosition(false);
   syncMirrorCaveChestState(false);
+  syncEchoFragmentState(false);
   const wolvesSave=wolves.slice(0, WOLF_SPAWNS.length).map((wolf)=>({
     id:wolf.id,
     hp:wolf.hp,
@@ -2551,6 +2713,7 @@ function loadGame(){
       }
     }
     syncMirrorCaveChestState(false);
+    syncEchoFragmentState(false);
     log("System: Save loaded.");
     return true;
   } catch(err){
@@ -2562,6 +2725,7 @@ function loadGame(){
 }
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>saveGame("quest_complete"));
 eventSystem.on("quest:completed:hunters_request", ()=>saveGame("quest_complete"));
+eventSystem.on("quest:completed:the_still_water", ()=>saveGame("quest_complete"));
 eventSystem.on("quest:state-changed", ()=>saveGame("quest_state_change"));
 
 interactionManager.register({
@@ -2619,6 +2783,34 @@ registerWorldObject({
   onInteract:()=>{
     patchPersistentObject("mirror_pond_sign", { state:"read", read:true });
     openWorldInfoPanel("Signpost", "Mirror Pond — Still water, old stories.");
+  }
+});
+registerWorldObject({
+  objectId:"mirror_pond_interaction",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:24, y:14,
+  state:"still",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Inspect water",
+  onInteract:()=>{
+    const stage=getStillWaterQuestStage();
+    if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+      log("For a moment, your reflection moves half a breath late.");
+      patchPersistentObject("mirror_pond_interaction", { inspected:true, state:"inspected" }, false);
+      questSystem.completeObjective("the_still_water", "inspect_pond");
+      setStillWaterQuestStage(StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN);
+      eventSystem.emit("object:used:mirror_pond",{ stage });
+      saveGame("object_state_change");
+      return;
+    }
+    if(stage===StillWaterQuestStage.COMPLETED){
+      log("The pond is still again, but not empty.");
+      return;
+    }
+    log("The water is still.");
   }
 });
 registerWorldObject({
@@ -2695,6 +2887,37 @@ registerWorldObject({
     if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
     log("You recovered the Mirror Relic.");
     eventSystem.emit("object:opened:mirror_cave_chest");
+    saveGame("object_state_change");
+  }
+});
+registerWorldObject({
+  objectId:"echo_fragment",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"mirror_cave",
+  dungeon:"mirror_cave",
+  x:12, y:5,
+  state:"inert",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Take Echo Fragment",
+  onInteract:()=>{
+    const persistent=getPersistentObject("echo_fragment");
+    const stage=getStillWaterQuestStage();
+    if(persistent.collected || getItemQuantity("echo_fragment")>0){
+      syncEchoFragmentState(false);
+      log("Only a faint chill remains where the fragment rested.");
+      saveGame("object_state_change");
+      return;
+    }
+    if(stage!==StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+      log("A pale shard rests in silence, as if waiting.");
+      return;
+    }
+    if(getItemQuantity("echo_fragment")<=0) addItemToInventory("echo_fragment", 1);
+    patchPersistentObject("echo_fragment", { state:"collected", collected:true }, false);
+    log("You recovered the Echo Fragment.");
+    eventSystem.emit("object:collected:echo_fragment");
     saveGame("object_state_change");
   }
 });
@@ -2935,29 +3158,51 @@ function updateSidebar(){
   zoneVal.textContent = zoneName;
   const huntersQuest=questSystem.getQuest("hunters_request");
   const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
-  const activeQuest=((huntersQuest?.state===QuestState.ACTIVE || huntersQuest?.state===QuestState.READY_TO_TURN_IN) ? huntersQuest : ((mirrorQuest?.state===QuestState.ACTIVE) ? mirrorQuest : (huntersQuest?.state===QuestState.COMPLETED ? huntersQuest : mirrorQuest)));
+  const stillWaterQuest=questSystem.getQuest("the_still_water");
+  const activeQuest=(
+    (stillWaterQuest?.state===QuestState.ACTIVE || stillWaterQuest?.state===QuestState.READY_TO_TURN_IN) ? stillWaterQuest :
+    ((huntersQuest?.state===QuestState.ACTIVE || huntersQuest?.state===QuestState.READY_TO_TURN_IN) ? huntersQuest :
+    ((mirrorQuest?.state===QuestState.ACTIVE) ? mirrorQuest :
+    (stillWaterQuest?.state===QuestState.COMPLETED ? stillWaterQuest :
+    (huntersQuest?.state===QuestState.COMPLETED ? huntersQuest : mirrorQuest))))
+  );
   questVal.textContent = activeQuest ? (activeQuest.name + " [" + activeQuest.state + "]") : "Town Slice";
-  const hunterStage=getHunterQuestStage();
-  if(hunterStage===HunterQuestStage.STAGE_1_PROVE_YOURSELF){
-    const wolves=Math.max(0, Math.min(3, questSystem.getObjective("hunters_request", "wolves")?.currentAmount || 0));
-    const pelts=Math.max(0, Math.min(3, getItemQuantity("wolf_pelt")));
-    objectiveText.textContent = "Hunter's Request\n- Defeat Wolves: " + wolves + "/3\n- Wolf Pelts: " + pelts + "/3";
-  } else if(hunterStage===HunterQuestStage.STAGE_2_RETURN_TO_HUNTER){
-    objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
-  } else if(hunterStage===HunterQuestStage.STAGE_3_MIRROR_CAVE){
-    objectiveText.textContent = "Hunter's Request\n- Enter Mirror Cave\n- Recover the Mirror Relic";
-  } else if(hunterStage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC){
-    objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
-  } else if(hunterStage===HunterQuestStage.COMPLETED){
-    objectiveText.textContent = "Quest complete: Hunter's Request.";
-  } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="go_to_pond"){
-    objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
-  } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="heard_whispers"){
-    objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
-  } else if(mirrorQuest?.state===QuestState.COMPLETED){
-    objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
+  const stillWaterStage=getStillWaterQuestStage();
+  if(stillWaterStage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+    objectiveText.textContent = "The Still Water\n- Inspect Mirror Pond";
+  } else if(stillWaterStage===StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN){
+    objectiveText.textContent = "The Still Water\n- Return to Edrin Vale";
+  } else if(stillWaterStage===StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE){
+    objectiveText.textContent = "The Still Water\n- Enter Mirror Cave";
+  } else if(stillWaterStage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+    objectiveText.textContent = "The Still Water\n- Recover the Echo Fragment from Mirror Cave";
+  } else if(stillWaterStage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
+    objectiveText.textContent = "The Still Water\n- Return to Edrin Vale";
+  } else if(stillWaterStage===StillWaterQuestStage.COMPLETED){
+    objectiveText.textContent = "Quest complete: The Still Water.";
   } else {
-    objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
+    const hunterStage=getHunterQuestStage();
+    if(hunterStage===HunterQuestStage.STAGE_1_PROVE_YOURSELF){
+      const wolves=Math.max(0, Math.min(3, questSystem.getObjective("hunters_request", "wolves")?.currentAmount || 0));
+      const pelts=Math.max(0, Math.min(3, getItemQuantity("wolf_pelt")));
+      objectiveText.textContent = "Hunter's Request\n- Defeat Wolves: " + wolves + "/3\n- Wolf Pelts: " + pelts + "/3";
+    } else if(hunterStage===HunterQuestStage.STAGE_2_RETURN_TO_HUNTER){
+      objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
+    } else if(hunterStage===HunterQuestStage.STAGE_3_MIRROR_CAVE){
+      objectiveText.textContent = "Hunter's Request\n- Enter Mirror Cave\n- Recover the Mirror Relic";
+    } else if(hunterStage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC){
+      objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
+    } else if(hunterStage===HunterQuestStage.COMPLETED){
+      objectiveText.textContent = "Quest complete: Hunter's Request.";
+    } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="go_to_pond"){
+      objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
+    } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="heard_whispers"){
+      objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
+    } else if(mirrorQuest?.state===QuestState.COMPLETED){
+      objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
+    } else {
+      objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
+    }
   }
   let nextInventoryMarkup="Empty";
   if(player.inventory.length>0){
@@ -3043,7 +3288,7 @@ function resetQuestToNotStarted(questId){
   return true;
 }
 function resetCurrentQuestForDebug(){
-  const priority=["hunters_request","mirror_pond_listening"];
+  const priority=["the_still_water","hunters_request","mirror_pond_listening"];
   const activeOrReady=priority.find((questId)=>{
     const quest=questSystem.getQuest(questId);
     return quest && (quest.state===QuestState.ACTIVE || quest.state===QuestState.READY_TO_TURN_IN || quest.state===QuestState.COMPLETED);
@@ -3509,6 +3754,23 @@ function drawMirrorCaveScene(now){
   ctx.fillStyle="rgba(155,170,189,.2)"; ctx.fillRect(ep.x+4,ep.y+4,24,24);
   ctx.strokeStyle="rgba(199,214,236,.5)"; ctx.strokeRect(ep.x+4.5,ep.y+4.5,23,23);
   ctx.fillStyle="#c7d6ec"; ctx.font="bold 10px monospace"; ctx.fillText("EXIT", ep.x+6, ep.y+19);
+  const echoPersistent=getPersistentObject("echo_fragment");
+  const echoCollected=Boolean(echoPersistent.collected) || getItemQuantity("echo_fragment")>0;
+  const stillWaterStage=getStillWaterQuestStage();
+  if(!echoCollected && stillWaterStage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+    const fp=tileToScreen(12,5);
+    const pulse=0.45+Math.sin(now*0.006)*0.2;
+    ctx.fillStyle="rgba(146,192,246," + pulse.toFixed(3) + ")";
+    ctx.beginPath();
+    ctx.moveTo(fp.x+16,fp.y+7);
+    ctx.lineTo(fp.x+22,fp.y+17);
+    ctx.lineTo(fp.x+16,fp.y+25);
+    ctx.lineTo(fp.x+10,fp.y+17);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle="rgba(214,234,255,.82)";
+    ctx.stroke();
+  }
 
   mirrorCaveWolves.forEach((wolf)=>{
     if(wolf.hp<=0) return;
