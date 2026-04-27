@@ -2033,12 +2033,7 @@ const treeData = [
   [6,6,"a"],[7,8,"b"],[6,18,"a"],[8,20,"c"],[9,5,"c"],[27,19,"b"],[24,20,"c"],[22,19,"a"],[19,21,"b"]
 ];
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
-[
-  keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y),
-  keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y+1),
-  keyOf(OVERWORLD_CAVE_ENTRY.x-1, OVERWORLD_CAVE_ENTRY.y+1),
-  keyOf(OVERWORLD_CAVE_ENTRY.x+1, OVERWORLD_CAVE_ENTRY.y+1)
-].forEach((tileKey)=>world.blocked.delete(tileKey));
+rebuildOverworldCollisionFromMap();
 
 world.zones.push(
   {name:"North Road",x:10,y:0,w:14,h:7},
@@ -2105,6 +2100,29 @@ function rebuildNpcTerrainForbiddenTiles(){
 function isOverworldTerrainBlocked(x,y){
   const tileKey=keyOf(x,y);
   return world.blocked.has(tileKey) || world.pondBlocked.has(tileKey) || world.pondShore.has(tileKey);
+}
+function rebuildOverworldCollisionFromMap(){
+  const rebuiltBlocked=new Set();
+  const addRect=(rect)=>{
+    if(!rect) return;
+    for(let tx=rect.x;tx<rect.x+rect.w;tx++){
+      for(let ty=rect.y;ty<rect.y+rect.h;ty++){
+        rebuiltBlocked.add(keyOf(tx,ty));
+      }
+    }
+  };
+  world.buildings.forEach((building)=>{
+    addRect(building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h });
+  });
+  world.fences.forEach((fenceTile)=>rebuiltBlocked.add(keyOf(fenceTile.x, fenceTile.y)));
+  world.trees.forEach((tree)=>rebuiltBlocked.add(keyOf(tree.x, tree.y)));
+  [
+    keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y),
+    keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y+1),
+    keyOf(OVERWORLD_CAVE_ENTRY.x-1, OVERWORLD_CAVE_ENTRY.y+1),
+    keyOf(OVERWORLD_CAVE_ENTRY.x+1, OVERWORLD_CAVE_ENTRY.y+1)
+  ].forEach((tileKey)=>rebuiltBlocked.delete(tileKey));
+  world.blocked=rebuiltBlocked;
 }
 function isNpcOnTile(x,y,excludeId){
   return namedVillageNpcs.some((villageNpc)=>villageNpc.id!==excludeId && villageNpc.targetX===x && villageNpc.targetY===y);
@@ -4331,7 +4349,7 @@ registerWorldObject({
   x:16, y:4,
   state:"unread",
   interactable:true,
-  collision:true,
+  collision:false,
   persistence:true,
   promptLabel:"Read sign",
   onInteract:()=>{
@@ -5005,7 +5023,8 @@ function updateSidebar(){
     "H : Quick-use healing item",
     "K : Manual Save",
     "1-9 : Dialogue Choices",
-    "G : Toggle grid"
+    "G : Toggle grid",
+    "V : Toggle collision overlay"
   ];
   if(interactionPrompt) hudLines.splice(1, 0, interactionPrompt);
   hud.textContent=hudLines.join("\n");
@@ -5044,6 +5063,7 @@ function canMoveTo(x,y){
 
 const keys=new Set();
 let showGrid=false;
+let showCollisionOverlay=false;
 
 const questDefinitionById=new Map((questData.quests||[]).map((quest)=>[quest.id, quest]));
 function resetQuestToNotStarted(questId){
@@ -5110,7 +5130,7 @@ function resetFullSaveForDebug(){
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
   const isDevToggleKey=e.code==="Backquote";
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k) || isDevToggleKey) e.preventDefault();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","g","v","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k) || isDevToggleKey) e.preventDefault();
   if(DIRECTION_KEYS.includes(k)){
     if(blockedDirectionalKeysUntilRelease.has(k)) return;
   }
@@ -5120,6 +5140,7 @@ addEventListener("keydown",(e)=>{
     updateSidebar();
   }
   if(k==="g") showGrid=!showGrid;
+  if(k==="v") showCollisionOverlay=!showCollisionOverlay;
   if(k==="escape" && worldInfoPanel) closeWorldInfoPanel();
   else if(k==="escape" && dialogueSystem.activeSession) dialogueSystem.close();
   if(k==="e") interactionManager.tryInteract();
@@ -5521,6 +5542,26 @@ function hitVisualAlpha(e){ const now=performance.now(); if(now>=e.hitUntil) ret
 function attackPose(entity){ const now=performance.now(); const total=350; const left=Math.max(0,entity.attackUntil-now); if(left<=0) return {active:false,thrust:0}; const t=(total-left)/total; return {active:true,thrust:Math.sin(t*Math.PI)*3.5}; }
 
 function drawAlignmentGrid(){ const cam=getCamera(); const sx=cam.offsetX, sy=cam.offsetY, ex=sx+VIEW_TILES_X*TILE, ey=sy+VIEW_TILES_Y*TILE; ctx.save(); ctx.strokeStyle="rgba(221,233,255,.16)"; ctx.lineWidth=1; ctx.beginPath(); for(let x=0;x<=VIEW_TILES_X;x++){ const px=sx+x*TILE+.5; ctx.moveTo(px,sy); ctx.lineTo(px,ey);} for(let y=0;y<=VIEW_TILES_Y;y++){ const py=sy+y*TILE+.5; ctx.moveTo(sx,py); ctx.lineTo(ex,py);} ctx.stroke(); ctx.restore(); }
+function drawCollisionOverlay(){
+  const cam=getCamera();
+  ctx.save();
+  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++){
+    for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
+      if(!isTileInCurrentZone(x,y)) continue;
+      const p=tileToScreen(x,y);
+      const tileBlocked=isInMirrorCave
+        ? mirrorCave.blocked.has(keyOf(x,y))
+        : (isInAbandonedTollhouse
+          ? abandonedTollhouse.blocked.has(keyOf(x,y))
+          : isOverworldTerrainBlocked(x,y));
+      const blockedByObject=isWorldObjectBlockingTile(x,y);
+      if(tileBlocked || blockedByObject) ctx.fillStyle=blockedByObject ? "rgba(166,85,218,0.36)" : "rgba(220,76,76,0.28)";
+      else ctx.fillStyle="rgba(64,186,116,0.14)";
+      ctx.fillRect(p.x,p.y,TILE,TILE);
+    }
+  }
+  ctx.restore();
+}
 function drawTileRotated(img, x, y, turns){
   if(!img||!img.complete||img.naturalWidth<=0) return;
   ctx.save();
@@ -5989,6 +6030,7 @@ function drawWorld(){
     if(detail && detail.complete && detail.naturalWidth>0) ctx.drawImage(detail,p.x,p.y,32,32);
   }
 
+  if(showCollisionOverlay) drawCollisionOverlay();
   if(showGrid) drawAlignmentGrid();
 
   const zoneName=currentLocalAreaName();
