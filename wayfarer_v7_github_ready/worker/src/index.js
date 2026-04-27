@@ -1402,11 +1402,11 @@ function makeShadowTiles(){
 
 function makePropSprites(){
   const sheet = document.createElement("canvas");
-  sheet.width = 320;
+  sheet.width = 416;
   sheet.height = 32;
   const p = sheet.getContext("2d");
   p.imageSmoothingEnabled = false;
-  p.clearRect(0,0,320,32);
+  p.clearRect(0,0,416,32);
 
   function cell(col, drawFn){
     p.save();
@@ -1471,12 +1471,31 @@ function makePropSprites(){
     q.fillStyle="#70756f"; q.fillRect(10,20,4,3); q.fillRect(14,18,5,4); q.fillRect(19,20,3,3);
     q.fillStyle="#8c928b"; q.fillRect(11,19,2,1); q.fillRect(15,17,2,1); q.fillRect(20,19,1,1);
   });
+  cell(10,(q)=>{ // bench
+    q.fillStyle="#6f5035"; q.fillRect(6,17,20,3); q.fillRect(8,12,16,2);
+    q.fillStyle="#9c734d"; q.fillRect(7,16,18,1); q.fillRect(9,11,14,1);
+    q.fillStyle="#4e3827"; q.fillRect(8,20,2,6); q.fillRect(22,20,2,6);
+  });
+  cell(11,(q)=>{ // notice board
+    q.fillStyle="#5f432d"; q.fillRect(8,8,2,19); q.fillRect(22,8,2,19);
+    q.fillStyle="#8f6948"; q.fillRect(9,8,14,12);
+    q.fillStyle="#d3be96"; q.fillRect(10,9,12,10);
+    q.fillStyle="#826247"; q.fillRect(12,11,7,1); q.fillRect(11,14,8,1); q.fillRect(13,16,6,1);
+  });
+  cell(12,(q)=>{ // handcart
+    q.fillStyle="#6f4e35"; q.fillRect(7,14,18,9);
+    q.fillStyle="#8f6847"; q.fillRect(8,15,16,7);
+    q.fillStyle="#523927"; q.fillRect(9,13,14,1); q.fillRect(9,23,14,1);
+    q.fillStyle="#503626"; q.fillRect(3,16,4,2); q.fillRect(25,16,4,2);
+    q.fillStyle="#3b2a1f"; q.fillRect(5,22,3,3); q.fillRect(24,22,3,3);
+    q.fillStyle="#9f9a8f"; q.fillRect(5,23,3,1); q.fillRect(24,23,3,1);
+  });
 
   const sheetImg = new Image();
   sheetImg.src = sheet.toDataURL("image/png");
   assets.props.sheet = sheetImg;
 
-  const names = ["barrel","crate","sack","lanternPost","signPost","fenceSeg","bush","grassTuft","well","stonePile"];
+  const names = ["barrel","crate","sack","lanternPost","signPost","fenceSeg","bush","grassTuft","well","stonePile","bench","noticeBoard","handcart"];
   names.forEach((name, i)=>{
     assets.props.sprites[name] = makeTile((q)=>{ q.drawImage(sheet, i*32, 0, 32, 32, 0, 0, 32, 32); });
   });
@@ -1621,10 +1640,10 @@ makeFenceTiles();
 makeShadowTiles();
 makePropSprites();
 assets.sprites.player = paintHumanoidSheet({ skin:"#e4c8a2", hair:"#4f3a2c", tunic:"#5c80a2", tunicShade:"#3d5978", cloak:"#d2d8e2", boots:"#4f3826" }, "adventurer");
-assets.sprites.npc = paintHumanoidSheet({ skin:"#ccb79b", hair:"#d9dde5", tunic:"#4d473f", tunicShade:"#322d28", cloak:"#262229", boots:"#2f2418" }, "elder");
-assets.sprites.edrin = paintHumanoidSheet({ skin:"#c8ae8d", hair:"#e6e9f0", tunic:"#5b5450", tunicShade:"#3a3430", cloak:"#2c2830", boots:"#2f2418" }, "elder");
-assets.sprites.hunter = paintHumanoidSheet({ skin:"#d3b999", hair:"#4d3a2b", tunic:"#556246", tunicShade:"#3d4731", cloak:"#3a2f24", boots:"#312519" }, "adventurer");
-assets.sprites.merchant = paintHumanoidSheet({ skin:"#dabf9e", hair:"#61452f", tunic:"#6f4d39", tunicShade:"#513727", cloak:"#8b6f4a", boots:"#3b2a1d" }, "adventurer");
+assets.sprites.npc = paintHumanoidSheet({ skin:"#ccb79b", hair:"#e3e8f4", tunic:"#64617a", tunicShade:"#49465d", cloak:"#313547", boots:"#2f2418" }, "elder");
+assets.sprites.edrin = paintHumanoidSheet({ skin:"#c8ae8d", hair:"#f0f4fc", tunic:"#70708a", tunicShade:"#55556c", cloak:"#34384b", boots:"#2f2418" }, "elder");
+assets.sprites.hunter = paintHumanoidSheet({ skin:"#d3b999", hair:"#4d3a2b", tunic:"#5c744c", tunicShade:"#45573b", cloak:"#3f3225", boots:"#312519" }, "adventurer");
+assets.sprites.merchant = paintHumanoidSheet({ skin:"#dabf9e", hair:"#61452f", tunic:"#7a4f38", tunicShade:"#5b3b2a", cloak:"#a4824f", boots:"#3b2a1d" }, "adventurer");
 assets.sprites.bandit = paintHumanoidSheet({ skin:"#b99b7b", hair:"#2a2320", tunic:"#5b3d3f", tunicShade:"#412b2d", cloak:"#1f1c24", boots:"#241a13" }, "adventurer");
 assets.sprites.rook = paintHumanoidSheet({ skin:"#b4916c", hair:"#131116", tunic:"#6f2f36", tunicShade:"#4f2127", cloak:"#2e1116", boots:"#1f1310" }, "adventurer");
 assets.sprites.wolf = paintWolfSheet();
@@ -1716,23 +1735,25 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  { x:7,y:11,w:24,h:2 },
+  { x:6,y:11,w:25,h:2 },
   { x:17,y:0,w:3,h:21 },
-  { x:13,y:8,w:11,h:3 },
-  { x:15,y:13,w:8,h:3 },
-  { x:24,y:10,w:3,h:8 },
-  { x:10,y:11,w:3,h:7 },
-  { x:26,y:11,w:5,h:2 },
-  { x:20,y:3,w:3,h:5 },
+  { x:13,y:9,w:11,h:5 },
+  { x:15,y:14,w:8,h:3 },
+  { x:9,y:12,w:3,h:7 },
+  { x:23,y:10,w:3,h:4 },
+  { x:25,y:11,w:6,h:2 },
+  { x:20,y:3,w:3,h:6 },
   { x:28,y:13,w:3,h:2 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { x:11,y:6,w:5,h:3,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["window","wall","window","wall","window"],["wall","wall","door","wall","wall"]] },
-  { x:20,y:6,w:5,h:3,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["window","wall","window","wall","window"],["wall","door","wall","window","wall"]] },
-  { x:11,y:15,w:5,h:3,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["window","wall","window","wall","window"],["wall","wall","door","wall","wall"]] },
-  { x:20,y:15,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","window"],["wall","door","wall","wall"]] }
+  { x:9,y:6,w:7,h:4,tileRows:[["roofL","roofC","roofC","roofC","roofC","roofC","roofR"],["window","wall","window","wall","window","wall","window"],["wall","wall","wall","door","wall","wall","wall"],["wall","window","wall","wall","wall","window","wall"]] },
+  { x:20,y:6,w:5,h:4,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["window","wall","window","wall","window"],["wall","door","wall","wall","wall"],["wall","window","wall","window","wall"]] },
+  { x:12,y:15,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","wall"],["wall","door","wall","wall"]] },
+  { x:17,y:16,w:6,h:3,tileRows:[["roofL","roofC","roofC","roofC","roofC","roofR"],["window","wall","window","window","wall","window"],["wall","wall","door","wall","wall","wall"]] },
+  { x:25,y:7,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","wall"],["wall","door","wall","wall"]] },
+  { x:6,y:15,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["window","wall","window","wall"],["wall","door","wall","wall"]] }
 );
 world.buildings.forEach(b=>blockRect(b.x,b.y,b.w,b.h));
 
@@ -1749,34 +1770,37 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
   }
 }
 
-for(let x=8;x<=14;x++){ world.fences.push({x,y:19}); }
-for(let y=16;y<=19;y++){ world.fences.push({x:8,y}); }
-for(let x=24;x<=33;x++){ world.fences.push({x,y:7}); }
-for(let y=8;y<=11;y++){ world.fences.push({x:33,y}); }
-for(let x=24;x<=31;x++){ world.fences.push({x,y:18}); }
-for(let y=15;y<=18;y++){ world.fences.push({x:31,y}); }
+for(let x=5;x<=11;x++){ world.fences.push({x,y:19}); }
+for(let y=16;y<=19;y++){ world.fences.push({x:5,y}); }
+for(let x=24;x<=34;x++){ world.fences.push({x,y:6}); }
+for(let y=7;y<=11;y++){ world.fences.push({x:34,y}); }
+for(let x=23;x<=31;x++){ world.fences.push({x,y:19}); }
+for(let y=16;y<=19;y++){ world.fences.push({x:31,y}); }
 for(let x=13;x<=17;x++){ world.fences.push({x,y:3}); }
 for(let x=20;x<=24;x++){ world.fences.push({x,y:3}); }
+for(let x=14;x<=22;x++){ if(x!==18 && x!==19) world.fences.push({x,y:14}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
-  {x:12,y:9,type:"crate"},{x:13,y:9,type:"barrel"},{x:14,y:9,type:"sack"},{x:11,y:9,type:"bush"},
-  {x:21,y:9,type:"crate"},{x:22,y:9,type:"barrel"},{x:23,y:9,type:"sack"},{x:24,y:9,type:"bush"},
+  {x:10,y:10,type:"lanternPost"},{x:14,y:10,type:"lanternPost"},{x:9,y:10,type:"signPost"},
+  {x:20,y:10,type:"crate"},{x:21,y:10,type:"crate"},{x:22,y:10,type:"sack"},{x:23,y:10,type:"barrel"},
+  {x:24,y:10,type:"handcart"},{x:24,y:9,type:"signPost"},
+  {x:16,y:11,type:"bench"},{x:21,y:11,type:"bench"},
+  {x:18,y:12,type:"well"},{x:17,y:11,type:"noticeBoard"},{x:19,y:11,type:"lanternPost"},
+  {x:15,y:13,type:"crate"},{x:20,y:13,type:"barrel"},
+  {x:7,y:18,type:"barrel"},{x:8,y:18,type:"crate"},{x:9,y:18,type:"sack"},{x:6,y:18,type:"bush"},
   {x:12,y:18,type:"crate"},{x:13,y:18,type:"sack"},{x:14,y:18,type:"barrel"},{x:11,y:18,type:"bush"},
-  {x:21,y:18,type:"crate"},{x:22,y:18,type:"sack"},{x:23,y:18,type:"barrel"},
-  {x:15,y:11,type:"grassTuft"},{x:16,y:12,type:"grassTuft"},{x:20,y:13,type:"grassTuft"},
-  {x:17,y:12,type:"well"},
-  {x:16,y:11,type:"lanternPost"},{x:19,y:11,type:"lanternPost"},
-  {x:12,y:12,type:"signPost"},{x:23,y:12,type:"signPost"},{x:27,y:11,type:"signPost"},
+  {x:18,y:19,type:"crate"},{x:19,y:19,type:"sack"},{x:20,y:19,type:"barrel"},
+  {x:25,y:10,type:"barrel"},{x:26,y:10,type:"crate"},{x:27,y:10,type:"sack"},{x:28,y:10,type:"stonePile"},
+  {x:26,y:12,type:"signPost"},{x:27,y:12,type:"fenceSeg"},
   {x:25,y:13,type:"stonePile"},{x:24,y:16,type:"stonePile"},{x:31,y:17,type:"stonePile"},
   {x:26,y:18,type:"grassTuft"},{x:29,y:17,type:"grassTuft"},{x:30,y:14,type:"grassTuft"},
-  {x:8,y:12,type:"bush"},{x:30,y:12,type:"bush"},{x:7,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
-  {x:16,y:14,type:"fenceSeg"},{x:17,y:14,type:"fenceSeg"},{x:18,y:14,type:"fenceSeg"},{x:19,y:14,type:"fenceSeg"},
+  {x:8,y:12,type:"bush"},{x:30,y:12,type:"bush"},{x:6,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
+  {x:16,y:14,type:"fenceSeg"},{x:17,y:14,type:"fenceSeg"},{x:20,y:14,type:"fenceSeg"},{x:21,y:14,type:"fenceSeg"},
   {x:18,y:4,type:"signPost"},{x:21,y:4,type:"signPost"},{x:22,y:2,type:"fenceSeg"},
   {x:14,y:4,type:"fenceSeg"},{x:24,y:4,type:"fenceSeg"},
   {x:14,y:2,type:"bush"},{x:23,y:2,type:"bush"},
-  {x:12,y:1,type:"stonePile"},{x:24,y:1,type:"stonePile"},
-  {x:10,y:15,type:"barrel"},{x:25,y:15,type:"crate"},{x:27,y:10,type:"sack"}
+  {x:12,y:1,type:"stonePile"},{x:24,y:1,type:"stonePile"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -1801,9 +1825,9 @@ world.zones.push(
 const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
-const npc={x:20,y:12,name:"Edrin Vale",facing:"down"};
-const hunterNpc={x:25,y:11,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"down"};
-const vendorNpc={x:15,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
+const npc={x:18,y:11,name:"Edrin Vale",facing:"down"};
+const hunterNpc={x:27,y:11,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
+const vendorNpc={x:22,y:11,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"left"};
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
@@ -3911,7 +3935,7 @@ registerWorldObject({
   objectId:"town_well",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
-  x:18, y:11,
+  x:18, y:12,
   state:"default",
   interactable:true,
   collision:false,
@@ -5529,6 +5553,7 @@ function drawWorld(){
     const img = assets.props.sprites[prop.type];
     if(!img || !img.complete || img.naturalWidth<=0) return;
     if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
+    if(prop.type==="handcart"||prop.type==="bench"||prop.type==="noticeBoard") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
     if(prop.type==="sack"||prop.type==="stonePile") drawSoftShadow(p.x+16,p.y+26,8,3,.16);
     if(prop.type==="bush"||prop.type==="grassTuft") drawSoftShadow(p.x+16,p.y+26,9,4,.14);
     if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
@@ -5593,12 +5618,12 @@ function drawWorld(){
   if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:26, ty:12, priority:0 });
   if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
 
-  drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.33,8.5);
-  drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.82, "", 0, null, null);
-  drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.3,8.5);
-  drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.82, "", 0, null, null);
-  drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.3,8.5);
-  drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.82, "", 0, null, null);
+  drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.4,8.8);
+  drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.84, "", 0, null, null);
+  drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.38,8.8);
+  drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.84, "", 0, null, null);
+  drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.38,8.8);
+  drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.84, "", 0, null, null);
   wolves.forEach((wolf)=>{
     if(wolf.hp<=0) return;
     drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.25,8);
