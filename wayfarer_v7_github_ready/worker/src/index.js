@@ -1225,7 +1225,6 @@ const worldObjects=[];
 const worldObjectsById=new Map();
 const persistentObjects={};
 let worldInfoPanel=null;
-let lastWalkInTriggerKey=null;
 
 function createWorldObject(config){
   return {
@@ -2693,16 +2692,10 @@ function handleZoneTransitionIfNeeded(){
 }
 function triggerWalkInWorldObject(){
   if(transitionState.active || performance.now()<zoneTransitionLockedUntil) return false;
-  const zoneKey=isInMirrorCave ? "mirror_cave" : "overworld";
-  const playerTileKey=zoneKey + ":" + player.targetX + "," + player.targetY;
-  if(lastWalkInTriggerKey && lastWalkInTriggerKey!==playerTileKey) lastWalkInTriggerKey=null;
   return getActiveWorldObjects().some((object)=>{
     if(!object.walkInTrigger || !object.interactable) return false;
     const tile=getWorldObjectTile(object);
     if(tile.x!==player.targetX || tile.y!==player.targetY) return false;
-    const triggerKey=zoneKey + ":" + tile.x + "," + tile.y;
-    if(lastWalkInTriggerKey===triggerKey) return false;
-    lastWalkInTriggerKey=triggerKey;
     object.onInteract?.();
     eventSystem.emit("interaction:used",{id:object.objectId,type:object.type});
     return true;
