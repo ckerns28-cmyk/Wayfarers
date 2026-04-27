@@ -87,16 +87,21 @@
 - [ ] Save/load while standing in North Road and verify player position + HUD zone text remain correct.
 
 ## L. Second Dungeon / Mini-Boss — Abandoned Tollhouse (Phase 26)
+- [ ] POI discovery test: approach or enter the tollhouse and verify `Discovered: Abandoned Tollhouse.` appears once.
+- [ ] Environmental sign test: read the tollhouse roadside notice and verify text appears/closes cleanly.
 - [ ] Enter North Road and confirm region remains stable.
 - [ ] Enter Abandoned Tollhouse and verify hard transition (no bounce loop, safe spawn, cooldown behavior).
 - [ ] Fight interior bandits and confirm encounter difficulty feels fair for Level 3–5 loadouts.
 - [ ] Confirm Rook the Tollkeeper appears clearly named and feels stronger than normal bandits.
+- [ ] Rook defeat feedback test: verify Chronicle logs `Rook the Tollkeeper defeated.` and a clear `Boss rewards:` list.
 - [ ] Defeat Rook and verify one-time mini-boss rewards (XP/coins/Old Toll Key, Traveler's Charm path).
 - [ ] Open tollhouse chest after Rook defeat and verify one-time loot behavior.
 - [ ] On first chest open, verify Chronicle prints `Opened the tollhouse chest.` + `Loot acquired:` + per-reward lines, and on-screen reward notifications appear (`+ Item` / `+Coins`).
+- [ ] Chest reward feedback test: verify inventory reflects each listed chest reward exactly once.
 - [ ] Interact with the already-open tollhouse chest and verify no rewards are granted and Chronicle logs `The tollhouse chest is empty.`.
 - [ ] Defeat Rook, save/reload, and confirm no duplicate boss rewards are granted on revisit (Rook does not respawn and rewards are not re-issued).
 - [ ] Save/reload after Rook defeat and verify: Rook stays defeated, chest state persists, rewards do not duplicate.
+- [ ] Cleared-state persistence test: after Rook defeat + chest open, verify cleared state survives save/reload and objective text returns to exploration.
 - [ ] Equip Traveler's Charm from Inventory and verify Equipment panel shows `Trinket: Traveler's Charm` with DEF increase reflected in combat mitigation.
-- [ ] Objective panel context check (with no active quest): before Rook defeat = clear tollhouse, after Rook defeat/chest closed = open chest, after chest open = cleared/explore text depending on location.
+- [ ] Objective panel context check (with no active quest): before clear = `Explore the Abandoned Tollhouse.`, after Rook defeat/chest closed = `Open the tollhouse chest.`, after clear = `Explore Hearthvale and the surrounding roads.`.
 - [ ] Regression sweep: Hearthvale, North Road, Mirror Cave, Merchant Rowan, Hunter Garran, Edrin Vale, inventory/equipment, and level/XP all remain functional.
