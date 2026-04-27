@@ -24,7 +24,7 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 | Vendor buying | working | Merchant buy flow checks coins and item registry cost. |
 | Vendor selling | working | Sell flow supports per-item value and equip-safe restrictions. |
 | Consumables | working | Consumables heal and clamp to max HP with quantity decrement. |
-| Save/load | partially working | Save schema versioning/defaults exist; migration logic is still brittle and tightly coupled to current quest/object model. |
+| Save/load | working | Schema versioning, centralized defaults, migration/repair, and backup-safe local storage paths are now in place. |
 | Continuous outdoor regions | working | Outdoor region definitions and boundary-based zone detection are active. |
 | Mirror Cave dungeon | working | Enter/exit transition flow and cave map state are implemented. |
 | Dungeon chest/reward gating | working | Chest supports sealed/closed/open state with quest-stage gating and one-time reward behavior. |
@@ -58,14 +58,34 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 21. Combat Balance / Difficulty Curve
 22. Second Quest Chain / Main Story Thread
 23. Creative Direction / Art Direction Lock
-
-## Upcoming Phases
-
 24. UX Presentation Polish
 25. Second Outdoor Region
 26. Second Dungeon / Mini-Boss
 27. Skill Use Progression
-28. Save Schema Hardening
+28. Save Schema / Architecture Hardening
 29. Multiplayer Architecture Planning
-30. Shared World Prototype
-31. Full Production Art Replacement Pass
+
+## Upcoming Phases
+
+30. Vertical Slice Quality Gate
+31. Combat Feel / Reward Polish
+32. Art Direction Application Pass
+33. Audio / Atmosphere Foundation
+34. First 20 Minutes Player Experience
+35. Shared World Prototype
+
+## Phase 29 outcome summary (Multiplayer Architecture Planning)
+
+- Added a concrete multiplayer architecture plan in `docs/MULTIPLAYER_ARCHITECTURE.md`.
+- Multiplayer implementation is intentionally paused until after the single-player vertical slice quality gates are complete.
+- Defined server-authoritative boundaries for combat, loot, object state, and save writes.
+- Selected Cloudflare baseline: Worker router + zone Durable Objects + D1 canonical persistence.
+- Marked private dungeon policy for Mirror Cave and Abandoned Tollhouse in early multiplayer.
+
+
+## Phase 32 outcome summary (Art Direction Application Pass)
+
+- Applied a major in-game art direction pass focused on terrain, region identity, entity readability, and UI cohesion in the playable slice.
+- Upgraded environmental readability for grass/road/water/cave/tollhouse surfaces without changing gameplay systems.
+- Improved actor differentiation (Wayfarer, NPC roles, wolves, bandits, and Rook mini-boss) to reduce label-only identification.
+- Added/updated visual QA checklist in `docs/VISUAL_QA.md` for ongoing regression-safe art polish.
