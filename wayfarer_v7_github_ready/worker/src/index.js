@@ -3420,12 +3420,11 @@ function resetFullSaveForDebug(){
 }
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
-  const isDevToggleKey=e.code==="Backquote";
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k) || isDevToggleKey) e.preventDefault();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10","`"].includes(k)) e.preventDefault();
   if(DIRECTION_KEYS.includes(k)){
     if(blockedDirectionalKeysUntilRelease.has(k)) return;
   }
-  if(isDevToggleKey){
+  if(k==="`"){
     DEV_MODE=!DEV_MODE;
     log(DEV_MODE ? "Dev mode enabled" : "Dev mode disabled");
     updateSidebar();
