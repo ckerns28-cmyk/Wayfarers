@@ -1255,6 +1255,58 @@ function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
   ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, dw ?? sprite.sw, dh ?? sprite.sh);
   return true;
 }
+const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
+  inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", window:"windowTall" },
+  mercantile_shop:{ roof:"roofSlate", wall:"wallBrick", door:"doorShop", window:"windowWide" },
+  village_hall_meeting_house:{ roof:"roofSlate", wall:"wall", door:"door", window:"window" },
+  residence_small:{ roof:"roofL", wall:"wall", door:"door", window:"window" },
+  residence_large:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall" },
+  hunter_lodge_or_outfitter:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall" },
+  pond_boathouse_or_waterfront_shed:{ roof:"roofR", wall:"wallBrick", door:"doorShop", window:"windowWide" }
+});
+function drawBuildingFallbackSprite(building){
+  const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+  const style=BUILDING_FALLBACK_STYLE_BY_ROLE[building.role] || BUILDING_FALLBACK_STYLE_BY_ROLE.residence_small;
+  const roofTile=assets.building[style.roof] || assets.building.roofC;
+  const wallTile=assets.building[style.wall] || assets.building.wall;
+  const doorTile=assets.building[style.door] || assets.building.door;
+  const windowTile=assets.building[style.window] || assets.building.window;
+  const roofY=Math.max(0, visual.y-1);
+  for(let rx=0;rx<visual.w;rx++){
+    const roofX=visual.x+rx;
+    const roofP=tileToScreen(roofX, roofY);
+    drawShadowTile(assets.shadow.softTile, roofP.x+2, roofP.y+5, .66);
+    const roofVariant=(rx===0&&assets.building.roofL)
+      ? assets.building.roofL
+      : (rx===visual.w-1&&assets.building.roofR)
+        ? assets.building.roofR
+        : roofTile;
+    if(roofVariant) ctx.drawImage(roofVariant, roofP.x, roofP.y, TILE, TILE);
+  }
+  for(let rx=0;rx<visual.w;rx++){
+    for(let ry=0;ry<visual.h;ry++){
+      const tileX=visual.x+rx;
+      const tileY=visual.y+ry;
+      const wallP=tileToScreen(tileX, tileY);
+      if(wallTile) ctx.drawImage(wallTile, wallP.x, wallP.y, TILE, TILE);
+    }
+  }
+  const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1, w:1, h:1 };
+  const doorY=Math.min(visual.y+visual.h-1, Math.max(visual.y, interaction.y));
+  const doorX=Math.min(visual.x+visual.w-1, Math.max(visual.x, interaction.x));
+  const doorP=tileToScreen(doorX, doorY);
+  if(doorTile) ctx.drawImage(doorTile, doorP.x, doorP.y, TILE, TILE);
+  const windowRows=visual.h>=5 ? [visual.y+1, visual.y+2] : [visual.y+1];
+  const windowCols=visual.w>=6 ? [visual.x+1, visual.x+visual.w-2] : [visual.x+1];
+  windowCols.forEach((wx)=>{
+    windowRows.forEach((wy)=>{
+      if(wx===doorX && wy===doorY) return;
+      if(wx<visual.x||wx>=visual.x+visual.w||wy<visual.y||wy>=visual.y+visual.h) return;
+      const wp=tileToScreen(wx,wy);
+      if(windowTile) ctx.drawImage(windowTile, wp.x, wp.y, TILE, TILE);
+    });
+  });
+}
 
 function buildTerrainTiles() {
   const grassBases = ["#4f7347", "#517548", "#4c7044", "#53774a"];
@@ -6122,15 +6174,7 @@ function drawWorld(){
     const didDraw=drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh);
     if(!didDraw){
       warnMissingAssetOnce("building_sprite", b.spriteId);
-      ctx.fillStyle=DEV_MODE ? "rgba(133,72,61,.55)" : "rgba(74,62,55,.22)";
-      ctx.fillRect(tileToScreen(b.x,b.y).x,tileToScreen(b.x,b.y).y,b.w*TILE,b.h*TILE);
-      ctx.strokeStyle=DEV_MODE ? "rgba(255,207,180,.75)" : "rgba(220,205,184,.3)";
-      ctx.strokeRect(tileToScreen(b.x,b.y).x+.5,tileToScreen(b.x,b.y).y+.5,b.w*TILE-1,b.h*TILE-1);
-      if(DEV_MODE){
-        ctx.fillStyle="rgba(255,232,197,.9)";
-        ctx.font="bold 10px monospace";
-        ctx.fillText("PLACEHOLDER", tileToScreen(b.x,b.y).x+6, tileToScreen(b.x,b.y).y+18);
-      }
+      drawBuildingFallbackSprite(b);
     }
 
     const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
