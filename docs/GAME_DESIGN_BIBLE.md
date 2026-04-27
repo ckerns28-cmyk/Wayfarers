@@ -87,6 +87,16 @@ Mythic, grounded, moody, old-school RPG.
 - **North Road:** quieter road leaving Hearthvale; more open space, worn travel markers, sparse trees, and lightly ominous roadside clutter.
 - North Road should stay **continuous** with Hearthvale movement (no hard transition), use existing systems/art language, and remain balanced for roughly **Level 2–5** travelers.
 
+## Second Dungeon / Mini-Boss (Phase 26)
+
+- **Abandoned Tollhouse:** a compact interior dungeon connected to North Road through a hard transition doorway.
+- Theme: derelict roadside checkpoint reclaimed by bandits.
+- Intended role: first structured humanoid combat challenge before larger dungeon ambitions.
+- Layout rule: readable, small interior with one narrow entry hall, one side room, and one main chamber.
+- **Rook the Tollkeeper:** first named mini-boss encounter (bandit baseline behavior, elevated stats, no complex mechanics yet).
+- Mini-bosses are stronger named enemies with persistent defeat state and meaningful rewards.
+- Rook rewards include the **Old Toll Key** and access to tollhouse post-boss reward flow (including Traveler's Charm support).
+
 ## Combat Balance & Difficulty Curve (Phase 21)
 
 ### Early-game combat goals
