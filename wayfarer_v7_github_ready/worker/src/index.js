@@ -37,6 +37,10 @@ const html = String.raw`<!DOCTYPE html>
       --accent:#8fb6ff;
     }
     * { box-sizing: border-box; }
+    #gamePanel, #game, #hud, #dialogue, #vendorPanel, #inventoryPanel, #stats, #objective, #logPanel, #brand {
+      user-select: none;
+      -webkit-user-select: none;
+    }
     body {
       margin:0;
       background: radial-gradient(circle at 30% -10%, #1a2333 0%, #070d14 58%);
@@ -93,11 +97,11 @@ const html = String.raw`<!DOCTYPE html>
       position:absolute;
       left:50%;
       transform:translateX(-50%);
-      bottom:max(16px, env(safe-area-inset-bottom));
+      bottom:max(24px, env(safe-area-inset-bottom));
       width:min(860px, calc(100% - 32px));
       display:none;
       z-index:25;
-      max-height:min(40vh, calc(100% - 72px));
+      max-height:min(44vh, calc(100% - 96px));
       overflow:auto;
       overscroll-behavior:contain;
       background:linear-gradient(#121a25,#0b1018);
@@ -105,6 +109,18 @@ const html = String.raw`<!DOCTYPE html>
       border-radius:10px;
       box-shadow:0 12px 34px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);
       padding:12px 14px;
+    }
+    @media (max-height: 820px) {
+      #dialogue{
+        bottom:max(32px, env(safe-area-inset-bottom));
+        max-height:min(48vh, calc(100% - 120px));
+      }
+    }
+    @media (max-height: 680px) {
+      #dialogue{
+        bottom:max(40px, env(safe-area-inset-bottom));
+        max-height:min(54vh, calc(100% - 136px));
+      }
     }
     #dialogueName{font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.4px}
     #dialogueText{white-space:pre-wrap;overflow-wrap:anywhere;min-height:62px;line-height:1.5}
@@ -337,6 +353,7 @@ const html = String.raw`<!DOCTYPE html>
   </div>
 <script>
 const canvas = document.getElementById("game");
+const gamePanel = document.getElementById("gamePanel");
 const ctx = canvas.getContext("2d");
 const hud = document.getElementById("hud");
 const chat = document.getElementById("chat");
@@ -364,6 +381,17 @@ function parseJsonScript(id){
   if(!node) return {};
   try { return JSON.parse(node.textContent || "{}"); }
   catch(err){ console.error("Invalid JSON in", id, err); return {}; }
+}
+
+function updateDialogueViewportConstraints(){
+  const panelHeight=gamePanel?.clientHeight || 0;
+  if(panelHeight<=0) return;
+  const isShortViewport=window.innerHeight<760 || panelHeight<520;
+  const bottomPadding=isShortViewport ? 40 : 24;
+  const topReserve=isShortViewport ? 112 : 92;
+  const maxHeight=Math.max(150, Math.min(Math.floor(panelHeight*0.54), panelHeight-bottomPadding-topReserve));
+  dialogue.style.bottom=bottomPadding + "px";
+  dialogue.style.maxHeight=maxHeight + "px";
 }
 
 const TILE = 32;
@@ -417,9 +445,10 @@ const BANDIT_LOOT_TABLE = Object.freeze([
 const VENDOR_BUY_INVENTORY = Object.freeze(["healing_herb","small_potion","leather_armor"]);
 
 function resize() {
-  const rect = document.getElementById("gamePanel").getBoundingClientRect();
+  const rect = gamePanel.getBoundingClientRect();
   canvas.width = Math.floor(rect.width);
   canvas.height = Math.floor(rect.height);
+  updateDialogueViewportConstraints();
 }
 resize();
 addEventListener("resize", resize);
@@ -1617,6 +1646,7 @@ class DialogueFramework {
     if(!session || !node){ this.close(); return; }
     const char=this.data.characters?.[session.characterId];
     const displayLines=this.getDisplayLines(node);
+    updateDialogueViewportConstraints();
     dialogue.style.display="block";
     dialogueName.textContent=char?.name || "Unknown";
     if(session.pendingChoices){
@@ -1642,6 +1672,12 @@ class InteractionManager {
       if(!nearest || distance<nearest.distance) nearest={target,distance};
     }
     return nearest?.target || null;
+  }
+  getPromptText(){
+    const target=this.getNearest();
+    if(!target) return "E : Interact";
+    if(target.promptLabel) return "E : " + target.promptLabel;
+    return "E : Interact";
   }
   tryInteract(){
     if(dialogueSystem.activeSession){ dialogueSystem.advance(); return true; }
@@ -1928,34 +1964,42 @@ eventSystem.on("quest:state-changed", ()=>saveGame("quest_state_change"));
 
 interactionManager.register({
   id:"npc_edrin", type:"npc", x:()=>npc.x, y:()=>npc.y,
+  promptLabel:"Talk to Edrin Vale",
   onInteract:()=>dialogueSystem.start("edrin")
 });
 interactionManager.register({
   id:"npc_hunter_garran", type:"npc", x:()=>hunterNpc.x, y:()=>hunterNpc.y,
+  promptLabel:"Talk to Hunter Garran",
   onInteract:()=>dialogueSystem.start("hunter_garran")
 });
 interactionManager.register({
   id:"npc_merchant_rowan", type:"npc", x:()=>vendorNpc.x, y:()=>vendorNpc.y,
+  promptLabel:"Talk to Merchant Rowan",
   onInteract:()=>openVendorMenu()
 });
 interactionManager.register({
   id:"obj_well", type:"object", x:()=>18, y:()=>11,
+  promptLabel:"Inspect well",
   onInteract:()=>{ log("The well water is cold and perfectly still."); eventSystem.emit("object:used:well",{}); }
 });
 interactionManager.register({
   id:"obj_sign_pond", type:"object", x:()=>25, y:()=>11,
+  promptLabel:"Read signpost",
   onInteract:()=>{ log("Signpost: Mirror Pond — Keep silence near the water."); eventSystem.emit("object:used:pond_sign",{}); }
 });
 interactionManager.register({
   id:"obj_mirror_cave_entrance", type:"object", x:()=>isInMirrorCave ? -999 : OVERWORLD_CAVE_ENTRY.x, y:()=>isInMirrorCave ? -999 : OVERWORLD_CAVE_ENTRY.y,
+  promptLabel:"Enter Mirror Cave",
   onInteract:()=>enterMirrorCave()
 });
 interactionManager.register({
   id:"obj_mirror_cave_exit", type:"object", x:()=>isInMirrorCave ? mirrorCave.exit.x : -999, y:()=>isInMirrorCave ? mirrorCave.exit.y : -999,
+  promptLabel:"Exit Mirror Cave",
   onInteract:()=>exitMirrorCave()
 });
 interactionManager.register({
   id:"obj_mirror_cave_chest", type:"object", x:()=>isInMirrorCave && !mirrorCave.chest.opened ? mirrorCave.chest.x : -999, y:()=>isInMirrorCave && !mirrorCave.chest.opened ? mirrorCave.chest.y : -999,
+  promptLabel:"Open chest",
   onInteract:()=>{
     if(mirrorCave.chest.opened) return;
     mirrorCave.chest.opened=true;
@@ -2223,7 +2267,8 @@ function updateSidebar(){
   const currentTarget=targetHostile?.entity || null;
   const targetCooldownMs=currentTarget ? Math.max(0, getHostileAttackCooldownMs(currentTarget)-(performance.now()-getHostileLastAttackAt(currentTarget))) : 0;
   const targetCooldownText=!currentTarget ? "N/A" : (currentTarget.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
-  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\nH : Use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName +
+  const interactionPrompt=interactionManager.getPromptText();
+  hud.textContent = "WASD / Arrows : Move\n" + interactionPrompt + "\nSpace : Attack\nH : Use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName +
     "\nHostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No") +
     "\nCurrent target : " + hostileLabel(currentTarget) +
     "\nTarget strike cd : " + targetCooldownText;
@@ -2539,6 +2584,36 @@ function drawHumanoid(sheet, tx, ty, facing, moving, scale, label, hitAlpha, rec
   }
 }
 
+function rectsOverlap(a,b){
+  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
+function drawWorldLabels(entries){
+  const occupied=[];
+  entries
+    .filter((entry)=>Boolean(entry?.text))
+    .sort((a,b)=>(b.priority||0)-(a.priority||0))
+    .forEach((entry)=>{
+      const text=entry.text;
+      const w=Math.max(56,text.length*7+9);
+      const h=14;
+      const p=tileToScreen(entry.tx, entry.ty);
+      let y=p.y-20;
+      const x=p.x-12;
+      for(let i=0;i<8;i++){
+        const rect={x,y,w,h};
+        if(!occupied.some((other)=>rectsOverlap(rect, other))){
+          occupied.push(rect);
+          ctx.fillStyle="rgba(7,11,18,.86)"; ctx.fillRect(rect.x,rect.y,rect.w,rect.h);
+          ctx.strokeStyle="rgba(211,224,242,.45)"; ctx.strokeRect(rect.x-.5,rect.y-.5,rect.w,rect.h);
+          ctx.fillStyle="#f6fbff"; ctx.font="bold 11px monospace"; ctx.fillText(text,rect.x+4,rect.y+10);
+          return;
+        }
+        y -= 16;
+      }
+    });
+}
+
 function drawWolf(wolf,tx,ty,facing,moving,scale,hitAlpha,recoil){
   const row = ({down:0,left:1,right:2,up:3})[facing] ?? 0;
   const p=tileToScreen(tx,ty);
@@ -2737,9 +2812,9 @@ function drawWorld(){
   if(zoneName==="Mirror Pond") zoneLabel("Mirror Pond",23,12);
   if(zoneName==="Eastern Woods") zoneLabel("Eastern Woods",30,4);
 
-  drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
-  drawHumanoid(assets.sprites.npc, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.78, Math.abs(player.targetX-hunterNpc.x)+Math.abs(player.targetY-hunterNpc.y)<=5?hunterNpc.displayLabel:"", 0, null, null);
-  drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5?vendorNpc.displayLabel:"", 0, null, null);
+  drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, "", 0, null, null);
+  drawHumanoid(assets.sprites.npc, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.78, "", 0, null, null);
+  drawHumanoid(assets.sprites.npc, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.78, "", 0, null, null);
   wolves.forEach((wolf)=>{
     if(wolf.hp<=0) return;
     drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
@@ -2748,7 +2823,13 @@ function drawWorld(){
     if(bandit.hp<=0) return;
     drawWolf(bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.84, hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY});
   });
-  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  drawWorldLabels([
+    {text:Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5 ? npc.name : "", tx:npc.x, ty:npc.y, priority:3},
+    {text:Math.abs(player.targetX-hunterNpc.x)+Math.abs(player.targetY-hunterNpc.y)<=5 ? hunterNpc.displayLabel : "", tx:hunterNpc.x, ty:hunterNpc.y, priority:3},
+    {text:Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5 ? vendorNpc.displayLabel : "", tx:vendorNpc.x, ty:vendorNpc.y, priority:3},
+    {text:"Wayfarer", tx:player.px/TILE, ty:player.py/TILE, priority:1}
+  ]);
 
   const tint=0.08+Math.max(0,Math.sin(performance.now()/9000))*.07;
   ctx.fillStyle="rgba(9,16,26," + tint.toFixed(3) + ")"; ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -2802,6 +2883,7 @@ let last=performance.now();
 function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
 
 const loadedFromSave=loadGame();
+updateDialogueViewportConstraints();
 ensureStarterEquipment();
 log("System: Artistic rebuild slice loaded.");
 if(loadedFromSave) log("System: Continuing from saved progress.");
