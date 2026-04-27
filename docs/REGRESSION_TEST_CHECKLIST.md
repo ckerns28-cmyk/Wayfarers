@@ -7,8 +7,20 @@
 
 ## NPCs
 - [ ] Talk to Edrin Vale.
+- [ ] Edrin shows branching dialogue options (Mirror Pond / cave / Wayfarer / goodbye).
+- [ ] If Mirror Cave chest is opened, Edrin references change near Mirror Pond.
 - [ ] Talk to Merchant Rowan.
+- [ ] Rowan opens shop only via “Show me your goods.”
+- [ ] Rowan provides advice and Hearthvale dialogue branches.
+- [ ] If player owns Iron Sword, Rowan comments on improved gear.
 - [ ] Talk to Hunter Garran.
+- [ ] Hunter shows correct Hunter’s Request state (not started / active / ready turn-in / completed).
+- [ ] Hunter active dialogue shows objective progress reminders.
+- [ ] Hunter completion cannot be claimed twice.
+- [ ] Hunter repeatable flavor lines mention wolves, bandits, Eastern Woods, and survival.
+- [ ] Dialogue choices can be selected by number keys and clickable options.
+- [ ] Dialogue panel always includes a clear exit path and closes correctly.
+- [ ] Dialogue panel remains readable with no clipping or HUD overlap.
 
 ## Vendor
 - [ ] Buy Small Potion.
@@ -37,6 +49,7 @@
 ## Quest
 - [ ] Hunter’s Request displays completed state.
 - [ ] Completed quests do not reward twice.
+- [ ] Active quest reminders remain accurate after save/load.
 
 ## Dungeon
 - [ ] Enter Mirror Cave.
@@ -50,6 +63,7 @@
 - [ ] Save in Eastern Woods.
 - [ ] Save in Mirror Cave if supported.
 - [ ] Reload preserves state.
+- [ ] Reload preserves completed quest states and prevents duplicate turn-in rewards.
 
 ## Foundation lock validation
 - [ ] Load a legacy save that lacks `saveSchemaVersion` and verify no crash.

@@ -112,6 +112,22 @@ const html = String.raw`<!DOCTYPE html>
     }
     #dialogueName{font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.4px}
     #dialogueText{white-space:pre-wrap;overflow-wrap:anywhere;min-height:62px;line-height:1.5}
+    #dialogueChoices{
+      margin-top:10px;
+      display:grid;
+      gap:6px;
+    }
+    .dialogue-choice{
+      border:1px solid #4c6281;
+      border-radius:8px;
+      background:#162435;
+      color:#e6ecf5;
+      text-align:left;
+      font:12px ui-monospace,SFMono-Regular,Menlo,monospace;
+      padding:7px 9px;
+      cursor:pointer;
+    }
+    .dialogue-choice:hover{background:#1b2d44}
     #dialogueHint{margin-top:8px;color:var(--muted);font-size:12px}
     #vendorPanel{
       position:absolute;left:50%;transform:translateX(-50%);bottom:20px;display:none;
@@ -193,6 +209,7 @@ const html = String.raw`<!DOCTYPE html>
       <div id="dialogue">
         <div id="dialogueName"></div>
         <div id="dialogueText"></div>
+        <div id="dialogueChoices"></div>
         <div id="dialogueHint">Click to continue. Press number keys for choices.</div>
       </div>
       <div id="vendorPanel">
@@ -211,52 +228,100 @@ const html = String.raw`<!DOCTYPE html>
     "edrin": {
       "name": "Edrin Vale",
       "root": "greeting",
+      "rootByCondition": [
+        { "if": { "questId": "mirror_pond_listening", "state": "Completed" }, "next": "after_pond_rite" },
+        { "if": { "questId": "mirror_pond_listening", "state": "Active", "progress": "heard_whispers" }, "next": "pond_whispers_heard" },
+        { "if": { "objectiveId": "hunters_request:open_chest", "completed": true }, "next": "cave_relic_observed" },
+        { "if": { "questId": "mirror_pond_listening", "state": "Active" }, "next": "pond_listening_active" }
+      ],
       "nodes": {
         "greeting": {
           "lines": [
-            "You are not from here.",
-            "Mirror Pond keeps old promises.",
-            "What do you seek, wayfarer?"
+            "You walk like someone called by old water.",
+            "I am Edrin Vale. Mirror Pond remembers names before they are spoken.",
+            "What do you seek, Wayfarer?"
           ],
           "choices": [
-            { "text": "Any work for me?", "next": "quest_offer" },
-            { "text": "Tell me about this town.", "next": "town_lore" }
+            { "text": "What is Mirror Pond?", "next": "mirror_pond_lore" },
+            { "text": "What do you know about the cave?", "next": "mirror_cave_lore" },
+            { "text": "Why do people call me Wayfarer?", "next": "wayfarer_title" },
+            { "text": "Goodbye.", "next": "end" }
           ]
         },
-        "town_lore": {
+        "mirror_pond_lore": {
           "lines": [
-            "Hearthvale pretends to be quiet.",
-            "Listen long enough and the stones answer back."
+            "Mirror Pond is older than Hearthvale, older than the roads, older than the names we use.",
+            "The surface reflects faces. The depths remember choices."
           ],
           "next": "greeting"
         },
-        "quest_offer": {
+        "mirror_cave_lore": {
           "lines": [
-            "Go to Mirror Pond and listen carefully.",
-            "Something is wrong."
+            "Mirror Cave was carved by fear and devotion in equal measure.",
+            "Most who enter hear only echoes. A few hear answers."
           ],
-          "onCompleteEvents": ["quest:activate:mirror_pond_listening"],
-          "next": "quest_active_followup"
+          "next": "greeting"
+        },
+        "wayfarer_title": {
+          "lines": [
+            "Wayfarer is not a rank. It is a warning.",
+            "Some arrive in Hearthvale by road. Others are brought by history."
+          ],
+          "next": "greeting"
+        },
+        "pond_listening_active": {
+          "lines": [
+            "The pond is waiting. Stand at the water in silence and listen."
+          ],
+          "choices": [
+            { "text": "What is Mirror Pond?", "next": "mirror_pond_lore" },
+            { "text": "What do you know about the cave?", "next": "mirror_cave_lore" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "pond_whispers_heard": {
+          "lines": [
+            "The water answered you.",
+            "Tell me what the stillness carried."
+          ],
+          "choices": [
+            { "text": "I heard the whispers.", "next": "pond_whispers_turn_in" },
+            { "text": "Not yet.", "next": "end" }
+          ]
+        },
+        "pond_whispers_turn_in": {
+          "lines": [
+            "Then the old vow is stirring again.",
+            "You have done what few could."
+          ],
+          "onCompleteEvents": ["quest:report:mirror_pond"],
+          "next": "after_pond_rite"
+        },
+        "cave_relic_observed": {
+          "lines": [
+            "You took something from Mirror Cave, didn't you?",
+            "The pond's surface has changed since that relic was disturbed."
+          ],
+          "choices": [
+            { "text": "What is Mirror Pond?", "next": "mirror_pond_lore" },
+            { "text": "Why do people call me Wayfarer?", "next": "wayfarer_title" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "after_pond_rite": {
+          "lines": [
+            "Hearthvale heard your step, Wayfarer.",
+            "The world is older than it looks, and now it knows you."
+          ],
+          "choices": [
+            { "text": "What do you know about the cave?", "next": "mirror_cave_lore" },
+            { "text": "Why do people call me Wayfarer?", "next": "wayfarer_title" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
         },
         "quest_active_followup": {
           "lines": [
             "The pond is waiting. Go there and be still."
-          ],
-          "next": "end"
-        },
-        "quest_turn_in": {
-          "lines": [
-            "You hear them too, then.",
-            "Good. The pond is warning us.",
-            "You have done well, wayfarer."
-          ],
-          "onCompleteEvents": ["quest:report:mirror_pond"],
-          "next": "post_quest"
-        },
-        "post_quest": {
-          "lines": [
-            "You heard it, didn't you?",
-            "Good. Hearthvale will remember your step."
           ],
           "next": "end"
         }
@@ -265,42 +330,125 @@ const html = String.raw`<!DOCTYPE html>
     "hunter_garran": {
       "name": "Hunter Garran",
       "root": "hunters_request_offer",
+      "rootByCondition": [
+        { "if": { "questId": "hunters_request", "state": "Completed" }, "next": "hunters_request_complete" },
+        { "if": { "questId": "hunters_request", "state": "Ready To Turn In" }, "next": "hunters_request_turn_in_ready" },
+        { "if": { "questId": "hunters_request", "state": "Active" }, "next": "hunters_request_active" }
+      ],
       "nodes": {
         "hunters_request_offer": {
           "lines": [
-            "Tracks are thick near Mirror Pond. If you want to prove yourself, start with the wolves."
+            "You want to survive out there? Then earn it.",
+            "Wolves are ranging near the pond and bandits are watching the trails.",
+            "Take Hunter's Request: thin the wolves, enter Mirror Cave, and bring back proof."
           ],
           "choices": [
             { "text": "Accept Hunter's Request", "event": "quest:activate:hunters_request", "next": "hunters_request_active" },
-            { "text": "Not now", "next": "end" }
+            { "text": "Any survival advice?", "next": "garran_survival_advice" },
+            { "text": "Goodbye.", "next": "end" }
           ]
         },
         "hunters_request_active": {
           "lines": [
-            "Stay sharp. Bring me proof you’ve handled the wolves and searched Mirror Cave."
+            "Keep your blade ready and your eyes up.",
+            "Report once every objective is done."
           ],
-          "next": "end"
+          "choices": [
+            { "text": "How are the woods lately?", "next": "garran_woods_flavor" },
+            { "text": "Remind me of the objective.", "next": "hunters_request_active" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
         },
         "hunters_request_turn_in_ready": {
           "lines": [
-            "You made it back. Let’s see what you found."
+            "You made it back. That's what matters.",
+            "Looks like you've done the work."
           ],
           "choices": [
-            { "text": "Complete Hunter's Request", "next": "hunters_request_turn_in" }
+            { "text": "Complete Hunter's Request", "next": "hunters_request_turn_in" },
+            { "text": "One more question first.", "next": "garran_woods_flavor" },
+            { "text": "Goodbye.", "next": "end" }
           ]
         },
         "hunters_request_turn_in": {
           "lines": [
-            "Good work. You’ve got the makings of a real wayfarer."
+            "Good work. You stayed alive, stayed focused, and came back."
           ],
           "onCompleteEvents": ["quest:turn_in:hunters_request"],
           "next": "hunters_request_complete"
         },
         "hunters_request_complete": {
           "lines": [
-            "Good work. You’ve got the makings of a real wayfarer."
+            "You've proven yourself.",
+            "Eastern Woods will still test you, but now you know how to read it."
           ],
-          "next": "end"
+          "choices": [
+            { "text": "Any survival advice?", "next": "garran_survival_advice" },
+            { "text": "How are the woods lately?", "next": "garran_woods_flavor" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "garran_survival_advice": {
+          "lines": [
+            "Wolves circle before they strike. Keep moving and don't over-commit.",
+            "Bandits rush when they smell panic.",
+            "In the Eastern Woods, patience keeps you breathing."
+          ],
+          "next": "hunters_request_offer"
+        },
+        "garran_woods_flavor": {
+          "lines": [
+            "Wolves keep to the low brush at dawn. Bandits like the old road bends.",
+            "Eastern Woods sound quiet right before trouble starts."
+          ],
+          "next": "hunters_request_active"
+        }
+      }
+    },
+    "merchant_rowan": {
+      "name": "Merchant Rowan",
+      "root": "rowan_greeting",
+      "rootByCondition": [
+        { "if": { "itemId": "iron_sword", "minimumOwned": 1 }, "next": "rowan_iron_sword_greeting" }
+      ],
+      "nodes": {
+        "rowan_greeting": {
+          "lines": [
+            "Welcome, friend. Coin, stories, and practical supplies — that's my trade.",
+            "What can I do for you?"
+          ],
+          "choices": [
+            { "text": "Show me your goods.", "event": "vendor:open", "next": "end" },
+            { "text": "Any advice?", "next": "rowan_advice" },
+            { "text": "Tell me about Hearthvale.", "next": "rowan_hearthvale" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "rowan_iron_sword_greeting": {
+          "lines": [
+            "That Iron Sword suits you. Mirror Cave doesn't give up steel to just anyone.",
+            "Need fresh supplies?"
+          ],
+          "choices": [
+            { "text": "Show me your goods.", "event": "vendor:open", "next": "end" },
+            { "text": "Any advice?", "next": "rowan_advice" },
+            { "text": "Tell me about Hearthvale.", "next": "rowan_hearthvale" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "rowan_advice": {
+          "lines": [
+            "Keep at least one potion on hand and sell spare loot often.",
+            "If your pack gets heavy, your choices get expensive."
+          ],
+          "next": "rowan_greeting"
+        },
+        "rowan_hearthvale": {
+          "lines": [
+            "Hearthvale looks peaceful until dusk. Then hunters hurry in and mystics get quiet.",
+            "If you need rumors, listen near the well at sundown."
+          ],
+          "next": "rowan_greeting"
         }
       }
     }
@@ -357,6 +505,7 @@ const equipmentList = document.getElementById("equipmentList");
 const dialogue = document.getElementById("dialogue");
 const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
+const dialogueChoices = document.getElementById("dialogueChoices");
 const dialogueHint = document.getElementById("dialogueHint");
 const vendorPanel = document.getElementById("vendorPanel");
 const vendorList = document.getElementById("vendorList");
@@ -1608,20 +1757,39 @@ class DialogueFramework {
     }
     return baseLines;
   }
+  evaluateCondition(condition){
+    if(!condition || typeof condition!=="object") return false;
+    if(typeof condition.questId==="string"){
+      const quest=questSystem.getQuest(condition.questId);
+      if(!quest) return false;
+      if(typeof condition.state==="string" && quest.state!==condition.state) return false;
+      if(typeof condition.progress==="string" && quest.progress!==condition.progress) return false;
+    }
+    if(typeof condition.objectiveId==="string"){
+      const [questId, objectiveId]=condition.objectiveId.split(":");
+      if(!questId || !objectiveId) return false;
+      const objective=questSystem.getObjective(questId, objectiveId);
+      const needsCompleted=typeof condition.completed==="boolean" ? condition.completed : true;
+      if(!objective || objective.completed!==needsCompleted) return false;
+    }
+    if(typeof condition.itemId==="string"){
+      const minimum=Number.isFinite(condition.minimumOwned) ? Math.max(0, Math.floor(condition.minimumOwned)) : 1;
+      if(getItemQuantity(condition.itemId)<minimum) return false;
+    }
+    return true;
+  }
+  getRootNodeId(characterId, char){
+    const conditionalRoots=Array.isArray(char?.rootByCondition) ? char.rootByCondition : [];
+    for(const conditionalRoot of conditionalRoots){
+      if(!this.evaluateCondition(conditionalRoot?.if)) continue;
+      if(typeof conditionalRoot?.next==="string" && conditionalRoot.next) return conditionalRoot.next;
+    }
+    return char?.root;
+  }
   start(characterId){
     const char=this.data.characters?.[characterId];
     if(!char) return false;
-    let root=char.root;
-    if(characterId==="edrin"){
-      const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
-      if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest?.progress==="heard_whispers") root="quest_turn_in";
-      else if(mirrorQuest?.state===QuestState.ACTIVE) root="quest_active_followup";
-    } else if(characterId==="hunter_garran"){
-      const hunterQuest=questSystem.getQuest("hunters_request");
-      if(hunterQuest?.state===QuestState.COMPLETED) root="hunters_request_complete";
-      else if(hunterQuest?.state===QuestState.READY_TO_TURN_IN) root="hunters_request_turn_in_ready";
-      else if(hunterQuest?.state===QuestState.ACTIVE) root="hunters_request_active";
-    }
+    const root=this.getRootNodeId(characterId, char);
     this.activeSession={characterId,nodeId:root,lineIndex:0,pendingChoices:null};
     this.render();
     this.events.emit("dialogue:started:" + characterId,{characterId,nodeId:root});
@@ -1660,7 +1828,11 @@ class DialogueFramework {
     this.activeSession.pendingChoices=null;
     this.render();
   }
-  close(){ this.activeSession=null; dialogue.style.display="none"; }
+  close(){
+    this.activeSession=null;
+    dialogueChoices.innerHTML="";
+    dialogue.style.display="none";
+  }
   render(){
     const session=this.activeSession;
     const node=this.getNode();
@@ -1671,10 +1843,13 @@ class DialogueFramework {
     dialogue.style.display="block";
     dialogueName.textContent=char?.name || "Unknown";
     if(session.pendingChoices){
-      const options=session.pendingChoices.map((choice, idx)=>(idx+1)+") "+choice.text).join("\n");
-      dialogueText.textContent=displayLines.join("\n") + "\n\n" + options;
+      dialogueText.textContent=displayLines.join("\n");
+      dialogueChoices.innerHTML=session.pendingChoices.map((choice, idx)=>(
+        "<button type=\"button\" class=\"dialogue-choice\" data-dialogue-choice=\"" + idx + "\">" + (idx+1) + ") " + choice.text + "</button>"
+      )).join("");
       dialogueHint.textContent="Press 1-9 to choose an option.";
     } else {
+      dialogueChoices.innerHTML="";
       dialogueText.textContent=displayLines[session.lineIndex] || "...";
       dialogueHint.textContent="Click to continue dialogue.";
     }
@@ -1729,6 +1904,8 @@ const interactionManager=new InteractionManager(2);
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
 eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
 eventSystem.on("dialogue:started:hunter_garran", ()=>eventSystem.emit("npc:interacted:hunter_garran"));
+eventSystem.on("dialogue:started:merchant_rowan", ()=>eventSystem.emit("npc:interacted:merchant_rowan"));
+eventSystem.on("vendor:open", ()=>openVendorMenu());
 eventSystem.on("zone:entered:mirror_pond", ()=>{
   const quest=questSystem.getQuest("mirror_pond_listening");
   if(quest?.state!==QuestState.ACTIVE || quest.progress!=="go_to_pond") return;
@@ -2003,7 +2180,7 @@ interactionManager.register({
 interactionManager.register({
   id:"npc_merchant_rowan", type:"npc", x:()=>vendorNpc.x, y:()=>vendorNpc.y,
   promptLabel:"Talk to Merchant Rowan",
-  onInteract:()=>openVendorMenu()
+  onInteract:()=>dialogueSystem.start("merchant_rowan")
 });
 interactionManager.register({
   id:"obj_well", type:"object", x:()=>18, y:()=>11,
@@ -2040,8 +2217,16 @@ interactionManager.register({
 });
 
 dialogue.addEventListener("click",()=>{
-  if(dialogueSystem.activeSession?.pendingChoices) dialogueSystem.choose(0);
-  else if(dialogueSystem.activeSession) dialogueSystem.advance();
+  if(dialogueSystem.activeSession?.pendingChoices) return;
+  if(dialogueSystem.activeSession) dialogueSystem.advance();
+});
+dialogueChoices.addEventListener("click",(event)=>{
+  const target=event.target instanceof Element ? event.target.closest("button[data-dialogue-choice]") : null;
+  if(!target) return;
+  event.preventDefault();
+  event.stopPropagation();
+  const index=Number.parseInt(target.getAttribute("data-dialogue-choice") || "-1", 10);
+  if(Number.isInteger(index) && index>=0) dialogueSystem.choose(index);
 });
 vendorClose.addEventListener("click", closeVendorMenu);
 vendorList.addEventListener("click",(e)=>{
