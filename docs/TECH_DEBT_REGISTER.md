@@ -4,9 +4,10 @@
 |---|---|---|---|---|
 | Hardcoded quest logic | high | Quest system, dialogue events | 22 (Second Quest Chain) + 27 (Save Schema Hardening) | Hunter progression is implemented with explicit stage handlers/events instead of data-driven generalized quest scripting. |
 | Hardcoded NPC state | medium | NPC dialogue and world-state reactions | 18 follow-up + 22 | NPC behavior roots are condition-based but still tightly authored per character in one script blob. |
-| Brittle save/load migrations | high | Save/load | 27 | Legacy compatibility paths exist, but migration behavior is manual and version-specific, increasing regression risk. |
+| Save migration coverage breadth | medium | Save/load | 28 follow-up | Core migration/repair and schema versioning are centralized, but coverage still depends on manual scenario testing for newly-added systems. |
 | Map/entity coupling | high | World architecture, transitions, collision | 23 + 28 | World coordinates, interactables, enemies, and scene transitions are colocated and tightly linked. |
-| Object persistence risks | medium | Persistent object system | 19 follow-up + 27 | Persistent object state map works but lacks stronger schema validation and object lifecycle tooling. |
+| Object persistence lifecycle tooling | medium | Persistent object system | 28 follow-up | Canonical object IDs + repair normalization exist, but lifecycle visualization/debug tools are still minimal. |
+| Save backup retention policy | low | Save/load | 28 follow-up | Backup key is maintained before writes/migrations, but no rotation or age/size policy exists yet. |
 | UI clipping risks | medium | Dialogue/vendor/HUD UI | 17 follow-up + 26 | Layout uses fixed/floating panels and mixed scaling rules that can clip at edge viewport sizes. |
 | Duplicated item/combat logic | medium | Combat, inventory, rewards | 25 | Reward and stat updates are still spread across direct code paths even after introducing shared balance constants. |
 | Old transition code should be removed | medium | Zone transition flow | 14/15 cleanup pass | Transition lock/timing logic has layered patches and legacy guard paths that should be simplified. |
