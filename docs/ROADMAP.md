@@ -69,7 +69,7 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 
 30. Vertical Slice Quality Gate
 31. Combat Feel / Reward Polish
-32. Art Direction Application
+32. Art Direction Application Pass
 33. Audio / Atmosphere Foundation
 34. First 20 Minutes Player Experience
 35. Shared World Prototype
@@ -81,3 +81,11 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 - Defined server-authoritative boundaries for combat, loot, object state, and save writes.
 - Selected Cloudflare baseline: Worker router + zone Durable Objects + D1 canonical persistence.
 - Marked private dungeon policy for Mirror Cave and Abandoned Tollhouse in early multiplayer.
+
+
+## Phase 32 outcome summary (Art Direction Application Pass)
+
+- Applied a major in-game art direction pass focused on terrain, region identity, entity readability, and UI cohesion in the playable slice.
+- Upgraded environmental readability for grass/road/water/cave/tollhouse surfaces without changing gameplay systems.
+- Improved actor differentiation (Wayfarer, NPC roles, wolves, bandits, and Rook mini-boss) to reduce label-only identification.
+- Added/updated visual QA checklist in `docs/VISUAL_QA.md` for ongoing regression-safe art polish.
