@@ -90,10 +90,16 @@ const html = String.raw`<!DOCTYPE html>
       text-shadow:0 1px 0 #000;
     }
     #dialogue {
-      position:absolute;left:20px;right:20px;bottom:56px;display:none;
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:max(16px, env(safe-area-inset-bottom));
+      width:min(860px, calc(100% - 32px));
+      display:none;
       z-index:25;
-      max-height:min(42%, 280px);
+      max-height:min(40vh, calc(100% - 72px));
       overflow:auto;
+      overscroll-behavior:contain;
       background:linear-gradient(#121a25,#0b1018);
       border:1px solid #51637d;
       border-radius:10px;
@@ -101,7 +107,7 @@ const html = String.raw`<!DOCTYPE html>
       padding:12px 14px;
     }
     #dialogueName{font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.4px}
-    #dialogueText{white-space:pre-line;min-height:62px;line-height:1.5}
+    #dialogueText{white-space:pre-wrap;overflow-wrap:anywhere;min-height:62px;line-height:1.5}
     #dialogueHint{margin-top:8px;color:var(--muted);font-size:12px}
     #vendorPanel{
       position:absolute;left:50%;transform:translateX(-50%);bottom:20px;display:none;
@@ -254,30 +260,29 @@ const html = String.raw`<!DOCTYPE html>
     },
     "hunter_garran": {
       "name": "Hunter Garran",
-      "root": "greeting",
+      "root": "hunters_request_offer",
       "nodes": {
-        "greeting": {
+        "hunters_request_offer": {
           "lines": [
-            "Tracks have been thick near Mirror Pond. Bring me proof you can handle yourself."
+            "Tracks are thick near Mirror Pond. If you want to prove yourself, start with the wolves."
           ],
-          "onCompleteEvents": ["quest:activate:hunters_request"],
-          "next": "hunters_request_active"
+          "choices": [
+            { "text": "Accept Hunter's Request", "event": "quest:activate:hunters_request", "next": "hunters_request_active" },
+            { "text": "Not now", "next": "end" }
+          ]
         },
         "hunters_request_active": {
           "lines": [
-            "Hunter's Request.",
-            "Defeat 3 wolves, enter Mirror Cave, open Mirror Cave chest, then return to Hunter Garran."
+            "Stay sharp. Bring me proof you’ve handled the wolves and searched Mirror Cave."
           ],
           "next": "end"
         },
         "hunters_request_turn_in_ready": {
           "lines": [
-            "You made it back. Did you complete everything?",
-            "Ready to report and collect your reward?"
+            "You made it back. Let’s see what you found."
           ],
           "choices": [
-            { "text": "Yes, report complete.", "next": "hunters_request_turn_in" },
-            { "text": "Not yet.", "next": "end" }
+            { "text": "Complete Hunter's Request", "next": "hunters_request_turn_in" }
           ]
         },
         "hunters_request_turn_in": {
@@ -1534,6 +1539,25 @@ class DialogueFramework {
     this.events=events;
     this.activeSession=null;
   }
+  getHunterObjectiveSummaryLines(){
+    const hunterQuest=questSystem.getQuest("hunters_request");
+    if(!hunterQuest) return [];
+    const objectiveLines=(hunterQuest.objectives||[]).map((objective)=>{
+      const hasCounter=objective.requiredAmount>1;
+      const counter=hasCounter ? (" " + objective.currentAmount + "/" + objective.requiredAmount) : "";
+      const marker=objective.completed ? "✔" : "•";
+      return marker + " " + objective.label + counter;
+    });
+    return objectiveLines.length ? ["", ...objectiveLines] : [];
+  }
+  getDisplayLines(node){
+    const baseLines=Array.isArray(node?.lines) ? node.lines : [];
+    if(!this.activeSession) return baseLines;
+    if(this.activeSession.characterId==="hunter_garran" && this.activeSession.nodeId==="hunters_request_active"){
+      return [...baseLines, ...this.getHunterObjectiveSummaryLines()];
+    }
+    return baseLines;
+  }
   start(characterId){
     const char=this.data.characters?.[characterId];
     if(!char) return false;
@@ -1562,8 +1586,9 @@ class DialogueFramework {
     const node=this.getNode();
     if(!node || !this.activeSession) return;
     if(this.activeSession.pendingChoices) return;
+    const displayLines=this.getDisplayLines(node);
     this.activeSession.lineIndex += 1;
-    if(this.activeSession.lineIndex < (node.lines?.length||0)){ this.render(); return; }
+    if(this.activeSession.lineIndex < displayLines.length){ this.render(); return; }
     if(node.choices?.length){ this.activeSession.pendingChoices=node.choices; this.render(); return; }
     (node.onCompleteEvents||[]).forEach((eventName)=>this.events.emit(eventName,{characterId:this.activeSession.characterId,nodeId:this.activeSession.nodeId}));
     if(node.next && node.next!=="end"){
@@ -1591,14 +1616,15 @@ class DialogueFramework {
     const node=this.getNode();
     if(!session || !node){ this.close(); return; }
     const char=this.data.characters?.[session.characterId];
+    const displayLines=this.getDisplayLines(node);
     dialogue.style.display="block";
     dialogueName.textContent=char?.name || "Unknown";
     if(session.pendingChoices){
       const options=session.pendingChoices.map((choice, idx)=>(idx+1)+") "+choice.text).join("\n");
-      dialogueText.textContent=(node.lines||[]).join("\n") + "\n\n" + options;
-      dialogueHint.textContent="Press 1-9 to choose, or click to continue with option 1.";
+      dialogueText.textContent=displayLines.join("\n") + "\n\n" + options;
+      dialogueHint.textContent="Press 1-9 to choose an option.";
     } else {
-      dialogueText.textContent=(node.lines||[])[session.lineIndex] || "...";
+      dialogueText.textContent=displayLines[session.lineIndex] || "...";
       dialogueHint.textContent="Click to continue dialogue.";
     }
   }
@@ -2153,7 +2179,7 @@ function updateSidebar(){
   } else if(mirrorQuest?.state===QuestState.COMPLETED){
     objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
   } else {
-    objectiveText.textContent = "Speak with Edrin Vale to begin a task.";
+    objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
   }
   let nextInventoryMarkup="Empty";
   if(player.inventory.length>0){
