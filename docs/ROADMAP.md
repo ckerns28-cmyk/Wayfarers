@@ -24,7 +24,7 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 | Vendor buying | working | Merchant buy flow checks coins and item registry cost. |
 | Vendor selling | working | Sell flow supports per-item value and equip-safe restrictions. |
 | Consumables | working | Consumables heal and clamp to max HP with quantity decrement. |
-| Save/load | partially working | Save schema versioning/defaults exist; migration logic is still brittle and tightly coupled to current quest/object model. |
+| Save/load | working | Schema versioning, centralized defaults, migration/repair, and backup-safe local storage paths are now in place. |
 | Continuous outdoor regions | working | Outdoor region definitions and boundary-based zone detection are active. |
 | Mirror Cave dungeon | working | Enter/exit transition flow and cave map state are implemented. |
 | Dungeon chest/reward gating | working | Chest supports sealed/closed/open state with quest-stage gating and one-time reward behavior. |
@@ -62,10 +62,10 @@ This audit was performed before beginning **Phase 20: Character Progression Foun
 25. Second Outdoor Region
 26. Second Dungeon / Mini-Boss
 27. Skill Use Progression
+28. Save Schema / Architecture Hardening
 
 ## Upcoming Phases
 
-28. Save Schema Hardening
 29. Multiplayer Architecture Planning
 30. Shared World Prototype
 31. Full Production Art Replacement Pass

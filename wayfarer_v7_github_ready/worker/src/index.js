@@ -1804,6 +1804,43 @@ function createDefaultSkills(){
     survival:{ level:1, xp:0 }
   };
 }
+const DEFAULT_EQUIPMENT=Object.freeze({ weapon:"rusty_sword", armor:null, trinket:null });
+const SAVE_OBJECT_ID_ALIASES=Object.freeze({
+  tollhouse_reward_chest:"tollhouse_chest",
+  mirror_pond_interaction:"mirror_pond",
+  echo_fragment:"echo_fragment_object",
+  east_road_sign:"north_road_notice",
+  abandoned_tollhouse_state:"abandoned_tollhouse_state",
+  rook_tollkeeper_state:"rook_tollkeeper_state"
+});
+const CANONICAL_SAVE_OBJECT_IDS=Object.freeze([
+  "mirror_cave_chest",
+  "echo_fragment_object",
+  "tollhouse_chest",
+  "north_road_notice",
+  "mirror_pond",
+  "abandoned_tollhouse_state",
+  "rook_tollkeeper_state",
+  "mirror_pond_sign"
+]);
+function canonicalizePersistentObjectId(objectId){
+  if(typeof objectId!=="string") return null;
+  return SAVE_OBJECT_ID_ALIASES[objectId] || objectId;
+}
+function normalizePersistentObjects(rawPersistentObjects){
+  const normalized={};
+  if(rawPersistentObjects && typeof rawPersistentObjects==="object"){
+    Object.entries(rawPersistentObjects).forEach(([objectId, objectState])=>{
+      const canonicalId=canonicalizePersistentObjectId(objectId);
+      if(!canonicalId || !objectState || typeof objectState!=="object") return;
+      normalized[canonicalId]={ ...(normalized[canonicalId]||{}), ...objectState };
+    });
+  }
+  CANONICAL_SAVE_OBJECT_IDS.forEach((objectId)=>{
+    if(!normalized[objectId]) normalized[objectId]={ state:"default" };
+  });
+  return normalized;
+}
 function getSkillLevelFromXp(totalXp){
   const normalizedXp=Math.max(0, Math.floor(Number.isFinite(totalXp) ? totalXp : 0));
   let level=1;
@@ -2692,7 +2729,7 @@ function syncMirrorCaveChestState(shouldSave=false){
   return state;
 }
 function getTollhouseChestState(){
-  const persistent=getPersistentObject("tollhouse_reward_chest");
+  const persistent=getPersistentObject("tollhouse_chest");
   if(persistent.opened) return "open";
   if(rookTollkeeperDefeated) return "closed";
   return "locked";
@@ -2726,7 +2763,7 @@ function syncAbandonedTollhouseClearedState(shouldSave=false, announce=false){
 }
 function syncTollhouseChestState(shouldSave=false){
   const state=getTollhouseChestState();
-  patchPersistentObject("tollhouse_reward_chest", {
+  patchPersistentObject("tollhouse_chest", {
     state,
     opened:state==="open"
   }, shouldSave);
@@ -2895,12 +2932,12 @@ function setStillWaterQuestStage(stage){
   eventSystem.emit("quest:state-changed",{questId:"the_still_water",state:quest.state,progress:quest.progress});
 }
 function isStillWaterEchoFragmentCollected(){
-  const persistent=getPersistentObject("echo_fragment");
+  const persistent=getPersistentObject("echo_fragment_object");
   return Boolean(persistent.collected) || getItemQuantity("echo_fragment")>0;
 }
 function syncEchoFragmentState(shouldSave=false){
   const collected=isStillWaterEchoFragmentCollected();
-  patchPersistentObject("echo_fragment", { state:collected ? "collected" : "inert", collected }, shouldSave);
+  patchPersistentObject("echo_fragment_object", { state:collected ? "collected" : "inert", collected }, shouldSave);
   return collected;
 }
 function getStillWaterObjectiveText(){
@@ -3096,7 +3133,8 @@ eventSystem.on("world:pond:awakened", ()=>{
 });
 
 const SAVE_KEY="wayfarer.save.v1";
-const SAVE_SCHEMA_VERSION=1;
+const SAVE_BACKUP_KEY="wayfarer.save.v1.backup";
+const SAVE_SCHEMA_VERSION=2;
 const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10,11,12,13]);
 const DEFAULT_DEV_MODE=false;
 let DEV_MODE=DEFAULT_DEV_MODE;
@@ -3108,6 +3146,226 @@ function showSaveNotice(message){
   saveNoticeTimeout=setTimeout(()=>saveNotice.classList.remove("visible"), 1400);
 }
 function isFiniteNumber(value){ return typeof value==="number" && Number.isFinite(value); }
+function cloneValue(value){
+  return JSON.parse(JSON.stringify(value));
+}
+function createDefaultSave(reason="default"){
+  const questStates=(questData.quests||[]).map((definition)=>({
+    id:definition.id,
+    state:QuestState.NOT_STARTED,
+    status:QuestState.NOT_STARTED,
+    progress:definition.initialProgress || "",
+    objectives:questSystem.normalizeObjectives(definition.objectives||[]).map((objective)=>({
+      id:objective.id,
+      currentAmount:0,
+      completed:false
+    }))
+  }));
+  return {
+    version:13,
+    saveSchemaVersion:SAVE_SCHEMA_VERSION,
+    reason,
+    savedAt:new Date().toISOString(),
+    player:{
+      zoneId:"hearthvale_square",
+      position:{ x:18, y:11 },
+      level:1,
+      hp:BALANCE.player.startingMaxHp,
+      maxHp:BALANCE.player.startingMaxHp,
+      xp:0,
+      baseAttackBonus:0,
+      baseDefenseBonus:0,
+      coins:0,
+      skills:createDefaultSkills(),
+      inventory:[{ itemId:"rusty_sword", quantity:1 }],
+      equipment:{ ...DEFAULT_EQUIPMENT }
+    },
+    quests:{
+      questStates,
+      completedQuests:[],
+      activeQuests:[]
+    },
+    world:{
+      triggeredEvents:[],
+      stateChanges:{ pondAwakened:false },
+      persistentObjects:normalizePersistentObjects({}),
+      mirrorCave:{ chestDiscovered:false, chestOpened:false, cleared:false },
+      tollhouse:{
+        abandonedTollhouseDiscovered:false,
+        rookTollkeeperDefeated:false,
+        chestState:"closed",
+        abandonedTollhouseCleared:false
+      },
+      hunterQuest:{
+        hunterQuestStage:HunterQuestStage.NOT_STARTED,
+        hunterQuestRewardClaimed:false
+      },
+      creatures:{
+        wolves:[],
+        bandits:[],
+        tollhouseBandits:[],
+        rookTollkeeper:{ hp:getEnemyConfig("rook_tollkeeper").hp, defeated:false },
+        mirrorCaveWolves:[]
+      }
+    },
+    systems:{
+      currentObjective:getContextualObjectiveText(),
+      discoveredLocations:["hearthvale_square"],
+      devMode:DEFAULT_DEV_MODE
+    }
+  };
+}
+function migrateSave(rawSave){
+  const base=createDefaultSave("migration");
+  const incoming=(rawSave && typeof rawSave==="object") ? rawSave : {};
+  const migrated=cloneValue(base);
+  migrated.version=SUPPORTED_SAVE_VERSIONS.has(incoming.version) ? incoming.version : base.version;
+  const incomingSchema=Number.isInteger(incoming.saveSchemaVersion) ? incoming.saveSchemaVersion : 1;
+  migrated.saveSchemaVersion=Math.max(1, Math.min(SAVE_SCHEMA_VERSION, incomingSchema));
+  migrated.savedAt=typeof incoming.savedAt==="string" ? incoming.savedAt : base.savedAt;
+  migrated.reason=typeof incoming.reason==="string" ? incoming.reason : base.reason;
+  const rawPlayer=incoming.player && typeof incoming.player==="object" ? incoming.player : {};
+  migrated.player.position={
+    x:Number.isInteger(rawPlayer.position?.x) ? rawPlayer.position.x : base.player.position.x,
+    y:Number.isInteger(rawPlayer.position?.y) ? rawPlayer.position.y : base.player.position.y
+  };
+  migrated.player.zoneId=typeof rawPlayer.zoneId==="string" ? rawPlayer.zoneId : base.player.zoneId;
+  migrated.player.xp=Math.max(0, Math.floor(Number.isFinite(rawPlayer.xp) ? rawPlayer.xp : base.player.xp));
+  const xpResolvedLevel=getLevelFromXp(migrated.player.xp);
+  const savedLevel=Math.max(1, Math.floor(Number.isFinite(rawPlayer.level) ? rawPlayer.level : xpResolvedLevel));
+  migrated.player.level=Math.max(xpResolvedLevel, Math.min(MAX_DEFINED_LEVEL, savedLevel));
+  const levelProfile=getLevelProfile(migrated.player.level);
+  migrated.player.maxHp=Math.max(levelProfile.maxHp, Math.floor(Number.isFinite(rawPlayer.maxHp) ? rawPlayer.maxHp : levelProfile.maxHp));
+  migrated.player.baseAttackBonus=Math.max(levelProfile.baseAttackBonus, Math.floor(Number.isFinite(rawPlayer.baseAttackBonus) ? rawPlayer.baseAttackBonus : levelProfile.baseAttackBonus));
+  migrated.player.baseDefenseBonus=Math.max(levelProfile.baseDefenseBonus, Math.floor(Number.isFinite(rawPlayer.baseDefenseBonus) ? rawPlayer.baseDefenseBonus : levelProfile.baseDefenseBonus));
+  migrated.player.hp=Math.max(0, Math.min(migrated.player.maxHp, Math.floor(Number.isFinite(rawPlayer.hp) ? rawPlayer.hp : migrated.player.maxHp)));
+  migrated.player.coins=Math.max(0, Math.floor(Number.isFinite(rawPlayer.coins) ? rawPlayer.coins : base.player.coins));
+  migrated.player.skills=normalizeSkills(rawPlayer.skills);
+  migrated.player.inventory=normalizeInventory(rawPlayer.inventory);
+  if(rawPlayer.equipment && typeof rawPlayer.equipment==="object"){
+    migrated.player.equipment={
+      weapon:typeof rawPlayer.equipment.weapon==="string" ? rawPlayer.equipment.weapon : DEFAULT_EQUIPMENT.weapon,
+      armor:typeof rawPlayer.equipment.armor==="string" ? rawPlayer.equipment.armor : DEFAULT_EQUIPMENT.armor,
+      trinket:typeof rawPlayer.equipment.trinket==="string" ? rawPlayer.equipment.trinket : DEFAULT_EQUIPMENT.trinket
+    };
+  } else if(rawPlayer.weapon && typeof rawPlayer.weapon==="object"){
+    migrated.player.equipment={ ...DEFAULT_EQUIPMENT };
+  }
+  const rawQuests=incoming.quests && typeof incoming.quests==="object" ? incoming.quests : {};
+  migrated.quests.questStates=Array.isArray(rawQuests.questStates) ? rawQuests.questStates : base.quests.questStates;
+  migrated.quests.completedQuests=Array.isArray(rawQuests.completedQuests) ? rawQuests.completedQuests : [];
+  migrated.quests.activeQuests=Array.isArray(rawQuests.activeQuests) ? rawQuests.activeQuests : [];
+  const rawWorld=incoming.world && typeof incoming.world==="object" ? incoming.world : {};
+  migrated.world.triggeredEvents=Array.isArray(rawWorld.triggeredEvents) ? rawWorld.triggeredEvents.filter((name)=>typeof name==="string") : [];
+  migrated.world.stateChanges.pondAwakened=Boolean(rawWorld.stateChanges?.pondAwakened);
+  migrated.world.persistentObjects=normalizePersistentObjects(rawWorld.persistentObjects);
+  migrated.world.mirrorCave.chestDiscovered=Boolean(rawWorld.mirrorCave?.chestDiscovered || migrated.world.persistentObjects?.mirror_cave_chest?.discovered);
+  migrated.world.mirrorCave.chestOpened=Boolean(rawWorld.mirrorCave?.chestOpened || migrated.world.persistentObjects?.mirror_cave_chest?.opened);
+  migrated.world.mirrorCave.cleared=Boolean(rawWorld.mirrorCave?.cleared);
+  const rookDefeated=Boolean(rawWorld.tollhouse?.rookTollkeeperDefeated || migrated.world.persistentObjects?.rook_tollkeeper_state?.defeated);
+  const tollhouseChestOpened=Boolean(rawWorld.tollhouse?.chestState==="open" || migrated.world.persistentObjects?.tollhouse_chest?.opened);
+  migrated.world.tollhouse.abandonedTollhouseDiscovered=Boolean(
+    rawWorld.tollhouse?.abandonedTollhouseDiscovered ||
+    migrated.world.persistentObjects?.abandoned_tollhouse_state?.discovered ||
+    migrated.player.zoneId==="abandoned_tollhouse" ||
+    rookDefeated ||
+    tollhouseChestOpened
+  );
+  migrated.world.tollhouse.rookTollkeeperDefeated=rookDefeated;
+  migrated.world.tollhouse.chestState=tollhouseChestOpened ? "open" : (rookDefeated ? "closed" : "sealed");
+  migrated.world.tollhouse.abandonedTollhouseCleared=Boolean(
+    rawWorld.tollhouse?.abandonedTollhouseCleared ||
+    migrated.world.persistentObjects?.abandoned_tollhouse_state?.cleared ||
+    (rookDefeated && tollhouseChestOpened)
+  );
+  migrated.world.hunterQuest.hunterQuestStage=typeof rawWorld.hunterQuest?.hunterQuestStage==="string" ? rawWorld.hunterQuest.hunterQuestStage : HunterQuestStage.NOT_STARTED;
+  migrated.world.hunterQuest.hunterQuestRewardClaimed=Boolean(rawWorld.hunterQuest?.hunterQuestRewardClaimed);
+  migrated.world.creatures.wolves=Array.isArray(rawWorld.creatures?.wolves) ? rawWorld.creatures.wolves : [];
+  migrated.world.creatures.bandits=Array.isArray(rawWorld.creatures?.bandits) ? rawWorld.creatures.bandits : [];
+  migrated.world.creatures.tollhouseBandits=Array.isArray(rawWorld.creatures?.tollhouseBandits) ? rawWorld.creatures.tollhouseBandits : [];
+  migrated.world.creatures.mirrorCaveWolves=Array.isArray(rawWorld.creatures?.mirrorCaveWolves) ? rawWorld.creatures.mirrorCaveWolves : [];
+  migrated.world.creatures.rookTollkeeper={
+    hp:Number.isFinite(rawWorld.creatures?.rookTollkeeper?.hp) ? rawWorld.creatures.rookTollkeeper.hp : base.world.creatures.rookTollkeeper.hp,
+    defeated:Boolean(rawWorld.creatures?.rookTollkeeper?.defeated || rookDefeated)
+  };
+  const rawSystems=incoming.systems && typeof incoming.systems==="object" ? incoming.systems : {};
+  migrated.systems.currentObjective=typeof rawSystems.currentObjective==="string" ? rawSystems.currentObjective : base.systems.currentObjective;
+  migrated.systems.discoveredLocations=Array.isArray(rawSystems.discoveredLocations) ? rawSystems.discoveredLocations : [migrated.player.zoneId];
+  migrated.systems.devMode=Boolean(rawSystems.devMode);
+  migrated.saveSchemaVersion=SAVE_SCHEMA_VERSION;
+  return migrated;
+}
+function repairSave(save){
+  const repaired=cloneValue(save);
+  let changed=false;
+  const warnings=[];
+  const zoneId=typeof repaired.player?.zoneId==="string" ? repaired.player.zoneId : "hearthvale_square";
+  const isMirror=zoneId==="mirror_cave";
+  const isTollhouse=zoneId==="abandoned_tollhouse";
+  const maxX=(isMirror ? mirrorCave.width : (isTollhouse ? abandonedTollhouse.width : WORLD_W)) - 1;
+  const maxY=(isMirror ? mirrorCave.height : (isTollhouse ? abandonedTollhouse.height : WORLD_H)) - 1;
+  const clampedX=Math.max(0, Math.min(maxX, Math.floor(Number.isFinite(repaired.player.position?.x) ? repaired.player.position.x : 18)));
+  const clampedY=Math.max(0, Math.min(maxY, Math.floor(Number.isFinite(repaired.player.position?.y) ? repaired.player.position.y : 11)));
+  if(clampedX!==repaired.player.position.x || clampedY!==repaired.player.position.y){
+    repaired.player.position={ x:clampedX, y:clampedY };
+    changed=true;
+    warnings.push("Player position was out of bounds and has been clamped.");
+  }
+  const xpResolvedLevel=getLevelFromXp(repaired.player.xp);
+  const safeLevel=Math.max(xpResolvedLevel, Math.min(MAX_DEFINED_LEVEL, Math.floor(Number.isFinite(repaired.player.level) ? repaired.player.level : xpResolvedLevel)));
+  if(safeLevel!==repaired.player.level){
+    repaired.player.level=safeLevel;
+    changed=true;
+    warnings.push("Player level did not match XP and was repaired.");
+  }
+  repaired.player.maxHp=Math.max(1, Math.floor(Number.isFinite(repaired.player.maxHp) ? repaired.player.maxHp : BALANCE.player.startingMaxHp));
+  const clampedHp=Math.max(0, Math.min(repaired.player.maxHp, Math.floor(Number.isFinite(repaired.player.hp) ? repaired.player.hp : repaired.player.maxHp)));
+  if(clampedHp!==repaired.player.hp){
+    repaired.player.hp=clampedHp;
+    changed=true;
+    warnings.push("Player HP was out of bounds and has been clamped.");
+  }
+  repaired.player.inventory=normalizeInventory(repaired.player.inventory);
+  repaired.player.equipment={
+    weapon:typeof repaired.player.equipment?.weapon==="string" ? repaired.player.equipment.weapon : "rusty_sword",
+    armor:typeof repaired.player.equipment?.armor==="string" ? repaired.player.equipment.armor : null,
+    trinket:typeof repaired.player.equipment?.trinket==="string" ? repaired.player.equipment.trinket : null
+  };
+  ["weapon","armor","trinket"].forEach((slotName)=>{
+    const itemId=repaired.player.equipment[slotName];
+    if(!itemId) return;
+    const definition=getItemDefinition(itemId);
+    if(!definition){
+      repaired.player.equipment[slotName]=slotName==="weapon" ? "rusty_sword" : null;
+      changed=true;
+      warnings.push("Invalid equipped " + slotName + " was repaired.");
+      return;
+    }
+    if(!repaired.player.inventory.some((entry)=>entry.itemId===itemId)){
+      repaired.player.inventory.push({ itemId, quantity:1 });
+      changed=true;
+      warnings.push("Missing equipped " + slotName + " was restored to inventory.");
+    }
+  });
+  repaired.world.persistentObjects=normalizePersistentObjects(repaired.world?.persistentObjects);
+  if(repaired.world?.tollhouse?.rookTollkeeperDefeated && repaired.world?.tollhouse?.chestState!=="open" && repaired.world?.tollhouse?.abandonedTollhouseCleared){
+    repaired.world.tollhouse.chestState="closed";
+    changed=true;
+  }
+  if(Array.isArray(repaired.quests?.questStates)){
+    repaired.quests.questStates=repaired.quests.questStates.map((questEntry)=>{
+      if(questEntry?.state!==QuestState.COMPLETED || !Array.isArray(questEntry.objectives)) return questEntry;
+      return {
+        ...questEntry,
+        objectives:questEntry.objectives.map((objective)=>({
+          ...objective,
+          completed:true
+        }))
+      };
+    });
+  }
+  return { save:repaired, changed, warnings };
+}
 function createSaveData(reason){
   updateOutdoorRegionFromPosition(false);
   syncMirrorCaveChestState(false);
@@ -3163,7 +3421,7 @@ function createSaveData(reason){
     world:{
       triggeredEvents:Array.from(worldTriggeredEvents),
       stateChanges:{ pondAwakened:worldEvents.pondAwakened },
-      persistentObjects:{ ...persistentObjects },
+      persistentObjects:normalizePersistentObjects(persistentObjects),
       mirrorCave:{
         chestDiscovered:mirrorCaveChestDiscovered,
         chestOpened:mirrorCave.chest.opened,
@@ -3194,11 +3452,17 @@ function createSaveData(reason){
           respawnRemainingMs:Math.max(0, wolfRespawnAtById[wolf.id] ? wolfRespawnAtById[wolf.id]-performance.now() : 0)
         }))
       }
+    },
+    systems:{
+      currentObjective:getContextualObjectiveText(),
+      discoveredLocations:[currentZoneId],
+      devMode:DEV_MODE
     }
   };
 }
 function validateSaveData(data){
-  if(!data || !SUPPORTED_SAVE_VERSIONS.has(data.version)) return false;
+  if(!data || typeof data!=="object") return false;
+  if(data.version!==undefined && !SUPPORTED_SAVE_VERSIONS.has(data.version)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -3207,6 +3471,8 @@ function validateSaveData(data){
 function saveGame(reason){
   try {
     const payload=createSaveData(reason);
+    const existingRaw=localStorage.getItem(SAVE_KEY);
+    if(existingRaw) localStorage.setItem(SAVE_BACKUP_KEY, existingRaw);
     localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
     showSaveNotice("Game Saved");
   } catch(err){
@@ -3218,9 +3484,26 @@ function loadGame(){
   const raw=localStorage.getItem(SAVE_KEY);
   if(!raw) return false;
   try {
-    const data=JSON.parse(raw);
+    let parsed;
+    try {
+      parsed=JSON.parse(raw);
+    } catch(parseError){
+      localStorage.setItem(SAVE_BACKUP_KEY, raw);
+      throw parseError;
+    }
+    const migrated=migrateSave(parsed);
+    const repaired=repairSave(migrated);
+    const data=repaired.save;
     if(!validateSaveData(data)) throw new Error("Invalid save payload");
-    const saveSchemaVersion=Number.isInteger(data.saveSchemaVersion) ? data.saveSchemaVersion : 0;
+    if(repaired.changed){
+      repaired.warnings.forEach((message)=>console.warn("[Save Repair] " + message));
+    }
+    if(parsed.saveSchemaVersion!==SAVE_SCHEMA_VERSION || repaired.changed){
+      localStorage.setItem(SAVE_BACKUP_KEY, raw);
+      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+      log("System: Save migrated to schema v" + String(SAVE_SCHEMA_VERSION) + ".");
+    }
+    const saveSchemaVersion=Number.isInteger(parsed.saveSchemaVersion) ? parsed.saveSchemaVersion : 0;
     if(saveSchemaVersion>SAVE_SCHEMA_VERSION) log("System: Save schema is newer than this build. Attempting safe load.");
     const savedZoneId=typeof data.player.zoneId==="string" ? data.player.zoneId : getOutdoorRegionIdAt(data.player.position.x, data.player.position.y);
     isInMirrorCave=savedZoneId==="mirror_cave";
@@ -3384,15 +3667,18 @@ function loadGame(){
         wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
       });
     }
-    mirrorCaveChestDiscovered=Boolean(data.world?.mirrorCave?.chestDiscovered || persistentObjects?.mirror_cave_chest?.discovered);
-    mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened || persistentObjects?.mirror_cave_chest?.opened);
+    const mirrorCaveChestState=persistentObjects?.mirror_cave_chest || {};
+    const tollhouseChestState=persistentObjects?.tollhouse_chest || persistentObjects?.tollhouse_reward_chest || {};
+    const echoFragmentState=persistentObjects?.echo_fragment_object || persistentObjects?.echo_fragment || {};
+    mirrorCaveChestDiscovered=Boolean(data.world?.mirrorCave?.chestDiscovered || mirrorCaveChestState.discovered);
+    mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened || mirrorCaveChestState.opened);
     mirrorCave.cleared=Boolean(data.world?.mirrorCave?.cleared);
     abandonedTollhouseDiscovered=Boolean(
       data.world?.tollhouse?.abandonedTollhouseDiscovered ||
       persistentObjects?.abandoned_tollhouse_state?.discovered ||
       savedZoneId==="abandoned_tollhouse" ||
       data.world?.tollhouse?.rookTollkeeperDefeated ||
-      persistentObjects?.tollhouse_reward_chest?.opened
+      tollhouseChestState.opened
     );
     rookTollkeeperDefeated=Boolean(data.world?.tollhouse?.rookTollkeeperDefeated || persistentObjects?.rook_tollkeeper_state?.defeated);
     abandonedTollhouseCleared=Boolean(data.world?.tollhouse?.abandonedTollhouseCleared || persistentObjects?.abandoned_tollhouse_state?.cleared);
@@ -3421,6 +3707,7 @@ function loadGame(){
     syncMirrorCaveChestState(false);
     syncTollhouseChestState(false);
     syncAbandonedTollhouseClearedState(false, false);
+    if(echoFragmentState.collected && getItemQuantity("echo_fragment")<=0) addItemToInventory("echo_fragment", 1);
     syncEchoFragmentState(false);
     migrateStillWaterStateFromSave();
     log("System: Save loaded.");
@@ -3465,7 +3752,7 @@ registerWorldObject({
   onInteract:()=>{ log("The well water is cold and perfectly still."); eventSystem.emit("object:used:well",{}); }
 });
 registerWorldObject({
-  objectId:"east_road_sign",
+  objectId:"north_road_notice",
   type:WORLD_OBJECT_TYPE.SIGN,
   zone:"overworld",
   x:26, y:11,
@@ -3475,7 +3762,7 @@ registerWorldObject({
   persistence:true,
   promptLabel:"Read sign",
   onInteract:()=>{
-    patchPersistentObject("east_road_sign", { state:"read", read:true });
+    patchPersistentObject("north_road_notice", { state:"read", read:true });
     openWorldInfoPanel("Signpost", "East Road — Eastern Woods");
   }
 });
@@ -3536,7 +3823,7 @@ registerWorldObject({
   }
 });
 registerWorldObject({
-  objectId:"mirror_pond_interaction",
+  objectId:"mirror_pond",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
   x:21, y:13,
@@ -3553,7 +3840,7 @@ registerWorldObject({
     if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
       log("For a moment, your reflection moves half a breath late.");
       log("Mirror Pond stirs beneath your reflection.");
-      patchPersistentObject("mirror_pond_interaction", { inspected:true, state:"inspected" }, false);
+      patchPersistentObject("mirror_pond", { inspected:true, state:"inspected" }, false);
       questSystem.completeObjective("the_still_water", "inspect_pond");
       setStillWaterQuestStage(StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN);
       eventSystem.emit("object:used:mirror_pond",{ stage });
@@ -3693,7 +3980,7 @@ registerWorldObject({
   }
 });
 registerWorldObject({
-  objectId:"echo_fragment",
+  objectId:"echo_fragment_object",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"mirror_cave",
   dungeon:"mirror_cave",
@@ -3704,7 +3991,7 @@ registerWorldObject({
   persistence:true,
   promptLabel:"Take Echo Fragment",
   onInteract:()=>{
-    const persistent=getPersistentObject("echo_fragment");
+    const persistent=getPersistentObject("echo_fragment_object");
     const stage=getStillWaterQuestStage();
     if(persistent.collected || getItemQuantity("echo_fragment")>0){
       syncEchoFragmentState(false);
@@ -3717,14 +4004,14 @@ registerWorldObject({
       return;
     }
     if(getItemQuantity("echo_fragment")<=0) addItemToInventory("echo_fragment", 1);
-    patchPersistentObject("echo_fragment", { state:"collected", collected:true }, false);
+    patchPersistentObject("echo_fragment_object", { state:"collected", collected:true }, false);
     log("You recovered the Echo Fragment.");
     eventSystem.emit("object:collected:echo_fragment");
     saveGame("object_state_change");
   }
 });
 registerWorldObject({
-  objectId:"tollhouse_reward_chest",
+  objectId:"tollhouse_chest",
   type:WORLD_OBJECT_TYPE.CHEST,
   zone:"abandoned_tollhouse",
   dungeon:"abandoned_tollhouse",
@@ -3744,7 +4031,7 @@ registerWorldObject({
       log("The tollhouse chest is empty.");
       return;
     }
-    patchPersistentObject("tollhouse_reward_chest", { state:"open", opened:true }, false);
+    patchPersistentObject("tollhouse_chest", { state:"open", opened:true }, false);
     const rewardResult=grantTollhouseChestRewards();
     if(!rewardResult.rewardsGranted.length){
       log("The tollhouse chest is empty.");
@@ -3767,7 +4054,7 @@ worldObjects
       type:object.type,
       x:()=>isWorldObjectInCurrentZone(object) ? getWorldObjectTile(object).x : -999,
       y:()=>isWorldObjectInCurrentZone(object) ? getWorldObjectTile(object).y : -999,
-      range:object.objectId==="mirror_pond_interaction" ? 3 : undefined,
+      range:object.objectId==="mirror_pond" ? 3 : undefined,
       promptLabel:object.promptLabel || "Interact",
       onInteract:()=>object.onInteract?.()
     });
@@ -4727,7 +5014,7 @@ function drawMirrorCaveScene(now){
   ctx.fillStyle="rgba(155,170,189,.2)"; ctx.fillRect(ep.x+4,ep.y+4,24,24);
   ctx.strokeStyle="rgba(199,214,236,.5)"; ctx.strokeRect(ep.x+4.5,ep.y+4.5,23,23);
   ctx.fillStyle="#c7d6ec"; ctx.font="bold 10px monospace"; ctx.fillText("EXIT", ep.x+6, ep.y+19);
-  const echoPersistent=getPersistentObject("echo_fragment");
+  const echoPersistent=getPersistentObject("echo_fragment_object");
   const echoCollected=Boolean(echoPersistent.collected) || getItemQuantity("echo_fragment")>0;
   const stillWaterStage=getStillWaterQuestStage();
   if(!echoCollected && stillWaterStage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){

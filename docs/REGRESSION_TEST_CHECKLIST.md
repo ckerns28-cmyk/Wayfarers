@@ -117,3 +117,15 @@
 - [ ] Attempt to use healing items at full HP and confirm item is not consumed and no Survival XP is granted.
 - [ ] Save, reload, and confirm skill levels + skill XP persist alongside level/XP, HP, inventory, and equipment.
 - [ ] Confirm Equipment panel clearly shows Traveler's Charm trinket defense bonus and total mitigation reflects it.
+
+## N. Save Schema / Architecture Hardening (Phase 28)
+- [ ] Fresh save: start new game, save, reload, and confirm no console errors.
+- [ ] Advanced save: verify Hunter's Request complete + The Still Water complete + tollhouse cleared + skills/equipment/trinket all persist.
+- [ ] Missing field simulation: remove `player.skills` from save JSON and confirm defaults are restored safely.
+- [ ] Missing persistent object registry simulation: remove `world.persistentObjects` and confirm no duplicate chest/object rewards.
+- [ ] Corrupt save simulation: set invalid JSON in `wayfarer.save.v1`, reload, and verify graceful recovery/reset behavior.
+- [ ] Equipment consistency: equipped weapon/armor/trinket persist and remain inventory-safe after reload.
+- [ ] Quest consistency: completed quests stay completed and rewards cannot be duplicated after migration.
+- [ ] Dungeon consistency: Mirror Cave chest + Tollhouse chest + Rook defeated states persist through save/load.
+- [ ] Schema migration: load a save with missing `saveSchemaVersion` and confirm it migrates to `saveSchemaVersion: 2`.
+- [ ] Backup behavior: confirm `wayfarer.save.v1.backup` is written before migration overwrite/save writes.
