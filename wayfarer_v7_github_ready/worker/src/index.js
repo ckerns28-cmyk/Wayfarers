@@ -676,8 +676,8 @@ const BALANCE = Object.freeze({
     ])
   },
   items: {
-    healingHerbHealAmount: 12,
-    smallPotionHealAmount: 28,
+    healingHerbHealAmount: 10,
+    smallPotionHealAmount: 25,
     leatherArmorDefense: 2,
     rustySwordAttack: 2,
     ironSwordAttack: 5
@@ -1659,32 +1659,57 @@ function canSellItem(item){
   return !equipped || total>1;
 }
 function getBestUsableHealingItem(){
-  let selected=null;
+  const missingHp=Math.max(0, player.maxHp-player.hp);
+  let herbCandidate=null;
+  let potionCandidate=null;
+  let fallbackCandidate=null;
   for(const entry of player.inventory){
     if(!entry || entry.quantity<=0) continue;
     const item=getItemDefinition(entry.itemId);
     if(!item || item.type!=="consumable") continue;
     const healAmount=Number.isFinite(item.healAmount) ? Math.floor(item.healAmount) : 0;
     if(healAmount<=0) continue;
-    if(!selected || healAmount>selected.healAmount || (healAmount===selected.healAmount && item.value<selected.item.value)){
-      selected={ item, healAmount };
+    const candidate={ item, healAmount };
+    if(item.id==="healing_herb"){
+      if(!herbCandidate || healAmount<herbCandidate.healAmount) herbCandidate=candidate;
+      continue;
+    }
+    if(item.id==="small_potion"){
+      if(!potionCandidate || healAmount>potionCandidate.healAmount) potionCandidate=candidate;
+      continue;
+    }
+    if(!fallbackCandidate || healAmount>fallbackCandidate.healAmount || (healAmount===fallbackCandidate.healAmount && item.value<fallbackCandidate.item.value)){
+      fallbackCandidate=candidate;
     }
   }
-  return selected?.item || null;
+  if(herbCandidate && missingHp<=herbCandidate.healAmount) return herbCandidate.item;
+  if(potionCandidate && missingHp>=potionCandidate.healAmount) return potionCandidate.item;
+  if(herbCandidate) return herbCandidate.item;
+  if(potionCandidate) return potionCandidate.item;
+  return fallbackCandidate?.item || null;
 }
 function useHealingConsumable(){
   if(player.hp>=player.maxHp){
-    log("You are already at full health.");
+    log("HP is already full.");
     return false;
   }
   const item=getBestUsableHealingItem();
   if(!item){
-    log("You have no healing consumables.");
+    log("No healing items available.");
     return false;
   }
+  return consumeHealingItem(item);
+}
+function consumeHealingItem(item){
+  if(!item || item.type!=="consumable") return false;
+  if(player.hp>=player.maxHp){
+    log("HP is already full.");
+    return false;
+  }
+  const healAmount=Math.max(0, Math.floor(Number.isFinite(item.healAmount) ? item.healAmount : 0));
+  if(healAmount<=0) return false;
   const removed=removeItemFromInventory(item.id, 1);
   if(removed<=0) return false;
-  const healAmount=Math.max(0, Math.floor(Number.isFinite(item.healAmount) ? item.healAmount : 0));
   const hpBefore=player.hp;
   player.hp=Math.min(player.maxHp, player.hp + healAmount);
   const restored=player.hp-hpBefore;
@@ -3221,6 +3246,10 @@ function updateSidebar(){
         const disabledAttr=equipped ? " disabled" : "";
         return name + " x" + entry.quantity + " <button type=\"button\" data-equip-item=\"" + item.id + "\" data-equip-slot=\"" + equipSlot + "\"" + disabledAttr + ">" + actionLabel + "</button>";
       }
+      const canUse=Boolean(item && item.type==="consumable" && Number.isFinite(item.healAmount) && Math.floor(item.healAmount)>0);
+      if(canUse){
+        return name + " x" + entry.quantity + " <button type=\"button\" data-use-item=\"" + item.id + "\">Use</button>";
+      }
       return name + " x" + entry.quantity;
     }).join("<br>");
   }
@@ -3249,7 +3278,7 @@ function updateSidebar(){
   const totalAttack=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0);
   const totalDefense=Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0));
   const interactionPrompt=interactionManager.getPromptText();
-  hud.textContent = "WASD / Arrows : Move\n" + interactionPrompt + "\nSpace : Attack\nH : Use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nF6 : Debug Heal\nF7/F8/F9 : Debug Teleport\nF10 : Debug Reset Quest\nShift+F10 : Debug Reset Save\nCurrent Zone : " + zoneName +
+  hud.textContent = "WASD / Arrows : Move\n" + interactionPrompt + "\nSpace : Attack\nH : Quick-use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nF6 : Debug Heal\nF7/F8/F9 : Debug Teleport\nF10 : Debug Reset Quest\nShift+F10 : Debug Reset Save\nCurrent Zone : " + zoneName +
     "\nHostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No") +
     "\nCurrent target : " + hostileLabel(currentTarget) +
     "\nTarget HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") +
@@ -3365,6 +3394,15 @@ addEventListener("keyup",(e)=>{
 });
 canvas.addEventListener("click",(e)=>{ const clicked=screenToWorld(e.clientX,e.clientY); interactionManager.interactAt(clicked.x, clicked.y); });
 inventoryList.addEventListener("click",(e)=>{
+  const useTarget=e.target instanceof Element ? e.target.closest("button[data-use-item]") : null;
+  if(useTarget instanceof HTMLElement){
+    const itemId=useTarget.dataset?.useItem;
+    const item=getItemDefinition(itemId || "");
+    if(item && item.type==="consumable" && Number.isFinite(item.healAmount) && Math.floor(item.healAmount)>0){
+      consumeHealingItem(item);
+    }
+    return;
+  }
   const target=e.target instanceof Element ? e.target.closest("button[data-equip-item]") : null;
   if(!(target instanceof HTMLElement)) return;
   const itemId=target.dataset?.equipItem;
