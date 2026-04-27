@@ -1400,11 +1400,11 @@ function makeShadowTiles(){
 
 function makePropSprites(){
   const sheet = document.createElement("canvas");
-  sheet.width = 416;
+  sheet.width = 480;
   sheet.height = 32;
   const p = sheet.getContext("2d");
   p.imageSmoothingEnabled = false;
-  p.clearRect(0,0,416,32);
+  p.clearRect(0,0,480,32);
 
   function cell(col, drawFn){
     p.save();
@@ -1489,11 +1489,22 @@ function makePropSprites(){
     q.fillStyle="#9f9a8f"; q.fillRect(5,23,3,1); q.fillRect(24,23,3,1);
   });
 
+  cell(13,(q)=>{ // woodpile
+    q.fillStyle="#6a4a30"; q.fillRect(6,16,20,8);
+    q.fillStyle="#8a6340"; q.fillRect(8,14,16,3);
+    q.fillStyle="#4e3523"; q.fillRect(9,18,2,6); q.fillRect(14,18,2,6); q.fillRect(19,18,2,6);
+  });
+  cell(14,(q)=>{ // small garden
+    q.fillStyle="#6d5137"; q.fillRect(7,20,18,4);
+    q.fillStyle="#557d45"; q.fillRect(8,17,16,3);
+    q.fillStyle="#7fa55e"; q.fillRect(10,15,3,2); q.fillRect(15,14,3,3); q.fillRect(20,15,2,2);
+  });
+
   const sheetImg = new Image();
   sheetImg.src = sheet.toDataURL("image/png");
   assets.props.sheet = sheetImg;
 
-  const names = ["barrel","crate","sack","lanternPost","signPost","fenceSeg","bush","grassTuft","well","stonePile","bench","noticeBoard","handcart"];
+  const names = ["barrel","crate","sack","lanternPost","signPost","fenceSeg","bush","grassTuft","well","stonePile","bench","noticeBoard","handcart","woodpile","smallGarden"];
   names.forEach((name, i)=>{
     assets.props.sprites[name] = makeTile((q)=>{ q.drawImage(sheet, i*32, 0, 32, 32, 0, 0, 32, 32); });
   });
@@ -1514,6 +1525,8 @@ function paintHumanoidSheet(colors, variant = "adventurer") {
     const ox = baseX + 8;
     const oy = baseY + 7;
     const elder = variant === "elder";
+    const merchant = variant === "merchant";
+    const ranger = variant === "ranger";
     const bob = Math.abs(step) > 0 ? 1 : 0;
     const armSwing = elder ? Math.round(step * 0.5) : step;
     const outline = "rgba(8,12,18,.84)";
@@ -1526,45 +1539,52 @@ function paintHumanoidSheet(colors, variant = "adventurer") {
     if (dir==="down" || dir==="up") {
       const front = dir==="down";
       dot(10,4+bob,8,6,colors.skin);
-      dot(9,3+bob,10,4,colors.hair);
+      dot(10,3+bob,8,3,colors.hair);
+      if(ranger) dot(9,3+bob,10,2,"#4b5f2f");
+      if(merchant && front) dot(9,2+bob,10,2,colors.accent || "#d9bf84");
       if(front){
         dot(11,8+bob,1,1,"#1b2632");
         dot(15,8+bob,1,1,"#1b2632");
       }
       if(elder && front) dot(12,9+bob,4,1,"#e7ecf7");
-      dot(9,10+bob,10,2,colors.tunicShade);
-      dot(9,12+bob,10,8,colors.tunic);
-      dot(10,12+bob,8,2,"rgba(255,255,255,.16)");
-      dot(8,13+bob,12,7,colors.cloak);
+      dot(10,10+bob,8,2,colors.tunicShade);
+      dot(10,12+bob,8,8,colors.tunic);
+      dot(11,12+bob,6,2,"rgba(255,255,255,.16)");
+      dot(9,13+bob,10,6,colors.cloak);
       dot(10,16+bob,8,1,colors.accent || "#d8dfef");
       dot(10,19+bob,3,3,colors.tunicShade);
       dot(15,19+bob,3,3,colors.tunicShade);
       dot(10,22+step,2,3,colors.boots);
       dot(16,22-step,2,3,colors.boots);
-      dot(9,20+bob,1,2,cloakShadow);
-      dot(18,20+bob,1,2,cloakShadow);
-      dot(7,14+armSwing,2,4,skinShadow);
-      dot(19,14-armSwing,2,4,skinShadow);
+      dot(10,20+bob,1,2,cloakShadow);
+      dot(17,20+bob,1,2,cloakShadow);
+      dot(8,14+armSwing,2,4,skinShadow);
+      dot(18,14-armSwing,2,4,skinShadow);
+      if(ranger) dot(18,15+bob,1,5,"#5e422d");
+      if(merchant && front) dot(13,20+bob,2,2,"#b98952");
     } else {
       const left = dir==="left";
-      const headX = left ? 8 : 14;
-      dot(headX,4+bob,7,6,colors.skin);
-      dot(left ? 7 : 15,3+bob,6,4,colors.hair);
-      dot(left ? 11 : 16,8+bob,1,1,"#1b2632");
-      dot(left ? 12 : 14,8+bob,2,2,skinShadow);
-      dot(9,11+bob,10,2,colors.tunicShade);
-      dot(9,13+bob,10,7,colors.tunic);
-      dot(8,14+bob,12,6,colors.cloak);
-      dot(10,16+bob,8,1,colors.accent || "#d8dfef");
-      dot(left ? 6 : 20,14+armSwing,2,4,skinShadow);
+      const headX = left ? 9 : 14;
+      dot(headX,4+bob,6,6,colors.skin);
+      dot(left ? 8 : 14,3+bob,7,3,colors.hair);
+      if(merchant) dot(left ? 8 : 14,2+bob,7,2,colors.accent || "#d9bf84");
+      if(ranger) dot(left ? 7 : 15,3+bob,6,2,"#4b5f2f");
+      dot(left ? 11 : 15,8+bob,1,1,"#1b2632");
+      dot(left ? 11 : 14,8+bob,2,2,skinShadow);
+      dot(10,11+bob,8,2,colors.tunicShade);
+      dot(10,13+bob,8,7,colors.tunic);
+      dot(9,14+bob,10,5,colors.cloak);
+      dot(11,16+bob,6,1,colors.accent || "#d8dfef");
+      dot(left ? 7 : 19,14+armSwing,2,4,skinShadow);
       dot(left ? 10 : 15,19+step,3,4,colors.tunicShade);
       dot(left ? 15 : 10,21-step,2,3,colors.boots);
       dot(left ? 11 : 14,22+step,2,2,colors.boots);
-      dot(left ? 8 : 18,13+bob,1,5,cloakShadow);
+      dot(left ? 9 : 17,13+bob,1,5,cloakShadow);
+      if(ranger) dot(left ? 18 : 9,15+bob,1,5,"#5e422d");
     }
 
-    edge(8,4+bob,1,7); edge(19,4+bob,1,7); edge(9,3+bob,10,1); edge(9,10+bob,10,1);
-    edge(7,12+bob,1,9); edge(20,12+bob,1,9); edge(8,20+bob,12,1);
+    edge(9,4+bob,1,7); edge(18,4+bob,1,7); edge(10,3+bob,8,1); edge(10,10+bob,8,1);
+    edge(8,12+bob,1,9); edge(19,12+bob,1,9); edge(9,20+bob,10,1);
   }
 
   dirs.forEach((d,row)=> gait.forEach((s,col)=> drawFrame(col*size,row*size,d,s)));
@@ -1646,8 +1666,8 @@ makePropSprites();
 assets.sprites.player = paintHumanoidSheet({ skin:"#e4c8a2", hair:"#4f3a2c", tunic:"#3f719f", tunicShade:"#2d5275", cloak:"#e2e8f3", boots:"#4f3826", accent:"#f2d37c" }, "adventurer");
 assets.sprites.npc = paintHumanoidSheet({ skin:"#ccb79b", hair:"#dbe4f6", tunic:"#626a86", tunicShade:"#4b5167", cloak:"#2d3345", boots:"#2f2418", accent:"#c5cee3" }, "elder");
 assets.sprites.edrin = paintHumanoidSheet({ skin:"#c8ae8d", hair:"#f0f4fc", tunic:"#6c6b96", tunicShade:"#4f4d73", cloak:"#2a3148", boots:"#2f2418", accent:"#c9d0f0" }, "elder");
-assets.sprites.hunter = paintHumanoidSheet({ skin:"#d3b999", hair:"#4d3a2b", tunic:"#5f7948", tunicShade:"#425736", cloak:"#3a2f24", boots:"#312519", accent:"#b7c986" }, "adventurer");
-assets.sprites.merchant = paintHumanoidSheet({ skin:"#dabf9e", hair:"#6d4a30", tunic:"#8b5537", tunicShade:"#633b27", cloak:"#b69458", boots:"#3b2a1d", accent:"#e5c57e" }, "adventurer");
+assets.sprites.hunter = paintHumanoidSheet({ skin:"#d3b999", hair:"#4d3a2b", tunic:"#5f7948", tunicShade:"#425736", cloak:"#3a2f24", boots:"#312519", accent:"#b7c986" }, "ranger");
+assets.sprites.merchant = paintHumanoidSheet({ skin:"#dabf9e", hair:"#6d4a30", tunic:"#8b5537", tunicShade:"#633b27", cloak:"#b69458", boots:"#3b2a1d", accent:"#e5c57e" }, "merchant");
 assets.sprites.bandit = paintHumanoidSheet({ skin:"#b99b7b", hair:"#231d1a", tunic:"#6b3940", tunicShade:"#46262b", cloak:"#17141d", boots:"#21170f", accent:"#b4797f" }, "adventurer");
 assets.sprites.rook = paintHumanoidSheet({ skin:"#b4916c", hair:"#100d13", tunic:"#8a2e3b", tunicShade:"#651f2a", cloak:"#2b0e15", boots:"#1f1310", accent:"#cc8a8f" }, "adventurer");
 assets.sprites.wolf = paintWolfSheet();
@@ -1739,26 +1759,29 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  { x:7,y:11,w:23,h:2 },
-  { x:17,y:0,w:3,h:20 },
-  { x:14,y:10,w:8,h:2 },
-  { x:15,y:13,w:5,h:2 },
-  { x:10,y:12,w:2,h:5 },
-  { x:22,y:10,w:3,h:2 },
-  { x:20,y:3,w:3,h:5 }
+  { x:8,y:11,w:21,h:1 },
+  { x:16,y:4,w:1,h:15 },
+  { x:11,y:8,w:12,h:1 },
+  { x:10,y:15,w:17,h:1 },
+  { x:24,y:14,w:9,h:1 },
+  { x:24,y:15,w:1,h:4 },
+  { x:20,y:10,w:1,h:6 },
+  { x:13,y:11,w:1,h:6 },
+  { x:28,y:11,w:1,h:4 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { x:9,y:6,w:7,h:4,tileRows:[["roofL","roofC","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","wall","wall","window","wall"],["wall","wall","wall","door","wall","wall","wall"],["wall","window","wall","wall","wall","window","wall"]] },
-  { x:20,y:6,w:5,h:4,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["wall","window","wall","window","wall"],["wall","wall","door","wall","wall"],["wall","window","wall","window","wall"]] },
-  { x:12,y:15,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["wall","window","wall","wall"],["wall","door","wall","window"]] },
-  { x:18,y:16,w:5,h:3,tileRows:[["roofL","roofC","roofC","roofC","roofR"],["window","wall","wall","window","wall"],["wall","wall","door","wall","wall"]] },
-  { x:6,y:15,w:4,h:3,tileRows:[["roofL","roofC","roofC","roofR"],["wall","window","wall","wall"],["wall","door","wall","window"]] }
+  { x:8,y:6,w:8,h:5,role:"tavern",tileRows:[["roofL","roofC","roofC","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","window","wall","window","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall"],["wall","window","wall","door","wall","window","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall"]] },
+  { x:18,y:6,w:7,h:5,role:"mercantile",tileRows:[["roofL","roofC","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","window","wall","window","wall"],["wall","wall","wall","wall","wall","wall","wall"],["wall","window","wall","door","wall","window","wall"],["wall","wall","wall","wall","wall","wall","wall"]] },
+  { x:12,y:13,w:8,h:5,role:"village_hall",tileRows:[["roofL","roofC","roofC","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","window","wall","window","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall"],["wall","window","wall","door","wall","window","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall"]] },
+  { x:8,y:14,w:4,h:4,role:"home",tileRows:[["roofL","roofC","roofC","roofR"],["wall","window","wall","wall"],["wall","door","wall","window"],["wall","wall","wall","wall"]] },
+  { x:21,y:13,w:4,h:4,role:"home",tileRows:[["roofL","roofC","roofC","roofR"],["wall","window","wall","wall"],["wall","door","wall","window"],["wall","wall","wall","wall"]] },
+  { x:26,y:16,w:6,h:3,role:"waterside_utility",tileRows:[["roofL","roofC","roofC","roofC","roofC","roofR"],["wall","window","wall","door","wall","wall"],["wall","wall","wall","wall","wall","wall"]] }
 );
 world.buildings.forEach(b=>blockRect(b.x,b.y,b.w,b.h));
 
-const pond={x:23,y:11,w:10,h:8,cx:28,cy:15};
+const pond={x:24,y:12,w:9,h:7,cx:28,cy:15};
 for(let x=pond.x;x<pond.x+pond.w;x++){
   for(let y=pond.y;y<pond.y+pond.h;y++){
     const dx=(x+.5-pond.cx)/(pond.w/2), dy=(y+.5-pond.cy)/(pond.h/2);
@@ -1771,35 +1794,31 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
   }
 }
 
-for(let x=6;x<=10;x++){ world.fences.push({x,y:19}); }
-for(let y=16;y<=19;y++){ world.fences.push({x:5,y}); }
-for(let x=25;x<=33;x++){ world.fences.push({x,y:6}); }
-for(let y=7;y<=10;y++){ world.fences.push({x:34,y}); }
-for(let x=24;x<=30;x++){ world.fences.push({x,y:19}); }
-for(let y=17;y<=19;y++){ world.fences.push({x:31,y}); }
-for(let x=14;x<=16;x++){ world.fences.push({x,y:3}); }
-for(let x=21;x<=23;x++){ world.fences.push({x,y:3}); }
-for(let x=15;x<=21;x++){ if(x!==18 && x!==19) world.fences.push({x,y:14}); }
+for(let x=7;x<=15;x++){ world.fences.push({x,y:5}); }
+for(let x=18;x<=25;x++){ world.fences.push({x,y:5}); }
+for(let y=6;y<=10;y++){ world.fences.push({x:26,y}); }
+for(let x=7;x<=10;x++){ world.fences.push({x,y:18}); }
+for(let y=16;y<=18;y++){ world.fences.push({x:7,y}); }
+for(let x=22;x<=25;x++){ world.fences.push({x,y:18}); }
+for(let y=17;y<=19;y++){ world.fences.push({x:32,y}); }
+for(let x=25;x<=31;x++){ world.fences.push({x,y:19}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
-  {x:10,y:10,type:"signPost"},{x:11,y:10,type:"bench"},{x:12,y:10,type:"barrel"},
-  {x:22,y:10,type:"handcart"},{x:23,y:10,type:"crate"},{x:23,y:9,type:"sack"},
-  {x:17,y:10,type:"noticeBoard"},{x:18,y:10,type:"well"},
-  {x:16,y:12,type:"bench"},
-  {x:7,y:18,type:"barrel"},{x:8,y:18,type:"crate"},{x:6,y:18,type:"bush"},
-  {x:12,y:18,type:"crate"},{x:14,y:18,type:"barrel"},{x:11,y:18,type:"bush"},
-  {x:19,y:19,type:"sack"},
-  {x:28,y:10,type:"stonePile"},{x:27,y:10,type:"crate"},{x:28,y:9,type:"fenceSeg"},
-  {x:26,y:12,type:"signPost"},
-  {x:25,y:13,type:"stonePile"},{x:31,y:17,type:"stonePile"},
-  {x:30,y:14,type:"grassTuft"},
-  {x:8,y:12,type:"bush"},{x:30,y:12,type:"bush"},
-  {x:15,y:14,type:"fenceSeg"},{x:21,y:14,type:"fenceSeg"},
-  {x:18,y:4,type:"signPost"},{x:21,y:4,type:"signPost"},{x:22,y:2,type:"fenceSeg"},
-  {x:14,y:4,type:"fenceSeg"},{x:24,y:4,type:"fenceSeg"},
-  {x:14,y:2,type:"bush"},{x:23,y:2,type:"bush"},
-  {x:12,y:1,type:"stonePile"},{x:24,y:1,type:"stonePile"}
+  {x:9,y:11,type:"signPost"},{x:10,y:11,type:"bench"},{x:11,y:11,type:"barrel"},
+  {x:17,y:11,type:"noticeBoard"},{x:18,y:11,type:"well"},{x:19,y:11,type:"bench"},
+  {x:21,y:11,type:"handcart"},{x:22,y:11,type:"crate"},{x:23,y:11,type:"sack"},
+  {x:8,y:13,type:"barrel"},{x:9,y:13,type:"crate"},{x:10,y:13,type:"woodpile"},
+  {x:23,y:12,type:"lanternPost"},{x:24,y:12,type:"crate"},{x:25,y:12,type:"sack"},
+  {x:14,y:12,type:"lanternPost"},{x:16,y:12,type:"bench"},
+  {x:11,y:16,type:"smallGarden"},{x:10,y:17,type:"woodpile"},{x:9,y:17,type:"barrel"},
+  {x:20,y:16,type:"smallGarden"},{x:24,y:17,type:"crate"},{x:23,y:17,type:"barrel"},
+  {x:26,y:15,type:"signPost"},{x:27,y:15,type:"stonePile"},{x:28,y:15,type:"grassTuft"},
+  {x:29,y:17,type:"crate"},{x:30,y:17,type:"barrel"},{x:31,y:17,type:"woodpile"},
+  {x:26,y:18,type:"fenceSeg"},{x:27,y:18,type:"fenceSeg"},{x:28,y:18,type:"fenceSeg"},
+  {x:16,y:4,type:"signPost"},{x:22,y:4,type:"signPost"},{x:24,y:4,type:"fenceSeg"},
+  {x:8,y:5,type:"bush"},{x:19,y:5,type:"bush"},
+  {x:12,y:3,type:"stonePile"},{x:24,y:2,type:"stonePile"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -1815,7 +1834,7 @@ treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); 
 
 world.zones.push(
   {name:"North Road",x:10,y:0,w:14,h:7},
-  {name:"Hearthvale Square",x:9,y:6,w:18,h:13},
+  {name:"Hearthvale Square",x:8,y:6,w:20,h:13},
   {name:"Mirror Pond",x:23,y:11,w:10,h:9},
   {name:"Eastern Woods",x:27,y:3,w:11,h:19},
   {name:"West Lane",x:0,y:7,w:10,h:12}
@@ -1824,9 +1843,9 @@ world.zones.push(
 const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
 const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
-const npc={x:18,y:11,name:"Edrin Vale",facing:"down"};
-const hunterNpc={x:29,y:10,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
-const vendorNpc={x:23,y:10,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
+const npc={x:17,y:13,name:"Edrin Vale",facing:"down"};
+const hunterNpc={x:28,y:11,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
+const vendorNpc={x:22,y:11,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
@@ -3934,7 +3953,7 @@ registerWorldObject({
   objectId:"town_well",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
-  x:18, y:12,
+  x:18, y:11,
   state:"default",
   interactable:true,
   collision:false,
