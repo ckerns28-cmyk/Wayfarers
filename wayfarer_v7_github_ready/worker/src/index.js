@@ -1804,12 +1804,44 @@ assets.sprites.wolf = paintWolfSheet();
 
 const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], roadTiles:new Set(), props:[], zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
 function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) world.blocked.add(keyOf(ix,iy)); }
-const OVERWORLD_CAVE_ENTRY = Object.freeze({ x:30, y:13 });
+const HEARTHVALE_LANDMARKS = Object.freeze({
+  mirrorPond:{ x:27, y:14 },
+  caveEntrance:{ x:34, y:11 },
+  mainCrossroads:{ x:16, y:11 },
+  townCenterSpawn:{ x:18, y:11 },
+  merchantRowanArea:{ x:20, y:10 },
+  edrinValeArea:{ x:24, y:14 },
+  hunterGarranArea:{ x:27, y:14 },
+  noticeSignNode:{ x:26, y:11 },
+  zoneExits:Object.freeze({
+    mirrorCaveEntrance:{ x:34, y:11 },
+    abandonedTollhouseEntrance:{ x:22, y:2 },
+    northRoadBoundary:{ x:16, y:0 },
+    westLaneBoundary:{ x:0, y:12 },
+    easternWoodsBoundary:{ x:37, y:14 }
+  })
+});
+const OVERWORLD_CAVE_ENTRY = Object.freeze({ ...HEARTHVALE_LANDMARKS.caveEntrance });
 const MIRROR_CAVE_EXIT = Object.freeze({ x:13, y:16 });
 const MIRROR_CAVE_CHEST_TILE = Object.freeze({ x:13, y:2 });
 const NORTH_ROAD_TOLLHOUSE_ENTRY = Object.freeze({ x:22, y:2 });
 const TOLLHOUSE_EXIT = Object.freeze({ x:13, y:18 });
 const TOLLHOUSE_CHEST_TILE = Object.freeze({ x:22, y:4 });
+function createFootprint({
+  visual,
+  collision,
+  interaction,
+  label,
+  pathingBounds
+}){
+  return {
+    visual,
+    collision,
+    interaction,
+    label,
+    pathingBounds:pathingBounds || visual
+  };
+}
 const WORLD_OBJECT_TYPE = Object.freeze({
   CAVE_ENTRANCE:"caveEntrance",
   DUNGEON_EXIT:"dungeonExit",
@@ -1901,16 +1933,16 @@ world.roads.push(
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:8, y:5, w:7, h:6, anchorX:3, anchorY:5, collision:{x:8,y:8,w:7,h:3}, interaction:{x:11,y:10,w:1,h:1}, label:{x:11,y:6,text:"Inn & Tavern"} },
-  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:17, y:5, w:6, h:6, anchorX:3, anchorY:5, collision:{x:17,y:8,w:6,h:3}, interaction:{x:20,y:10,w:1,h:1}, label:{x:20,y:6,text:"Mercantile Shop"} },
-  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:11, y:12, w:7, h:6, anchorX:3, anchorY:5, collision:{x:11,y:15,w:7,h:3}, interaction:{x:14,y:17,w:1,h:1}, label:{x:14,y:13,text:"Village Hall"} },
-  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:13, w:4, h:5, anchorX:2, anchorY:4, collision:{x:7,y:15,w:4,h:3}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:14,text:"Cottage"} },
-  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:13, w:5, h:5, anchorX:2, anchorY:4, collision:{x:19,y:15,w:5,h:3}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:14,text:"Residence"} },
-  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:25, y:12, w:4, h:5, anchorX:2, anchorY:4, collision:{x:25,y:14,w:4,h:3}, interaction:{x:26,y:16,w:1,h:1}, label:{x:26,y:13,text:"Hunter Lodge"} },
-  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:25, y:19, w:7, h:4, anchorX:3, anchorY:3, collision:{x:25,y:20,w:7,h:3}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"} }
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:8, y:5, w:7, h:6, anchorX:3, anchorY:5, ...createFootprint({ visual:{x:8,y:5,w:7,h:6}, collision:{x:8,y:8,w:7,h:3}, interaction:{x:11,y:10,w:1,h:1}, label:{x:11,y:6,text:"Inn & Tavern"}, pathingBounds:{x:7,y:5,w:9,h:7} }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:17, y:5, w:6, h:6, anchorX:3, anchorY:5, ...createFootprint({ visual:{x:17,y:5,w:6,h:6}, collision:{x:17,y:8,w:6,h:3}, interaction:{x:20,y:10,w:1,h:1}, label:{x:20,y:6,text:"Mercantile Shop"}, pathingBounds:{x:16,y:5,w:8,h:7} }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:11, y:12, w:7, h:6, anchorX:3, anchorY:5, ...createFootprint({ visual:{x:11,y:12,w:7,h:6}, collision:{x:11,y:15,w:7,h:3}, interaction:{x:14,y:17,w:1,h:1}, label:{x:14,y:13,text:"Village Hall"}, pathingBounds:{x:10,y:12,w:9,h:7} }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:13, w:4, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:7,y:13,w:4,h:5}, collision:{x:7,y:15,w:4,h:3}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:14,text:"Cottage"}, pathingBounds:{x:6,y:13,w:6,h:6} }) },
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:13, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:19,y:13,w:5,h:5}, collision:{x:19,y:15,w:5,h:3}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:14,text:"Residence"}, pathingBounds:{x:18,y:13,w:7,h:6} }) },
+  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:25, y:12, w:4, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:25,y:12,w:4,h:5}, collision:{x:25,y:14,w:4,h:3}, interaction:{x:26,y:16,w:1,h:1}, label:{x:26,y:13,text:"Hunter Lodge"}, pathingBounds:{x:24,y:12,w:6,h:6} }) },
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:25, y:19, w:7, h:4, anchorX:3, anchorY:3, ...createFootprint({ visual:{x:25,y:19,w:7,h:4}, collision:{x:25,y:20,w:7,h:3}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"}, pathingBounds:{x:24,y:19,w:9,h:5} }) }
 );
 world.buildings.forEach((b)=>{
-  const c=b.collision || {x:b.x,y:b.y,w:b.w,h:b.h};
+  const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
   blockRect(c.x,c.y,c.w,c.h);
 });
 
@@ -1965,6 +1997,12 @@ const treeData = [
   [6,6,"a"],[7,8,"b"],[6,18,"a"],[8,20,"c"],[9,5,"c"],[27,19,"b"],[24,20,"c"],[22,19,"a"],[19,21,"b"]
 ];
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
+[
+  keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y),
+  keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y+1),
+  keyOf(OVERWORLD_CAVE_ENTRY.x-1, OVERWORLD_CAVE_ENTRY.y+1),
+  keyOf(OVERWORLD_CAVE_ENTRY.x+1, OVERWORLD_CAVE_ENTRY.y+1)
+].forEach((tileKey)=>world.blocked.delete(tileKey));
 
 world.zones.push(
   {name:"North Road",x:10,y:0,w:14,h:7},
@@ -1976,10 +2014,10 @@ world.zones.push(
 
 const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
-const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
-const npc={x:24,y:14,name:"Edrin Vale",facing:"left"};
-const hunterNpc={x:27,y:14,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
-const vendorNpc={x:21,y:10,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
+const player={x:HEARTHVALE_LANDMARKS.townCenterSpawn.x,y:HEARTHVALE_LANDMARKS.townCenterSpawn.y,px:HEARTHVALE_LANDMARKS.townCenterSpawn.x*TILE,py:HEARTHVALE_LANDMARKS.townCenterSpawn.y*TILE,targetX:HEARTHVALE_LANDMARKS.townCenterSpawn.x,targetY:HEARTHVALE_LANDMARKS.townCenterSpawn.y,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
+const npc={x:HEARTHVALE_LANDMARKS.edrinValeArea.x,y:HEARTHVALE_LANDMARKS.edrinValeArea.y,name:"Edrin Vale",facing:"left"};
+const hunterNpc={x:HEARTHVALE_LANDMARKS.hunterGarranArea.x,y:HEARTHVALE_LANDMARKS.hunterGarranArea.y,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left"};
+const vendorNpc={x:HEARTHVALE_LANDMARKS.merchantRowanArea.x,y:HEARTHVALE_LANDMARKS.merchantRowanArea.y,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
 const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
 const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
 const MIRROR_CAVE_WOLF_SPAWNS=[
@@ -4087,7 +4125,7 @@ registerWorldObject({
   objectId:"town_well",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
-  x:18, y:11,
+  x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y,
   state:"default",
   interactable:true,
   collision:false,
@@ -4099,7 +4137,7 @@ registerWorldObject({
   objectId:"north_road_notice",
   type:WORLD_OBJECT_TYPE.SIGN,
   zone:"overworld",
-  x:26, y:11,
+  x:HEARTHVALE_LANDMARKS.noticeSignNode.x, y:HEARTHVALE_LANDMARKS.noticeSignNode.y,
   state:"unread",
   interactable:true,
   collision:true,
@@ -4155,7 +4193,7 @@ registerWorldObject({
   objectId:"mirror_pond_sign",
   type:WORLD_OBJECT_TYPE.SIGN,
   zone:"overworld",
-  x:26, y:11,
+  x:HEARTHVALE_LANDMARKS.noticeSignNode.x, y:HEARTHVALE_LANDMARKS.noticeSignNode.y,
   state:"unread",
   interactable:true,
   collision:true,
@@ -4170,7 +4208,7 @@ registerWorldObject({
   objectId:"mirror_pond",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
-  x:27, y:14,
+  x:HEARTHVALE_LANDMARKS.mirrorPond.x, y:HEARTHVALE_LANDMARKS.mirrorPond.y,
   state:"still",
   interactable:true,
   collision:false,
@@ -4206,7 +4244,7 @@ registerWorldObject({
   objectId:"mirror_cave_sign",
   type:WORLD_OBJECT_TYPE.SIGN,
   zone:"overworld",
-  x:31, y:12,
+  x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y+1,
   state:"unread",
   interactable:true,
   collision:true,
@@ -4642,7 +4680,7 @@ function respawnPlayerAtSquare(){
   isInMirrorCave=false;
   isInAbandonedTollhouse=false;
   currentZoneId="hearthvale_square";
-  setPlayerTilePosition(18, 11);
+  setPlayerTilePosition(HEARTHVALE_LANDMARKS.townCenterSpawn.x, HEARTHVALE_LANDMARKS.townCenterSpawn.y);
   zoneTransitionLockedUntil=0;
   blockedDirectionalKeysUntilRelease.clear();
   lastLoggedZoneEntryId=currentZoneId;
@@ -4870,7 +4908,7 @@ function teleportToZoneForDebug(zoneId){
     isInMirrorCave=false;
     isInAbandonedTollhouse=false;
     currentZoneId="hearthvale_square";
-    setPlayerTilePosition(18, 11);
+    setPlayerTilePosition(HEARTHVALE_LANDMARKS.townCenterSpawn.x, HEARTHVALE_LANDMARKS.townCenterSpawn.y);
     log("[Debug] Teleported to Hearthvale Square.");
   } else if(zoneId==="eastern_woods"){
     isInMirrorCave=false;
@@ -5688,13 +5726,15 @@ function drawWorld(){
 
     const didDraw=drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh);
     if(!didDraw){
-      ctx.fillStyle="rgba(133,72,61,.8)";
+      ctx.fillStyle=DEV_MODE ? "rgba(133,72,61,.55)" : "rgba(74,62,55,.22)";
       ctx.fillRect(tileToScreen(b.x,b.y).x,tileToScreen(b.x,b.y).y,b.w*TILE,b.h*TILE);
-      ctx.strokeStyle="rgba(255,207,180,.75)";
+      ctx.strokeStyle=DEV_MODE ? "rgba(255,207,180,.75)" : "rgba(220,205,184,.3)";
       ctx.strokeRect(tileToScreen(b.x,b.y).x+.5,tileToScreen(b.x,b.y).y+.5,b.w*TILE-1,b.h*TILE-1);
-      ctx.fillStyle="rgba(255,232,197,.9)";
-      ctx.font="bold 10px monospace";
-      ctx.fillText("PLACEHOLDER", tileToScreen(b.x,b.y).x+6, tileToScreen(b.x,b.y).y+18);
+      if(DEV_MODE){
+        ctx.fillStyle="rgba(255,232,197,.9)";
+        ctx.font="bold 10px monospace";
+        ctx.fillText("PLACEHOLDER", tileToScreen(b.x,b.y).x+6, tileToScreen(b.x,b.y).y+18);
+      }
     }
 
     const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
