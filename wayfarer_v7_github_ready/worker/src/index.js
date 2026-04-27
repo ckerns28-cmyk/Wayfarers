@@ -2525,13 +2525,8 @@ eventSystem.on("world:pond:awakened", ()=>{
 const SAVE_KEY="wayfarer.save.v1";
 const SAVE_SCHEMA_VERSION=1;
 const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10]);
-const DEV_MODE = (() => {
-  const queryDev = new URLSearchParams(location.search).get("dev");
-  if(queryDev==="1") return true;
-  if(queryDev==="0") return false;
-  return localStorage.getItem("wayfarer.dev_mode")==="true";
-})();
-const DEV_DEBUG_TOOLS_ENABLED=DEV_MODE;
+const DEFAULT_DEV_MODE=false;
+let DEV_MODE=DEFAULT_DEV_MODE;
 let saveNoticeTimeout=0;
 function showSaveNotice(message){
   saveNotice.textContent=message;
@@ -3313,30 +3308,22 @@ function updateSidebar(){
     equipmentList.innerHTML = nextEquipmentMarkup;
     sidebarEquipmentMarkup=nextEquipmentMarkup;
   }
-  const nearbyHostile=getNearestHostile(5);
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   const currentTarget=targetHostile?.entity || null;
   const targetCooldownMs=currentTarget ? Math.max(0, getHostileAttackCooldownMs(currentTarget)-(performance.now()-getHostileLastAttackAt(currentTarget))) : 0;
   const targetCooldownText=!currentTarget ? "N/A" : (currentTarget.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
   const totalAttack=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0);
   const totalDefense=Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0));
-  const interactionPrompt=interactionManager.getPromptText();
+  const interactionPrompt=interactionManager.getPromptText() || "E : Context Action";
   const hudLines=[
     "WASD / Arrows : Move",
+    interactionPrompt,
     "Space : Attack",
     "H : Quick-use healing item",
     "K : Manual Save",
     "1-9 : Dialogue Choices",
     "G : Toggle grid"
   ];
-  if(interactionPrompt) hudLines.splice(1, 0, interactionPrompt);
-  hudLines.push(
-    "Current Zone : " + zoneName,
-    "Hostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No"),
-    "Current target : " + hostileLabel(currentTarget),
-    "Target HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A"),
-    "Target strike cd : " + targetCooldownText
-  );
   hud.textContent=hudLines.join("\n");
   if(DEV_MODE){
     debugPanel.style.display="block";
@@ -3345,7 +3332,9 @@ function updateSidebar(){
       "F7/F8/F9 : Debug Teleport\n" +
       "F10 : Debug Reset Quest\n" +
       "Shift+F10 : Debug Reset Save\n" +
-      "Debug Lv/ATK/DEF : " + player.level + " / " + totalAttack + " / " + totalDefense;
+      "Debug Lv/ATK/DEF : " + player.level + " / " + totalAttack + " / " + totalDefense + "\n" +
+      "Target HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") + "\n" +
+      "Target cooldown : " + targetCooldownText;
   } else {
     debugPanel.style.display="none";
     debugPanel.textContent="";
@@ -3431,9 +3420,15 @@ function resetFullSaveForDebug(){
 }
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k)) e.preventDefault();
+  const isDevToggleKey=e.code==="Backquote";
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k) || isDevToggleKey) e.preventDefault();
   if(DIRECTION_KEYS.includes(k)){
     if(blockedDirectionalKeysUntilRelease.has(k)) return;
+  }
+  if(isDevToggleKey){
+    DEV_MODE=!DEV_MODE;
+    log(DEV_MODE ? "Dev mode enabled" : "Dev mode disabled");
+    updateSidebar();
   }
   if(k==="g") showGrid=!showGrid;
   if(k==="escape" && worldInfoPanel) closeWorldInfoPanel();
@@ -3441,12 +3436,12 @@ addEventListener("keydown",(e)=>{
   if(k==="e") interactionManager.tryInteract();
   if(k==="h") useHealingConsumable();
   if(k==="k") saveGame("manual");
-  if(DEV_DEBUG_TOOLS_ENABLED && k==="f6") healPlayerToFullForDebug();
-  if(DEV_DEBUG_TOOLS_ENABLED && k==="f7") teleportToZoneForDebug("hearthvale_square");
-  if(DEV_DEBUG_TOOLS_ENABLED && k==="f8") teleportToZoneForDebug("eastern_woods");
-  if(DEV_DEBUG_TOOLS_ENABLED && k==="f9") teleportToZoneForDebug("mirror_cave");
-  if(DEV_DEBUG_TOOLS_ENABLED && k==="f10" && e.shiftKey) resetFullSaveForDebug();
-  else if(DEV_DEBUG_TOOLS_ENABLED && k==="f10") resetCurrentQuestForDebug();
+  if(DEV_MODE && k==="f6") healPlayerToFullForDebug();
+  if(DEV_MODE && k==="f7") teleportToZoneForDebug("hearthvale_square");
+  if(DEV_MODE && k==="f8") teleportToZoneForDebug("eastern_woods");
+  if(DEV_MODE && k==="f9") teleportToZoneForDebug("mirror_cave");
+  if(DEV_MODE && k==="f10" && e.shiftKey) resetFullSaveForDebug();
+  else if(DEV_MODE && k==="f10") resetCurrentQuestForDebug();
   if(dialogueSystem.activeSession?.pendingChoices && /^[1-9]$/.test(k)) dialogueSystem.choose(Number(k)-1);
   keys.add(k);
 });
