@@ -1204,6 +1204,7 @@ const atlasManifests = {
 };
 const atlasImages = {};
 const missingAssetWarnings=new Set();
+const USE_PRODUCTION_BUILDING_ATLAS = false;
 function warnMissingAssetOnce(kind,key){
   const token=kind+":"+key;
   if(missingAssetWarnings.has(token)) return;
@@ -1256,13 +1257,13 @@ function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
   return true;
 }
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
-  inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", window:"windowTall" },
-  mercantile_shop:{ roof:"roofSlate", wall:"wallBrick", door:"doorShop", window:"windowWide" },
-  village_hall_meeting_house:{ roof:"roofSlate", wall:"wall", door:"door", window:"window" },
-  residence_small:{ roof:"roofL", wall:"wall", door:"door", window:"window" },
-  residence_large:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall" },
-  hunter_lodge_or_outfitter:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall" },
-  pond_boathouse_or_waterfront_shed:{ roof:"roofR", wall:"wallBrick", door:"doorShop", window:"windowWide" }
+  inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"TAVERN", windowCols:[1,3,4] },
+  mercantile_shop:{ roof:"roofSlate", wall:"wallBrick", door:"doorShop", window:"windowWide", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"SHOP", windowCols:[1,3] },
+  village_hall_meeting_house:{ roof:"roofSlate", wall:"wall", door:"door", window:"window", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"HALL", windowCols:[1,4] },
+  residence_small:{ roof:"roofL", wall:"wall", door:"door", window:"window", roofDepth:2, wallDepth:2, hasChimney:true, windowCols:[1,2] },
+  residence_large:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, windowCols:[1,3] },
+  hunter_lodge_or_outfitter:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:2, wallDepth:2, hasChimney:true, sign:true, signText:"HUNT", windowCols:[1,2] },
+  pond_boathouse_or_waterfront_shed:{ roof:"roofR", wall:"wallBrick", door:"doorShop", window:"windowWide", roofDepth:2, wallDepth:1, hasChimney:false, sign:true, signText:"DOCK", windowCols:[1] }
 });
 function drawBuildingFallbackSprite(building){
   const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
@@ -1271,41 +1272,68 @@ function drawBuildingFallbackSprite(building){
   const wallTile=assets.building[style.wall] || assets.building.wall;
   const doorTile=assets.building[style.door] || assets.building.door;
   const windowTile=assets.building[style.window] || assets.building.window;
-  const roofY=Math.max(0, visual.y-1);
-  for(let rx=0;rx<visual.w;rx++){
-    const roofX=visual.x+rx;
-    const roofP=tileToScreen(roofX, roofY);
-    drawShadowTile(assets.shadow.softTile, roofP.x+2, roofP.y+5, .66);
-    const roofVariant=(rx===0&&assets.building.roofL)
-      ? assets.building.roofL
-      : (rx===visual.w-1&&assets.building.roofR)
-        ? assets.building.roofR
-        : roofTile;
-    if(roofVariant) ctx.drawImage(roofVariant, roofP.x, roofP.y, TILE, TILE);
+  const roofDepth=Math.max(2, Math.min(visual.h-1, style.roofDepth || 2));
+  const wallDepth=Math.max(1, Math.min(visual.h-1, style.wallDepth || 2));
+  const roofStartY=Math.max(0, visual.y-1);
+  const roofEndY=Math.min(visual.y+visual.h-2, roofStartY+roofDepth-1);
+  const wallStartY=Math.max(visual.y+1, visual.y+visual.h-wallDepth);
+  for(let ry=roofStartY;ry<=roofEndY;ry++){
+    for(let rx=0;rx<visual.w;rx++){
+      const roofX=visual.x+rx;
+      const roofP=tileToScreen(roofX, ry);
+      drawShadowTile(assets.shadow.softTile, roofP.x+2, roofP.y+5, .56);
+      const roofVariant=(rx===0&&assets.building.roofL)
+        ? assets.building.roofL
+        : (rx===visual.w-1&&assets.building.roofR)
+          ? assets.building.roofR
+          : roofTile;
+      if(roofVariant) ctx.drawImage(roofVariant, roofP.x, roofP.y, TILE, TILE);
+      if(ry===roofEndY){
+        ctx.fillStyle="rgba(52,36,30,.32)";
+        ctx.fillRect(roofP.x+1, roofP.y+25, TILE-2, 3);
+      }
+    }
   }
   for(let rx=0;rx<visual.w;rx++){
-    for(let ry=0;ry<visual.h;ry++){
+    for(let ry=wallStartY;ry<visual.y+visual.h;ry++){
       const tileX=visual.x+rx;
-      const tileY=visual.y+ry;
+      const tileY=ry;
       const wallP=tileToScreen(tileX, tileY);
       if(wallTile) ctx.drawImage(wallTile, wallP.x, wallP.y, TILE, TILE);
     }
   }
   const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1, w:1, h:1 };
-  const doorY=Math.min(visual.y+visual.h-1, Math.max(visual.y, interaction.y));
+  const doorY=Math.min(visual.y+visual.h-1, Math.max(wallStartY, interaction.y));
   const doorX=Math.min(visual.x+visual.w-1, Math.max(visual.x, interaction.x));
   const doorP=tileToScreen(doorX, doorY);
   if(doorTile) ctx.drawImage(doorTile, doorP.x, doorP.y, TILE, TILE);
-  const windowRows=visual.h>=5 ? [visual.y+1, visual.y+2] : [visual.y+1];
-  const windowCols=visual.w>=6 ? [visual.x+1, visual.x+visual.w-2] : [visual.x+1];
-  windowCols.forEach((wx)=>{
-    windowRows.forEach((wy)=>{
-      if(wx===doorX && wy===doorY) return;
-      if(wx<visual.x||wx>=visual.x+visual.w||wy<visual.y||wy>=visual.y+visual.h) return;
-      const wp=tileToScreen(wx,wy);
-      if(windowTile) ctx.drawImage(windowTile, wp.x, wp.y, TILE, TILE);
-    });
+  const windowY=Math.max(wallStartY, visual.y+visual.h-2);
+  const windowCols=(style.windowCols || [1, Math.max(1, visual.w-2)])
+    .map((col)=>visual.x + Math.min(Math.max(col, 0), visual.w-1));
+  [...new Set(windowCols)].forEach((wx)=>{
+    if(wx===doorX) return;
+    if(wx<visual.x||wx>=visual.x+visual.w||windowY<visual.y||windowY>=visual.y+visual.h) return;
+    const wp=tileToScreen(wx,windowY);
+    if(windowTile) ctx.drawImage(windowTile, wp.x, wp.y, TILE, TILE);
   });
+  if(style.hasChimney){
+    const chimneyX=visual.x + (visual.w >= 5 ? visual.w-2 : 1);
+    const chimneyY=Math.max(roofStartY, roofEndY-1);
+    const chimney=tileToScreen(chimneyX, chimneyY);
+    ctx.fillStyle="rgba(96,72,53,.95)";
+    ctx.fillRect(chimney.x+10, chimney.y+2, 6, 12);
+  }
+  if(style.sign){
+    const signX=Math.max(visual.x, doorX-1);
+    const signP=tileToScreen(signX, doorY);
+    ctx.fillStyle="rgba(87,63,38,.92)";
+    ctx.fillRect(signP.x+6, signP.y+5, 20, 7);
+    if(style.signText){
+      ctx.fillStyle="rgba(232,216,168,.9)";
+      ctx.font="bold 6px monospace";
+      ctx.fillText(style.signText, signP.x+7, signP.y+11);
+    }
+  }
 }
 
 function buildTerrainTiles() {
@@ -2021,13 +2049,13 @@ world.roads.push(
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:8, y:5, w:7, h:6, anchorX:3, anchorY:5, ...createFootprint({ visual:{x:8,y:5,w:7,h:6}, collision:{x:8,y:8,w:7,h:3}, interaction:{x:11,y:10,w:1,h:1}, label:{x:11,y:6,text:"Inn & Tavern"}, pathingBounds:{x:7,y:5,w:9,h:7} }) },
-  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:17, y:5, w:6, h:6, anchorX:3, anchorY:5, ...createFootprint({ visual:{x:17,y:5,w:6,h:6}, collision:{x:17,y:8,w:6,h:3}, interaction:{x:20,y:10,w:1,h:1}, label:{x:20,y:6,text:"Mercantile Shop"}, pathingBounds:{x:16,y:5,w:8,h:7} }) },
-  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:11, y:12, w:7, h:6, anchorX:3, anchorY:5, ...createFootprint({ visual:{x:11,y:12,w:7,h:6}, collision:{x:11,y:15,w:7,h:3}, interaction:{x:14,y:17,w:1,h:1}, label:{x:14,y:13,text:"Village Hall"}, pathingBounds:{x:10,y:12,w:9,h:7} }) },
-  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:13, w:4, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:7,y:13,w:4,h:5}, collision:{x:7,y:15,w:4,h:3}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:14,text:"Cottage"}, pathingBounds:{x:6,y:13,w:6,h:6} }) },
-  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:13, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:19,y:13,w:5,h:5}, collision:{x:19,y:15,w:5,h:3}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:14,text:"Residence"}, pathingBounds:{x:18,y:13,w:7,h:6} }) },
-  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:25, y:12, w:4, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:25,y:12,w:4,h:5}, collision:{x:25,y:14,w:4,h:3}, interaction:{x:26,y:16,w:1,h:1}, label:{x:26,y:13,text:"Hunter Lodge"}, pathingBounds:{x:24,y:12,w:6,h:6} }) },
-  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:25, y:19, w:7, h:4, anchorX:3, anchorY:3, ...createFootprint({ visual:{x:25,y:19,w:7,h:4}, collision:{x:25,y:20,w:7,h:3}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"}, pathingBounds:{x:24,y:19,w:9,h:5} }) }
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6} }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6} }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:11, y:13, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:11,y:13,w:6,h:5}, collision:{x:11,y:16,w:6,h:2}, interaction:{x:14,y:17,w:1,h:1}, label:{x:14,y:14,text:"Village Hall"}, pathingBounds:{x:10,y:13,w:8,h:6} }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:7,y:14,w:4,h:4}, collision:{x:7,y:16,w:4,h:2}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:15,text:"Cottage"}, pathingBounds:{x:6,y:14,w:6,h:5} }) },
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:14, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:19,y:14,w:5,h:4}, collision:{x:19,y:16,w:5,h:2}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:15,text:"Residence"}, pathingBounds:{x:18,y:14,w:7,h:5} }) },
+  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:25, y:13, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:25,y:13,w:4,h:4}, collision:{x:25,y:15,w:4,h:2}, interaction:{x:26,y:16,w:1,h:1}, label:{x:26,y:14,text:"Hunter Lodge"}, pathingBounds:{x:24,y:13,w:6,h:5} }) },
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:20, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:20,w:5,h:3}, collision:{x:26,y:21,w:5,h:2}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"}, pathingBounds:{x:25,y:20,w:7,h:4} }) }
 );
 world.buildings.forEach((b)=>{
   const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
@@ -6171,10 +6199,13 @@ function drawWorld(){
       drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
     }
 
-    const didDraw=drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh);
+    const didDraw=USE_PRODUCTION_BUILDING_ATLAS
+      ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh)
+      : false;
     if(!didDraw){
       warnMissingAssetOnce("building_sprite", b.spriteId);
       drawBuildingFallbackSprite(b);
+      return;
     }
 
     const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
