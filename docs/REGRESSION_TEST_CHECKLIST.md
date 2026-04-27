@@ -105,3 +105,15 @@
 - [ ] Equip Traveler's Charm from Inventory and verify Equipment panel shows `Trinket: Traveler's Charm` with DEF increase reflected in combat mitigation.
 - [ ] Objective panel context check (with no active quest): before clear = `Explore the Abandoned Tollhouse.`, after Rook defeat/chest closed = `Open the tollhouse chest.`, after clear = `Explore Hearthvale and the surrounding roads.`.
 - [ ] Regression sweep: Hearthvale, North Road, Mirror Cave, Merchant Rowan, Hunter Garran, Edrin Vale, inventory/equipment, and level/XP all remain functional.
+
+## M. Skill Use Progression (Phase 27)
+- [ ] Hit enemies with a melee weapon and confirm Swordsmanship XP increases on successful hits only.
+- [ ] Defeat enemies with a melee weapon and confirm Swordsmanship defeat XP is granted.
+- [ ] Verify Swordsmanship levels up at 50/125/250/450 XP and melee damage bonus applies (+1 at Lv2-3, +2 at Lv4-5).
+- [ ] Take enemy damage while armor is equipped and confirm Defense XP increases.
+- [ ] Confirm Defense level bonuses increase total defense but incoming damage still has a minimum of 1.
+- [ ] Defeat an enemy while armored and confirm encounter-survival Defense XP bonus applies.
+- [ ] Use Healing Herb/Small Potion while damaged and confirm Survival XP increases and healing bonus applies by Survival level.
+- [ ] Attempt to use healing items at full HP and confirm item is not consumed and no Survival XP is granted.
+- [ ] Save, reload, and confirm skill levels + skill XP persist alongside level/XP, HP, inventory, and equipment.
+- [ ] Confirm Equipment panel clearly shows Traveler's Charm trinket defense bonus and total mitigation reflects it.

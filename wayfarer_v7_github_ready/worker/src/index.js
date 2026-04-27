@@ -343,6 +343,10 @@ const html = String.raw`<!DOCTYPE html>
         <div class="questTitle">Equipment</div>
         <div id="equipmentList" class="muted">Weapon: Iron Sword (+5)<br>Armor: Leather Armor (+2 DEF)<br>Trinket: None</div>
       </section>
+      <section id="skillsPanel" class="panel">
+        <div class="questTitle">Skills</div>
+        <div id="skillsList" class="muted">Swordsmanship Lv 1<br>Defense Lv 1<br>Survival Lv 1</div>
+      </section>
       <section id="logPanel" class="panel">
         <div class="questTitle">Chronicle</div>
         <div id="chat"></div>
@@ -735,6 +739,7 @@ const weaponVal = document.getElementById("weaponVal");
 const objectiveText = document.getElementById("objectiveText");
 const inventoryList = document.getElementById("inventoryList");
 const equipmentList = document.getElementById("equipmentList");
+const skillsList = document.getElementById("skillsList");
 const dialogue = document.getElementById("dialogue");
 const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
@@ -894,6 +899,13 @@ const BALANCE = Object.freeze({
   death: {
     respawnSafetyMs:1800
   }
+});
+const SKILL_LEVEL_THRESHOLDS = Object.freeze([0,50,125,250,450]);
+const SKILL_MAX_LEVEL = SKILL_LEVEL_THRESHOLDS.length;
+const SKILL_DISPLAY_NAMES = Object.freeze({
+  swordsmanship:"Swordsmanship",
+  defense:"Defense",
+  survival:"Survival"
 });
 const HARD_ZONE_TRANSITIONS = Object.freeze([]);
 let currentZoneId = "hearthvale_square";
@@ -1585,7 +1597,7 @@ world.zones.push(
 
 const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
-const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
+const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const hunterNpc={x:26,y:9,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"down"};
 const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
@@ -1712,6 +1724,85 @@ function isWorldObjectBlockingTile(x,y){
     const tile=getWorldObjectTile(object);
     return tile.x===x && tile.y===y;
   });
+}
+function createDefaultSkills(){
+  return {
+    swordsmanship:{ level:1, xp:0 },
+    defense:{ level:1, xp:0 },
+    survival:{ level:1, xp:0 }
+  };
+}
+function getSkillLevelFromXp(totalXp){
+  const normalizedXp=Math.max(0, Math.floor(Number.isFinite(totalXp) ? totalXp : 0));
+  let level=1;
+  for(let i=0; i<SKILL_LEVEL_THRESHOLDS.length; i++){
+    if(normalizedXp>=SKILL_LEVEL_THRESHOLDS[i]) level=i+1;
+  }
+  return Math.min(SKILL_MAX_LEVEL, level);
+}
+function getSkillXpThresholdForLevel(level){
+  const normalizedLevel=Math.max(1, Math.min(SKILL_MAX_LEVEL, Math.floor(Number.isFinite(level) ? level : 1)));
+  return SKILL_LEVEL_THRESHOLDS[normalizedLevel-1];
+}
+function normalizeSkills(rawSkills){
+  const defaults=createDefaultSkills();
+  const normalized={};
+  Object.keys(defaults).forEach((skillId)=>{
+    const saved=rawSkills?.[skillId];
+    const savedXp=Math.max(0, Math.floor(Number.isFinite(saved?.xp) ? saved.xp : 0));
+    const levelFromXp=getSkillLevelFromXp(savedXp);
+    const savedLevel=Math.max(1, Math.min(SKILL_MAX_LEVEL, Math.floor(Number.isFinite(saved?.level) ? saved.level : 1)));
+    const resolvedLevel=Math.max(levelFromXp, savedLevel);
+    const minXpForResolved=getSkillXpThresholdForLevel(resolvedLevel);
+    normalized[skillId]={
+      xp:Math.max(savedXp, minXpForResolved),
+      level:resolvedLevel
+    };
+  });
+  return normalized;
+}
+function getSkillLevel(skillId){
+  return Math.max(1, Math.min(SKILL_MAX_LEVEL, Math.floor(Number.isFinite(player.skills?.[skillId]?.level) ? player.skills[skillId].level : 1)));
+}
+function gainSkillXp(skillId, amount){
+  if(!player.skills?.[skillId]) return 0;
+  const gained=Math.max(0, Math.floor(Number.isFinite(amount) ? amount : 0));
+  if(gained<=0) return 0;
+  const skill=player.skills[skillId];
+  const beforeLevel=getSkillLevel(skillId);
+  skill.xp=Math.max(0, Math.floor(Number.isFinite(skill.xp) ? skill.xp : 0)) + gained;
+  skill.level=getSkillLevelFromXp(skill.xp);
+  if(skill.level>beforeLevel){
+    log(SKILL_DISPLAY_NAMES[skillId] + " increased to Level " + skill.level + ".");
+    showRewardToast("Skill Up: " + SKILL_DISPLAY_NAMES[skillId], 1500);
+  }
+  return gained;
+}
+function getSwordsmanshipAttackBonus(){
+  const level=getSkillLevel("swordsmanship");
+  if(level>=4) return 2;
+  if(level>=2) return 1;
+  return 0;
+}
+function getDefenseSkillBonus(){
+  const level=getSkillLevel("defense");
+  if(level>=4) return 2;
+  if(level>=2) return 1;
+  return 0;
+}
+function getSurvivalHealingBonus(){
+  const level=getSkillLevel("survival");
+  if(level>=5) return 8;
+  if(level===4) return 6;
+  if(level===3) return 4;
+  if(level===2) return 2;
+  return 0;
+}
+function getTotalAttackDamage(){
+  return BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0) + getSwordsmanshipAttackBonus();
+}
+function getTotalDefenseRating(){
+  return Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0) + getDefenseSkillBonus());
 }
 
 let lastPlayerAttack=0,hitStopUntil=0,lastNoTargetLogAt=0;
@@ -1843,12 +1934,16 @@ function getEquippedWeaponBonus(){
   if(!weapon || weapon.type!=="weapon") return 0;
   return Number.isFinite(weapon.attackBonus) ? weapon.attackBonus : 0;
 }
-function getEquippedDefenseBonus(){
+function getArmorDefenseBonus(){
   const armor=getEquippedItem("armor");
+  return (!armor || armor.type!=="armor") ? 0 : (Number.isFinite(armor.defenseBonus) ? armor.defenseBonus : 0);
+}
+function getTrinketDefenseBonus(){
   const trinket=getEquippedItem("trinket");
-  const armorDefense=(!armor || armor.type!=="armor") ? 0 : (Number.isFinite(armor.defenseBonus) ? armor.defenseBonus : 0);
-  const trinketDefense=(!trinket || trinket.type!=="trinket") ? 0 : (Number.isFinite(trinket.defenseBonus) ? trinket.defenseBonus : 0);
-  return armorDefense + trinketDefense;
+  return (!trinket || trinket.type!=="trinket") ? 0 : (Number.isFinite(trinket.defenseBonus) ? trinket.defenseBonus : 0);
+}
+function getEquippedDefenseBonus(){
+  return getArmorDefenseBonus() + getTrinketDefenseBonus();
 }
 function ensureStarterEquipment(){
   if(getItemQuantity("rusty_sword")<=0) addItemToInventory("rusty_sword", 1);
@@ -1887,9 +1982,12 @@ function unequipSlot(slotName){
   return true;
 }
 function applyIncomingDamage(rawDamage){
-  const defense=Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0));
+  const defense=getTotalDefenseRating();
   const reducedDamage=Math.max(1, Math.floor(rawDamage)-defense);
   player.hp=Math.max(0, player.hp-reducedDamage);
+  if(reducedDamage>0 && getArmorDefenseBonus()>0){
+    gainSkillXp("defense", 2);
+  }
   return reducedDamage;
 }
 function removeItemFromInventory(itemId, amount){
@@ -1992,13 +2090,16 @@ function consumeHealingItem(item){
     log("HP is already full.");
     return false;
   }
-  const healAmount=Math.max(0, Math.floor(Number.isFinite(item.healAmount) ? item.healAmount : 0));
+  const healAmount=Math.max(0, Math.floor(Number.isFinite(item.healAmount) ? item.healAmount : 0)) + getSurvivalHealingBonus();
   if(healAmount<=0) return false;
   const removed=removeItemFromInventory(item.id, 1);
   if(removed<=0) return false;
   const hpBefore=player.hp;
   player.hp=Math.min(player.maxHp, player.hp + healAmount);
   const restored=player.hp-hpBefore;
+  if(restored<=0) return false;
+  if(item.id==="healing_herb") gainSkillXp("survival", 5);
+  if(item.id==="small_potion") gainSkillXp("survival", 8);
   log("Used " + item.name + ". Restored " + restored + " HP.");
   saveGame("consume_item");
   return true;
@@ -2919,7 +3020,7 @@ eventSystem.on("world:pond:awakened", ()=>{
 
 const SAVE_KEY="wayfarer.save.v1";
 const SAVE_SCHEMA_VERSION=1;
-const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10,11,12]);
+const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10,11,12,13]);
 const DEFAULT_DEV_MODE=false;
 let DEV_MODE=DEFAULT_DEV_MODE;
 let saveNoticeTimeout=0;
@@ -2955,7 +3056,7 @@ function createSaveData(reason){
     respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
   }));
   return {
-    version:12,
+    version:13,
     saveSchemaVersion:SAVE_SCHEMA_VERSION,
     reason,
     savedAt:new Date().toISOString(),
@@ -2969,6 +3070,11 @@ function createSaveData(reason){
       baseAttackBonus:player.baseAttackBonus,
       baseDefenseBonus:player.baseDefenseBonus,
       coins:player.coins,
+      skills:{
+        swordsmanship:{ ...player.skills.swordsmanship },
+        defense:{ ...player.skills.defense },
+        survival:{ ...player.skills.survival }
+      },
       inventory:player.inventory.map((entry)=>({ itemId:entry.itemId, quantity:entry.quantity })),
       equipment:{ ...player.equipment }
     },
@@ -3063,6 +3169,7 @@ function loadGame(){
     player.baseDefenseBonus=Math.max(targetProfile.baseDefenseBonus, Math.floor(Number.isFinite(data.player.baseDefenseBonus) ? data.player.baseDefenseBonus : targetProfile.baseDefenseBonus));
     player.hp=Math.max(0,Math.min(player.maxHp,Math.floor(Number.isFinite(data.player.hp) ? data.player.hp : player.maxHp)));
     player.coins=Math.max(0,Math.floor(Number.isFinite(data.player.coins) ? data.player.coins : 0));
+    player.skills=normalizeSkills(data.player.skills);
     player.inventory=normalizeInventory(data.player.inventory);
     if(data.player.equipment && typeof data.player.equipment==="object"){
       player.equipment={
@@ -3834,6 +3941,7 @@ function handlePlayerDefeat(){
 
 let sidebarInventoryMarkup="";
 let sidebarEquipmentMarkup="";
+let sidebarSkillsMarkup="";
 function updateSidebar(){
   levelVal.textContent = String(player.level);
   hpVal.textContent = player.hp + "/" + player.maxHp;
@@ -3916,10 +4024,11 @@ function updateSidebar(){
   // can swallow button clicks before click events complete.
   const weaponLine=equippedWeapon ? (equippedWeapon.name + " (+" + getEquippedWeaponBonus() + ")") : "None";
   const equippedArmor=getEquippedItem("armor");
-  const armorDefense=getEquippedDefenseBonus();
+  const armorDefense=getArmorDefenseBonus();
   const armorLine=equippedArmor ? (equippedArmor.name + " (+" + armorDefense + " DEF)") : "None";
   const equippedTrinket=getEquippedItem("trinket");
-  const trinketLine=equippedTrinket ? equippedTrinket.name : "None";
+  const trinketDefense=getTrinketDefenseBonus();
+  const trinketLine=equippedTrinket ? (equippedTrinket.name + (trinketDefense>0 ? " (+" + trinketDefense + " DEF)" : "")) : "None";
   const weaponButton="";
   const armorButton=equippedArmor ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"armor\">Remove</button>" : "";
   const trinketButton=equippedTrinket ? " <button type=\"button\" class=\"inventory-btn\" data-unequip-slot=\"trinket\">Remove</button>" : "";
@@ -3931,12 +4040,24 @@ function updateSidebar(){
     equipmentList.innerHTML = nextEquipmentMarkup;
     sidebarEquipmentMarkup=nextEquipmentMarkup;
   }
+  const nextSkillsMarkup=["swordsmanship","defense","survival"].map((skillId)=>{
+    const skill=player.skills?.[skillId] || { level:1, xp:0 };
+    const nextThreshold=getSkillXpThresholdForLevel(skill.level+1);
+    const progressText=skill.level>=SKILL_MAX_LEVEL
+      ? (skill.xp + " / MAX")
+      : (skill.xp + " / " + nextThreshold);
+    return "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">" + SKILL_DISPLAY_NAMES[skillId] + "</span><span class=\"equipment-slot-value\">Lv " + skill.level + " — " + progressText + "</span></div>";
+  }).join("");
+  if(nextSkillsMarkup!==sidebarSkillsMarkup){
+    skillsList.innerHTML=nextSkillsMarkup;
+    sidebarSkillsMarkup=nextSkillsMarkup;
+  }
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
   const currentTarget=targetHostile?.entity || null;
   const targetCooldownMs=currentTarget ? Math.max(0, getHostileAttackCooldownMs(currentTarget)-(performance.now()-getHostileLastAttackAt(currentTarget))) : 0;
   const targetCooldownText=!currentTarget ? "N/A" : (currentTarget.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
-  const totalAttack=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0);
-  const totalDefense=Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0));
+  const totalAttack=getTotalAttackDamage();
+  const totalDefense=getTotalDefenseRating();
   const interactionPrompt=interactionManager.getPromptText();
   const hudLines=[
     "WASD / Arrows : Move",
@@ -3957,6 +4078,7 @@ function updateSidebar(){
       "F10 : Debug Reset Quest\n" +
       "Shift+F10 : Debug Reset Save\n" +
       "Debug Lv/ATK/DEF : " + player.level + " / " + totalAttack + " / " + totalDefense + "\n" +
+      "Skills S/D/Sv : " + getSkillLevel("swordsmanship") + " / " + getSkillLevel("defense") + " / " + getSkillLevel("survival") + "\n" +
       "Target HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") + "\n" +
       "Target cooldown : " + targetCooldownText;
   } else {
@@ -4262,6 +4384,8 @@ function defeatWolf(wolf,now){
   const enemyConfig=getEnemyConfig(wolf.enemyType || "wolf");
   wolf.defeated=true;
   grantPlayerXp(enemyConfig.xp);
+  if(getEquippedItem("weapon")?.type==="weapon") gainSkillXp("swordsmanship", 10);
+  if(getArmorDefenseBonus()>0 && player.hp>0) gainSkillXp("defense", 5);
   player.coins+=enemyConfig.coinReward;
   const lootDrops=rollEnemyLoot(wolf.enemyType || "wolf");
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
@@ -4275,6 +4399,8 @@ function defeatBandit(bandit,now){
   const enemyConfig=getEnemyConfig(bandit.enemyType || "bandit");
   bandit.defeated=true;
   grantPlayerXp(enemyConfig.xp);
+  if(getEquippedItem("weapon")?.type==="weapon") gainSkillXp("swordsmanship", 10);
+  if(getArmorDefenseBonus()>0 && player.hp>0) gainSkillXp("defense", 5);
   player.coins+=enemyConfig.coinReward;
   const lootDrops=rollEnemyLoot(bandit.enemyType || "bandit");
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
@@ -4318,13 +4444,14 @@ function tryPlayerAttack(now){
   const len=Math.max(1,Math.hypot(tx,ty));
   player.attackLungeX=(tx/len)*2.4;
   player.attackLungeY=(ty/len)*1.4;
-  const totalDamage=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0);
+  const totalDamage=getTotalAttackDamage();
   targetHostile.entity.hp=Math.max(0,targetHostile.entity.hp-totalDamage);
   targetHostile.entity.hitUntil=now+320;
   targetHostile.entity.hitFlickerUntil=now+240;
   targetHostile.entity.recoilX=(tx/len)*2.3;
   targetHostile.entity.recoilY=(ty/len)*1.5;
   hitStopUntil=now+65;
+  if(getEquippedItem("weapon")?.type==="weapon") gainSkillXp("swordsmanship", 3);
   logCombat("Hit " + hostileLabel(targetHostile.entity) + " for " + totalDamage + " damage.");
   if(targetHostile.entity.hp<=0 && !targetHostile.entity.defeated){
     if(targetHostile.entity.kind==="bandit") defeatBandit(targetHostile.entity, now);
