@@ -1116,11 +1116,11 @@ const mirrorCave = {
   floor:new Set(),
   blocked:new Set(),
   walls:new Set(),
-  spawn:{ x:13, y:16 },
+  spawn:{ x:13, y:15 },
   exit:{ ...MIRROR_CAVE_EXIT },
   chest:{ ...MIRROR_CAVE_CHEST_TILE, opened:false },
   cleared:false,
-  returnTile:{ ...OVERWORLD_CAVE_ENTRY }
+  returnTile:{ x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y+1 }
 };
 function carveMirrorCaveRoom(x,y,w,h){
   for(let tx=x;tx<x+w;tx++){
