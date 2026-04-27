@@ -336,51 +336,74 @@ const html = String.raw`<!DOCTYPE html>
       "root": "hunters_request_offer",
       "rootByCondition": [
         { "if": { "questId": "hunters_request", "state": "Completed" }, "next": "hunters_request_complete" },
-        { "if": { "questId": "hunters_request", "state": "Ready To Turn In" }, "next": "hunters_request_turn_in_ready" },
-        { "if": { "questId": "hunters_request", "state": "Active" }, "next": "hunters_request_active" }
+        { "if": { "questId": "hunters_request", "progress": "stage_4_return_with_relic" }, "next": "hunters_request_final_turn_in_ready" },
+        { "if": { "questId": "hunters_request", "progress": "stage_3_mirror_cave" }, "next": "hunters_request_stage_3_active" },
+        { "if": { "questId": "hunters_request", "progress": "stage_2_return_to_hunter" }, "next": "hunters_request_stage_2_turn_in" },
+        { "if": { "questId": "hunters_request", "progress": "stage_1_prove_yourself" }, "next": "hunters_request_stage_1_active" }
       ],
       "nodes": {
         "hunters_request_offer": {
           "lines": [
             "You want to survive out there? Then earn it.",
-            "Wolves are ranging near the pond and bandits are watching the trails.",
-            "Take Hunter's Request: thin the wolves, enter Mirror Cave, and bring back proof."
+            "Wolves are ranging near the pond. Bring me proof you can hold your ground.",
+            "Take Hunter's Request: defeat 3 wolves and collect 3 Wolf Pelts."
           ],
           "choices": [
             { "text": "Accept Hunter's Request", "event": "quest:activate:hunters_request", "next": "end" },
             { "text": "Not now.", "next": "end" }
           ]
         },
-        "hunters_request_active": {
+        "hunters_request_stage_1_active": {
           "lines": [
-            "Keep your blade ready and your eyes up.",
-            "Report once every objective is done."
+            "Prove yourself first. Defeat 3 wolves and bring me 3 Wolf Pelts."
           ],
           "choices": [
-            { "text": "Continue", "next": "hunters_request_active" },
             { "text": "Goodbye.", "next": "end" }
           ]
         },
-        "hunters_request_turn_in_ready": {
+        "hunters_request_stage_2_turn_in": {
           "lines": [
-            "You made it back. That's what matters.",
-            "Looks like you've done the work."
+            "You handled yourself. Good. Now there is something deeper I need you to see."
           ],
           "choices": [
-            { "text": "Complete Hunter's Request", "next": "hunters_request_turn_in" },
+            { "text": "Hand over 3 Wolf Pelts", "next": "hunters_request_pelt_turn_in" },
             { "text": "Goodbye.", "next": "end" }
           ]
         },
-        "hunters_request_turn_in": {
+        "hunters_request_pelt_turn_in": {
           "lines": [
-            "Good work. You stayed alive, stayed focused, and came back."
+            "Enter Mirror Cave and recover what waits inside. Bring it back to me."
           ],
-          "onCompleteEvents": ["quest:turn_in:hunters_request"],
+          "onCompleteEvents": ["quest:hunter:turn_in_pelts"],
+          "next": "end"
+        },
+        "hunters_request_stage_3_active": {
+          "lines": [
+            "Mirror Cave is waiting. Recover what rests in the old chest and come back."
+          ],
+          "choices": [
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "hunters_request_final_turn_in_ready": {
+          "lines": [
+            "You came back with it. Then Hearthvale may remember your name yet."
+          ],
+          "choices": [
+            { "text": "Give Hunter Garran the Mirror Relic", "next": "hunters_request_final_turn_in" },
+            { "text": "Goodbye.", "next": "end" }
+          ]
+        },
+        "hunters_request_final_turn_in": {
+          "lines": [
+            "Good. You did what I asked, in order, and you came back standing."
+          ],
+          "onCompleteEvents": ["quest:hunter:final_turn_in"],
           "next": "hunters_request_complete"
         },
         "hunters_request_complete": {
           "lines": [
-            "Good work. You've got the makings of a real wayfarer."
+            "You came back with it. Then Hearthvale may remember your name yet."
           ],
           "choices": [
             { "text": "Goodbye.", "next": "end" }
@@ -409,7 +432,7 @@ const html = String.raw`<!DOCTYPE html>
         },
         "rowan_iron_sword_greeting": {
           "lines": [
-            "That Iron Sword suits you. Mirror Cave doesn't give up steel to just anyone.",
+            "That Iron Sword suits you. Hunter Garran doesn't hand out steel lightly.",
             "Need fresh supplies?"
           ],
           "choices": [
@@ -454,16 +477,18 @@ const html = String.raw`<!DOCTYPE html>
       "questId": "hunters_request",
       "title": "Hunter's Request",
       "name": "Hunter's Request",
-      "description": "Defeat wolves, enter Mirror Cave, recover the cave relic, then report back to Hunter Garran.",
+      "description": "Prove yourself to Hunter Garran, recover the Mirror Relic from Mirror Cave, then return for your reward.",
       "startEvents": ["quest:activate:hunters_request"],
+      "initialProgress": "stage_1_prove_yourself",
       "status": "Not Started",
       "objectives": [
         { "id": "wolves", "label": "Defeat 3 wolves", "summaryLabel": "Wolves defeated", "type": "kill", "targetId": "wolf", "requiredAmount": 3, "currentAmount": 0, "completed": false },
+        { "id": "pelts", "label": "Collect 3 Wolf Pelts", "summaryLabel": "Wolf Pelts", "type": "item", "targetId": "wolf_pelt", "requiredAmount": 3, "currentAmount": 0, "completed": false },
         { "id": "enter_cave", "label": "Enter Mirror Cave", "type": "reach", "targetId": "mirror_cave", "requiredAmount": 1, "currentAmount": 0, "completed": false },
         { "id": "open_chest", "label": "Open Mirror Cave chest", "type": "interact", "targetId": "mirror_cave_chest", "requiredAmount": 1, "currentAmount": 0, "completed": false },
         { "id": "return_hunter", "label": "Return to Hunter Garran", "type": "interact", "targetId": "npc_hunter_garran", "requiredAmount": 1, "currentAmount": 0, "completed": false }
       ],
-      "rewards": { "xp": 60, "coins": 50, "items": [{ "itemId": "small_potion", "count": 2 }] }
+      "rewards": { "xp": 0, "coins": 0, "items": [] }
     }
   ]
 }
@@ -576,6 +601,7 @@ const ITEM_REGISTRY = Object.freeze({
   wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:5 },
   small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:3 },
   old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
+  mirror_relic: { id:"mirror_relic", name:"Mirror Relic", type:"quest", description:"An old relic recovered from the Mirror Cave chest.", stackable:false, value:0 },
   cloth_scrap: { id:"cloth_scrap", name:"Cloth Scrap", type:"material", description:"Rough cloth torn from worn travel gear.", stackable:true, value:3 },
   healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, healAmount:10, value:5 },
   small_potion: { id:"small_potion", name:"Small Potion", type:"consumable", description:"A compact tonic that restores vitality.", stackable:true, healAmount:25, value:12 }
@@ -1225,6 +1251,7 @@ function normalizeInventory(entries){
 }
 function onInventoryChanged(reason){
   if(typeof questSystem!=="undefined" && questSystem) questSystem.refreshAllItemProgress();
+  if(typeof updateHunterStageOneReadiness==="function") updateHunterStageOneReadiness();
   if(typeof updateSidebar==="function") updateSidebar();
   if(typeof saveGame==="function") saveGame(reason || "inventory_update");
 }
@@ -1502,6 +1529,16 @@ function buyOneItemFromVendor(itemId){
 }
 
 const QuestState = Object.freeze({ NOT_STARTED:"Not Started", ACTIVE:"Active", READY_TO_TURN_IN:"Ready To Turn In", COMPLETED:"Completed" });
+const HunterQuestStage = Object.freeze({
+  NOT_STARTED:"not_started",
+  STAGE_1_PROVE_YOURSELF:"stage_1_prove_yourself",
+  STAGE_2_RETURN_TO_HUNTER:"stage_2_return_to_hunter",
+  STAGE_3_MIRROR_CAVE:"stage_3_mirror_cave",
+  STAGE_4_RETURN_WITH_RELIC:"stage_4_return_with_relic",
+  COMPLETED:"completed"
+});
+let mirrorCaveChestDiscovered=false;
+let hunterQuestRewardClaimed=false;
 
 class EventTriggerSystem {
   constructor(){ this.handlers=new Map(); this.zoneWatchers=[]; this.lastZone=""; }
@@ -1661,7 +1698,21 @@ class QuestStateSystem {
     if(!quest || quest.state!==QuestState.READY_TO_TURN_IN) return false;
     return this.completeQuest(questId), true;
   }
-  refreshAllItemProgress(){ return false; }
+  refreshAllItemProgress(){
+    const quest=this.getQuest("hunters_request");
+    if(!quest || quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) return false;
+    const peltObjective=this.getObjective("hunters_request", "pelts");
+    if(!peltObjective) return false;
+    const before=peltObjective.currentAmount;
+    const currentPelts=Math.max(0, Math.min(peltObjective.requiredAmount, getItemQuantity("wolf_pelt")));
+    peltObjective.currentAmount=currentPelts;
+    peltObjective.completed=currentPelts>=peltObjective.requiredAmount;
+    if(before!==peltObjective.currentAmount){
+      this.events.emit("quest:state-changed",{questId:"hunters_request",state:quest.state,progress:quest.progress});
+      return true;
+    }
+    return false;
+  }
   serializeState(){
     const states=[];
     for(const quest of this.quests.values()) states.push({
@@ -1723,20 +1774,22 @@ class DialogueFramework {
     this.activeSession=null;
   }
   getHunterObjectiveSummaryLines(){
-    const hunterQuest=questSystem.getQuest("hunters_request");
-    if(!hunterQuest) return [];
-    const objectiveLines=(hunterQuest.objectives||[]).map((objective)=>{
-      const hasCounter=objective.requiredAmount>1;
-      const counter=hasCounter ? (" " + objective.currentAmount + "/" + objective.requiredAmount) : "";
-      const marker=objective.completed ? "✔" : "•";
-      return marker + " " + objective.label + counter;
-    });
-    return objectiveLines.length ? ["", ...objectiveLines] : [];
+    const stage=getHunterQuestStage();
+    const wolvesObjective=questSystem.getObjective("hunters_request", "wolves");
+    if(stage===HunterQuestStage.STAGE_1_PROVE_YOURSELF){
+      const wolves=Math.max(0, Math.min(3, wolvesObjective?.currentAmount || 0));
+      const pelts=Math.max(0, Math.min(3, getItemQuantity("wolf_pelt")));
+      return ["", "• Defeat Wolves: " + wolves + "/3", "• Wolf Pelts: " + pelts + "/3"];
+    }
+    if(stage===HunterQuestStage.STAGE_2_RETURN_TO_HUNTER) return ["", "• Return to Hunter Garran"];
+    if(stage===HunterQuestStage.STAGE_3_MIRROR_CAVE) return ["", "• Enter Mirror Cave", "• Recover the Mirror Relic"];
+    if(stage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC) return ["", "• Return to Hunter Garran"];
+    return [];
   }
   getDisplayLines(node){
     const baseLines=Array.isArray(node?.lines) ? node.lines : [];
     if(!this.activeSession) return baseLines;
-    if(this.activeSession.characterId==="hunter_garran" && this.activeSession.nodeId==="hunters_request_active"){
+    if(this.activeSession.characterId==="hunter_garran" && (this.activeSession.nodeId==="hunters_request_stage_1_active" || this.activeSession.nodeId==="hunters_request_stage_3_active")){
       return [...baseLines, ...this.getHunterObjectiveSummaryLines()];
     }
     return baseLines;
@@ -1888,6 +1941,45 @@ const questSystem=new QuestStateSystem(questData.quests||[], eventSystem);
 const dialogueSystem=new DialogueFramework(dialogueData, eventSystem);
 const interactionManager=new InteractionManager(2);
 
+function getHunterQuestStage(){
+  const quest=questSystem.getQuest("hunters_request");
+  if(!quest) return HunterQuestStage.NOT_STARTED;
+  if(quest.state===QuestState.COMPLETED) return HunterQuestStage.COMPLETED;
+  const progress=typeof quest.progress==="string" ? quest.progress : "";
+  if(Object.values(HunterQuestStage).includes(progress)) return progress;
+  return quest.state===QuestState.NOT_STARTED ? HunterQuestStage.NOT_STARTED : HunterQuestStage.STAGE_1_PROVE_YOURSELF;
+}
+function setHunterQuestStage(stage){
+  const quest=questSystem.getQuest("hunters_request");
+  if(!quest) return;
+  if(stage===HunterQuestStage.NOT_STARTED){
+    quest.state=QuestState.NOT_STARTED;
+    quest.status=quest.state;
+    quest.progress=HunterQuestStage.NOT_STARTED;
+  } else if(stage===HunterQuestStage.COMPLETED){
+    quest.state=QuestState.COMPLETED;
+    quest.status=quest.state;
+    quest.progress=HunterQuestStage.COMPLETED;
+  } else {
+    if(quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) quest.state=QuestState.ACTIVE;
+    if(quest.state===QuestState.READY_TO_TURN_IN) quest.state=QuestState.ACTIVE;
+    quest.status=quest.state;
+    quest.progress=stage;
+  }
+  eventSystem.emit("quest:state-changed",{questId:"hunters_request",state:quest.state,progress:quest.progress});
+}
+function isHunterStageOneReady(){
+  const wolvesObjective=questSystem.getObjective("hunters_request", "wolves");
+  return Boolean(wolvesObjective && wolvesObjective.currentAmount>=3 && getItemQuantity("wolf_pelt")>=3);
+}
+function updateHunterStageOneReadiness(){
+  const stage=getHunterQuestStage();
+  if(stage!==HunterQuestStage.STAGE_1_PROVE_YOURSELF) return;
+  if(!isHunterStageOneReady()) return;
+  setHunterQuestStage(HunterQuestStage.STAGE_2_RETURN_TO_HUNTER);
+  log("Objective Complete: Return to Hunter Garran with 3 Wolf Pelts.");
+}
+
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
 eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
 eventSystem.on("dialogue:started:hunter_garran", ()=>eventSystem.emit("npc:interacted:hunter_garran"));
@@ -1900,33 +1992,67 @@ eventSystem.on("zone:entered:mirror_pond", ()=>{
   questSystem.updateProgress("mirror_pond_listening", "heard_whispers");
 });
 eventSystem.on("combat:enemy-defeated", ({enemyType})=>{
-  const quest=questSystem.getQuest("hunters_request");
-  if(quest?.state!==QuestState.ACTIVE || enemyType!=="wolf") return;
+  const stage=getHunterQuestStage();
+  if((stage!==HunterQuestStage.STAGE_1_PROVE_YOURSELF && stage!==HunterQuestStage.STAGE_2_RETURN_TO_HUNTER) || enemyType!=="wolf") return;
   questSystem.incrementObjective("hunters_request", "wolves", 1);
+  updateHunterStageOneReadiness();
 });
 eventSystem.on("zone:entered:mirror_cave", ()=>{
-  const quest=questSystem.getQuest("hunters_request");
-  if(quest?.state!==QuestState.ACTIVE) return;
+  if(getHunterQuestStage()!==HunterQuestStage.STAGE_3_MIRROR_CAVE) return;
   if(questSystem.completeObjective("hunters_request", "enter_cave")) log("Objective Complete: Entered Mirror Cave");
 });
 eventSystem.on("object:opened:mirror_cave_chest", ()=>{
-  const quest=questSystem.getQuest("hunters_request");
-  if(quest?.state!==QuestState.ACTIVE) return;
+  if(getHunterQuestStage()!==HunterQuestStage.STAGE_3_MIRROR_CAVE) return;
   if(questSystem.completeObjective("hunters_request", "open_chest")) log("Objective Complete: Recovered the relic from Mirror Cave");
+  setHunterQuestStage(HunterQuestStage.STAGE_4_RETURN_WITH_RELIC);
 });
-eventSystem.on("npc:interacted:hunter_garran", ()=>{
+eventSystem.on("quest:activate:hunters_request", ()=>{
   const quest=questSystem.getQuest("hunters_request");
-  if(quest?.state!==QuestState.READY_TO_TURN_IN) return;
+  if(!quest || quest.state===QuestState.COMPLETED) return;
+  setHunterQuestStage(HunterQuestStage.STAGE_1_PROVE_YOURSELF);
+  questSystem.refreshAllItemProgress();
+  updateHunterStageOneReadiness();
+});
+eventSystem.on("quest:hunter:turn_in_pelts", ()=>{
+  if(getHunterQuestStage()!==HunterQuestStage.STAGE_2_RETURN_TO_HUNTER) return;
+  if(getItemQuantity("wolf_pelt")<3){
+    log("Bring me 3 Wolf Pelts first.");
+    return;
+  }
+  removeItemFromInventory("wolf_pelt", 3);
+  if(mirrorCaveChestDiscovered) log("You found the old chest, then. Good. Now you know why I needed proof first.");
+  questSystem.completeObjective("hunters_request", "pelts");
+  setHunterQuestStage(HunterQuestStage.STAGE_3_MIRROR_CAVE);
+  log("Hunter Garran sent you to Mirror Cave to recover the Mirror Relic.");
+});
+eventSystem.on("quest:hunter:final_turn_in", ()=>{
+  if(getHunterQuestStage()!==HunterQuestStage.STAGE_4_RETURN_WITH_RELIC){
+    log("Recover the Mirror Relic from Mirror Cave first.");
+    return;
+  }
+  if(getItemQuantity("mirror_relic")<1){
+    log("You need the Mirror Relic before this can be completed.");
+    return;
+  }
+  removeItemFromInventory("mirror_relic", 1);
+  if(!hunterQuestRewardClaimed){
+    if(getItemQuantity("iron_sword")<=0){
+      addItemToInventory("iron_sword", 1);
+      log("You obtained Iron Sword.");
+    }
+    player.coins += 50;
+    player.xp += 100;
+    addItemToInventory("small_potion", 2);
+    log("Rewards: +100 XP, +50 Coins, Small Potion x2.");
+    hunterQuestRewardClaimed=true;
+  }
   questSystem.completeObjective("hunters_request", "return_hunter");
+  questSystem.completeQuest("hunters_request");
 });
 eventSystem.on("quest:report:mirror_pond", ()=>{
   const quest=questSystem.getQuest("mirror_pond_listening");
   if(quest?.state!==QuestState.ACTIVE || quest.progress!=="heard_whispers") return;
   questSystem.completeQuest("mirror_pond_listening");
-});
-eventSystem.on("quest:turn_in:hunters_request", ()=>{
-  const completed=questSystem.tryTurnInQuest("hunters_request");
-  if(!completed) log("Finish all Hunter's Request objectives before turning this in.");
 });
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
 let worldEvents={ pondAwakened:false };
@@ -1987,8 +2113,13 @@ function createSaveData(reason){
       triggeredEvents:Array.from(worldTriggeredEvents),
       stateChanges:{ pondAwakened:worldEvents.pondAwakened },
       mirrorCave:{
+        chestDiscovered:mirrorCaveChestDiscovered,
         chestOpened:mirrorCave.chest.opened,
         cleared:mirrorCave.cleared
+      },
+      hunterQuest:{
+        hunterQuestStage:getHunterQuestStage(),
+        hunterQuestRewardClaimed:hunterQuestRewardClaimed
       },
       creatures:{
         wolves:wolvesSave,
@@ -2139,8 +2270,29 @@ function loadGame(){
         wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
       });
     }
+    mirrorCaveChestDiscovered=Boolean(data.world?.mirrorCave?.chestDiscovered);
     mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened);
     mirrorCave.cleared=Boolean(data.world?.mirrorCave?.cleared);
+    hunterQuestRewardClaimed=Boolean(data.world?.hunterQuest?.hunterQuestRewardClaimed);
+    const hunterQuest=questSystem.getQuest("hunters_request");
+    if(hunterQuest?.state===QuestState.COMPLETED){
+      setHunterQuestStage(HunterQuestStage.COMPLETED);
+      mirrorCave.chest.opened=true;
+      hunterQuestRewardClaimed=true;
+    } else if(hunterQuest){
+      const savedStage=data.world?.hunterQuest?.hunterQuestStage;
+      if(typeof savedStage==="string" && Object.values(HunterQuestStage).includes(savedStage) && savedStage!==HunterQuestStage.NOT_STARTED){
+        setHunterQuestStage(savedStage);
+      } else if(mirrorCave.chest.opened || getItemQuantity("mirror_relic")>0){
+        if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
+        questSystem.completeObjective("hunters_request", "enter_cave");
+        questSystem.completeObjective("hunters_request", "open_chest");
+        setHunterQuestStage(HunterQuestStage.STAGE_4_RETURN_WITH_RELIC);
+      } else if(hunterQuest.state!==QuestState.NOT_STARTED){
+        setHunterQuestStage(HunterQuestStage.STAGE_1_PROVE_YOURSELF);
+        updateHunterStageOneReadiness();
+      }
+    }
     log("System: Save loaded.");
     return true;
   } catch(err){
@@ -2190,16 +2342,31 @@ interactionManager.register({
   onInteract:()=>exitMirrorCave()
 });
 interactionManager.register({
-  id:"obj_mirror_cave_chest", type:"object", x:()=>isInMirrorCave && !mirrorCave.chest.opened ? mirrorCave.chest.x : -999, y:()=>isInMirrorCave && !mirrorCave.chest.opened ? mirrorCave.chest.y : -999,
+  id:"obj_mirror_cave_chest", type:"object", x:()=>isInMirrorCave ? mirrorCave.chest.x : -999, y:()=>isInMirrorCave ? mirrorCave.chest.y : -999,
   promptLabel:"Open chest",
   onInteract:()=>{
-    if(mirrorCave.chest.opened) return;
-    mirrorCave.chest.opened=true;
-    addItemToInventory("iron_sword", 1);
-    log("You obtained Iron Sword.");
-    mirrorCave.cleared=true;
-    log("Mirror Cave cleared.");
-    eventSystem.emit("object:opened:mirror_cave_chest");
+    const stage=getHunterQuestStage();
+    if(mirrorCave.chest.opened || stage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC || stage===HunterQuestStage.COMPLETED){
+      mirrorCave.chest.opened=true;
+      log("The chest is empty.");
+      return;
+    }
+    if(stage===HunterQuestStage.NOT_STARTED){
+      mirrorCaveChestDiscovered=true;
+      log("The chest is sealed. Someone in Hearthvale may know more about it.");
+      return;
+    }
+    if(stage===HunterQuestStage.STAGE_1_PROVE_YOURSELF || stage===HunterQuestStage.STAGE_2_RETURN_TO_HUNTER){
+      log("The chest does not respond. Perhaps Hunter Garran knows more.");
+      return;
+    }
+    if(stage===HunterQuestStage.STAGE_3_MIRROR_CAVE){
+      mirrorCave.chest.opened=true;
+      mirrorCave.cleared=true;
+      if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
+      log("You recovered the Mirror Relic.");
+      eventSystem.emit("object:opened:mirror_cave_chest");
+    }
   }
 });
 
@@ -2413,20 +2580,23 @@ function updateSidebar(){
   const mirrorQuest=questSystem.getQuest("mirror_pond_listening");
   const activeQuest=((huntersQuest?.state===QuestState.ACTIVE || huntersQuest?.state===QuestState.READY_TO_TURN_IN) ? huntersQuest : ((mirrorQuest?.state===QuestState.ACTIVE) ? mirrorQuest : (huntersQuest?.state===QuestState.COMPLETED ? huntersQuest : mirrorQuest)));
   questVal.textContent = activeQuest ? (activeQuest.name + " [" + activeQuest.state + "]") : "Town Slice";
-  if(huntersQuest?.state===QuestState.ACTIVE || huntersQuest?.state===QuestState.READY_TO_TURN_IN){
-    const objectiveLines=(huntersQuest.objectives||[]).map((objective)=>{
-      const checked=objective.completed ? "✔" : " ";
-      const hasCounter=objective.requiredAmount>1;
-      const counter=hasCounter ? (" (" + objective.currentAmount + "/" + objective.requiredAmount + ")") : "";
-      return "[" + checked + "] " + objective.label + counter;
-    }).join("\n");
-    objectiveText.textContent = "Hunter's Request\n" + objectiveLines;
+  const hunterStage=getHunterQuestStage();
+  if(hunterStage===HunterQuestStage.STAGE_1_PROVE_YOURSELF){
+    const wolves=Math.max(0, Math.min(3, questSystem.getObjective("hunters_request", "wolves")?.currentAmount || 0));
+    const pelts=Math.max(0, Math.min(3, getItemQuantity("wolf_pelt")));
+    objectiveText.textContent = "Hunter's Request\n- Defeat Wolves: " + wolves + "/3\n- Wolf Pelts: " + pelts + "/3";
+  } else if(hunterStage===HunterQuestStage.STAGE_2_RETURN_TO_HUNTER){
+    objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
+  } else if(hunterStage===HunterQuestStage.STAGE_3_MIRROR_CAVE){
+    objectiveText.textContent = "Hunter's Request\n- Enter Mirror Cave\n- Recover the Mirror Relic";
+  } else if(hunterStage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC){
+    objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
+  } else if(hunterStage===HunterQuestStage.COMPLETED){
+    objectiveText.textContent = "Quest complete: Hunter's Request.";
   } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="go_to_pond"){
     objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
   } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="heard_whispers"){
     objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
-  } else if(huntersQuest?.state===QuestState.COMPLETED){
-    objectiveText.textContent = "Quest complete: Hunter's Request.";
   } else if(mirrorQuest?.state===QuestState.COMPLETED){
     objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
   } else {
@@ -2954,10 +3124,13 @@ function drawMirrorCaveScene(now){
       ctx.fillRect(p.x,p.y,32,6);
     }
   }
-  if(!mirrorCave.chest.opened){
-    const cp=tileToScreen(mirrorCave.chest.x, mirrorCave.chest.y);
-    drawSoftShadow(cp.x+16,cp.y+26,10,4,.2);
-    ctx.fillStyle="#6b4c2f"; ctx.fillRect(cp.x+6,cp.y+10,20,14);
+  const cp=tileToScreen(mirrorCave.chest.x, mirrorCave.chest.y);
+  drawSoftShadow(cp.x+16,cp.y+26,10,4,.2);
+  ctx.fillStyle="#6b4c2f"; ctx.fillRect(cp.x+6,cp.y+10,20,14);
+  if(mirrorCave.chest.opened){
+    ctx.fillStyle="#4c3927"; ctx.fillRect(cp.x+6,cp.y+8,20,4);
+    ctx.fillStyle="#d6bc7f"; ctx.fillRect(cp.x+6,cp.y+11,20,2);
+  } else {
     ctx.fillStyle="#b58f56"; ctx.fillRect(cp.x+6,cp.y+10,20,4);
     ctx.fillStyle="#d6bc7f"; ctx.fillRect(cp.x+14,cp.y+14,4,6);
   }
