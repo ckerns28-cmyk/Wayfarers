@@ -2103,16 +2103,18 @@ function isOverworldTerrainBlocked(x,y){
 }
 function rebuildOverworldCollisionFromMap(){
   const rebuiltBlocked=new Set();
-  const addRect=(rect)=>{
+  const addRect=(rect, options={})=>{
     if(!rect) return;
+    const { allowRoadOverlap=true } = options;
     for(let tx=rect.x;tx<rect.x+rect.w;tx++){
       for(let ty=rect.y;ty<rect.y+rect.h;ty++){
+        if(!allowRoadOverlap && world.roadTiles.has(keyOf(tx,ty))) continue;
         rebuiltBlocked.add(keyOf(tx,ty));
       }
     }
   };
   world.buildings.forEach((building)=>{
-    addRect(building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h });
+    addRect(building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h }, { allowRoadOverlap:false });
   });
   world.fences.forEach((fenceTile)=>rebuiltBlocked.add(keyOf(fenceTile.x, fenceTile.y)));
   world.trees.forEach((tree)=>rebuiltBlocked.add(keyOf(tree.x, tree.y)));
@@ -5046,18 +5048,142 @@ function updateSidebar(){
   }
 }
 
-function canMoveTo(x,y){
-  if(!isTileInCurrentZone(x,y)) return false;
-  if(isWorldObjectBlockingTile(x,y)) return false;
-  if(isInMirrorCave){
-    if(mirrorCave.blocked.has(keyOf(x,y))) return false;
-  } else if(isInAbandonedTollhouse){
-    if(abandonedTollhouse.blocked.has(keyOf(x,y))) return false;
-  } else {
-    if(isOverworldTerrainBlocked(x,y)) return false;
-    if(isNpcOnTile(x,y,null)) return false;
+function formatRect(rect){
+  if(!rect) return "n/a";
+  return "x=" + rect.x + ",y=" + rect.y + ",w=" + rect.w + ",h=" + rect.h;
+}
+function describeOverworldTerrainType(x,y){
+  const tileKey=keyOf(x,y);
+  if(world.pondWater.has(tileKey)) return "water";
+  if(world.pondShore.has(tileKey)) return "shore";
+  if(world.roadTiles.has(tileKey)) return "road";
+  if(world.fences.some((fence)=>fence.x===x&&fence.y===y)) return "fence";
+  if(world.trees.some((tree)=>tree.x===x&&tree.y===y)) return "tree";
+  if(world.buildings.some((building)=>{
+    const rect=building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+  })) return "building";
+  return "land";
+}
+function getMovementBlockDiagnostics(x,y){
+  const tileKey=keyOf(x,y);
+  const attemptedWorld={ x:x*TILE, y:y*TILE };
+  const zoneContext=isInMirrorCave ? "mirror_cave" : (isInAbandonedTollhouse ? "abandoned_tollhouse" : "overworld");
+  const worldObjectBlocker=getActiveWorldObjects().find((object)=>{
+    if(!object.collision) return false;
+    const tile=getWorldObjectTile(object);
+    return tile.x===x && tile.y===y;
+  });
+  const blockingNpc=!isInMirrorCave && !isInAbandonedTollhouse
+    ? namedVillageNpcs.find((villageNpc)=>villageNpc.targetX===x&&villageNpc.targetY===y)
+    : null;
+  const blockingHostile=getActiveHostiles().find((hostile)=>hostile.hp>0&&hostile.targetX===x&&hostile.targetY===y);
+  const blockingFence=world.fences.find((fence)=>fence.x===x&&fence.y===y);
+  const blockingTree=world.trees.find((tree)=>tree.x===x&&tree.y===y);
+  const blockingBuilding=world.buildings.find((building)=>{
+    const rect=building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+  });
+  const buildingParcel=world.buildings.find((building)=>{
+    const rect=building.pathingBounds || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+  });
+  const atLandmark=Object.entries(HEARTHVALE_LANDMARKS).find(([key, landmark])=>{
+    if(key==="zoneExits" || !landmark || typeof landmark!=="object" || !Number.isFinite(landmark.x) || !Number.isFinite(landmark.y)) return false;
+    return landmark.x===x && landmark.y===y;
+  });
+  const sourceFlags={
+    terrain:false,
+    water:false,
+    fence:false,
+    building:false,
+    prop:false,
+    npc:false,
+    enemy:false,
+    parcel:false,
+    landmark:false,
+    debug_rectangle:false,
+    invisible_bounds:false
+  };
+  const causes=[];
+  if(!isTileInCurrentZone(x,y)){ causes.push("invisible_bounds"); sourceFlags.invisible_bounds=true; }
+  if(worldObjectBlocker){
+    const category=worldObjectBlocker.type==="door"||worldObjectBlocker.type==="caveEntrance" ? "landmark" : worldObjectBlocker.type;
+    causes.push(category);
+    if(category==="landmark") sourceFlags.landmark=true;
   }
-  if(getActiveHostiles().some((hostile)=>hostile.hp>0&&x===hostile.targetX&&y===hostile.targetY)) return false;
+  if(isInMirrorCave && mirrorCave.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
+  if(isInAbandonedTollhouse && abandonedTollhouse.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
+  if(!isInMirrorCave && !isInAbandonedTollhouse){
+    if(world.pondWater.has(tileKey)){ causes.push("water"); sourceFlags.water=true; }
+    if(world.pondShore.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
+    if(blockingFence){ causes.push("fence"); sourceFlags.fence=true; }
+    if(blockingTree){ causes.push("terrain"); sourceFlags.terrain=true; }
+    if(blockingBuilding){ causes.push("building"); sourceFlags.building=true; }
+  }
+  if(buildingParcel){ sourceFlags.parcel=true; }
+  if(blockingNpc){ causes.push("npc"); sourceFlags.npc=true; }
+  if(blockingHostile){ causes.push("enemy"); sourceFlags.enemy=true; }
+  return {
+    blocked:causes.length>0,
+    zoneContext,
+    attemptedTile:{ x,y },
+    attemptedWorld,
+    terrainType:zoneContext==="overworld" ? describeOverworldTerrainType(x,y) : "dungeon_floor",
+    walkable:causes.length===0,
+    reason:causes[0] || "none",
+    causeChain:causes,
+    blockingObjectId:worldObjectBlocker?.objectId || null,
+    blockingObjectType:worldObjectBlocker?.type || null,
+    blockingObjectRect:worldObjectBlocker ? { x, y, w:1, h:1 } : null,
+    blockingEntityId:blockingNpc?.id || blockingHostile?.id || null,
+    blockingEntityType:blockingNpc ? "npc" : (blockingHostile ? "enemy" : null),
+    blockingEntityRect:(blockingNpc||blockingHostile) ? { x, y, w:1, h:1 } : null,
+    blockingBuildingId:blockingBuilding?.id || null,
+    blockingBuildingRect:blockingBuilding ? (blockingBuilding.collision || blockingBuilding.visual || { x:blockingBuilding.x, y:blockingBuilding.y, w:blockingBuilding.w, h:blockingBuilding.h }) : null,
+    parcelId:buildingParcel?.id || null,
+    parcelRect:buildingParcel ? (buildingParcel.pathingBounds || buildingParcel.visual || { x:buildingParcel.x, y:buildingParcel.y, w:buildingParcel.w, h:buildingParcel.h }) : null,
+    blockingLandmarkId:atLandmark?.[0] || null,
+    sourceFlags
+  };
+}
+let lastMovementBlockSignature="";
+let lastMovementBlockLogAt=0;
+function emitMovementBlockDiagnostics(diag){
+  if(!diag?.blocked) return;
+  const now=performance.now();
+  const signature=JSON.stringify({
+    zone:diag.zoneContext,
+    x:diag.attemptedTile?.x,
+    y:diag.attemptedTile?.y,
+    reasons:diag.causeChain
+  });
+  if(signature===lastMovementBlockSignature && now-lastMovementBlockLogAt<280) return;
+  lastMovementBlockSignature=signature;
+  lastMovementBlockLogAt=now;
+  const detailLines=[
+    "Movement blocked at x=" + diag.attemptedTile.x + ", y=" + diag.attemptedTile.y + " (world x=" + diag.attemptedWorld.x + ", y=" + diag.attemptedWorld.y + ")",
+    "Reason: " + diag.reason,
+    "Cause chain: " + (diag.causeChain.join(", ") || "none"),
+    "Terrain: " + diag.terrainType + " | walkable=" + diag.walkable,
+    "Blocked by object: " + (diag.blockingObjectId || "none") + " [" + (diag.blockingObjectType || "n/a") + "] rect=" + formatRect(diag.blockingObjectRect),
+    "Blocked by entity: " + (diag.blockingEntityId || "none") + " [" + (diag.blockingEntityType || "n/a") + "] rect=" + formatRect(diag.blockingEntityRect),
+    "Building collision: " + (diag.blockingBuildingId || "none") + " rect=" + formatRect(diag.blockingBuildingRect),
+    "Parcel overlap: " + (diag.parcelId || "none") + " rect=" + formatRect(diag.parcelRect),
+    "Landmark overlap: " + (diag.blockingLandmarkId || "none"),
+    "Source flags: " + JSON.stringify(diag.sourceFlags)
+  ];
+  const joined="[CollisionDebug] " + detailLines.join(" | ");
+  console.info(joined);
+  logThrottled("movement_block:" + signature, "Movement blocked at x=" + diag.attemptedTile.x + ", y=" + diag.attemptedTile.y + " — " + diag.reason + ".", 180);
+}
+
+function canMoveTo(x,y){
+  const diag=getMovementBlockDiagnostics(x,y);
+  if(diag.blocked){
+    emitMovementBlockDiagnostics(diag);
+    return false;
+  }
   return true;
 }
 
@@ -5560,6 +5686,55 @@ function drawCollisionOverlay(){
       ctx.fillRect(p.x,p.y,TILE,TILE);
     }
   }
+  const drawWorldRect=(rect,stroke,fill)=>{
+    if(!rect) return;
+    const p=tileToScreen(rect.x, rect.y);
+    if(fill){
+      ctx.fillStyle=fill;
+      ctx.fillRect(p.x, p.y, rect.w*TILE, rect.h*TILE);
+    }
+    if(stroke){
+      ctx.strokeStyle=stroke;
+      ctx.lineWidth=1;
+      ctx.strokeRect(p.x+0.5, p.y+0.5, rect.w*TILE-1, rect.h*TILE-1);
+    }
+  };
+  if(!isInMirrorCave && !isInAbandonedTollhouse){
+    world.buildings.forEach((building)=>{
+      drawWorldRect(building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h }, "rgba(255,128,88,0.95)", "rgba(255,124,88,0.08)");
+      drawWorldRect(building.interaction, "rgba(108,206,255,0.95)", "rgba(108,206,255,0.15)");
+      drawWorldRect(building.pathingBounds, "rgba(239,199,111,0.55)", null);
+    });
+    getActiveWorldObjects().forEach((object)=>{
+      const tile=getWorldObjectTile(object);
+      drawWorldRect({ x:tile.x, y:tile.y, w:1, h:1 }, object.collision ? "rgba(192,128,255,0.95)" : "rgba(192,128,255,0.5)", object.collision ? "rgba(177,110,255,0.22)" : null);
+    });
+    const landmarkRects=[
+      { x:HEARTHVALE_LANDMARKS.mirrorPond.x, y:HEARTHVALE_LANDMARKS.mirrorPond.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.caveEntrance.x, y:HEARTHVALE_LANDMARKS.caveEntrance.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.mainCrossroads.x, y:HEARTHVALE_LANDMARKS.mainCrossroads.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.mirrorCaveEntrance.x, y:HEARTHVALE_LANDMARKS.zoneExits.mirrorCaveEntrance.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.abandonedTollhouseEntrance.x, y:HEARTHVALE_LANDMARKS.zoneExits.abandonedTollhouseEntrance.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.northRoadBoundary.x, y:HEARTHVALE_LANDMARKS.zoneExits.northRoadBoundary.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.westLaneBoundary.x, y:HEARTHVALE_LANDMARKS.zoneExits.westLaneBoundary.y, w:1, h:1 },
+      { x:HEARTHVALE_LANDMARKS.zoneExits.easternWoodsBoundary.x, y:HEARTHVALE_LANDMARKS.zoneExits.easternWoodsBoundary.y, w:1, h:1 }
+    ];
+    landmarkRects.forEach((rect)=>drawWorldRect(rect, "rgba(255,241,122,0.95)", "rgba(255,241,122,0.15)"));
+  }
+  const entityRects=[
+    { x:player.targetX, y:player.targetY, w:1, h:1, stroke:"rgba(96,188,255,0.98)", fill:"rgba(96,188,255,0.2)" }
+  ];
+  if(!isInMirrorCave && !isInAbandonedTollhouse){
+    namedVillageNpcs.forEach((villageNpc)=>{
+      entityRects.push({ x:villageNpc.targetX, y:villageNpc.targetY, w:1, h:1, stroke:"rgba(255,228,133,0.98)", fill:"rgba(255,228,133,0.2)" });
+    });
+  }
+  getActiveHostiles().forEach((hostile)=>{
+    if(hostile.hp<=0) return;
+    entityRects.push({ x:hostile.targetX, y:hostile.targetY, w:1, h:1, stroke:"rgba(255,110,110,0.98)", fill:"rgba(255,110,110,0.2)" });
+  });
+  entityRects.forEach((rect)=>drawWorldRect(rect, rect.stroke, rect.fill));
   ctx.restore();
 }
 function drawTileRotated(img, x, y, turns){
