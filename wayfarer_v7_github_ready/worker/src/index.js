@@ -52,7 +52,7 @@ const html = String.raw`<!DOCTYPE html>
       display:grid;
       grid-template-columns: 320px 1fr;
       gap:14px;
-      height:100vh;
+      height:100dvh;
       padding:14px;
     }
     .panel {
@@ -61,8 +61,16 @@ const html = String.raw`<!DOCTYPE html>
       border-radius: 12px;
       box-shadow: 0 14px 40px rgba(0,0,0,.46), inset 0 0 0 1px rgba(255,255,255,.03);
     }
-    #sidebar { display:flex; flex-direction:column; gap:10px; min-width:0; }
-    #brand,#stats,#objective,#inventoryPanel,#logPanel{padding:14px;}
+    #sidebar {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width:0;
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+    }
+    #brand,#stats,#objective,#inventoryPanel,#logPanel{padding:12px;}
     h1{margin:0 0 6px;font-size:24px;letter-spacing:.4px}
     .sub{font-size:13px;color:var(--muted)}
     .tag{display:inline-block;margin-top:8px;padding:5px 9px;border:1px solid #435065;border-radius:999px;font-size:11px;color:#c7d6ec}
@@ -73,13 +81,26 @@ const html = String.raw`<!DOCTYPE html>
       background:#0a1018;
       border:1px solid #2e3b4f;
       border-radius:8px;
-      min-height:160px;
-      max-height:280px;
-      overflow:auto;
-      padding:10px;
+      min-height:0;
+      max-height:none;
+      overflow-y:auto;
+      padding:8px 9px;
       white-space:pre-line;
-      font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;
+      font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
       color:#d2dded;
+      flex:1 1 auto;
+    }
+    #objective,#inventoryPanel{
+      flex:0 1 auto;
+      overflow:auto;
+    }
+    #inventoryList,#equipmentList{line-height:1.45}
+    #logPanel{
+      display:flex;
+      flex-direction:column;
+      flex:1 1 auto;
+      min-height:190px;
+      overflow:hidden;
     }
     #gamePanel{position:relative;overflow:hidden}
     #game{width:100%;height:100%;display:block;border-radius:12px;image-rendering:pixelated;background:#081017}
