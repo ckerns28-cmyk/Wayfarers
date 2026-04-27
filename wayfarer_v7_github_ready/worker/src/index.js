@@ -360,7 +360,7 @@ const html = String.raw`<!DOCTYPE html>
         <div class="stats" style="margin-top:10px;">
           <div class="muted">Current Objective</div><div id="objectiveText">Explore Hearthvale and the surrounding roads.</div>
           <div class="muted">Current Zone</div><div id="zoneVal">Hearthvale Square</div>
-          <div class="muted">Quest</div><div id="questVal">The Still Water [Completed]</div>
+          <div class="muted">Quest</div><div id="questVal">Town Slice</div>
         </div>
       </section>
       <section id="stats" class="panel">
@@ -1966,6 +1966,7 @@ function applyProgressionForLevel(targetLevel,{announce=false}={}){
   if(gainedMaxHp>0) player.hp=Math.min(player.maxHp, player.hp + gainedMaxHp);
   if(announce && player.level>beforeLevel){
     log("Level up! You reached Level " + player.level + ".");
+    showRewardToast("Level Up! Lv " + player.level, 1900);
     if(player.maxHp>beforeProfile.maxHp) log("Max HP increased.");
     if(player.baseAttackBonus>beforeAttack) log("Attack increased.");
     if(player.baseDefenseBonus>beforeDefense) log("Defense increased.");
@@ -2980,8 +2981,27 @@ function hasActiveGuidedQuest(){
   const stillWaterActive=stillWaterQuest && stillWaterQuest.state!==QuestState.NOT_STARTED && stillWaterQuest.state!==QuestState.COMPLETED;
   return Boolean(hunterActive || stillWaterActive);
 }
+function hasCompletedVerticalSliceCoreQuests(){
+  const hunterQuest=questSystem.getQuest("hunters_request");
+  const stillWaterQuest=questSystem.getQuest("the_still_water");
+  return hunterQuest?.state===QuestState.COMPLETED && stillWaterQuest?.state===QuestState.COMPLETED;
+}
+function isVerticalSliceCleared(){
+  return hasCompletedVerticalSliceCoreQuests() && abandonedTollhouseCleared && isTollhouseChestOpened();
+}
+function maybeAnnounceVerticalSliceEndpoint(){
+  if(!isVerticalSliceCleared()) return;
+  const persistent=getPersistentObject("vertical_slice_endpoint");
+  if(persistent.announced) return;
+  patchPersistentObject("vertical_slice_endpoint", { state:"announced", announced:true }, false);
+  log("For now, Hearthvale is safer. But Mirror Pond has not gone still.");
+  showRewardToast("Vertical Slice Complete", 2200);
+  saveGame("vertical_slice_endpoint");
+}
 function getContextualObjectiveText(){
-  if(!abandonedTollhouseDiscovered || !rookTollkeeperDefeated) return "Explore the Abandoned Tollhouse.";
+  if(isVerticalSliceCleared()) return "For now, Hearthvale is safer. But Mirror Pond has not gone still.";
+  if(!abandonedTollhouseDiscovered) return "Explore Hearthvale and the surrounding roads.";
+  if(!rookTollkeeperDefeated) return "Defeat Rook the Tollkeeper in the Abandoned Tollhouse.";
   if(!isTollhouseChestOpened()) return "Open the tollhouse chest.";
   return "Explore Hearthvale and the surrounding roads.";
 }
@@ -3111,6 +3131,7 @@ eventSystem.on("quest:hunter:final_turn_in", ()=>{
     grantPlayerXp(65);
     addItemToInventory("small_potion", 2);
     log("Rewards: +65 XP, +24 Coins, Small Potion x2.");
+    showRewardToasts(["Hunter's Request Complete", "+65 XP", "+24 Coins", "+ Iron Sword", "+ Small Potion x2"]);
     hunterQuestRewardClaimed=true;
   }
   questSystem.completeObjective("hunters_request", "return_hunter");
@@ -3123,6 +3144,8 @@ eventSystem.on("quest:report:mirror_pond", ()=>{
 });
 eventSystem.on("quest:completed:mirror_pond_listening", ()=>eventSystem.emit("world:pond:awakened"));
 eventSystem.on("quest:completed:the_still_water", ()=>syncEchoFragmentState(false));
+eventSystem.on("quest:completed:hunters_request", ()=>maybeAnnounceVerticalSliceEndpoint());
+eventSystem.on("quest:completed:the_still_water", ()=>maybeAnnounceVerticalSliceEndpoint());
 let worldEvents={ pondAwakened:false };
 const worldTriggeredEvents=new Set();
 eventSystem.on("world:pond:awakened", ()=>{
@@ -3975,6 +3998,7 @@ registerWorldObject({
     patchPersistentObject("mirror_cave_chest", { state:"open", opened:true }, false);
     if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
     log("You recovered the Mirror Relic.");
+    showRewardToast("Quest Item: Mirror Relic", 1800);
     eventSystem.emit("object:opened:mirror_cave_chest");
     saveGame("object_state_change");
   }
@@ -4006,6 +4030,7 @@ registerWorldObject({
     if(getItemQuantity("echo_fragment")<=0) addItemToInventory("echo_fragment", 1);
     patchPersistentObject("echo_fragment_object", { state:"collected", collected:true }, false);
     log("You recovered the Echo Fragment.");
+    showRewardToast("Quest Item: Echo Fragment", 1800);
     eventSystem.emit("object:collected:echo_fragment");
     saveGame("object_state_change");
   }
@@ -4043,6 +4068,7 @@ registerWorldObject({
     }
     syncTollhouseChestState(false);
     syncAbandonedTollhouseClearedState(false, true);
+    maybeAnnounceVerticalSliceEndpoint();
     saveGame("object_state_change");
   }
 });
@@ -4297,6 +4323,7 @@ function respawnPlayerAtSquare(){
 
 function handlePlayerDefeat(){
   log("Defeat: You fall in battle.");
+  showRewardToast("Defeated - Respawning at Hearthvale", 1800);
   player.hp=player.maxHp;
   hostileAggroBlockedUntil=performance.now()+BALANCE.death.respawnSafetyMs;
   respawnPlayerAtSquare();
@@ -4780,8 +4807,8 @@ function defeatBandit(bandit,now){
     rookTollkeeperDefeated=true;
     patchPersistentObject("rook_tollkeeper_state", { defeated:true, state:"defeated" }, false);
     const bossRewardLines=["- " + enemyConfig.xp + " XP", "- " + enemyConfig.coinReward + " coins"];
-    const bossRewardToasts=["+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"];
-    log("Rook the Tollkeeper defeated.");
+    const bossRewardToasts=["Mini-Boss Defeated: Rook", "+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"];
+    log("Mini-Boss Defeated: Rook the Tollkeeper.");
     log("Boss rewards:");
     bossRewardLines.forEach((line)=>log(line));
     showRewardToasts(bossRewardToasts);
@@ -5321,6 +5348,7 @@ function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt
 const loadedFromSave=loadGame();
 updateDialogueViewportConstraints();
 ensureStarterEquipment();
+maybeAnnounceVerticalSliceEndpoint();
 log("System: Artistic rebuild slice loaded.");
 if(loadedFromSave) log("System: Continuing from saved progress.");
 else log("System: New journey started.");
