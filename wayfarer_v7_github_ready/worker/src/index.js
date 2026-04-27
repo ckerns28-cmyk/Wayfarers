@@ -471,7 +471,7 @@ const html = String.raw`<!DOCTYPE html>
       "description": "Travel to Mirror Pond and listen in silence.",
       "startEvents": ["quest:activate:mirror_pond_listening"],
       "initialProgress": "go_to_pond",
-      "rewards": { "xp": 20, "coins": 6 }
+      "rewards": { "xp": 15, "coins": 5 }
     },
     {
       "id": "hunters_request",
@@ -489,7 +489,7 @@ const html = String.raw`<!DOCTYPE html>
         { "id": "open_chest", "label": "Open Mirror Cave chest", "type": "interact", "targetId": "mirror_cave_chest", "requiredAmount": 1, "currentAmount": 0, "completed": false },
         { "id": "return_hunter", "label": "Return to Hunter Garran", "type": "interact", "targetId": "npc_hunter_garran", "requiredAmount": 1, "currentAmount": 0, "completed": false }
       ],
-      "rewards": { "xp": 50, "coins": 0, "items": [] }
+      "rewards": { "xp": 35, "coins": 0, "items": [] }
     }
   ]
 }
@@ -588,6 +588,70 @@ const INTERIOR_REGION_DEFS = {
     name:"Mirror Cave"
   }
 };
+const BALANCE = Object.freeze({
+  player: {
+    startingMaxHp: 52,
+    baseDamage: 6,
+    levelProgression: Object.freeze([
+      { level:1, xpRequired:0, maxHp:52, baseAttackBonus:0, baseDefenseBonus:0 },
+      { level:2, xpRequired:90, maxHp:62, baseAttackBonus:1, baseDefenseBonus:0 },
+      { level:3, xpRequired:210, maxHp:74, baseAttackBonus:2, baseDefenseBonus:1 },
+      { level:4, xpRequired:420, maxHp:86, baseAttackBonus:3, baseDefenseBonus:1 },
+      { level:5, xpRequired:720, maxHp:98, baseAttackBonus:3, baseDefenseBonus:2 }
+    ])
+  },
+  items: {
+    healingHerbHealAmount: 12,
+    smallPotionHealAmount: 28,
+    leatherArmorDefense: 2,
+    rustySwordAttack: 2,
+    ironSwordAttack: 5
+  },
+  enemies: {
+    wolf: {
+      hp:24,
+      damage:6,
+      xp:9,
+      coinReward:2,
+      attackCooldownMs:2000,
+      respawnMs:14000,
+      lootTable: Object.freeze([
+        { itemId:"wolf_pelt", chance:0.55, min:1, max:1 },
+        { itemId:"small_fang", chance:0.4, min:1, max:1 }
+      ])
+    },
+    bandit: {
+      hp:34,
+      damage:8,
+      xp:18,
+      coinReward:7,
+      attackCooldownMs:2600,
+      respawnMs:18000,
+      lootTable: Object.freeze([
+        { itemId:"old_coin", chance:0.85, min:1, max:2 },
+        { itemId:"cloth_scrap", chance:0.55, min:1, max:1 }
+      ])
+    },
+    cave_wolf: {
+      hp:28,
+      damage:7,
+      xp:13,
+      coinReward:3,
+      attackCooldownMs:2200,
+      respawnMs:16000,
+      lootTable: Object.freeze([
+        { itemId:"wolf_pelt", chance:0.75, min:1, max:1 },
+        { itemId:"small_fang", chance:0.65, min:1, max:2 }
+      ])
+    }
+  },
+  combatLog: {
+    repeatWindowMs:1200
+  },
+  death: {
+    respawnSafetyMs:1800
+  }
+});
 const HARD_ZONE_TRANSITIONS = Object.freeze([]);
 let currentZoneId = "hearthvale_square";
 let zoneTransitionLockedUntil = 0;
@@ -597,25 +661,17 @@ let lastLoggedZoneEntryId = currentZoneId;
 const VIEW_TILES_X = 22;
 const VIEW_TILES_Y = 14;
 const ITEM_REGISTRY = Object.freeze({
-  rusty_sword: { id:"rusty_sword", name:"Rusty Sword", type:"weapon", attackBonus:2, description:"A worn but dependable blade.", stackable:false, value:8 },
-  iron_sword: { id:"iron_sword", name:"Iron Sword", type:"weapon", attackBonus:4, description:"A sharpened iron blade forged for close cave fights.", stackable:false, value:20 },
-  leather_armor: { id:"leather_armor", name:"Leather Armor", type:"armor", defenseBonus:2, description:"Sturdy leather armor that softens incoming blows.", stackable:false, value:25 },
-  wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:5 },
-  small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:3 },
+  rusty_sword: { id:"rusty_sword", name:"Rusty Sword", type:"weapon", attackBonus:BALANCE.items.rustySwordAttack, description:"A worn but dependable blade.", stackable:false, value:8 },
+  iron_sword: { id:"iron_sword", name:"Iron Sword", type:"weapon", attackBonus:BALANCE.items.ironSwordAttack, description:"A sharpened iron blade forged for close cave fights.", stackable:false, value:24 },
+  leather_armor: { id:"leather_armor", name:"Leather Armor", type:"armor", defenseBonus:BALANCE.items.leatherArmorDefense, description:"Sturdy leather armor that softens incoming blows.", stackable:false, value:28 },
+  wolf_pelt: { id:"wolf_pelt", name:"Wolf Pelt", type:"material", description:"A coarse pelt taken from a wild wolf.", stackable:true, value:3 },
+  small_fang: { id:"small_fang", name:"Small Fang", type:"material", description:"A sharp fang useful for craftwork.", stackable:true, value:2 },
   old_coin: { id:"old_coin", name:"Old Coin", type:"trinket", description:"A worn coin from a forgotten mint.", stackable:true, value:2 },
   mirror_relic: { id:"mirror_relic", name:"Mirror Relic", type:"quest", description:"An old relic recovered from the Mirror Cave chest.", stackable:false, value:0 },
-  cloth_scrap: { id:"cloth_scrap", name:"Cloth Scrap", type:"material", description:"Rough cloth torn from worn travel gear.", stackable:true, value:3 },
-  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, healAmount:10, value:5 },
-  small_potion: { id:"small_potion", name:"Small Potion", type:"consumable", description:"A compact tonic that restores vitality.", stackable:true, healAmount:25, value:12 }
+  cloth_scrap: { id:"cloth_scrap", name:"Cloth Scrap", type:"material", description:"Rough cloth torn from worn travel gear.", stackable:true, value:2 },
+  healing_herb: { id:"healing_herb", name:"Healing Herb", type:"consumable", description:"A medicinal herb with a clean scent.", stackable:true, healAmount:BALANCE.items.healingHerbHealAmount, value:4 },
+  small_potion: { id:"small_potion", name:"Small Potion", type:"consumable", description:"A compact tonic that restores vitality.", stackable:true, healAmount:BALANCE.items.smallPotionHealAmount, value:10 }
 });
-const WOLF_LOOT_TABLE = Object.freeze([
-  { itemId:"wolf_pelt", chance:0.85, min:1, max:1 },
-  { itemId:"small_fang", chance:0.65, min:1, max:2 }
-]);
-const BANDIT_LOOT_TABLE = Object.freeze([
-  { itemId:"old_coin", chance:0.9, min:1, max:2 },
-  { itemId:"cloth_scrap", chance:0.8, min:1, max:2 }
-]);
 const VENDOR_BUY_INVENTORY = Object.freeze(["healing_herb","small_potion","leather_armor"]);
 
 function resize() {
@@ -638,7 +694,14 @@ const palette = {
   uiInk: "#0d141f",
 };
 
+let lastCombatLog={ message:"", at:0 };
 function log(message){ chat.textContent = message + "\n" + chat.textContent; }
+function logCombat(message){
+  const now=performance.now();
+  if(lastCombatLog.message===message && now-lastCombatLog.at<BALANCE.combatLog.repeatWindowMs) return;
+  lastCombatLog={ message, at:now };
+  log(message);
+}
 const logThrottleState=new Map();
 function logThrottled(key,message,cooldownMs){
   const now=performance.now();
@@ -1199,15 +1262,9 @@ world.zones.push(
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
 
-const LEVEL_PROGRESSION=[
-  { level:1, xpRequired:0, maxHp:50, baseAttackBonus:0, baseDefenseBonus:0 },
-  { level:2, xpRequired:100, maxHp:60, baseAttackBonus:1, baseDefenseBonus:0 },
-  { level:3, xpRequired:250, maxHp:70, baseAttackBonus:1, baseDefenseBonus:1 },
-  { level:4, xpRequired:450, maxHp:80, baseAttackBonus:2, baseDefenseBonus:1 },
-  { level:5, xpRequired:700, maxHp:90, baseAttackBonus:2, baseDefenseBonus:2 }
-];
+const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
 const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
-const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
+const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
 const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
 const hunterNpc={x:26,y:9,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"down"};
 const vendorNpc={x:16,y:12,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down"};
@@ -1219,15 +1276,20 @@ const MIRROR_CAVE_WOLF_SPAWNS=[
   {id:103,x:11,y:6},
   {id:104,x:9,y:3}
 ];
-function createWolf(spawn){
-  return {kind:"wolf",id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:22,maxHp:22,homeX:spawn.x,homeY:spawn.y,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
+function getEnemyConfig(enemyType){
+  return BALANCE.enemies[enemyType] || BALANCE.enemies.wolf;
+}
+function createWolf(spawn,enemyType="wolf"){
+  const enemyConfig=getEnemyConfig(enemyType);
+  return {kind:"wolf",enemyType,id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:enemyConfig.hp,maxHp:enemyConfig.hp,homeX:spawn.x,homeY:spawn.y,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
 }
 function createBandit(spawn){
-  return {kind:"bandit",id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:35,maxHp:35,homeX:spawn.x,homeY:spawn.y,roam:2,speed:95,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
+  const enemyConfig=getEnemyConfig("bandit");
+  return {kind:"bandit",enemyType:"bandit",id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:enemyConfig.hp,maxHp:enemyConfig.hp,homeX:spawn.x,homeY:spawn.y,roam:2,speed:95,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
 }
 const wolves=WOLF_SPAWNS.map(createWolf);
 const bandits=BANDIT_SPAWNS.map(createBandit);
-const mirrorCaveWolves=MIRROR_CAVE_WOLF_SPAWNS.map(createWolf);
+const mirrorCaveWolves=MIRROR_CAVE_WOLF_SPAWNS.map((spawn)=>createWolf(spawn, "cave_wolf"));
 const hostiles=[...wolves, ...bandits, ...mirrorCaveWolves];
 let isInMirrorCave=false;
 let transitionState={ active:false, start:0, duration:0, switched:false, onSwitch:null };
@@ -1300,12 +1362,9 @@ const lastBanditAttackAt={};
 const wolfRespawnAtById={};
 const banditRespawnAtById={};
 let missNoticeArmed=true;
+let hostileAggroBlockedUntil=0;
 const PLAYER_ATTACK_RANGE=1;
-const WOLF_ATTACK_COOLDOWN_MS=1800;
-const BANDIT_ATTACK_COOLDOWN_MS=2800;
-const WOLF_RESPAWN_MS=15000;
-const BANDIT_RESPAWN_MS=18000;
-const BASE_PLAYER_DAMAGE=6;
+const BASE_PLAYER_DAMAGE=BALANCE.player.baseDamage;
 
 function getLevelProfile(level){
   const normalized=Math.max(1, Math.floor(Number.isFinite(level) ? level : 1));
@@ -1499,11 +1558,9 @@ function rollLootFromTable(lootTable){
   });
   return drops;
 }
-function rollWolfLoot(){
-  return rollLootFromTable(WOLF_LOOT_TABLE);
-}
-function rollBanditLoot(){
-  return rollLootFromTable(BANDIT_LOOT_TABLE);
+function rollEnemyLoot(enemyType){
+  const config=getEnemyConfig(enemyType);
+  return rollLootFromTable(config.lootTable || []);
 }
 function formatDropText(drops){
   return drops.map((drop)=>{
@@ -1525,23 +1582,26 @@ function canSellItem(item){
   const equipped=player.equipment[equippableSlot]===item.id;
   return !equipped || total>1;
 }
-function getFirstUsableHealingItem(){
+function getBestUsableHealingItem(){
+  let selected=null;
   for(const entry of player.inventory){
     if(!entry || entry.quantity<=0) continue;
     const item=getItemDefinition(entry.itemId);
     if(!item || item.type!=="consumable") continue;
     const healAmount=Number.isFinite(item.healAmount) ? Math.floor(item.healAmount) : 0;
     if(healAmount<=0) continue;
-    return item;
+    if(!selected || healAmount>selected.healAmount || (healAmount===selected.healAmount && item.value<selected.item.value)){
+      selected={ item, healAmount };
+    }
   }
-  return null;
+  return selected?.item || null;
 }
 function useHealingConsumable(){
   if(player.hp>=player.maxHp){
     log("You are already at full health.");
     return false;
   }
-  const item=getFirstUsableHealingItem();
+  const item=getBestUsableHealingItem();
   if(!item){
     log("You have no healing consumables.");
     return false;
@@ -1558,7 +1618,9 @@ function useHealingConsumable(){
 }
 function getVendorBuyCost(item){
   if(!item) return 0;
-  if(item.id==="leather_armor") return 25;
+  if(item.id==="leather_armor") return 30;
+  if(item.id==="small_potion") return 14;
+  if(item.id==="healing_herb") return 5;
   return Math.max(0, Math.floor(Number.isFinite(item.value) ? item.value : 0));
 }
 function renderVendorMenu(){
@@ -2213,10 +2275,10 @@ eventSystem.on("quest:hunter:final_turn_in", ()=>{
       addItemToInventory("iron_sword", 1);
       log("You obtained Iron Sword.");
     }
-    player.coins += 50;
-    grantPlayerXp(100);
+    player.coins += 24;
+    grantPlayerXp(65);
     addItemToInventory("small_potion", 2);
-    log("Rewards: +100 XP, +50 Coins, Small Potion x2.");
+    log("Rewards: +65 XP, +24 Coins, Small Potion x2.");
     hunterQuestRewardClaimed=true;
   }
   questSystem.completeObjective("hunters_request", "return_hunter");
@@ -2818,12 +2880,14 @@ function getHostileDistance(hostile){
 
 function hostileLabel(hostile){
   if(!hostile) return "None";
-  return hostile.kind==="bandit" ? ("Bandit #" + hostile.id) : ("Wolf #" + hostile.id);
+  if(hostile.kind==="bandit") return "Bandit #" + hostile.id;
+  if(hostile.enemyType==="cave_wolf") return "Cave Wolf #" + hostile.id;
+  return "Wolf #" + hostile.id;
 }
 
 function getHostileAttackCooldownMs(hostile){
   if(!hostile) return 0;
-  return hostile.kind==="bandit" ? BANDIT_ATTACK_COOLDOWN_MS : WOLF_ATTACK_COOLDOWN_MS;
+  return getEnemyConfig(hostile.enemyType || hostile.kind).attackCooldownMs;
 }
 
 function getHostileLastAttackAt(hostile){
@@ -2853,6 +2917,7 @@ function respawnPlayerAtSquare(){
 function handlePlayerDefeat(){
   log("Defeat: You fall in battle.");
   player.hp=player.maxHp;
+  hostileAggroBlockedUntil=performance.now()+BALANCE.death.respawnSafetyMs;
   respawnPlayerAtSquare();
   log("System: You awaken at Hearthvale Square.");
 }
@@ -2936,11 +3001,15 @@ function updateSidebar(){
   const currentTarget=targetHostile?.entity || null;
   const targetCooldownMs=currentTarget ? Math.max(0, getHostileAttackCooldownMs(currentTarget)-(performance.now()-getHostileLastAttackAt(currentTarget))) : 0;
   const targetCooldownText=!currentTarget ? "N/A" : (currentTarget.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
+  const totalAttack=BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0);
+  const totalDefense=Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0));
   const interactionPrompt=interactionManager.getPromptText();
   hud.textContent = "WASD / Arrows : Move\n" + interactionPrompt + "\nSpace : Attack\nH : Use healing item\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nF6 : Debug Heal\nF7/F8/F9 : Debug Teleport\nF10 : Debug Reset Quest\nShift+F10 : Debug Reset Save\nCurrent Zone : " + zoneName +
     "\nHostile nearby : " + (nearbyHostile ? "Yes (" + hostileLabel(nearbyHostile.entity) + ")" : "No") +
     "\nCurrent target : " + hostileLabel(currentTarget) +
-    "\nTarget strike cd : " + targetCooldownText;
+    "\nTarget HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") +
+    "\nTarget strike cd : " + targetCooldownText +
+    "\nDebug Lv/ATK/DEF : " + player.level + " / " + totalAttack + " / " + totalDefense;
 }
 
 function canMoveTo(x,y){
@@ -3125,7 +3194,7 @@ function canHostileMoveTo(x,y,self){
   return true;
 }
 function isHostileAggroBlocked(now){
-  return false;
+  return now<hostileAggroBlockedUntil;
 }
 function updateWolf(wolf,now){
   if(wolf.hp<=0){
@@ -3188,13 +3257,13 @@ function wolfAttack(now){
   for(const wolf of getActiveHostiles().filter((hostile)=>hostile.kind==="wolf")){
     if(wolf.hp<=0) continue;
     const dist=Math.abs(player.targetX-wolf.targetX)+Math.abs(player.targetY-wolf.targetY);
-    if(dist>1||now-(lastWolfAttackAt[wolf.id]||0)<WOLF_ATTACK_COOLDOWN_MS) continue;
+    if(dist>1||now-(lastWolfAttackAt[wolf.id]||0)<getHostileAttackCooldownMs(wolf)) continue;
     lastWolfAttackAt[wolf.id]=now;
     wolf.attackUntil=now+350;
-    const damageDealt=applyIncomingDamage(5); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
+    const damageDealt=applyIncomingDamage(getEnemyConfig(wolf.enemyType || "wolf").damage); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
     const wx=player.targetX-wolf.targetX, wy=player.targetY-wolf.targetY, len=Math.max(1,Math.hypot(wx,wy));
     wolf.attackLungeX=(wx/len)*2; wolf.attackLungeY=(wy/len)*1.2; player.recoilX=(wx/len)*2.5; player.recoilY=(wy/len)*1.6;
-    logThrottled("combat:wolf_bite:" + wolf.id, "Wolf #" + wolf.id + " bites you for " + damageDealt + " damage.", 1500);
+    logCombat(hostileLabel(wolf) + " bites you for " + damageDealt + " damage.");
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
 }
@@ -3203,36 +3272,38 @@ function banditAttack(now){
   for(const bandit of bandits){
     if(bandit.hp<=0) continue;
     const dist=Math.abs(player.targetX-bandit.targetX)+Math.abs(player.targetY-bandit.targetY);
-    if(dist>1||now-(lastBanditAttackAt[bandit.id]||0)<BANDIT_ATTACK_COOLDOWN_MS) continue;
+    if(dist>1||now-(lastBanditAttackAt[bandit.id]||0)<getHostileAttackCooldownMs(bandit)) continue;
     lastBanditAttackAt[bandit.id]=now;
     bandit.attackUntil=now+350;
-    const damageDealt=applyIncomingDamage(7); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
+    const damageDealt=applyIncomingDamage(getEnemyConfig("bandit").damage); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
     const wx=player.targetX-bandit.targetX, wy=player.targetY-bandit.targetY, len=Math.max(1,Math.hypot(wx,wy));
     bandit.attackLungeX=(wx/len)*2.2; bandit.attackLungeY=(wy/len)*1.3; player.recoilX=(wx/len)*2.8; player.recoilY=(wy/len)*1.8;
-    logThrottled("combat:bandit_slash:" + bandit.id, "Bandit #" + bandit.id + " slashes you for " + damageDealt + " damage.", 1700);
+    logCombat("Bandit #" + bandit.id + " slashes you for " + damageDealt + " damage.");
     if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
 }
 function defeatWolf(wolf,now){
+  const enemyConfig=getEnemyConfig(wolf.enemyType || "wolf");
   wolf.defeated=true;
-  grantPlayerXp(12);
-  player.coins+=4;
-  const lootDrops=rollWolfLoot();
+  grantPlayerXp(enemyConfig.xp);
+  player.coins+=enemyConfig.coinReward;
+  const lootDrops=rollEnemyLoot(wolf.enemyType || "wolf");
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
-  wolfRespawnAtById[wolf.id]=now+WOLF_RESPAWN_MS;
-  log("Wolf #" + wolf.id + " defeated. Rewards: +12 XP, +4 coins.");
+  wolfRespawnAtById[wolf.id]=now+enemyConfig.respawnMs;
+  log(hostileLabel(wolf) + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");
   eventSystem.emit("combat:enemy-defeated",{ enemyType:"wolf", enemyId:wolf.id });
   if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
   else log("No loot dropped this time.");
 }
 function defeatBandit(bandit,now){
+  const enemyConfig=getEnemyConfig("bandit");
   bandit.defeated=true;
-  grantPlayerXp(16);
-  player.coins+=6;
-  const lootDrops=rollBanditLoot();
+  grantPlayerXp(enemyConfig.xp);
+  player.coins+=enemyConfig.coinReward;
+  const lootDrops=rollEnemyLoot("bandit");
   lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
-  banditRespawnAtById[bandit.id]=now+BANDIT_RESPAWN_MS;
-  log("Bandit #" + bandit.id + " defeated. Rewards: +16 XP, +6 coins.");
+  banditRespawnAtById[bandit.id]=now+enemyConfig.respawnMs;
+  log("Bandit #" + bandit.id + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");
   if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
   else log("No loot dropped this time.");
 }
@@ -3264,8 +3335,7 @@ function tryPlayerAttack(now){
   targetHostile.entity.recoilX=(tx/len)*2.3;
   targetHostile.entity.recoilY=(ty/len)*1.5;
   hitStopUntil=now+65;
-  const label=targetHostile.entity.kind==="bandit" ? "Bandit" : "Wolf";
-  log("Hit " + label + " #" + targetHostile.entity.id + " for " + totalDamage + " damage.");
+  logCombat("Hit " + hostileLabel(targetHostile.entity) + " for " + totalDamage + " damage.");
   if(targetHostile.entity.hp<=0 && !targetHostile.entity.defeated){
     if(targetHostile.entity.kind==="bandit") defeatBandit(targetHostile.entity, now);
     else defeatWolf(targetHostile.entity, now);
