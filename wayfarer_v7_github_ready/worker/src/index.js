@@ -271,8 +271,10 @@ const html = String.raw`<!DOCTYPE html>
       "root": "greeting",
       "rootByCondition": [
         { "if": { "questId": "the_still_water", "state": "Completed" }, "next": "still_water_complete" },
+        { "if": { "questId": "the_still_water", "state": "Ready To Turn In", "progress": "stage_6_return_to_edrin" }, "next": "still_water_final_turn_in" },
         { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_6_return_to_edrin" }, "next": "still_water_final_turn_in" },
         { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_3_return_to_edrin" }, "next": "still_water_stage_3_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Ready To Turn In" }, "next": "still_water_active" },
         { "if": { "questId": "the_still_water", "state": "Active" }, "next": "still_water_active" },
         { "if": { "questId": "mirror_pond_listening", "state": "Completed" }, "next": "after_pond_rite" },
         { "if": { "questId": "mirror_pond_listening", "state": "Active", "progress": "heard_whispers" }, "next": "pond_whispers_heard" },
@@ -2410,6 +2412,49 @@ function syncEchoFragmentState(shouldSave=false){
   patchPersistentObject("echo_fragment", { state:collected ? "collected" : "inert", collected }, shouldSave);
   return collected;
 }
+function getStillWaterObjectiveText(){
+  const quest=questSystem.getQuest("the_still_water");
+  const stage=getStillWaterQuestStage();
+  const fallbackText="The Still Water\nObjective: Return to Edrin Vale";
+  if(stage===StillWaterQuestStage.COMPLETED || quest?.state===QuestState.COMPLETED){
+    return "Quest complete: The Still Water.";
+  }
+  if(stage===StillWaterQuestStage.NOT_STARTED || stage===StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN){
+    return "The Still Water\nObjective: Speak with Edrin Vale";
+  }
+  if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+    return "The Still Water\nObjective: Inspect Mirror Pond";
+  }
+  if(stage===StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN){
+    return "The Still Water\nObjective: Return to Edrin Vale";
+  }
+  if(stage===StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE){
+    return "The Still Water\nObjective: Enter Mirror Cave";
+  }
+  if(stage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+    return "The Still Water\nObjective: Recover the Echo Fragment";
+  }
+  if(stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
+    if(quest?.state===QuestState.READY_TO_TURN_IN){
+      return "The Still Water\nObjective: Speak with Edrin Vale";
+    }
+    return "The Still Water\nObjective: Return to Edrin Vale with the Echo Fragment";
+  }
+  if((quest?.state===QuestState.ACTIVE || quest?.state===QuestState.READY_TO_TURN_IN) && DEV_MODE){
+    console.warn("Unknown objective stage for The Still Water: " + String(stage));
+  }
+  return fallbackText;
+}
+function migrateStillWaterStateFromSave(){
+  const quest=questSystem.getQuest("the_still_water");
+  if(!quest || quest.state===QuestState.NOT_STARTED || quest.state===QuestState.COMPLETED) return;
+  const stage=getStillWaterQuestStage();
+  const hasFragment=isStillWaterEchoFragmentCollected();
+  if(!hasFragment) return;
+  if(stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN) return;
+  questSystem.completeObjective("the_still_water", "recover_echo_fragment");
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN);
+}
 
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
 eventSystem.on("dialogue:started:edrin", ()=>eventSystem.emit("npc:interacted:edrin"));
@@ -2467,7 +2512,7 @@ eventSystem.on("object:collected:echo_fragment", ()=>{
   if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT) return;
   questSystem.completeObjective("the_still_water", "recover_echo_fragment");
   setStillWaterQuestStage(StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN);
-  log("Objective Updated: Return to Edrin Vale.");
+  log("Objective Updated: Return to Edrin Vale with the Echo Fragment.");
 });
 eventSystem.on("quest:still_water:final_turn_in", ()=>{
   if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
@@ -2789,6 +2834,7 @@ function loadGame(){
     }
     syncMirrorCaveChestState(false);
     syncEchoFragmentState(false);
+    migrateStillWaterStateFromSave();
     log("System: Save loaded.");
     return true;
   } catch(err){
@@ -3251,19 +3297,8 @@ function updateSidebar(){
     (huntersQuest?.state===QuestState.COMPLETED ? huntersQuest : mirrorQuest))))
   );
   questVal.textContent = activeQuest ? (activeQuest.name + " [" + activeQuest.state + "]") : "Town Slice";
-  const stillWaterStage=getStillWaterQuestStage();
-  if(stillWaterStage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
-    objectiveText.textContent = "The Still Water\n- Inspect Mirror Pond";
-  } else if(stillWaterStage===StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN){
-    objectiveText.textContent = "The Still Water\n- Return to Edrin Vale";
-  } else if(stillWaterStage===StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE){
-    objectiveText.textContent = "The Still Water\n- Enter Mirror Cave";
-  } else if(stillWaterStage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
-    objectiveText.textContent = "The Still Water\n- Recover the Echo Fragment from Mirror Cave";
-  } else if(stillWaterStage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
-    objectiveText.textContent = "The Still Water\n- Return to Edrin Vale";
-  } else if(stillWaterStage===StillWaterQuestStage.COMPLETED){
-    objectiveText.textContent = "Quest complete: The Still Water.";
+  if(stillWaterQuest?.state===QuestState.ACTIVE || stillWaterQuest?.state===QuestState.READY_TO_TURN_IN || stillWaterQuest?.state===QuestState.COMPLETED){
+    objectiveText.textContent = getStillWaterObjectiveText();
   } else {
     const hunterStage=getHunterQuestStage();
     if(hunterStage===HunterQuestStage.STAGE_1_PROVE_YOURSELF){
