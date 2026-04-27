@@ -90,3 +90,27 @@ Focus:
 - No dedicated audio layer yet for hit confirm, miss, level-up, or boss defeat beats.
 - Floating text layering is intentionally conservative and may still overlap in very dense melee clusters.
 - Boss-specific animation and bespoke telegraphing are still deferred (mechanics unchanged by design).
+
+
+---
+
+## Phase 32 implementation notes (Major Art Direction Application Pass)
+
+### Visual improvements shipped
+
+- Unified world palette pass across grass, roads, water, shoreline, building materials, cave floors, tollhouse interior, fences, and panel framing.
+- Terrain rendering now differentiates town grass and forest grass to improve region identity and path readability.
+- Road texture pass reduces repetitive placeholder noise and improves seam readability at road boundaries.
+- Mirror Pond water/shoreline gained stronger contrast and a subtle mythic reflective treatment.
+- Building readability improved through tighter material contrast and warmer village-facing values.
+- Character readability pass added role-specific NPC palettes plus humanoid bandit + elite Rook silhouettes.
+- Label readability pass prioritizes current combat target styling while preserving non-target readability.
+- UI cohesion pass updated panel/tab/button framing to better match world art direction.
+- Ambient regional tinting now varies by area (warmer town, cooler/tenser wild zones).
+
+### Remaining production-art gaps
+
+- No bespoke hand-authored tile atlas yet (runtime-generated tiles still used).
+- No bespoke frame-by-frame unique animation sets for each NPC/enemy archetype.
+- No dedicated VFX/audio layer yet for water ambience, cave atmosphere, or UI feedback.
+- Prop storytelling remains selective; full production prop density pass is still pending.

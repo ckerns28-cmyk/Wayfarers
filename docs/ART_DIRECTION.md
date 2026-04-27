@@ -212,3 +212,37 @@ Phase 24 should prioritize **UX presentation polish and interaction clarity befo
 3. Standardize quest/objective/chronicle messaging cadence and priority.
 4. Improve interaction prompt clarity for NPCs, doors, cave entrances, and chest states.
 5. Validate readability with a quick pass checklist on Hearthvale, Eastern Woods, and Mirror Cave.
+
+
+## Phase 32 Applied Decisions (Art Direction Application Pass)
+
+### Palette decisions implemented
+
+- Town grass shifted toward warmer mid-green values for safer readability.
+- Eastern Woods now uses darker forest-grass variants for stronger danger contrast.
+- Dirt roads were rebalanced to worn umber values with less speckled noise and clearer route legibility.
+- Water moved to deeper blue-slate base values with brighter but restrained shallow edges.
+- Mirror Pond includes subtle reflective highlights to separate it from ordinary water tiles.
+- Mirror Cave floor/wall palette now uses cooler slate mineral values.
+- Abandoned Tollhouse interior now uses desaturated brown-wood decay tones with stronger wall/floor separation.
+- UI borders/panels shifted toward a unified steel-blue fantasy frame treatment.
+
+### Sprite and readability rules applied
+
+- Wayfarer sprite contrast increased against grass/road/water backgrounds.
+- Key NPCs now have role-coded palettes:
+  - Edrin: muted mystic elder tones
+  - Garran: rugged hunter earth/olive tones
+  - Rowan: warmer merchant browns
+- Bandits now use humanoid hostile silhouettes distinct from wolves.
+- Rook the Tollkeeper receives a stronger elite silhouette/scale and higher-contrast hostile palette.
+- Target labels now use higher-priority styling cues so current combat target is easier to parse.
+
+### Region-specific visual direction applied
+
+- **Hearthvale Square:** warmer overlays and cleaner road/building readability for safe-hub clarity.
+- **Eastern Woods:** darker denser grass variants and stronger environmental mood.
+- **Mirror Pond:** increased shoreline readability and subtle mystic shimmer pass.
+- **North Road:** colder mood tint + sparse roadside props to support exposed/ominous feel.
+- **Mirror Cave:** cooler enclosed value structure with clear chest/exit readability.
+- **Abandoned Tollhouse:** harsher interior contrast and clearer enemy/chest/exit readability.
