@@ -70,7 +70,50 @@ const html = String.raw`<!DOCTYPE html>
       height:100%;
       overflow:hidden;
     }
-    #brand,#stats,#objective,#inventoryPanel,#equipmentPanel,#logPanel{padding:12px;}
+    #brand,#stats,#objective{padding:12px;}
+    #sidebarLower{
+      display:flex;
+      flex-direction:column;
+      flex:1 1 auto;
+      min-height:0;
+      overflow:hidden;
+      padding:10px;
+      gap:10px;
+    }
+    #sidebarTabs{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:6px;
+      flex:0 0 auto;
+    }
+    .sidebar-tab{
+      border:1px solid #4c6281;
+      border-radius:7px;
+      background:#121d2b;
+      color:#c7d6ec;
+      font:11px ui-monospace,SFMono-Regular,Menlo,monospace;
+      padding:5px 6px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .sidebar-tab.active{
+      background:#1c3048;
+      color:#f0f6ff;
+      border-color:#6d87ab;
+    }
+    #sidebarTabPanels{
+      flex:1 1 auto;
+      min-height:0;
+      overflow:hidden;
+    }
+    .sidebar-tab-panel{
+      display:none;
+      flex-direction:column;
+      min-height:0;
+      height:100%;
+      padding:2px;
+    }
+    .sidebar-tab-panel.active{display:flex;}
     h1{margin:0 0 6px;font-size:24px;letter-spacing:.4px}
     .sub{font-size:13px;color:var(--muted)}
     .tag{display:inline-block;margin-top:8px;padding:5px 9px;border:1px solid #435065;border-radius:999px;font-size:11px;color:#c7d6ec}
@@ -100,16 +143,18 @@ const html = String.raw`<!DOCTYPE html>
       white-space:normal;
       overflow-wrap:anywhere;
     }
-    #inventoryPanel{
+    #inventoryPanel,#equipmentPanel,#skillsPanel,#logPanel{
       display:flex;
       flex-direction:column;
-      flex:0 0 auto;
       min-height:0;
+      height:100%;
       overflow:hidden;
+      padding:10px;
     }
     #inventoryList{
       line-height:1.45;
-      max-height:170px;
+      flex:1 1 auto;
+      min-height:0;
       overflow-y:auto;
       padding-right:2px;
       display:flex;
@@ -156,15 +201,15 @@ const html = String.raw`<!DOCTYPE html>
       font-size:11px;
       white-space:nowrap;
     }
-    #equipmentPanel{
-      flex:0 0 auto;
-      overflow:visible;
-    }
-    #equipmentList{
+    #equipmentList,#skillsList{
       line-height:1.45;
       display:flex;
       flex-direction:column;
       gap:7px;
+      flex:1 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      padding-right:2px;
     }
     .equipment-slot{
       display:flex;
@@ -178,13 +223,7 @@ const html = String.raw`<!DOCTYPE html>
     .equipment-slot-label{color:#9eacbe}
     .equipment-slot-value{color:#d8e3f3;flex:1 1 auto;overflow-wrap:anywhere}
     .equipment-slot button{margin-left:8px}
-    #logPanel{
-      display:flex;
-      flex-direction:column;
-      flex:1 1 220px;
-      min-height:170px;
-      overflow:hidden;
-    }
+    #logPanel{padding:10px;}
     #gamePanel{position:relative;overflow:hidden}
     #game{width:100%;height:100%;display:block;border-radius:12px;image-rendering:pixelated;background:#081017}
     #hud {
@@ -335,21 +374,31 @@ const html = String.raw`<!DOCTYPE html>
         <div class="questTitle">Current Objective</div>
         <div id="objectiveText" class="muted">Walk Hearthvale, visit Mirror Pond, and speak to Edrin Vale.</div>
       </section>
-      <section id="inventoryPanel" class="panel">
-        <div class="questTitle">Inventory</div>
-        <div id="inventoryList" class="muted">Empty</div>
-      </section>
-      <section id="equipmentPanel" class="panel">
-        <div class="questTitle">Equipment</div>
-        <div id="equipmentList" class="muted">Weapon: Iron Sword (+5)<br>Armor: Leather Armor (+2 DEF)<br>Trinket: None</div>
-      </section>
-      <section id="skillsPanel" class="panel">
-        <div class="questTitle">Skills</div>
-        <div id="skillsList" class="muted">Swordsmanship Lv 1<br>Defense Lv 1<br>Survival Lv 1</div>
-      </section>
-      <section id="logPanel" class="panel">
-        <div class="questTitle">Chronicle</div>
-        <div id="chat"></div>
+      <section id="sidebarLower" class="panel">
+        <div id="sidebarTabs" role="tablist" aria-label="Sidebar sections">
+          <button type="button" class="sidebar-tab active" data-sidebar-tab="inventory" role="tab" aria-selected="true">Inventory</button>
+          <button type="button" class="sidebar-tab" data-sidebar-tab="equipment" role="tab" aria-selected="false">Equipment</button>
+          <button type="button" class="sidebar-tab" data-sidebar-tab="skills" role="tab" aria-selected="false">Skills</button>
+          <button type="button" class="sidebar-tab" data-sidebar-tab="chronicle" role="tab" aria-selected="false">Chronicle</button>
+        </div>
+        <div id="sidebarTabPanels">
+          <section id="inventoryPanel" class="sidebar-tab-panel active" data-sidebar-panel="inventory" role="tabpanel">
+            <div class="questTitle">Inventory</div>
+            <div id="inventoryList" class="muted">Empty</div>
+          </section>
+          <section id="equipmentPanel" class="sidebar-tab-panel" data-sidebar-panel="equipment" role="tabpanel">
+            <div class="questTitle">Equipment</div>
+            <div id="equipmentList" class="muted">Weapon: Iron Sword (+5)<br>Armor: Leather Armor (+2 DEF)<br>Trinket: None</div>
+          </section>
+          <section id="skillsPanel" class="sidebar-tab-panel" data-sidebar-panel="skills" role="tabpanel">
+            <div class="questTitle">Skills</div>
+            <div id="skillsList" class="muted">Swordsmanship Lv 1 — 0 / 50<br>Defense Lv 1 — 0 / 50<br>Survival Lv 1 — 0 / 50</div>
+          </section>
+          <section id="logPanel" class="sidebar-tab-panel" data-sidebar-panel="chronicle" role="tabpanel">
+            <div class="questTitle">Chronicle</div>
+            <div id="chat"></div>
+          </section>
+        </div>
       </section>
     </aside>
 
@@ -752,6 +801,27 @@ const vendorClose = document.getElementById("vendorClose");
 const saveNotice = document.getElementById("saveNotice");
 const rewardToast = document.getElementById("rewardToast");
 const transitionFade = document.getElementById("transitionFade");
+const sidebarTabs = Array.from(document.querySelectorAll(".sidebar-tab"));
+const sidebarPanels = Array.from(document.querySelectorAll(".sidebar-tab-panel"));
+
+function setActiveSidebarTab(tabId){
+  sidebarTabs.forEach((tab)=>{
+    const isActive=tab.dataset.sidebarTab===tabId;
+    tab.classList.toggle("active", isActive);
+    tab.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+  sidebarPanels.forEach((panel)=>{
+    panel.classList.toggle("active", panel.dataset.sidebarPanel===tabId);
+  });
+}
+if(sidebarTabs.length>0){
+  const tabsHost=document.getElementById("sidebarTabs");
+  tabsHost?.addEventListener("click", (event)=>{
+    const tabButton=event.target.closest(".sidebar-tab");
+    if(!tabButton) return;
+    setActiveSidebarTab(tabButton.dataset.sidebarTab || "inventory");
+  });
+}
 
 function parseJsonScript(id){
   const node=document.getElementById(id);
@@ -4044,7 +4114,7 @@ function updateSidebar(){
     const skill=player.skills?.[skillId] || { level:1, xp:0 };
     const nextThreshold=getSkillXpThresholdForLevel(skill.level+1);
     const progressText=skill.level>=SKILL_MAX_LEVEL
-      ? (skill.xp + " / MAX")
+      ? "MAX"
       : (skill.xp + " / " + nextThreshold);
     return "<div class=\"equipment-slot\"><span class=\"equipment-slot-label\">" + SKILL_DISPLAY_NAMES[skillId] + "</span><span class=\"equipment-slot-value\">Lv " + skill.level + " — " + progressText + "</span></div>";
   }).join("");
