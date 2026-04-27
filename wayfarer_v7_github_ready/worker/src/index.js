@@ -1102,17 +1102,25 @@ function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) 
 const OVERWORLD_CAVE_ENTRY = Object.freeze({ x:30, y:13 });
 const MIRROR_CAVE_EXIT = Object.freeze({ x:13, y:16 });
 const MIRROR_CAVE_CHEST_TILE = Object.freeze({ x:13, y:2 });
+const WORLD_OBJECT_TYPE = Object.freeze({
+  CAVE_ENTRANCE:"caveEntrance",
+  DUNGEON_EXIT:"dungeonExit",
+  CHEST:"chest",
+  SIGN:"sign",
+  DOOR:"door",
+  DECORATION:"decoration"
+});
 const mirrorCave = {
   width:26,
   height:18,
   floor:new Set(),
   blocked:new Set(),
   walls:new Set(),
-  spawn:{ x:13, y:16 },
+  spawn:{ x:13, y:15 },
   exit:{ ...MIRROR_CAVE_EXIT },
   chest:{ ...MIRROR_CAVE_CHEST_TILE, opened:false },
   cleared:false,
-  returnTile:{ ...OVERWORLD_CAVE_ENTRY }
+  returnTile:{ x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y+1 }
 };
 function carveMirrorCaveRoom(x,y,w,h){
   for(let tx=x;tx<x+w;tx++){
@@ -1170,7 +1178,7 @@ world.props.push(
   {x:9,y:8,type:"crate"},{x:9,y:9,type:"barrel"},{x:13,y:8,type:"crate"},{x:13,y:9,type:"bush"},{x:10,y:9,type:"fenceSeg"},
   {x:19,y:8,type:"crate"},{x:24,y:8,type:"sack"},{x:24,y:9,type:"barrel"},{x:19,y:9,type:"bush"},
   {x:11,y:17,type:"crate"},{x:16,y:17,type:"barrel"},{x:11,y:16,type:"fenceSeg"},{x:16,y:16,type:"bush"},{x:15,y:17,type:"sack"},
-  {x:16,y:10,type:"signPost"},{x:25,y:11,type:"signPost"},
+  {x:16,y:10,type:"signPost"},{x:25,y:11,type:"signPost"},{x:26,y:11,type:"signPost"},{x:31,y:12,type:"signPost"},
   {x:8,y:10,type:"lanternPost"},{x:28,y:10,type:"lanternPost"},
   {x:21,y:14,type:"stonePile"},{x:21,y:16,type:"stonePile"},{x:29,y:15,type:"stonePile"},
   {x:21,y:13,type:"grassTuft"},{x:29,y:17,type:"grassTuft"},{x:24,y:18,type:"grassTuft"},
@@ -1213,6 +1221,67 @@ const mirrorCaveWolves=MIRROR_CAVE_WOLF_SPAWNS.map(createWolf);
 const hostiles=[...wolves, ...bandits, ...mirrorCaveWolves];
 let isInMirrorCave=false;
 let transitionState={ active:false, start:0, duration:0, switched:false, onSwitch:null };
+const worldObjects=[];
+const worldObjectsById=new Map();
+const persistentObjects={};
+let worldInfoPanel=null;
+let lastWalkInTriggerKey=null;
+
+function createWorldObject(config){
+  return {
+    objectId:config.objectId,
+    type:config.type,
+    zone:config.zone || null,
+    region:config.region || null,
+    dungeon:config.dungeon || null,
+    x:config.x,
+    y:config.y,
+    state:config.state || "default",
+    interactable:config.interactable!==false,
+    collision:Boolean(config.collision),
+    requiredQuestStage:config.requiredQuestStage || null,
+    onInteract:typeof config.onInteract==="function" ? config.onInteract : null,
+    persistence:config.persistence!==false,
+    walkInTrigger:Boolean(config.walkInTrigger),
+    promptLabel:config.promptLabel || null
+  };
+}
+function registerWorldObject(config){
+  const object=createWorldObject(config);
+  worldObjects.push(object);
+  worldObjectsById.set(object.objectId, object);
+  if(object.persistence && !persistentObjects[object.objectId]) persistentObjects[object.objectId]={ state:object.state };
+  return object;
+}
+function getPersistentObject(objectId){
+  if(!persistentObjects[objectId]) persistentObjects[objectId]={};
+  return persistentObjects[objectId];
+}
+function patchPersistentObject(objectId, patch, shouldSave=true){
+  const existing=getPersistentObject(objectId);
+  persistentObjects[objectId]={ ...existing, ...patch };
+  if(shouldSave && typeof saveGame==="function") saveGame("object_state_change");
+}
+function getWorldObjectTile(object){
+  const tx=typeof object.x==="function" ? object.x() : object.x;
+  const ty=typeof object.y==="function" ? object.y() : object.y;
+  return { x:tx, y:ty };
+}
+function isWorldObjectInCurrentZone(object){
+  if(object.zone==="mirror_cave") return isInMirrorCave;
+  if(object.zone==="overworld") return !isInMirrorCave;
+  return true;
+}
+function getActiveWorldObjects(){
+  return worldObjects.filter((object)=>isWorldObjectInCurrentZone(object));
+}
+function isWorldObjectBlockingTile(x,y){
+  return getActiveWorldObjects().some((object)=>{
+    if(!object.collision) return false;
+    const tile=getWorldObjectTile(object);
+    return tile.x===x && tile.y===y;
+  });
+}
 
 let lastPlayerAttack=0,hitStopUntil=0,lastNoTargetLogAt=0;
 const lastWolfDecisionAt={};
@@ -1897,6 +1966,39 @@ class DialogueFramework {
   }
 }
 
+function getMirrorCaveChestState(){
+  const persistent=getPersistentObject("mirror_cave_chest");
+  if(persistent.opened || mirrorCave.chest.opened) return "open";
+  const stage=getHunterQuestStage();
+  if(stage===HunterQuestStage.STAGE_3_MIRROR_CAVE) return "closed";
+  return "sealed";
+}
+function syncMirrorCaveChestState(shouldSave=false){
+  const state=getMirrorCaveChestState();
+  mirrorCave.chest.opened=state==="open";
+  patchPersistentObject("mirror_cave_chest", {
+    state,
+    opened:state==="open"
+  }, shouldSave);
+  return state;
+}
+function openWorldInfoPanel(title,text){
+  worldInfoPanel={ title, text };
+  dialogue.style.display="block";
+  dialogueName.textContent=title;
+  dialogueText.textContent=text;
+  dialogueChoices.innerHTML="";
+  dialogueHint.textContent="Press Esc or E to close.";
+  dialogueActions.innerHTML="<button type=\"button\" class=\"dialogue-action\" data-world-info-close>Close</button>";
+  updateDialogueViewportConstraints();
+}
+function closeWorldInfoPanel(){
+  worldInfoPanel=null;
+  dialogueChoices.innerHTML="";
+  dialogueActions.innerHTML="";
+  dialogue.style.display="none";
+}
+
 class InteractionManager {
   constructor(range){ this.range=range; this.interactables=[]; }
   register(interactable){ this.interactables.push(interactable); }
@@ -1917,6 +2019,7 @@ class InteractionManager {
     return "E : Interact";
   }
   tryInteract(){
+    if(worldInfoPanel){ closeWorldInfoPanel(); return true; }
     if(dialogueSystem.activeSession){ dialogueSystem.close(); return true; }
     if(isVendorOpen()){ closeVendorMenu(); return true; }
     const target=this.getNearest();
@@ -1926,6 +2029,7 @@ class InteractionManager {
     return true;
   }
   interactAt(x,y){
+    if(worldInfoPanel){ closeWorldInfoPanel(); return true; }
     const target=this.interactables.find((candidate)=>candidate.x()===x && candidate.y()===y && this.isInRange(candidate));
     if(!target) return false;
     target.onInteract?.();
@@ -2078,6 +2182,7 @@ function showSaveNotice(message){
 function isFiniteNumber(value){ return typeof value==="number" && Number.isFinite(value); }
 function createSaveData(reason){
   updateOutdoorRegionFromPosition(false);
+  syncMirrorCaveChestState(false);
   const wolvesSave=wolves.slice(0, WOLF_SPAWNS.length).map((wolf)=>({
     id:wolf.id,
     hp:wolf.hp,
@@ -2112,6 +2217,7 @@ function createSaveData(reason){
     world:{
       triggeredEvents:Array.from(worldTriggeredEvents),
       stateChanges:{ pondAwakened:worldEvents.pondAwakened },
+      persistentObjects:{ ...persistentObjects },
       mirrorCave:{
         chestDiscovered:mirrorCaveChestDiscovered,
         chestOpened:mirrorCave.chest.opened,
@@ -2190,6 +2296,13 @@ function loadGame(){
     ensureStarterEquipment();
     questSystem.applyState(data.quests?.questStates||[]);
     worldTriggeredEvents.clear();
+    Object.keys(persistentObjects).forEach((objectId)=>{ delete persistentObjects[objectId]; });
+    if(data.world?.persistentObjects && typeof data.world.persistentObjects==="object"){
+      Object.entries(data.world.persistentObjects).forEach(([objectId, objectState])=>{
+        if(!objectState || typeof objectState!=="object") return;
+        persistentObjects[objectId]={ ...objectState };
+      });
+    }
     (data.world?.triggeredEvents||[]).forEach((eventName)=>{ if(typeof eventName==="string") worldTriggeredEvents.add(eventName); });
     worldEvents.pondAwakened=Boolean(data.world?.stateChanges?.pondAwakened);
     wolves.forEach((wolf)=>{
@@ -2270,8 +2383,8 @@ function loadGame(){
         wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
       });
     }
-    mirrorCaveChestDiscovered=Boolean(data.world?.mirrorCave?.chestDiscovered);
-    mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened);
+    mirrorCaveChestDiscovered=Boolean(data.world?.mirrorCave?.chestDiscovered || persistentObjects?.mirror_cave_chest?.discovered);
+    mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened || persistentObjects?.mirror_cave_chest?.opened);
     mirrorCave.cleared=Boolean(data.world?.mirrorCave?.cleared);
     hunterQuestRewardClaimed=Boolean(data.world?.hunterQuest?.hunterQuestRewardClaimed);
     const hunterQuest=questSystem.getQuest("hunters_request");
@@ -2293,6 +2406,7 @@ function loadGame(){
         updateHunterStageOneReadiness();
       }
     }
+    syncMirrorCaveChestState(false);
     log("System: Save loaded.");
     return true;
   } catch(err){
@@ -2321,54 +2435,137 @@ interactionManager.register({
   promptLabel:"Talk to Merchant Rowan",
   onInteract:()=>dialogueSystem.start("merchant_rowan")
 });
-interactionManager.register({
-  id:"obj_well", type:"object", x:()=>18, y:()=>11,
+registerWorldObject({
+  objectId:"town_well",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:18, y:11,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:false,
   promptLabel:"Inspect well",
   onInteract:()=>{ log("The well water is cold and perfectly still."); eventSystem.emit("object:used:well",{}); }
 });
-interactionManager.register({
-  id:"obj_sign_pond", type:"object", x:()=>25, y:()=>11,
+registerWorldObject({
+  objectId:"east_road_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:26, y:11,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
   promptLabel:"Read signpost",
-  onInteract:()=>{ log("Signpost: Mirror Pond — Keep silence near the water."); eventSystem.emit("object:used:pond_sign",{}); }
+  onInteract:()=>{
+    patchPersistentObject("east_road_sign", { state:"read", read:true });
+    openWorldInfoPanel("Signpost", "East Road — Eastern Woods");
+  }
 });
-interactionManager.register({
-  id:"obj_mirror_cave_entrance", type:"object", x:()=>isInMirrorCave ? -999 : OVERWORLD_CAVE_ENTRY.x, y:()=>isInMirrorCave ? -999 : OVERWORLD_CAVE_ENTRY.y,
+registerWorldObject({
+  objectId:"mirror_pond_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:25, y:11,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Read signpost",
+  onInteract:()=>{
+    patchPersistentObject("mirror_pond_sign", { state:"read", read:true });
+    openWorldInfoPanel("Signpost", "Mirror Pond — Still water, old stories.");
+  }
+});
+registerWorldObject({
+  objectId:"mirror_cave_sign",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:31, y:12,
+  state:"unread",
+  interactable:true,
+  collision:true,
+  persistence:true,
+  promptLabel:"Read signpost",
+  onInteract:()=>{
+    patchPersistentObject("mirror_cave_sign", { state:"read", read:true });
+    openWorldInfoPanel("Signpost", "Mirror Cave");
+  }
+});
+registerWorldObject({
+  objectId:"mirror_cave_entrance",
+  type:WORLD_OBJECT_TYPE.CAVE_ENTRANCE,
+  zone:"overworld",
+  region:"eastern_woods",
+  x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y,
+  state:"active",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  walkInTrigger:true,
   promptLabel:"Enter Mirror Cave",
   onInteract:()=>enterMirrorCave()
 });
-interactionManager.register({
-  id:"obj_mirror_cave_exit", type:"object", x:()=>isInMirrorCave ? mirrorCave.exit.x : -999, y:()=>isInMirrorCave ? mirrorCave.exit.y : -999,
+registerWorldObject({
+  objectId:"mirror_cave_exit",
+  type:WORLD_OBJECT_TYPE.DUNGEON_EXIT,
+  zone:"mirror_cave",
+  dungeon:"mirror_cave",
+  x:mirrorCave.exit.x, y:mirrorCave.exit.y,
+  state:"active",
+  interactable:true,
+  collision:false,
+  persistence:false,
+  walkInTrigger:true,
   promptLabel:"Exit Mirror Cave",
   onInteract:()=>exitMirrorCave()
 });
-interactionManager.register({
-  id:"obj_mirror_cave_chest", type:"object", x:()=>isInMirrorCave ? mirrorCave.chest.x : -999, y:()=>isInMirrorCave ? mirrorCave.chest.y : -999,
+registerWorldObject({
+  objectId:"mirror_cave_chest",
+  type:WORLD_OBJECT_TYPE.CHEST,
+  zone:"mirror_cave",
+  dungeon:"mirror_cave",
+  x:mirrorCave.chest.x, y:mirrorCave.chest.y,
+  state:"sealed",
+  interactable:true,
+  collision:true,
+  requiredQuestStage:HunterQuestStage.STAGE_3_MIRROR_CAVE,
+  persistence:true,
   promptLabel:"Open chest",
   onInteract:()=>{
-    const stage=getHunterQuestStage();
-    if(mirrorCave.chest.opened || stage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC || stage===HunterQuestStage.COMPLETED){
-      mirrorCave.chest.opened=true;
+    const state=syncMirrorCaveChestState(false);
+    if(state==="open"){
       log("The chest is empty.");
       return;
     }
-    if(stage===HunterQuestStage.NOT_STARTED){
+    if(state==="sealed"){
       mirrorCaveChestDiscovered=true;
-      log("The chest is sealed. Someone in Hearthvale may know more about it.");
+      patchPersistentObject("mirror_cave_chest", { discovered:true }, false);
+      log("The chest is sealed.");
+      saveGame("object_state_change");
       return;
     }
-    if(stage===HunterQuestStage.STAGE_1_PROVE_YOURSELF || stage===HunterQuestStage.STAGE_2_RETURN_TO_HUNTER){
-      log("The chest does not respond. Perhaps Hunter Garran knows more.");
-      return;
-    }
-    if(stage===HunterQuestStage.STAGE_3_MIRROR_CAVE){
-      mirrorCave.chest.opened=true;
-      mirrorCave.cleared=true;
-      if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
-      log("You recovered the Mirror Relic.");
-      eventSystem.emit("object:opened:mirror_cave_chest");
-    }
+    mirrorCave.chest.opened=true;
+    mirrorCave.cleared=true;
+    patchPersistentObject("mirror_cave_chest", { state:"open", opened:true }, false);
+    if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
+    log("You recovered the Mirror Relic.");
+    eventSystem.emit("object:opened:mirror_cave_chest");
+    saveGame("object_state_change");
   }
 });
+worldObjects
+  .filter((object)=>object.interactable)
+  .forEach((object)=>{
+    interactionManager.register({
+      id:object.objectId,
+      type:object.type,
+      x:()=>isWorldObjectInCurrentZone(object) ? getWorldObjectTile(object).x : -999,
+      y:()=>isWorldObjectInCurrentZone(object) ? getWorldObjectTile(object).y : -999,
+      promptLabel:object.promptLabel || "Interact",
+      onInteract:()=>object.onInteract?.()
+    });
+  });
 
 dialogue.addEventListener("click",()=>{
   if(dialogueSystem.activeSession?.pendingChoices) return;
@@ -2387,6 +2584,7 @@ dialogueActions.addEventListener("click",(event)=>{
   if(!target) return;
   event.preventDefault();
   event.stopPropagation();
+  if(target.hasAttribute("data-world-info-close")){ closeWorldInfoPanel(); return; }
   if(target.hasAttribute("data-dialogue-close")){ dialogueSystem.close(); return; }
   if(target.hasAttribute("data-dialogue-advance")) dialogueSystem.advance();
 });
@@ -2492,6 +2690,23 @@ function isDirectionalInputHeld(){
 function handleZoneTransitionIfNeeded(){
   if(HARD_ZONE_TRANSITIONS.length===0) return false;
   return true;
+}
+function triggerWalkInWorldObject(){
+  if(transitionState.active || performance.now()<zoneTransitionLockedUntil) return false;
+  const zoneKey=isInMirrorCave ? "mirror_cave" : "overworld";
+  const playerTileKey=zoneKey + ":" + player.targetX + "," + player.targetY;
+  if(lastWalkInTriggerKey && lastWalkInTriggerKey!==playerTileKey) lastWalkInTriggerKey=null;
+  return getActiveWorldObjects().some((object)=>{
+    if(!object.walkInTrigger || !object.interactable) return false;
+    const tile=getWorldObjectTile(object);
+    if(tile.x!==player.targetX || tile.y!==player.targetY) return false;
+    const triggerKey=zoneKey + ":" + tile.x + "," + tile.y;
+    if(lastWalkInTriggerKey===triggerKey) return false;
+    lastWalkInTriggerKey=triggerKey;
+    object.onInteract?.();
+    eventSystem.emit("interaction:used",{id:object.objectId,type:object.type});
+    return true;
+  });
 }
 
 function getOutdoorRegionIdAt(x,y){
@@ -2653,6 +2868,7 @@ function updateSidebar(){
 
 function canMoveTo(x,y){
   if(!isTileInCurrentZone(x,y)) return false;
+  if(isWorldObjectBlockingTile(x,y)) return false;
   if(isInMirrorCave){
     if(mirrorCave.blocked.has(keyOf(x,y))) return false;
   } else {
@@ -2734,7 +2950,8 @@ addEventListener("keydown",(e)=>{
     if(blockedDirectionalKeysUntilRelease.has(k)) return;
   }
   if(k==="g") showGrid=!showGrid;
-  if(k==="escape" && dialogueSystem.activeSession) dialogueSystem.close();
+  if(k==="escape" && worldInfoPanel) closeWorldInfoPanel();
+  else if(k==="escape" && dialogueSystem.activeSession) dialogueSystem.close();
   if(k==="e") interactionManager.tryInteract();
   if(k==="h") useHealingConsumable();
   if(k==="k") saveGame("manual");
@@ -2818,6 +3035,7 @@ function updateInput(){
 
 function canHostileMoveTo(x,y,self){
   if(!isTileInCurrentZone(x,y)) return false;
+  if(isWorldObjectBlockingTile(x,y)) return false;
   if(isInMirrorCave){
     if(mirrorCave.blocked.has(keyOf(x,y))) return false;
   } else {
@@ -3125,14 +3343,20 @@ function drawMirrorCaveScene(now){
     }
   }
   const cp=tileToScreen(mirrorCave.chest.x, mirrorCave.chest.y);
+  const chestState=getMirrorCaveChestState();
   drawSoftShadow(cp.x+16,cp.y+26,10,4,.2);
   ctx.fillStyle="#6b4c2f"; ctx.fillRect(cp.x+6,cp.y+10,20,14);
-  if(mirrorCave.chest.opened){
+  if(chestState==="open"){
     ctx.fillStyle="#4c3927"; ctx.fillRect(cp.x+6,cp.y+8,20,4);
     ctx.fillStyle="#d6bc7f"; ctx.fillRect(cp.x+6,cp.y+11,20,2);
   } else {
     ctx.fillStyle="#b58f56"; ctx.fillRect(cp.x+6,cp.y+10,20,4);
     ctx.fillStyle="#d6bc7f"; ctx.fillRect(cp.x+14,cp.y+14,4,6);
+    if(chestState==="sealed"){
+      ctx.fillStyle="#7ea8dc";
+      ctx.fillRect(cp.x+9,cp.y+15,14,2);
+      ctx.fillRect(cp.x+15,cp.y+12,2,8);
+    }
   }
   const ep=tileToScreen(mirrorCave.exit.x, mirrorCave.exit.y);
   ctx.fillStyle="rgba(155,170,189,.2)"; ctx.fillRect(ep.x+4,ep.y+4,24,24);
@@ -3310,7 +3534,10 @@ function update(dt,now){
   if(!isTransitionLocked) updateInput();
   tryPlayerAttack(now);
   smoothMove(player,dt);
-  if(!player.moving) handleZoneTransitionIfNeeded();
+  if(!player.moving){
+    triggerWalkInWorldObject();
+    handleZoneTransitionIfNeeded();
+  }
   if(!isTransitionLocked && !player.moving && (moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
   updateOutdoorRegionFromPosition(true);
   if(!isTransitionLocked){
