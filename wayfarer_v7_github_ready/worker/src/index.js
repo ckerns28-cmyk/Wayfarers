@@ -129,6 +129,9 @@ const html = String.raw`<!DOCTYPE html>
     }
     .dialogue-choice:hover{background:#1b2d44}
     #dialogueHint{margin-top:8px;color:var(--muted);font-size:12px}
+    #dialogueActions{margin-top:8px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+    .dialogue-action{border:1px solid #4c6281;border-radius:8px;background:#162435;color:#e6ecf5;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;padding:6px 10px;cursor:pointer}
+    .dialogue-action:hover{background:#1b2d44}
     #vendorPanel{
       position:absolute;left:50%;transform:translateX(-50%);bottom:20px;display:none;
       z-index:30;
@@ -211,6 +214,7 @@ const html = String.raw`<!DOCTYPE html>
         <div id="dialogueText"></div>
         <div id="dialogueChoices"></div>
         <div id="dialogueHint">Click to continue. Press number keys for choices.</div>
+        <div id="dialogueActions"></div>
       </div>
       <div id="vendorPanel">
         <div id="vendorHeader">
@@ -343,9 +347,8 @@ const html = String.raw`<!DOCTYPE html>
             "Take Hunter's Request: thin the wolves, enter Mirror Cave, and bring back proof."
           ],
           "choices": [
-            { "text": "Accept Hunter's Request", "event": "quest:activate:hunters_request", "next": "hunters_request_active" },
-            { "text": "Any survival advice?", "next": "garran_survival_advice" },
-            { "text": "Goodbye.", "next": "end" }
+            { "text": "Accept Hunter's Request", "event": "quest:activate:hunters_request", "next": "end" },
+            { "text": "Not now.", "next": "end" }
           ]
         },
         "hunters_request_active": {
@@ -354,8 +357,7 @@ const html = String.raw`<!DOCTYPE html>
             "Report once every objective is done."
           ],
           "choices": [
-            { "text": "How are the woods lately?", "next": "garran_woods_flavor" },
-            { "text": "Remind me of the objective.", "next": "hunters_request_active" },
+            { "text": "Continue", "next": "hunters_request_active" },
             { "text": "Goodbye.", "next": "end" }
           ]
         },
@@ -366,7 +368,6 @@ const html = String.raw`<!DOCTYPE html>
           ],
           "choices": [
             { "text": "Complete Hunter's Request", "next": "hunters_request_turn_in" },
-            { "text": "One more question first.", "next": "garran_woods_flavor" },
             { "text": "Goodbye.", "next": "end" }
           ]
         },
@@ -379,29 +380,11 @@ const html = String.raw`<!DOCTYPE html>
         },
         "hunters_request_complete": {
           "lines": [
-            "You've proven yourself.",
-            "Eastern Woods will still test you, but now you know how to read it."
+            "Good work. You've got the makings of a real wayfarer."
           ],
           "choices": [
-            { "text": "Any survival advice?", "next": "garran_survival_advice" },
-            { "text": "How are the woods lately?", "next": "garran_woods_flavor" },
             { "text": "Goodbye.", "next": "end" }
           ]
-        },
-        "garran_survival_advice": {
-          "lines": [
-            "Wolves circle before they strike. Keep moving and don't over-commit.",
-            "Bandits rush when they smell panic.",
-            "In the Eastern Woods, patience keeps you breathing."
-          ],
-          "next": "hunters_request_offer"
-        },
-        "garran_woods_flavor": {
-          "lines": [
-            "Wolves keep to the low brush at dawn. Bandits like the old road bends.",
-            "Eastern Woods sound quiet right before trouble starts."
-          ],
-          "next": "hunters_request_active"
         }
       }
     },
@@ -507,6 +490,7 @@ const dialogueName = document.getElementById("dialogueName");
 const dialogueText = document.getElementById("dialogueText");
 const dialogueChoices = document.getElementById("dialogueChoices");
 const dialogueHint = document.getElementById("dialogueHint");
+const dialogueActions = document.getElementById("dialogueActions");
 const vendorPanel = document.getElementById("vendorPanel");
 const vendorList = document.getElementById("vendorList");
 const vendorClose = document.getElementById("vendorClose");
@@ -1831,6 +1815,7 @@ class DialogueFramework {
   close(){
     this.activeSession=null;
     dialogueChoices.innerHTML="";
+    dialogueActions.innerHTML="";
     dialogue.style.display="none";
   }
   render(){
@@ -1847,11 +1832,13 @@ class DialogueFramework {
       dialogueChoices.innerHTML=session.pendingChoices.map((choice, idx)=>(
         "<button type=\"button\" class=\"dialogue-choice\" data-dialogue-choice=\"" + idx + "\">" + (idx+1) + ") " + choice.text + "</button>"
       )).join("");
-      dialogueHint.textContent="Press 1-9 to choose an option.";
+      dialogueHint.textContent="Press 1-9 to choose an option. Press Esc or E to close.";
+      dialogueActions.innerHTML="<button type=\"button\" class=\"dialogue-action\" data-dialogue-close>Close</button>";
     } else {
       dialogueChoices.innerHTML="";
       dialogueText.textContent=displayLines[session.lineIndex] || "...";
-      dialogueHint.textContent="Click to continue dialogue.";
+      dialogueHint.textContent="Click Continue, click dialogue text, or press E. Press Esc to close.";
+      dialogueActions.innerHTML="<button type=\"button\" class=\"dialogue-action\" data-dialogue-advance>Continue</button><button type=\"button\" class=\"dialogue-action\" data-dialogue-close>Close</button>";
     }
     updateDialogueViewportConstraints();
   }
@@ -1877,7 +1864,7 @@ class InteractionManager {
     return "E : Interact";
   }
   tryInteract(){
-    if(dialogueSystem.activeSession){ dialogueSystem.advance(); return true; }
+    if(dialogueSystem.activeSession){ dialogueSystem.close(); return true; }
     if(isVendorOpen()){ closeVendorMenu(); return true; }
     const target=this.getNearest();
     if(!target) return false;
@@ -2228,6 +2215,14 @@ dialogueChoices.addEventListener("click",(event)=>{
   const index=Number.parseInt(target.getAttribute("data-dialogue-choice") || "-1", 10);
   if(Number.isInteger(index) && index>=0) dialogueSystem.choose(index);
 });
+dialogueActions.addEventListener("click",(event)=>{
+  const target=event.target instanceof Element ? event.target.closest("button") : null;
+  if(!target) return;
+  event.preventDefault();
+  event.stopPropagation();
+  if(target.hasAttribute("data-dialogue-close")){ dialogueSystem.close(); return; }
+  if(target.hasAttribute("data-dialogue-advance")) dialogueSystem.advance();
+});
 vendorClose.addEventListener("click", closeVendorMenu);
 vendorList.addEventListener("click",(e)=>{
   const target=e.target instanceof Element ? e.target : null;
@@ -2564,11 +2559,12 @@ function resetFullSaveForDebug(){
 }
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","h","k","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k)) e.preventDefault();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k)) e.preventDefault();
   if(DIRECTION_KEYS.includes(k)){
     if(blockedDirectionalKeysUntilRelease.has(k)) return;
   }
   if(k==="g") showGrid=!showGrid;
+  if(k==="escape" && dialogueSystem.activeSession) dialogueSystem.close();
   if(k==="e") interactionManager.tryInteract();
   if(k==="h") useHealingConsumable();
   if(k==="k") saveGame("manual");
