@@ -284,6 +284,28 @@ const html = String.raw`<!DOCTYPE html>
       box-shadow:0 8px 22px rgba(0,0,0,.45);
     }
     #saveNotice.visible{opacity:1;transform:translateY(0)}
+    #rewardToast{
+      position:absolute;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%) translateY(8px);
+      opacity:0;
+      pointer-events:none;
+      z-index:36;
+      transition:opacity .18s ease, transform .18s ease;
+      font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;
+      background:rgba(10,18,27,.92);
+      border:1px solid #4d6888;
+      border-radius:8px;
+      padding:7px 10px;
+      box-shadow:0 8px 24px rgba(0,0,0,.4);
+      white-space:pre-wrap;
+      text-align:center;
+    }
+    #rewardToast.visible{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
     #transitionFade{
       position:absolute;inset:0;pointer-events:none;z-index:35;
       background:rgba(2,6,10,0);
@@ -347,6 +369,7 @@ const html = String.raw`<!DOCTYPE html>
         <div id="vendorHint">Buy supplies and sell loot. Buying and selling happen one item per click.</div>
       </div>
       <div id="saveNotice">Game Saved</div>
+      <div id="rewardToast" aria-live="polite"></div>
       <div id="transitionFade"></div>
       <script id="dialogueData" type="application/json">
 {
@@ -721,6 +744,7 @@ const vendorPanel = document.getElementById("vendorPanel");
 const vendorList = document.getElementById("vendorList");
 const vendorClose = document.getElementById("vendorClose");
 const saveNotice = document.getElementById("saveNotice");
+const rewardToast = document.getElementById("rewardToast");
 const transitionFade = document.getElementById("transitionFade");
 
 function parseJsonScript(id){
@@ -917,6 +941,7 @@ const palette = {
 
 let lastCombatLog={ message:"", at:0 };
 let lastLogMessage="";
+let rewardToastTimeout=0;
 function log(message){
   if(!message || message===lastLogMessage) return;
   lastLogMessage=message;
@@ -927,6 +952,24 @@ function log(message){
     chat.removeChild(chat.firstElementChild);
   }
   chat.scrollTop=chat.scrollHeight;
+}
+function showRewardToast(message, durationMs=1400){
+  if(!rewardToast || !message) return;
+  rewardToast.textContent=message;
+  rewardToast.classList.add("visible");
+  if(rewardToastTimeout) clearTimeout(rewardToastTimeout);
+  rewardToastTimeout=setTimeout(()=>{
+    rewardToast.classList.remove("visible");
+  }, Math.max(800, durationMs));
+}
+function showRewardToasts(messages){
+  if(!Array.isArray(messages) || !messages.length) return;
+  let delay=0;
+  messages.forEach((message)=>{
+    if(typeof message!=="string" || !message) return;
+    setTimeout(()=>showRewardToast(message), delay);
+    delay+=750;
+  });
 }
 function logCombat(message){
   const now=performance.now();
@@ -2092,6 +2135,7 @@ const StillWaterQuestStage = Object.freeze({
 });
 let mirrorCaveChestDiscovered=false;
 let rookTollkeeperDefeated=false;
+let abandonedTollhouseCleared=false;
 let hunterQuestRewardClaimed=false;
 
 class EventTriggerSystem {
@@ -2473,13 +2517,49 @@ function getTollhouseChestState(){
   if(rookTollkeeperDefeated) return "closed";
   return "locked";
 }
+function isTollhouseChestOpened(){
+  return getTollhouseChestState()==="open";
+}
+function evaluateAbandonedTollhouseCleared(){
+  return Boolean(rookTollkeeperDefeated && isTollhouseChestOpened());
+}
+function syncAbandonedTollhouseClearedState(shouldSave=false, announce=false){
+  const cleared=evaluateAbandonedTollhouseCleared();
+  const wasCleared=abandonedTollhouseCleared;
+  abandonedTollhouseCleared=cleared;
+  patchPersistentObject("abandoned_tollhouse_state", { cleared, state:cleared ? "cleared" : "active" }, shouldSave);
+  if(announce && cleared && !wasCleared) log("Abandoned Tollhouse cleared.");
+  return cleared;
+}
 function syncTollhouseChestState(shouldSave=false){
   const state=getTollhouseChestState();
   patchPersistentObject("tollhouse_reward_chest", {
     state,
     opened:state==="open"
   }, shouldSave);
+  syncAbandonedTollhouseClearedState(false, false);
   return state;
+}
+function grantTollhouseChestRewards(){
+  const rewardsGranted=[];
+  const rewardToasts=[];
+  if(getItemQuantity("old_toll_key")<=0){
+    addItemToInventory("old_toll_key", 1);
+    rewardsGranted.push("Old Toll Key x1");
+    rewardToasts.push("+ Old Toll Key");
+  }
+  if(getItemQuantity("travelers_charm")<=0 && player.equipment.trinket!=="travelers_charm"){
+    addItemToInventory("travelers_charm", 1);
+    rewardsGranted.push("Traveler's Charm x1");
+    rewardToasts.push("+ Traveler's Charm");
+  }
+  addItemToInventory("small_potion", 1);
+  rewardsGranted.push("Small Potion x1");
+  rewardToasts.push("+ Small Potion");
+  player.coins += 25;
+  rewardsGranted.push("25 coins");
+  rewardToasts.push("+25 Coins");
+  return { rewardsGranted, rewardToasts };
 }
 function openWorldInfoPanel(title,text){
   worldInfoPanel={ title, text };
@@ -2635,7 +2715,7 @@ function getStillWaterObjectiveText(){
   const stage=getStillWaterQuestStage();
   const fallbackText="The Still Water\nObjective: Return to Edrin Vale";
   if(stage===StillWaterQuestStage.COMPLETED || quest?.state===QuestState.COMPLETED){
-    return "Quest complete: The Still Water.";
+    return getContextualObjectiveText();
   }
   if(stage===StillWaterQuestStage.NOT_STARTED || stage===StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN){
     return "The Still Water\nObjective: Speak with Edrin Vale";
@@ -2669,6 +2749,13 @@ function hasActiveGuidedQuest(){
   const hunterActive=hunterQuest && hunterQuest.state!==QuestState.NOT_STARTED && hunterQuest.state!==QuestState.COMPLETED;
   const stillWaterActive=stillWaterQuest && stillWaterQuest.state!==QuestState.NOT_STARTED && stillWaterQuest.state!==QuestState.COMPLETED;
   return Boolean(hunterActive || stillWaterActive);
+}
+function getContextualObjectiveText(){
+  const nearTollhouse=isInAbandonedTollhouse || currentZoneId==="north_road";
+  if(!rookTollkeeperDefeated) return "Clear the Abandoned Tollhouse.";
+  if(!isTollhouseChestOpened()) return "Open the tollhouse chest.";
+  if(abandonedTollhouseCleared && nearTollhouse) return "Abandoned Tollhouse cleared.";
+  return "Explore Hearthvale and the surrounding roads.";
 }
 function handleNorthRoadArrivalAtmosphere(){
   const persistent=getPersistentObject("north_road_intro");
@@ -2819,7 +2906,7 @@ eventSystem.on("world:pond:awakened", ()=>{
 
 const SAVE_KEY="wayfarer.save.v1";
 const SAVE_SCHEMA_VERSION=1;
-const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10,11]);
+const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10,11,12]);
 const DEFAULT_DEV_MODE=false;
 let DEV_MODE=DEFAULT_DEV_MODE;
 let saveNoticeTimeout=0;
@@ -2834,6 +2921,7 @@ function createSaveData(reason){
   updateOutdoorRegionFromPosition(false);
   syncMirrorCaveChestState(false);
   syncTollhouseChestState(false);
+  syncAbandonedTollhouseClearedState(false, false);
   syncEchoFragmentState(false);
   const wolvesSave=wolves.slice(0, WOLF_SPAWNS.length).map((wolf)=>({
     id:wolf.id,
@@ -2854,7 +2942,7 @@ function createSaveData(reason){
     respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
   }));
   return {
-    version:11,
+    version:12,
     saveSchemaVersion:SAVE_SCHEMA_VERSION,
     reason,
     savedAt:new Date().toISOString(),
@@ -2887,7 +2975,8 @@ function createSaveData(reason){
       },
       tollhouse:{
         rookTollkeeperDefeated:rookTollkeeperDefeated,
-        chestState:getTollhouseChestState()
+        chestState:getTollhouseChestState(),
+        abandonedTollhouseCleared:abandonedTollhouseCleared
       },
       hunterQuest:{
         hunterQuestStage:getHunterQuestStage(),
@@ -3027,6 +3116,7 @@ function loadGame(){
     rookTollkeeper.py=rookTollkeeper.targetY*TILE;
     banditRespawnAtById[rookTollkeeper.id]=0;
     rookTollkeeperDefeated=false;
+    abandonedTollhouseCleared=false;
     mirrorCaveWolves.forEach((wolf)=>{
       wolf.hp=wolf.maxHp;
       wolf.defeated=false;
@@ -3099,6 +3189,7 @@ function loadGame(){
     mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened || persistentObjects?.mirror_cave_chest?.opened);
     mirrorCave.cleared=Boolean(data.world?.mirrorCave?.cleared);
     rookTollkeeperDefeated=Boolean(data.world?.tollhouse?.rookTollkeeperDefeated || persistentObjects?.rook_tollkeeper_state?.defeated);
+    abandonedTollhouseCleared=Boolean(data.world?.tollhouse?.abandonedTollhouseCleared || persistentObjects?.abandoned_tollhouse_state?.cleared);
     rookTollkeeper.defeated=rookTollkeeperDefeated;
     if(rookTollkeeperDefeated){
       rookTollkeeper.hp=0;
@@ -3126,6 +3217,7 @@ function loadGame(){
     }
     syncMirrorCaveChestState(false);
     syncTollhouseChestState(false);
+    syncAbandonedTollhouseClearedState(false, false);
     syncEchoFragmentState(false);
     migrateStillWaterStateFromSave();
     log("System: Save loaded.");
@@ -3430,16 +3522,21 @@ registerWorldObject({
       return;
     }
     if(state==="open"){
-      log("The tollhouse chest stands open and empty.");
+      log("The tollhouse chest is empty.");
       return;
     }
     patchPersistentObject("tollhouse_reward_chest", { state:"open", opened:true }, false);
-    addItemToInventory("small_potion", 1);
-    player.coins += 14;
-    if(getItemQuantity("travelers_charm")<=0 && player.equipment.trinket!=="travelers_charm"){
-      addItemToInventory("travelers_charm", 1);
+    const rewardResult=grantTollhouseChestRewards();
+    if(!rewardResult.rewardsGranted.length){
+      log("The tollhouse chest is empty.");
+    } else {
+      log("Opened the tollhouse chest.");
+      log("Loot acquired:");
+      rewardResult.rewardsGranted.forEach((entry)=>log("- " + entry));
+      showRewardToasts(rewardResult.rewardToasts);
     }
-    log("Opened the tollhouse chest.");
+    syncTollhouseChestState(false);
+    syncAbandonedTollhouseClearedState(false, true);
     saveGame("object_state_change");
   }
 });
@@ -3736,15 +3833,15 @@ function updateSidebar(){
     } else if(hunterStage===HunterQuestStage.STAGE_4_RETURN_WITH_RELIC){
       objectiveText.textContent = "Hunter's Request\n- Return to Hunter Garran";
     } else if(hunterStage===HunterQuestStage.COMPLETED){
-      objectiveText.textContent = "Quest complete: Hunter's Request.";
+      objectiveText.textContent = getContextualObjectiveText();
     } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="go_to_pond"){
       objectiveText.textContent = "Go to Mirror Pond and listen carefully.";
     } else if(mirrorQuest?.state===QuestState.ACTIVE && mirrorQuest.progress==="heard_whispers"){
       objectiveText.textContent = "Return to Edrin Vale and report what you heard.";
     } else if(mirrorQuest?.state===QuestState.COMPLETED){
-      objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
+      objectiveText.textContent = getContextualObjectiveText();
     } else {
-      objectiveText.textContent = "Speak with Hunter Garran near the eastern road.";
+      objectiveText.textContent = getContextualObjectiveText();
     }
   }
   let nextInventoryMarkup="Empty";
@@ -4149,11 +4246,19 @@ function defeatBandit(bandit,now){
   if(bandit.isMiniBoss){
     rookTollkeeperDefeated=true;
     patchPersistentObject("rook_tollkeeper_state", { defeated:true, state:"defeated" }, false);
-    if(getItemQuantity("old_toll_key")<=0) addItemToInventory("old_toll_key", 1);
-    if(getItemQuantity("travelers_charm")<=0 && player.equipment.trinket!=="travelers_charm") addItemToInventory("travelers_charm", 1);
+    const bossRewardLines=["- " + enemyConfig.xp + " XP", "- " + enemyConfig.coinReward + " coins"];
+    const bossRewardToasts=["+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"];
+    if(getItemQuantity("old_toll_key")<=0){
+      addItemToInventory("old_toll_key", 1);
+      bossRewardLines.push("- Old Toll Key x1");
+      bossRewardToasts.push("+ Old Toll Key");
+    }
     log("Rook the Tollkeeper defeated.");
-    log("Recovered the Old Toll Key.");
+    log("Boss rewards:");
+    bossRewardLines.forEach((line)=>log(line));
+    showRewardToasts(bossRewardToasts);
     syncTollhouseChestState(false);
+    syncAbandonedTollhouseClearedState(false, false);
     saveGame("rook_defeated");
   } else {
     log(hostileLabel(bandit) + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");

@@ -96,6 +96,11 @@ Mythic, grounded, moody, old-school RPG.
 - **Rook the Tollkeeper:** first named mini-boss encounter (bandit baseline behavior, elevated stats, no complex mechanics yet).
 - Mini-bosses are stronger named enemies with persistent defeat state and meaningful rewards.
 - Rook rewards include the **Old Toll Key** and access to tollhouse post-boss reward flow (including Traveler's Charm support).
+- Chronicle mini-boss feedback: after defeating Rook, log `Rook the Tollkeeper defeated.` then log a separate `Boss rewards:` list (XP, coins, and any item rewards) rather than folding rewards into generic bandit lines.
+- Abandoned Tollhouse clear condition: set `abandonedTollhouseCleared=true` only when **both** conditions are met: (1) Rook defeated and (2) tollhouse chest opened.
+- Cleared-state persistence rule: once cleared, Rook remains defeated, the chest remains open, rewards do not duplicate, and contextual objectives can surface `Abandoned Tollhouse cleared.` while near North Road/tollhouse.
+- Tollhouse chest reward clarity rule: first valid open logs `Opened the tollhouse chest.`, followed by `Loot acquired:` and one line per reward. Re-interaction logs `The tollhouse chest is empty.` and grants nothing.
+- Traveler's Charm behavior (Phase 26B): Charm is a trinket, grants **+1 DEF**, can be equipped from Inventory, and displays in Equipment under `Trinket`.
 
 ## Combat Balance & Difficulty Curve (Phase 21)
 
