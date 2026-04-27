@@ -1124,10 +1124,11 @@ function logThrottled(key,message,cooldownMs){
 function keyOf(x,y){ return x + "," + y; }
 function rng(x,y,s=1){ return (((x*73856093)^(y*19349663)^(s*83492791))>>>0)%1000/1000; }
 function layeredNoise(x,y){
-  const broad = rng(Math.floor(x*0.22), Math.floor(y*0.22), 401);
-  const medium = rng(Math.floor(x*0.48), Math.floor(y*0.48), 487);
+  const broad = rng(Math.floor(x*0.34), Math.floor(y*0.34), 401);
+  const medium = rng(Math.floor(x*0.72), Math.floor(y*0.72), 487);
   const fine = rng(x,y,509);
-  return broad*0.52 + medium*0.33 + fine*0.15;
+  const micro = rng(Math.floor((x+13)*1.35), Math.floor((y+9)*1.35), 521);
+  return broad*0.36 + medium*0.31 + fine*0.18 + micro*0.15;
 }
 
 function makeTile(drawFn){
@@ -1145,7 +1146,7 @@ const assets = {
 };
 
 function buildTerrainTiles() {
-  const grassBases = [palette.grass[0], "#587d4e", palette.grass[1], "#4f7346", palette.grass[2], "#45673f"];
+  const grassBases = ["#4f7347", "#527849", "#4c7044", "#557a4d", "#486c41", "#507448"];
   const forestBases = [palette.forestGrass[0], "#3f6540", palette.forestGrass[1], "#314f34"];
   for (let i=0;i<6;i++) {
     assets.grass.push(makeTile((p)=>{
@@ -1153,17 +1154,19 @@ function buildTerrainTiles() {
       for (let y=0;y<32;y+=2){
         for (let x=0;x<32;x+=2){
           const n=rng(x+i*7,y+i*5,31+i);
-          if(n>0.88){ p.fillStyle = "rgba(198,226,162,.08)"; p.fillRect(x,y,2,1); }
-          else if(n<0.08){ p.fillStyle = "rgba(29,47,28,.12)"; p.fillRect(x,y+1,2,1); }
+          if(n>0.9){ p.fillStyle = "rgba(198,226,162,.055)"; p.fillRect(x,y,2,1); }
+          else if(n<0.07){ p.fillStyle = "rgba(29,47,28,.085)"; p.fillRect(x,y+1,2,1); }
         }
       }
-      p.fillStyle = "rgba(220,239,180,.06)";
-      for (let k=0;k<11;k++) {
-        const gx = ((k*5+i*6)%30)+1, gy = ((k*7+i*3)%25)+3;
-        p.fillRect(gx,gy,1,1);
+      p.fillStyle = "rgba(220,239,180,.045)";
+      for (let k=0;k<16;k++) {
+        const gx = ((k*5+i*6)%30)+1;
+        const gy = ((k*7+i*3)%25)+3;
+        const dotW = rng(k+i,gy,145)>0.72 ? 2 : 1;
+        p.fillRect(gx,gy,dotW,1);
       }
-      p.fillStyle="rgba(255,255,255,.022)"; p.fillRect(0,0,32,1);
-      p.fillStyle="rgba(0,0,0,.09)"; p.fillRect(0,30,32,2);
+      p.fillStyle="rgba(255,255,255,.018)"; p.fillRect(0,0,32,1);
+      p.fillStyle="rgba(0,0,0,.065)"; p.fillRect(0,30,32,2);
     }));
     if(i<4){
       assets.forestGrass.push(makeTile((p)=>{
@@ -1181,13 +1184,22 @@ function buildTerrainTiles() {
 
     if(i<5) {
       assets.road.push(makeTile((p)=>{
-        p.fillStyle = i%2? palette.road[0] : palette.road[1]; p.fillRect(0,0,32,32);
-        p.fillStyle = i%2? palette.road[1] : palette.road[3];
-        for(let y=0;y<32;y+=5){ for(let x=((y+i*2)%6);x<32;x+=8) p.fillRect(x,y,2,2); }
-        p.fillStyle = "rgba(204,176,136,.2)";
-        for(let k=0;k<7;k++){ const x=((k*9+i*7)%24)+3; const y=((k*7+i*6)%24)+3; p.fillRect(x,y,3,2); }
-        p.fillStyle = "rgba(243,219,169,.12)"; p.fillRect(0,14,32,2);
-        p.fillStyle = "rgba(0,0,0,.2)"; p.fillRect(0,29,32,3);
+        const base = i%2? "#836a48" : "#7b6343";
+        p.fillStyle = base; p.fillRect(0,0,32,32);
+        p.fillStyle = "rgba(98,78,53,.22)";
+        for(let y=0;y<32;y+=3){
+          const wob=Math.floor((Math.sin((y+i)*0.45)+1.3)*1.5);
+          p.fillRect((y+i*3)%10, y, 9+wob, 1);
+        }
+        p.fillStyle = "rgba(196,166,128,.16)";
+        for(let k=0;k<10;k++){
+          const x=((k*7+i*5)%26)+2;
+          const y=((k*6+i*8)%24)+4;
+          p.fillRect(x,y,2+(k%2),1);
+        }
+        p.fillStyle="rgba(0,0,0,.1)";
+        p.fillRect(0,0,32,2);
+        p.fillStyle = "rgba(0,0,0,.16)"; p.fillRect(0,29,32,3);
       }));
     }
 
@@ -1258,8 +1270,10 @@ function makeBuildingTiles(){
     p.fillStyle=palette.roof[2]; for(let y=2;y<28;y+=4) p.fillRect(2,y,28,1);
     p.fillStyle="rgba(255,226,199,.1)"; p.fillRect(5,3,22,2);
     p.fillStyle="rgba(64,37,26,.28)"; for(let x=3;x<30;x+=6) p.fillRect(x,6,2,16);
+    p.fillStyle="rgba(89,48,32,.2)"; for(let x=2;x<30;x+=4) p.fillRect(x,11,1,10);
     p.fillStyle=palette.roof[3]; p.fillRect(0,24,32,8);
     p.fillStyle="rgba(231,196,152,.2)"; p.fillRect(2,24,28,1);
+    p.fillStyle="rgba(0,0,0,.19)"; p.fillRect(0,25,32,2);
   });
   assets.building.roofR = makeTile((p)=>{
     p.fillStyle=palette.roof[0]; p.fillRect(0,0,32,32);
@@ -1276,6 +1290,8 @@ function makeBuildingTiles(){
     p.fillStyle="rgba(255,255,255,.05)";
     for(let y=5;y<29;y+=5) for(let x=(y%5)+2;x<30;x+=7){ p.fillRect(x,y,1,1); }
     p.fillStyle="rgba(35,28,20,.14)"; p.fillRect(29,0,3,32);
+    p.fillStyle="rgba(255,232,189,.06)"; p.fillRect(2,5,2,20);
+    p.fillStyle="rgba(0,0,0,.08)"; p.fillRect(0,27,32,1);
   });
   assets.building.window = makeTile((p)=>{
     p.drawImage(assets.building.wall,0,0);
@@ -1297,6 +1313,8 @@ function makeBuildingTiles(){
     p.fillStyle="#e3ba86"; p.fillRect(20,21,2,2);
     p.fillStyle="rgba(246,222,171,.2)"; p.fillRect(10,10,4,18);
     p.fillStyle="rgba(0,0,0,.25)"; p.fillRect(8,30,16,1);
+    p.fillStyle="rgba(246,211,162,.18)"; p.fillRect(9,9,3,20);
+    p.fillStyle="rgba(15,10,7,.18)"; p.fillRect(21,8,1,22);
   });
 }
 
@@ -1718,14 +1736,16 @@ world.buildings.push(
 );
 world.buildings.forEach(b=>blockRect(b.x,b.y,b.w,b.h));
 
-const pond={x:24,y:12,w:8,h:6,cx:28,cy:15};
+const pond={x:23,y:11,w:10,h:8,cx:28,cy:15};
 for(let x=pond.x;x<pond.x+pond.w;x++){
   for(let y=pond.y;y<pond.y+pond.h;y++){
     const dx=(x+.5-pond.cx)/(pond.w/2), dy=(y+.5-pond.cy)/(pond.h/2);
-    const d=dx*dx+dy*dy, wob=(rng(x,y,17)-.5)*.15, lim=.88+wob;
+    const d=dx*dx+dy*dy;
+    const wob=(rng(x,y,17)-.5)*.2 + (rng(x,y,19)-.5)*.08;
+    const lim=.84+wob;
     if(d<=lim){ world.pondWater.add(keyOf(x,y)); world.pondBlocked.add(keyOf(x,y)); }
-    if(d>=lim-.2&&d<=lim+.2) world.pondShore.add(keyOf(x,y));
-    if(d>=lim-.26&&d<=lim+.08) world.pondNearEdge.add(keyOf(x,y));
+    if(d>=lim-.18&&d<=lim+.2) world.pondShore.add(keyOf(x,y));
+    if(d>=lim-.25&&d<=lim+.1) world.pondNearEdge.add(keyOf(x,y));
   }
 }
 
@@ -1744,14 +1764,14 @@ world.props.push(
   {x:21,y:9,type:"crate"},{x:22,y:9,type:"barrel"},{x:23,y:9,type:"sack"},{x:24,y:9,type:"bush"},
   {x:12,y:18,type:"crate"},{x:13,y:18,type:"sack"},{x:14,y:18,type:"barrel"},{x:11,y:18,type:"bush"},
   {x:21,y:18,type:"crate"},{x:22,y:18,type:"sack"},{x:23,y:18,type:"barrel"},
-  {x:15,y:12,type:"grassTuft"},{x:16,y:12,type:"grassTuft"},{x:20,y:12,type:"grassTuft"},
+  {x:15,y:11,type:"grassTuft"},{x:16,y:12,type:"grassTuft"},{x:20,y:13,type:"grassTuft"},
   {x:17,y:12,type:"well"},
   {x:16,y:11,type:"lanternPost"},{x:19,y:11,type:"lanternPost"},
   {x:12,y:12,type:"signPost"},{x:23,y:12,type:"signPost"},{x:27,y:11,type:"signPost"},
-  {x:25,y:13,type:"stonePile"},{x:24,y:15,type:"stonePile"},{x:30,y:17,type:"stonePile"},
-  {x:26,y:18,type:"grassTuft"},{x:29,y:18,type:"grassTuft"},{x:31,y:14,type:"grassTuft"},
+  {x:25,y:13,type:"stonePile"},{x:24,y:16,type:"stonePile"},{x:31,y:17,type:"stonePile"},
+  {x:26,y:18,type:"grassTuft"},{x:29,y:17,type:"grassTuft"},{x:30,y:14,type:"grassTuft"},
   {x:8,y:12,type:"bush"},{x:30,y:12,type:"bush"},{x:7,y:11,type:"fenceSeg"},{x:31,y:11,type:"fenceSeg"},
-  {x:16,y:14,type:"fenceSeg"},{x:17,y:14,type:"fenceSeg"},{x:18,y:14,type:"fenceSeg"},
+  {x:16,y:14,type:"fenceSeg"},{x:17,y:14,type:"fenceSeg"},{x:18,y:14,type:"fenceSeg"},{x:19,y:14,type:"fenceSeg"},
   {x:18,y:4,type:"signPost"},{x:21,y:4,type:"signPost"},{x:22,y:2,type:"fenceSeg"},
   {x:14,y:4,type:"fenceSeg"},{x:24,y:4,type:"fenceSeg"},
   {x:14,y:2,type:"bush"},{x:23,y:2,type:"bush"},
@@ -5158,6 +5178,10 @@ function drawTransitionFade(now){
 function drawEntityRing(tx,ty,color,alpha=0.35,radius=9){
   const p=tileToScreen(tx,ty);
   ctx.save();
+  ctx.fillStyle=color.replace("__A__", (alpha*0.12).toFixed(3));
+  ctx.beginPath();
+  ctx.ellipse(p.x+16,p.y+23,radius*1.25,radius*0.72,0,0,Math.PI*2);
+  ctx.fill();
   ctx.strokeStyle=color.replace("__A__", alpha.toFixed(3));
   ctx.lineWidth=1.4;
   ctx.beginPath();
@@ -5377,18 +5401,20 @@ function drawWorld(){
     const p=tileToScreen(x,y);
     if(x<0 || y<0 || x>=WORLD_W || y>=WORLD_H) continue;
     const n=layeredNoise(x,y);
-    const mix=Math.min(assets.grass.length-1, Math.floor(n*assets.grass.length));
+    const n2=layeredNoise(x+2.2,y+1.6)*0.35 + layeredNoise(x-3.4,y-0.8)*0.25;
+    const tone=Math.max(0, Math.min(0.999, n*0.75 + n2));
+    const mix=Math.min(assets.grass.length-1, Math.floor(tone*assets.grass.length));
     const region=getOutdoorRegionIdAt(x,y);
     const inForest=region==="eastern_woods" || (region==="north_road" && rng(x,y,211)>0.45);
     const forestMix=Math.min(assets.forestGrass.length-1, Math.floor((layeredNoise(x+5,y+3)+rng(x,y,212)*0.2)*assets.forestGrass.length)%assets.forestGrass.length);
     const img=inForest ? assets.forestGrass[forestMix] : assets.grass[mix];
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
-    if(!inForest && layeredNoise(x+13,y+7)>0.72){
-      ctx.fillStyle="rgba(188,216,151,.032)";
+    if(!inForest && layeredNoise(x+13,y+7)>0.74){
+      ctx.fillStyle="rgba(188,216,151,.02)";
       ctx.fillRect(p.x+1,p.y+1,30,30);
     }
     if(world.roadTiles.has(keyOf(x,y))){
-      ctx.fillStyle="rgba(77,109,63,.09)";
+      ctx.fillStyle="rgba(77,109,63,.06)";
       ctx.fillRect(p.x,p.y,32,32);
     }
   }
@@ -5406,6 +5432,20 @@ function drawWorld(){
     if(!east) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,64)*assets.roadEdge.length)], p.x, p.y, 1);
     if(!south) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,66)*assets.roadEdge.length)], p.x, p.y, 2);
     if(!west) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,68)*assets.roadEdge.length)], p.x, p.y, 3);
+
+    if(!north || !south || !east || !west){
+      ctx.fillStyle="rgba(84,118,64,.16)";
+      if(!north) ctx.fillRect(p.x+2,p.y+1,28,2);
+      if(!south) ctx.fillRect(p.x+2,p.y+29,28,2);
+      if(!east) ctx.fillRect(p.x+29,p.y+2,2,28);
+      if(!west) ctx.fillRect(p.x+1,p.y+2,2,28);
+    }
+    if((north&&south&&east&&west) || ((!north&&!south)&&(east||west)) || ((!east&&!west)&&(north||south))){
+      ctx.fillStyle="rgba(121,95,64,.18)";
+      ctx.fillRect(p.x+11,p.y+11,10,10);
+      ctx.fillStyle="rgba(203,176,138,.07)";
+      ctx.fillRect(p.x+13,p.y+13,6,2);
+    }
   } });
 
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
@@ -5413,7 +5453,7 @@ function drawWorld(){
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
     const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     const t=performance.now()*0.002, rip=(Math.sin(t*3+x*1.1+y*.8)+1)*.5;
-    const mirrorAura=(x>=25&&x<=30&&y>=13&&y<=17) ? 0.075 : 0.02;
+    const mirrorAura=(x>=25&&x<=30&&y>=12&&y<=17) ? 0.1 : 0.02;
     ctx.fillStyle="rgba(188,228,255," + (.02+rip*.05+mirrorAura).toFixed(3) + ")"; ctx.fillRect(p.x+3,p.y+6,TILE-10,1);
     if(edge){
       ctx.fillStyle="rgba(224,244,255," + (.05+rip*.05).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1);
@@ -5423,6 +5463,10 @@ function drawWorld(){
       ctx.fillStyle="rgba(201,240,255,.25)";
       ctx.fillRect(p.x+10,p.y+10,4,1);
       ctx.fillRect(p.x+14,p.y+9,2,1);
+    }
+    if(rng(x,y,409)>0.77){
+      ctx.fillStyle="rgba(176,225,255,.2)";
+      ctx.fillRect(p.x+7,p.y+20,8,1);
     }
   }
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
@@ -5437,9 +5481,14 @@ function drawWorld(){
       ctx.fillStyle="rgba(198,214,162,.18)";
       ctx.fillRect(p.x+11,p.y+10,4,1);
     }
+    if(rng(x,y,535)>0.8){
+      ctx.fillStyle="rgba(116,149,94,.65)";
+      ctx.fillRect(p.x+21,p.y+15,1,6);
+      ctx.fillRect(p.x+23,p.y+14,1,7);
+    }
   }
 
-  world.buildings.forEach(b=>{
+  world.buildings.forEach((b,bIndex)=>{
     for(let ry=0; ry<b.h; ry++){
       const right = tileToScreen(b.x+b.w, b.y+ry);
       drawShadowTile(assets.shadow.buildingRight, right.x+4, right.y+3, .9);
@@ -5456,7 +5505,23 @@ function drawWorld(){
       ctx.fillRect(p.x+7,p.y+1,18,5);
       ctx.fillStyle="rgba(192,164,123,.28)";
       ctx.fillRect(p.x+8,p.y+1,16,1);
+      ctx.fillStyle="rgba(63,44,28,.38)";
+      ctx.fillRect(p.x+6,p.y+5,20,2);
     }));
+    const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
+    ctx.fillStyle="rgba(94,72,54,.9)";
+    ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
+    ctx.fillStyle="rgba(138,113,88,.85)";
+    ctx.fillRect(chimney.x+9,chimney.y-8,8,2);
+    if(rng(b.x,b.y,602)>0.4){
+      ctx.fillStyle="rgba(255,244,226,.18)";
+      ctx.fillRect(chimney.x+13,chimney.y-11,2,2);
+    }
+    const planter=tileToScreen(b.x+1,b.y+b.h-1);
+    ctx.fillStyle="rgba(94,70,46,.7)";
+    ctx.fillRect(planter.x+7,planter.y+24,18,3);
+    ctx.fillStyle="rgba(121,157,90,.78)";
+    ctx.fillRect(planter.x+8,planter.y+22,16,2);
   });
 
   world.props.forEach((prop)=>{
@@ -5472,6 +5537,13 @@ function drawWorld(){
   if(getStillWaterQuestStage()===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
     drawMirrorPondInspectionMarker(now);
   }
+  const pondFocus=tileToScreen(pond.cx, pond.cy);
+  const pondGlow=ctx.createRadialGradient(pondFocus.x+16,pondFocus.y+12,8,pondFocus.x+16,pondFocus.y+12,96);
+  pondGlow.addColorStop(0,"rgba(173,214,255,.16)");
+  pondGlow.addColorStop(.55,"rgba(120,174,220,.09)");
+  pondGlow.addColorStop(1,"rgba(120,174,220,0)");
+  ctx.fillStyle=pondGlow;
+  ctx.fillRect(pondFocus.x-96,pondFocus.y-80,210,180);
   const caveEntrancePos=tileToScreen(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y);
   ctx.fillStyle="rgba(23,29,38,.9)";
   ctx.beginPath();
