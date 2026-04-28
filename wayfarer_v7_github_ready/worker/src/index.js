@@ -1192,7 +1192,7 @@ const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
   buildings:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.manifest.json",
   props:"/assets/wayfarer/props/hearthvale_props_atlas_v1.manifest.json"
 });
-const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern"]));
+const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern","b_mercantile","b_village_hall"]));
 const HEARTHVALE_PROOF_PROP_TYPES = Object.freeze(new Set(["bench","barrel","crate","signPost"]));
 
 const atlasManifests = {
@@ -1535,6 +1535,7 @@ const buildingSpriteProofState={
   drawn:false
 };
 const atlasProofDiagnostics={
+  statuses:new Map(),
   selectedBuildingId:"b_inn_tavern",
   selectedBuildingRole:"inn_tavern",
   selectedSpriteId:null,
@@ -1600,10 +1601,12 @@ function toAtlasProofFallbackReason(reason, building, spriteId){
   if(reason==="known_bad_test_asset") return "asset_not_found";
   return reason || "other_specific_reason";
 }
-function syncInnAtlasProofDiagnostics(building, spriteId, sprite, didDraw, fallbackReason){
-  if(building?.id!=="b_inn_tavern") return;
+function syncAtlasProofDiagnostics(building, spriteId, sprite, didDraw, fallbackReason){
+  if(!building || !HEARTHVALE_PROOF_BUILDING_IDS.has(building.id)) return;
   const buildingRuntime=atlasRuntimeInfo.buildings||{};
   const selectedUrl=buildingRuntime.selectedUrl || atlasManifests.buildings?.imagePath || "n/a";
+  atlasProofDiagnostics.selectedBuildingId=building.id;
+  atlasProofDiagnostics.selectedBuildingRole=building.role || "unknown";
   atlasProofDiagnostics.selectedSpriteId=spriteId || "n/a";
   atlasProofDiagnostics.selectedAtlasFilename=getAtlasFilename(sprite?.atlas || atlasManifests.buildings?.imagePath || selectedUrl);
   atlasProofDiagnostics.requestedAssetUrl=selectedUrl;
@@ -1620,6 +1623,16 @@ function syncInnAtlasProofDiagnostics(building, spriteId, sprite, didDraw, fallb
   atlasProofDiagnostics.drawSize=sprite ? { w:sprite.drawW ?? sprite.sw, h:sprite.drawH ?? sprite.sh } : null;
   atlasProofDiagnostics.usedAtlasRender=!!didDraw;
   atlasProofDiagnostics.fallbackReason=fallbackReason ? toAtlasProofFallbackReason(fallbackReason, building, spriteId) : null;
+  atlasProofDiagnostics.statuses.set(building.id,{
+    buildingId:building.id,
+    role:building.role || "unknown",
+    spriteId:spriteId || "n/a",
+    renderPath:didDraw ? "ATLAS" : "FALLBACK",
+    fallbackReason:fallbackReason ? toAtlasProofFallbackReason(fallbackReason, building, spriteId) : null,
+    crop:sprite ? { x:sprite.sx, y:sprite.sy, w:sprite.sw, h:sprite.sh } : null,
+    drawSize:sprite ? { w:sprite.drawW ?? sprite.sw, h:sprite.drawH ?? sprite.sh } : null,
+    anchor:sprite ? { x:sprite.anchorX, y:sprite.anchorY } : null
+  });
 }
 function atlasProofStatusLine(pathLabel){
   return "[Atlas Proof] " +
@@ -1643,9 +1656,16 @@ function atlasProofStatusLine(pathLabel){
     " RenderPath=" + pathLabel +
     (pathLabel==="FALLBACK" ? " Reason=" + (atlasProofDiagnostics.fallbackReason||"other_specific_reason") : "");
 }
-function atlasProofCompactStatusLine(pathLabel){
-  const atlasState=pathLabel==="ATLAS" ? "ATLAS" : "FALLBACK:" + (atlasProofDiagnostics.fallbackReason||"other_specific_reason");
-  return "atlasDebug=1 | proof=ON | inn_tavern=" + atlasState;
+function atlasProofCompactStatusLine(){
+  const ids=["b_inn_tavern","b_mercantile","b_village_hall"];
+  const summary=ids.map((id)=>{
+    const status=atlasProofDiagnostics.statuses.get(id);
+    const key=id==="b_inn_tavern"?"inn_tavern":(id==="b_mercantile"?"mercantile_shop":"village_hall_meeting_house");
+    if(!status) return key+"=PENDING";
+    if(status.renderPath==="ATLAS") return key+"=ATLAS";
+    return key+"=FALLBACK:" + (status.fallbackReason||"other_specific_reason");
+  }).join(" | ");
+  return "atlasDebug=1 | proof=ON | " + summary;
 }
 function logAtlasProofStatusOnce(pathLabel){
   if(!ATLAS_DEBUG_MODE){
@@ -1658,22 +1678,23 @@ function logAtlasProofStatusOnce(pathLabel){
   if(pathLabel==="FALLBACK" && atlasProofDiagnostics.fallbackLogged) return;
   if(pathLabel==="FALLBACK"){
     atlasProofDiagnostics.fallbackLogged=true;
-    console.warn("[Atlas Proof HUD] " + atlasProofCompactStatusLine("FALLBACK"));
+    console.warn("[Atlas Proof HUD] " + atlasProofCompactStatusLine());
     console.warn(atlasProofStatusLine("FALLBACK"));
     return;
   }
   atlasProofDiagnostics.statusLogged=true;
-  console.info("[Atlas Proof HUD] " + atlasProofCompactStatusLine("ATLAS"));
+  console.info("[Atlas Proof HUD] " + atlasProofCompactStatusLine());
   console.info(atlasProofStatusLine("ATLAS"));
 }
 function drawAtlasProofMarker(drawX, drawY, drawW, drawH, building, renderPath, fallbackReason){
   const buildingId=building?.id;
-  if(!USE_HEARTHVALE_ATLAS_PROOF_DEBUG || buildingId!=="b_inn_tavern") return;
+  if(!USE_HEARTHVALE_ATLAS_PROOF_DEBUG || !HEARTHVALE_PROOF_BUILDING_IDS.has(buildingId)) return;
   ctx.save();
   const isAtlas=renderPath==="ATLAS";
+  const roleLabel=building?.role || buildingId || "building";
   const labelText=isAtlas
-    ? "inn_tavern: ATLAS"
-    : "inn_tavern: FALLBACK: " + (fallbackReason || "other_specific_reason");
+    ? roleLabel + ": ATLAS"
+    : roleLabel + ": FALLBACK: " + (fallbackReason || "other_specific_reason");
   ctx.strokeStyle=isAtlas ? "rgba(0,255,255,1)" : "rgba(255,106,0,1)";
   ctx.lineWidth=3;
   ctx.strokeRect(Math.floor(drawX)+0.5, Math.floor(drawY)+0.5, Math.max(1, Math.floor(drawW)-1), Math.max(1, Math.floor(drawH)-1));
@@ -7316,8 +7337,8 @@ function drawWorld(){
       warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
       logBuildingFallbackOnce(b, fallbackReason);
-      syncInnAtlasProofDiagnostics(b, spriteId, sprite, false, fallbackReason);
-      if(b.id==="b_inn_tavern"){
+      syncAtlasProofDiagnostics(b, spriteId, sprite, false, fallbackReason);
+      if(HEARTHVALE_PROOF_BUILDING_IDS.has(b.id)){
         logAtlasProofStatusOnce("FALLBACK");
         const fallbackDrawW=(sprite?.drawW ?? sprite?.sw ?? (b.w*TILE));
         const fallbackDrawH=(sprite?.drawH ?? sprite?.sh ?? (b.h*TILE));
@@ -7328,8 +7349,8 @@ function drawWorld(){
     }
     buildingRenderDiagnostics.atlasBuildings.add(b.id);
     registerAtlasBuildingDecorExclusionZone(b, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh);
-    syncInnAtlasProofDiagnostics(b, spriteId, sprite, true, null);
-    if(b.id==="b_inn_tavern"){
+    syncAtlasProofDiagnostics(b, spriteId, sprite, true, null);
+    if(HEARTHVALE_PROOF_BUILDING_IDS.has(b.id)){
       drawAtlasProofMarker(drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh, b, "ATLAS", null);
       logAtlasProofStatusOnce("ATLAS");
     }
