@@ -1274,7 +1274,17 @@ const atlasDebugPreview={
   enabled:false,
   showCrops:true
 };
-const USE_HEARTHVALE_ATLAS_PROOF_DEBUG = false;
+function isAtlasDebugEnabledFromUrl(){
+  try{
+    const params=new URLSearchParams(window.location.search || "");
+    const raw=params.get("atlasDebug");
+    return raw==="1";
+  }catch(_error){
+    return false;
+  }
+}
+const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
+const USE_HEARTHVALE_ATLAS_PROOF_DEBUG = ATLAS_DEBUG_MODE;
 const BUILDING_SPRITE_PROOF_DEBUG = false;
 const buildingSpriteProofState={
   attempted:false,
@@ -1293,7 +1303,9 @@ const atlasProofDiagnostics={
   drawSize:null,
   usedAtlasRender:false,
   fallbackReason:null,
-  fallbackLogged:false
+  fallbackLogged:false,
+  statusLogged:false,
+  startupLogged:false
 };
 const spriteBlankHeuristicCache=new Map();
 function getAtlasFilename(value){
@@ -1302,13 +1314,13 @@ function getAtlasFilename(value){
   return parts[parts.length-1] || value;
 }
 function toAtlasProofFallbackReason(reason, building, spriteId){
-  if(!USE_HEARTHVALE_ATLAS_PROOF) return "proof flag disabled";
-  if(reason==="production_atlas_disabled") return "proof flag disabled";
-  if(!spriteId || reason==="unmapped_for_safe_rollout" || reason==="missing_sprite_entry") return "missing sprite id";
-  if(reason==="asset_not_production_ready" || reason==="sprite_not_production_ready") return "productionReady false";
-  if(reason==="debug_only_sprite") return "debugOnly true";
-  if(reason==="atlas_missing_alpha_transparency") return "failed transparency/alpha validation";
-  if(reason==="sprite_crop_absurdly_large" || reason==="sprite_draw_scale_too_large") return "crop exceeds max size";
+  if(!USE_HEARTHVALE_ATLAS_PROOF) return "proof_flag_disabled";
+  if(reason==="production_atlas_disabled") return "proof_flag_disabled";
+  if(!spriteId || reason==="unmapped_for_safe_rollout" || reason==="missing_sprite_entry") return "sprite_missing";
+  if(reason==="asset_not_production_ready" || reason==="sprite_not_production_ready") return "production_ready_false";
+  if(reason==="debug_only_sprite") return "debug_only";
+  if(reason==="atlas_missing_alpha_transparency") return "transparency_invalid";
+  if(reason==="sprite_crop_absurdly_large" || reason==="sprite_draw_scale_too_large") return "crop_too_large";
   if(
     reason==="invalid_atlas_metadata_position" ||
     reason==="invalid_atlas_metadata_crop_size" ||
@@ -1316,14 +1328,15 @@ function toAtlasProofFallbackReason(reason, building, spriteId){
     reason==="invalid_atlas_metadata_anchor" ||
     reason==="sprite_crop_out_of_bounds" ||
     reason==="sprite_crop_full_sheet_like"
-  ) return "invalid crop";
+  ) return "invalid_crop";
   if(
     reason==="sheet_not_initialized" ||
     reason==="sheet_not_complete" ||
     reason==="sheet_invalid_dimensions" ||
     reason==="missing_manifest"
-  ) return "atlas image not loaded";
-  return reason || "unknown";
+  ) return "asset_not_loaded";
+  if(reason==="known_bad_test_asset") return "asset_not_found";
+  return reason || "other_specific_reason";
 }
 function syncInnAtlasProofDiagnostics(building, spriteId, sprite, didDraw, fallbackReason){
   if(building?.id!=="b_inn_tavern") return;
@@ -1340,50 +1353,55 @@ function syncInnAtlasProofDiagnostics(building, spriteId, sprite, didDraw, fallb
   atlasProofDiagnostics.usedAtlasRender=!!didDraw;
   atlasProofDiagnostics.fallbackReason=fallbackReason ? toAtlasProofFallbackReason(fallbackReason, building, spriteId) : null;
 }
-function logAtlasProofStatusOnce(pathLabel){
-  if(pathLabel==="ATLAS"){
-    console.info(
-      "[Atlas Proof] ON=" + USE_HEARTHVALE_ATLAS_PROOF +
-      " Building=" + atlasProofDiagnostics.selectedBuildingId +
-      " Role=" + atlasProofDiagnostics.selectedBuildingRole +
-      " Sprite=" + (atlasProofDiagnostics.selectedSpriteId||"n/a") +
-      " Atlas=" + atlasProofDiagnostics.selectedAtlasFilename +
-      " URL=" + atlasProofDiagnostics.requestedAssetUrl +
-      " ImageLoaded=" + atlasProofDiagnostics.imageLoaded +
-      " " + atlasProofDiagnostics.naturalWidth + "x" + atlasProofDiagnostics.naturalHeight +
-      " Crop=" + formatRect(atlasProofDiagnostics.crop) +
-      " Draw=" + (atlasProofDiagnostics.drawSize ? atlasProofDiagnostics.drawSize.w + "x" + atlasProofDiagnostics.drawSize.h : "n/a") +
-      " Render path=ATLAS"
-    );
-    return;
-  }
-  if(atlasProofDiagnostics.fallbackLogged) return;
-  atlasProofDiagnostics.fallbackLogged=true;
-  console.warn(
-    "[Atlas Proof] ON=" + USE_HEARTHVALE_ATLAS_PROOF +
+function atlasProofStatusLine(pathLabel){
+  return "[Atlas Proof] " +
+    "atlasDebug=" + (ATLAS_DEBUG_MODE ? "true" : "false") +
+    " USE_HEARTHVALE_ATLAS_PROOF=" + (USE_HEARTHVALE_ATLAS_PROOF ? "true" : "false") +
     " Building=" + atlasProofDiagnostics.selectedBuildingId +
     " Role=" + atlasProofDiagnostics.selectedBuildingRole +
     " Sprite=" + (atlasProofDiagnostics.selectedSpriteId||"n/a") +
-    " Atlas=" + atlasProofDiagnostics.selectedAtlasFilename +
+    " Asset=" + atlasProofDiagnostics.selectedAtlasFilename +
     " URL=" + atlasProofDiagnostics.requestedAssetUrl +
     " ImageLoaded=" + atlasProofDiagnostics.imageLoaded +
-    " " + atlasProofDiagnostics.naturalWidth + "x" + atlasProofDiagnostics.naturalHeight +
+    " Natural=" + atlasProofDiagnostics.naturalWidth + "x" + atlasProofDiagnostics.naturalHeight +
     " Crop=" + formatRect(atlasProofDiagnostics.crop) +
     " Draw=" + (atlasProofDiagnostics.drawSize ? atlasProofDiagnostics.drawSize.w + "x" + atlasProofDiagnostics.drawSize.h : "n/a") +
-    " Render path=FALLBACK Reason=" + (atlasProofDiagnostics.fallbackReason||"unknown")
-  );
+    " RenderPath=" + pathLabel +
+    (pathLabel==="FALLBACK" ? " Reason=" + (atlasProofDiagnostics.fallbackReason||"other_specific_reason") : "");
 }
-function drawAtlasProofMarker(drawX, drawY, drawW, drawH){
-  if(!USE_HEARTHVALE_ATLAS_PROOF_DEBUG) return;
+function logAtlasProofStatusOnce(pathLabel){
+  if(!ATLAS_DEBUG_MODE){
+    if(atlasProofDiagnostics.startupLogged) return;
+    atlasProofDiagnostics.startupLogged=true;
+    console.info("[Atlas Proof] atlasDebug=false USE_HEARTHVALE_ATLAS_PROOF=" + (USE_HEARTHVALE_ATLAS_PROOF ? "true" : "false"));
+    return;
+  }
+  if(atlasProofDiagnostics.statusLogged && pathLabel!=="FALLBACK") return;
+  if(pathLabel==="FALLBACK" && atlasProofDiagnostics.fallbackLogged) return;
+  if(pathLabel==="FALLBACK"){
+    atlasProofDiagnostics.fallbackLogged=true;
+    console.warn(atlasProofStatusLine("FALLBACK"));
+    return;
+  }
+  atlasProofDiagnostics.statusLogged=true;
+  console.info(atlasProofStatusLine("ATLAS"));
+}
+function drawAtlasProofMarker(drawX, drawY, drawW, drawH, buildingId, renderPath, fallbackReason){
+  if(!USE_HEARTHVALE_ATLAS_PROOF_DEBUG || buildingId!=="b_inn_tavern") return;
   ctx.save();
-  ctx.strokeStyle="rgba(81,237,255,.95)";
+  const isAtlas=renderPath==="ATLAS";
+  const labelText=isAtlas
+    ? "inn_tavern: ATLAS"
+    : "inn_tavern: FALLBACK: " + (fallbackReason || "other_specific_reason");
+  ctx.strokeStyle=isAtlas ? "rgba(81,237,255,.95)" : "rgba(255,130,76,.95)";
   ctx.lineWidth=1;
   ctx.strokeRect(Math.floor(drawX)+0.5, Math.floor(drawY)+0.5, Math.max(1, Math.floor(drawW)-1), Math.max(1, Math.floor(drawH)-1));
   ctx.fillStyle="rgba(9,18,22,.86)";
-  ctx.fillRect(Math.floor(drawX), Math.floor(drawY)-10, 32, 10);
-  ctx.fillStyle="rgba(89,245,255,.98)";
+  const labelW=Math.max(126, Math.ceil(ctx.measureText(labelText).width)+8);
+  ctx.fillRect(Math.floor(drawX), Math.floor(drawY)-10, labelW, 10);
+  ctx.fillStyle=isAtlas ? "rgba(89,245,255,.98)" : "rgba(255,167,122,.98)";
   ctx.font="9px ui-monospace, monospace";
-  ctx.fillText("ATLAS", Math.floor(drawX)+2, Math.floor(drawY)-2);
+  ctx.fillText(labelText, Math.floor(drawX)+2, Math.floor(drawY)-2);
   ctx.restore();
 }
 function hasAtlasUsableTransparency(atlasId){
@@ -6811,14 +6829,19 @@ function drawWorld(){
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
       logBuildingFallbackOnce(b, fallbackReason);
       syncInnAtlasProofDiagnostics(b, spriteId, sprite, false, fallbackReason);
-      if(b.id==="b_inn_tavern") logAtlasProofStatusOnce("FALLBACK");
+      if(b.id==="b_inn_tavern"){
+        logAtlasProofStatusOnce("FALLBACK");
+        const fallbackDrawW=(sprite?.drawW ?? sprite?.sw ?? (b.w*TILE));
+        const fallbackDrawH=(sprite?.drawH ?? sprite?.sh ?? (b.h*TILE));
+        drawAtlasProofMarker(drawX, drawY, fallbackDrawW, fallbackDrawH, b.id, "FALLBACK", atlasProofDiagnostics.fallbackReason);
+      }
       drawBuildingFallbackSprite(b);
       return;
     }
     buildingRenderDiagnostics.atlasBuildings.add(b.id);
     syncInnAtlasProofDiagnostics(b, spriteId, sprite, true, null);
     if(b.id==="b_inn_tavern"){
-      drawAtlasProofMarker(drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh);
+      drawAtlasProofMarker(drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh, b.id, "ATLAS", null);
       logAtlasProofStatusOnce("ATLAS");
     }
 
