@@ -1331,8 +1331,82 @@ function isPropDebugEnabledFromUrl(){
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
 const PROP_DEBUG_MODE = isPropDebugEnabledFromUrl();
+const ATLAS_DEBUG_SOURCE_LABELS = (() => {
+  if(!ATLAS_DEBUG_MODE) return false;
+  try{
+    return new URLSearchParams(window.location.search).get("sourceLabels") !== "0";
+  }catch(_error){
+    return true;
+  }
+})();
 const USE_HEARTHVALE_ATLAS_PROOF_DEBUG = ATLAS_DEBUG_MODE;
 const BUILDING_SPRITE_PROOF_DEBUG = false;
+const HEARTHVALE_TRACE_BOUNDS = Object.freeze({ x:7, y:5, w:23, h:15 });
+const decorSourceTraceState={
+  frame:0,
+  entries:[]
+};
+function isTraceableDecorTile(tx, ty){
+  return tx>=HEARTHVALE_TRACE_BOUNDS.x &&
+    ty>=HEARTHVALE_TRACE_BOUNDS.y &&
+    tx<HEARTHVALE_TRACE_BOUNDS.x+HEARTHVALE_TRACE_BOUNDS.w &&
+    ty<HEARTHVALE_TRACE_BOUNDS.y+HEARTHVALE_TRACE_BOUNDS.h;
+}
+function beginDecorSourceTraceFrame(){
+  if(!ATLAS_DEBUG_MODE) return;
+  decorSourceTraceState.frame+=1;
+  decorSourceTraceState.entries.length=0;
+}
+function traceDecorSource(entry){
+  if(!ATLAS_DEBUG_MODE) return;
+  const tx=Math.round(entry.worldTile?.x ?? -9999);
+  const ty=Math.round(entry.worldTile?.y ?? -9999);
+  if(!isTraceableDecorTile(tx,ty)) return;
+  decorSourceTraceState.entries.push({
+    sourceSystem:entry.sourceSystem || "unknown",
+    sourceFunction:entry.sourceFunction || "unknown",
+    objectId:entry.objectId || "n/a",
+    objectType:entry.objectType || "n/a",
+    sourceLabel:entry.sourceLabel || "MAP_OBJECT",
+    atlasFile:entry.atlasFile || null,
+    crop:entry.crop || null,
+    procedural:entry.procedural || false,
+    worldTile:{ x:tx, y:ty },
+    screenDraw:{
+      x:Math.round(entry.screenDraw?.x ?? 0),
+      y:Math.round(entry.screenDraw?.y ?? 0)
+    },
+    drawSize:{
+      w:Math.max(1, Math.round(entry.drawSize?.w ?? TILE)),
+      h:Math.max(1, Math.round(entry.drawSize?.h ?? TILE))
+    },
+    renderLayer:entry.renderLayer || "unknown"
+  });
+}
+function flushDecorSourceTraceFrame(){
+  if(!ATLAS_DEBUG_MODE) return;
+  window.__atlasDecorSourceTrace = {
+    frame:decorSourceTraceState.frame,
+    entries:decorSourceTraceState.entries.slice()
+  };
+}
+function drawDecorSourceLabels(){
+  if(!ATLAS_DEBUG_SOURCE_LABELS || !ATLAS_DEBUG_MODE) return;
+  ctx.save();
+  ctx.font="10px ui-monospace, monospace";
+  decorSourceTraceState.entries.forEach((entry)=>{
+    if(!entry.sourceLabel) return;
+    const x=Math.floor(entry.screenDraw.x);
+    const y=Math.floor(entry.screenDraw.y)-2;
+    const label=entry.sourceLabel;
+    const w=Math.ceil(ctx.measureText(label).width)+8;
+    ctx.fillStyle="rgba(8,12,18,.86)";
+    ctx.fillRect(x, y-11, w, 11);
+    ctx.fillStyle="rgba(250,236,202,.94)";
+    ctx.fillText(label, x+4, y-3);
+  });
+  ctx.restore();
+}
 const buildingSpriteProofState={
   attempted:false,
   drawn:false
@@ -6972,6 +7046,7 @@ function drawWorld(){
   ctx.imageSmoothingEnabled=false;
 
   const now=performance.now();
+  beginDecorSourceTraceFrame();
   const shakeActive=now<cameraShakeUntil;
   const shakeMagnitude=shakeActive ? cameraShakeStrength*Math.max(0.15, (cameraShakeUntil-now)/180) : 0;
   const shakeX=shakeActive ? (Math.random()*2-1)*shakeMagnitude : 0;
@@ -7133,10 +7208,39 @@ function drawWorld(){
       drawAtlasProofMarker(drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh, b, "ATLAS", null);
       logAtlasProofStatusOnce("ATLAS");
     }
+    traceDecorSource({
+      sourceSystem:"overworld_renderer",
+      sourceFunction:"drawWorld.world.buildings.forEach",
+      objectId:b.id,
+      objectType:b.role,
+      sourceLabel:"BUILDING_ATLAS",
+      atlasFile:getAtlasFilename(sprite?.atlas || atlasManifests.buildings?.imagePath),
+      crop:sprite ? { x:sprite.sx, y:sprite.sy, w:sprite.sw, h:sprite.sh } : null,
+      worldTile:{ x:b.x + (b.anchorX ?? Math.floor(b.w/2)), y:b.y + (b.anchorY ?? (b.h-1)) },
+      screenDraw:{ x:drawX, y:drawY },
+      drawSize:{ w:sprite?.drawW ?? sprite?.sw, h:sprite?.drawH ?? sprite?.sh },
+      renderLayer:"buildings"
+    });
 
-    const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
-    ctx.fillStyle="rgba(94,72,54,.9)";
-    ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
+    const chimneyTx=b.x + (bIndex%2 ? b.w-2 : 1);
+    const chimneyTy=b.y;
+    const chimney=tileToScreen(chimneyTx, chimneyTy);
+    traceDecorSource({
+      sourceSystem:"procedural_building_overlay",
+      sourceFunction:"drawWorld.world.buildings.forEach.chimney",
+      objectId:b.id + ":chimney",
+      objectType:"chimney_overlay",
+      sourceLabel:"PROCEDURAL",
+      procedural:true,
+      worldTile:{ x:chimneyTx, y:chimneyTy },
+      screenDraw:{ x:chimney.x+10, y:chimney.y-7 },
+      drawSize:{ w:6, h:9 },
+      renderLayer:"buildings_overlay"
+    });
+    if(b.id!=="b_inn_tavern"){
+      ctx.fillStyle="rgba(94,72,54,.9)";
+      ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
+    }
   });
 
   const propsBehind=world.props.filter((prop)=>prop.layer!=="above_entities");
@@ -7144,6 +7248,26 @@ function drawWorld(){
   propsBehind.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const usedAtlasSprite=drawMappedPropSprite(prop,p);
+    const mappedSpriteId=PROP_SPRITE_BY_WORLD_TYPE[prop.type];
+    const mappedAtlasSprite=mappedSpriteId ? atlasManifests.props?.sprites?.[mappedSpriteId] : null;
+    const mappedDrawX=mappedAtlasSprite ? Math.round(p.x + TILE/2 - (mappedAtlasSprite.anchorX ?? TILE/2)) : p.x;
+    const mappedDrawY=mappedAtlasSprite ? Math.round(p.y + TILE - (mappedAtlasSprite.anchorY ?? TILE)) : p.y;
+    const mappedDrawW=mappedAtlasSprite?.drawW ?? mappedAtlasSprite?.sw ?? TILE;
+    const mappedDrawH=mappedAtlasSprite?.drawH ?? mappedAtlasSprite?.sh ?? TILE;
+    traceDecorSource({
+      sourceSystem:"map_props",
+      sourceFunction:"drawWorld.propsBehind.forEach",
+      objectId:"prop_" + prop.x + "_" + prop.y + "_" + prop.type,
+      objectType:prop.type,
+      sourceLabel:usedAtlasSprite ? "PROP_ATLAS" : "LEGACY_PROP",
+      atlasFile:usedAtlasSprite ? getAtlasFilename(mappedAtlasSprite?.atlas || atlasManifests.props?.imagePath) : null,
+      crop:usedAtlasSprite && mappedAtlasSprite ? { x:mappedAtlasSprite.sx, y:mappedAtlasSprite.sy, w:mappedAtlasSprite.sw, h:mappedAtlasSprite.sh } : null,
+      procedural:!usedAtlasSprite,
+      worldTile:{ x:prop.x, y:prop.y },
+      screenDraw:{ x:usedAtlasSprite ? mappedDrawX : p.x, y:usedAtlasSprite ? mappedDrawY : p.y },
+      drawSize:{ w:usedAtlasSprite ? mappedDrawW : TILE, h:usedAtlasSprite ? mappedDrawH : TILE },
+      renderLayer:prop.layer || "ground_props"
+    });
     if(!usedAtlasSprite){
       const img = assets.props.sprites[prop.type];
       if(!img || !img.complete || img.naturalWidth<=0){
@@ -7209,6 +7333,18 @@ function drawWorld(){
     if(chance > 0.045) continue;
     const p = tileToScreen(x,y);
     const detail = assets.detail[Math.floor(rng(x,y,137)*assets.detail.length)];
+    traceDecorSource({
+      sourceSystem:"terrain_detail_scatter",
+      sourceFunction:"drawWorld.detailScatterLoop",
+      objectId:"detail_" + x + "_" + y,
+      objectType:"detail_tile",
+      sourceLabel:"FALLBACK_DECOR",
+      procedural:true,
+      worldTile:{ x, y },
+      screenDraw:{ x:p.x, y:p.y },
+      drawSize:{ w:TILE, h:TILE },
+      renderLayer:"ground_decor"
+    });
     if(detail && detail.complete && detail.naturalWidth>0) ctx.drawImage(detail,p.x,p.y,32,32);
   }
 
@@ -7243,6 +7379,26 @@ function drawWorld(){
   propsAbove.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const usedAtlasSprite=drawMappedPropSprite(prop,p);
+    const mappedSpriteId=PROP_SPRITE_BY_WORLD_TYPE[prop.type];
+    const mappedAtlasSprite=mappedSpriteId ? atlasManifests.props?.sprites?.[mappedSpriteId] : null;
+    const mappedDrawX=mappedAtlasSprite ? Math.round(p.x + TILE/2 - (mappedAtlasSprite.anchorX ?? TILE/2)) : p.x;
+    const mappedDrawY=mappedAtlasSprite ? Math.round(p.y + TILE - (mappedAtlasSprite.anchorY ?? TILE)) : p.y;
+    const mappedDrawW=mappedAtlasSprite?.drawW ?? mappedAtlasSprite?.sw ?? TILE;
+    const mappedDrawH=mappedAtlasSprite?.drawH ?? mappedAtlasSprite?.sh ?? TILE;
+    traceDecorSource({
+      sourceSystem:"map_props",
+      sourceFunction:"drawWorld.propsAbove.forEach",
+      objectId:"prop_" + prop.x + "_" + prop.y + "_" + prop.type,
+      objectType:prop.type,
+      sourceLabel:usedAtlasSprite ? "PROP_ATLAS" : "MAP_OBJECT",
+      atlasFile:usedAtlasSprite ? getAtlasFilename(mappedAtlasSprite?.atlas || atlasManifests.props?.imagePath) : null,
+      crop:usedAtlasSprite && mappedAtlasSprite ? { x:mappedAtlasSprite.sx, y:mappedAtlasSprite.sy, w:mappedAtlasSprite.sw, h:mappedAtlasSprite.sh } : null,
+      procedural:!usedAtlasSprite,
+      worldTile:{ x:prop.x, y:prop.y },
+      screenDraw:{ x:usedAtlasSprite ? mappedDrawX : p.x, y:usedAtlasSprite ? mappedDrawY : p.y },
+      drawSize:{ w:usedAtlasSprite ? mappedDrawW : TILE, h:usedAtlasSprite ? mappedDrawH : TILE },
+      renderLayer:prop.layer || "above_entities"
+    });
     if(!usedAtlasSprite){
       const img = assets.props.sprites[prop.type];
       if(!img || !img.complete || img.naturalWidth<=0){
@@ -7285,6 +7441,8 @@ function drawWorld(){
   drawTransitionFade(now);
   drawFloatingTexts(now);
   maybeLogBuildingRenderSummary();
+  drawDecorSourceLabels();
+  flushDecorSourceTraceFrame();
   drawAtlasDebugPreview();
   drawBuildingSpriteProof();
   drawAtlasProofTopLeftLine();
