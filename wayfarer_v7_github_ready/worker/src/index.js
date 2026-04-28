@@ -5113,6 +5113,35 @@ function drawTileRotated(img, x, y, turns){
   ctx.drawImage(img,-16,-16,32,32);
   ctx.restore();
 }
+function drawTerrainFallbackTile(p, kind, seed=0){
+  if(kind==="grass"){
+    const shade=58+Math.floor((seed%5)*6);
+    ctx.fillStyle="rgb(" + (34+Math.floor((seed%3)*3)) + "," + shade + ",42)";
+    ctx.fillRect(p.x,p.y,32,32);
+    return;
+  }
+  if(kind==="road"){
+    ctx.fillStyle="rgba(103,85,61,.9)";
+    ctx.fillRect(p.x,p.y,32,32);
+    ctx.fillStyle="rgba(136,113,82,.42)";
+    ctx.fillRect(p.x+4,p.y+13,24,2);
+    return;
+  }
+  if(kind==="water_deep"){
+    ctx.fillStyle="rgba(35,74,112,.92)";
+    ctx.fillRect(p.x,p.y,32,32);
+    return;
+  }
+  if(kind==="water_shallow"){
+    ctx.fillStyle="rgba(59,111,148,.88)";
+    ctx.fillRect(p.x,p.y,32,32);
+    return;
+  }
+  if(kind==="shore"){
+    ctx.fillStyle="rgba(98,120,83,.78)";
+    ctx.fillRect(p.x,p.y,32,32);
+  }
+}
 function drawShadowTile(img, x, y, alpha=1){
   if(!img || !img.complete || img.naturalWidth<=0) return;
   const oldAlpha = ctx.globalAlpha;
@@ -5392,6 +5421,7 @@ function drawWorld(){
     const forestMix=Math.min(assets.forestGrass.length-1, Math.floor((layeredNoise(x+5,y+3)+rng(x,y,212)*0.2)*assets.forestGrass.length)%assets.forestGrass.length);
     const img=inForest ? assets.forestGrass[forestMix] : assets.grass[mix];
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    else drawTerrainFallbackTile(p, "grass", x*31+y*17);
     if(!inForest && layeredNoise(x+13,y+7)>0.8){
       ctx.fillStyle="rgba(188,216,151,.012)";
       ctx.fillRect(p.x+1,p.y+1,30,30);
@@ -5406,6 +5436,7 @@ function drawWorld(){
     const p=tileToScreen(x,y);
     const img=assets.road[Math.floor(rng(x,y,22)*assets.road.length)];
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    else drawTerrainFallbackTile(p, "road");
 
     const north = world.roadTiles.has(keyOf(x,y-1));
     const south = world.roadTiles.has(keyOf(x,y+1));
@@ -5434,7 +5465,9 @@ function drawWorld(){
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondWater.has(k)) continue;
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
-    const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    const img=edge?assets.water.shallow:assets.water.deep;
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    else drawTerrainFallbackTile(p, edge ? "water_shallow" : "water_deep");
     const t=performance.now()*0.0014, rip=(Math.sin(t*2+x*0.8+y*.6)+1)*.5;
     const mirrorAura=(x>=25&&x<=30&&y>=12&&y<=17) ? 0.065 : 0.016;
     ctx.fillStyle="rgba(188,228,255," + (.014+rip*.03+mirrorAura).toFixed(3) + ")"; ctx.fillRect(p.x+4,p.y+7,TILE-12,1);
@@ -5454,7 +5487,9 @@ function drawWorld(){
   }
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondShore.has(k)) continue;
-    const p=tileToScreen(x,y); const img=assets.shore[Math.floor(rng(x,y,33)*assets.shore.length)]; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    const p=tileToScreen(x,y); const img=assets.shore[Math.floor(rng(x,y,33)*assets.shore.length)];
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    else drawTerrainFallbackTile(p, "shore");
     if(rng(x,y,491)>0.78){
       ctx.fillStyle="rgba(86,121,74,.42)";
       ctx.fillRect(p.x+5,p.y+14,2,8);
@@ -5561,6 +5596,10 @@ function drawWorld(){
     drawShadowTile(assets.shadow.softTile,p.x+4,p.y+4,.42);
     const img=assets.fence[i%assets.fence.length];
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    else {
+      ctx.fillStyle="rgba(122,96,69,.9)";
+      ctx.fillRect(p.x+4,p.y+8,24,14);
+    }
   });
   world.trees.forEach(t=>{
     const p=tileToScreen(t.x,t.y);
@@ -5568,6 +5607,12 @@ function drawWorld(){
     drawShadowTile(assets.shadow.treeCircle,p.x+2,p.y+2,.72);
     const img=assets.tree[t.type]||assets.tree.a;
     if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
+    else {
+      ctx.fillStyle="rgba(67,98,58,.92)";
+      ctx.fillRect(p.x+6,p.y,20,18);
+      ctx.fillStyle="rgba(92,68,46,.92)";
+      ctx.fillRect(p.x+14,p.y+16,4,14);
+    }
   });
 
   for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
@@ -5639,7 +5684,26 @@ function update(dt,now){
 }
 
 let last=performance.now();
-function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
+function loop(now){
+  const dt=Math.min(.033,(now-last)/1000);
+  last=now;
+  try {
+    update(dt,now);
+    drawWorld();
+  } catch(err){
+    console.error("[Render Guard] Frame failure", err);
+    try {
+      ctx.save();
+      ctx.fillStyle="rgba(10,16,24,.92)";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle="rgba(243,208,146,.95)";
+      ctx.font="bold 12px monospace";
+      ctx.fillText("Render error. Check console.", 18, 30);
+      ctx.restore();
+    } catch(_err){}
+  }
+  requestAnimationFrame(loop);
+}
 
 const loadedFromSave=loadGame();
 enforceAllVillageNpcTerrainValidation(true);
