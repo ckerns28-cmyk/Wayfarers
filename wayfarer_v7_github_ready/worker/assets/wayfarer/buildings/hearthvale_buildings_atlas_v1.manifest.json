@@ -77,17 +77,19 @@
       "id": "inn_tavern_v1",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 0,
-        "y": 160,
-        "w": 192,
-        "h": 160
+        "x": 33,
+        "y": 120,
+        "w": 420,
+        "h": 340
       },
       "tileFootprint": {
         "w": 6,
         "h": 5
       },
       "anchorX": 96,
-      "anchorY": 128,
+      "anchorY": 143,
+      "drawW": 192,
+      "drawH": 156,
       "collisionRect": {
         "x": 0,
         "y": 3,
