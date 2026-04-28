@@ -1221,8 +1221,8 @@ const atlasManifests = {
       "/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png"
     ],
     sprites: {
-      village_hall_meeting_house:{ sx:0, sy:0, sw:192, sh:160, drawW:192, drawH:160, anchorX:96, anchorY:128, productionReady:true, proofEnabled:true, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, labelAnchor:{ x:3, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
-      mercantile_shop:{ sx:192, sy:0, sw:160, sh:160, drawW:160, drawH:160, anchorX:80, anchorY:128, productionReady:true, proofEnabled:true, footprint:{ w:5, h:5 }, collisionRect:{ x:0, y:4, w:5, h:1 }, interactionRect:{ x:2, y:4, w:1, h:1 }, labelAnchor:{ x:2, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
+      village_hall_meeting_house:{ sx:0, sy:0, sw:192, sh:160, drawW:192, drawH:160, anchorX:96, anchorY:128, productionReady:false, debugOnly:true, proofEnabled:false, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, labelAnchor:{ x:3, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
+      mercantile_shop:{ sx:192, sy:32, sw:160, sh:160, drawW:160, drawH:160, anchorX:80, anchorY:128, productionReady:true, proofEnabled:true, calibrationOnly:true, footprint:{ w:5, h:5 }, collisionRect:{ x:0, y:4, w:5, h:1 }, interactionRect:{ x:2, y:4, w:1, h:1 }, labelAnchor:{ x:2, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       inn_tavern_v1:{ sx:33, sy:120, sw:420, sh:340, drawW:192, drawH:156, anchorX:96, anchorY:143, productionReady:true, proofEnabled:true, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, labelAnchor:{ x:3, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       residence_small:{ sx:192, sy:160, sw:128, sh:128, drawW:128, drawH:128, anchorX:64, anchorY:96, productionReady:false, proofEnabled:false, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, labelAnchor:{ x:1, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       residence_large:{ sx:320, sy:160, sw:160, sh:128, drawW:160, drawH:128, anchorX:80, anchorY:96, productionReady:false, proofEnabled:false, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, labelAnchor:{ x:2, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
@@ -1849,7 +1849,9 @@ function bootstrapAtlasPipeline(){
 function isProofBuildingEnabled(building, sprite){
   if(!USE_HEARTHVALE_ATLAS_PROOF) return false;
   if(!building || !HEARTHVALE_PROOF_BUILDING_IDS.has(building.id)) return false;
-  return sprite?.proofEnabled===true;
+  if(sprite?.proofEnabled!==true) return false;
+  if(sprite?.calibrationOnly===true && !ATLAS_DEBUG_MODE) return false;
+  return true;
 }
 function isProofPropEnabled(propType, sprite){
   if(!USE_HEARTHVALE_ATLAS_PROOF) return false;
