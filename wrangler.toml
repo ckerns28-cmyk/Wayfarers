@@ -4,3 +4,4 @@ compatibility_date = "2026-04-23"
 
 [assets]
 directory = "./wayfarer_v7_github_ready/worker/assets"
+binding = "ASSETS"
