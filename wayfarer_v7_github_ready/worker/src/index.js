@@ -1160,7 +1160,7 @@ const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
   buildings:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.manifest.json",
   props:"/assets/wayfarer/props/hearthvale_props_atlas_v1.manifest.json"
 });
-const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_village_hall"]));
+const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_village_hall","b_mercantile"]));
 const HEARTHVALE_PROOF_PROP_TYPES = Object.freeze(new Set(["bench","barrel","crate","signPost"]));
 
 const atlasManifests = {
@@ -1341,12 +1341,12 @@ function bootstrapAtlasPipeline(){
   initExternalAtlasManifests().finally(()=>initAtlasImages());
 }
 function isProofBuildingEnabled(building, sprite){
-  if(!USE_HEARTHVALE_ATLAS_PROOF || !DEV_MODE) return false;
+  if(!USE_HEARTHVALE_ATLAS_PROOF) return false;
   if(!building || !HEARTHVALE_PROOF_BUILDING_IDS.has(building.id)) return false;
   return sprite?.proofEnabled===true;
 }
 function isProofPropEnabled(propType, sprite){
-  if(!USE_HEARTHVALE_ATLAS_PROOF || !DEV_MODE) return false;
+  if(!USE_HEARTHVALE_ATLAS_PROOF) return false;
   if(!HEARTHVALE_PROOF_PROP_TYPES.has(propType)) return false;
   return sprite?.proofEnabled===true;
 }
@@ -1474,53 +1474,6 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   ) return "sprite_crop_absurdly_large";
   return getAtlasSpriteFailureReason("buildings", spriteId);
 }
-function getBuildingDrawPlacementFailureReason(building, sprite, drawX, drawY, drawW, drawH){
-  if(!sprite || !building) return "missing_building_or_sprite";
-  if(sprite.debugOnly===true || sprite.debug_only===true) return "debug_only_sprite";
-  if(sprite.productionReady!==true && !isProofBuildingEnabled(building, sprite)) return "sprite_not_production_ready";
-  if(!hasFiniteNonNegativeNumber(drawX) || !hasFiniteNonNegativeNumber(drawY)) return "invalid_draw_position";
-  if(!hasFinitePositiveNumber(drawW) || !hasFinitePositiveNumber(drawH)) return "invalid_draw_size";
-  const maxDrawW=TILE*BUILDING_SPRITE_PRODUCTION_LIMITS.maxDrawTilesWide;
-  const maxDrawH=TILE*BUILDING_SPRITE_PRODUCTION_LIMITS.maxDrawTilesHigh;
-  if(drawW>maxDrawW || drawH>maxDrawH) return "sprite_draw_scale_too_large";
-  const mapPxW=WORLD_W*TILE;
-  const mapPxH=WORLD_H*TILE;
-  const maxOutsidePx=4;
-  if(drawX<-maxOutsidePx) return "draw_left_of_map";
-  if(drawY<-Math.max(drawH, TILE*5)) return "draw_far_above_map";
-  if(drawX+drawW>mapPxW+maxOutsidePx) return "draw_right_of_map";
-  if(drawY+drawH>mapPxH+maxOutsidePx) return "draw_below_map";
-  const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
-  const visualPx={ x:visual.x*TILE, y:visual.y*TILE, w:visual.w*TILE, h:visual.h*TILE };
-  const spriteRect={ x:drawX, y:drawY, w:drawW, h:drawH };
-  const overlapsRoadTile=(tx,ty)=>(
-    tx*TILE<spriteRect.x+spriteRect.w &&
-    (tx+1)*TILE>spriteRect.x &&
-    ty*TILE<spriteRect.y+spriteRect.h &&
-    (ty+1)*TILE>spriteRect.y
-  );
-  let roadOverlapCount=0;
-  for(const key of world.roadTiles){
-    const [rx,ry]=key.split(",").map(Number);
-    if(!Number.isFinite(rx)||!Number.isFinite(ry)) continue;
-    const inBuildingVisual=rx>=visual.x && rx<visual.x+visual.w && ry>=visual.y && ry<visual.y+visual.h;
-    if(inBuildingVisual) continue;
-    if(overlapsRoadTile(rx,ry)){
-      roadOverlapCount+=1;
-      if(roadOverlapCount>2) return "overlaps_unrelated_roads";
-    }
-  }
-  if(Array.isArray(namedVillageNpcs)){
-    for(const npcEntity of namedVillageNpcs){
-      const cx=npcEntity.x*TILE+(TILE/2);
-      const cy=npcEntity.y*TILE+TILE;
-      const insideSprite=cx>=spriteRect.x && cx<=spriteRect.x+spriteRect.w && cy>=spriteRect.y && cy<=spriteRect.y+spriteRect.h;
-      const insideBuildingParcel=cx>=visualPx.x && cx<=visualPx.x+visualPx.w && cy>=visualPx.y && cy<=visualPx.y+visualPx.h;
-      if(insideSprite && !insideBuildingParcel) return "covers_unrelated_npc";
-    }
-  }
-  return null;
-}
 function getExternalProductionSpriteFailureReason(atlasId, spriteId, drawW, drawH, worldType){
   const manifest=atlasManifests[atlasId];
   if(!manifest) return "missing_manifest";
@@ -1620,7 +1573,7 @@ function drawMappedPropSprite(prop, p){
   return drawAtlasSprite("props", spriteId, drawX, drawY, drawW, drawH);
 }
 function drawAtlasDebugPreview(){
-  if(!DEV_MODE || !atlasDebugPreview.enabled) return;
+  if(!atlasDebugPreview.enabled) return;
   ctx.save();
   ctx.setTransform(1,0,0,1,0,0);
   ctx.imageSmoothingEnabled=false;
@@ -1719,7 +1672,7 @@ function getBuildingAtlasDebugStatus(){
   };
 }
 function drawBuildingSpriteProof(){
-  if(!DEV_MODE || !BUILDING_SPRITE_PROOF_DEBUG) return;
+  if(!BUILDING_SPRITE_PROOF_DEBUG) return;
   const spriteId="village_hall_meeting_house";
   const sprite=atlasManifests.buildings.sprites[spriteId];
   if(!sprite) return;
@@ -2500,7 +2453,7 @@ world.buildings.push(
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:7,y:14,w:4,h:4}, collision:{x:7,y:16,w:4,h:2}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:15,text:"Cottage"}, pathingBounds:{x:6,y:14,w:6,h:5} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:14, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:19,y:14,w:5,h:4}, collision:{x:19,y:16,w:5,h:2}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:15,text:"Residence"}, pathingBounds:{x:18,y:14,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:25, y:13, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:25,y:13,w:4,h:4}, collision:{x:25,y:15,w:4,h:2}, interaction:{x:26,y:16,w:1,h:1}, label:{x:26,y:14,text:"Hunter Lodge"}, pathingBounds:{x:24,y:13,w:6,h:5} }) },
-  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:20, w:5, h:3, anchorX:2, anchorY:1, ...createFootprint({ visual:{x:26,y:20,w:5,h:3}, collision:{x:26,y:21,w:5,h:2}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"}, pathingBounds:{x:25,y:20,w:7,h:4} }) }
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:20, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:20,w:5,h:3}, collision:{x:26,y:21,w:5,h:2}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"}, pathingBounds:{x:25,y:20,w:7,h:4} }) }
 );
 world.buildings.forEach((b)=>{
   const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
@@ -6682,16 +6635,11 @@ function drawWorld(){
     }
 
     const spriteFailureReason=getBuildingProductionSpriteFailureReason(b, spriteId);
-    const resolvedDrawW=sprite?.drawW ?? sprite?.sw;
-    const resolvedDrawH=sprite?.drawH ?? sprite?.sh;
-    const placementFailureReason=!spriteFailureReason
-      ? getBuildingDrawPlacementFailureReason(b, sprite, drawX, drawY, resolvedDrawW, resolvedDrawH)
-      : null;
     const didDraw=!spriteFailureReason
-      ? (!placementFailureReason && drawAtlasSprite("buildings", spriteId, drawX, drawY, resolvedDrawW, resolvedDrawH))
+      ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh)
       : false;
     if(!didDraw){
-      const fallbackReason=spriteFailureReason||placementFailureReason||"draw_failed";
+      const fallbackReason=spriteFailureReason||"draw_failed";
       warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
       logBuildingFallbackOnce(b, fallbackReason);
