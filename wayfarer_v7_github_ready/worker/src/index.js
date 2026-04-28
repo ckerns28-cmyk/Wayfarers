@@ -1174,10 +1174,15 @@ const atlasManifests = {
     imagePath: "/assets/sprites/medieval_town_buildings_sprite_sheet.png",
     fallbackImagePaths: ["/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png"],
     tileSize: 32,
+    allowProductionSprites: false,
+    knownBadAssetPaths: [
+      "/assets/sprites/medieval_town_buildings_sprite_sheet.png",
+      "/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png"
+    ],
     sprites: {
-      hall_large_white_manor:{ sx:74, sy:3, sw:357, sh:392, anchorX:178, anchorY:382, drawW:357, drawH:392 },
-      tavern_shop_red_roof:{ sx:1014, sy:81, sw:366, sh:302, anchorX:183, anchorY:294, drawW:366, drawH:302 },
-      cottage_small_stone:{ sx:1056, sy:816, sw:271, sh:204, anchorX:136, anchorY:198, drawW:271, drawH:204 }
+      hall_large_white_manor:{ sx:74, sy:3, sw:357, sh:392, anchorX:178, anchorY:382, drawW:357, drawH:392, debug_only:true },
+      tavern_shop_red_roof:{ sx:1014, sy:81, sw:366, sh:302, anchorX:183, anchorY:294, drawW:366, drawH:302, debug_only:true },
+      cottage_small_stone:{ sx:1056, sy:816, sw:271, sh:204, anchorX:136, anchorY:198, drawW:271, drawH:204, debug_only:true }
     }
   },
   characters: {
@@ -1211,7 +1216,14 @@ const buildingRenderDiagnostics={
   fallbackBuildings:new Map(),
   summaryLogged:false
 };
-const USE_PRODUCTION_BUILDING_ATLAS = true;
+const USE_PRODUCTION_BUILDING_ATLAS = false;
+const BUILDING_SPRITE_PRODUCTION_LIMITS = Object.freeze({
+  maxDrawTilesWide: 6,
+  maxDrawTilesHigh: 6,
+  maxCropPxWide: 192,
+  maxCropPxHigh: 192,
+  maxCropAreaPx: 192 * 192
+});
 const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze({
   b_village_hall:"hall_large_white_manor",
   b_mercantile:"tavern_shop_red_roof"
@@ -1327,6 +1339,38 @@ function getAtlasSpriteFailureReason(atlasId, spriteId){
   const blankToken=atlasId+":"+spriteId;
   if(spriteBlankHeuristicCache.get(blankToken)===true) return "sprite_crop_blank_or_checkerboard";
   return null;
+}
+function hasFinitePositiveNumber(value){
+  return Number.isFinite(value) && value > 0;
+}
+function hasFiniteNonNegativeNumber(value){
+  return Number.isFinite(value) && value >= 0;
+}
+function getBuildingProductionSpriteFailureReason(building, spriteId){
+  const manifest=atlasManifests.buildings;
+  if(!manifest) return "missing_building_manifest";
+  if(!manifest.allowProductionSprites || !USE_PRODUCTION_BUILDING_ATLAS) return "production_atlas_disabled";
+  if(!spriteId) return "unmapped_for_safe_rollout";
+  const sprite=manifest.sprites?.[spriteId];
+  if(!sprite) return "missing_sprite_entry";
+  if(sprite.debug_only) return "debug_only_sprite";
+  const selectedUrl=atlasRuntimeInfo.buildings?.selectedUrl || manifest.imagePath || "";
+  if(manifest.knownBadAssetPaths?.includes(selectedUrl)) return "known_bad_test_asset";
+  if(!hasFiniteNonNegativeNumber(sprite.sx) || !hasFiniteNonNegativeNumber(sprite.sy)) return "invalid_atlas_metadata_position";
+  if(!hasFinitePositiveNumber(sprite.sw) || !hasFinitePositiveNumber(sprite.sh)) return "invalid_atlas_metadata_crop_size";
+  const drawW=sprite.drawW ?? sprite.sw;
+  const drawH=sprite.drawH ?? sprite.sh;
+  if(!hasFinitePositiveNumber(drawW) || !hasFinitePositiveNumber(drawH)) return "invalid_atlas_metadata_draw_size";
+  if(!hasFiniteNonNegativeNumber(sprite.anchorX) || !hasFiniteNonNegativeNumber(sprite.anchorY)) return "invalid_atlas_metadata_anchor";
+  const maxDrawW=TILE*BUILDING_SPRITE_PRODUCTION_LIMITS.maxDrawTilesWide;
+  const maxDrawH=TILE*BUILDING_SPRITE_PRODUCTION_LIMITS.maxDrawTilesHigh;
+  if(drawW>maxDrawW || drawH>maxDrawH) return "sprite_draw_scale_too_large";
+  if(
+    sprite.sw>BUILDING_SPRITE_PRODUCTION_LIMITS.maxCropPxWide ||
+    sprite.sh>BUILDING_SPRITE_PRODUCTION_LIMITS.maxCropPxHigh ||
+    (sprite.sw*sprite.sh)>BUILDING_SPRITE_PRODUCTION_LIMITS.maxCropAreaPx
+  ) return "sprite_crop_absurdly_large";
+  return getAtlasSpriteFailureReason("buildings", spriteId);
 }
 function updateSpriteBlankHeuristic(atlasId, spriteId){
   const token=atlasId+":"+spriteId;
@@ -6458,9 +6502,7 @@ function drawWorld(){
       drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
     }
 
-    const spriteFailureReason=!spriteId
-      ? "unmapped_for_safe_rollout"
-      : (USE_PRODUCTION_BUILDING_ATLAS ? getAtlasSpriteFailureReason("buildings", spriteId) : "production_atlas_disabled");
+    const spriteFailureReason=getBuildingProductionSpriteFailureReason(b, spriteId);
     const didDraw=!spriteFailureReason
       ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh)
       : false;
