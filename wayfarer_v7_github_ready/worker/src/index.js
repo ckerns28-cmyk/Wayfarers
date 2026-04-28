@@ -1276,9 +1276,8 @@ const atlasDebugPreview={
 };
 function isAtlasDebugEnabledFromUrl(){
   try{
-    const params=new URLSearchParams(window.location.search || "");
-    const raw=params.get("atlasDebug");
-    return raw==="1";
+    const atlasDebug = new URLSearchParams(window.location.search).get("atlasDebug")==="1";
+    return atlasDebug;
   }catch(_error){
     return false;
   }
@@ -1369,6 +1368,10 @@ function atlasProofStatusLine(pathLabel){
     " RenderPath=" + pathLabel +
     (pathLabel==="FALLBACK" ? " Reason=" + (atlasProofDiagnostics.fallbackReason||"other_specific_reason") : "");
 }
+function atlasProofCompactStatusLine(pathLabel){
+  const atlasState=pathLabel==="ATLAS" ? "ATLAS" : "FALLBACK:" + (atlasProofDiagnostics.fallbackReason||"other_specific_reason");
+  return "atlasDebug=1 | proof=ON | inn_tavern=" + atlasState;
+}
 function logAtlasProofStatusOnce(pathLabel){
   if(!ATLAS_DEBUG_MODE){
     if(atlasProofDiagnostics.startupLogged) return;
@@ -1380,10 +1383,12 @@ function logAtlasProofStatusOnce(pathLabel){
   if(pathLabel==="FALLBACK" && atlasProofDiagnostics.fallbackLogged) return;
   if(pathLabel==="FALLBACK"){
     atlasProofDiagnostics.fallbackLogged=true;
+    console.warn("[Atlas Proof HUD] " + atlasProofCompactStatusLine("FALLBACK"));
     console.warn(atlasProofStatusLine("FALLBACK"));
     return;
   }
   atlasProofDiagnostics.statusLogged=true;
+  console.info("[Atlas Proof HUD] " + atlasProofCompactStatusLine("ATLAS"));
   console.info(atlasProofStatusLine("ATLAS"));
 }
 function drawAtlasProofMarker(drawX, drawY, drawW, drawH, buildingId, renderPath, fallbackReason){
@@ -1393,15 +1398,29 @@ function drawAtlasProofMarker(drawX, drawY, drawW, drawH, buildingId, renderPath
   const labelText=isAtlas
     ? "inn_tavern: ATLAS"
     : "inn_tavern: FALLBACK: " + (fallbackReason || "other_specific_reason");
-  ctx.strokeStyle=isAtlas ? "rgba(81,237,255,.95)" : "rgba(255,130,76,.95)";
-  ctx.lineWidth=1;
+  ctx.strokeStyle=isAtlas ? "rgba(0,255,255,1)" : "rgba(255,106,0,1)";
+  ctx.lineWidth=3;
   ctx.strokeRect(Math.floor(drawX)+0.5, Math.floor(drawY)+0.5, Math.max(1, Math.floor(drawW)-1), Math.max(1, Math.floor(drawH)-1));
-  ctx.fillStyle="rgba(9,18,22,.86)";
-  const labelW=Math.max(126, Math.ceil(ctx.measureText(labelText).width)+8);
-  ctx.fillRect(Math.floor(drawX), Math.floor(drawY)-10, labelW, 10);
-  ctx.fillStyle=isAtlas ? "rgba(89,245,255,.98)" : "rgba(255,167,122,.98)";
-  ctx.font="9px ui-monospace, monospace";
-  ctx.fillText(labelText, Math.floor(drawX)+2, Math.floor(drawY)-2);
+  ctx.fillStyle="rgba(0,0,0,.92)";
+  ctx.font="bold 14px ui-monospace, monospace";
+  const labelW=Math.max(220, Math.ceil(ctx.measureText(labelText).width)+14);
+  const labelH=18;
+  ctx.fillRect(Math.floor(drawX), Math.floor(drawY)-labelH-4, labelW, labelH);
+  ctx.fillStyle=isAtlas ? "rgba(0,255,255,1)" : "rgba(255,184,120,1)";
+  ctx.fillText(labelText, Math.floor(drawX)+6, Math.floor(drawY)-8);
+  ctx.restore();
+}
+function drawAtlasProofTopLeftLine(){
+  if(!ATLAS_DEBUG_MODE) return;
+  const pathLabel=atlasProofDiagnostics.usedAtlasRender ? "ATLAS" : "FALLBACK";
+  const line=atlasProofCompactStatusLine(pathLabel);
+  ctx.save();
+  ctx.font="bold 14px ui-monospace, monospace";
+  const textW=Math.ceil(ctx.measureText(line).width);
+  ctx.fillStyle="rgba(0,0,0,.86)";
+  ctx.fillRect(8, 8, textW+14, 22);
+  ctx.fillStyle=pathLabel==="ATLAS" ? "rgba(0,255,255,1)" : "rgba(255,184,120,1)";
+  ctx.fillText(line, 14, 23);
   ctx.restore();
 }
 function hasAtlasUsableTransparency(atlasId){
@@ -6998,6 +7017,7 @@ function drawWorld(){
   maybeLogBuildingRenderSummary();
   drawAtlasDebugPreview();
   drawBuildingSpriteProof();
+  drawAtlasProofTopLeftLine();
   ctx.restore();
 }
 
