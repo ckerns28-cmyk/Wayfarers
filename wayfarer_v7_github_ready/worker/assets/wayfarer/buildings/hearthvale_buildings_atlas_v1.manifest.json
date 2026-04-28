@@ -52,8 +52,8 @@
         "w": 5,
         "h": 5
       },
-      "anchorX": 66,
-      "anchorY": 128,
+      "anchorX": 64,
+      "anchorY": 126,
       "drawW": 131,
       "drawH": 160,
       "collisionRect": {
