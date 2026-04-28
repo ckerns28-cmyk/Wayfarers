@@ -1,12 +1,12 @@
 # Wayfarers Art Pipeline Contract (Phase 32)
 
-This contract defines what is required for **production** building sprites.
+This contract defines what is required for **production** external sprites (buildings + props).
 
 ## Current status
 
 - External PNG atlas loading remains enabled and instrumented in `worker/src/index.js` (`atlasManifests`, `initAtlasImages`, probe/load runtime diagnostics).
 - `drawImage` atlas rendering remains supported.
-- The currently uploaded medieval town building sheets are treated as **debug/proof assets only** and are blocked from production placement.
+- The currently uploaded medieval town building/prop sheets are treated as **debug/proof assets only** and are blocked from production placement.
 
 ## Production building sprite requirements
 
@@ -49,14 +49,17 @@ All production building sprites must satisfy the following:
 
 ## Production safety gates
 
-Before drawing a building sprite in production, the renderer validates:
+Before drawing any external atlas sprite in production, the renderer validates:
 
+- atlas asset `productionReady === true`
+- sprite entry `productionReady === true`
+- sprite entry `debugOnly !== true`
 - production atlas path is enabled
 - sprite ID exists and metadata is valid
-- sprite is not marked `debug_only`
 - selected source is not a known bad/test sheet
 - crop dimensions are within production limits
 - draw dimensions are within map-scale limits
+- crop must match transparent/tight-crop expectations (blank/checkerboard heuristic)
 - atlas crop passes existing runtime load/bounds/blank-check heuristic
 
 If any check fails, renderer falls back to the procedural building renderer.
