@@ -10,7 +10,17 @@ export class WorldRoom {
 }
 
 export default {
-  async fetch() {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const spriteAliasToAssetPath = {
+      "/assets/sprites/medieval_town_buildings_sprite_sheet.png": "/tiles/buildings/test_house/Medieval town buildings sprite sheet.png",
+      "/assets/sprites/medieval_town_asset_sprite_sheet.png": "/tiles/buildings/test_house/Medieval town asset sprite sheet.png"
+    };
+    const aliasedPath = spriteAliasToAssetPath[url.pathname];
+    if(aliasedPath){
+      const assetUrl = new URL(aliasedPath, url.origin);
+      return Response.redirect(assetUrl.toString(), 302);
+    }
     return new Response(html, {
       headers: {
         "content-type": "text/html; charset=UTF-8",
@@ -1161,8 +1171,8 @@ const atlasManifests = {
     }
   },
   buildings: {
-    imagePath: "/assets/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png",
-    fallbackImagePaths: ["/assets/tiles/buildings/test_house/medieval_town_buildings_sprite_sheet.png"],
+    imagePath: "/assets/sprites/medieval_town_buildings_sprite_sheet.png",
+    fallbackImagePaths: ["/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png"],
     tileSize: 32,
     sprites: {
       test_house_a:{ sx:74, sy:3, sw:357, sh:392, anchorX:178, anchorY:382, drawW:357, drawH:392 },
@@ -1186,8 +1196,8 @@ const atlasManifests = {
     }
   },
   props: {
-    imagePath: "/assets/tiles/buildings/test_house/Medieval%20town%20asset%20sprite%20sheet.png",
-    fallbackImagePaths: ["/assets/tiles/buildings/test_house/medieval_town_asset_sprite_sheet.png"],
+    imagePath: "/assets/sprites/medieval_town_asset_sprite_sheet.png",
+    fallbackImagePaths: ["/tiles/buildings/test_house/Medieval%20town%20asset%20sprite%20sheet.png"],
     tileSize: 32,
     sprites: {
       crate:{ sx:0, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 },
@@ -1209,13 +1219,7 @@ const buildingRenderDiagnostics={
   summaryLogged:false
 };
 const USE_PRODUCTION_BUILDING_ATLAS = true;
-const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze({
-  b_inn_tavern:"test_tavern_a",
-  b_mercantile:"test_shop_a",
-  b_village_hall:"test_house_a",
-  b_res_small:"test_hall_a",
-  b_boathouse:"test_boathouse_a"
-});
+const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze({});
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
   residence_small:{ roof:"roofC", wall:"wallTimber", window:"windowTall", door:"doorPorch", dormer:true },
   residence_large:{ roof:"roofSlate", wall:"wall", window:"window", door:"door", dormer:true },
@@ -1237,6 +1241,10 @@ const atlasDebugPreview={
   showCrops:true
 };
 const BUILDING_SPRITE_PROOF_DEBUG = true;
+const buildingSpriteProofState={
+  attempted:false,
+  drawn:false
+};
 function getAtlasCandidateUrls(manifest){
   return [manifest?.imagePath, ...(manifest?.fallbackImagePaths||[])].filter((url,idx,arr)=>url&&arr.indexOf(url)===idx);
 }
@@ -1447,7 +1455,7 @@ function getBuildingAtlasDebugStatus(){
     assetLoaded:!!propInfo.loaded,
     assetNaturalWidth:propInfo.width || propSheet?.naturalWidth || 0,
     assetNaturalHeight:propInfo.height || propSheet?.naturalHeight || 0,
-    spriteRenderingPathActive:buildingRenderDiagnostics.atlasBuildings.size>0,
+    spriteRenderingPathActive:buildingRenderDiagnostics.atlasBuildings.size>0 || buildingSpriteProofState.drawn,
     fallbackRenderingUsed:buildingRenderDiagnostics.fallbackBuildings.size>0
   };
 }
@@ -1469,6 +1477,8 @@ function drawBuildingSpriteProof(){
   ctx.strokeStyle="rgba(145,194,255,.75)";
   ctx.strokeRect(panelX+0.5,panelY+0.5,drawW+17,drawH+27);
   const didDraw=drawAtlasSprite("buildings", spriteId, panelX+9, panelY+14, drawW, drawH);
+  buildingSpriteProofState.attempted=true;
+  buildingSpriteProofState.drawn=!!didDraw;
   ctx.fillStyle=didDraw ? "rgba(189,231,178,.95)" : "rgba(255,177,177,.95)";
   ctx.font="11px ui-monospace, monospace";
   ctx.fillText("Sprite proof: " + (didDraw ? "drawImage OK" : "fallback"), panelX+8, panelY+11);
@@ -5325,6 +5335,7 @@ function updateSidebar(){
       "Asset URL : " + atlasStatus.assetRequestedUrl + "\n" +
       "Asset loaded : " + atlasStatus.assetLoaded + " (" + atlasStatus.assetNaturalWidth + "x" + atlasStatus.assetNaturalHeight + ")\n" +
       "Sprite path active : " + atlasStatus.spriteRenderingPathActive + "\n" +
+      "Proof sprite drawn : " + buildingSpriteProofState.drawn + "\n" +
       "Fallback used : " + atlasStatus.fallbackRenderingUsed + "\n" +
       "Target HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") + "\n" +
       "Target cooldown : " + targetCooldownText;
