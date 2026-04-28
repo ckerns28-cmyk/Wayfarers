@@ -1253,7 +1253,19 @@ function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
     warnMissingAssetOnce("atlas_image", atlasId);
     return false;
   }
-  ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, dw ?? sprite.sw, dh ?? sprite.sh);
+  if(![sprite.sx,sprite.sy,sprite.sw,sprite.sh].every((value)=>Number.isFinite(value))){
+    console.error("[Render Guard] Invalid atlas sprite metadata for", atlasId, spriteId, sprite);
+    warnMissingAssetOnce("atlas_sprite_invalid", atlasId+":"+spriteId);
+    return false;
+  }
+  const safeDw=Number.isFinite(dw) && dw>0 ? dw : sprite.sw;
+  const safeDh=Number.isFinite(dh) && dh>0 ? dh : sprite.sh;
+  if(sprite.sw<=0 || sprite.sh<=0 || safeDw<=0 || safeDh<=0){
+    console.error("[Render Guard] Invalid atlas sprite dimensions for", atlasId, spriteId, { source:{ sw:sprite.sw, sh:sprite.sh }, draw:{ dw:safeDw, dh:safeDh } });
+    warnMissingAssetOnce("atlas_sprite_invalid_size", atlasId+":"+spriteId);
+    return false;
+  }
+  ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, safeDw, safeDh);
   return true;
 }
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
@@ -1366,7 +1378,7 @@ function drawBuildingFallbackSprite(building){
   for(let ry=roofStartY;ry<=roofEndY;ry++){
     for(let rx=-1;rx<=visual.w;rx++){
       const roofX=visual.x+rx;
-      if(roofX<0||roofX>=MAP_W) continue;
+      if(roofX<0||roofX>=WORLD_W) continue;
       drawPixelRoof(roofX,ry,rx+1,visual.w+2,style,roofTile);
       if(ry===roofEndY){
         const roofP=tileToScreen(roofX,ry);
@@ -3745,7 +3757,7 @@ function createSaveData(reason){
   };
 }
 function validateSaveData(data){
-  if(!data || (data.version!==1 && data.version!==2 && data.version!==3 && data.version!==4 && data.version!==5)) return false;
+  if(!data || !SUPPORTED_SAVE_VERSIONS.has(data.version)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -5101,6 +5113,35 @@ function drawTileRotated(img, x, y, turns){
   ctx.drawImage(img,-16,-16,32,32);
   ctx.restore();
 }
+function drawTerrainFallbackTile(p, kind, seed=0){
+  if(kind==="grass"){
+    const shade=58+Math.floor((seed%5)*6);
+    ctx.fillStyle="rgb(" + (34+Math.floor((seed%3)*3)) + "," + shade + ",42)";
+    ctx.fillRect(p.x,p.y,32,32);
+    return;
+  }
+  if(kind==="road"){
+    ctx.fillStyle="rgba(103,85,61,.9)";
+    ctx.fillRect(p.x,p.y,32,32);
+    ctx.fillStyle="rgba(136,113,82,.42)";
+    ctx.fillRect(p.x+4,p.y+13,24,2);
+    return;
+  }
+  if(kind==="water_deep"){
+    ctx.fillStyle="rgba(35,74,112,.92)";
+    ctx.fillRect(p.x,p.y,32,32);
+    return;
+  }
+  if(kind==="water_shallow"){
+    ctx.fillStyle="rgba(59,111,148,.88)";
+    ctx.fillRect(p.x,p.y,32,32);
+    return;
+  }
+  if(kind==="shore"){
+    ctx.fillStyle="rgba(98,120,83,.78)";
+    ctx.fillRect(p.x,p.y,32,32);
+  }
+}
 function drawShadowTile(img, x, y, alpha=1){
   if(!img || !img.complete || img.naturalWidth<=0) return;
   const oldAlpha = ctx.globalAlpha;
@@ -5179,7 +5220,7 @@ function drawOutdoorBackdrop(cam, now){
       const p=tileToScreen(x,y);
       const v=Math.floor(rng(x,y,603)*assets.forestGrass.length);
       const img=assets.forestGrass[v];
-      if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+      if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
       if(rng(x,y,612)>0.92){
         ctx.fillStyle="rgba(86,126,72,.18)";
         ctx.fillRect(p.x+6,p.y+8,20,12);
@@ -5379,7 +5420,8 @@ function drawWorld(){
     const inForest=region==="eastern_woods" || (region==="north_road" && rng(x,y,211)>0.45);
     const forestMix=Math.min(assets.forestGrass.length-1, Math.floor((layeredNoise(x+5,y+3)+rng(x,y,212)*0.2)*assets.forestGrass.length)%assets.forestGrass.length);
     const img=inForest ? assets.forestGrass[forestMix] : assets.grass[mix];
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    else drawTerrainFallbackTile(p, "grass", x*31+y*17);
     if(!inForest && layeredNoise(x+13,y+7)>0.8){
       ctx.fillStyle="rgba(188,216,151,.012)";
       ctx.fillRect(p.x+1,p.y+1,30,30);
@@ -5393,7 +5435,8 @@ function drawWorld(){
   world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){
     const p=tileToScreen(x,y);
     const img=assets.road[Math.floor(rng(x,y,22)*assets.road.length)];
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    else drawTerrainFallbackTile(p, "road");
 
     const north = world.roadTiles.has(keyOf(x,y-1));
     const south = world.roadTiles.has(keyOf(x,y+1));
@@ -5422,13 +5465,15 @@ function drawWorld(){
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondWater.has(k)) continue;
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
-    const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    const img=edge?assets.water.shallow:assets.water.deep;
+    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    else drawTerrainFallbackTile(p, edge ? "water_shallow" : "water_deep");
     const t=performance.now()*0.0014, rip=(Math.sin(t*2+x*0.8+y*.6)+1)*.5;
     const mirrorAura=(x>=25&&x<=30&&y>=12&&y<=17) ? 0.065 : 0.016;
     ctx.fillStyle="rgba(188,228,255," + (.014+rip*.03+mirrorAura).toFixed(3) + ")"; ctx.fillRect(p.x+4,p.y+7,TILE-12,1);
     if(edge){
       ctx.fillStyle="rgba(224,244,255," + (.035+rip*.03).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1);
-      if(assets.water.edge.complete&&assets.water.edge.naturalWidth>0) ctx.drawImage(assets.water.edge,p.x,p.y,32,32);
+      if(assets.water.edge?.complete&&assets.water.edge.naturalWidth>0) ctx.drawImage(assets.water.edge,p.x,p.y,32,32);
     }
     if(rng(x,y,402)>0.92){
       ctx.fillStyle="rgba(201,240,255,.25)";
@@ -5442,7 +5487,9 @@ function drawWorld(){
   }
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondShore.has(k)) continue;
-    const p=tileToScreen(x,y); const img=assets.shore[Math.floor(rng(x,y,33)*assets.shore.length)]; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    const p=tileToScreen(x,y); const img=assets.shore[Math.floor(rng(x,y,33)*assets.shore.length)];
+    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    else drawTerrainFallbackTile(p, "shore");
     if(rng(x,y,491)>0.78){
       ctx.fillStyle="rgba(86,121,74,.42)";
       ctx.fillRect(p.x+5,p.y+14,2,8);
@@ -5460,33 +5507,45 @@ function drawWorld(){
   }
 
   world.buildings.forEach((b,bIndex)=>{
-    const sprite=atlasManifests.buildings.sprites[b.spriteId];
-    const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
-    const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
-    const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
-    const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
+    try {
+      const sprite=atlasManifests.buildings.sprites[b.spriteId];
+      const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
+      const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
+      const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
+      const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
 
-    for(let ry=0; ry<b.h; ry++){
-      const right = tileToScreen(b.x+b.w, b.y+ry);
-      drawShadowTile(assets.shadow.buildingRight, right.x+4, right.y+3, .9);
-    }
-    for(let rx=0; rx<b.w; rx++){
-      const bottom = tileToScreen(b.x+rx, b.y+b.h);
-      drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
-    }
+      for(let ry=0; ry<b.h; ry++){
+        const right = tileToScreen(b.x+b.w, b.y+ry);
+        drawShadowTile(assets.shadow.buildingRight, right.x+4, right.y+3, .9);
+      }
+      for(let rx=0; rx<b.w; rx++){
+        const bottom = tileToScreen(b.x+rx, b.y+b.h);
+        drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
+      }
 
-    const didDraw=USE_PRODUCTION_BUILDING_ATLAS
-      ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh)
-      : false;
-    if(!didDraw){
-      warnMissingAssetOnce("building_sprite", b.spriteId);
-      drawBuildingFallbackSprite(b);
-      return;
-    }
+      const didDraw=USE_PRODUCTION_BUILDING_ATLAS
+        ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh)
+        : false;
+      if(!didDraw){
+        warnMissingAssetOnce("building_sprite", b.spriteId);
+        drawBuildingFallbackSprite(b);
+        return;
+      }
 
-    const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
-    ctx.fillStyle="rgba(94,72,54,.9)";
-    ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
+      const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
+      ctx.fillStyle="rgba(94,72,54,.9)";
+      ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
+    } catch(err){
+      console.error("[Render Guard] Building render failed", { spriteId:b?.spriteId, role:b?.role, index:bIndex, error:err });
+      try {
+        drawBuildingFallbackSprite(b);
+      } catch(fallbackErr){
+        console.error("[Render Guard] Building fallback render failed", { spriteId:b?.spriteId, role:b?.role, index:bIndex, error:fallbackErr });
+        const visual=b?.visual || { x:b?.x??0, y:b?.y??0, w:b?.w??1, h:b?.h??1 };
+        const p=tileToScreen(visual.x, visual.y);
+        drawMissingSpritePlaceholder(p.x, p.y, Math.max(32,(visual.w||1)*TILE), Math.max(32,(visual.h||1)*TILE), "BLDG");
+      }
+    }
   });
 
   const propsBehind=world.props.filter((prop)=>prop.layer!=="above_entities");
@@ -5536,14 +5595,24 @@ function drawWorld(){
     const p=tileToScreen(f.x,f.y);
     drawShadowTile(assets.shadow.softTile,p.x+4,p.y+4,.42);
     const img=assets.fence[i%assets.fence.length];
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    else {
+      ctx.fillStyle="rgba(122,96,69,.9)";
+      ctx.fillRect(p.x+4,p.y+8,24,14);
+    }
   });
   world.trees.forEach(t=>{
     const p=tileToScreen(t.x,t.y);
     const sway=Math.sin(performance.now()*0.0012+t.seed*8)*0.8;
     drawShadowTile(assets.shadow.treeCircle,p.x+2,p.y+2,.72);
     const img=assets.tree[t.type]||assets.tree.a;
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
+    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
+    else {
+      ctx.fillStyle="rgba(67,98,58,.92)";
+      ctx.fillRect(p.x+6,p.y,20,18);
+      ctx.fillStyle="rgba(92,68,46,.92)";
+      ctx.fillRect(p.x+14,p.y+16,4,14);
+    }
   });
 
   for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
@@ -5615,7 +5684,26 @@ function update(dt,now){
 }
 
 let last=performance.now();
-function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
+function loop(now){
+  const dt=Math.min(.033,(now-last)/1000);
+  last=now;
+  try {
+    update(dt,now);
+    drawWorld();
+  } catch(err){
+    console.error("[Render Guard] Frame failure", err);
+    try {
+      ctx.save();
+      ctx.fillStyle="rgba(10,16,24,.92)";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle="rgba(243,208,146,.95)";
+      ctx.font="bold 12px monospace";
+      ctx.fillText("Render error. Check console.", 18, 30);
+      ctx.restore();
+    } catch(_err){}
+  }
+  requestAnimationFrame(loop);
+}
 
 const loadedFromSave=loadGame();
 enforceAllVillageNpcTerrainValidation(true);
