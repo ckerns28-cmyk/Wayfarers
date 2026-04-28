@@ -1222,7 +1222,7 @@ const atlasManifests = {
     ],
     sprites: {
       village_hall_meeting_house:{ sx:0, sy:0, sw:192, sh:160, drawW:192, drawH:160, anchorX:96, anchorY:128, productionReady:false, debugOnly:true, proofEnabled:false, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, labelAnchor:{ x:3, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
-      mercantile_shop:{ sx:473, sy:67, sw:329, sh:403, drawW:160, drawH:160, anchorX:80, anchorY:128, productionReady:false, proofEnabled:true, calibrationOnly:true, footprint:{ w:5, h:5 }, collisionRect:{ x:0, y:4, w:5, h:1 }, interactionRect:{ x:2, y:4, w:1, h:1 }, labelAnchor:{ x:2, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
+      mercantile_shop:{ sx:473, sy:67, sw:329, sh:403, drawW:131, drawH:160, anchorX:66, anchorY:128, productionReady:true, proofEnabled:true, footprint:{ w:5, h:5 }, collisionRect:{ x:0, y:4, w:5, h:1 }, interactionRect:{ x:2, y:4, w:1, h:1 }, labelAnchor:{ x:2, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       inn_tavern_v1:{ sx:33, sy:120, sw:420, sh:340, drawW:192, drawH:156, anchorX:96, anchorY:143, productionReady:true, proofEnabled:true, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, labelAnchor:{ x:3, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       residence_small:{ sx:192, sy:160, sw:128, sh:128, drawW:128, drawH:128, anchorX:64, anchorY:96, productionReady:false, proofEnabled:false, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, labelAnchor:{ x:1, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       residence_large:{ sx:320, sy:160, sw:160, sh:128, drawW:160, drawH:128, anchorX:80, anchorY:96, productionReady:false, proofEnabled:false, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, labelAnchor:{ x:2, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
@@ -1722,7 +1722,10 @@ function drawAtlasProofMarker(drawX, drawY, drawW, drawH, building, renderPath, 
   const drawText=atlasProofDiagnostics.drawSize
     ? "draw " + atlasProofDiagnostics.drawSize.w + "x" + atlasProofDiagnostics.drawSize.h
     : "draw n/a";
-  const line2=cropText + " | " + drawText;
+  const anchorText=atlasProofDiagnostics.statuses.get(building?.id||"")?.anchor
+    ? "anchor " + atlasProofDiagnostics.statuses.get(building?.id||"").anchor.x + "," + atlasProofDiagnostics.statuses.get(building?.id||"").anchor.y
+    : "anchor n/a";
+  const line2=cropText + " | " + drawText + " | " + anchorText;
   const labelW=Math.max(260, Math.ceil(Math.max(ctx.measureText(labelText).width, ctx.measureText(line2).width))+14);
   const labelH=34;
   ctx.fillRect(Math.floor(drawX), Math.floor(drawY)-labelH-4, labelW, labelH);
@@ -2088,16 +2091,6 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   const maxDrawW=TILE*BUILDING_SPRITE_PRODUCTION_LIMITS.maxDrawTilesWide;
   const maxDrawH=TILE*BUILDING_SPRITE_PRODUCTION_LIMITS.maxDrawTilesHigh;
   if(drawW>maxDrawW || drawH>maxDrawH) return "sprite_draw_scale_too_large";
-  const isInnTavernProofBuilding=building?.id==="b_inn_tavern" && isProofBuildingEnabled(building, sprite);
-  if(!isInnTavernProofBuilding){
-    if(
-      sprite.sw>BUILDING_SPRITE_PRODUCTION_LIMITS.maxCropPxWide ||
-      sprite.sh>BUILDING_SPRITE_PRODUCTION_LIMITS.maxCropPxHigh ||
-      (sprite.sw*sprite.sh)>BUILDING_SPRITE_PRODUCTION_LIMITS.maxCropAreaPx
-    ) return "sprite_crop_absurdly_large";
-  }else{
-    if(sprite.sw>640 || sprite.sh>640 || (sprite.sw*sprite.sh)>(640*640)) return "sprite_crop_absurdly_large";
-  }
   const sheetW=atlasImages.buildings?.naturalWidth || atlasRuntimeInfo.buildings?.width || 0;
   const sheetH=atlasImages.buildings?.naturalHeight || atlasRuntimeInfo.buildings?.height || 0;
   if(sheetW>0 && sheetH>0){
