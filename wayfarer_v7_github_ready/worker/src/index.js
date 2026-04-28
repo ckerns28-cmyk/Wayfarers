@@ -1429,110 +1429,117 @@ const NEWPORT_BUILDING_PALETTES = Object.freeze({
 function _drawNewportBuilding(building){
   const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
   const palette=NEWPORT_BUILDING_PALETTES[building.role] || NEWPORT_BUILDING_PALETTES.residence_small;
-  const roofRows=Math.max(1, Math.min(visual.h, Math.ceil(visual.h*0.6)));
-  const wallRows=Math.max(1, visual.h-roofRows);
-  const roofStartY=visual.y;
-  const roofEndY=visual.y+roofRows-1;
-  const wallStartY=roofEndY+1;
-  const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1 };
-  const doorX=Math.max(visual.x, Math.min(visual.x+visual.w-1, interaction.x));
-  const doorY=Math.max(wallStartY, Math.min(visual.y+visual.h-1, interaction.y));
-
-  for(let ry=roofStartY;ry<=roofEndY;ry++){
-    const depthT=(ry-roofStartY)/Math.max(1,roofRows-1);
-    for(let rx=0;rx<visual.w;rx++){
-      const p=tileToScreen(visual.x+rx, ry);
-      const inset=(rx===0||rx===visual.w-1) ? 3 : 1;
-      ctx.fillStyle=depthT>0.58 ? palette.roofShade : palette.roof;
-      ctx.fillRect(p.x+inset, p.y+6, TILE-(inset*2), TILE-10);
-      ctx.fillStyle="rgba(255,255,255,.08)";
-      ctx.fillRect(p.x+inset+1, p.y+7, TILE-(inset*2)-2, 1);
-      if(ry===roofEndY){
-        ctx.fillStyle="rgba(46,33,28,.28)";
-        ctx.fillRect(p.x+2, p.y+24, TILE-4, 2);
-      }
-      drawShadowTile(assets.shadow.softTile, p.x+2, p.y+5, .44);
-    }
-  }
-
-  if(wallRows>0){
-    for(let ry=wallStartY;ry<visual.y+visual.h;ry++){
-      for(let rx=0;rx<visual.w;rx++){
-        const tileX=visual.x+rx;
-        const p=tileToScreen(tileX, ry);
-        const edge=(rx===0||rx===visual.w-1);
-        const isDoor=(tileX===doorX&&ry===doorY);
-        ctx.fillStyle=edge ? palette.wallShade : palette.wall;
-        ctx.fillRect(p.x+3, p.y+8, TILE-6, TILE-9);
-        if(!isDoor){
-          const windowRow=wallStartY + Math.max(0, Math.floor((wallRows-1)*0.35));
-          if(visual.w>=3 && ry===windowRow && rx>0 && rx<visual.w-1 && Math.abs(tileX-doorX)>0){
-            ctx.fillStyle=palette.trim;
-            ctx.fillRect(p.x+8, p.y+12, TILE-16, 8);
-            ctx.fillStyle=palette.window;
-            ctx.fillRect(p.x+9, p.y+13, TILE-18, 6);
-          }
-        }
-      }
-    }
-  }
-
-  const doorP=tileToScreen(doorX, doorY);
-  ctx.fillStyle=palette.door;
-  ctx.fillRect(doorP.x+11, doorP.y+11, 10, 14);
+  const bounds=computeBuildingScreenBounds(visual);
+  const pxX=Math.round(bounds.x);
+  const pxY=Math.round(bounds.y);
+  const pxW=Math.max(32, Math.round(bounds.w));
+  const pxH=Math.max(28, Math.round(bounds.h));
+  const roofHeight=Math.max(14, Math.round(pxH*0.6));
+  const wallTop=pxY+roofHeight-5;
+  const wallHeight=Math.max(9, pxH-roofHeight+5);
+  ctx.fillStyle=palette.wall;
+  ctx.fillRect(pxX+5, wallTop, pxW-10, wallHeight);
+  ctx.fillStyle=palette.wallShade;
+  ctx.fillRect(pxX+5, wallTop+Math.max(2,Math.floor(wallHeight*0.5)), pxW-10, Math.max(3,Math.floor(wallHeight*0.5)));
   ctx.fillStyle=palette.trim;
-  ctx.fillRect(doorP.x+12, doorP.y+12, 8, 2);
+  ctx.fillRect(pxX+4, wallTop-1, pxW-8, 2);
+  ctx.fillRect(pxX+4, wallTop+wallHeight-2, pxW-8, 2);
+
+  const roofInset=Math.max(2,Math.floor(pxW*0.12));
+  const roofPeakX=pxX+Math.floor(pxW*0.5);
+  const roofPeakY=pxY+2;
+  const roofBaseY=wallTop+2;
+  ctx.beginPath();
+  ctx.moveTo(pxX+roofInset, roofBaseY);
+  ctx.lineTo(roofPeakX, roofPeakY);
+  ctx.lineTo(pxX+pxW-roofInset, roofBaseY);
+  ctx.lineTo(pxX+pxW-roofInset-2, roofBaseY+6);
+  ctx.lineTo(pxX+roofInset+2, roofBaseY+6);
+  ctx.closePath();
+  ctx.fillStyle=palette.roof;
+  ctx.fill();
+  ctx.fillStyle=palette.roofShade;
+  ctx.fillRect(pxX+roofInset+2, roofBaseY+4, Math.max(8,pxW-roofInset*2-4), 3);
 
   const dormerCount=Math.max(0, palette.dormers|0);
   for(let i=0;i<dormerCount;i++){
-    const dx=visual.x+Math.round(((i+1)/(dormerCount+1))*(visual.w-1));
-    const dy=roofStartY + Math.max(0, Math.floor(roofRows*0.45));
-    const p=tileToScreen(dx, dy);
+    const t=(i+1)/(dormerCount+1);
+    const dw=8;
+    const dh=6;
+    const dx=pxX+Math.floor(pxW*t)-Math.floor(dw/2);
+    const dy=roofBaseY+2;
     ctx.fillStyle=palette.trim;
-    ctx.fillRect(p.x+11, p.y+11, 10, 7);
+    ctx.fillRect(dx,dy,dw,dh);
     ctx.fillStyle=palette.window;
-    ctx.fillRect(p.x+13, p.y+13, 6, 4);
+    ctx.fillRect(dx+2,dy+2,dw-4,dh-3);
     ctx.fillStyle=palette.roofShade;
     ctx.beginPath();
-    ctx.moveTo(p.x+10, p.y+11);
-    ctx.lineTo(p.x+16, p.y+7);
-    ctx.lineTo(p.x+22, p.y+11);
+    ctx.moveTo(dx-1,dy+1);
+    ctx.lineTo(dx+Math.floor(dw/2),dy-3);
+    ctx.lineTo(dx+dw+1,dy+1);
     ctx.closePath();
     ctx.fill();
   }
 
+  const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1 };
+  const doorAnchor=tileToScreen(interaction.x, interaction.y);
+  const doorW=8;
+  const doorH=Math.max(10,Math.floor(wallHeight*0.58));
+  const doorX=Math.round(doorAnchor.x+Math.floor(TILE/2)-Math.floor(doorW/2));
+  const doorY=wallTop+wallHeight-doorH;
+  ctx.fillStyle=palette.door;
+  ctx.fillRect(doorX,doorY,doorW,doorH);
+  ctx.fillStyle=palette.trim;
+  ctx.fillRect(doorX+1,doorY+1,doorW-2,2);
+
+  const windowY=wallTop+Math.max(2,Math.floor(wallHeight*0.28));
+  const windowW=8;
+  const windowH=7;
+  const windowGap=Math.max(4,Math.floor((pxW-10-windowW*2)/3));
+  const leftWindowX=pxX+7+windowGap;
+  const rightWindowX=pxX+pxW-7-windowGap-windowW;
+  [leftWindowX,rightWindowX].forEach((wx)=>{
+    ctx.fillStyle=palette.trim;
+    ctx.fillRect(wx-1,windowY-1,windowW+2,windowH+2);
+    ctx.fillStyle=palette.window;
+    ctx.fillRect(wx,windowY,windowW,windowH);
+    ctx.fillStyle="rgba(255,255,255,.35)";
+    ctx.fillRect(wx+1,windowY+1,windowW-2,1);
+  });
+
   const chimneyCount=Math.max(0,palette.chimneys|0);
   for(let i=0;i<chimneyCount;i++){
-    const cx=visual.x + (chimneyCount===1 ? visual.w-2 : Math.round((i/(chimneyCount-1))*Math.max(1,visual.w-2)));
-    const cy=roofStartY + Math.max(0, Math.floor(roofRows*0.25));
-    const p=tileToScreen(Math.max(visual.x, Math.min(visual.x+visual.w-1, cx)), cy);
+    const cx=pxX+Math.floor(pxW*(chimneyCount===1?0.76:(0.22+i*0.56)));
+    const cy=roofBaseY-9;
     ctx.fillStyle=palette.chimney;
-    ctx.fillRect(p.x+12, p.y+5, 7, 11);
+    ctx.fillRect(cx,cy,6,11);
     ctx.fillStyle="rgba(244,232,212,.8)";
-    ctx.fillRect(p.x+13, p.y+5, 5, 2);
+    ctx.fillRect(cx+1,cy,4,2);
   }
 
   if(palette.steeple){
-    const p=tileToScreen(visual.x+Math.floor(visual.w/2), roofStartY);
+    const sx=pxX+Math.floor(pxW*0.5);
+    const sy=roofPeakY-3;
     ctx.fillStyle=palette.trim;
-    ctx.fillRect(p.x+14, p.y+2, 4, 11);
+    ctx.fillRect(sx-2,sy,4,10);
     ctx.beginPath();
-    ctx.moveTo(p.x+12, p.y+2);
-    ctx.lineTo(p.x+16, p.y-9);
-    ctx.lineTo(p.x+20, p.y+2);
+    ctx.moveTo(sx-5,sy);
+    ctx.lineTo(sx,sy-12);
+    ctx.lineTo(sx+5,sy);
     ctx.closePath();
     ctx.fillStyle=palette.roofShade;
     ctx.fill();
   }
   if(palette.sign){
-    const signX=Math.max(visual.x, doorX-1);
-    const signY=Math.max(wallStartY, doorY-1);
-    const sp=tileToScreen(signX, signY);
+    const signW=22;
+    const signH=8;
+    const sx=doorX-signW-4;
+    const sy=doorY+2;
     ctx.fillStyle="rgba(83,58,37,.95)";
-    ctx.fillRect(sp.x+4, sp.y+10, 24, 8);
+    ctx.fillRect(sx,sy,signW,signH);
     ctx.fillStyle="rgba(237,221,178,.95)";
     ctx.font="bold 6px monospace";
-    ctx.fillText(palette.sign, sp.x+6, sp.y+16);
+    ctx.fillText(palette.sign,sx+2,sy+6);
   }
 }
 
