@@ -1282,6 +1282,14 @@ const EXTERNAL_SPRITE_PRODUCTION_LIMITS = Object.freeze({
   maxDrawTilesWide: 6,
   maxDrawTilesHigh: 6
 });
+const PROP_SPRITE_PRODUCTION_LIMITS = Object.freeze({
+  default: { minDrawW:16, minDrawH:16, maxDrawW:64, maxDrawH:64, maxCropW:128, maxCropH:128, maxCropArea:128*128 },
+  bench: { minDrawW:32, minDrawH:16, maxDrawW:64, maxDrawH:32, maxCropW:96, maxCropH:64, maxCropArea:96*64 },
+  barrel: { minDrawW:16, minDrawH:16, maxDrawW:32, maxDrawH:32, maxCropW:64, maxCropH:64, maxCropArea:64*64 },
+  crate: { minDrawW:16, minDrawH:16, maxDrawW:32, maxDrawH:32, maxCropW:64, maxCropH:64, maxCropArea:64*64 },
+  signPost: { minDrawW:16, minDrawH:32, maxDrawW:32, maxDrawH:64, maxCropW:64, maxCropH:96, maxCropArea:64*96 },
+  well: { minDrawW:32, minDrawH:32, maxDrawW:64, maxDrawH:64, maxCropW:96, maxCropH:96, maxCropArea:96*96 }
+});
 const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze({
   b_village_hall:"village_hall_meeting_house",
   b_mercantile:"mercantile_shop",
@@ -1345,6 +1353,14 @@ const atlasProofDiagnostics={
   startupLogged:false
 };
 const spriteBlankHeuristicCache=new Map();
+const atlasDebugValidationWarnings=new Set();
+function logAtlasValidationFailureOnce(kind, token, reason){
+  if(!ATLAS_DEBUG_MODE) return;
+  const key=kind+":"+token+":"+reason;
+  if(atlasDebugValidationWarnings.has(key)) return;
+  atlasDebugValidationWarnings.add(key);
+  console.warn("[Atlas Validation] " + kind + " " + token + " blocked reason=" + reason);
+}
 function getAtlasFilename(value){
   if(!value || typeof value!=="string") return "n/a";
   const parts=value.split("/");
@@ -1560,8 +1576,21 @@ function mergeAtlasManifestEntries(atlasId, externalManifest){
       labelAnchor:entry.labelAnchor ?? mergedSprites[entry.id]?.labelAnchor,
       renderLayer:entry.renderLayer ?? mergedSprites[entry.id]?.renderLayer,
       productionReady:entry.productionReady ?? mergedSprites[entry.id]?.productionReady,
-      proofEnabled:entry.proofEnabled ?? mergedSprites[entry.id]?.proofEnabled
+      proofEnabled:entry.proofEnabled ?? mergedSprites[entry.id]?.proofEnabled,
+      debugOnly:entry.debugOnly ?? entry.debug_only ?? mergedSprites[entry.id]?.debugOnly
     };
+    if(atlasId==="props"){
+      const mergedSprite=mergedSprites[entry.id];
+      const drawW=mergedSprite.drawW ?? mergedSprite.sw;
+      const drawH=mergedSprite.drawH ?? mergedSprite.sh;
+      const hasFiniteSize=hasFinitePositiveNumber(drawW) && hasFinitePositiveNumber(drawH) && hasFinitePositiveNumber(mergedSprite.sw) && hasFinitePositiveNumber(mergedSprite.sh);
+      const giantCrop=hasFiniteSize && ((mergedSprite.sw*mergedSprite.sh)>(256*256) || mergedSprite.sw>256 || mergedSprite.sh>256);
+      const giantDraw=hasFiniteSize && (drawW>128 || drawH>128);
+      if(!hasFiniteSize || giantCrop || giantDraw){
+        mergedSprite.productionReady=false;
+        mergedSprite.debugOnly=true;
+      }
+    }
   });
   runtimeManifest.sprites=mergedSprites;
   runtimeManifest.tileSize=Number.isFinite(externalManifest.tileSize) ? externalManifest.tileSize : runtimeManifest.tileSize;
@@ -1792,6 +1821,24 @@ function getExternalProductionSpriteFailureReason(atlasId, spriteId, drawW, draw
   const maxDrawW=TILE*EXTERNAL_SPRITE_PRODUCTION_LIMITS.maxDrawTilesWide;
   const maxDrawH=TILE*EXTERNAL_SPRITE_PRODUCTION_LIMITS.maxDrawTilesHigh;
   if(resolvedDrawW>maxDrawW || resolvedDrawH>maxDrawH) return "sprite_draw_scale_too_large";
+  if(atlasId==="props"){
+    const propLimits=PROP_SPRITE_PRODUCTION_LIMITS[worldType] || PROP_SPRITE_PRODUCTION_LIMITS.default;
+    if(
+      resolvedDrawW<propLimits.minDrawW || resolvedDrawH<propLimits.minDrawH ||
+      resolvedDrawW>propLimits.maxDrawW || resolvedDrawH>propLimits.maxDrawH
+    ) return "prop_draw_size_out_of_bounds";
+    if(
+      sprite.sw>propLimits.maxCropW ||
+      sprite.sh>propLimits.maxCropH ||
+      (sprite.sw*sprite.sh)>propLimits.maxCropArea
+    ) return "prop_crop_out_of_bounds";
+    const sheetW=atlasImages[atlasId]?.naturalWidth || atlasRuntimeInfo[atlasId]?.width || 0;
+    const sheetH=atlasImages[atlasId]?.naturalHeight || atlasRuntimeInfo[atlasId]?.height || 0;
+    if(sheetW>0 && sheetH>0){
+      const nearFullSheet=sprite.sw>=Math.floor(sheetW*0.9) && sprite.sh>=Math.floor(sheetH*0.9);
+      if(nearFullSheet) return "sprite_crop_full_sheet_like";
+    }
+  }
   if(!hasFiniteNonNegativeNumber(sprite.anchorX) || !hasFiniteNonNegativeNumber(sprite.anchorY)) return "invalid_atlas_metadata_anchor";
   const selectedUrl=atlasRuntimeInfo[atlasId]?.selectedUrl || manifest.imagePath || "";
   if(manifest.knownBadAssetPaths?.includes(selectedUrl)) return "known_bad_test_asset";
@@ -1858,16 +1905,20 @@ function drawMappedPropSprite(prop, p){
   if(!spriteId) return false;
   const atlasSprite=atlasManifests.props?.sprites?.[spriteId];
   if(!atlasSprite){
-    warnMissingAssetOnce("prop_atlas_sprite", spriteId);
+    logAtlasValidationFailureOnce("prop", spriteId, "missing_sprite_entry");
     return false;
   }
   const drawX=Math.round(p.x + TILE/2 - (atlasSprite.anchorX ?? TILE/2));
   const drawY=Math.round(p.y + TILE - (atlasSprite.anchorY ?? TILE));
   const drawW=atlasSprite.drawW ?? atlasSprite.sw;
   const drawH=atlasSprite.drawH ?? atlasSprite.sh;
+  if(!Number.isFinite(drawX) || !Number.isFinite(drawY)){
+    logAtlasValidationFailureOnce("prop", spriteId, "invalid_draw_position");
+    return false;
+  }
   const failReason=getExternalProductionSpriteFailureReason("props", spriteId, drawW, drawH, prop.type);
   if(failReason){
-    warnMissingAssetOnce("prop_sprite", spriteId+":"+failReason);
+    logAtlasValidationFailureOnce("prop", spriteId, failReason);
     return false;
   }
   return drawAtlasSprite("props", spriteId, drawX, drawY, drawW, drawH);
