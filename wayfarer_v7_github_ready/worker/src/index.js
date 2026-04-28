@@ -1161,8 +1161,8 @@ const atlasManifests = {
     }
   },
   buildings: {
-    imagePath: "/assets/tiles/buildings/test_house/medieval_town_buildings_sprite_sheet.png",
-    fallbackImagePaths: ["/assets/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png"],
+    imagePath: "/assets/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png",
+    fallbackImagePaths: ["/assets/tiles/buildings/test_house/medieval_town_buildings_sprite_sheet.png"],
     tileSize: 32,
     sprites: {
       inn_tavern:{ sx:0, sy:0, sw:224, sh:192, anchorX:96, anchorY:176, drawW:224, drawH:192, collisionFootprint:{ x:0, y:96, w:192, h:96 } },
@@ -1188,8 +1188,8 @@ const atlasManifests = {
     }
   },
   props: {
-    imagePath: "/assets/tiles/buildings/test_house/medieval_town_asset_sprite_sheet.png",
-    fallbackImagePaths: ["/assets/tiles/buildings/test_house/Medieval%20town%20asset%20sprite%20sheet.png"],
+    imagePath: "/assets/tiles/buildings/test_house/Medieval%20town%20asset%20sprite%20sheet.png",
+    fallbackImagePaths: ["/assets/tiles/buildings/test_house/medieval_town_asset_sprite_sheet.png"],
     tileSize: 32,
     sprites: {
       crate:{ sx:0, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 },
@@ -1211,6 +1211,20 @@ const buildingRenderDiagnostics={
   summaryLogged:false
 };
 const USE_PRODUCTION_BUILDING_ATLAS = true;
+const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze({
+  b_inn_tavern:"inn_tavern",
+  b_mercantile:"mercantile_shop",
+  b_village_hall:"village_hall_meeting_house"
+});
+const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
+  residence_small:{ roof:"roofC", wall:"wallTimber", window:"windowTall", door:"doorPorch", dormer:true },
+  residence_large:{ roof:"roofSlate", wall:"wall", window:"window", door:"door", dormer:true },
+  inn_tavern:{ roof:"roofC", wall:"wall", window:"window", door:"doorShop", dormer:true },
+  mercantile_shop:{ roof:"roofSlate", wall:"wallBrick", window:"windowWide", door:"doorShop", dormer:false },
+  village_hall_meeting_house:{ roof:"roofSlate", wall:"wall", window:"windowTall", door:"door", dormer:true },
+  hunter_lodge_or_outfitter:{ roof:"roofC", wall:"wallTimber", window:"windowTall", door:"doorPorch", dormer:false },
+  pond_boathouse_or_waterfront_shed:{ roof:"roofSlate", wall:"wallBrick", window:"windowWide", door:"doorShop", dormer:false }
+});
 const PROP_SPRITE_BY_WORLD_TYPE = Object.freeze({
   crate:"crate",
   barrel:"barrel",
@@ -1235,10 +1249,11 @@ function logAtlasRuntimeInfo(atlasId, message){
   console.info("[Atlas] " + atlasId + " " + message);
 }
 function logBuildingFallbackOnce(building, reason){
-  const key=(building?.id||"unknown")+":"+(building?.spriteId||"none")+":"+reason;
+  const spriteId=building ? getBuildingSpriteId(building) : null;
+  const key=(building?.id||"unknown")+":"+(spriteId||"none")+":"+reason;
   if(buildingFallbackWarnings.has(key)) return;
   buildingFallbackWarnings.add(key);
-  console.warn("[Building Fallback] buildingId=" + (building?.id||"unknown") + " spriteId=" + (building?.spriteId||"none") + " reason=" + reason);
+  console.warn("[Building Fallback] buildingId=" + (building?.id||"unknown") + " spriteId=" + (spriteId||"none") + " reason=" + reason);
 }
 function probeAtlasUrl(atlasId, url){
   fetch(url, { method:"GET", cache:"no-store" })
@@ -1390,7 +1405,7 @@ function drawAtlasDebugPreview(){
         ctx.strokeStyle="rgba(255,112,112,.95)";
         ctx.lineWidth=1;
         const spriteEntries=atlasId==="buildings"
-          ? world.buildings.slice(0,4).map((b)=>[b.spriteId, atlasManifests.buildings.sprites[b.spriteId]]).filter((entry)=>entry[1])
+          ? world.buildings.slice(0,4).map((b)=>{ const id=getBuildingSpriteId(b); return [id, atlasManifests.buildings.sprites[id]]; }).filter((entry)=>entry[0]&&entry[1])
           : Object.entries(atlasManifests.props.sprites).slice(0,4);
         spriteEntries.forEach(([spriteId,sprite])=>{
           ctx.strokeRect(previewX+Math.round(sprite.sx*scale)+0.5, previewY+Math.round(sprite.sy*scale)+0.5, Math.max(1,Math.round(sprite.sw*scale)-1), Math.max(1,Math.round(sprite.sh*scale)-1));
@@ -1417,129 +1432,41 @@ function maybeLogBuildingRenderSummary(){
   const fallbackEntries=[...buildingRenderDiagnostics.fallbackBuildings.entries()].map(([id,reason])=>id+"("+reason+")");
   console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(","));
 }
-const NEWPORT_BUILDING_PALETTES = Object.freeze({
-  residence_small:{ roof:"#6f5445", roofShade:"#573f35", wall:"#d8c7ab", wallShade:"#c9b695", trim:"#f0e8d8", door:"#7f4f34", window:"#afc8df", chimney:"#7a5f4c", dormers:1, chimneys:1, steeple:false },
-  residence_large:{ roof:"#6a4d3f", roofShade:"#523a2f", wall:"#c9b79f", wallShade:"#b6a288", trim:"#efe2cb", door:"#74472d", window:"#b8d2e8", chimney:"#795b45", dormers:2, chimneys:2, steeple:false },
-  inn_tavern:{ roof:"#704838", roofShade:"#5a372b", wall:"#ceb99b", wallShade:"#bcaa8d", trim:"#f4e7cf", door:"#6e3f24", window:"#9ec0db", chimney:"#75563e", dormers:2, chimneys:2, steeple:false, sign:"TAVERN" },
-  mercantile_shop:{ roof:"#4f4d57", roofShade:"#3e3c45", wall:"#b86f4e", wallShade:"#9f5f42", trim:"#efdecb", door:"#6f4129", window:"#9fbed6", chimney:"#665244", dormers:2, chimneys:1, steeple:false, sign:"SHOP" },
-  village_hall_meeting_house:{ roof:"#51555d", roofShade:"#41454d", wall:"#d9d0bf", wallShade:"#c6baa8", trim:"#fbf5e8", door:"#68452f", window:"#a8c8de", chimney:"#706050", dormers:1, chimneys:1, steeple:true, sign:"HALL" },
-  hunter_lodge_or_outfitter:{ roof:"#5a463a", roofShade:"#49382f", wall:"#b49374", wallShade:"#9f8267", trim:"#e6d4be", door:"#5f3c2a", window:"#9db8c9", chimney:"#624d3a", dormers:1, chimneys:1, steeple:false, sign:"HUNT" },
-  pond_boathouse_or_waterfront_shed:{ roof:"#5f5b64", roofShade:"#4c4952", wall:"#8f7867", wallShade:"#7c6859", trim:"#d9c7b3", door:"#5a3b2a", window:"#94b4cc", chimney:"#5f5043", dormers:0, chimneys:0, steeple:false, sign:"DOCK" }
-});
-function _drawNewportBuilding(building){
+function getBuildingSpriteId(building){
+  return BUILDING_SPRITE_ID_BY_BUILDING_ID[building.id] || null;
+}
+function drawBuildingFallbackSprite(building){
   const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
-  const palette=NEWPORT_BUILDING_PALETTES[building.role] || NEWPORT_BUILDING_PALETTES.residence_small;
-  const bounds=computeBuildingScreenBounds(visual);
-  const pxX=Math.round(bounds.x);
-  const pxY=Math.round(bounds.y);
-  const pxW=Math.max(32, Math.round(bounds.w));
-  const pxH=Math.max(28, Math.round(bounds.h));
-  const roofHeight=Math.max(14, Math.round(pxH*0.6));
-  const wallTop=pxY+roofHeight-5;
-  const wallHeight=Math.max(9, pxH-roofHeight+5);
-  ctx.fillStyle=palette.wall;
-  ctx.fillRect(pxX+5, wallTop, pxW-10, wallHeight);
-  ctx.fillStyle=palette.wallShade;
-  ctx.fillRect(pxX+5, wallTop+Math.max(2,Math.floor(wallHeight*0.5)), pxW-10, Math.max(3,Math.floor(wallHeight*0.5)));
-  ctx.fillStyle=palette.trim;
-  ctx.fillRect(pxX+4, wallTop-1, pxW-8, 2);
-  ctx.fillRect(pxX+4, wallTop+wallHeight-2, pxW-8, 2);
-
-  const roofInset=Math.max(2,Math.floor(pxW*0.12));
-  const roofPeakX=pxX+Math.floor(pxW*0.5);
-  const roofPeakY=pxY+2;
-  const roofBaseY=wallTop+2;
-  ctx.beginPath();
-  ctx.moveTo(pxX+roofInset, roofBaseY);
-  ctx.lineTo(roofPeakX, roofPeakY);
-  ctx.lineTo(pxX+pxW-roofInset, roofBaseY);
-  ctx.lineTo(pxX+pxW-roofInset-2, roofBaseY+6);
-  ctx.lineTo(pxX+roofInset+2, roofBaseY+6);
-  ctx.closePath();
-  ctx.fillStyle=palette.roof;
-  ctx.fill();
-  ctx.fillStyle=palette.roofShade;
-  ctx.fillRect(pxX+roofInset+2, roofBaseY+4, Math.max(8,pxW-roofInset*2-4), 3);
-
-  const dormerCount=Math.max(0, palette.dormers|0);
-  for(let i=0;i<dormerCount;i++){
-    const t=(i+1)/(dormerCount+1);
-    const dw=8;
-    const dh=6;
-    const dx=pxX+Math.floor(pxW*t)-Math.floor(dw/2);
-    const dy=roofBaseY+2;
-    ctx.fillStyle=palette.trim;
-    ctx.fillRect(dx,dy,dw,dh);
-    ctx.fillStyle=palette.window;
-    ctx.fillRect(dx+2,dy+2,dw-4,dh-3);
-    ctx.fillStyle=palette.roofShade;
-    ctx.beginPath();
-    ctx.moveTo(dx-1,dy+1);
-    ctx.lineTo(dx+Math.floor(dw/2),dy-3);
-    ctx.lineTo(dx+dw+1,dy+1);
-    ctx.closePath();
-    ctx.fill();
+  const style=BUILDING_FALLBACK_STYLE_BY_ROLE[building.role] || BUILDING_FALLBACK_STYLE_BY_ROLE.residence_small;
+  const roofMidTile=assets.building[style.roof] || assets.building.roofC;
+  const wallTile=assets.building[style.wall] || assets.building.wall;
+  const windowTile=assets.building[style.window] || assets.building.window;
+  const doorTile=assets.building[style.door] || assets.building.door;
+  const drawTile=(img,tx,ty)=>{
+    if(!img || !img.complete || img.naturalWidth<=0) return false;
+    const p=tileToScreen(tx,ty);
+    ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    return true;
+  };
+  for(let y=0;y<visual.h;y++){
+    for(let x=0;x<visual.w;x++){
+      const tx=visual.x+x;
+      const ty=visual.y+y;
+      if(y===0){
+        const roofTile=(x===0) ? assets.building.roofL : (x===visual.w-1 ? assets.building.roofR : roofMidTile);
+        drawTile(roofTile, tx, ty);
+        continue;
+      }
+      drawTile(wallTile, tx, ty);
+    }
   }
-
+  if(style.dormer && visual.w>=3) drawTile(assets.building.roofDormer, visual.x+Math.floor(visual.w/2), visual.y);
   const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1 };
-  const doorAnchor=tileToScreen(interaction.x, interaction.y);
-  const doorW=8;
-  const doorH=Math.max(10,Math.floor(wallHeight*0.58));
-  const doorX=Math.round(doorAnchor.x+Math.floor(TILE/2)-Math.floor(doorW/2));
-  const doorY=wallTop+wallHeight-doorH;
-  ctx.fillStyle=palette.door;
-  ctx.fillRect(doorX,doorY,doorW,doorH);
-  ctx.fillStyle=palette.trim;
-  ctx.fillRect(doorX+1,doorY+1,doorW-2,2);
-
-  const windowY=wallTop+Math.max(2,Math.floor(wallHeight*0.28));
-  const windowW=8;
-  const windowH=7;
-  const windowGap=Math.max(4,Math.floor((pxW-10-windowW*2)/3));
-  const leftWindowX=pxX+7+windowGap;
-  const rightWindowX=pxX+pxW-7-windowGap-windowW;
-  [leftWindowX,rightWindowX].forEach((wx)=>{
-    ctx.fillStyle=palette.trim;
-    ctx.fillRect(wx-1,windowY-1,windowW+2,windowH+2);
-    ctx.fillStyle=palette.window;
-    ctx.fillRect(wx,windowY,windowW,windowH);
-    ctx.fillStyle="rgba(255,255,255,.35)";
-    ctx.fillRect(wx+1,windowY+1,windowW-2,1);
-  });
-
-  const chimneyCount=Math.max(0,palette.chimneys|0);
-  for(let i=0;i<chimneyCount;i++){
-    const cx=pxX+Math.floor(pxW*(chimneyCount===1?0.76:(0.22+i*0.56)));
-    const cy=roofBaseY-9;
-    ctx.fillStyle=palette.chimney;
-    ctx.fillRect(cx,cy,6,11);
-    ctx.fillStyle="rgba(244,232,212,.8)";
-    ctx.fillRect(cx+1,cy,4,2);
-  }
-
-  if(palette.steeple){
-    const sx=pxX+Math.floor(pxW*0.5);
-    const sy=roofPeakY-3;
-    ctx.fillStyle=palette.trim;
-    ctx.fillRect(sx-2,sy,4,10);
-    ctx.beginPath();
-    ctx.moveTo(sx-5,sy);
-    ctx.lineTo(sx,sy-12);
-    ctx.lineTo(sx+5,sy);
-    ctx.closePath();
-    ctx.fillStyle=palette.roofShade;
-    ctx.fill();
-  }
-  if(palette.sign){
-    const signW=22;
-    const signH=8;
-    const sx=doorX-signW-4;
-    const sy=doorY+2;
-    ctx.fillStyle="rgba(83,58,37,.95)";
-    ctx.fillRect(sx,sy,signW,signH);
-    ctx.fillStyle="rgba(237,221,178,.95)";
-    ctx.font="bold 6px monospace";
-    ctx.fillText(palette.sign,sx+2,sy+6);
+  drawTile(doorTile, interaction.x, interaction.y);
+  if(visual.h>=3){
+    const windowY=visual.y+Math.min(visual.h-2, 2);
+    drawTile(windowTile, visual.x+1, windowY);
+    if(visual.w>=4) drawTile(windowTile, visual.x+visual.w-2, windowY);
   }
 }
 
@@ -2272,16 +2199,17 @@ function auditBuildingAtlasMappings(){
   const atlasEntries=[];
   const fallbackEntries=[];
   world.buildings.forEach((building)=>{
-    if(!building.spriteId){
-      fallbackEntries.push(building.id + "(missing_sprite_id)");
+    const spriteId=getBuildingSpriteId(building);
+    if(!spriteId){
+      fallbackEntries.push(building.id + "(unmapped_for_safe_rollout)");
       return;
     }
-    const sprite=atlasManifests.buildings.sprites?.[building.spriteId];
+    const sprite=atlasManifests.buildings.sprites?.[spriteId];
     if(!sprite){
-      fallbackEntries.push(building.id + "(missing_atlas_entry:" + building.spriteId + ")");
+      fallbackEntries.push(building.id + "(missing_atlas_entry:" + spriteId + ")");
       return;
     }
-    atlasEntries.push(building.id + "->" + building.spriteId + "[sx=" + sprite.sx + ",sy=" + sprite.sy + ",sw=" + sprite.sw + ",sh=" + sprite.sh + "]");
+    atlasEntries.push(building.id + "->" + spriteId + "[sx=" + sprite.sx + ",sy=" + sprite.sy + ",sw=" + sprite.sw + ",sh=" + sprite.sh + "]");
   });
   console.info("[Building Atlas Mapping] atlas=" + atlasEntries.join(",") + " fallback=" + (fallbackEntries.join(",") || "none"));
 }
@@ -6418,7 +6346,8 @@ function drawWorld(){
   }
 
   world.buildings.forEach((b,bIndex)=>{
-    const sprite=atlasManifests.buildings.sprites[b.spriteId];
+    const spriteId=getBuildingSpriteId(b);
+    const sprite=atlasManifests.buildings.sprites[spriteId];
     const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
     const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
     const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
@@ -6433,16 +6362,18 @@ function drawWorld(){
       drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
     }
 
-    const spriteFailureReason=USE_PRODUCTION_BUILDING_ATLAS ? getAtlasSpriteFailureReason("buildings", b.spriteId) : "production_atlas_disabled";
+    const spriteFailureReason=!spriteId
+      ? "unmapped_for_safe_rollout"
+      : (USE_PRODUCTION_BUILDING_ATLAS ? getAtlasSpriteFailureReason("buildings", spriteId) : "production_atlas_disabled");
     const didDraw=!spriteFailureReason
-      ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh)
+      ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh)
       : false;
     if(!didDraw){
       const fallbackReason=spriteFailureReason||"draw_failed";
-      warnMissingAssetOnce("building_sprite", b.spriteId+":"+fallbackReason);
+      warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
       logBuildingFallbackOnce(b, fallbackReason);
-      _drawNewportBuilding(b);
+      drawBuildingFallbackSprite(b);
       return;
     }
     buildingRenderDiagnostics.atlasBuildings.add(b.id);
