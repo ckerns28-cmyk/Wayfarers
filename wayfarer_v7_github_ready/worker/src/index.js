@@ -1161,16 +1161,16 @@ const atlasManifests = {
     }
   },
   buildings: {
-    imagePath: "/assets/wayfarer/buildings/hearthvale_buildings_sheet.png",
+    imagePath: "/assets/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png",
     tileSize: 32,
     sprites: {
-      inn_tavern:{ sx:0, sy:0, sw:224, sh:192, anchorX:96, anchorY:176 },
-      mercantile_shop:{ sx:224, sy:0, sw:192, sh:192, anchorX:80, anchorY:176 },
-      village_hall_meeting_house:{ sx:0, sy:192, sw:224, sh:192, anchorX:96, anchorY:176 },
-      residence_small:{ sx:224, sy:192, sw:128, sh:160, anchorX:48, anchorY:144 },
-      residence_large:{ sx:352, sy:192, sw:160, sh:160, anchorX:64, anchorY:144 },
-      hunter_lodge_or_outfitter:{ sx:0, sy:384, sw:160, sh:160, anchorX:64, anchorY:144 },
-      pond_boathouse_or_waterfront_shed:{ sx:160, sy:384, sw:224, sh:128, anchorX:96, anchorY:112 }
+      inn_tavern:{ sx:0, sy:0, sw:224, sh:192, anchorX:96, anchorY:176, drawW:224, drawH:192, collisionFootprint:{ x:0, y:96, w:192, h:96 } },
+      mercantile_shop:{ sx:224, sy:0, sw:192, sh:192, anchorX:80, anchorY:176, drawW:192, drawH:192, collisionFootprint:{ x:0, y:96, w:160, h:96 } },
+      village_hall_meeting_house:{ sx:0, sy:192, sw:224, sh:192, anchorX:96, anchorY:176, drawW:224, drawH:192, collisionFootprint:{ x:0, y:96, w:192, h:96 } },
+      residence_small:{ sx:224, sy:192, sw:128, sh:160, anchorX:48, anchorY:144, drawW:128, drawH:160, collisionFootprint:{ x:0, y:80, w:96, h:80 } },
+      residence_large:{ sx:352, sy:192, sw:160, sh:160, anchorX:64, anchorY:144, drawW:160, drawH:160, collisionFootprint:{ x:0, y:80, w:128, h:80 } },
+      hunter_lodge_or_outfitter:{ sx:0, sy:384, sw:160, sh:160, anchorX:64, anchorY:144, drawW:160, drawH:160, collisionFootprint:{ x:0, y:80, w:128, h:80 } },
+      pond_boathouse_or_waterfront_shed:{ sx:160, sy:384, sw:224, sh:128, anchorX:96, anchorY:112, drawW:224, drawH:128, collisionFootprint:{ x:0, y:64, w:192, h:64 } }
     }
   },
   characters: {
@@ -1187,24 +1187,28 @@ const atlasManifests = {
     }
   },
   props: {
-    imagePath: "/assets/wayfarer/props/props_sheet.png",
+    imagePath: "/assets/tiles/buildings/test_house/Medieval%20town%20asset%20sprite%20sheet.png",
     tileSize: 32,
     sprites: {
-      notice_board:{ sx:0, sy:0, sw:32, sh:32 },
-      barrel:{ sx:32, sy:0, sw:32, sh:32 },
-      crate:{ sx:64, sy:0, sw:32, sh:32 },
-      bench:{ sx:96, sy:0, sw:32, sh:32 },
-      lantern_post:{ sx:128, sy:0, sw:32, sh:32 },
-      fence_horizontal:{ sx:160, sy:0, sw:32, sh:32 },
-      fence_vertical:{ sx:192, sy:0, sw:32, sh:32 },
-      dock_plank:{ sx:224, sy:0, sw:32, sh:32 },
-      signpost:{ sx:256, sy:0, sw:32, sh:32 }
+      crate:{ sx:0, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 },
+      barrel:{ sx:32, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 },
+      sign_post:{ sx:64, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 },
+      fence_segment:{ sx:96, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 },
+      bench:{ sx:128, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 },
+      dock_detail:{ sx:160, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 }
     }
   }
 };
 const atlasImages = {};
 const missingAssetWarnings=new Set();
-const USE_PRODUCTION_BUILDING_ATLAS = false;
+const USE_PRODUCTION_BUILDING_ATLAS = true;
+const PROP_SPRITE_BY_WORLD_TYPE = Object.freeze({
+  crate:"crate",
+  barrel:"barrel",
+  signPost:"sign_post",
+  fenceSeg:"fence_segment",
+  bench:"bench"
+});
 function warnMissingAssetOnce(kind,key){
   const token=kind+":"+key;
   if(missingAssetWarnings.has(token)) return;
@@ -1255,6 +1259,18 @@ function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
   }
   ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, dw ?? sprite.sw, dh ?? sprite.sh);
   return true;
+}
+function drawMappedPropSprite(prop, p){
+  const spriteId=PROP_SPRITE_BY_WORLD_TYPE[prop.type];
+  if(!spriteId) return false;
+  const atlasSprite=atlasManifests.props?.sprites?.[spriteId];
+  if(!atlasSprite){
+    warnMissingAssetOnce("prop_atlas_sprite", spriteId);
+    return false;
+  }
+  const drawX=Math.round(p.x + TILE/2 - (atlasSprite.anchorX ?? TILE/2));
+  const drawY=Math.round(p.y + TILE - (atlasSprite.anchorY ?? TILE));
+  return drawAtlasSprite("props", spriteId, drawX, drawY, atlasSprite.drawW ?? atlasSprite.sw, atlasSprite.drawH ?? atlasSprite.sh);
 }
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
   inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"TAVERN", windowCols:[1,3,4] },
@@ -6200,7 +6216,7 @@ function drawWorld(){
     }
 
     const didDraw=USE_PRODUCTION_BUILDING_ATLAS
-      ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh)
+      ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh)
       : false;
     if(!didDraw){
       warnMissingAssetOnce("building_sprite", b.spriteId);
@@ -6217,18 +6233,24 @@ function drawWorld(){
   const propsAbove=world.props.filter((prop)=>prop.layer==="above_entities");
   propsBehind.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
-    const img = assets.props.sprites[prop.type];
-    if(!img || !img.complete || img.naturalWidth<=0){
-      warnMissingAssetOnce("prop_sprite", prop.type);
-      drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
+    const usedAtlasSprite=drawMappedPropSprite(prop,p);
+    if(!usedAtlasSprite){
+      const img = assets.props.sprites[prop.type];
+      if(!img || !img.complete || img.naturalWidth<=0){
+        warnMissingAssetOnce("prop_sprite", prop.type);
+        drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
+        return;
+      }
+      if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
+      if(prop.type==="handcart"||prop.type==="bench"||prop.type==="noticeBoard") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
+      if(prop.type==="sack"||prop.type==="stonePile") drawSoftShadow(p.x+16,p.y+26,8,3,.16);
+      if(prop.type==="bush"||prop.type==="grassTuft") drawSoftShadow(p.x+16,p.y+26,9,4,.14);
+      if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
+      ctx.drawImage(img,p.x,p.y,32,32);
       return;
     }
     if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
-    if(prop.type==="handcart"||prop.type==="bench"||prop.type==="noticeBoard") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
-    if(prop.type==="sack"||prop.type==="stonePile") drawSoftShadow(p.x+16,p.y+26,8,3,.16);
-    if(prop.type==="bush"||prop.type==="grassTuft") drawSoftShadow(p.x+16,p.y+26,9,4,.14);
-    if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
-    ctx.drawImage(img,p.x,p.y,32,32);
+    if(prop.type==="bench"||prop.type==="signPost") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
   });
   if(getStillWaterQuestStage()===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
     drawMirrorPondInspectionMarker(now);
@@ -6310,14 +6332,19 @@ function drawWorld(){
   drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
   propsAbove.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
-    const img = assets.props.sprites[prop.type];
-    if(!img || !img.complete || img.naturalWidth<=0){
-      warnMissingAssetOnce("prop_sprite", prop.type);
-      drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
+    const usedAtlasSprite=drawMappedPropSprite(prop,p);
+    if(!usedAtlasSprite){
+      const img = assets.props.sprites[prop.type];
+      if(!img || !img.complete || img.naturalWidth<=0){
+        warnMissingAssetOnce("prop_sprite", prop.type);
+        drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
+        return;
+      }
+      drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.65);
+      ctx.drawImage(img,p.x,p.y,32,32);
       return;
     }
     drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.65);
-    ctx.drawImage(img,p.x,p.y,32,32);
   });
   const currentTarget=getCurrentCombatTarget(5);
   const hostileLabelEntries=[...wolves, ...bandits]
