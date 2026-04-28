@@ -1329,10 +1329,18 @@ function isPropDebugEnabledFromUrl(){
     return false;
   }
 }
+function isDecorDebugEnabledFromUrl(){
+  try{
+    return new URLSearchParams(window.location.search).get("decorDebug")==="1";
+  }catch(_error){
+    return false;
+  }
+}
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
+const DECOR_DEBUG_MODE = isDecorDebugEnabledFromUrl();
 const PROP_DEBUG_MODE = isPropDebugEnabledFromUrl();
 const ATLAS_DEBUG_SOURCE_LABELS = (() => {
-  if(!ATLAS_DEBUG_MODE) return false;
+  if(!ATLAS_DEBUG_MODE || !DECOR_DEBUG_MODE) return false;
   try{
     return new URLSearchParams(window.location.search).get("sourceLabels") !== "0";
   }catch(_error){
@@ -1346,6 +1354,56 @@ const decorSourceTraceState={
   frame:0,
   entries:[]
 };
+const ATLAS_DECOR_SUPPRESS_SOURCE_LABELS=Object.freeze(new Set(["LEGACY_PROP","FALLBACK_DECOR","MAP_OBJECT"]));
+const ATLAS_DECOR_ALLOWLIST=Object.freeze(new Set([]));
+const atlasBuildingDecorExclusionState={
+  zones:[],
+  suppressionLog:new Set()
+};
+function resetAtlasBuildingDecorExclusionState(){
+  atlasBuildingDecorExclusionState.zones.length=0;
+}
+function overlapsRect(a,b){
+  if(!a || !b) return false;
+  return a.x < b.x + b.w &&
+    a.x + a.w > b.x &&
+    a.y < b.y + b.h &&
+    a.y + a.h > b.y;
+}
+function registerAtlasBuildingDecorExclusionZone(building, drawX, drawY, drawW, drawH){
+  if(!building || !Number.isFinite(drawX) || !Number.isFinite(drawY) || !Number.isFinite(drawW) || !Number.isFinite(drawH)) return;
+  atlasBuildingDecorExclusionState.zones.push({
+    buildingId:building.id || "unknown_building",
+    buildingRole:building.role || "unknown_role",
+    rect:{
+      x:Math.floor(drawX),
+      y:Math.floor(drawY),
+      w:Math.max(1, Math.ceil(drawW)),
+      h:Math.max(1, Math.ceil(drawH))
+    }
+  });
+}
+function getAtlasDecorSuppressionZoneHit(drawRect){
+  if(!drawRect) return null;
+  for(const zone of atlasBuildingDecorExclusionState.zones){
+    if(overlapsRect(drawRect, zone.rect)){
+      return zone;
+    }
+  }
+  return null;
+}
+function shouldSuppressDecorObject(objectId, sourceLabel, drawRect){
+  if(!ATLAS_DECOR_SUPPRESS_SOURCE_LABELS.has(sourceLabel || "")) return null;
+  if(ATLAS_DECOR_ALLOWLIST.has(objectId || "")) return null;
+  const zone=getAtlasDecorSuppressionZoneHit(drawRect);
+  if(!zone) return null;
+  const token=[zone.buildingId, sourceLabel, objectId || "n/a", Math.round(drawRect.x), Math.round(drawRect.y)].join("|");
+  if(ATLAS_DEBUG_MODE && DECOR_DEBUG_MODE && !atlasBuildingDecorExclusionState.suppressionLog.has(token)){
+    atlasBuildingDecorExclusionState.suppressionLog.add(token);
+    console.info("[Decor Exclusion] Suppressed " + sourceLabel + " objectId=" + (objectId || "n/a") + " at " + Math.round(drawRect.x) + "," + Math.round(drawRect.y) + " near " + zone.buildingId + " [" + zone.buildingRole + "]");
+  }
+  return zone;
+}
 function isTraceableDecorTile(tx, ty){
   return tx>=HEARTHVALE_TRACE_BOUNDS.x &&
     ty>=HEARTHVALE_TRACE_BOUNDS.y &&
@@ -7047,6 +7105,7 @@ function drawWorld(){
 
   const now=performance.now();
   beginDecorSourceTraceFrame();
+  resetAtlasBuildingDecorExclusionState();
   const shakeActive=now<cameraShakeUntil;
   const shakeMagnitude=shakeActive ? cameraShakeStrength*Math.max(0.15, (cameraShakeUntil-now)/180) : 0;
   const shakeX=shakeActive ? (Math.random()*2-1)*shakeMagnitude : 0;
@@ -7203,6 +7262,7 @@ function drawWorld(){
       return;
     }
     buildingRenderDiagnostics.atlasBuildings.add(b.id);
+    registerAtlasBuildingDecorExclusionZone(b, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh);
     syncInnAtlasProofDiagnostics(b, spriteId, sprite, true, null);
     if(b.id==="b_inn_tavern"){
       drawAtlasProofMarker(drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh, b, "ATLAS", null);
@@ -7254,20 +7314,29 @@ function drawWorld(){
     const mappedDrawY=mappedAtlasSprite ? Math.round(p.y + TILE - (mappedAtlasSprite.anchorY ?? TILE)) : p.y;
     const mappedDrawW=mappedAtlasSprite?.drawW ?? mappedAtlasSprite?.sw ?? TILE;
     const mappedDrawH=mappedAtlasSprite?.drawH ?? mappedAtlasSprite?.sh ?? TILE;
+    const sourceLabel=usedAtlasSprite ? "PROP_ATLAS" : "LEGACY_PROP";
+    const drawRect={
+      x:usedAtlasSprite ? mappedDrawX : p.x,
+      y:usedAtlasSprite ? mappedDrawY : p.y,
+      w:usedAtlasSprite ? mappedDrawW : TILE,
+      h:usedAtlasSprite ? mappedDrawH : TILE
+    };
+    const suppressionZone=shouldSuppressDecorObject("prop_" + prop.x + "_" + prop.y + "_" + prop.type, sourceLabel, drawRect);
     traceDecorSource({
       sourceSystem:"map_props",
       sourceFunction:"drawWorld.propsBehind.forEach",
       objectId:"prop_" + prop.x + "_" + prop.y + "_" + prop.type,
       objectType:prop.type,
-      sourceLabel:usedAtlasSprite ? "PROP_ATLAS" : "LEGACY_PROP",
+      sourceLabel,
       atlasFile:usedAtlasSprite ? getAtlasFilename(mappedAtlasSprite?.atlas || atlasManifests.props?.imagePath) : null,
       crop:usedAtlasSprite && mappedAtlasSprite ? { x:mappedAtlasSprite.sx, y:mappedAtlasSprite.sy, w:mappedAtlasSprite.sw, h:mappedAtlasSprite.sh } : null,
       procedural:!usedAtlasSprite,
       worldTile:{ x:prop.x, y:prop.y },
-      screenDraw:{ x:usedAtlasSprite ? mappedDrawX : p.x, y:usedAtlasSprite ? mappedDrawY : p.y },
-      drawSize:{ w:usedAtlasSprite ? mappedDrawW : TILE, h:usedAtlasSprite ? mappedDrawH : TILE },
-      renderLayer:prop.layer || "ground_props"
+      screenDraw:{ x:drawRect.x, y:drawRect.y },
+      drawSize:{ w:drawRect.w, h:drawRect.h },
+      renderLayer:suppressionZone ? "suppressed_ground_props" : (prop.layer || "ground_props")
     });
+    if(suppressionZone) return;
     if(!usedAtlasSprite){
       const img = assets.props.sprites[prop.type];
       if(!img || !img.complete || img.naturalWidth<=0){
@@ -7333,6 +7402,7 @@ function drawWorld(){
     if(chance > 0.045) continue;
     const p = tileToScreen(x,y);
     const detail = assets.detail[Math.floor(rng(x,y,137)*assets.detail.length)];
+    const suppressionZone=shouldSuppressDecorObject("detail_" + x + "_" + y, "FALLBACK_DECOR", { x:p.x, y:p.y, w:TILE, h:TILE });
     traceDecorSource({
       sourceSystem:"terrain_detail_scatter",
       sourceFunction:"drawWorld.detailScatterLoop",
@@ -7343,8 +7413,9 @@ function drawWorld(){
       worldTile:{ x, y },
       screenDraw:{ x:p.x, y:p.y },
       drawSize:{ w:TILE, h:TILE },
-      renderLayer:"ground_decor"
+      renderLayer:suppressionZone ? "suppressed_ground_decor" : "ground_decor"
     });
+    if(suppressionZone) continue;
     if(detail && detail.complete && detail.naturalWidth>0) ctx.drawImage(detail,p.x,p.y,32,32);
   }
 
@@ -7385,20 +7456,29 @@ function drawWorld(){
     const mappedDrawY=mappedAtlasSprite ? Math.round(p.y + TILE - (mappedAtlasSprite.anchorY ?? TILE)) : p.y;
     const mappedDrawW=mappedAtlasSprite?.drawW ?? mappedAtlasSprite?.sw ?? TILE;
     const mappedDrawH=mappedAtlasSprite?.drawH ?? mappedAtlasSprite?.sh ?? TILE;
+    const sourceLabel=usedAtlasSprite ? "PROP_ATLAS" : "MAP_OBJECT";
+    const drawRect={
+      x:usedAtlasSprite ? mappedDrawX : p.x,
+      y:usedAtlasSprite ? mappedDrawY : p.y,
+      w:usedAtlasSprite ? mappedDrawW : TILE,
+      h:usedAtlasSprite ? mappedDrawH : TILE
+    };
+    const suppressionZone=shouldSuppressDecorObject("prop_" + prop.x + "_" + prop.y + "_" + prop.type, sourceLabel, drawRect);
     traceDecorSource({
       sourceSystem:"map_props",
       sourceFunction:"drawWorld.propsAbove.forEach",
       objectId:"prop_" + prop.x + "_" + prop.y + "_" + prop.type,
       objectType:prop.type,
-      sourceLabel:usedAtlasSprite ? "PROP_ATLAS" : "MAP_OBJECT",
+      sourceLabel,
       atlasFile:usedAtlasSprite ? getAtlasFilename(mappedAtlasSprite?.atlas || atlasManifests.props?.imagePath) : null,
       crop:usedAtlasSprite && mappedAtlasSprite ? { x:mappedAtlasSprite.sx, y:mappedAtlasSprite.sy, w:mappedAtlasSprite.sw, h:mappedAtlasSprite.sh } : null,
       procedural:!usedAtlasSprite,
       worldTile:{ x:prop.x, y:prop.y },
-      screenDraw:{ x:usedAtlasSprite ? mappedDrawX : p.x, y:usedAtlasSprite ? mappedDrawY : p.y },
-      drawSize:{ w:usedAtlasSprite ? mappedDrawW : TILE, h:usedAtlasSprite ? mappedDrawH : TILE },
-      renderLayer:prop.layer || "above_entities"
+      screenDraw:{ x:drawRect.x, y:drawRect.y },
+      drawSize:{ w:drawRect.w, h:drawRect.h },
+      renderLayer:suppressionZone ? "suppressed_above_entities" : (prop.layer || "above_entities")
     });
+    if(suppressionZone) return;
     if(!usedAtlasSprite){
       const img = assets.props.sprites[prop.type];
       if(!img || !img.complete || img.naturalWidth<=0){
