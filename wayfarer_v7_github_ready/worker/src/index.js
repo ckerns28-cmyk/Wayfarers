@@ -1254,10 +1254,10 @@ const atlasManifests = {
       "/tiles/buildings/test_house/Medieval%20town%20asset%20sprite%20sheet.png"
     ],
     sprites: {
-      bench_market:{ sx:0, sy:0, sw:64, sh:32, drawW:64, drawH:32, anchorX:32, anchorY:32, productionReady:true, proofEnabled:true, footprint:{ w:2, h:1 }, collisionRect:{ x:0, y:0, w:2, h:1 }, interactionRect:{ x:1, y:0, w:1, h:1 }, atlas:"hearthvale_props_atlas_v1.png" },
-      barrel_oak:{ sx:64, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:32, productionReady:true, proofEnabled:true, footprint:{ w:1, h:1 }, collisionRect:{ x:0, y:0, w:1, h:1 }, atlas:"hearthvale_props_atlas_v1.png" },
-      crate_market:{ sx:96, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:32, productionReady:true, proofEnabled:true, footprint:{ w:1, h:1 }, collisionRect:{ x:0, y:0, w:1, h:1 }, atlas:"hearthvale_props_atlas_v1.png" },
-      signpost_square:{ sx:128, sy:0, sw:32, sh:64, drawW:32, drawH:64, anchorX:16, anchorY:32, renderLayer:"above_entities", productionReady:true, proofEnabled:true, footprint:{ w:1, h:1 }, collisionRect:{ x:0, y:0, w:1, h:1 }, interactionRect:{ x:0, y:0, w:1, h:1 }, atlas:"hearthvale_props_atlas_v1.png" }
+      bench_market:{ sx:0, sy:0, sw:64, sh:32, drawW:64, drawH:32, anchorX:32, anchorY:32, productionReady:false, debugOnly:true, proofEnabled:true, footprint:{ w:2, h:1 }, collisionRect:{ x:0, y:0, w:2, h:1 }, interactionRect:{ x:1, y:0, w:1, h:1 }, atlas:"hearthvale_props_atlas_v1.png" },
+      barrel_oak:{ sx:64, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:32, productionReady:false, debugOnly:true, proofEnabled:true, footprint:{ w:1, h:1 }, collisionRect:{ x:0, y:0, w:1, h:1 }, atlas:"hearthvale_props_atlas_v1.png" },
+      crate_market:{ sx:96, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:32, productionReady:false, debugOnly:true, proofEnabled:true, footprint:{ w:1, h:1 }, collisionRect:{ x:0, y:0, w:1, h:1 }, atlas:"hearthvale_props_atlas_v1.png" },
+      signpost_square:{ sx:128, sy:0, sw:32, sh:64, drawW:32, drawH:64, anchorX:16, anchorY:32, renderLayer:"above_entities", productionReady:false, debugOnly:true, proofEnabled:true, footprint:{ w:1, h:1 }, collisionRect:{ x:0, y:0, w:1, h:1 }, interactionRect:{ x:0, y:0, w:1, h:1 }, atlas:"hearthvale_props_atlas_v1.png" }
     }
   }
 };
@@ -1322,7 +1322,15 @@ function isAtlasDebugEnabledFromUrl(){
     return false;
   }
 }
+function isPropDebugEnabledFromUrl(){
+  try{
+    return new URLSearchParams(window.location.search).get("propDebug")==="1";
+  }catch(_error){
+    return false;
+  }
+}
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
+const PROP_DEBUG_MODE = isPropDebugEnabledFromUrl();
 const USE_HEARTHVALE_ATLAS_PROOF_DEBUG = ATLAS_DEBUG_MODE;
 const BUILDING_SPRITE_PROOF_DEBUG = false;
 const buildingSpriteProofState={
@@ -1589,6 +1597,9 @@ function mergeAtlasManifestEntries(atlasId, externalManifest){
       if(!hasFiniteSize || giantCrop || giantDraw){
         mergedSprite.productionReady=false;
         mergedSprite.debugOnly=true;
+      }else{
+        mergedSprite.productionReady=false;
+        mergedSprite.debugOnly=true;
       }
     }
   });
@@ -1624,8 +1635,80 @@ function isProofBuildingEnabled(building, sprite){
 }
 function isProofPropEnabled(propType, sprite){
   if(!USE_HEARTHVALE_ATLAS_PROOF) return false;
+  if(!PROP_DEBUG_MODE) return false;
   if(!HEARTHVALE_PROOF_PROP_TYPES.has(propType)) return false;
   return sprite?.proofEnabled===true;
+}
+function isPropOverlappingBuildingVisualFootprint(prop, propFootprintW=1, propFootprintH=1){
+  const minX=prop.x;
+  const minY=prop.y;
+  const maxX=prop.x + Math.max(1, propFootprintW) - 1;
+  const maxY=prop.y + Math.max(1, propFootprintH) - 1;
+  return world.buildings.some((building)=>{
+    const bx=building.visualX ?? building.x;
+    const by=building.visualY ?? building.y;
+    const bw=building.visualW ?? building.w;
+    const bh=building.visualH ?? building.h;
+    const bMaxX=bx + bw - 1;
+    const bMaxY=by + bh - 1;
+    return !(maxX<bx || minX>bMaxX || maxY<by || minY>bMaxY);
+  });
+}
+function isPropBlockingDoorThreshold(prop, propFootprintW=1, propFootprintH=1){
+  const minX=prop.x;
+  const minY=prop.y;
+  const maxX=prop.x + Math.max(1, propFootprintW) - 1;
+  const maxY=prop.y + Math.max(1, propFootprintH) - 1;
+  return world.buildings.some((building)=>{
+    if(!building.interactionRect) return false;
+    const ix=building.interactionRect.x;
+    const iy=building.interactionRect.y;
+    const iw=building.interactionRect.w;
+    const ih=building.interactionRect.h;
+    const iMaxX=ix + iw - 1;
+    const iMaxY=iy + ih - 1;
+    return !(maxX<ix || minX>iMaxX || maxY<iy || minY>iMaxY);
+  });
+}
+function isPropBlockingMainRoad(prop, propFootprintW=1, propFootprintH=1){
+  for(let dx=0;dx<Math.max(1, propFootprintW);dx++){
+    for(let dy=0;dy<Math.max(1, propFootprintH);dy++){
+      if(world.roadTiles.has(keyOf(prop.x+dx, prop.y+dy))) return true;
+    }
+  }
+  return false;
+}
+function getPropPlacementValidationFailure(prop, atlasSprite, drawW, drawH){
+  if(!Number.isFinite(prop.x) || !Number.isFinite(prop.y)) return "invalid_prop_tile_position";
+  if(!atlasSprite) return "missing_sprite_entry";
+  if(!Number.isFinite(drawW) || !Number.isFinite(drawH)) return "invalid_atlas_metadata_draw_size";
+  const footprintW=Math.max(1, atlasSprite?.footprint?.w ?? atlasSprite?.tileFootprint?.w ?? 1);
+  const footprintH=Math.max(1, atlasSprite?.footprint?.h ?? atlasSprite?.tileFootprint?.h ?? 1);
+  if(isPropOverlappingBuildingVisualFootprint(prop, footprintW, footprintH)) return "overlaps_building_visual_footprint";
+  if(isPropBlockingDoorThreshold(prop, footprintW, footprintH)) return "blocks_door_threshold";
+  if(isPropBlockingMainRoad(prop, footprintW, footprintH)) return "blocks_main_road";
+  const limits=PROP_SPRITE_PRODUCTION_LIMITS[prop.type] || PROP_SPRITE_PRODUCTION_LIMITS.default;
+  if(drawW<limits.minDrawW || drawH<limits.minDrawH || drawW>limits.maxDrawW || drawH>limits.maxDrawH) return "prop_draw_size_out_of_bounds";
+  if(drawW>TILE*EXTERNAL_SPRITE_PRODUCTION_LIMITS.maxDrawTilesWide || drawH>TILE*EXTERNAL_SPRITE_PRODUCTION_LIMITS.maxDrawTilesHigh) return "uses_building_scale_dimensions";
+  return null;
+}
+function drawPropDebugMarker(prop, drawX, drawY, drawW, drawH, atlasSprite, failureReason){
+  if(!PROP_DEBUG_MODE || !atlasSprite) return;
+  const label=failureReason
+    ? prop.type + " " + atlasSprite.atlas + " BLOCKED(" + failureReason + ")"
+    : prop.type + " " + atlasSprite.atlas + " draw=" + drawW + "x" + drawH + " anchor=" + (atlasSprite.anchorX ?? "n/a") + "," + (atlasSprite.anchorY ?? "n/a");
+  ctx.save();
+  ctx.strokeStyle=failureReason ? "rgba(255,104,104,.96)" : "rgba(120,255,180,.96)";
+  ctx.lineWidth=2;
+  ctx.strokeRect(Math.floor(drawX)+0.5, Math.floor(drawY)+0.5, Math.max(1, Math.floor(drawW)-1), Math.max(1, Math.floor(drawH)-1));
+  ctx.font="11px ui-monospace, monospace";
+  const textW=Math.ceil(ctx.measureText(label).width)+10;
+  const panelY=Math.floor(drawY)-18;
+  ctx.fillStyle="rgba(0,0,0,.88)";
+  ctx.fillRect(Math.floor(drawX), panelY, textW, 16);
+  ctx.fillStyle=failureReason ? "rgba(255,174,174,.98)" : "rgba(178,255,210,.98)";
+  ctx.fillText(label, Math.floor(drawX)+4, panelY+12);
+  ctx.restore();
 }
 function getAtlasCandidateUrls(manifest){
   return [manifest?.imagePath, ...(manifest?.fallbackImagePaths||[])].filter((url,idx,arr)=>url&&arr.indexOf(url)===idx);
@@ -1903,6 +1986,7 @@ function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
 function drawMappedPropSprite(prop, p){
   const spriteId=PROP_SPRITE_BY_WORLD_TYPE[prop.type];
   if(!spriteId) return false;
+  if(!PROP_DEBUG_MODE) return false;
   const atlasSprite=atlasManifests.props?.sprites?.[spriteId];
   if(!atlasSprite){
     logAtlasValidationFailureOnce("prop", spriteId, "missing_sprite_entry");
@@ -1914,24 +1998,38 @@ function drawMappedPropSprite(prop, p){
   const drawH=atlasSprite.drawH ?? atlasSprite.sh;
   if(!Number.isFinite(drawX) || !Number.isFinite(drawY)){
     logAtlasValidationFailureOnce("prop", spriteId, "invalid_draw_position");
+    drawPropDebugMarker(prop, p.x, p.y, drawW, drawH, atlasSprite, "invalid_draw_position");
+    return false;
+  }
+  const placementFailure=getPropPlacementValidationFailure(prop, atlasSprite, drawW, drawH);
+  if(placementFailure){
+    logAtlasValidationFailureOnce("prop", spriteId, placementFailure);
+    drawPropDebugMarker(prop, drawX, drawY, drawW, drawH, atlasSprite, placementFailure);
     return false;
   }
   const failReason=getExternalProductionSpriteFailureReason("props", spriteId, drawW, drawH, prop.type);
   if(failReason){
     logAtlasValidationFailureOnce("prop", spriteId, failReason);
+    drawPropDebugMarker(prop, drawX, drawY, drawW, drawH, atlasSprite, failReason);
     return false;
   }
-  return drawAtlasSprite("props", spriteId, drawX, drawY, drawW, drawH);
+  const drawn=drawAtlasSprite("props", spriteId, drawX, drawY, drawW, drawH);
+  drawPropDebugMarker(prop, drawX, drawY, drawW, drawH, atlasSprite, drawn ? null : "draw_failed");
+  return drawn;
 }
 function drawAtlasDebugPreview(){
-  if(!atlasDebugPreview.enabled) return;
+  if(!atlasDebugPreview.enabled && !PROP_DEBUG_MODE) return;
   ctx.save();
   ctx.setTransform(1,0,0,1,0,0);
   ctx.imageSmoothingEnabled=false;
   const panelW=360;
   let panelY=10;
   const panelX=Math.max(10, canvas.width-panelW-10);
-  ["buildings","props"].forEach((atlasId)=>{
+  const panelAtlasIds=[
+    ...(atlasDebugPreview.enabled ? ["buildings"] : []),
+    ...(PROP_DEBUG_MODE ? ["props"] : [])
+  ];
+  panelAtlasIds.forEach((atlasId)=>{
     const info=atlasRuntimeInfo[atlasId];
     const sheet=atlasImages[atlasId];
     const panelH=atlasId==="buildings" ? 184 : 148;

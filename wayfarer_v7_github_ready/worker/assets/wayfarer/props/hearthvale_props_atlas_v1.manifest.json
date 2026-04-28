@@ -15,7 +15,8 @@
       "labelAnchor": { "x": 1, "y": 0 },
       "renderLayer": "ground_props",
       "proofEnabled": true,
-      "productionReady": true
+      "productionReady": false,
+      "debugOnly": true
     },
     {
       "id": "barrel_oak",
@@ -27,7 +28,8 @@
       "collisionRect": { "x": 0, "y": 0, "w": 1, "h": 1 },
       "renderLayer": "ground_props",
       "proofEnabled": true,
-      "productionReady": true
+      "productionReady": false,
+      "debugOnly": true
     },
     {
       "id": "crate_market",
@@ -39,7 +41,8 @@
       "collisionRect": { "x": 0, "y": 0, "w": 1, "h": 1 },
       "renderLayer": "ground_props",
       "proofEnabled": true,
-      "productionReady": true
+      "productionReady": false,
+      "debugOnly": true
     },
     {
       "id": "signpost_square",
@@ -53,7 +56,8 @@
       "labelAnchor": { "x": 0, "y": 0 },
       "renderLayer": "above_entities",
       "proofEnabled": true,
-      "productionReady": true
+      "productionReady": false,
+      "debugOnly": true
     }
   ]
 }
