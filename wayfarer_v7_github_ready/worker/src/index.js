@@ -1253,143 +1253,44 @@ function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
     warnMissingAssetOnce("atlas_image", atlasId);
     return false;
   }
-  if(![sprite.sx,sprite.sy,sprite.sw,sprite.sh].every((value)=>Number.isFinite(value))){
-    console.error("[Render Guard] Invalid atlas sprite metadata for", atlasId, spriteId, sprite);
-    warnMissingAssetOnce("atlas_sprite_invalid", atlasId+":"+spriteId);
-    return false;
-  }
-  const safeDw=Number.isFinite(dw) && dw>0 ? dw : sprite.sw;
-  const safeDh=Number.isFinite(dh) && dh>0 ? dh : sprite.sh;
-  if(sprite.sw<=0 || sprite.sh<=0 || safeDw<=0 || safeDh<=0){
-    console.error("[Render Guard] Invalid atlas sprite dimensions for", atlasId, spriteId, { source:{ sw:sprite.sw, sh:sprite.sh }, draw:{ dw:safeDw, dh:safeDh } });
-    warnMissingAssetOnce("atlas_sprite_invalid_size", atlasId+":"+spriteId);
-    return false;
-  }
-  ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, safeDw, safeDh);
+  ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, dw ?? sprite.sw, dh ?? sprite.sh);
   return true;
 }
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
-  inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", roofDepth:4, wallDepth:1, roofColor:"#7b4a3e", roofRidge:"#d39b84", roofShape:"gambrel", hasChimney:true, sign:true, signText:"TAVERN", signOffset:-1, windows:2, shutters:true },
-  mercantile_shop:{ roof:"roofSlate", wall:"wallBrick", door:"doorShop", roofDepth:4, wallDepth:1, roofColor:"#64615f", roofRidge:"#a6a39d", roofShape:"pitched", hasChimney:true, sign:true, signText:"SHOP", windows:2, shutters:true },
-  village_hall_meeting_house:{ roof:"roofSlate", wall:"wall", door:"door", roofDepth:4, wallDepth:1, roofColor:"#5f5b59", roofRidge:"#b2aea7", roofShape:"pitched", hasChimney:true, sign:true, signText:"HALL", windows:2, civicNotice:true },
-  residence_small:{ roof:"roofL", wall:"wall", door:"door", roofDepth:3, wallDepth:1, roofColor:"#855648", roofRidge:"#cc967e", roofShape:"pitched", hasChimney:true, windows:1, shutters:true },
-  residence_large:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", roofDepth:3, wallDepth:1, roofColor:"#775042", roofRidge:"#c8957d", roofShape:"gambrel", hasChimney:true, windows:2, shutters:true },
-  hunter_lodge_or_outfitter:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", roofDepth:3, wallDepth:1, roofColor:"#6f4a3b", roofRidge:"#bb8469", roofShape:"pitched", hasChimney:true, sign:true, signText:"HUNT", windows:1, shutters:true },
-  pond_boathouse_or_waterfront_shed:{ roof:"roofR", wall:"wallBrick", door:"doorShop", roofDepth:2, wallDepth:1, roofColor:"#72655c", roofRidge:"#b3a596", roofShape:"shed", hasChimney:false, sign:true, signText:"DOCK", signOffset:1, windows:1 }
+  inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"TAVERN", windowCols:[1,3,4] },
+  mercantile_shop:{ roof:"roofSlate", wall:"wallBrick", door:"doorShop", window:"windowWide", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"SHOP", windowCols:[1,3] },
+  village_hall_meeting_house:{ roof:"roofSlate", wall:"wall", door:"door", window:"window", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"HALL", windowCols:[1,4] },
+  residence_small:{ roof:"roofL", wall:"wall", door:"door", window:"window", roofDepth:2, wallDepth:2, hasChimney:true, windowCols:[1,2] },
+  residence_large:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, windowCols:[1,3] },
+  hunter_lodge_or_outfitter:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:2, wallDepth:2, hasChimney:true, sign:true, signText:"HUNT", windowCols:[1,2] },
+  pond_boathouse_or_waterfront_shed:{ roof:"roofR", wall:"wallBrick", door:"doorShop", window:"windowWide", roofDepth:2, wallDepth:1, hasChimney:false, sign:true, signText:"DOCK", windowCols:[1] }
 });
-function drawBuildingShadow(visual){
-  for(let y=visual.y+visual.h-1;y<=visual.y+visual.h;y++){
-    for(let x=visual.x;x<visual.x+visual.w;x++){
-      const p=tileToScreen(x,y);
-      drawShadowTile(assets.shadow.softTile,p.x+5,p.y+6,.42);
-    }
-  }
-}
-function drawPixelRoof(tileX,tileY,rx,roofWidth,style,roofTile){
-  const rp=tileToScreen(tileX,tileY);
-  drawShadowTile(assets.shadow.softTile, rp.x+2, rp.y+6, .56);
-  const roofVariant=(rx===0&&assets.building.roofL)
-    ? assets.building.roofL
-    : (rx===roofWidth-1&&assets.building.roofR)
-      ? assets.building.roofR
-      : roofTile;
-  if(roofVariant) ctx.drawImage(roofVariant, rp.x, rp.y, TILE, TILE);
-  const leftShade=Math.max(0, 8-rx*2);
-  const rightShade=Math.max(0, 8-(roofWidth-rx-1)*2);
-  ctx.fillStyle="rgba(41,24,18,.24)";
-  if(leftShade>0) ctx.fillRect(rp.x+1,rp.y+8,leftShade,13);
-  if(rightShade>0) ctx.fillRect(rp.x+TILE-rightShade-1,rp.y+8,rightShade,13);
-  if(style.roofShape==="gambrel"){
-    ctx.fillStyle="rgba(255,232,210,.09)";
-    ctx.fillRect(rp.x+6,rp.y+7,20,1);
-  }
-  if(style.roofShape==="shed" && rx>0){
-    ctx.fillStyle="rgba(34,24,19,.2)";
-    ctx.fillRect(rp.x+1,rp.y+9,30,2);
-  }
-}
-function drawColonialWindow(tileX,tileY,style){
-  const wp=tileToScreen(tileX,tileY);
-  ctx.fillStyle="rgba(45,33,25,.9)";
-  ctx.fillRect(wp.x+10,wp.y+9,12,10);
-  ctx.fillStyle="rgba(160,190,208,.88)";
-  ctx.fillRect(wp.x+11,wp.y+10,10,8);
-  ctx.fillStyle="rgba(63,83,95,.9)";
-  ctx.fillRect(wp.x+15,wp.y+10,1,8);
-  ctx.fillRect(wp.x+11,wp.y+14,10,1);
-  if(style.shutters){
-    ctx.fillStyle="rgba(82,56,40,.88)";
-    ctx.fillRect(wp.x+7,wp.y+10,2,8);
-    ctx.fillRect(wp.x+23,wp.y+10,2,8);
-  }
-}
-function drawDoorFrame(tileX,tileY){
-  const dp=tileToScreen(tileX,tileY);
-  ctx.fillStyle="rgba(46,31,22,.95)";
-  ctx.fillRect(dp.x+11,dp.y+7,10,23);
-  ctx.fillStyle="rgba(109,76,51,.95)";
-  ctx.fillRect(dp.x+12,dp.y+8,8,21);
-  ctx.fillStyle="rgba(175,133,86,.86)";
-  ctx.fillRect(dp.x+13,dp.y+9,2,19);
-  ctx.fillStyle="rgba(227,196,145,.8)";
-  ctx.fillRect(dp.x+18,dp.y+20,1,1);
-  ctx.fillStyle="rgba(0,0,0,.26)";
-  ctx.fillRect(dp.x+9,dp.y+30,14,1);
-}
-function drawChimney(tileX,tileY){
-  const cp=tileToScreen(tileX,tileY);
-  ctx.fillStyle="rgba(93,70,52,.95)";
-  ctx.fillRect(cp.x+10,cp.y+4,7,12);
-  ctx.fillStyle="rgba(126,95,70,.9)";
-  ctx.fillRect(cp.x+11,cp.y+5,5,9);
-  ctx.fillStyle="rgba(40,30,24,.6)";
-  ctx.fillRect(cp.x+9,cp.y+3,9,2);
-}
-function drawSign(tileX,tileY,style){
-  const sp=tileToScreen(tileX,tileY);
-  ctx.fillStyle="rgba(72,49,32,.96)";
-  ctx.fillRect(sp.x+5,sp.y+6,21,8);
-  ctx.fillStyle="rgba(196,171,125,.82)";
-  if(style.signText){
-    ctx.font="bold 6px monospace";
-    ctx.fillText(style.signText, sp.x+7, sp.y+12);
-  } else {
-    ctx.fillRect(sp.x+8,sp.y+9,14,2);
-  }
-  if(style.civicNotice){
-    ctx.fillStyle="rgba(227,214,189,.95)";
-    ctx.fillRect(sp.x+12,sp.y+16,8,10);
-    ctx.fillStyle="rgba(113,87,62,.85)";
-    ctx.fillRect(sp.x+13,sp.y+18,6,1);
-  }
-}
 function drawBuildingFallbackSprite(building){
   const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
-  if(!Number.isFinite(visual.x) || !Number.isFinite(visual.y) || !Number.isFinite(visual.w) || !Number.isFinite(visual.h) || visual.w<=0 || visual.h<=0){
-    console.error("[Render Guard] Invalid building visual bounds for fallback render", { building, visual });
-    return;
-  }
   const style=BUILDING_FALLBACK_STYLE_BY_ROLE[building.role] || BUILDING_FALLBACK_STYLE_BY_ROLE.residence_small;
   const roofTile=assets.building[style.roof] || assets.building.roofC;
   const wallTile=assets.building[style.wall] || assets.building.wall;
   const doorTile=assets.building[style.door] || assets.building.door;
-  const roofDepth=Math.max(2, Math.min(visual.h, style.roofDepth || Math.ceil(visual.h*.65)));
-  const wallDepth=Math.max(1, Math.min(2, style.wallDepth || 1));
+  const windowTile=assets.building[style.window] || assets.building.window;
+  const roofDepth=Math.max(2, Math.min(visual.h-1, style.roofDepth || 2));
+  const wallDepth=Math.max(1, Math.min(visual.h-1, style.wallDepth || 2));
   const roofStartY=Math.max(0, visual.y-1);
-  const roofEndY=Math.min(visual.y+visual.h-1, roofStartY+roofDepth-1);
-  const wallStartY=Math.max(visual.y, visual.y+visual.h-wallDepth);
-  drawBuildingShadow(visual);
+  const roofEndY=Math.min(visual.y+visual.h-2, roofStartY+roofDepth-1);
+  const wallStartY=Math.max(visual.y+1, visual.y+visual.h-wallDepth);
   for(let ry=roofStartY;ry<=roofEndY;ry++){
-    for(let rx=-1;rx<=visual.w;rx++){
+    for(let rx=0;rx<visual.w;rx++){
       const roofX=visual.x+rx;
-      if(roofX<0||roofX>=WORLD_W) continue;
-      drawPixelRoof(roofX,ry,rx+1,visual.w+2,style,roofTile);
+      const roofP=tileToScreen(roofX, ry);
+      drawShadowTile(assets.shadow.softTile, roofP.x+2, roofP.y+5, .56);
+      const roofVariant=(rx===0&&assets.building.roofL)
+        ? assets.building.roofL
+        : (rx===visual.w-1&&assets.building.roofR)
+          ? assets.building.roofR
+          : roofTile;
+      if(roofVariant) ctx.drawImage(roofVariant, roofP.x, roofP.y, TILE, TILE);
       if(ry===roofEndY){
-        const roofP=tileToScreen(roofX,ry);
-        ctx.fillStyle="rgba(45,31,24,.34)";
-        ctx.fillRect(roofP.x+1, roofP.y+25, TILE-2, 4);
-        ctx.fillStyle=style.roofRidge || "rgba(224,187,156,.14)";
-        ctx.fillRect(roofP.x+4, roofP.y+4, TILE-8, 1);
+        ctx.fillStyle="rgba(52,36,30,.32)";
+        ctx.fillRect(roofP.x+1, roofP.y+25, TILE-2, 3);
       }
     }
   }
@@ -1399,10 +1300,6 @@ function drawBuildingFallbackSprite(building){
       const tileY=ry;
       const wallP=tileToScreen(tileX, tileY);
       if(wallTile) ctx.drawImage(wallTile, wallP.x, wallP.y, TILE, TILE);
-      ctx.fillStyle="rgba(248,236,213,.08)";
-      ctx.fillRect(wallP.x+2,wallP.y+7,28,1);
-      ctx.fillStyle="rgba(38,28,21,.12)";
-      ctx.fillRect(wallP.x+1,wallP.y+27,30,2);
     }
   }
   const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1, w:1, h:1 };
@@ -1410,25 +1307,32 @@ function drawBuildingFallbackSprite(building){
   const doorX=Math.min(visual.x+visual.w-1, Math.max(visual.x, interaction.x));
   const doorP=tileToScreen(doorX, doorY);
   if(doorTile) ctx.drawImage(doorTile, doorP.x, doorP.y, TILE, TILE);
-  drawDoorFrame(doorX,doorY);
-  const windowY=Math.max(wallStartY, visual.y+visual.h-1);
-  const desiredWindows=Math.max(0,Math.min(2,style.windows ?? (visual.w>=5?2:1)));
-  const rawCols=desiredWindows===2
-    ? [visual.x+1, visual.x+visual.w-2]
-    : [visual.x+Math.floor(visual.w/2)-1];
-  [...new Set(rawCols)].forEach((wx)=>{
+  const windowY=Math.max(wallStartY, visual.y+visual.h-2);
+  const windowCols=(style.windowCols || [1, Math.max(1, visual.w-2)])
+    .map((col)=>visual.x + Math.min(Math.max(col, 0), visual.w-1));
+  [...new Set(windowCols)].forEach((wx)=>{
     if(wx===doorX) return;
     if(wx<visual.x||wx>=visual.x+visual.w||windowY<visual.y||windowY>=visual.y+visual.h) return;
-    drawColonialWindow(wx,windowY,style);
+    const wp=tileToScreen(wx,windowY);
+    if(windowTile) ctx.drawImage(windowTile, wp.x, wp.y, TILE, TILE);
   });
   if(style.hasChimney){
     const chimneyX=visual.x + (visual.w >= 5 ? visual.w-2 : 1);
     const chimneyY=Math.max(roofStartY, roofEndY-1);
-    drawChimney(chimneyX,chimneyY);
+    const chimney=tileToScreen(chimneyX, chimneyY);
+    ctx.fillStyle="rgba(96,72,53,.95)";
+    ctx.fillRect(chimney.x+10, chimney.y+2, 6, 12);
   }
   if(style.sign){
-    const signX=Math.max(visual.x, Math.min(visual.x+visual.w-1, doorX+(style.signOffset||0)));
-    drawSign(signX,doorY,style);
+    const signX=Math.max(visual.x, doorX-1);
+    const signP=tileToScreen(signX, doorY);
+    ctx.fillStyle="rgba(87,63,38,.92)";
+    ctx.fillRect(signP.x+6, signP.y+5, 20, 7);
+    if(style.signText){
+      ctx.fillStyle="rgba(232,216,168,.9)";
+      ctx.font="bold 6px monospace";
+      ctx.fillText(style.signText, signP.x+7, signP.y+11);
+    }
   }
 }
 
@@ -2219,15 +2123,202 @@ world.zones.push(
   {name:"West Lane",x:0,y:7,w:10,h:12}
 );
 
-const player={x:18,y:11,px:18*TILE,py:11*TILE,targetX:18,targetY:11,hp:50,maxHp:50,xp:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
-const npc={x:21,y:12,name:"Edrin Vale",facing:"down"};
-const WOLF_SPAWNS=[
-  { id:1, x:30, y:13 },
-  { id:2, x:27, y:18 },
-  { id:3, x:22, y:12 }
+const LEVEL_PROGRESSION=BALANCE.player.levelProgression;
+const MAX_DEFINED_LEVEL=LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1].level;
+const player={x:HEARTHVALE_LANDMARKS.townCenterSpawn.x,y:HEARTHVALE_LANDMARKS.townCenterSpawn.y,px:HEARTHVALE_LANDMARKS.townCenterSpawn.x*TILE,py:HEARTHVALE_LANDMARKS.townCenterSpawn.y*TILE,targetX:HEARTHVALE_LANDMARKS.townCenterSpawn.x,targetY:HEARTHVALE_LANDMARKS.townCenterSpawn.y,hp:BALANCE.player.startingMaxHp,maxHp:BALANCE.player.startingMaxHp,level:1,xp:0,baseAttackBonus:0,baseDefenseBonus:0,coins:0,inventory:[],equipment:{weapon:"rusty_sword",armor:null,trinket:null},skills:createDefaultSkills(),moving:false,facing:"down",speed:180,attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0};
+const NAMED_NPC_ANCHORS = {
+  edrin_vale:{
+    role:"civic_narrative_focal",
+    home:{ x:HEARTHVALE_LANDMARKS.edrinValeArea.x, y:HEARTHVALE_LANDMARKS.edrinValeArea.y },
+    idleRadius:2,
+    interactionFacingZone:["left","down"],
+    collisionFootprint:{ w:1, h:1 },
+    landOnlyValidation:true
+  },
+  hunter_garran:{
+    role:"hunter_outdoorsman_eastern_road",
+    home:{ x:HEARTHVALE_LANDMARKS.hunterGarranArea.x, y:HEARTHVALE_LANDMARKS.hunterGarranArea.y },
+    idleRadius:2,
+    interactionFacingZone:["left","down"],
+    collisionFootprint:{ w:1, h:1 },
+    landOnlyValidation:true
+  },
+  merchant_rowan:{
+    role:"merchant_mercantile_frontage",
+    home:{ x:HEARTHVALE_LANDMARKS.merchantRowanArea.x, y:HEARTHVALE_LANDMARKS.merchantRowanArea.y },
+    idleRadius:1,
+    interactionFacingZone:["down","left","right"],
+    collisionFootprint:{ w:1, h:1 },
+    landOnlyValidation:true
+  }
+};
+const npc={id:"npc_edrin",anchorId:"edrin_vale",x:NAMED_NPC_ANCHORS.edrin_vale.home.x,y:NAMED_NPC_ANCHORS.edrin_vale.home.y,targetX:NAMED_NPC_ANCHORS.edrin_vale.home.x,targetY:NAMED_NPC_ANCHORS.edrin_vale.home.y,px:NAMED_NPC_ANCHORS.edrin_vale.home.x*TILE,py:NAMED_NPC_ANCHORS.edrin_vale.home.y*TILE,name:"Edrin Vale",displayLabel:"Edrin Vale",facing:"left",speed:92,moving:false,nextDecisionAt:0};
+const hunterNpc={id:"npc_hunter_garran",anchorId:"hunter_garran",x:NAMED_NPC_ANCHORS.hunter_garran.home.x,y:NAMED_NPC_ANCHORS.hunter_garran.home.y,targetX:NAMED_NPC_ANCHORS.hunter_garran.home.x,targetY:NAMED_NPC_ANCHORS.hunter_garran.home.y,px:NAMED_NPC_ANCHORS.hunter_garran.home.x*TILE,py:NAMED_NPC_ANCHORS.hunter_garran.home.y*TILE,name:"Hunter Garran",displayLabel:"Hunter Garran",facing:"left",speed:94,moving:false,nextDecisionAt:0};
+const vendorNpc={id:"npc_merchant_rowan",anchorId:"merchant_rowan",x:NAMED_NPC_ANCHORS.merchant_rowan.home.x,y:NAMED_NPC_ANCHORS.merchant_rowan.home.y,targetX:NAMED_NPC_ANCHORS.merchant_rowan.home.x,targetY:NAMED_NPC_ANCHORS.merchant_rowan.home.y,px:NAMED_NPC_ANCHORS.merchant_rowan.home.x*TILE,py:NAMED_NPC_ANCHORS.merchant_rowan.home.y*TILE,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down",speed:86,moving:false,nextDecisionAt:0};
+const namedVillageNpcs=[npc,hunterNpc,vendorNpc];
+const ambientVillageNpcs=[];
+const npcTerrainForbiddenTiles=new Set();
+function fillSetRect(set,x,y,w,h){
+  for(let tx=x;tx<x+w;tx++){
+    for(let ty=y;ty<y+h;ty++){
+      set.add(keyOf(tx,ty));
+    }
+  }
+}
+function rebuildNpcTerrainForbiddenTiles(){
+  npcTerrainForbiddenTiles.clear();
+  world.blocked.forEach((tileKey)=>npcTerrainForbiddenTiles.add(tileKey));
+  world.pondBlocked.forEach((tileKey)=>npcTerrainForbiddenTiles.add(tileKey));
+  world.pondShore.forEach((tileKey)=>npcTerrainForbiddenTiles.add(tileKey));
+  world.props.forEach((prop)=>npcTerrainForbiddenTiles.add(keyOf(prop.x,prop.y)));
+  world.buildings.forEach((building)=>{
+    const area=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    fillSetRect(npcTerrainForbiddenTiles, area.x, area.y, area.w, area.h);
+  });
+  npcTerrainForbiddenTiles.add(keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y));
+}
+function isOverworldTerrainBlocked(x,y){
+  const tileKey=keyOf(x,y);
+  return world.blocked.has(tileKey) || world.pondBlocked.has(tileKey) || world.pondShore.has(tileKey);
+}
+function rebuildOverworldCollisionFromMap(){
+  const rebuiltBlocked=new Set();
+  const addRect=(rect, options={})=>{
+    if(!rect) return;
+    const { allowRoadOverlap=true } = options;
+    for(let tx=rect.x;tx<rect.x+rect.w;tx++){
+      for(let ty=rect.y;ty<rect.y+rect.h;ty++){
+        if(!allowRoadOverlap && world.roadTiles.has(keyOf(tx,ty))) continue;
+        rebuiltBlocked.add(keyOf(tx,ty));
+      }
+    }
+  };
+  world.buildings.forEach((building)=>{
+    addRect(building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h }, { allowRoadOverlap:false });
+  });
+  world.fences.forEach((fenceTile)=>rebuiltBlocked.add(keyOf(fenceTile.x, fenceTile.y)));
+  world.trees.forEach((tree)=>rebuiltBlocked.add(keyOf(tree.x, tree.y)));
+  [
+    keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y),
+    keyOf(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y+1),
+    keyOf(OVERWORLD_CAVE_ENTRY.x-1, OVERWORLD_CAVE_ENTRY.y+1),
+    keyOf(OVERWORLD_CAVE_ENTRY.x+1, OVERWORLD_CAVE_ENTRY.y+1)
+  ].forEach((tileKey)=>rebuiltBlocked.delete(tileKey));
+  world.blocked=rebuiltBlocked;
+}
+function isNpcOnTile(x,y,excludeId){
+  return namedVillageNpcs.some((villageNpc)=>villageNpc.id!==excludeId && villageNpc.targetX===x && villageNpc.targetY===y);
+}
+function isValidNpcLandTile(x,y,excludeId){
+  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
+  if(npcTerrainForbiddenTiles.has(keyOf(x,y))) return false;
+  if(isWorldObjectBlockingTile(x,y)) return false;
+  if(isNpcOnTile(x,y,excludeId)) return false;
+  return true;
+}
+function findNearestValidNpcLandTile(startX,startY,excludeId,maxDepth=16){
+  if(isValidNpcLandTile(startX,startY,excludeId)) return { x:startX, y:startY };
+  const visited=new Set([keyOf(startX,startY)]);
+  const queue=[{ x:startX, y:startY, depth:0 }];
+  for(let cursor=0;cursor<queue.length;cursor++){
+    const node=queue[cursor];
+    if(node.depth>=maxDepth) continue;
+    const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
+    for(const [dx,dy] of neighbors){
+      const nx=node.x+dx;
+      const ny=node.y+dy;
+      const tileKey=keyOf(nx,ny);
+      if(visited.has(tileKey)) continue;
+      visited.add(tileKey);
+      if(isValidNpcLandTile(nx,ny,excludeId)) return { x:nx, y:ny };
+      queue.push({ x:nx, y:ny, depth:node.depth+1 });
+    }
+  }
+  return null;
+}
+function setNpcTile(npcEntity,x,y,alignImmediately=false){
+  npcEntity.x=x;
+  npcEntity.y=y;
+  npcEntity.targetX=x;
+  npcEntity.targetY=y;
+  if(alignImmediately){
+    npcEntity.px=x*TILE;
+    npcEntity.py=y*TILE;
+    npcEntity.moving=false;
+  }
+}
+function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
+  const anchor=NAMED_NPC_ANCHORS[npcEntity.anchorId];
+  if(!anchor) return;
+  if(!isValidNpcLandTile(anchor.home.x, anchor.home.y, npcEntity.id)){
+    const relocatedAnchor=findNearestValidNpcLandTile(anchor.home.x, anchor.home.y, npcEntity.id, 24);
+    if(relocatedAnchor){
+      anchor.home.x=relocatedAnchor.x;
+      anchor.home.y=relocatedAnchor.y;
+    }
+  }
+  if(!isValidNpcLandTile(npcEntity.targetX, npcEntity.targetY, npcEntity.id)){
+    const safeTile=findNearestValidNpcLandTile(anchor.home.x, anchor.home.y, npcEntity.id, 24);
+    if(safeTile) setNpcTile(npcEntity, safeTile.x, safeTile.y, alignImmediately);
+  }
+}
+function updateVillageNpcWander(npcEntity,now){
+  const anchor=NAMED_NPC_ANCHORS[npcEntity.anchorId];
+  if(!anchor) return;
+  ensureNpcAnchorAndPositionValid(npcEntity);
+  if(now<(npcEntity.nextDecisionAt||0)) return;
+  const directionOptions=[[0,0],[1,0],[-1,0],[0,1],[0,-1]];
+  for(let idx=directionOptions.length-1;idx>0;idx--){
+    const swapIndex=Math.floor(Math.random()*(idx+1));
+    const next=directionOptions[idx];
+    directionOptions[idx]=directionOptions[swapIndex];
+    directionOptions[swapIndex]=next;
+  }
+  for(const [dx,dy] of directionOptions){
+    const nextX=npcEntity.targetX+dx;
+    const nextY=npcEntity.targetY+dy;
+    const homeDistance=Math.abs(nextX-anchor.home.x)+Math.abs(nextY-anchor.home.y);
+    if(homeDistance>anchor.idleRadius) continue;
+    if(!isValidNpcLandTile(nextX,nextY,npcEntity.id)) continue;
+    setNpcTile(npcEntity, nextX, nextY, true);
+    if(dx>0) npcEntity.facing="right";
+    else if(dx<0) npcEntity.facing="left";
+    else if(dy>0) npcEntity.facing="down";
+    else if(dy<0) npcEntity.facing="up";
+    break;
+  }
+  npcEntity.nextDecisionAt=now+900+Math.random()*900;
+}
+function enforceAllVillageNpcTerrainValidation(alignImmediately=false){
+  rebuildNpcTerrainForbiddenTiles();
+  [...namedVillageNpcs, ...ambientVillageNpcs].forEach((npcEntity)=>ensureNpcAnchorAndPositionValid(npcEntity, alignImmediately));
+}
+const WOLF_SPAWNS=[{id:1,x:32,y:14},{id:2,x:33,y:17},{id:3,x:12,y:1}];
+const BANDIT_SPAWNS=[{id:1,x:34,y:15},{id:2,x:16,y:1},{id:3,x:21,y:2}];
+const MIRROR_CAVE_WOLF_SPAWNS=[
+  {id:101,x:13,y:13},
+  {id:102,x:12,y:9},
+  {id:103,x:11,y:6},
+  {id:104,x:9,y:3}
 ];
-function createWolfFromSpawn(spawn){
+const TOLLHOUSE_BANDIT_SPAWNS=[
+  {id:201,x:9,y:9},
+  {id:202,x:19,y:8},
+  {id:203,x:21,y:5}
+];
+const ROOK_TOLLKEEPER_SPAWN={id:301,x:21,y:8};
+function getEnemyConfig(enemyType){
+  return BALANCE.enemies[enemyType] || BALANCE.enemies.wolf;
+}
+function createWolf(spawn,enemyType="wolf"){
+  const enemyConfig=getEnemyConfig(enemyType);
+  return {kind:"wolf",enemyType,id:spawn.id,x:spawn.x,y:spawn.y,px:spawn.x*TILE,py:spawn.y*TILE,targetX:spawn.x,targetY:spawn.y,hp:enemyConfig.hp,maxHp:enemyConfig.hp,homeX:spawn.x,homeY:spawn.y,roam:3,speed:110,facing:"left",attackUntil:0,hitUntil:0,hitFlickerUntil:0,attackLungeX:0,attackLungeY:0,recoilX:0,recoilY:0,moving:false,defeated:false};
+}
+function createBandit(spawn,enemyType="bandit",extras={}){
+  const enemyConfig=getEnemyConfig(enemyType);
   return {
+    kind:"bandit",
+    enemyType,
     id:spawn.id,
     x:spawn.x,
     y:spawn.y,
@@ -2235,13 +2326,13 @@ function createWolfFromSpawn(spawn){
     py:spawn.y*TILE,
     targetX:spawn.x,
     targetY:spawn.y,
-    hp:22,
-    maxHp:22,
+    hp:enemyConfig.hp,
+    maxHp:enemyConfig.hp,
     homeX:spawn.x,
     homeY:spawn.y,
-    roam:3,
-    speed:110,
-    facing:"left",
+    roam:extras.roam ?? 2,
+    speed:extras.speed ?? 95,
+    facing:extras.facing || "left",
     attackUntil:0,
     hitUntil:0,
     hitFlickerUntil:0,
@@ -2251,20 +2342,280 @@ function createWolfFromSpawn(spawn){
     recoilY:0,
     moving:false,
     defeated:false,
-    respawnAt:0
+    isMiniBoss:Boolean(extras.isMiniBoss),
+    displayName:extras.displayName || null,
+    noRespawn:Boolean(extras.noRespawn)
   };
 }
-const wolves=WOLF_SPAWNS.map((spawn)=>createWolfFromSpawn(spawn));
+const wolves=WOLF_SPAWNS.map(createWolf);
+const bandits=BANDIT_SPAWNS.map((spawn)=>createBandit(spawn,"bandit"));
+const mirrorCaveWolves=MIRROR_CAVE_WOLF_SPAWNS.map((spawn)=>createWolf(spawn, "cave_wolf"));
+const tollhouseBandits=TOLLHOUSE_BANDIT_SPAWNS.map((spawn)=>createBandit(spawn,"bandit",{ roam:1, speed:92 }));
+const rookTollkeeper=createBandit(ROOK_TOLLKEEPER_SPAWN,"rook_tollkeeper",{ roam:1, speed:88, isMiniBoss:true, displayName:"Rook the Tollkeeper", noRespawn:true });
+let isInMirrorCave=false;
+let isInAbandonedTollhouse=false;
+let rookEncounterAnnounced=false;
+let transitionState={ active:false, start:0, duration:0, switched:false, onSwitch:null };
+const worldObjects=[];
+const worldObjectsById=new Map();
+const persistentObjects={};
+let worldInfoPanel=null;
 
-let lastWolfDecision=0,lastWolfDamageAt=0,lastPlayerAttack=0,hitStopUntil=0,lastNoTargetLogAt=0;
-const lastWolfAttackById={};
+function createWorldObject(config){
+  return {
+    objectId:config.objectId,
+    type:config.type,
+    zone:config.zone || null,
+    region:config.region || null,
+    dungeon:config.dungeon || null,
+    x:config.x,
+    y:config.y,
+    state:config.state || "default",
+    interactable:config.interactable!==false,
+    collision:Boolean(config.collision),
+    requiredQuestStage:config.requiredQuestStage || null,
+    onInteract:typeof config.onInteract==="function" ? config.onInteract : null,
+    persistence:config.persistence!==false,
+    walkInTrigger:Boolean(config.walkInTrigger),
+    promptLabel:config.promptLabel || null
+  };
+}
+function registerWorldObject(config){
+  const object=createWorldObject(config);
+  worldObjects.push(object);
+  worldObjectsById.set(object.objectId, object);
+  if(object.persistence && !persistentObjects[object.objectId]) persistentObjects[object.objectId]={ state:object.state };
+  return object;
+}
+function getPersistentObject(objectId){
+  if(!persistentObjects[objectId]) persistentObjects[objectId]={};
+  return persistentObjects[objectId];
+}
+function patchPersistentObject(objectId, patch, shouldSave=true){
+  const existing=getPersistentObject(objectId);
+  persistentObjects[objectId]={ ...existing, ...patch };
+  if(shouldSave && typeof saveGame==="function") saveGame("object_state_change");
+}
+function getWorldObjectTile(object){
+  const tx=typeof object.x==="function" ? object.x() : object.x;
+  const ty=typeof object.y==="function" ? object.y() : object.y;
+  return { x:tx, y:ty };
+}
+function isWorldObjectInCurrentZone(object){
+  if(object.zone==="mirror_cave") return isInMirrorCave;
+  if(object.zone==="abandoned_tollhouse") return isInAbandonedTollhouse;
+  if(object.zone==="overworld") return !isInMirrorCave && !isInAbandonedTollhouse;
+  return true;
+}
+function getActiveWorldObjects(){
+  return worldObjects.filter((object)=>isWorldObjectInCurrentZone(object));
+}
+function isWorldObjectBlockingTile(x,y){
+  return getActiveWorldObjects().some((object)=>{
+    if(!object.collision) return false;
+    const tile=getWorldObjectTile(object);
+    return tile.x===x && tile.y===y;
+  });
+}
+function createDefaultSkills(){
+  return {
+    swordsmanship:{ level:1, xp:0 },
+    defense:{ level:1, xp:0 },
+    survival:{ level:1, xp:0 }
+  };
+}
+const DEFAULT_EQUIPMENT=Object.freeze({ weapon:"rusty_sword", armor:null, trinket:null });
+const SAVE_OBJECT_ID_ALIASES=Object.freeze({
+  tollhouse_reward_chest:"tollhouse_chest",
+  mirror_pond_interaction:"mirror_pond",
+  echo_fragment:"echo_fragment_object",
+  east_road_sign:"north_road_notice",
+  abandoned_tollhouse_state:"abandoned_tollhouse_state",
+  rook_tollkeeper_state:"rook_tollkeeper_state"
+});
+const CANONICAL_SAVE_OBJECT_IDS=Object.freeze([
+  "mirror_cave_chest",
+  "echo_fragment_object",
+  "tollhouse_chest",
+  "north_road_notice",
+  "mirror_pond",
+  "abandoned_tollhouse_state",
+  "rook_tollkeeper_state",
+  "mirror_pond_sign"
+]);
+function canonicalizePersistentObjectId(objectId){
+  if(typeof objectId!=="string") return null;
+  return SAVE_OBJECT_ID_ALIASES[objectId] || objectId;
+}
+function normalizePersistentObjects(rawPersistentObjects){
+  const normalized={};
+  if(rawPersistentObjects && typeof rawPersistentObjects==="object"){
+    Object.entries(rawPersistentObjects).forEach(([objectId, objectState])=>{
+      const canonicalId=canonicalizePersistentObjectId(objectId);
+      if(!canonicalId || !objectState || typeof objectState!=="object") return;
+      normalized[canonicalId]={ ...(normalized[canonicalId]||{}), ...objectState };
+    });
+  }
+  CANONICAL_SAVE_OBJECT_IDS.forEach((objectId)=>{
+    if(!normalized[objectId]) normalized[objectId]={ state:"default" };
+  });
+  return normalized;
+}
+function getSkillLevelFromXp(totalXp){
+  const normalizedXp=Math.max(0, Math.floor(Number.isFinite(totalXp) ? totalXp : 0));
+  let level=1;
+  for(let i=0; i<SKILL_LEVEL_THRESHOLDS.length; i++){
+    if(normalizedXp>=SKILL_LEVEL_THRESHOLDS[i]) level=i+1;
+  }
+  return Math.min(SKILL_MAX_LEVEL, level);
+}
+function getSkillXpThresholdForLevel(level){
+  const normalizedLevel=Math.max(1, Math.min(SKILL_MAX_LEVEL, Math.floor(Number.isFinite(level) ? level : 1)));
+  return SKILL_LEVEL_THRESHOLDS[normalizedLevel-1];
+}
+function normalizeSkills(rawSkills){
+  const defaults=createDefaultSkills();
+  const normalized={};
+  Object.keys(defaults).forEach((skillId)=>{
+    const saved=rawSkills?.[skillId];
+    const savedXp=Math.max(0, Math.floor(Number.isFinite(saved?.xp) ? saved.xp : 0));
+    const levelFromXp=getSkillLevelFromXp(savedXp);
+    const savedLevel=Math.max(1, Math.min(SKILL_MAX_LEVEL, Math.floor(Number.isFinite(saved?.level) ? saved.level : 1)));
+    const resolvedLevel=Math.max(levelFromXp, savedLevel);
+    const minXpForResolved=getSkillXpThresholdForLevel(resolvedLevel);
+    normalized[skillId]={
+      xp:Math.max(savedXp, minXpForResolved),
+      level:resolvedLevel
+    };
+  });
+  return normalized;
+}
+function getSkillLevel(skillId){
+  return Math.max(1, Math.min(SKILL_MAX_LEVEL, Math.floor(Number.isFinite(player.skills?.[skillId]?.level) ? player.skills[skillId].level : 1)));
+}
+function gainSkillXp(skillId, amount){
+  if(!player.skills?.[skillId]) return 0;
+  const gained=Math.max(0, Math.floor(Number.isFinite(amount) ? amount : 0));
+  if(gained<=0) return 0;
+  const skill=player.skills[skillId];
+  const beforeLevel=getSkillLevel(skillId);
+  skill.xp=Math.max(0, Math.floor(Number.isFinite(skill.xp) ? skill.xp : 0)) + gained;
+  skill.level=getSkillLevelFromXp(skill.xp);
+  if(skill.level>beforeLevel){
+    log(SKILL_DISPLAY_NAMES[skillId] + " increased to Level " + skill.level + ".");
+    showRewardToast("Skill Up: " + SKILL_DISPLAY_NAMES[skillId] + " Lv " + skill.level, 1500);
+  }
+  return gained;
+}
+function getSwordsmanshipAttackBonus(){
+  const level=getSkillLevel("swordsmanship");
+  if(level>=4) return 2;
+  if(level>=2) return 1;
+  return 0;
+}
+function getDefenseSkillBonus(){
+  const level=getSkillLevel("defense");
+  if(level>=4) return 2;
+  if(level>=2) return 1;
+  return 0;
+}
+function getSurvivalHealingBonus(){
+  const level=getSkillLevel("survival");
+  if(level>=5) return 8;
+  if(level===4) return 6;
+  if(level===3) return 4;
+  if(level===2) return 2;
+  return 0;
+}
+function getTotalAttackDamage(){
+  return BASE_PLAYER_DAMAGE + getEquippedWeaponBonus() + Math.max(0, player.baseAttackBonus||0) + getSwordsmanshipAttackBonus();
+}
+function getTotalDefenseRating(){
+  return Math.max(0, getEquippedDefenseBonus() + Math.max(0, player.baseDefenseBonus||0) + getDefenseSkillBonus());
+}
+
+let lastPlayerAttack=0,hitStopUntil=0,lastNoTargetLogAt=0;
+const lastWolfDecisionAt={};
+const lastWolfAttackAt={};
+const lastBanditDecisionAt={};
+const lastBanditAttackAt={};
+const wolfRespawnAtById={};
+const banditRespawnAtById={};
 let missNoticeArmed=true;
 let hostileAggroBlockedUntil=0;
 const PLAYER_ATTACK_RANGE=1;
-const WOLF_ATTACK_COOLDOWN_MS=1800;
-const WOLF_RESPAWN_MIN_MS=10000;
-const WOLF_RESPAWN_MAX_MS=20000;
-const BASE_PLAYER_DAMAGE=6;
+const BASE_PLAYER_DAMAGE=BALANCE.player.baseDamage;
+
+function getLevelProfile(level){
+  const normalized=Math.max(1, Math.floor(Number.isFinite(level) ? level : 1));
+  const found=LEVEL_PROGRESSION.find((entry)=>entry.level===normalized);
+  return found || LEVEL_PROGRESSION[LEVEL_PROGRESSION.length-1];
+}
+function getLevelFromXp(totalXp){
+  const normalizedXp=Math.max(0, Math.floor(Number.isFinite(totalXp) ? totalXp : 0));
+  let resolvedLevel=1;
+  for(const entry of LEVEL_PROGRESSION){
+    if(normalizedXp>=entry.xpRequired) resolvedLevel=entry.level;
+    else break;
+  }
+  return resolvedLevel;
+}
+function getNextLevelXpThreshold(level){
+  const next=LEVEL_PROGRESSION.find((entry)=>entry.level===level+1);
+  return next ? next.xpRequired : null;
+}
+function getXpProgressText(){
+  const nextThreshold=getNextLevelXpThreshold(player.level);
+  if(nextThreshold===null){
+    return player.xp + " / MAX";
+  }
+  return player.xp + " / " + nextThreshold;
+}
+function applyProgressionForLevel(targetLevel,{announce=false}={}){
+  const beforeLevel=player.level;
+  const beforeProfile=getLevelProfile(beforeLevel);
+  const beforeMaxHp=player.maxHp;
+  const beforeAttack=player.baseAttackBonus;
+  const beforeDefense=player.baseDefenseBonus;
+  const profile=getLevelProfile(targetLevel);
+  player.level=profile.level;
+  player.maxHp=profile.maxHp;
+  player.baseAttackBonus=profile.baseAttackBonus;
+  player.baseDefenseBonus=profile.baseDefenseBonus;
+  const gainedMaxHp=Math.max(0, player.maxHp-beforeMaxHp);
+  if(gainedMaxHp>0) player.hp=Math.min(player.maxHp, player.hp + gainedMaxHp);
+  if(announce && player.level>beforeLevel){
+    const levelUpLines=["LEVEL UP — Level " + player.level];
+    log(levelUpLines[0] + ".");
+    if(player.maxHp>beforeProfile.maxHp){
+      log("Max HP increased.");
+      levelUpLines.push("Max HP +" + (player.maxHp-beforeProfile.maxHp));
+    }
+    if(player.baseAttackBonus>beforeAttack){
+      log("Attack increased.");
+      levelUpLines.push("Attack +" + (player.baseAttackBonus-beforeAttack));
+    }
+    if(player.baseDefenseBonus>beforeDefense){
+      log("Defense increased.");
+      levelUpLines.push("Defense +" + (player.baseDefenseBonus-beforeDefense));
+    }
+    showRewardToasts(levelUpLines);
+  }
+}
+function syncLevelFromXp({announce=false}={}){
+  let targetLevel=getLevelFromXp(player.xp);
+  targetLevel=Math.min(MAX_DEFINED_LEVEL, targetLevel);
+  while(player.level<targetLevel){
+    applyProgressionForLevel(player.level+1,{announce});
+  }
+}
+function grantPlayerXp(amount){
+  const gained=Math.max(0, Math.floor(Number.isFinite(amount) ? amount : 0));
+  if(gained<=0) return 0;
+  player.xp += gained;
+  syncLevelFromXp({announce:true});
+  return gained;
+}
 
 function randomInt(min,max){ return min + Math.floor(Math.random() * (max-min+1)); }
 function getItemDefinition(itemId){ return ITEM_REGISTRY[itemId] || null; }
@@ -3697,7 +4048,8 @@ function createSaveData(reason){
     respawnRemainingMs:Math.max(0, banditRespawnAtById[bandit.id] ? banditRespawnAtById[bandit.id]-performance.now() : 0)
   }));
   return {
-    version:5,
+    version:13,
+    saveSchemaVersion:SAVE_SCHEMA_VERSION,
     reason,
     savedAt:new Date().toISOString(),
     player:{
@@ -3743,13 +4095,18 @@ function createSaveData(reason){
         hunterQuestRewardClaimed:hunterQuestRewardClaimed
       },
       creatures:{
-        wolves:wolves.map((wolf)=>({
+        wolves:wolvesSave,
+        bandits:banditsSave,
+        tollhouseBandits:tollhouseBanditsSave,
+        rookTollkeeper:{
+          hp:rookTollkeeper.hp,
+          defeated:rookTollkeeperDefeated || rookTollkeeper.defeated
+        },
+        mirrorCaveWolves:mirrorCaveWolves.map((wolf)=>({
           id:wolf.id,
           hp:wolf.hp,
           defeated:wolf.defeated,
-          targetX:wolf.targetX,
-          targetY:wolf.targetY,
-          respawnRemainingMs:Math.max(0, wolf.respawnAt ? wolf.respawnAt-performance.now() : 0)
+          respawnRemainingMs:Math.max(0, wolfRespawnAtById[wolf.id] ? wolfRespawnAtById[wolf.id]-performance.now() : 0)
         }))
       }
     },
@@ -3761,7 +4118,8 @@ function createSaveData(reason){
   };
 }
 function validateSaveData(data){
-  if(!data || !SUPPORTED_SAVE_VERSIONS.has(data.version)) return false;
+  if(!data || typeof data!=="object") return false;
+  if(data.version!==undefined && !SUPPORTED_SAVE_VERSIONS.has(data.version)) return false;
   const px=data.player?.position?.x, py=data.player?.position?.y;
   if(!Number.isInteger(px) || !Number.isInteger(py)) return false;
   if(!isFiniteNumber(data.player?.hp) || !isFiniteNumber(data.player?.xp) || !isFiniteNumber(data.player?.coins)) return false;
@@ -3844,43 +4202,81 @@ function loadGame(){
       };
     }
     ensureStarterEquipment();
-    try {
-      questSystem.applyState(data.quests?.questStates||[]);
-    } catch(err){
-      console.error("[Save Guard] Failed to apply quest state; continuing with default quest state.", err);
-      log("System: Save quest state was invalid and was safely skipped.");
-    }
+    questSystem.applyState(data.quests?.questStates||[]);
     worldTriggeredEvents.clear();
     Object.keys(persistentObjects).forEach((objectId)=>{ delete persistentObjects[objectId]; });
     if(data.world?.persistentObjects && typeof data.world.persistentObjects==="object"){
       Object.entries(data.world.persistentObjects).forEach(([objectId, objectState])=>{
         if(!objectState || typeof objectState!=="object") return;
-        try {
-          persistentObjects[objectId]={ ...objectState };
-        } catch(err){
-          console.error("[Save Guard] Invalid persistent object state", { objectId, objectState, error:err });
-        }
+        persistentObjects[objectId]={ ...objectState };
       });
     }
     (data.world?.triggeredEvents||[]).forEach((eventName)=>{ if(typeof eventName==="string") worldTriggeredEvents.add(eventName); });
     worldEvents.pondAwakened=Boolean(data.world?.stateChanges?.pondAwakened);
-    wolves.splice(0,wolves.length,...WOLF_SPAWNS.map((spawn)=>createWolfFromSpawn(spawn)));
-    const savedWolves=data.world?.creatures?.wolves;
-    if(Array.isArray(savedWolves)){
+    wolves.forEach((wolf)=>{
+      wolf.hp=wolf.maxHp;
+      wolf.defeated=false;
+      wolf.targetX=wolf.homeX;
+      wolf.targetY=wolf.homeY;
+      wolf.px=wolf.targetX*TILE;
+      wolf.py=wolf.targetY*TILE;
+      wolfRespawnAtById[wolf.id]=0;
+      lastWolfDecisionAt[wolf.id]=0;
+      lastWolfAttackAt[wolf.id]=0;
+    });
+    bandits.forEach((bandit)=>{
+      bandit.hp=bandit.maxHp;
+      bandit.defeated=false;
+      bandit.targetX=bandit.homeX;
+      bandit.targetY=bandit.homeY;
+      bandit.px=bandit.targetX*TILE;
+      bandit.py=bandit.targetY*TILE;
+      banditRespawnAtById[bandit.id]=0;
+      lastBanditDecisionAt[bandit.id]=0;
+      lastBanditAttackAt[bandit.id]=0;
+    });
+    tollhouseBandits.forEach((bandit)=>{
+      bandit.hp=bandit.maxHp;
+      bandit.defeated=false;
+      bandit.targetX=bandit.homeX;
+      bandit.targetY=bandit.homeY;
+      bandit.px=bandit.targetX*TILE;
+      bandit.py=bandit.targetY*TILE;
+      banditRespawnAtById[bandit.id]=0;
+      lastBanditDecisionAt[bandit.id]=0;
+      lastBanditAttackAt[bandit.id]=0;
+    });
+    rookTollkeeper.hp=rookTollkeeper.maxHp;
+    rookTollkeeper.defeated=false;
+    rookTollkeeper.targetX=rookTollkeeper.homeX;
+    rookTollkeeper.targetY=rookTollkeeper.homeY;
+    rookTollkeeper.px=rookTollkeeper.targetX*TILE;
+    rookTollkeeper.py=rookTollkeeper.targetY*TILE;
+    banditRespawnAtById[rookTollkeeper.id]=0;
+    rookTollkeeperDefeated=false;
+    abandonedTollhouseDiscovered=false;
+    abandonedTollhouseCleared=false;
+    mirrorCaveWolves.forEach((wolf)=>{
+      wolf.hp=wolf.maxHp;
+      wolf.defeated=false;
+      wolf.targetX=wolf.homeX;
+      wolf.targetY=wolf.homeY;
+      wolf.px=wolf.targetX*TILE;
+      wolf.py=wolf.targetY*TILE;
+      wolfRespawnAtById[wolf.id]=0;
+      lastWolfDecisionAt[wolf.id]=0;
+      lastWolfAttackAt[wolf.id]=0;
+    });
+    const savedWolves=Array.isArray(data.world?.creatures?.wolves) ? data.world.creatures.wolves : null;
+    if(savedWolves){
       savedWolves.forEach((savedWolf)=>{
-        if(!savedWolf || typeof savedWolf!=="object" || !Number.isInteger(savedWolf.id)) return;
-        const wolf=wolves.find((entry)=>entry.id===savedWolf.id);
+        if(!savedWolf || typeof savedWolf!=="object") return;
+        const wolf=wolves.find((candidate)=>candidate.id===savedWolf.id);
         if(!wolf) return;
         wolf.hp=isFiniteNumber(savedWolf.hp) ? Math.max(0,Math.min(wolf.maxHp,savedWolf.hp)) : wolf.hp;
         wolf.defeated=Boolean(savedWolf.defeated) || wolf.hp<=0;
         const remaining=isFiniteNumber(savedWolf.respawnRemainingMs)?Math.max(0,savedWolf.respawnRemainingMs):0;
-        wolf.respawnAt=wolf.defeated ? performance.now()+remaining : 0;
-        if(!wolf.defeated && wolf.hp>0){
-          wolf.targetX=Number.isInteger(savedWolf.targetX) ? savedWolf.targetX : wolf.homeX;
-          wolf.targetY=Number.isInteger(savedWolf.targetY) ? savedWolf.targetY : wolf.homeY;
-          wolf.px=wolf.targetX*TILE;
-          wolf.py=wolf.targetY*TILE;
-        }
+        wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
       });
     } else {
       const legacyWolf=data.world?.creatures?.wolf;
@@ -3889,7 +4285,80 @@ function loadGame(){
         wolf.hp=isFiniteNumber(legacyWolf.hp) ? Math.max(0,Math.min(wolf.maxHp,legacyWolf.hp)) : wolf.hp;
         wolf.defeated=Boolean(legacyWolf.defeated) || wolf.hp<=0;
         const remaining=isFiniteNumber(legacyWolf.respawnRemainingMs)?Math.max(0,legacyWolf.respawnRemainingMs):0;
-        wolf.respawnAt=wolf.defeated ? performance.now()+remaining : 0;
+        wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
+      }
+    }
+    const savedBandits=Array.isArray(data.world?.creatures?.bandits) ? data.world.creatures.bandits : null;
+    if(savedBandits){
+      savedBandits.forEach((savedBandit)=>{
+        if(!savedBandit || typeof savedBandit!=="object") return;
+        const bandit=bandits.find((candidate)=>candidate.id===savedBandit.id);
+        if(!bandit) return;
+        bandit.hp=isFiniteNumber(savedBandit.hp) ? Math.max(0,Math.min(bandit.maxHp,savedBandit.hp)) : bandit.hp;
+        bandit.defeated=Boolean(savedBandit.defeated) || bandit.hp<=0;
+        const remaining=isFiniteNumber(savedBandit.respawnRemainingMs)?Math.max(0,savedBandit.respawnRemainingMs):0;
+        banditRespawnAtById[bandit.id]=bandit.defeated ? performance.now()+remaining : 0;
+      });
+    }
+    const savedTollhouseBandits=Array.isArray(data.world?.creatures?.tollhouseBandits) ? data.world.creatures.tollhouseBandits : null;
+    if(savedTollhouseBandits){
+      savedTollhouseBandits.forEach((savedBandit)=>{
+        if(!savedBandit || typeof savedBandit!=="object") return;
+        const bandit=tollhouseBandits.find((candidate)=>candidate.id===savedBandit.id);
+        if(!bandit) return;
+        bandit.hp=isFiniteNumber(savedBandit.hp) ? Math.max(0,Math.min(bandit.maxHp,savedBandit.hp)) : bandit.hp;
+        bandit.defeated=Boolean(savedBandit.defeated) || bandit.hp<=0;
+        const remaining=isFiniteNumber(savedBandit.respawnRemainingMs)?Math.max(0,savedBandit.respawnRemainingMs):0;
+        banditRespawnAtById[bandit.id]=bandit.defeated ? performance.now()+remaining : 0;
+      });
+    }
+    const savedMirrorCaveWolves=Array.isArray(data.world?.creatures?.mirrorCaveWolves) ? data.world.creatures.mirrorCaveWolves : null;
+    if(savedMirrorCaveWolves){
+      savedMirrorCaveWolves.forEach((savedWolf)=>{
+        if(!savedWolf || typeof savedWolf!=="object") return;
+        const wolf=mirrorCaveWolves.find((candidate)=>candidate.id===savedWolf.id);
+        if(!wolf) return;
+        wolf.hp=isFiniteNumber(savedWolf.hp) ? Math.max(0,Math.min(wolf.maxHp,savedWolf.hp)) : wolf.hp;
+        wolf.defeated=Boolean(savedWolf.defeated) || wolf.hp<=0;
+        const remaining=isFiniteNumber(savedWolf.respawnRemainingMs)?Math.max(0,savedWolf.respawnRemainingMs):0;
+        wolfRespawnAtById[wolf.id]=wolf.defeated ? performance.now()+remaining : 0;
+      });
+    }
+    const mirrorCaveChestState=persistentObjects?.mirror_cave_chest || {};
+    const tollhouseChestState=persistentObjects?.tollhouse_chest || persistentObjects?.tollhouse_reward_chest || {};
+    const echoFragmentState=persistentObjects?.echo_fragment_object || persistentObjects?.echo_fragment || {};
+    mirrorCaveChestDiscovered=Boolean(data.world?.mirrorCave?.chestDiscovered || mirrorCaveChestState.discovered);
+    mirrorCave.chest.opened=Boolean(data.world?.mirrorCave?.chestOpened || mirrorCaveChestState.opened);
+    mirrorCave.cleared=Boolean(data.world?.mirrorCave?.cleared);
+    abandonedTollhouseDiscovered=Boolean(
+      data.world?.tollhouse?.abandonedTollhouseDiscovered ||
+      persistentObjects?.abandoned_tollhouse_state?.discovered ||
+      savedZoneId==="abandoned_tollhouse" ||
+      data.world?.tollhouse?.rookTollkeeperDefeated ||
+      tollhouseChestState.opened
+    );
+    rookTollkeeperDefeated=Boolean(data.world?.tollhouse?.rookTollkeeperDefeated || persistentObjects?.rook_tollkeeper_state?.defeated);
+    abandonedTollhouseCleared=Boolean(data.world?.tollhouse?.abandonedTollhouseCleared || persistentObjects?.abandoned_tollhouse_state?.cleared);
+    rookTollkeeper.defeated=rookTollkeeperDefeated;
+    if(rookTollkeeperDefeated) rookTollkeeper.hp=0;
+    hunterQuestRewardClaimed=Boolean(data.world?.hunterQuest?.hunterQuestRewardClaimed);
+    const hunterQuest=questSystem.getQuest("hunters_request");
+    if(hunterQuest?.state===QuestState.COMPLETED){
+      setHunterQuestStage(HunterQuestStage.COMPLETED);
+      mirrorCave.chest.opened=true;
+      hunterQuestRewardClaimed=true;
+    } else if(hunterQuest){
+      const savedStage=data.world?.hunterQuest?.hunterQuestStage;
+      if(typeof savedStage==="string" && Object.values(HunterQuestStage).includes(savedStage) && savedStage!==HunterQuestStage.NOT_STARTED){
+        setHunterQuestStage(savedStage);
+      } else if(mirrorCave.chest.opened || getItemQuantity("mirror_relic")>0){
+        if(getItemQuantity("mirror_relic")<=0) addItemToInventory("mirror_relic", 1);
+        questSystem.completeObjective("hunters_request", "enter_cave");
+        questSystem.completeObjective("hunters_request", "open_chest");
+        setHunterQuestStage(HunterQuestStage.STAGE_4_RETURN_WITH_RELIC);
+      } else if(hunterQuest.state!==QuestState.NOT_STARTED){
+        setHunterQuestStage(HunterQuestStage.STAGE_1_PROVE_YOURSELF);
+        updateHunterStageOneReadiness();
       }
     }
     syncMirrorCaveChestState(false);
@@ -4445,25 +4914,6 @@ function currentLocalAreaName(){
   }
   return "Outer Road";
 }
-function getZone(name){
-  return world.zones.find((zone)=>zone.name===name) || null;
-}
-function isWithinZone(x,y,zone){
-  if(!zone) return false;
-  return x>=zone.x && x<zone.x+zone.w && y>=zone.y && y<zone.y+zone.h;
-}
-const mirrorPondZone=getZone("Mirror Pond");
-function canWolfStandAt(x,y,ignoreWolfId=null){
-  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
-  if(!isWithinZone(x,y,mirrorPondZone)) return false;
-  if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
-  if(x===npc.x&&y===npc.y) return false;
-  for(const wolf of wolves){
-    if(wolf.id===ignoreWolfId || wolf.hp<=0) continue;
-    if(wolf.targetX===x && wolf.targetY===y) return false;
-  }
-  return true;
-}
 
 function getHostileDistance(hostile){
   if(!hostile || hostile.hp<=0) return Infinity;
@@ -4490,11 +4940,10 @@ function getHostileLastAttackAt(hostile){
 
 function getNearestHostile(range=Infinity){
   let nearest=null;
-  for(const wolf of wolves){
-    const distance=getHostileDistance(wolf);
+  for(const hostile of getActiveHostiles()){
+    const distance=getHostileDistance(hostile);
     if(distance>range) continue;
-    const hostile={ id:"wolf_" + wolf.id, name:"Wolf #" + wolf.id, entity:wolf, distance };
-    if(!nearest || distance<nearest.distance) nearest=hostile;
+    if(!nearest || distance<nearest.distance) nearest={entity:hostile,distance};
   }
   return nearest;
 }
@@ -4580,22 +5029,7 @@ function updateSidebar(){
   }
   let nextInventoryMarkup="Empty";
   if(player.inventory.length>0){
-    const groupOrder=["equipment","consumables","materials","quest","other"];
-    const groupTitles={
-      equipment:"Equipment",
-      consumables:"Consumables",
-      materials:"Materials",
-      quest:"Quest Items",
-      other:"Other"
-    };
-    const groupedEntries={
-      equipment:[],
-      consumables:[],
-      materials:[],
-      quest:[],
-      other:[]
-    };
-    for(const entry of player.inventory){
+    nextInventoryMarkup=player.inventory.map((entry)=>{
       const item=getItemDefinition(entry.itemId);
       const name=item?.name || entry.itemId;
       const equipSlot=item?.type==="weapon"
@@ -4660,21 +5094,176 @@ function updateSidebar(){
     sidebarSkillsMarkup=nextSkillsMarkup;
   }
   const targetHostile=getNearestHostile(PLAYER_ATTACK_RANGE);
-  const targetCooldownSource=nearbyHostile?.entity || null;
-  const lastAttackAt=targetCooldownSource ? (lastWolfAttackById[targetCooldownSource.id]||0) : 0;
-  const wolfCooldownMs=Math.max(0, WOLF_ATTACK_COOLDOWN_MS-(performance.now()-lastAttackAt));
-  const wolfCooldownText=!targetCooldownSource || targetCooldownSource.hp<=0 ? "Down" : (wolfCooldownMs<=0 ? "Ready" : (wolfCooldownMs/1000).toFixed(1)+"s");
-  hud.textContent = "WASD / Arrows : Move\nE : Interact\nSpace : Attack\nK : Manual Save\n1-9 : Dialogue Choices\nG : Toggle grid\nCurrent Zone : " + zoneName +
-    "\nHostile nearby : " + (nearbyHostile ? "Yes (" + nearbyHostile.name + ")" : "No") +
-    "\nCurrent target : " + (targetHostile ? targetHostile.name : "None") +
-    "\nWolf bite cd : " + wolfCooldownText;
+  const currentTarget=targetHostile?.entity || null;
+  const targetCooldownMs=currentTarget ? Math.max(0, getHostileAttackCooldownMs(currentTarget)-(performance.now()-getHostileLastAttackAt(currentTarget))) : 0;
+  const targetCooldownText=!currentTarget ? "N/A" : (currentTarget.hp<=0 ? "Down" : (targetCooldownMs<=0 ? "Ready" : (targetCooldownMs/1000).toFixed(1)+"s"));
+  const interactionPrompt=interactionManager.getPromptText();
+  const hudLines=[
+    "WASD / Arrows : Move",
+    "E : contextual action",
+    "Space : Attack",
+    "H : Quick-use healing item",
+    "K : Manual Save",
+    "1-9 : Dialogue Choices",
+    "G : Toggle grid",
+    "V : Toggle collision overlay"
+  ];
+  if(interactionPrompt) hudLines.splice(1, 0, interactionPrompt);
+  hud.textContent=hudLines.join("\n");
+  if(DEV_MODE){
+    debugPanel.style.display="block";
+    debugPanel.textContent = "DEV TOOLS\n" +
+      "~ : Toggle Debug Panel\n" +
+      "F6 : Debug Heal\n" +
+      "F7/F8/F9 : Debug Teleport\n" +
+      "F10 : Debug Reset Quest\n" +
+      "Shift+F10 : Debug Reset Save\n" +
+      "Debug Lv/ATK/DEF : " + player.level + " / " + totalAttack + " / " + totalDefense + "\n" +
+      "Skills S/D/Sv : " + getSkillLevel("swordsmanship") + " / " + getSkillLevel("defense") + " / " + getSkillLevel("survival") + "\n" +
+      "Target HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") + "\n" +
+      "Target cooldown : " + targetCooldownText;
+  } else {
+    debugPanel.style.display="none";
+    debugPanel.textContent="";
+  }
+}
+
+function formatRect(rect){
+  if(!rect) return "n/a";
+  return "x=" + rect.x + ",y=" + rect.y + ",w=" + rect.w + ",h=" + rect.h;
+}
+function describeOverworldTerrainType(x,y){
+  const tileKey=keyOf(x,y);
+  if(world.pondWater.has(tileKey)) return "water";
+  if(world.pondShore.has(tileKey)) return "shore";
+  if(world.roadTiles.has(tileKey)) return "road";
+  if(world.fences.some((fence)=>fence.x===x&&fence.y===y)) return "fence";
+  if(world.trees.some((tree)=>tree.x===x&&tree.y===y)) return "tree";
+  if(world.buildings.some((building)=>{
+    const rect=building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+  })) return "building";
+  return "land";
+}
+function getMovementBlockDiagnostics(x,y){
+  const tileKey=keyOf(x,y);
+  const attemptedWorld={ x:x*TILE, y:y*TILE };
+  const zoneContext=isInMirrorCave ? "mirror_cave" : (isInAbandonedTollhouse ? "abandoned_tollhouse" : "overworld");
+  const worldObjectBlocker=getActiveWorldObjects().find((object)=>{
+    if(!object.collision) return false;
+    const tile=getWorldObjectTile(object);
+    return tile.x===x && tile.y===y;
+  });
+  const blockingNpc=!isInMirrorCave && !isInAbandonedTollhouse
+    ? namedVillageNpcs.find((villageNpc)=>villageNpc.targetX===x&&villageNpc.targetY===y)
+    : null;
+  const blockingHostile=getActiveHostiles().find((hostile)=>hostile.hp>0&&hostile.targetX===x&&hostile.targetY===y);
+  const blockingFence=world.fences.find((fence)=>fence.x===x&&fence.y===y);
+  const blockingTree=world.trees.find((tree)=>tree.x===x&&tree.y===y);
+  const blockingBuilding=world.buildings.find((building)=>{
+    const rect=building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+  });
+  const buildingParcel=world.buildings.find((building)=>{
+    const rect=building.pathingBounds || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+  });
+  const atLandmark=Object.entries(HEARTHVALE_LANDMARKS).find(([key, landmark])=>{
+    if(key==="zoneExits" || !landmark || typeof landmark!=="object" || !Number.isFinite(landmark.x) || !Number.isFinite(landmark.y)) return false;
+    return landmark.x===x && landmark.y===y;
+  });
+  const sourceFlags={
+    terrain:false,
+    water:false,
+    fence:false,
+    building:false,
+    prop:false,
+    npc:false,
+    enemy:false,
+    parcel:false,
+    landmark:false,
+    debug_rectangle:false,
+    invisible_bounds:false
+  };
+  const causes=[];
+  if(!isTileInCurrentZone(x,y)){ causes.push("invisible_bounds"); sourceFlags.invisible_bounds=true; }
+  if(worldObjectBlocker){
+    const category=worldObjectBlocker.type==="door"||worldObjectBlocker.type==="caveEntrance" ? "landmark" : worldObjectBlocker.type;
+    causes.push(category);
+    if(category==="landmark") sourceFlags.landmark=true;
+  }
+  if(isInMirrorCave && mirrorCave.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
+  if(isInAbandonedTollhouse && abandonedTollhouse.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
+  if(!isInMirrorCave && !isInAbandonedTollhouse){
+    if(world.pondWater.has(tileKey)){ causes.push("water"); sourceFlags.water=true; }
+    if(world.pondShore.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
+    if(blockingFence){ causes.push("fence"); sourceFlags.fence=true; }
+    if(blockingTree){ causes.push("terrain"); sourceFlags.terrain=true; }
+    if(blockingBuilding){ causes.push("building"); sourceFlags.building=true; }
+  }
+  if(buildingParcel){ sourceFlags.parcel=true; }
+  if(blockingNpc){ causes.push("npc"); sourceFlags.npc=true; }
+  if(blockingHostile){ causes.push("enemy"); sourceFlags.enemy=true; }
+  return {
+    blocked:causes.length>0,
+    zoneContext,
+    attemptedTile:{ x,y },
+    attemptedWorld,
+    terrainType:zoneContext==="overworld" ? describeOverworldTerrainType(x,y) : "dungeon_floor",
+    walkable:causes.length===0,
+    reason:causes[0] || "none",
+    causeChain:causes,
+    blockingObjectId:worldObjectBlocker?.objectId || null,
+    blockingObjectType:worldObjectBlocker?.type || null,
+    blockingObjectRect:worldObjectBlocker ? { x, y, w:1, h:1 } : null,
+    blockingEntityId:blockingNpc?.id || blockingHostile?.id || null,
+    blockingEntityType:blockingNpc ? "npc" : (blockingHostile ? "enemy" : null),
+    blockingEntityRect:(blockingNpc||blockingHostile) ? { x, y, w:1, h:1 } : null,
+    blockingBuildingId:blockingBuilding?.id || null,
+    blockingBuildingRect:blockingBuilding ? (blockingBuilding.collision || blockingBuilding.visual || { x:blockingBuilding.x, y:blockingBuilding.y, w:blockingBuilding.w, h:blockingBuilding.h }) : null,
+    parcelId:buildingParcel?.id || null,
+    parcelRect:buildingParcel ? (buildingParcel.pathingBounds || buildingParcel.visual || { x:buildingParcel.x, y:buildingParcel.y, w:buildingParcel.w, h:buildingParcel.h }) : null,
+    blockingLandmarkId:atLandmark?.[0] || null,
+    sourceFlags
+  };
+}
+let lastMovementBlockSignature="";
+let lastMovementBlockLogAt=0;
+function emitMovementBlockDiagnostics(diag){
+  if(!diag?.blocked) return;
+  const now=performance.now();
+  const signature=JSON.stringify({
+    zone:diag.zoneContext,
+    x:diag.attemptedTile?.x,
+    y:diag.attemptedTile?.y,
+    reasons:diag.causeChain
+  });
+  if(signature===lastMovementBlockSignature && now-lastMovementBlockLogAt<280) return;
+  lastMovementBlockSignature=signature;
+  lastMovementBlockLogAt=now;
+  const detailLines=[
+    "Movement blocked at x=" + diag.attemptedTile.x + ", y=" + diag.attemptedTile.y + " (world x=" + diag.attemptedWorld.x + ", y=" + diag.attemptedWorld.y + ")",
+    "Reason: " + diag.reason,
+    "Cause chain: " + (diag.causeChain.join(", ") || "none"),
+    "Terrain: " + diag.terrainType + " | walkable=" + diag.walkable,
+    "Blocked by object: " + (diag.blockingObjectId || "none") + " [" + (diag.blockingObjectType || "n/a") + "] rect=" + formatRect(diag.blockingObjectRect),
+    "Blocked by entity: " + (diag.blockingEntityId || "none") + " [" + (diag.blockingEntityType || "n/a") + "] rect=" + formatRect(diag.blockingEntityRect),
+    "Building collision: " + (diag.blockingBuildingId || "none") + " rect=" + formatRect(diag.blockingBuildingRect),
+    "Parcel overlap: " + (diag.parcelId || "none") + " rect=" + formatRect(diag.parcelRect),
+    "Landmark overlap: " + (diag.blockingLandmarkId || "none"),
+    "Source flags: " + JSON.stringify(diag.sourceFlags)
+  ];
+  const joined="[CollisionDebug] " + detailLines.join(" | ");
+  console.info(joined);
+  logThrottled("movement_block:" + signature, "Movement blocked at x=" + diag.attemptedTile.x + ", y=" + diag.attemptedTile.y + " — " + diag.reason + ".", 180);
 }
 
 function canMoveTo(x,y){
-  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
-  if(world.blocked.has(keyOf(x,y))||world.pondBlocked.has(keyOf(x,y))) return false;
-  if(x===npc.x&&y===npc.y) return false;
-  for(const wolf of wolves){ if(wolf.hp>0&&x===wolf.targetX&&y===wolf.targetY) return false; }
+  const diag=getMovementBlockDiagnostics(x,y);
+  if(diag.blocked){
+    emitMovementBlockDiagnostics(diag);
+    return false;
+  }
   return true;
 }
 
@@ -4850,80 +5439,169 @@ function updateInput(){
   else if(keys.has("d")||keys.has("arrowright")){ moveIntent.dx=1; moveIntent.facing="right"; }
 }
 
-function canWolfMoveTo(x,y,wolfId){
-  if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return false;
-  if(!isWithinZone(x,y,mirrorPondZone)) return false;
-  if(world.blocked.has(keyOf(x,y)) || world.pondBlocked.has(keyOf(x,y))) return false;
-  if(x===npc.x&&y===npc.y) return false;
-  for(const wolf of wolves){
-    if(wolf.id===wolfId || wolf.hp<=0) continue;
-    if(wolf.targetX===x && wolf.targetY===y) return false;
+function canHostileMoveTo(x,y,self){
+  if(!isTileInCurrentZone(x,y)) return false;
+  if(isWorldObjectBlockingTile(x,y)) return false;
+  if(isInMirrorCave){
+    if(mirrorCave.blocked.has(keyOf(x,y))) return false;
+  } else if(isInAbandonedTollhouse){
+    if(abandonedTollhouse.blocked.has(keyOf(x,y))) return false;
+  } else {
+    if(isOverworldTerrainBlocked(x,y)) return false;
+    if(isNpcOnTile(x,y,null)) return false;
   }
+  if(getActiveHostiles().some((hostile)=>hostile!==self && hostile.hp>0 && hostile.targetX===x && hostile.targetY===y)) return false;
   return true;
 }
-function scheduleWolfRespawn(wolf,now){
-  const delay=randomInt(WOLF_RESPAWN_MIN_MS,WOLF_RESPAWN_MAX_MS);
-  wolf.respawnAt=now+delay;
+function isHostileAggroBlocked(now){
+  return now<hostileAggroBlockedUntil;
 }
-function tryRespawnWolf(wolf,now){
-  if(wolf.respawnAt===0 || now<wolf.respawnAt) return;
-  if(!canWolfStandAt(wolf.homeX,wolf.homeY,wolf.id)){
-    wolf.respawnAt=now+1500;
+function updateWolf(wolf,now){
+  if(wolf.hp<=0){
+    const respawnAt=wolfRespawnAtById[wolf.id]||0;
+    if(respawnAt!==0&&now>=respawnAt){
+      wolf.hp=wolf.maxHp;
+      wolf.defeated=false;
+      wolf.targetX=wolf.homeX; wolf.targetY=wolf.homeY; wolf.px=wolf.targetX*TILE; wolf.py=wolf.targetY*TILE;
+      wolfRespawnAtById[wolf.id]=0;
+      log("Wolf #" + wolf.id + " prowls back into the clearing.");
+    }
     return;
   }
-  wolf.hp=wolf.maxHp;
-  wolf.defeated=false;
-  wolf.targetX=wolf.homeX;
-  wolf.targetY=wolf.homeY;
-  wolf.px=wolf.targetX*TILE;
-  wolf.py=wolf.targetY*TILE;
-  wolf.respawnAt=0;
-  log("Wolf #" + wolf.id + " prowls back into the clearing.");
-}
-function updateWolves(now){
-  for(const wolf of wolves){
-    if(wolf.hp<=0){
-      tryRespawnWolf(wolf,now);
-      continue;
-    }
-    if(now-lastWolfDecision<650) continue;
-    const dx=player.targetX-wolf.targetX, dy=player.targetY-wolf.targetY, dist=Math.abs(dx)+Math.abs(dy);
-    if(dist<=4){
-      const sx=dx===0?0:dx>0?1:-1, sy=dy===0?0:dy>0?1:-1;
-      const a={x:wolf.targetX+sx,y:wolf.targetY}, b={x:wolf.targetX,y:wolf.targetY+sy};
-      if(Math.abs(dx)>=Math.abs(dy)&&canWolfMoveTo(a.x,a.y,wolf.id)){ wolf.targetX=a.x; wolf.targetY=a.y; if(sx!==0) wolf.facing=sx>0?"right":"left"; }
-      else if(canWolfMoveTo(b.x,b.y,wolf.id)){ wolf.targetY=b.y; if(sy!==0) wolf.facing=sy>0?"down":"up"; }
-    } else {
-      const backX=wolf.targetX<wolf.homeX?1:wolf.targetX>wolf.homeX?-1:0;
-      const backY=wolf.targetY<wolf.homeY?1:wolf.targetY>wolf.homeY?-1:0;
-      if(Math.abs(wolf.targetX-wolf.homeX)>wolf.roam&&canWolfMoveTo(wolf.targetX+backX,wolf.targetY,wolf.id)){ wolf.targetX+=backX; if(backX!==0) wolf.facing=backX>0?"right":"left"; }
-      if(Math.abs(wolf.targetY-wolf.homeY)>wolf.roam&&canWolfMoveTo(wolf.targetX,wolf.targetY+backY,wolf.id)){ wolf.targetY+=backY; if(backY!==0) wolf.facing=backY>0?"down":"up"; }
-    }
+  if(now-(lastWolfDecisionAt[wolf.id]||0)<650) return;
+  lastWolfDecisionAt[wolf.id]=now;
+  if(isHostileAggroBlocked(now)) return;
+  const dx=player.targetX-wolf.targetX, dy=player.targetY-wolf.targetY, dist=Math.abs(dx)+Math.abs(dy);
+  if(dist<=4){
+    const sx=dx===0?0:dx>0?1:-1, sy=dy===0?0:dy>0?1:-1;
+    const a={x:wolf.targetX+sx,y:wolf.targetY}, b={x:wolf.targetX,y:wolf.targetY+sy};
+    if(Math.abs(dx)>=Math.abs(dy)&&canHostileMoveTo(a.x,a.y,wolf)){ wolf.targetX=a.x; wolf.targetY=a.y; if(sx!==0) wolf.facing=sx>0?"right":"left"; }
+    else if(canHostileMoveTo(b.x,b.y,wolf)){ wolf.targetY=b.y; if(sy!==0) wolf.facing=sy>0?"down":"up"; }
+  } else {
+    const backX=wolf.targetX<wolf.homeX?1:wolf.targetX>wolf.homeX?-1:0;
+    const backY=wolf.targetY<wolf.homeY?1:wolf.targetY>wolf.homeY?-1:0;
+    if(Math.abs(wolf.targetX-wolf.homeX)>wolf.roam&&canHostileMoveTo(wolf.targetX+backX,wolf.targetY,wolf)){ wolf.targetX+=backX; if(backX!==0) wolf.facing=backX>0?"right":"left"; }
+    if(Math.abs(wolf.targetY-wolf.homeY)>wolf.roam&&canHostileMoveTo(wolf.targetX,wolf.targetY+backY,wolf)){ wolf.targetY+=backY; if(backY!==0) wolf.facing=backY>0?"down":"up"; }
   }
-  if(now-lastWolfDecision>=650) lastWolfDecision=now;
 }
-function wolvesAttack(now){
-  for(const wolf of wolves){
+function updateBandit(bandit,now){
+  if(bandit.hp<=0){
+    if(bandit.noRespawn) return;
+    const respawnAt=banditRespawnAtById[bandit.id]||0;
+    if(respawnAt!==0&&now>=respawnAt){
+      bandit.hp=bandit.maxHp;
+      bandit.defeated=false;
+      bandit.targetX=bandit.homeX; bandit.targetY=bandit.homeY; bandit.px=bandit.targetX*TILE; bandit.py=bandit.targetY*TILE;
+      banditRespawnAtById[bandit.id]=0;
+      log("Bandit #" + bandit.id + " stalks back toward Mirror Pond.");
+    }
+    return;
+  }
+  if(now-(lastBanditDecisionAt[bandit.id]||0)<850) return;
+  lastBanditDecisionAt[bandit.id]=now;
+  if(isHostileAggroBlocked(now)) return;
+  const dx=player.targetX-bandit.targetX, dy=player.targetY-bandit.targetY, dist=Math.abs(dx)+Math.abs(dy);
+  if(dist<=4){
+    const sx=dx===0?0:dx>0?1:-1, sy=dy===0?0:dy>0?1:-1;
+    const a={x:bandit.targetX+sx,y:bandit.targetY}, b={x:bandit.targetX,y:bandit.targetY+sy};
+    if(Math.abs(dx)>=Math.abs(dy)&&canHostileMoveTo(a.x,a.y,bandit)){ bandit.targetX=a.x; bandit.targetY=a.y; if(sx!==0) bandit.facing=sx>0?"right":"left"; }
+    else if(canHostileMoveTo(b.x,b.y,bandit)){ bandit.targetY=b.y; if(sy!==0) bandit.facing=sy>0?"down":"up"; }
+  } else {
+    const backX=bandit.targetX<bandit.homeX?1:bandit.targetX>bandit.homeX?-1:0;
+    const backY=bandit.targetY<bandit.homeY?1:bandit.targetY>bandit.homeY?-1:0;
+    if(Math.abs(bandit.targetX-bandit.homeX)>bandit.roam&&canHostileMoveTo(bandit.targetX+backX,bandit.targetY,bandit)){ bandit.targetX+=backX; if(backX!==0) bandit.facing=backX>0?"right":"left"; }
+    if(Math.abs(bandit.targetY-bandit.homeY)>bandit.roam&&canHostileMoveTo(bandit.targetX,bandit.targetY+backY,bandit)){ bandit.targetY+=backY; if(backY!==0) bandit.facing=backY>0?"down":"up"; }
+  }
+}
+function wolfAttack(now){
+  if(isHostileAggroBlocked(now)) return;
+  for(const wolf of getActiveHostiles().filter((hostile)=>hostile.kind==="wolf")){
     if(wolf.hp<=0) continue;
-    if(now-lastWolfDamageAt<220) continue;
     const dist=Math.abs(player.targetX-wolf.targetX)+Math.abs(player.targetY-wolf.targetY);
-    const lastAttackAt=lastWolfAttackById[wolf.id]||0;
-    if(dist>1||now-lastAttackAt<WOLF_ATTACK_COOLDOWN_MS) continue;
-    lastWolfAttackById[wolf.id]=now;
+    if(dist>1||now-(lastWolfAttackAt[wolf.id]||0)<getHostileAttackCooldownMs(wolf)) continue;
+    lastWolfAttackAt[wolf.id]=now;
     wolf.attackUntil=now+350;
-    player.hp=Math.max(0,player.hp-5); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
-    lastWolfDamageAt=now;
+    const damageDealt=applyIncomingDamage(getEnemyConfig(wolf.enemyType || "wolf").damage); player.hitUntil=now+300; player.hitFlickerUntil=now+220; hitStopUntil=now+55;
     const wx=player.targetX-wolf.targetX, wy=player.targetY-wolf.targetY, len=Math.max(1,Math.hypot(wx,wy));
-    wolf.attackLungeX=(wx/len)*2;
-    wolf.attackLungeY=(wy/len)*1.2;
-    player.recoilX=(wx/len)*2.5;
-    player.recoilY=(wy/len)*1.6;
-    log("Wolf #" + wolf.id + " bites you for 5 damage.");
-    if(player.hp<=0){
-      handlePlayerDefeat();
-      break;
-    }
+    wolf.attackLungeX=(wx/len)*2; wolf.attackLungeY=(wy/len)*1.2; player.recoilX=(wx/len)*2.5; player.recoilY=(wy/len)*1.6;
+    spawnFloatingText(player.px/TILE, player.py/TILE, "-" + damageDealt, { color:"#ff9b9b", durationMs:900 });
+    logCombat(hostileLabel(wolf) + " bites you for " + damageDealt + " damage.");
+    if(player.hp<=0){ handlePlayerDefeat(); break; }
   }
+}
+function banditAttack(now){
+  if(isHostileAggroBlocked(now)) return;
+  for(const bandit of getActiveHostiles().filter((hostile)=>hostile.kind==="bandit")){
+    if(bandit.hp<=0) continue;
+    const dist=Math.abs(player.targetX-bandit.targetX)+Math.abs(player.targetY-bandit.targetY);
+    if(dist>1||now-(lastBanditAttackAt[bandit.id]||0)<getHostileAttackCooldownMs(bandit)) continue;
+    lastBanditAttackAt[bandit.id]=now;
+    bandit.attackUntil=now+350;
+    const damageDealt=applyIncomingDamage(getEnemyConfig(bandit.enemyType || "bandit").damage); player.hitUntil=now+320; player.hitFlickerUntil=now+260; hitStopUntil=now+60;
+    const wx=player.targetX-bandit.targetX, wy=player.targetY-bandit.targetY, len=Math.max(1,Math.hypot(wx,wy));
+    bandit.attackLungeX=(wx/len)*2.2; bandit.attackLungeY=(wy/len)*1.3; player.recoilX=(wx/len)*2.8; player.recoilY=(wy/len)*1.8;
+    spawnFloatingText(player.px/TILE, player.py/TILE, "-" + damageDealt, { color:"#ff8888", durationMs:900 });
+    logCombat(hostileLabel(bandit) + " slashes you for " + damageDealt + " damage.");
+    if(player.hp<=0){ handlePlayerDefeat(); break; }
+  }
+}
+function defeatWolf(wolf,now){
+  const enemyConfig=getEnemyConfig(wolf.enemyType || "wolf");
+  wolf.defeated=true;
+  grantPlayerXp(enemyConfig.xp);
+  if(getEquippedItem("weapon")?.type==="weapon") gainSkillXp("swordsmanship", 10);
+  if(getArmorDefenseBonus()>0 && player.hp>0) gainSkillXp("defense", 5);
+  player.coins+=enemyConfig.coinReward;
+  const lootDrops=rollEnemyLoot(wolf.enemyType || "wolf");
+  lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
+  wolfRespawnAtById[wolf.id]=now+enemyConfig.respawnMs;
+  log(hostileLabel(wolf) + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");
+  showRewardToasts(["+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"]);
+  eventSystem.emit("combat:enemy-defeated",{ enemyType:"wolf", enemyId:wolf.id });
+  if(lootDrops.length){
+    log("Loot acquired: " + formatDropText(lootDrops) + ".");
+    showRewardToasts(lootDrops.map((drop)=>{
+      const item=getItemDefinition(drop.itemId);
+      return "+ " + (item?.name || drop.itemId) + " x" + drop.quantity;
+    }));
+  }
+  else log("No loot dropped this time.");
+}
+function defeatBandit(bandit,now){
+  const enemyConfig=getEnemyConfig(bandit.enemyType || "bandit");
+  bandit.defeated=true;
+  grantPlayerXp(enemyConfig.xp);
+  if(getEquippedItem("weapon")?.type==="weapon") gainSkillXp("swordsmanship", 10);
+  if(getArmorDefenseBonus()>0 && player.hp>0) gainSkillXp("defense", 5);
+  player.coins+=enemyConfig.coinReward;
+  const lootDrops=rollEnemyLoot(bandit.enemyType || "bandit");
+  lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
+  banditRespawnAtById[bandit.id]=bandit.noRespawn ? 0 : now+enemyConfig.respawnMs;
+  if(bandit.isMiniBoss){
+    rookTollkeeperDefeated=true;
+    patchPersistentObject("rook_tollkeeper_state", { defeated:true, state:"defeated" }, false);
+    const bossRewardLines=["+ " + enemyConfig.xp + " XP", "+ " + enemyConfig.coinReward + " Coins"];
+    const bossRewardToasts=["ROOK DEFEATED", "Rook the Tollkeeper falls.", "+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins", "Tollhouse chest unlocked"];
+    log("Rook the Tollkeeper falls. The old road is safer.");
+    log("Boss rewards:");
+    bossRewardLines.forEach((line)=>log(line));
+    showRewardToasts(bossRewardToasts);
+    triggerCameraShake(220, 3.6);
+    syncTollhouseChestState(false);
+    syncAbandonedTollhouseClearedState(false, false);
+    saveGame("rook_defeated");
+  } else {
+    log(hostileLabel(bandit) + " defeated. Rewards: +" + enemyConfig.xp + " XP, +" + enemyConfig.coinReward + " coins.");
+    showRewardToasts(["+" + enemyConfig.xp + " XP", "+" + enemyConfig.coinReward + " Coins"]);
+  }
+  if(lootDrops.length){
+    log("Loot acquired: " + formatDropText(lootDrops) + ".");
+    showRewardToasts(lootDrops.map((drop)=>{
+      const item=getItemDefinition(drop.itemId);
+      return "+ " + (item?.name || drop.itemId) + " x" + drop.quantity;
+    }));
+  }
+  else log("No loot dropped this time.");
 }
 function tryPlayerAttack(now){
   if(dialogueSystem.activeSession) return;
@@ -4960,17 +5638,8 @@ function tryPlayerAttack(now){
   if(getEquippedItem("weapon")?.type==="weapon") gainSkillXp("swordsmanship", 3);
   logCombat("Hit " + hostileLabel(targetHostile.entity) + " for " + totalDamage + " damage.");
   if(targetHostile.entity.hp<=0 && !targetHostile.entity.defeated){
-    targetHostile.entity.defeated=true;
-    targetHostile.entity.attackUntil=0;
-    targetHostile.entity.hitUntil=0;
-    player.xp+=12;
-    player.coins+=4;
-    const lootDrops=rollWolfLoot();
-    lootDrops.forEach((drop)=>addItemToInventory(drop.itemId, drop.quantity));
-    scheduleWolfRespawn(targetHostile.entity,now);
-    log(targetHostile.name + " defeated. Rewards: +12 XP, +4 coins.");
-    if(lootDrops.length) log("Loot acquired: " + formatDropText(lootDrops) + ".");
-    else log("No loot dropped this time.");
+    if(targetHostile.entity.kind==="bandit") defeatBandit(targetHostile.entity, now);
+    else defeatWolf(targetHostile.entity, now);
   }
 }
 
@@ -5026,6 +5695,36 @@ function drawHumanoid(sheet, tx, ty, facing, moving, scale, label, hitAlpha, rec
     else ctx.arc(dx+drawW/2,dy+44,15,Math.PI*.16,Math.PI*.84);
     ctx.stroke();
   }
+}
+
+function rectsOverlap(a,b){
+  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
+function drawWorldLabels(entries){
+  const occupied=[];
+  entries
+    .filter((entry)=>Boolean(entry?.text))
+    .sort((a,b)=>(b.priority||0)-(a.priority||0))
+    .forEach((entry)=>{
+      const text=entry.text;
+      const w=Math.max(56,text.length*7+9);
+      const h=14;
+      const p=tileToScreen(entry.tx, entry.ty);
+      let y=p.y-20;
+      const x=p.x-12;
+      for(let i=0;i<8;i++){
+        const rect={x,y,w,h};
+        if(!occupied.some((other)=>rectsOverlap(rect, other))){
+          occupied.push(rect);
+          ctx.fillStyle="rgba(9,15,22,.82)"; ctx.fillRect(rect.x,rect.y,rect.w,rect.h);
+          ctx.strokeStyle=entry.priority>=4 ? "rgba(255,226,159,.85)" : "rgba(211,224,242,.42)"; ctx.strokeRect(rect.x-.5,rect.y-.5,rect.w,rect.h);
+          ctx.fillStyle=entry.priority>=4 ? "#ffe8b0" : "#f4fbff"; ctx.font="bold 11px monospace"; ctx.fillText(text,rect.x+4,rect.y+10);
+          return;
+        }
+        y -= 16;
+      }
+    });
 }
 
 function drawWolf(wolf,tx,ty,facing,moving,scale,hitAlpha,recoil){
@@ -5119,49 +5818,12 @@ function drawCollisionOverlay(){
   ctx.restore();
 }
 function drawTileRotated(img, x, y, turns){
-  if(!isUsableImage(img)) return;
+  if(!img||!img.complete||img.naturalWidth<=0) return;
   ctx.save();
   ctx.translate(x+16,y+16);
   ctx.rotate((Math.PI/2)*turns);
   ctx.drawImage(img,-16,-16,32,32);
   ctx.restore();
-}
-function isUsableImage(img){
-  return Boolean(img && img.complete && img.naturalWidth>0 && img.naturalHeight>0);
-}
-function pickImageFromCollection(collection, seedIndex){
-  if(!Array.isArray(collection) || collection.length===0) return null;
-  const index=Math.max(0, Math.min(collection.length-1, seedIndex));
-  return collection[index] || null;
-}
-function drawTerrainFallbackTile(p, kind, seed=0){
-  if(kind==="grass"){
-    const shade=58+Math.floor((seed%5)*6);
-    ctx.fillStyle="rgb(" + (34+Math.floor((seed%3)*3)) + "," + shade + ",42)";
-    ctx.fillRect(p.x,p.y,32,32);
-    return;
-  }
-  if(kind==="road"){
-    ctx.fillStyle="rgba(103,85,61,.9)";
-    ctx.fillRect(p.x,p.y,32,32);
-    ctx.fillStyle="rgba(136,113,82,.42)";
-    ctx.fillRect(p.x+4,p.y+13,24,2);
-    return;
-  }
-  if(kind==="water_deep"){
-    ctx.fillStyle="rgba(35,74,112,.92)";
-    ctx.fillRect(p.x,p.y,32,32);
-    return;
-  }
-  if(kind==="water_shallow"){
-    ctx.fillStyle="rgba(59,111,148,.88)";
-    ctx.fillRect(p.x,p.y,32,32);
-    return;
-  }
-  if(kind==="shore"){
-    ctx.fillStyle="rgba(98,120,83,.78)";
-    ctx.fillRect(p.x,p.y,32,32);
-  }
 }
 function drawShadowTile(img, x, y, alpha=1){
   if(!img || !img.complete || img.naturalWidth<=0) return;
@@ -5241,7 +5903,7 @@ function drawOutdoorBackdrop(cam, now){
       const p=tileToScreen(x,y);
       const v=Math.floor(rng(x,y,603)*assets.forestGrass.length);
       const img=assets.forestGrass[v];
-      if(isUsableImage(img)) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+      if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
       if(rng(x,y,612)>0.92){
         ctx.fillStyle="rgba(86,126,72,.18)";
         ctx.fillRect(p.x+6,p.y+8,20,12);
@@ -5440,11 +6102,8 @@ function drawWorld(){
     const region=getOutdoorRegionIdAt(x,y);
     const inForest=region==="eastern_woods" || (region==="north_road" && rng(x,y,211)>0.45);
     const forestMix=Math.min(assets.forestGrass.length-1, Math.floor((layeredNoise(x+5,y+3)+rng(x,y,212)*0.2)*assets.forestGrass.length)%assets.forestGrass.length);
-    const img=inForest
-      ? pickImageFromCollection(assets.forestGrass, forestMix)
-      : pickImageFromCollection(assets.grass, mix);
-    if(isUsableImage(img)) ctx.drawImage(img,p.x,p.y,TILE,TILE);
-    else drawTerrainFallbackTile(p, "grass", x*31+y*17);
+    const img=inForest ? assets.forestGrass[forestMix] : assets.grass[mix];
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
     if(!inForest && layeredNoise(x+13,y+7)>0.8){
       ctx.fillStyle="rgba(188,216,151,.012)";
       ctx.fillRect(p.x+1,p.y+1,30,30);
@@ -5457,19 +6116,17 @@ function drawWorld(){
 
   world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){
     const p=tileToScreen(x,y);
-    const roadIndex=Math.floor(rng(x,y,22)*Math.max(1, assets.road.length));
-    const img=pickImageFromCollection(assets.road, roadIndex);
-    if(isUsableImage(img)) ctx.drawImage(img,p.x,p.y,32,32);
-    else drawTerrainFallbackTile(p, "road");
+    const img=assets.road[Math.floor(rng(x,y,22)*assets.road.length)];
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
 
     const north = world.roadTiles.has(keyOf(x,y-1));
     const south = world.roadTiles.has(keyOf(x,y+1));
     const east = world.roadTiles.has(keyOf(x+1,y));
     const west = world.roadTiles.has(keyOf(x-1,y));
-    if(!north) drawTileRotated(pickImageFromCollection(assets.roadEdge, Math.floor(rng(x,y,62)*Math.max(1, assets.roadEdge.length))), p.x, p.y, 0);
-    if(!east) drawTileRotated(pickImageFromCollection(assets.roadEdge, Math.floor(rng(x,y,64)*Math.max(1, assets.roadEdge.length))), p.x, p.y, 1);
-    if(!south) drawTileRotated(pickImageFromCollection(assets.roadEdge, Math.floor(rng(x,y,66)*Math.max(1, assets.roadEdge.length))), p.x, p.y, 2);
-    if(!west) drawTileRotated(pickImageFromCollection(assets.roadEdge, Math.floor(rng(x,y,68)*Math.max(1, assets.roadEdge.length))), p.x, p.y, 3);
+    if(!north) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,62)*assets.roadEdge.length)], p.x, p.y, 0);
+    if(!east) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,64)*assets.roadEdge.length)], p.x, p.y, 1);
+    if(!south) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,66)*assets.roadEdge.length)], p.x, p.y, 2);
+    if(!west) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,68)*assets.roadEdge.length)], p.x, p.y, 3);
 
     if(!north || !south || !east || !west){
       ctx.fillStyle="rgba(84,118,64,.1)";
@@ -5489,15 +6146,13 @@ function drawWorld(){
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondWater.has(k)) continue;
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
-    const img=edge?assets.water.shallow:assets.water.deep;
-    if(isUsableImage(img)) ctx.drawImage(img,p.x,p.y,32,32);
-    else drawTerrainFallbackTile(p, edge ? "water_shallow" : "water_deep");
+    const img=edge?assets.water.shallow:assets.water.deep; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     const t=performance.now()*0.0014, rip=(Math.sin(t*2+x*0.8+y*.6)+1)*.5;
     const mirrorAura=(x>=25&&x<=30&&y>=12&&y<=17) ? 0.065 : 0.016;
     ctx.fillStyle="rgba(188,228,255," + (.014+rip*.03+mirrorAura).toFixed(3) + ")"; ctx.fillRect(p.x+4,p.y+7,TILE-12,1);
     if(edge){
       ctx.fillStyle="rgba(224,244,255," + (.035+rip*.03).toFixed(3) + ")"; ctx.fillRect(p.x+1,p.y+1,TILE-2,1);
-      if(isUsableImage(assets.water.edge)) ctx.drawImage(assets.water.edge,p.x,p.y,32,32);
+      if(assets.water.edge.complete&&assets.water.edge.naturalWidth>0) ctx.drawImage(assets.water.edge,p.x,p.y,32,32);
     }
     if(rng(x,y,402)>0.92){
       ctx.fillStyle="rgba(201,240,255,.25)";
@@ -5511,11 +6166,7 @@ function drawWorld(){
   }
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondShore.has(k)) continue;
-    const p=tileToScreen(x,y);
-    const shoreIndex=Math.floor(rng(x,y,33)*Math.max(1, assets.shore.length));
-    const img=pickImageFromCollection(assets.shore, shoreIndex);
-    if(isUsableImage(img)) ctx.drawImage(img,p.x,p.y,32,32);
-    else drawTerrainFallbackTile(p, "shore");
+    const p=tileToScreen(x,y); const img=assets.shore[Math.floor(rng(x,y,33)*assets.shore.length)]; if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     if(rng(x,y,491)>0.78){
       ctx.fillStyle="rgba(86,121,74,.42)";
       ctx.fillRect(p.x+5,p.y+14,2,8);
@@ -5533,45 +6184,33 @@ function drawWorld(){
   }
 
   world.buildings.forEach((b,bIndex)=>{
-    try {
-      const sprite=atlasManifests.buildings.sprites[b.spriteId];
-      const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
-      const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
-      const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
-      const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
+    const sprite=atlasManifests.buildings.sprites[b.spriteId];
+    const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
+    const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
+    const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
+    const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
 
-      for(let ry=0; ry<b.h; ry++){
-        const right = tileToScreen(b.x+b.w, b.y+ry);
-        drawShadowTile(assets.shadow.buildingRight, right.x+4, right.y+3, .9);
-      }
-      for(let rx=0; rx<b.w; rx++){
-        const bottom = tileToScreen(b.x+rx, b.y+b.h);
-        drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
-      }
-
-      const didDraw=USE_PRODUCTION_BUILDING_ATLAS
-        ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh)
-        : false;
-      if(!didDraw){
-        warnMissingAssetOnce("building_sprite", b.spriteId);
-        drawBuildingFallbackSprite(b);
-        return;
-      }
-
-      const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
-      ctx.fillStyle="rgba(94,72,54,.9)";
-      ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
-    } catch(err){
-      console.error("[Render Guard] Building render failed", { spriteId:b?.spriteId, role:b?.role, index:bIndex, error:err });
-      try {
-        drawBuildingFallbackSprite(b);
-      } catch(fallbackErr){
-        console.error("[Render Guard] Building fallback render failed", { spriteId:b?.spriteId, role:b?.role, index:bIndex, error:fallbackErr });
-        const visual=b?.visual || { x:b?.x??0, y:b?.y??0, w:b?.w??1, h:b?.h??1 };
-        const p=tileToScreen(visual.x, visual.y);
-        drawMissingSpritePlaceholder(p.x, p.y, Math.max(32,(visual.w||1)*TILE), Math.max(32,(visual.h||1)*TILE), "BLDG");
-      }
+    for(let ry=0; ry<b.h; ry++){
+      const right = tileToScreen(b.x+b.w, b.y+ry);
+      drawShadowTile(assets.shadow.buildingRight, right.x+4, right.y+3, .9);
     }
+    for(let rx=0; rx<b.w; rx++){
+      const bottom = tileToScreen(b.x+rx, b.y+b.h);
+      drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
+    }
+
+    const didDraw=USE_PRODUCTION_BUILDING_ATLAS
+      ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.sw, sprite?.sh)
+      : false;
+    if(!didDraw){
+      warnMissingAssetOnce("building_sprite", b.spriteId);
+      drawBuildingFallbackSprite(b);
+      return;
+    }
+
+    const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
+    ctx.fillStyle="rgba(94,72,54,.9)";
+    ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
   });
 
   const propsBehind=world.props.filter((prop)=>prop.layer!=="above_entities");
@@ -5620,25 +6259,15 @@ function drawWorld(){
   world.fences.forEach((f,i)=>{
     const p=tileToScreen(f.x,f.y);
     drawShadowTile(assets.shadow.softTile,p.x+4,p.y+4,.42);
-    const img=pickImageFromCollection(assets.fence, assets.fence.length ? (i%assets.fence.length) : 0);
-    if(isUsableImage(img)) ctx.drawImage(img,p.x,p.y,32,32);
-    else {
-      ctx.fillStyle="rgba(122,96,69,.9)";
-      ctx.fillRect(p.x+4,p.y+8,24,14);
-    }
+    const img=assets.fence[i%assets.fence.length];
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
   });
   world.trees.forEach(t=>{
     const p=tileToScreen(t.x,t.y);
     const sway=Math.sin(performance.now()*0.0012+t.seed*8)*0.8;
     drawShadowTile(assets.shadow.treeCircle,p.x+2,p.y+2,.72);
     const img=assets.tree[t.type]||assets.tree.a;
-    if(isUsableImage(img)) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
-    else {
-      ctx.fillStyle="rgba(67,98,58,.92)";
-      ctx.fillRect(p.x+6,p.y,20,18);
-      ctx.fillStyle="rgba(92,68,46,.92)";
-      ctx.fillRect(p.x+14,p.y+16,4,14);
-    }
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
   });
 
   for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
@@ -5661,12 +6290,52 @@ function drawWorld(){
   if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:26, ty:12, priority:0 });
   if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
 
-  drawHumanoid(assets.sprites.npc, npc.x, npc.y, npc.facing, false, 0.78, Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5?npc.name:"", 0, null, null);
+  drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.42,8.6);
+  drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.86, "", 0, null, null);
+  drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.4,8.7);
+  drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.86, "", 0, null, null);
+  drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.4,8.7);
+  drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.86, "", 0, null, null);
   wolves.forEach((wolf)=>{
     if(wolf.hp<=0) return;
+    drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.26,8.1);
     drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
   });
-  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.84, "Wayfarer", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  bandits.forEach((bandit)=>{
+    if(bandit.hp<=0) return;
+    drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.32,8.7);
+    drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.85, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit));
+  });
+  drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2);
+  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  propsAbove.forEach((prop)=>{
+    const p = tileToScreen(prop.x,prop.y);
+    const img = assets.props.sprites[prop.type];
+    if(!img || !img.complete || img.naturalWidth<=0){
+      warnMissingAssetOnce("prop_sprite", prop.type);
+      drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
+      return;
+    }
+    drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.65);
+    ctx.drawImage(img,p.x,p.y,32,32);
+  });
+  const currentTarget=getCurrentCombatTarget(5);
+  const hostileLabelEntries=[...wolves, ...bandits]
+    .filter((hostile)=>hostile.hp>0 && Math.abs(player.targetX-hostile.targetX)+Math.abs(player.targetY-hostile.targetY)<=4)
+    .map((hostile)=>({
+      text:(hostile===currentTarget ? "[Target] " : "") + hostileLabel(hostile) + " " + hostile.hp + "/" + hostile.maxHp,
+      tx:hostile.px/TILE,
+      ty:hostile.py/TILE,
+      priority:hostile===currentTarget ? 4 : 1
+    }));
+  drawWorldLabels([
+    {text:Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5 ? npc.name : "", tx:npc.x, ty:npc.y, priority:3},
+    {text:Math.abs(player.targetX-hunterNpc.x)+Math.abs(player.targetY-hunterNpc.y)<=5 ? hunterNpc.displayLabel : "", tx:hunterNpc.x, ty:hunterNpc.y, priority:3},
+    {text:Math.abs(player.targetX-vendorNpc.x)+Math.abs(player.targetY-vendorNpc.y)<=5 ? vendorNpc.displayLabel : "", tx:vendorNpc.x, ty:vendorNpc.y, priority:3},
+    {text:"Wayfarer", tx:player.px/TILE, ty:player.py/TILE, priority:2},
+    ...hostileLabelEntries,
+    ...zoneLabelEntries
+  ]);
 
   const area=currentLocalAreaName();
   const baseTint=area==="Hearthvale Square" ? 0.045 : area==="Mirror Pond" ? 0.065 : area==="Eastern Woods" ? 0.095 : area==="North Road" ? 0.09 : 0.08;
@@ -5694,42 +6363,64 @@ function update(dt,now){
   }
   player.recoilX*=.8; player.recoilY*=.8; player.attackLungeX*=.74; player.attackLungeY*=.74;
   wolves.forEach((wolf)=>{
-    wolf.recoilX*=.82;
-    wolf.recoilY*=.82;
-    wolf.attackLungeX*=.78;
-    wolf.attackLungeY*=.78;
+    wolf.recoilX*=.82; wolf.recoilY*=.82; wolf.attackLungeX*=.78; wolf.attackLungeY*=.78;
   });
+  bandits.forEach((bandit)=>{
+    bandit.recoilX*=.82; bandit.recoilY*=.82; bandit.attackLungeX*=.78; bandit.attackLungeY*=.78;
+  });
+  tollhouseBandits.forEach((bandit)=>{
+    bandit.recoilX*=.82; bandit.recoilY*=.82; bandit.attackLungeX*=.78; bandit.attackLungeY*=.78;
+  });
+  rookTollkeeper.recoilX*=.82; rookTollkeeper.recoilY*=.82; rookTollkeeper.attackLungeX*=.78; rookTollkeeper.attackLungeY*=.78;
   if(now<hitStopUntil){ updateSidebar(); return; }
-  eventSystem.update(currentZoneName());
-  updateInput(); tryPlayerAttack(now); smoothMove(player,dt);
-  if(!player.moving&&(moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
-  updateWolves(now);
-  wolves.forEach((wolf)=>smoothMove(wolf,dt));
-  wolvesAttack(now);
+  eventSystem.update(currentLocalAreaName());
+  const isTransitionLocked=now<zoneTransitionLockedUntil;
+  if(!isTransitionLocked) updateInput();
+  tryPlayerAttack(now);
+  smoothMove(player,dt);
+  if(!player.moving){
+    triggerWalkInWorldObject();
+    handleZoneTransitionIfNeeded();
+  }
+  if(!isTransitionLocked && !player.moving && (moveIntent.dx!==0||moveIntent.dy!==0)) tryPlayerStep(moveIntent.dx,moveIntent.dy,moveIntent.facing);
+  updateOutdoorRegionFromPosition(true);
+  if(!isInMirrorCave && !isInAbandonedTollhouse && currentZoneId==="north_road"){
+    const tollhouseDistance=Math.abs(player.targetX-NORTH_ROAD_TOLLHOUSE_ENTRY.x)+Math.abs(player.targetY-NORTH_ROAD_TOLLHOUSE_ENTRY.y);
+    if(tollhouseDistance<=2) markAbandonedTollhouseDiscovered(true, true);
+  }
+  if(!isTransitionLocked){
+    if(isInMirrorCave){
+      mirrorCaveWolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
+    } else if(isInAbandonedTollhouse){
+      tollhouseBandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
+      if(!rookTollkeeperDefeated){
+        updateBandit(rookTollkeeper,now);
+        smoothMove(rookTollkeeper,dt);
+        if(!rookEncounterAnnounced && Math.abs(player.targetX-rookTollkeeper.targetX)+Math.abs(player.targetY-rookTollkeeper.targetY)<=4){
+          rookEncounterAnnounced=true;
+          log("Rook the Tollkeeper blocks the old road.");
+          showRewardToast("Mini-Boss: Rook the Tollkeeper", 1700);
+        }
+      }
+      banditAttack(now);
+    } else {
+      wolves.forEach((wolf)=>{ updateWolf(wolf,now); smoothMove(wolf,dt); });
+      bandits.forEach((bandit)=>{ updateBandit(bandit,now); smoothMove(bandit,dt); });
+      banditAttack(now);
+    }
+    wolfAttack(now);
+    if(!isInMirrorCave && !isInAbandonedTollhouse){
+      enforceAllVillageNpcTerrainValidation(false);
+      namedVillageNpcs.forEach((villageNpc)=>{
+        updateVillageNpcWander(villageNpc, now);
+      });
+    }
+  }
   updateSidebar();
 }
 
 let last=performance.now();
-function loop(now){
-  const dt=Math.min(.033,(now-last)/1000);
-  last=now;
-  try {
-    update(dt,now);
-    drawWorld();
-  } catch(err){
-    console.error("[Render Guard] Frame failure", err);
-    try {
-      ctx.save();
-      ctx.fillStyle="rgba(10,16,24,.92)";
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle="rgba(243,208,146,.95)";
-      ctx.font="bold 12px monospace";
-      ctx.fillText("Render error. Check console.", 18, 30);
-      ctx.restore();
-    } catch(_err){}
-  }
-  requestAnimationFrame(loop);
-}
+function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
 
 const loadedFromSave=loadGame();
 enforceAllVillageNpcTerrainValidation(true);
