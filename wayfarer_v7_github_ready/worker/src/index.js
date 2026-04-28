@@ -9,6 +9,12 @@ export class WorldRoom {
   }
 }
 
+function isLikelyStaticAssetRequest(pathname) {
+  if (pathname.startsWith("/assets/")) return true;
+  if (pathname.startsWith("/tiles/")) return true;
+  return /\.(?:png|jpe?g|webp|gif|svg|ico|css|js|mjs|json|txt|map|woff2?|ttf|otf)$/i.test(pathname);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -20,6 +26,32 @@ export default {
     if(aliasedPath){
       const assetUrl = new URL(aliasedPath, url.origin);
       return Response.redirect(assetUrl.toString(), 302);
+    }
+    if (env?.ASSETS) {
+      let assetResponse = null;
+      if (url.pathname.startsWith("/assets/")) {
+        const strippedUrl = new URL(request.url);
+        strippedUrl.pathname = url.pathname.replace(/^\/assets/, "") || "/";
+        const strippedRequest = new Request(strippedUrl.toString(), request);
+        const strippedResponse = await env.ASSETS.fetch(strippedRequest);
+        if (strippedResponse.ok) return strippedResponse;
+        assetResponse = strippedResponse;
+      }
+      if (!assetResponse) {
+        assetResponse = await env.ASSETS.fetch(request);
+      }
+      const assetContentType = assetResponse.headers.get("content-type") || "";
+      const looksLikeHtmlShell = assetContentType.includes("text/html");
+      const shouldPreferAsset = assetResponse.ok || isLikelyStaticAssetRequest(url.pathname);
+      if (!shouldPreferAsset && looksLikeHtmlShell) {
+        return new Response(html, {
+          headers: {
+            "content-type": "text/html; charset=UTF-8",
+            "cache-control": "no-store",
+          },
+        });
+      }
+      if (shouldPreferAsset) return assetResponse;
     }
     return new Response(html, {
       headers: {
@@ -1295,6 +1327,12 @@ const atlasProofDiagnostics={
   selectedSpriteId:null,
   selectedAtlasFilename:"n/a",
   requestedAssetUrl:"n/a",
+  directFetchStatus:0,
+  directFetchContentType:"unknown",
+  directFetchIsPng:false,
+  directFetchServedAppShell:false,
+  imageOnloadFired:false,
+  imageOnerrorFired:false,
   imageLoaded:false,
   naturalWidth:0,
   naturalHeight:0,
@@ -1318,6 +1356,10 @@ function toAtlasProofFallbackReason(reason, building, spriteId){
   if(!spriteId || reason==="unmapped_for_safe_rollout" || reason==="missing_sprite_entry") return "sprite_missing";
   if(reason==="asset_not_production_ready" || reason==="sprite_not_production_ready") return "production_ready_false";
   if(reason==="debug_only_sprite") return "debug_only";
+  if(reason==="asset_url_served_app_shell") return "asset_url_served_app_shell";
+  if(reason==="asset_404") return "asset_404";
+  if(reason==="asset_content_type_invalid") return "asset_content_type_invalid";
+  if(reason==="asset_not_loaded") return "asset_not_loaded";
   if(reason==="atlas_missing_alpha_transparency") return "transparency_invalid";
   if(reason==="sprite_crop_absurdly_large" || reason==="sprite_draw_scale_too_large") return "crop_too_large";
   if(
@@ -1344,6 +1386,12 @@ function syncInnAtlasProofDiagnostics(building, spriteId, sprite, didDraw, fallb
   atlasProofDiagnostics.selectedSpriteId=spriteId || "n/a";
   atlasProofDiagnostics.selectedAtlasFilename=getAtlasFilename(sprite?.atlas || atlasManifests.buildings?.imagePath || selectedUrl);
   atlasProofDiagnostics.requestedAssetUrl=selectedUrl;
+  atlasProofDiagnostics.directFetchStatus=buildingRuntime.probeStatus || 0;
+  atlasProofDiagnostics.directFetchContentType=buildingRuntime.probeContentType || "unknown";
+  atlasProofDiagnostics.directFetchIsPng=buildingRuntime.probeContentTypeIsPng===true;
+  atlasProofDiagnostics.directFetchServedAppShell=buildingRuntime.probeServedAppShell===true;
+  atlasProofDiagnostics.imageOnloadFired=buildingRuntime.imageOnloadFired===true;
+  atlasProofDiagnostics.imageOnerrorFired=buildingRuntime.imageOnerrorFired===true;
   atlasProofDiagnostics.imageLoaded=!!buildingRuntime.loaded;
   atlasProofDiagnostics.naturalWidth=buildingRuntime.width || atlasImages.buildings?.naturalWidth || 0;
   atlasProofDiagnostics.naturalHeight=buildingRuntime.height || atlasImages.buildings?.naturalHeight || 0;
@@ -1361,6 +1409,12 @@ function atlasProofStatusLine(pathLabel){
     " Sprite=" + (atlasProofDiagnostics.selectedSpriteId||"n/a") +
     " Asset=" + atlasProofDiagnostics.selectedAtlasFilename +
     " URL=" + atlasProofDiagnostics.requestedAssetUrl +
+    " DirectFetchStatus=" + atlasProofDiagnostics.directFetchStatus +
+    " DirectFetchType=" + atlasProofDiagnostics.directFetchContentType +
+    " DirectFetchIsPng=" + atlasProofDiagnostics.directFetchIsPng +
+    " DirectFetchAppShell=" + atlasProofDiagnostics.directFetchServedAppShell +
+    " OnLoad=" + atlasProofDiagnostics.imageOnloadFired +
+    " OnError=" + atlasProofDiagnostics.imageOnerrorFired +
     " ImageLoaded=" + atlasProofDiagnostics.imageLoaded +
     " Natural=" + atlasProofDiagnostics.naturalWidth + "x" + atlasProofDiagnostics.naturalHeight +
     " Crop=" + formatRect(atlasProofDiagnostics.crop) +
@@ -1543,6 +1597,23 @@ function probeAtlasUrl(atlasId, url){
   fetch(url, { method:"GET", cache:"no-store" })
     .then((response)=>{
       const contentType=response.headers.get("content-type")||"unknown";
+      const runtime=atlasRuntimeInfo[atlasId];
+      const normalizedContentType=contentType.toLowerCase();
+      const isPng=normalizedContentType.includes("image/png");
+      const servedAppShell=normalizedContentType.includes("text/html");
+      if(runtime && runtime.selectedUrl===url){
+        runtime.probeStatus=response.status;
+        runtime.probeContentType=contentType;
+        runtime.probeContentTypeIsPng=isPng;
+        runtime.probeServedAppShell=servedAppShell;
+        if(servedAppShell){
+          runtime.failure="asset_url_served_app_shell";
+        }else if(response.status===404){
+          runtime.failure="asset_404";
+        }else if(!isPng){
+          runtime.failure="asset_content_type_invalid";
+        }
+      }
       logAtlasRuntimeInfo(atlasId, "probe url=" + url + " status=" + response.status + " contentType=" + contentType);
     })
     .catch((error)=>{
@@ -1556,13 +1627,18 @@ function initAtlasImages(){
       urls,
       selectedUrl:null,
       loaded:false,
+      imageOnloadFired:false,
+      imageOnerrorFired:false,
       width:0,
       height:0,
       hasUsableTransparency:null,
       failure:null,
-      attempts:0
+      attempts:0,
+      probeStatus:0,
+      probeContentType:"unknown",
+      probeContentTypeIsPng:false,
+      probeServedAppShell:false
     };
-    urls.forEach((url)=>probeAtlasUrl(atlasId,url));
     const img=new Image();
     atlasImages[atlasId]=img;
     const tryLoadAt=(index)=>{
@@ -1577,7 +1653,16 @@ function initAtlasImages(){
       const url=urls[index];
       runtime.attempts+=1;
       runtime.selectedUrl=url;
+      runtime.imageOnloadFired=false;
+      runtime.imageOnerrorFired=false;
+      runtime.probeStatus=0;
+      runtime.probeContentType="unknown";
+      runtime.probeContentTypeIsPng=false;
+      runtime.probeServedAppShell=false;
+      probeAtlasUrl(atlasId,url);
       img.onload=()=>{
+        runtime.imageOnloadFired=true;
+        runtime.imageOnerrorFired=false;
         runtime.loaded=true;
         runtime.failure=null;
         runtime.width=img.naturalWidth||0;
@@ -1587,8 +1672,9 @@ function initAtlasImages(){
         logAtlasRuntimeInfo(atlasId, "usable_alpha=" + (runtime.hasUsableTransparency===true ? "true" : "false"));
       };
       img.onerror=(event)=>{
+        runtime.imageOnerrorFired=true;
         runtime.loaded=false;
-        runtime.failure="image_decode_error";
+        runtime.failure=runtime.failure||"asset_not_loaded";
         const reason=event?.message || event?.type || "unknown_error";
         logAtlasRuntimeInfo(atlasId, "load failed url=" + url + " currentSrc=" + (img.currentSrc||img.src||"n/a") + " reason=" + reason);
         tryLoadAt(index+1);
@@ -1628,6 +1714,11 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   if(!sprite) return "missing_sprite_entry";
   if(sprite.productionReady!==true) return "sprite_not_production_ready";
   if(sprite.debugOnly===true || sprite.debug_only===true) return "debug_only_sprite";
+  const runtime=atlasRuntimeInfo.buildings;
+  if(runtime?.probeStatus===404) return "asset_404";
+  if(runtime?.probeServedAppShell===true) return "asset_url_served_app_shell";
+  if(runtime && runtime.probeStatus>=200 && runtime.probeStatus<300 && runtime.probeContentTypeIsPng!==true) return "asset_content_type_invalid";
+  if(runtime?.loaded===false) return "asset_not_loaded";
   if(!hasAtlasUsableTransparency("buildings")) return "atlas_missing_alpha_transparency";
   const selectedUrl=atlasRuntimeInfo.buildings?.selectedUrl || manifest.imagePath || "";
   if(manifest.knownBadAssetPaths?.includes(selectedUrl)) return "known_bad_test_asset";
