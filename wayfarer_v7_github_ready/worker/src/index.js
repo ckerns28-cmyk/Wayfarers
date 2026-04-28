@@ -5420,7 +5420,7 @@ function drawWorld(){
     const inForest=region==="eastern_woods" || (region==="north_road" && rng(x,y,211)>0.45);
     const forestMix=Math.min(assets.forestGrass.length-1, Math.floor((layeredNoise(x+5,y+3)+rng(x,y,212)*0.2)*assets.forestGrass.length)%assets.forestGrass.length);
     const img=inForest ? assets.forestGrass[forestMix] : assets.grass[mix];
-    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
     else drawTerrainFallbackTile(p, "grass", x*31+y*17);
     if(!inForest && layeredNoise(x+13,y+7)>0.8){
       ctx.fillStyle="rgba(188,216,151,.012)";
@@ -5435,7 +5435,7 @@ function drawWorld(){
   world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){
     const p=tileToScreen(x,y);
     const img=assets.road[Math.floor(rng(x,y,22)*assets.road.length)];
-    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     else drawTerrainFallbackTile(p, "road");
 
     const north = world.roadTiles.has(keyOf(x,y-1));
@@ -5466,7 +5466,7 @@ function drawWorld(){
     const k=keyOf(x,y); if(!world.pondWater.has(k)) continue;
     const p=tileToScreen(x,y); const edge=world.pondNearEdge.has(k);
     const img=edge?assets.water.shallow:assets.water.deep;
-    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     else drawTerrainFallbackTile(p, edge ? "water_shallow" : "water_deep");
     const t=performance.now()*0.0014, rip=(Math.sin(t*2+x*0.8+y*.6)+1)*.5;
     const mirrorAura=(x>=25&&x<=30&&y>=12&&y<=17) ? 0.065 : 0.016;
@@ -5488,7 +5488,7 @@ function drawWorld(){
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondShore.has(k)) continue;
     const p=tileToScreen(x,y); const img=assets.shore[Math.floor(rng(x,y,33)*assets.shore.length)];
-    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     else drawTerrainFallbackTile(p, "shore");
     if(rng(x,y,491)>0.78){
       ctx.fillStyle="rgba(86,121,74,.42)";
@@ -5595,7 +5595,7 @@ function drawWorld(){
     const p=tileToScreen(f.x,f.y);
     drawShadowTile(assets.shadow.softTile,p.x+4,p.y+4,.42);
     const img=assets.fence[i%assets.fence.length];
-    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
     else {
       ctx.fillStyle="rgba(122,96,69,.9)";
       ctx.fillRect(p.x+4,p.y+8,24,14);
@@ -5606,7 +5606,7 @@ function drawWorld(){
     const sway=Math.sin(performance.now()*0.0012+t.seed*8)*0.8;
     drawShadowTile(assets.shadow.treeCircle,p.x+2,p.y+2,.72);
     const img=assets.tree[t.type]||assets.tree.a;
-    if(img?.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
+    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
     else {
       ctx.fillStyle="rgba(67,98,58,.92)";
       ctx.fillRect(p.x+6,p.y,20,18);
