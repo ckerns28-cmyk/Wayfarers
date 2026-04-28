@@ -1155,12 +1155,12 @@ const assets = {
   building: {}, sprites: { player:null, npc:null, edrin:null, hunter:null, merchant:null, wolf:null, bandit:null, rook:null }
 };
 
-const USE_HEARTHVALE_ATLAS_PROOF = false;
+const USE_HEARTHVALE_ATLAS_PROOF = true;
 const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
   buildings:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.manifest.json",
   props:"/assets/wayfarer/props/hearthvale_props_atlas_v1.manifest.json"
 });
-const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_village_hall","b_mercantile"]));
+const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern"]));
 const HEARTHVALE_PROOF_PROP_TYPES = Object.freeze(new Set(["bench","barrel","crate","signPost"]));
 
 const atlasManifests = {
@@ -1179,7 +1179,7 @@ const atlasManifests = {
     }
   },
   buildings: {
-    imagePath: "/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.png",
+    imagePath: "/assets/wayfarer/buildings/buildings.png",
     fallbackImagePaths: [],
     tileSize: 32,
     productionReady: true,
@@ -1191,7 +1191,7 @@ const atlasManifests = {
     sprites: {
       village_hall_meeting_house:{ sx:0, sy:0, sw:192, sh:160, drawW:192, drawH:160, anchorX:96, anchorY:128, productionReady:true, proofEnabled:true, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, labelAnchor:{ x:3, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       mercantile_shop:{ sx:192, sy:0, sw:160, sh:160, drawW:160, drawH:160, anchorX:80, anchorY:128, productionReady:true, proofEnabled:true, footprint:{ w:5, h:5 }, collisionRect:{ x:0, y:4, w:5, h:1 }, interactionRect:{ x:2, y:4, w:1, h:1 }, labelAnchor:{ x:2, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
-      inn_tavern:{ sx:0, sy:160, sw:192, sh:160, drawW:192, drawH:160, anchorX:96, anchorY:128, productionReady:false, proofEnabled:false, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, labelAnchor:{ x:3, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
+      inn_tavern_v1:{ sx:0, sy:160, sw:192, sh:160, drawW:192, drawH:160, anchorX:96, anchorY:128, productionReady:true, proofEnabled:true, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, labelAnchor:{ x:3, y:1 }, atlas:"buildings.png" },
       residence_small:{ sx:192, sy:160, sw:128, sh:128, drawW:128, drawH:128, anchorX:64, anchorY:96, productionReady:false, proofEnabled:false, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, labelAnchor:{ x:1, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       residence_large:{ sx:320, sy:160, sw:160, sh:128, drawW:160, drawH:128, anchorX:80, anchorY:96, productionReady:false, proofEnabled:false, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, labelAnchor:{ x:2, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
       hunter_lodge_or_outfitter:{ sx:0, sy:320, sw:128, sh:128, drawW:128, drawH:128, anchorX:64, anchorY:96, productionReady:false, proofEnabled:false, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, labelAnchor:{ x:1, y:1 }, atlas:"hearthvale_buildings_atlas_v1.png" },
@@ -1252,7 +1252,8 @@ const EXTERNAL_SPRITE_PRODUCTION_LIMITS = Object.freeze({
 });
 const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze({
   b_village_hall:"village_hall_meeting_house",
-  b_mercantile:"mercantile_shop"
+  b_mercantile:"mercantile_shop",
+  b_inn_tavern:"inn_tavern_v1"
 });
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
   residence_small:{ roof:"roofC", wall:"wallTimber", window:"windowTall", door:"doorPorch", dormer:true },
@@ -1279,6 +1280,31 @@ const buildingSpriteProofState={
   drawn:false
 };
 const spriteBlankHeuristicCache=new Map();
+function hasAtlasUsableTransparency(atlasId){
+  const runtime=atlasRuntimeInfo[atlasId];
+  if(runtime?.hasUsableTransparency===true) return true;
+  if(runtime?.hasUsableTransparency===false) return false;
+  const sheet=atlasImages[atlasId];
+  if(!sheet || !sheet.complete || !(sheet.naturalWidth>0&&sheet.naturalHeight>0)) return false;
+  const probe=document.createElement("canvas");
+  probe.width=Math.min(128, sheet.naturalWidth);
+  probe.height=Math.min(128, sheet.naturalHeight);
+  const probeCtx=probe.getContext("2d", { willReadFrequently:true });
+  if(!probeCtx) return false;
+  probeCtx.imageSmoothingEnabled=false;
+  probeCtx.drawImage(sheet, 0, 0, probe.width, probe.height);
+  const data=probeCtx.getImageData(0,0,probe.width,probe.height).data;
+  let alphaPixels=0;
+  for(let i=3;i<data.length;i+=4){
+    if(data[i] < 255){
+      alphaPixels += 1;
+      if(alphaPixels >= 8) break;
+    }
+  }
+  const hasUsableTransparency=alphaPixels >= 8;
+  if(runtime) runtime.hasUsableTransparency=hasUsableTransparency;
+  return hasUsableTransparency;
+}
 function mergeAtlasManifestEntries(atlasId, externalManifest){
   if(!externalManifest || typeof externalManifest!=="object") return false;
   const runtimeManifest=atlasManifests[atlasId];
@@ -1389,6 +1415,7 @@ function initAtlasImages(){
       loaded:false,
       width:0,
       height:0,
+      hasUsableTransparency:null,
       failure:null,
       attempts:0
     };
@@ -1413,6 +1440,8 @@ function initAtlasImages(){
         runtime.width=img.naturalWidth||0;
         runtime.height=img.naturalHeight||0;
         logAtlasRuntimeInfo(atlasId, "loaded=true url=" + url + " naturalWidth=" + runtime.width + " naturalHeight=" + runtime.height);
+        runtime.hasUsableTransparency=hasAtlasUsableTransparency(atlasId);
+        logAtlasRuntimeInfo(atlasId, "usable_alpha=" + (runtime.hasUsableTransparency===true ? "true" : "false"));
       };
       img.onerror=(event)=>{
         runtime.loaded=false;
@@ -1456,6 +1485,7 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   if(!sprite) return "missing_sprite_entry";
   if(sprite.productionReady!==true) return "sprite_not_production_ready";
   if(sprite.debugOnly===true || sprite.debug_only===true) return "debug_only_sprite";
+  if(!hasAtlasUsableTransparency("buildings")) return "atlas_missing_alpha_transparency";
   const selectedUrl=atlasRuntimeInfo.buildings?.selectedUrl || manifest.imagePath || "";
   if(manifest.knownBadAssetPaths?.includes(selectedUrl)) return "known_bad_test_asset";
   if(!hasFiniteNonNegativeNumber(sprite.sx) || !hasFiniteNonNegativeNumber(sprite.sy)) return "invalid_atlas_metadata_position";
@@ -1472,6 +1502,12 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
     sprite.sh>BUILDING_SPRITE_PRODUCTION_LIMITS.maxCropPxHigh ||
     (sprite.sw*sprite.sh)>BUILDING_SPRITE_PRODUCTION_LIMITS.maxCropAreaPx
   ) return "sprite_crop_absurdly_large";
+  const sheetW=atlasImages.buildings?.naturalWidth || atlasRuntimeInfo.buildings?.width || 0;
+  const sheetH=atlasImages.buildings?.naturalHeight || atlasRuntimeInfo.buildings?.height || 0;
+  if(sheetW>0 && sheetH>0){
+    const nearFullSheet=sprite.sw>=Math.floor(sheetW*0.9) && sprite.sh>=Math.floor(sheetH*0.9);
+    if(nearFullSheet) return "sprite_crop_full_sheet_like";
+  }
   return getAtlasSpriteFailureReason("buildings", spriteId);
 }
 function getExternalProductionSpriteFailureReason(atlasId, spriteId, drawW, drawH, worldType){
@@ -6635,11 +6671,12 @@ function drawWorld(){
     }
 
     const spriteFailureReason=getBuildingProductionSpriteFailureReason(b, spriteId);
+    const drawDimensionsAreFinite=Number.isFinite(drawX) && Number.isFinite(drawY) && Number.isFinite(sprite?.drawW ?? sprite?.sw) && Number.isFinite(sprite?.drawH ?? sprite?.sh);
     const didDraw=!spriteFailureReason
-      ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh)
+      ? (drawDimensionsAreFinite ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh) : false)
       : false;
     if(!didDraw){
-      const fallbackReason=spriteFailureReason||"draw_failed";
+      const fallbackReason=spriteFailureReason || (drawDimensionsAreFinite ? "draw_failed" : "invalid_draw_position");
       warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
       logBuildingFallbackOnce(b, fallbackReason);
