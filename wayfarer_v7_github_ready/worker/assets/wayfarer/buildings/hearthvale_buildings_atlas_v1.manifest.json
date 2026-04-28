@@ -43,10 +43,10 @@
       "id": "mercantile_shop",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 192,
-        "y": 0,
-        "w": 160,
-        "h": 160
+        "x": 473,
+        "y": 67,
+        "w": 329,
+        "h": 403
       },
       "tileFootprint": {
         "w": 5,
