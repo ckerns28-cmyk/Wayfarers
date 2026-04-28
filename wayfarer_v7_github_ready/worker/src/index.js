@@ -1417,83 +1417,122 @@ function maybeLogBuildingRenderSummary(){
   const fallbackEntries=[...buildingRenderDiagnostics.fallbackBuildings.entries()].map(([id,reason])=>id+"("+reason+")");
   console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(","));
 }
-const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
-  inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"TAVERN", windowCols:[1,3,4] },
-  mercantile_shop:{ roof:"roofSlate", wall:"wallBrick", door:"doorShop", window:"windowWide", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"SHOP", windowCols:[1,3] },
-  village_hall_meeting_house:{ roof:"roofSlate", wall:"wall", door:"door", window:"window", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"HALL", windowCols:[1,4] },
-  residence_small:{ roof:"roofL", wall:"wall", door:"door", window:"window", roofDepth:2, wallDepth:2, hasChimney:true, windowCols:[1,2] },
-  residence_large:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, windowCols:[1,3] },
-  hunter_lodge_or_outfitter:{ roof:"roofC", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:2, wallDepth:2, hasChimney:true, sign:true, signText:"HUNT", windowCols:[1,2] },
-  pond_boathouse_or_waterfront_shed:{ roof:"roofR", wall:"wallBrick", door:"doorShop", window:"windowWide", roofDepth:2, wallDepth:1, hasChimney:false, sign:true, signText:"DOCK", windowCols:[1] }
+const NEWPORT_BUILDING_PALETTES = Object.freeze({
+  residence_small:{ roof:"#6f5445", roofShade:"#573f35", wall:"#d8c7ab", wallShade:"#c9b695", trim:"#f0e8d8", door:"#7f4f34", window:"#afc8df", chimney:"#7a5f4c", dormers:1, chimneys:1, steeple:false },
+  residence_large:{ roof:"#6a4d3f", roofShade:"#523a2f", wall:"#c9b79f", wallShade:"#b6a288", trim:"#efe2cb", door:"#74472d", window:"#b8d2e8", chimney:"#795b45", dormers:2, chimneys:2, steeple:false },
+  inn_tavern:{ roof:"#704838", roofShade:"#5a372b", wall:"#ceb99b", wallShade:"#bcaa8d", trim:"#f4e7cf", door:"#6e3f24", window:"#9ec0db", chimney:"#75563e", dormers:2, chimneys:2, steeple:false, sign:"TAVERN" },
+  mercantile_shop:{ roof:"#4f4d57", roofShade:"#3e3c45", wall:"#b86f4e", wallShade:"#9f5f42", trim:"#efdecb", door:"#6f4129", window:"#9fbed6", chimney:"#665244", dormers:2, chimneys:1, steeple:false, sign:"SHOP" },
+  village_hall_meeting_house:{ roof:"#51555d", roofShade:"#41454d", wall:"#d9d0bf", wallShade:"#c6baa8", trim:"#fbf5e8", door:"#68452f", window:"#a8c8de", chimney:"#706050", dormers:1, chimneys:1, steeple:true, sign:"HALL" },
+  hunter_lodge_or_outfitter:{ roof:"#5a463a", roofShade:"#49382f", wall:"#b49374", wallShade:"#9f8267", trim:"#e6d4be", door:"#5f3c2a", window:"#9db8c9", chimney:"#624d3a", dormers:1, chimneys:1, steeple:false, sign:"HUNT" },
+  pond_boathouse_or_waterfront_shed:{ roof:"#5f5b64", roofShade:"#4c4952", wall:"#8f7867", wallShade:"#7c6859", trim:"#d9c7b3", door:"#5a3b2a", window:"#94b4cc", chimney:"#5f5043", dormers:0, chimneys:0, steeple:false, sign:"DOCK" }
 });
-function drawBuildingFallbackSprite(building){
+function _drawNewportBuilding(building){
   const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
-  const style=BUILDING_FALLBACK_STYLE_BY_ROLE[building.role] || BUILDING_FALLBACK_STYLE_BY_ROLE.residence_small;
-  const roofTile=assets.building[style.roof] || assets.building.roofC;
-  const wallTile=assets.building[style.wall] || assets.building.wall;
-  const doorTile=assets.building[style.door] || assets.building.door;
-  const windowTile=assets.building[style.window] || assets.building.window;
-  const roofDepth=Math.max(2, Math.min(visual.h-1, style.roofDepth || 2));
-  const wallDepth=Math.max(1, Math.min(visual.h-1, style.wallDepth || 2));
-  const roofStartY=Math.max(0, visual.y-1);
-  const roofEndY=Math.min(visual.y+visual.h-2, roofStartY+roofDepth-1);
-  const wallStartY=Math.max(visual.y+1, visual.y+visual.h-wallDepth);
+  const palette=NEWPORT_BUILDING_PALETTES[building.role] || NEWPORT_BUILDING_PALETTES.residence_small;
+  const roofRows=Math.max(1, Math.min(visual.h, Math.ceil(visual.h*0.6)));
+  const wallRows=Math.max(1, visual.h-roofRows);
+  const roofStartY=visual.y;
+  const roofEndY=visual.y+roofRows-1;
+  const wallStartY=roofEndY+1;
+  const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1 };
+  const doorX=Math.max(visual.x, Math.min(visual.x+visual.w-1, interaction.x));
+  const doorY=Math.max(wallStartY, Math.min(visual.y+visual.h-1, interaction.y));
+
   for(let ry=roofStartY;ry<=roofEndY;ry++){
+    const depthT=(ry-roofStartY)/Math.max(1,roofRows-1);
     for(let rx=0;rx<visual.w;rx++){
-      const roofX=visual.x+rx;
-      const roofP=tileToScreen(roofX, ry);
-      drawShadowTile(assets.shadow.softTile, roofP.x+2, roofP.y+5, .56);
-      const roofVariant=(rx===0&&assets.building.roofL)
-        ? assets.building.roofL
-        : (rx===visual.w-1&&assets.building.roofR)
-          ? assets.building.roofR
-          : roofTile;
-      if(roofVariant) ctx.drawImage(roofVariant, roofP.x, roofP.y, TILE, TILE);
+      const p=tileToScreen(visual.x+rx, ry);
+      const inset=(rx===0||rx===visual.w-1) ? 3 : 1;
+      ctx.fillStyle=depthT>0.58 ? palette.roofShade : palette.roof;
+      ctx.fillRect(p.x+inset, p.y+6, TILE-(inset*2), TILE-10);
+      ctx.fillStyle="rgba(255,255,255,.08)";
+      ctx.fillRect(p.x+inset+1, p.y+7, TILE-(inset*2)-2, 1);
       if(ry===roofEndY){
-        ctx.fillStyle="rgba(52,36,30,.32)";
-        ctx.fillRect(roofP.x+1, roofP.y+25, TILE-2, 3);
+        ctx.fillStyle="rgba(46,33,28,.28)";
+        ctx.fillRect(p.x+2, p.y+24, TILE-4, 2);
+      }
+      drawShadowTile(assets.shadow.softTile, p.x+2, p.y+5, .44);
+    }
+  }
+
+  if(wallRows>0){
+    for(let ry=wallStartY;ry<visual.y+visual.h;ry++){
+      for(let rx=0;rx<visual.w;rx++){
+        const tileX=visual.x+rx;
+        const p=tileToScreen(tileX, ry);
+        const edge=(rx===0||rx===visual.w-1);
+        const isDoor=(tileX===doorX&&ry===doorY);
+        ctx.fillStyle=edge ? palette.wallShade : palette.wall;
+        ctx.fillRect(p.x+3, p.y+8, TILE-6, TILE-9);
+        if(!isDoor){
+          const windowRow=wallStartY + Math.max(0, Math.floor((wallRows-1)*0.35));
+          if(visual.w>=3 && ry===windowRow && rx>0 && rx<visual.w-1 && Math.abs(tileX-doorX)>0){
+            ctx.fillStyle=palette.trim;
+            ctx.fillRect(p.x+8, p.y+12, TILE-16, 8);
+            ctx.fillStyle=palette.window;
+            ctx.fillRect(p.x+9, p.y+13, TILE-18, 6);
+          }
+        }
       }
     }
   }
-  for(let rx=0;rx<visual.w;rx++){
-    for(let ry=wallStartY;ry<visual.y+visual.h;ry++){
-      const tileX=visual.x+rx;
-      const tileY=ry;
-      const wallP=tileToScreen(tileX, tileY);
-      if(wallTile) ctx.drawImage(wallTile, wallP.x, wallP.y, TILE, TILE);
-    }
-  }
-  const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1, w:1, h:1 };
-  const doorY=Math.min(visual.y+visual.h-1, Math.max(wallStartY, interaction.y));
-  const doorX=Math.min(visual.x+visual.w-1, Math.max(visual.x, interaction.x));
+
   const doorP=tileToScreen(doorX, doorY);
-  if(doorTile) ctx.drawImage(doorTile, doorP.x, doorP.y, TILE, TILE);
-  const windowY=Math.max(wallStartY, visual.y+visual.h-2);
-  const windowCols=(style.windowCols || [1, Math.max(1, visual.w-2)])
-    .map((col)=>visual.x + Math.min(Math.max(col, 0), visual.w-1));
-  [...new Set(windowCols)].forEach((wx)=>{
-    if(wx===doorX) return;
-    if(wx<visual.x||wx>=visual.x+visual.w||windowY<visual.y||windowY>=visual.y+visual.h) return;
-    const wp=tileToScreen(wx,windowY);
-    if(windowTile) ctx.drawImage(windowTile, wp.x, wp.y, TILE, TILE);
-  });
-  if(style.hasChimney){
-    const chimneyX=visual.x + (visual.w >= 5 ? visual.w-2 : 1);
-    const chimneyY=Math.max(roofStartY, roofEndY-1);
-    const chimney=tileToScreen(chimneyX, chimneyY);
-    ctx.fillStyle="rgba(96,72,53,.95)";
-    ctx.fillRect(chimney.x+10, chimney.y+2, 6, 12);
+  ctx.fillStyle=palette.door;
+  ctx.fillRect(doorP.x+11, doorP.y+11, 10, 14);
+  ctx.fillStyle=palette.trim;
+  ctx.fillRect(doorP.x+12, doorP.y+12, 8, 2);
+
+  const dormerCount=Math.max(0, palette.dormers|0);
+  for(let i=0;i<dormerCount;i++){
+    const dx=visual.x+Math.round(((i+1)/(dormerCount+1))*(visual.w-1));
+    const dy=roofStartY + Math.max(0, Math.floor(roofRows*0.45));
+    const p=tileToScreen(dx, dy);
+    ctx.fillStyle=palette.trim;
+    ctx.fillRect(p.x+11, p.y+11, 10, 7);
+    ctx.fillStyle=palette.window;
+    ctx.fillRect(p.x+13, p.y+13, 6, 4);
+    ctx.fillStyle=palette.roofShade;
+    ctx.beginPath();
+    ctx.moveTo(p.x+10, p.y+11);
+    ctx.lineTo(p.x+16, p.y+7);
+    ctx.lineTo(p.x+22, p.y+11);
+    ctx.closePath();
+    ctx.fill();
   }
-  if(style.sign){
+
+  const chimneyCount=Math.max(0,palette.chimneys|0);
+  for(let i=0;i<chimneyCount;i++){
+    const cx=visual.x + (chimneyCount===1 ? visual.w-2 : Math.round((i/(chimneyCount-1))*Math.max(1,visual.w-2)));
+    const cy=roofStartY + Math.max(0, Math.floor(roofRows*0.25));
+    const p=tileToScreen(Math.max(visual.x, Math.min(visual.x+visual.w-1, cx)), cy);
+    ctx.fillStyle=palette.chimney;
+    ctx.fillRect(p.x+12, p.y+5, 7, 11);
+    ctx.fillStyle="rgba(244,232,212,.8)";
+    ctx.fillRect(p.x+13, p.y+5, 5, 2);
+  }
+
+  if(palette.steeple){
+    const p=tileToScreen(visual.x+Math.floor(visual.w/2), roofStartY);
+    ctx.fillStyle=palette.trim;
+    ctx.fillRect(p.x+14, p.y+2, 4, 11);
+    ctx.beginPath();
+    ctx.moveTo(p.x+12, p.y+2);
+    ctx.lineTo(p.x+16, p.y-9);
+    ctx.lineTo(p.x+20, p.y+2);
+    ctx.closePath();
+    ctx.fillStyle=palette.roofShade;
+    ctx.fill();
+  }
+  if(palette.sign){
     const signX=Math.max(visual.x, doorX-1);
-    const signP=tileToScreen(signX, doorY);
-    ctx.fillStyle="rgba(87,63,38,.92)";
-    ctx.fillRect(signP.x+6, signP.y+5, 20, 7);
-    if(style.signText){
-      ctx.fillStyle="rgba(232,216,168,.9)";
-      ctx.font="bold 6px monospace";
-      ctx.fillText(style.signText, signP.x+7, signP.y+11);
-    }
+    const signY=Math.max(wallStartY, doorY-1);
+    const sp=tileToScreen(signX, signY);
+    ctx.fillStyle="rgba(83,58,37,.95)";
+    ctx.fillRect(sp.x+4, sp.y+10, 24, 8);
+    ctx.fillStyle="rgba(237,221,178,.95)";
+    ctx.font="bold 6px monospace";
+    ctx.fillText(palette.sign, sp.x+6, sp.y+16);
   }
 }
 
@@ -6396,7 +6435,7 @@ function drawWorld(){
       warnMissingAssetOnce("building_sprite", b.spriteId+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
       logBuildingFallbackOnce(b, fallbackReason);
-      drawBuildingFallbackSprite(b);
+      _drawNewportBuilding(b);
       return;
     }
     buildingRenderDiagnostics.atlasBuildings.add(b.id);
