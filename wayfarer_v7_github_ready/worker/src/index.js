@@ -1583,7 +1583,8 @@ function toAtlasProofFallbackReason(reason, building, spriteId){
   if(reason==="asset_content_type_invalid") return "asset_content_type_invalid";
   if(reason==="asset_not_loaded") return "asset_not_loaded";
   if(reason==="atlas_missing_alpha_transparency") return "transparency_invalid";
-  if(reason==="sprite_crop_absurdly_large" || reason==="sprite_draw_scale_too_large") return "crop_too_large";
+  if(reason==="sprite_crop_absurdly_large") return "crop_too_large";
+  if(reason==="sprite_draw_scale_too_large") return "draw_too_large";
   if(
     reason==="invalid_atlas_metadata_position" ||
     reason==="invalid_atlas_metadata_crop_size" ||
@@ -1795,8 +1796,8 @@ function mergeAtlasManifestEntries(atlasId, externalManifest){
       sy:sourceRect.y ?? entry.sy ?? mergedSprites[entry.id]?.sy,
       sw:sourceRect.w ?? entry.sw ?? mergedSprites[entry.id]?.sw,
       sh:sourceRect.h ?? entry.sh ?? mergedSprites[entry.id]?.sh,
-      drawW:entry.drawW ?? sourceRect.w ?? mergedSprites[entry.id]?.drawW,
-      drawH:entry.drawH ?? sourceRect.h ?? mergedSprites[entry.id]?.drawH,
+      drawW:entry.drawW ?? entry.draw?.w ?? mergedSprites[entry.id]?.drawW ?? sourceRect.w,
+      drawH:entry.drawH ?? entry.draw?.h ?? mergedSprites[entry.id]?.drawH ?? sourceRect.h,
       anchorX:entry.anchorX ?? mergedSprites[entry.id]?.anchorX,
       anchorY:entry.anchorY ?? mergedSprites[entry.id]?.anchorY,
       tileFootprint:{ w:footprint.w ?? mergedSprites[entry.id]?.tileFootprint?.w, h:footprint.h ?? mergedSprites[entry.id]?.tileFootprint?.h },
