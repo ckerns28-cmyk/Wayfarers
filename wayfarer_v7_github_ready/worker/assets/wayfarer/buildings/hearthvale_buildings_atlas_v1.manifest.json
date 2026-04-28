@@ -35,15 +35,16 @@
         "y": 1
       },
       "renderLayer": "buildings",
-      "proofEnabled": true,
-      "productionReady": true
+      "proofEnabled": false,
+      "productionReady": false,
+      "debugOnly": true
     },
     {
       "id": "mercantile_shop",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
         "x": 192,
-        "y": 0,
+        "y": 32,
         "w": 160,
         "h": 160
       },
@@ -71,7 +72,8 @@
       },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true
+      "productionReady": true,
+      "calibrationOnly": true
     },
     {
       "id": "inn_tavern_v1",
