@@ -1,11 +1,11 @@
 {
-  "atlasFile": "hearthvale_buildings_atlas_v1.png",
+  "atlasFile": "buildings.png",
   "tileSize": 32,
   "productionReady": true,
   "entries": [
     {
       "id": "village_hall_meeting_house",
-      "atlas": "hearthvale_buildings_atlas_v1.png",
+      "atlas": "buildings.png",
       "sourceRect": { "x": 0, "y": 0, "w": 192, "h": 160 },
       "tileFootprint": { "w": 6, "h": 5 },
       "anchorX": 96,
@@ -19,7 +19,7 @@
     },
     {
       "id": "mercantile_shop",
-      "atlas": "hearthvale_buildings_atlas_v1.png",
+      "atlas": "buildings.png",
       "sourceRect": { "x": 192, "y": 0, "w": 160, "h": 160 },
       "tileFootprint": { "w": 5, "h": 5 },
       "anchorX": 80,
@@ -32,8 +32,8 @@
       "productionReady": true
     },
     {
-      "id": "inn_tavern",
-      "atlas": "hearthvale_buildings_atlas_v1.png",
+      "id": "inn_tavern_v1",
+      "atlas": "buildings.png",
       "sourceRect": { "x": 0, "y": 160, "w": 192, "h": 160 },
       "tileFootprint": { "w": 6, "h": 5 },
       "anchorX": 96,
@@ -42,12 +42,12 @@
       "interactionRect": { "x": 3, "y": 4, "w": 1, "h": 1 },
       "labelAnchor": { "x": 3, "y": 1 },
       "renderLayer": "buildings",
-      "proofEnabled": false,
-      "productionReady": false
+      "proofEnabled": true,
+      "productionReady": true
     },
     {
       "id": "residence_small",
-      "atlas": "hearthvale_buildings_atlas_v1.png",
+      "atlas": "buildings.png",
       "sourceRect": { "x": 192, "y": 160, "w": 128, "h": 128 },
       "tileFootprint": { "w": 4, "h": 4 },
       "anchorX": 64,
@@ -61,7 +61,7 @@
     },
     {
       "id": "residence_large",
-      "atlas": "hearthvale_buildings_atlas_v1.png",
+      "atlas": "buildings.png",
       "sourceRect": { "x": 320, "y": 160, "w": 160, "h": 128 },
       "tileFootprint": { "w": 5, "h": 4 },
       "anchorX": 80,
@@ -75,7 +75,7 @@
     },
     {
       "id": "hunter_lodge_or_outfitter",
-      "atlas": "hearthvale_buildings_atlas_v1.png",
+      "atlas": "buildings.png",
       "sourceRect": { "x": 0, "y": 320, "w": 128, "h": 128 },
       "tileFootprint": { "w": 4, "h": 4 },
       "anchorX": 64,
@@ -89,7 +89,7 @@
     },
     {
       "id": "pond_boathouse_or_waterfront_shed",
-      "atlas": "hearthvale_buildings_atlas_v1.png",
+      "atlas": "buildings.png",
       "sourceRect": { "x": 128, "y": 320, "w": 160, "h": 96 },
       "tileFootprint": { "w": 5, "h": 3 },
       "anchorX": 80,
