@@ -44,7 +44,7 @@
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
         "x": 192,
-        "y": 32,
+        "y": 0,
         "w": 160,
         "h": 160
       },
