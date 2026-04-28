@@ -1,0 +1,59 @@
+{
+  "atlasFile": "hearthvale_props_atlas_v1.png",
+  "tileSize": 32,
+  "productionReady": true,
+  "entries": [
+    {
+      "id": "bench_market",
+      "atlas": "hearthvale_props_atlas_v1.png",
+      "sourceRect": { "x": 0, "y": 0, "w": 64, "h": 32 },
+      "tileFootprint": { "w": 2, "h": 1 },
+      "anchorX": 32,
+      "anchorY": 32,
+      "collisionRect": { "x": 0, "y": 0, "w": 2, "h": 1 },
+      "interactionRect": { "x": 1, "y": 0, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 1, "y": 0 },
+      "renderLayer": "ground_props",
+      "proofEnabled": true,
+      "productionReady": true
+    },
+    {
+      "id": "barrel_oak",
+      "atlas": "hearthvale_props_atlas_v1.png",
+      "sourceRect": { "x": 64, "y": 0, "w": 32, "h": 32 },
+      "tileFootprint": { "w": 1, "h": 1 },
+      "anchorX": 16,
+      "anchorY": 32,
+      "collisionRect": { "x": 0, "y": 0, "w": 1, "h": 1 },
+      "renderLayer": "ground_props",
+      "proofEnabled": true,
+      "productionReady": true
+    },
+    {
+      "id": "crate_market",
+      "atlas": "hearthvale_props_atlas_v1.png",
+      "sourceRect": { "x": 96, "y": 0, "w": 32, "h": 32 },
+      "tileFootprint": { "w": 1, "h": 1 },
+      "anchorX": 16,
+      "anchorY": 32,
+      "collisionRect": { "x": 0, "y": 0, "w": 1, "h": 1 },
+      "renderLayer": "ground_props",
+      "proofEnabled": true,
+      "productionReady": true
+    },
+    {
+      "id": "signpost_square",
+      "atlas": "hearthvale_props_atlas_v1.png",
+      "sourceRect": { "x": 128, "y": 0, "w": 32, "h": 64 },
+      "tileFootprint": { "w": 1, "h": 1 },
+      "anchorX": 16,
+      "anchorY": 32,
+      "collisionRect": { "x": 0, "y": 0, "w": 1, "h": 1 },
+      "interactionRect": { "x": 0, "y": 0, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 0, "y": 0 },
+      "renderLayer": "above_entities",
+      "proofEnabled": true,
+      "productionReady": true
+    }
+  ]
+}

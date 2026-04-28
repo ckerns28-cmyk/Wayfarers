@@ -1,4 +1,4 @@
-# Art Pipeline (Phase 32S)
+# Art Pipeline (Phase 32T)
 
 ## Asset folders
 Wayfarer sprite assets are served from Worker static assets:
@@ -9,49 +9,42 @@ Wayfarer sprite assets are served from Worker static assets:
 - `wayfarer_v7_github_ready/worker/assets/wayfarer/props/`
 - `wayfarer_v7_github_ready/worker/assets/wayfarer/ui/`
 
-## Source of truth
-- Runtime atlas integration and drawing logic: `wayfarer_v7_github_ready/worker/src/index.js`
-- Game-ready atlas contract: `docs/SPRITE_ATLAS_CONTRACT.md`
-- Phase visual QA checklist: `docs/PHASE_32_VISUAL_QA.md`
+## Hearthvale atlas files (Phase 32T)
+- Building atlas PNG target: `hearthvale_buildings_atlas_v1.png`
+- Building manifest: `hearthvale_buildings_atlas_v1.manifest.json`
+- Prop atlas PNG target: `hearthvale_props_atlas_v1.png`
+- Prop manifest: `hearthvale_props_atlas_v1.manifest.json`
 
-## Atlas manifest format
-Atlas manifests are defined in `worker/src/index.js` under `atlasManifests`.
+## Runtime source of truth
+- Runtime integration: `wayfarer_v7_github_ready/worker/src/index.js`
+- Contract: `docs/SPRITE_ATLAS_CONTRACT.md`
+- Visual QA: `docs/PHASE_32_VISUAL_QA.md`
 
-Each atlas entry contains:
-- `imagePath`
-- `tileSize`
-- `sprites[spriteId] = { sx, sy, sw, sh, drawW?, drawH?, anchorX?, anchorY?, productionReady? }`
+## Manifest structure
+Each manifest entry supplies at minimum:
+- `id`
+- `atlas`
+- `sourceRect` (`x,y,w,h`)
+- `tileFootprint` (`w,h` in tiles)
+- `anchorX`,`anchorY`
+- `collisionRect`
+- `interactionRect` (if applicable)
+- `labelAnchor` (if applicable)
+- `renderLayer` (if needed)
+- rollout flags: `proofEnabled`, `productionReady`
 
-## Draw order (world)
-1. Terrain / roads / water / shoreline
-2. Buildings
-3. Props behind entities (`layer !== "above_entities"`)
-4. Entities (NPCs, enemies, player)
-5. Props above entities (`layer === "above_entities"`)
-6. Labels / UI overlays
+## Proof-mode behavior
+- Toggle: `USE_HEARTHVALE_ATLAS_PROOF` in `index.js`.
+- Default is `false` for production safety.
+- In proof mode only:
+  - Buildings: `b_village_hall`, `b_mercantile`
+  - Props: `bench`, `barrel`, `crate`, `signPost`
+- If atlas/manifest load fails, rendering falls back to procedural/tile fallback (no crash path).
 
-## Collision vs visuals
-Building placement remains data-driven and split into:
-- visual placement (`spriteId`, `x/y`, `w/h`, `anchorX/anchorY`)
-- collision bounds (`collision:{x,y,w,h}`)
-- interaction tile (`interaction:{x,y,w,h}`)
-- label anchor (`label:{x,y,text}`)
+## Collision and interaction policy
+- Building collision remains tile-rect driven (`collision` in world data), not sprite bounds.
+- Roof/overhang visuals never add collision.
+- Door interaction points remain explicit doorway threshold tiles.
 
-## Scaling and pixel rules
-- Tile size: `32px`
-- Character frame size: `64px`
-- Canvas CSS: `image-rendering: pixelated`
-- Render path: `ctx.imageSmoothingEnabled = false`
-
-## Integration workflow for new production sheets
-1. Place PNGs in `worker/assets/wayfarer/buildings/` and `worker/assets/wayfarer/props/`.
-2. Update `atlasManifests.*.imagePath` to new files.
-3. Add/update `sprites` metadata entries.
-4. Map world IDs to sprite IDs (`BUILDING_SPRITE_ID_BY_BUILDING_ID`, `PROP_SPRITE_BY_WORLD_TYPE`).
-5. Mark approved sprites with `productionReady:true`.
-6. Enable production toggles only after QA pass.
-7. Validate using `docs/PHASE_32_VISUAL_QA.md`.
-
-## Constraints
-- Do not introduce gameplay/system/map changes as part of art swaps.
-- Keep fallback rendering paths intact during rollout.
+## Next expansion step
+After proof validation, add transparent production-ready atlas PNGs and progressively enable additional building IDs by flipping per-entry `proofEnabled` and then global production flags.
