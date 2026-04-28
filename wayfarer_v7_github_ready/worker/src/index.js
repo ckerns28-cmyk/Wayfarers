@@ -1161,7 +1161,8 @@ const atlasManifests = {
     }
   },
   buildings: {
-    imagePath: "/assets/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png",
+    imagePath: "/assets/tiles/buildings/test_house/medieval_town_buildings_sprite_sheet.png",
+    fallbackImagePaths: ["/assets/tiles/buildings/test_house/Medieval%20town%20buildings%20sprite%20sheet.png"],
     tileSize: 32,
     sprites: {
       inn_tavern:{ sx:0, sy:0, sw:224, sh:192, anchorX:96, anchorY:176, drawW:224, drawH:192, collisionFootprint:{ x:0, y:96, w:192, h:96 } },
@@ -1187,7 +1188,8 @@ const atlasManifests = {
     }
   },
   props: {
-    imagePath: "/assets/tiles/buildings/test_house/Medieval%20town%20asset%20sprite%20sheet.png",
+    imagePath: "/assets/tiles/buildings/test_house/medieval_town_asset_sprite_sheet.png",
+    fallbackImagePaths: ["/assets/tiles/buildings/test_house/Medieval%20town%20asset%20sprite%20sheet.png"],
     tileSize: 32,
     sprites: {
       crate:{ sx:0, sy:0, sw:32, sh:32, drawW:32, drawH:32, anchorX:16, anchorY:28 },
@@ -1200,7 +1202,14 @@ const atlasManifests = {
   }
 };
 const atlasImages = {};
+const atlasRuntimeInfo = {};
 const missingAssetWarnings=new Set();
+const buildingFallbackWarnings=new Set();
+const buildingRenderDiagnostics={
+  atlasBuildings:new Set(),
+  fallbackBuildings:new Map(),
+  summaryLogged:false
+};
 const USE_PRODUCTION_BUILDING_ATLAS = true;
 const PROP_SPRITE_BY_WORLD_TYPE = Object.freeze({
   crate:"crate",
@@ -1209,11 +1218,95 @@ const PROP_SPRITE_BY_WORLD_TYPE = Object.freeze({
   fenceSeg:"fence_segment",
   bench:"bench"
 });
+const atlasDebugPreview={
+  enabled:false,
+  showCrops:true
+};
+function getAtlasCandidateUrls(manifest){
+  return [manifest?.imagePath, ...(manifest?.fallbackImagePaths||[])].filter((url,idx,arr)=>url&&arr.indexOf(url)===idx);
+}
 function warnMissingAssetOnce(kind,key){
   const token=kind+":"+key;
   if(missingAssetWarnings.has(token)) return;
   missingAssetWarnings.add(token);
   console.warn("[Asset Missing] " + kind + " " + key);
+}
+function logAtlasRuntimeInfo(atlasId, message){
+  console.info("[Atlas] " + atlasId + " " + message);
+}
+function logBuildingFallbackOnce(building, reason){
+  const key=(building?.id||"unknown")+":"+(building?.spriteId||"none")+":"+reason;
+  if(buildingFallbackWarnings.has(key)) return;
+  buildingFallbackWarnings.add(key);
+  console.warn("[Building Fallback] buildingId=" + (building?.id||"unknown") + " spriteId=" + (building?.spriteId||"none") + " reason=" + reason);
+}
+function probeAtlasUrl(atlasId, url){
+  fetch(url, { method:"GET", cache:"no-store" })
+    .then((response)=>{
+      const contentType=response.headers.get("content-type")||"unknown";
+      logAtlasRuntimeInfo(atlasId, "probe url=" + url + " status=" + response.status + " contentType=" + contentType);
+    })
+    .catch((error)=>{
+      logAtlasRuntimeInfo(atlasId, "probe url=" + url + " failed=" + String(error?.message||error));
+    });
+}
+function initAtlasImages(){
+  Object.entries(atlasManifests).forEach(([atlasId, manifest])=>{
+    const urls=getAtlasCandidateUrls(manifest);
+    atlasRuntimeInfo[atlasId]={
+      urls,
+      selectedUrl:null,
+      loaded:false,
+      width:0,
+      height:0,
+      failure:null,
+      attempts:0
+    };
+    urls.forEach((url)=>probeAtlasUrl(atlasId,url));
+    const img=new Image();
+    atlasImages[atlasId]=img;
+    const tryLoadAt=(index)=>{
+      const runtime=atlasRuntimeInfo[atlasId];
+      if(index>=urls.length){
+        runtime.loaded=false;
+        runtime.failure=runtime.failure||"exhausted_candidates";
+        warnMissingAssetOnce("atlas", atlasId+"@"+urls.join("|"));
+        logAtlasRuntimeInfo(atlasId, "load failed. reason=" + runtime.failure + " urls=" + urls.join(","));
+        return;
+      }
+      const url=urls[index];
+      runtime.attempts+=1;
+      runtime.selectedUrl=url;
+      img.onload=()=>{
+        runtime.loaded=true;
+        runtime.failure=null;
+        runtime.width=img.naturalWidth||0;
+        runtime.height=img.naturalHeight||0;
+        logAtlasRuntimeInfo(atlasId, "loaded=true url=" + url + " naturalWidth=" + runtime.width + " naturalHeight=" + runtime.height);
+      };
+      img.onerror=(event)=>{
+        runtime.loaded=false;
+        runtime.failure="image_decode_error";
+        const reason=event?.message || event?.type || "unknown_error";
+        logAtlasRuntimeInfo(atlasId, "load failed url=" + url + " reason=" + reason);
+        tryLoadAt(index+1);
+      };
+      img.src=url;
+    };
+    tryLoadAt(0);
+  });
+}
+function getAtlasSpriteFailureReason(atlasId, spriteId){
+  const manifest=atlasManifests[atlasId];
+  if(!manifest) return "missing_manifest";
+  const sprite=manifest.sprites?.[spriteId];
+  if(!sprite) return "missing_sprite_entry";
+  const sheet=atlasImages[atlasId];
+  if(!sheet) return "sheet_not_initialized";
+  if(!sheet.complete) return "sheet_not_complete";
+  if(!(sheet.naturalWidth>0&&sheet.naturalHeight>0)) return "sheet_invalid_dimensions";
+  if(sprite.sx+sprite.sw>sheet.naturalWidth || sprite.sy+sprite.sh>sheet.naturalHeight) return "sprite_crop_out_of_bounds";
+  return null;
 }
 function drawMissingSpritePlaceholder(dx,dy,dw,dh,label="MISSING"){
   const width=Math.max(8,Math.floor(dw||32));
@@ -1237,24 +1330,13 @@ function drawMissingSpritePlaceholder(dx,dy,dw,dh,label="MISSING"){
   }
   ctx.restore();
 }
-function initAtlasImages(){
-  Object.entries(atlasManifests).forEach(([atlasId, manifest])=>{
-    const img=new Image();
-    img.onerror=()=>warnMissingAssetOnce("atlas", atlasId+"@"+manifest.imagePath);
-    img.src=manifest.imagePath;
-    atlasImages[atlasId]=img;
-  });
-}
 function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
   const manifest=atlasManifests[atlasId];
   const sheet=atlasImages[atlasId];
   const sprite=manifest?.sprites?.[spriteId];
-  if(!manifest||!sheet||!sprite){
-    warnMissingAssetOnce("atlas_sprite", atlasId+":"+spriteId);
-    return false;
-  }
-  if(!(sheet.complete&&sheet.naturalWidth>0)){
-    warnMissingAssetOnce("atlas_image", atlasId);
+  const reason=getAtlasSpriteFailureReason(atlasId, spriteId);
+  if(reason){
+    warnMissingAssetOnce("atlas_sprite", atlasId+":"+spriteId+":"+reason);
     return false;
   }
   ctx.drawImage(sheet, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, dw ?? sprite.sw, dh ?? sprite.sh);
@@ -1271,6 +1353,69 @@ function drawMappedPropSprite(prop, p){
   const drawX=Math.round(p.x + TILE/2 - (atlasSprite.anchorX ?? TILE/2));
   const drawY=Math.round(p.y + TILE - (atlasSprite.anchorY ?? TILE));
   return drawAtlasSprite("props", spriteId, drawX, drawY, atlasSprite.drawW ?? atlasSprite.sw, atlasSprite.drawH ?? atlasSprite.sh);
+}
+function drawAtlasDebugPreview(){
+  if(!atlasDebugPreview.enabled) return;
+  ctx.save();
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.imageSmoothingEnabled=false;
+  const panelW=360;
+  let panelY=10;
+  const panelX=Math.max(10, canvas.width-panelW-10);
+  ["buildings","props"].forEach((atlasId)=>{
+    const info=atlasRuntimeInfo[atlasId];
+    const sheet=atlasImages[atlasId];
+    const panelH=atlasId==="buildings" ? 184 : 148;
+    ctx.fillStyle="rgba(9,14,22,.9)";
+    ctx.fillRect(panelX,panelY,panelW,panelH);
+    ctx.strokeStyle="rgba(142,176,220,.55)";
+    ctx.strokeRect(panelX+0.5,panelY+0.5,panelW-1,panelH-1);
+    ctx.fillStyle="#d9e8fb";
+    ctx.font="11px ui-monospace, monospace";
+    ctx.fillText(atlasId.toUpperCase() + " atlas", panelX+8, panelY+14);
+    const status=info?.loaded ? "loaded" : "not-loaded";
+    const dims=(info?.width||0) + "x" + (info?.height||0);
+    ctx.fillText("status=" + status + " dims=" + dims, panelX+8, panelY+28);
+    ctx.fillText("url=" + (info?.selectedUrl||"n/a"), panelX+8, panelY+41);
+    if(sheet && sheet.complete && sheet.naturalWidth>0 && sheet.naturalHeight>0){
+      const previewX=panelX+8;
+      const previewY=panelY+48;
+      const maxW=170;
+      const maxH=atlasId==="buildings" ? 126 : 92;
+      const scale=Math.min(maxW/sheet.naturalWidth,maxH/sheet.naturalHeight,1);
+      const dw=Math.max(1,Math.floor(sheet.naturalWidth*scale));
+      const dh=Math.max(1,Math.floor(sheet.naturalHeight*scale));
+      ctx.drawImage(sheet,previewX,previewY,dw,dh);
+      if(atlasDebugPreview.showCrops){
+        ctx.strokeStyle="rgba(255,112,112,.95)";
+        ctx.lineWidth=1;
+        const spriteEntries=atlasId==="buildings"
+          ? world.buildings.slice(0,4).map((b)=>[b.spriteId, atlasManifests.buildings.sprites[b.spriteId]]).filter((entry)=>entry[1])
+          : Object.entries(atlasManifests.props.sprites).slice(0,4);
+        spriteEntries.forEach(([spriteId,sprite])=>{
+          ctx.strokeRect(previewX+Math.round(sprite.sx*scale)+0.5, previewY+Math.round(sprite.sy*scale)+0.5, Math.max(1,Math.round(sprite.sw*scale)-1), Math.max(1,Math.round(sprite.sh*scale)-1));
+          ctx.fillStyle="rgba(255,228,198,.95)";
+          ctx.fillText(spriteId, previewX+Math.round(sprite.sx*scale)+2, previewY+Math.round(sprite.sy*scale)+10);
+        });
+      }
+    } else {
+      ctx.fillStyle="rgba(246,176,176,.92)";
+      ctx.fillText("sheet unavailable", panelX+8, panelY+64);
+      if(info?.failure) ctx.fillText("reason="+info.failure, panelX+8, panelY+78);
+    }
+    panelY+=panelH+8;
+  });
+  ctx.restore();
+}
+function maybeLogBuildingRenderSummary(){
+  if(buildingRenderDiagnostics.summaryLogged) return;
+  const totalBuildings=world.buildings.length;
+  const seen=buildingRenderDiagnostics.atlasBuildings.size + buildingRenderDiagnostics.fallbackBuildings.size;
+  if(seen<totalBuildings) return;
+  buildingRenderDiagnostics.summaryLogged=true;
+  const atlasIds=[...buildingRenderDiagnostics.atlasBuildings];
+  const fallbackEntries=[...buildingRenderDiagnostics.fallbackBuildings.entries()].map(([id,reason])=>id+"("+reason+")");
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(","));
 }
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
   inn_tavern:{ roof:"roofDormer", wall:"wallTimber", door:"doorPorch", window:"windowTall", roofDepth:3, wallDepth:2, hasChimney:true, sign:true, signText:"TAVERN", windowCols:[1,3,4] },
@@ -2077,6 +2222,24 @@ world.buildings.forEach((b)=>{
   const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
   blockRect(c.x,c.y,c.w,c.h);
 });
+function auditBuildingAtlasMappings(){
+  const atlasEntries=[];
+  const fallbackEntries=[];
+  world.buildings.forEach((building)=>{
+    if(!building.spriteId){
+      fallbackEntries.push(building.id + "(missing_sprite_id)");
+      return;
+    }
+    const sprite=atlasManifests.buildings.sprites?.[building.spriteId];
+    if(!sprite){
+      fallbackEntries.push(building.id + "(missing_atlas_entry:" + building.spriteId + ")");
+      return;
+    }
+    atlasEntries.push(building.id + "->" + building.spriteId + "[sx=" + sprite.sx + ",sy=" + sprite.sy + ",sw=" + sprite.sw + ",sh=" + sprite.sh + "]");
+  });
+  console.info("[Building Atlas Mapping] atlas=" + atlasEntries.join(",") + " fallback=" + (fallbackEntries.join(",") || "none"));
+}
+auditBuildingAtlasMappings();
 
 const pond={x:24,y:12,w:9,h:7,cx:28,cy:15};
 for(let x=pond.x;x<pond.x+pond.w;x++){
@@ -5130,12 +5293,16 @@ function updateSidebar(){
     debugPanel.style.display="block";
     debugPanel.textContent = "DEV TOOLS\n" +
       "~ : Toggle Debug Panel\n" +
+      "F4 : Atlas Preview Overlay\n" +
       "F6 : Debug Heal\n" +
       "F7/F8/F9 : Debug Teleport\n" +
       "F10 : Debug Reset Quest\n" +
       "Shift+F10 : Debug Reset Save\n" +
       "Debug Lv/ATK/DEF : " + player.level + " / " + totalAttack + " / " + totalDefense + "\n" +
       "Skills S/D/Sv : " + getSkillLevel("swordsmanship") + " / " + getSkillLevel("defense") + " / " + getSkillLevel("survival") + "\n" +
+      "Atlas preview : " + (atlasDebugPreview.enabled ? "ON" : "OFF") + "\n" +
+      "Building atlas : " + (atlasRuntimeInfo.buildings?.loaded ? "loaded " + atlasRuntimeInfo.buildings.width + "x" + atlasRuntimeInfo.buildings.height : "not loaded") + "\n" +
+      "Prop atlas : " + (atlasRuntimeInfo.props?.loaded ? "loaded " + atlasRuntimeInfo.props.width + "x" + atlasRuntimeInfo.props.height : "not loaded") + "\n" +
       "Target HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") + "\n" +
       "Target cooldown : " + targetCooldownText;
   } else {
@@ -5352,7 +5519,7 @@ function resetFullSaveForDebug(){
 addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
   const isDevToggleKey=e.code==="Backquote";
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","g","v","1","2","3","4","5","6","7","8","9","f6","f7","f8","f9","f10"].includes(k) || isDevToggleKey) e.preventDefault();
+  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","e","escape","h","k","g","v","1","2","3","4","5","6","7","8","9","f4","f6","f7","f8","f9","f10"].includes(k) || isDevToggleKey) e.preventDefault();
   if(DIRECTION_KEYS.includes(k)){
     if(blockedDirectionalKeysUntilRelease.has(k)) return;
   }
@@ -5368,6 +5535,11 @@ addEventListener("keydown",(e)=>{
   if(k==="e") interactionManager.tryInteract();
   if(k==="h") useHealingConsumable();
   if(k==="k") saveGame("manual");
+  if(DEV_MODE && k==="f4"){
+    atlasDebugPreview.enabled=!atlasDebugPreview.enabled;
+    log("[Debug] Atlas preview " + (atlasDebugPreview.enabled ? "enabled" : "disabled") + ".");
+    updateSidebar();
+  }
   if(DEV_MODE && k==="f6") healPlayerToFullForDebug();
   if(DEV_MODE && k==="f7") teleportToZoneForDebug("hearthvale_square");
   if(DEV_MODE && k==="f8") teleportToZoneForDebug("eastern_woods");
@@ -6215,14 +6387,19 @@ function drawWorld(){
       drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
     }
 
-    const didDraw=USE_PRODUCTION_BUILDING_ATLAS
+    const spriteFailureReason=USE_PRODUCTION_BUILDING_ATLAS ? getAtlasSpriteFailureReason("buildings", b.spriteId) : "production_atlas_disabled";
+    const didDraw=!spriteFailureReason
       ? drawAtlasSprite("buildings", b.spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh)
       : false;
     if(!didDraw){
-      warnMissingAssetOnce("building_sprite", b.spriteId);
+      const fallbackReason=spriteFailureReason||"draw_failed";
+      warnMissingAssetOnce("building_sprite", b.spriteId+":"+fallbackReason);
+      buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
+      logBuildingFallbackOnce(b, fallbackReason);
       drawBuildingFallbackSprite(b);
       return;
     }
+    buildingRenderDiagnostics.atlasBuildings.add(b.id);
 
     const chimney=tileToScreen(b.x + (bIndex%2 ? b.w-2 : 1), b.y);
     ctx.fillStyle="rgba(94,72,54,.9)";
@@ -6374,6 +6551,8 @@ function drawWorld(){
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
   drawTransitionFade(now);
   drawFloatingTexts(now);
+  maybeLogBuildingRenderSummary();
+  drawAtlasDebugPreview();
   ctx.restore();
 }
 
