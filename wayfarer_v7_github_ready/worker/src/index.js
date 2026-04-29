@@ -3289,6 +3289,17 @@ function isOverworldTerrainBlocked(x,y){
   const tileKey=keyOf(x,y);
   return world.blocked.has(tileKey) || world.pondBlocked.has(tileKey) || world.pondShore.has(tileKey);
 }
+function tileInRect(tileX,tileY,rect){
+  return !!rect && tileX>=rect.x && tileX<rect.x+rect.w && tileY>=rect.y && tileY<rect.y+rect.h;
+}
+function isAtlasBuildingBlockedTile(x,y){
+  return world.buildings.some((building)=>{
+    if(Array.isArray(building.blockedVisualTiles) && building.blockedVisualTiles.some((rect)=>tileInRect(x,y,rect))) return true;
+    if(tileInRect(x,y,building.rearExclusionZone)) return true;
+    const collisionRect=building.collision || building.collisionRect || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+    return tileInRect(x,y,collisionRect);
+  });
+}
 function rebuildOverworldCollisionFromMap(){
   const rebuiltBlocked=new Set();
   const addRect=(rect, options={})=>{
@@ -3358,6 +3369,42 @@ function setNpcTile(npcEntity,x,y,alignImmediately=false){
     npcEntity.py=y*TILE;
     npcEntity.moving=false;
   }
+}
+function findNearestValidPlayerSpawnTile(startX,startY,maxDepth=20){
+  const classifyTile=(x,y)=>{
+    if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return { valid:false, score:-1 };
+    if(!canMoveTo(x,y)) return { valid:false, score:-1 };
+    if(namedVillageNpcs.some((villageNpc)=>villageNpc.targetX===x && villageNpc.targetY===y)) return { valid:false, score:-1 };
+    let score=1;
+    if(world.roadTiles.has(keyOf(x,y))) score+=12;
+    if(world.buildings.some((building)=>tileInRect(x,y,building.frontWalkBand))) score+=8;
+    if(world.buildings.some((building)=>tileInRect(x,y,building.interaction) || tileInRect(x,y,building.interactRect))) score+=6;
+    return { valid:true, score };
+  };
+  const startClassification=classifyTile(startX,startY);
+  if(startClassification.valid) return { x:startX, y:startY };
+  const visited=new Set([keyOf(startX,startY)]);
+  const queue=[{ x:startX, y:startY, depth:0 }];
+  let best=null;
+  for(let cursor=0;cursor<queue.length;cursor++){
+    const current=queue[cursor];
+    if(current.depth>=maxDepth) continue;
+    for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){
+      const nx=current.x+dx;
+      const ny=current.y+dy;
+      const tileKey=keyOf(nx,ny);
+      if(visited.has(tileKey)) continue;
+      visited.add(tileKey);
+      const classification=classifyTile(nx,ny);
+      if(classification.valid){
+        const candidate={ x:nx, y:ny, depth:current.depth+1, score:classification.score };
+        if(!best || candidate.score>best.score || (candidate.score===best.score && candidate.depth<best.depth)) best=candidate;
+      }
+      queue.push({ x:nx, y:ny, depth:current.depth+1 });
+    }
+    if(best && best.depth<=current.depth+1) break;
+  }
+  return best ? { x:best.x, y:best.y } : null;
 }
 function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
   const anchor=NAMED_NPC_ANCHORS[npcEntity.anchorId];
@@ -5281,10 +5328,20 @@ function loadGame(){
     const mapH=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
     const loadedX=Math.max(0,Math.min(mapW-1,data.player.position.x));
     const loadedY=Math.max(0,Math.min(mapH-1,data.player.position.y));
-    setPlayerTilePosition(loadedX, loadedY);
+    let spawnX=loadedX;
+    let spawnY=loadedY;
+    if(!isInMirrorCave && !isInAbandonedTollhouse && isAtlasBuildingBlockedTile(loadedX, loadedY)){
+      const relocated=findNearestValidPlayerSpawnTile(loadedX, loadedY);
+      if(relocated){
+        spawnX=relocated.x;
+        spawnY=relocated.y;
+        if(DEBUG_MODE) console.info("[Atlas Collision] player_spawn_relocated_from_atlas_blocked_tile from (" + loadedX + "," + loadedY + ") to (" + spawnX + "," + spawnY + ")");
+      }
+    }
+    setPlayerTilePosition(spawnX, spawnY);
     zoneTransitionLockedUntil=0;
     blockedDirectionalKeysUntilRelease.clear();
-    currentZoneId=isInMirrorCave ? "mirror_cave" : (isInAbandonedTollhouse ? "abandoned_tollhouse" : getOutdoorRegionIdAt(loadedX, loadedY));
+    currentZoneId=isInMirrorCave ? "mirror_cave" : (isInAbandonedTollhouse ? "abandoned_tollhouse" : getOutdoorRegionIdAt(spawnX, spawnY));
     lastLoggedZoneEntryId=currentZoneId;
     player.xp=Math.max(0,Math.floor(Number.isFinite(data.player.xp) ? data.player.xp : 0));
     const xpResolvedLevel=getLevelFromXp(player.xp);
@@ -6295,8 +6352,11 @@ function getMovementBlockDiagnostics(x,y){
   const blockingFence=world.fences.find((fence)=>fence.x===x&&fence.y===y);
   const blockingTree=world.trees.find((tree)=>tree.x===x&&tree.y===y);
   const blockingBuilding=world.buildings.find((building)=>{
-    const rect=building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
-    return x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h;
+    return (
+      tileInRect(x,y,building.collision || building.collisionRect || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h }) ||
+      tileInRect(x,y,building.rearExclusionZone) ||
+      (Array.isArray(building.blockedVisualTiles) && building.blockedVisualTiles.some((rect)=>tileInRect(x,y,rect)))
+    );
   });
   const buildingParcel=world.buildings.find((building)=>{
     const rect=building.pathingBounds || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
@@ -6333,6 +6393,7 @@ function getMovementBlockDiagnostics(x,y){
     if(world.pondShore.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
     if(blockingFence){ causes.push("fence"); sourceFlags.fence=true; }
     if(blockingTree){ causes.push("terrain"); sourceFlags.terrain=true; }
+    if(world.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
     if(blockingBuilding){ causes.push("building"); sourceFlags.building=true; }
   }
   if(buildingParcel){ sourceFlags.parcel=true; }
@@ -6968,6 +7029,11 @@ function drawCollisionOverlay(){
   entityRects.forEach((rect)=>drawWorldRect(rect, rect.stroke, rect.fill));
   if(ATLAS_DEBUG_MODE){
     drawWorldRect({ x:player.x, y:player.y, w:1, h:1 }, "rgba(120,255,225,0.95)", null);
+    const playerTileDiag=getMovementBlockDiagnostics(player.targetX, player.targetY);
+    const playerTileScreen=tileToScreen(player.targetX, player.targetY);
+    ctx.fillStyle=playerTileDiag.walkable ? "rgba(131,255,169,0.95)" : "rgba(255,128,128,0.98)";
+    ctx.font="11px monospace";
+    ctx.fillText(playerTileDiag.walkable ? "walkable" : "blocked", playerTileScreen.x+2, playerTileScreen.y-4);
   }
   ctx.restore();
 }
