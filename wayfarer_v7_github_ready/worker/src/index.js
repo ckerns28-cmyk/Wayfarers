@@ -2309,7 +2309,7 @@ function drawMissingSpritePlaceholder(dx,dy,dw,dh,label="MISSING"){
   ctx.fillStyle="rgba(93,35,35,.52)";
   ctx.fillRect(dx,dy,width,height);
   ctx.strokeStyle="rgba(255,210,210,.82)";
-  ctx.lineWidth=1;
+  ctx.lineWidth=2;
   ctx.strokeRect(dx+0.5,dy+0.5,width-1,height-1);
   ctx.beginPath();
   ctx.moveTo(dx+2,dy+2);
@@ -2430,7 +2430,7 @@ function drawAtlasDebugPreview(){
       }
       if(atlasDebugPreview.showCrops){
         ctx.strokeStyle="rgba(255,112,112,.95)";
-        ctx.lineWidth=1;
+        ctx.lineWidth=2;
         const spriteEntries=atlasId==="buildings"
           ? world.buildings.slice(0,4).map((b)=>{ const id=getBuildingSpriteId(b); return [id, atlasManifests.buildings.sprites[id]]; }).filter((entry)=>entry[0]&&entry[1])
           : Object.entries(atlasManifests.props.sprites).slice(0,4);
@@ -2459,9 +2459,54 @@ function maybeLogBuildingRenderSummary(){
   const summaryToken=[atlasIds.join(","),fallbackEntries.join(","),pendingEntries.join(",")].join("|");
   if(buildingRenderDiagnostics.lastSummaryToken===summaryToken) return;
   buildingRenderDiagnostics.lastSummaryToken=summaryToken;
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(","));
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + [...missingAssetWarnings].join(",") + " manifest_status=buildings:" + (atlasRuntimeInfo.buildings?.manifestReady===true ? "ready" : "pending") + ",props:" + (atlasRuntimeInfo.props?.manifestReady===true ? "ready" : "pending") + " atlas_image_status=buildings:" + (atlasRuntimeInfo.buildings?.loaded===true ? "loaded" : (atlasRuntimeInfo.buildings?.imageOnerrorFired ? "error" : "pending")) + ",props:" + (atlasRuntimeInfo.props?.loaded===true ? "loaded" : (atlasRuntimeInfo.props?.imageOnerrorFired ? "error" : "pending")) + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
 }
 
+
+function getRectCenterTile(rect){
+  if(!rect) return null;
+  return { x:Math.floor(rect.x + Math.max(0, rect.w-1)/2), y:Math.floor(rect.y + Math.max(0, rect.h-1)/2) };
+}
+function getHeroFrontageDiagnostics(){
+  const heroIds=["b_inn_tavern","b_mercantile","b_village_hall"];
+  const rows=[];
+  heroIds.forEach((id)=>{
+    const building=world.buildings.find((b)=>b.id===id);
+    if(!building) return;
+    const door=building.frontDoorTile || getRectCenterTile(building.interaction || building.interactRect);
+    const frontageBand=building.frontWalkBand || (door ? { x:door.x-1, y:door.y, w:3, h:1 } : null);
+    const adjacencyTiles=[];
+    if(frontageBand){
+      for(let fx=frontageBand.x; fx<frontageBand.x+frontageBand.w; fx++){
+        for(let fy=frontageBand.y; fy<frontageBand.y+frontageBand.h; fy++) adjacencyTiles.push({x:fx,y:fy});
+      }
+    }
+    const playerCanStandAdjacent=adjacencyTiles.some((tile)=>getMovementBlockDiagnostics(tile.x,tile.y).blocked!==true);
+    const npcBlockingFrontage=adjacencyTiles.some((tile)=>namedVillageNpcs.some((npc)=>npc.targetX===tile.x&&npc.targetY===tile.y));
+    const roadConnected=adjacencyTiles.some((tile)=>world.roadTiles.has(keyOf(tile.x,tile.y)));
+    rows.push({
+      id:building.id,
+      door,
+      frontageBand,
+      interactionRect:building.interaction || building.interactRect || null,
+      collisionRect:building.collision || null,
+      playerCanStandAdjacent,
+      npcBlockingFrontage,
+      roadConnected
+    });
+  });
+  return rows;
+}
+let lastFrontageAuditToken="";
+function maybeEmitFrontageAudit(){
+  if(!ATLAS_DEBUG_MODE && !showCollisionOverlay) return;
+  const rows=getHeroFrontageDiagnostics();
+  const token=JSON.stringify(rows);
+  if(token===lastFrontageAuditToken) return;
+  lastFrontageAuditToken=token;
+  const line=rows.map((row)=>row.id+" door=("+(row.door?.x??"?")+","+(row.door?.y??"?")+") interaction="+formatRect(row.interactionRect)+" collision="+formatRect(row.collisionRect)+" player_adjacent="+row.playerCanStandAdjacent+" npc_blocking="+row.npcBlockingFrontage+" road_connected="+row.roadConnected).join(" | ");
+  console.info("[Frontage QA] "+line);
+}
 function isBuildingAtlasPendingReason(reason){
   if(reason!=="asset_not_loaded" && reason!=="sheet_not_complete") return false;
   const runtime=atlasRuntimeInfo.buildings;
@@ -6860,6 +6905,7 @@ addEventListener("keydown",(e)=>{
   if(k==="v" || e.code==="KeyV"){
     showCollisionOverlay=!showCollisionOverlay;
     collisionOverlayToastUntil=performance.now()+900;
+    console.info("[Debug] Collision Overlay " + (showCollisionOverlay ? "ON" : "OFF"));
     if(SAVE_DEBUG_MODE) console.info("[Collision Overlay] " + (showCollisionOverlay ? "ON" : "OFF"));
   }
   if(k==="escape" && worldInfoPanel) closeWorldInfoPanel();
@@ -7267,7 +7313,7 @@ function drawWolf(wolf,tx,ty,facing,moving,scale,hitAlpha,recoil){
 function hitVisualAlpha(e){ const now=performance.now(); if(now>=e.hitUntil) return 0; const left=e.hitUntil-now; const base=Math.min(.52,.2+left/300); const flick=now<e.hitFlickerUntil&&Math.floor(now/36)%2===0?.24:0; return Math.max(0,base+flick); }
 function attackPose(entity){ const now=performance.now(); const total=350; const left=Math.max(0,entity.attackUntil-now); if(left<=0) return {active:false,thrust:0}; const t=(total-left)/total; return {active:true,thrust:Math.sin(t*Math.PI)*3.5}; }
 
-function drawAlignmentGrid(){ const cam=getCamera(); const sx=cam.offsetX, sy=cam.offsetY, ex=sx+VIEW_TILES_X*TILE, ey=sy+VIEW_TILES_Y*TILE; ctx.save(); ctx.strokeStyle="rgba(221,233,255,.16)"; ctx.lineWidth=1; ctx.beginPath(); for(let x=0;x<=VIEW_TILES_X;x++){ const px=sx+x*TILE+.5; ctx.moveTo(px,sy); ctx.lineTo(px,ey);} for(let y=0;y<=VIEW_TILES_Y;y++){ const py=sy+y*TILE+.5; ctx.moveTo(sx,py); ctx.lineTo(ex,py);} ctx.stroke(); ctx.restore(); }
+function drawAlignmentGrid(){ const cam=getCamera(); const sx=cam.offsetX, sy=cam.offsetY, ex=sx+VIEW_TILES_X*TILE, ey=sy+VIEW_TILES_Y*TILE; ctx.save(); ctx.strokeStyle="rgba(221,233,255,.16)"; ctx.lineWidth=2; ctx.beginPath(); for(let x=0;x<=VIEW_TILES_X;x++){ const px=sx+x*TILE+.5; ctx.moveTo(px,sy); ctx.lineTo(px,ey);} for(let y=0;y<=VIEW_TILES_Y;y++){ const py=sy+y*TILE+.5; ctx.moveTo(sx,py); ctx.lineTo(ex,py);} ctx.stroke(); ctx.restore(); }
 function drawCollisionOverlay(){
   const cam=getCamera();
   ctx.save();
@@ -7282,7 +7328,7 @@ function drawCollisionOverlay(){
           : isOverworldTerrainBlocked(x,y));
       const blockedByObject=isWorldObjectBlockingTile(x,y);
       if(tileBlocked || blockedByObject) ctx.fillStyle=blockedByObject ? "rgba(166,85,218,0.36)" : "rgba(220,76,76,0.28)";
-      else ctx.fillStyle="rgba(64,186,116,0.14)";
+      else ctx.fillStyle="rgba(64,186,116,0.24)";
       ctx.fillRect(p.x,p.y,TILE,TILE);
     }
   }
@@ -7295,7 +7341,7 @@ function drawCollisionOverlay(){
     }
     if(stroke){
       ctx.strokeStyle=stroke;
-      ctx.lineWidth=1;
+      ctx.lineWidth=2;
       ctx.strokeRect(p.x+0.5, p.y+0.5, rect.w*TILE-1, rect.h*TILE-1);
     }
   };
@@ -7364,7 +7410,7 @@ function drawCollisionOverlayToast(now){
   ctx.fillStyle="rgba(0,0,0,0.76)";
   ctx.fillRect(12, 12, 196, 24);
   ctx.strokeStyle=showCollisionOverlay ? "rgba(132,244,171,0.95)" : "rgba(255,170,170,0.95)";
-  ctx.lineWidth=1;
+  ctx.lineWidth=2;
   ctx.strokeRect(12.5, 12.5, 195, 23);
   ctx.fillStyle=showCollisionOverlay ? "rgba(162,255,196,0.98)" : "rgba(255,198,198,0.98)";
   ctx.font="12px ui-monospace, monospace";
@@ -7958,6 +8004,7 @@ function drawWorld(){
   drawTransitionFade(now);
   drawFloatingTexts(now);
   maybeLogBuildingRenderSummary();
+  maybeEmitFrontageAudit();
   drawDecorSourceLabels();
   emitDecorSuppressionDebugReport();
   flushDecorSourceTraceFrame();
