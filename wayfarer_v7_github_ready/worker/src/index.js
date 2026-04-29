@@ -3256,35 +3256,36 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  // Hand-authored Hearthvale Square layout (Phase 32AA.2E)
+  // Hand-authored Hearthvale Square layout (Phase 32AA.2F)
   // Main commercial street running east-west above the harborfront.
-  { x:5,y:13,w:30,h:1 },
-  { x:7,y:12,w:26,h:1 },
+  { x:8,y:12,w:23,h:1 },
+  { x:9,y:13,w:21,h:1 },
   // Hero storefront thresholds tied into the same street spine.
-  { x:12,y:10,w:1,h:4 },
-  { x:20,y:10,w:1,h:4 },
-  // Civic rise approach from the commercial street to village hall.
-  { x:16,y:13,w:1,h:7 },
-  { x:13,y:19,w:7,h:1 },
+  { x:12,y:10,w:1,h:3 },
+  { x:20,y:10,w:1,h:3 },
+  // Civic rise approach from the commercial street to the inland village hall.
+  { x:20,y:8,w:1,h:4 },
+  { x:17,y:8,w:4,h:1 },
   // Inland residential and landward approach lanes.
-  { x:10,y:6,w:16,h:1 },
-  { x:8,y:6,w:1,h:6 },
-  { x:27,y:6,w:1,h:8 },
+  { x:8,y:6,w:23,h:1 },
+  { x:10,y:6,w:1,h:7 },
+  { x:28,y:6,w:1,h:9 },
   // Harborfront service roads and working shoreline circulation.
-  { x:8,y:16,w:24,h:1 },
-  { x:6,y:18,w:24,h:1 },
-  { x:30,y:16,w:1,h:3 }
+  { x:7,y:16,w:27,h:1 },
+  { x:6,y:18,w:28,h:1 },
+  { x:9,y:19,w:24,h:1 },
+  { x:31,y:16,w:1,h:4 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
   { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, visualBounds:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, interactRect:{x:12,y:10,w:1,h:1}, frontDoorTile:{x:12,y:10}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6}, frontWalkBand:{ x:9, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:9, y:6, w:6, h:3 }], occlusionDepthLine:{ x:9, y:9, w:6, h:1 }, rearExclusionZone:{ x:9, y:6, w:6, h:3 } }) },
   { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, visualBounds:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, interactRect:{x:20,y:10,w:1,h:1}, frontDoorTile:{x:20,y:10}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:18, y:6, w:5, h:3 }, { x:18, y:9, w:2, h:1 }, { x:21, y:9, w:2, h:1 }], occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
-  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:13, y:20, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:13,y:20,w:6,h:5}, visualBounds:{x:13,y:20,w:6,h:5}, collision:{x:13,y:23,w:6,h:2}, interaction:{x:16,y:24,w:1,h:1}, interactRect:{x:16,y:24,w:1,h:1}, frontDoorTile:{x:16,y:24}, label:{x:16,y:21,text:"Village Hall"}, pathingBounds:{x:12,y:20,w:8,h:6}, frontWalkBand:{ x:13, y:24, w:6, h:1 }, blockedVisualTiles:[{ x:13, y:20, w:6, h:3 }, { x:13, y:23, w:2, h:1 }, { x:17, y:23, w:2, h:1 }], occlusionDepthLine:{ x:13, y:23, w:6, h:1 }, rearExclusionZone:{ x:13, y:20, w:6, h:3 } }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:17, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:17,y:3,w:6,h:5}, visualBounds:{x:17,y:3,w:6,h:5}, collision:{x:17,y:6,w:6,h:2}, interaction:{x:20,y:7,w:1,h:1}, interactRect:{x:20,y:7,w:1,h:1}, frontDoorTile:{x:20,y:7}, label:{x:20,y:4,text:"Village Hall"}, pathingBounds:{x:16,y:3,w:8,h:6}, frontWalkBand:{ x:17, y:7, w:6, h:1 }, blockedVisualTiles:[{ x:17, y:3, w:6, h:3 }, { x:17, y:6, w:2, h:1 }, { x:21, y:6, w:2, h:1 }], occlusionDepthLine:{ x:17, y:6, w:6, h:1 }, rearExclusionZone:{ x:17, y:3, w:6, h:3 } }) },
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:6, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:6,y:7,w:4,h:4}, collision:{x:6,y:9,w:4,h:2}, interaction:{x:7,y:10,w:1,h:1}, label:{x:7,y:8,text:"Cottage"}, pathingBounds:{x:5,y:7,w:6,h:5} }) },
-  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:28, y:7, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:28,y:7,w:5,h:4}, collision:{x:28,y:9,w:5,h:2}, interaction:{x:30,y:10,w:1,h:1}, label:{x:30,y:8,text:"Residence"}, pathingBounds:{x:27,y:7,w:7,h:5} }) },
-  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:24, y:16, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:24,y:16,w:4,h:4}, collision:{x:24,y:18,w:4,h:2}, interaction:{x:25,y:19,w:1,h:1}, label:{x:25,y:17,text:"Harbor Outfitter"}, pathingBounds:{x:23,y:16,w:6,h:5} }) },
-  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:29, y:17, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:29,y:17,w:5,h:3}, collision:{x:29,y:18,w:5,h:2}, interaction:{x:31,y:19,w:1,h:1}, label:{x:31,y:17,text:"Harbor Shed"}, pathingBounds:{x:28,y:17,w:7,h:4} }) }
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:27, y:7, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:27,y:7,w:5,h:4}, collision:{x:27,y:9,w:5,h:2}, interaction:{x:29,y:10,w:1,h:1}, label:{x:29,y:8,text:"Residence"}, pathingBounds:{x:26,y:7,w:7,h:5} }) },
+  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:10, y:16, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:10,y:16,w:4,h:4}, collision:{x:10,y:18,w:4,h:2}, interaction:{x:11,y:19,w:1,h:1}, label:{x:11,y:17,text:"Dock Warehouse"}, pathingBounds:{x:9,y:16,w:6,h:5} }) },
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:17, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:17,w:5,h:3}, collision:{x:26,y:18,w:5,h:2}, interaction:{x:28,y:19,w:1,h:1}, label:{x:28,y:17,text:"Harbor Shed"}, pathingBounds:{x:25,y:17,w:7,h:4} }) }
 );
 world.buildings.forEach((b)=>{
   const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
@@ -3323,23 +3324,24 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
   }
 }
 
-for(let x=9;x<=26;x++){ world.fences.push({x,y:5}); }
-for(let y=6;y<=10;y++){ world.fences.push({x:26,y}); }
-for(let x=6;x<=11;x++){ world.fences.push({x,y:11}); }
-for(let x=22;x<=27;x++){ world.fences.push({x,y:11}); }
-for(let y=14;y<=16;y++){ world.fences.push({x:33,y}); }
+for(let x=16;x<=23;x++){ world.fences.push({x,y:2}); }
+for(let y=3;y<=6;y++){ world.fences.push({x:16,y}); }
+for(let y=3;y<=6;y++){ world.fences.push({x:23,y}); }
+for(let x=9;x<=14;x++){ world.fences.push({x,y:15}); }
+for(let x=24;x<=32;x++){ world.fences.push({x,y:15}); }
+for(let y=16;y<=19;y++){ world.fences.push({x:33,y}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
   {x:12,y:14,type:"bench"},{x:16,y:14,type:"noticeBoard",layer:"above_entities"},
   {x:19,y:14,type:"well"},{x:22,y:14,type:"handcart"},{x:23,y:14,type:"crate"},
   {x:12,y:12,type:"lanternPost",layer:"above_entities"},{x:20,y:12,type:"lanternPost",layer:"above_entities"},
-  {x:9,y:8,type:"smallGarden"},{x:29,y:8,type:"smallGarden"},{x:26,y:16,type:"barrel"},
-  {x:28,y:16,type:"stonePile"},
+  {x:9,y:8,type:"smallGarden"},{x:28,y:8,type:"smallGarden"},{x:11,y:16,type:"barrel"},
+  {x:13,y:16,type:"stonePile"},{x:27,y:16,type:"crate"},{x:30,y:16,type:"barrel"},
   {x:13,y:6,type:"signPost",layer:"above_entities"},{x:22,y:6,type:"signPost",layer:"above_entities"},
   {x:7,y:12,type:"bush"},{x:25,y:12,type:"bush"},{x:31,y:16,type:"bush"},
   {x:30,y:20,type:"grassTuft"},{x:32,y:20,type:"stonePile"},
-  {x:10,y:4,type:"stonePile"},{x:24,y:4,type:"stonePile"}
+  {x:18,y:2,type:"smallGarden"},{x:22,y:2,type:"smallGarden"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -6456,7 +6458,7 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Phase 32AA.2E status : harbor-town structure active; Hearthvale is being reframed as Gandon's Newport-style harbor town; production readiness not yet passed\n" +
+      "Phase 32AA.2F status : harbor-town structure active; village hall restored inland as civic anchor; production readiness not yet passed\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
