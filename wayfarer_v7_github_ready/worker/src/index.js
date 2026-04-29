@@ -3264,8 +3264,8 @@ world.roads.push(
   { x:12,y:10,w:1,h:3 },
   { x:20,y:10,w:1,h:3 },
   // Civic rise approach from the commercial street to the inland village hall.
-  { x:20,y:8,w:1,h:4 },
-  { x:17,y:8,w:4,h:1 },
+  { x:27,y:7,w:1,h:5 },
+  { x:20,y:7,w:8,h:1 },
   // Inland residential and landward approach lanes.
   { x:8,y:6,w:23,h:1 },
   { x:10,y:6,w:1,h:7 },
@@ -3281,7 +3281,7 @@ world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y+
 world.buildings.push(
   { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, visualBounds:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, interactRect:{x:12,y:10,w:1,h:1}, frontDoorTile:{x:12,y:10}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6}, frontWalkBand:{ x:9, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:9, y:6, w:6, h:3 }], occlusionDepthLine:{ x:9, y:9, w:6, h:1 }, rearExclusionZone:{ x:9, y:6, w:6, h:3 } }) },
   { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, visualBounds:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, interactRect:{x:20,y:10,w:1,h:1}, frontDoorTile:{x:20,y:10}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:18, y:6, w:5, h:3 }, { x:18, y:9, w:2, h:1 }, { x:21, y:9, w:2, h:1 }], occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
-  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:17, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:17,y:3,w:6,h:5}, visualBounds:{x:17,y:3,w:6,h:5}, collision:{x:17,y:6,w:6,h:2}, interaction:{x:20,y:7,w:1,h:1}, interactRect:{x:20,y:7,w:1,h:1}, frontDoorTile:{x:20,y:7}, label:{x:20,y:4,text:"Village Hall"}, pathingBounds:{x:16,y:3,w:8,h:6}, frontWalkBand:{ x:17, y:7, w:6, h:1 }, blockedVisualTiles:[{ x:17, y:3, w:6, h:3 }, { x:17, y:6, w:2, h:1 }, { x:21, y:6, w:2, h:1 }], occlusionDepthLine:{ x:17, y:6, w:6, h:1 }, rearExclusionZone:{ x:17, y:3, w:6, h:3 } }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:24, y:2, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:24,y:2,w:6,h:5}, visualBounds:{x:24,y:2,w:6,h:5}, collision:{x:24,y:5,w:6,h:2}, interaction:{x:27,y:6,w:1,h:1}, interactRect:{x:27,y:6,w:1,h:1}, frontDoorTile:{x:27,y:6}, label:{x:27,y:3,text:"Village Hall"}, pathingBounds:{x:23,y:2,w:8,h:6}, frontWalkBand:{ x:24, y:6, w:6, h:1 }, blockedVisualTiles:[{ x:24, y:2, w:6, h:3 }, { x:24, y:5, w:2, h:1 }, { x:28, y:5, w:2, h:1 }], occlusionDepthLine:{ x:24, y:5, w:6, h:1 }, rearExclusionZone:{ x:24, y:2, w:6, h:3 } }) },
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:6, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:6,y:7,w:4,h:4}, collision:{x:6,y:9,w:4,h:2}, interaction:{x:7,y:10,w:1,h:1}, label:{x:7,y:8,text:"Cottage"}, pathingBounds:{x:5,y:7,w:6,h:5} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:27, y:7, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:27,y:7,w:5,h:4}, collision:{x:27,y:9,w:5,h:2}, interaction:{x:29,y:10,w:1,h:1}, label:{x:29,y:8,text:"Residence"}, pathingBounds:{x:26,y:7,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:10, y:16, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:10,y:16,w:4,h:4}, collision:{x:10,y:18,w:4,h:2}, interaction:{x:11,y:19,w:1,h:1}, label:{x:11,y:17,text:"Dock Warehouse"}, pathingBounds:{x:9,y:16,w:6,h:5} }) },
