@@ -7698,6 +7698,7 @@ function drawWorld(){
 
   const renderQueue=[...buildingDrawEntries, ...entityDrawEntries]
     .sort((a,b)=>a.worldAnchorY-b.worldAnchorY);
+  const propsAbove=(Array.isArray(world.props) ? world.props : []).filter((prop)=>prop?.layer==="above_entities");
 
   renderQueue.forEach((entry, drawOrderRank)=>{
     if(entry.type!=="building"){
