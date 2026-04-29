@@ -3324,9 +3324,9 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
   }
 }
 
-for(let x=16;x<=23;x++){ world.fences.push({x,y:2}); }
-for(let y=3;y<=6;y++){ world.fences.push({x:16,y}); }
-for(let y=3;y<=6;y++){ world.fences.push({x:23,y}); }
+for(let x=16;x<=20;x++){ world.fences.push({x,y:2}); } // garden plot north fence — stops at x=20 to clear village hall (x=21..26)
+for(let y=3;y<=6;y++){ world.fences.push({x:16,y}); }   // garden plot west fence
+for(let y=3;y<=6;y++){ world.fences.push({x:20,y}); }   // garden plot east fence — moved from x=23 so village hall isn't sitting on it
 for(let x=9;x<=14;x++){ world.fences.push({x,y:15}); }
 for(let x=24;x<=32;x++){ world.fences.push({x,y:15}); }
 for(let y=16;y<=19;y++){ world.fences.push({x:33,y}); }
@@ -3338,10 +3338,10 @@ world.props.push(
   {x:12,y:12,type:"lanternPost",layer:"above_entities"},{x:20,y:12,type:"lanternPost",layer:"above_entities"},
   {x:9,y:8,type:"smallGarden"},{x:28,y:8,type:"smallGarden"},{x:11,y:16,type:"barrel"},
   {x:13,y:16,type:"stonePile"},{x:27,y:16,type:"crate"},{x:30,y:16,type:"barrel"},
-  {x:13,y:6,type:"signPost",layer:"above_entities"},{x:22,y:6,type:"signPost",layer:"above_entities"},
+  {x:13,y:6,type:"signPost",layer:"above_entities"},
   {x:7,y:12,type:"bush"},{x:25,y:12,type:"bush"},{x:31,y:16,type:"bush"},
   {x:30,y:20,type:"grassTuft"},{x:32,y:20,type:"stonePile"},
-  {x:18,y:2,type:"smallGarden"},{x:22,y:2,type:"smallGarden"}
+  {x:18,y:2,type:"smallGarden"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
