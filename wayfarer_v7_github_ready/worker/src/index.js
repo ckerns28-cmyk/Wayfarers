@@ -3256,22 +3256,26 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
+  // Hand-authored Hearthvale Square layout (Phase 32AA.2C)
+  // Main horizontal town road through the hero-building square.
   { x:8,y:11,w:23,h:1 },
-  { x:16,y:4,w:1,h:16 },
-  { x:10,y:8,w:15,h:1 },
-  { x:9,y:18,w:22,h:1 },
-  { x:11,y:10,w:3,h:1 },
+  // Tavern frontage/apron aligned to porch and front door.
+  { x:10,y:10,w:5,h:1 },
   { x:12,y:10,w:1,h:2 },
+  // Mercantile storefront approach kept simple/readable.
   { x:19,y:10,w:3,h:1 },
   { x:20,y:10,w:1,h:2 },
-  { x:13,y:16,w:3,h:1 },
-  { x:13,y:17,w:3,h:1 },
-  { x:14,y:11,w:1,h:5 },
+  // Village hall centered civic approach and apron/plaza.
+  { x:14,y:11,w:1,h:7 },
+  { x:12,y:17,w:5,h:1 },
+  { x:12,y:18,w:5,h:1 },
+  // Intentional north/south support links only where composition needs it.
+  { x:16,y:4,w:1,h:7 },
   { x:24,y:11,w:1,h:8 },
-  { x:28,y:15,w:1,h:8 },
+  { x:24,y:16,w:2,h:1 },
   { x:24,y:18,w:7,h:1 },
-  { x:28,y:18,w:1,h:5 },
-  { x:24,y:16,w:2,h:1 }
+  { x:28,y:15,w:1,h:8 },
+  { x:28,y:18,w:1,h:5 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
