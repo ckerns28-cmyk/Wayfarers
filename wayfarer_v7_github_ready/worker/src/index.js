@@ -3261,11 +3261,11 @@ world.roads.push(
   { x:8,y:12,w:23,h:1 },
   { x:9,y:13,w:21,h:1 },
   // Hero storefront thresholds tied into the same street spine.
-  { x:12,y:10,w:1,h:3 },
-  { x:20,y:10,w:1,h:3 },
+  { x:13,y:10,w:1,h:3 },
+  { x:21,y:10,w:1,h:3 },
   // Civic rise approach from the commercial street to the inland village hall.
-  { x:20,y:8,w:1,h:4 },
-  { x:17,y:8,w:4,h:1 },
+  { x:24,y:8,w:1,h:5 },
+  { x:20,y:8,w:5,h:1 },
   // Inland residential and landward approach lanes.
   { x:8,y:6,w:23,h:1 },
   { x:10,y:6,w:1,h:7 },
@@ -3279,10 +3279,10 @@ world.roads.push(
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, visualBounds:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, interactRect:{x:12,y:10,w:1,h:1}, frontDoorTile:{x:12,y:10}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6}, frontWalkBand:{ x:9, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:9, y:6, w:6, h:3 }], occlusionDepthLine:{ x:9, y:9, w:6, h:1 }, rearExclusionZone:{ x:9, y:6, w:6, h:3 } }) },
-  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, visualBounds:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, interactRect:{x:20,y:10,w:1,h:1}, frontDoorTile:{x:20,y:10}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:18, y:6, w:5, h:3 }, { x:18, y:9, w:2, h:1 }, { x:21, y:9, w:2, h:1 }], occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
-  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:17, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:17,y:3,w:6,h:5}, visualBounds:{x:17,y:3,w:6,h:5}, collision:{x:17,y:6,w:6,h:2}, interaction:{x:20,y:7,w:1,h:1}, interactRect:{x:20,y:7,w:1,h:1}, frontDoorTile:{x:20,y:7}, label:{x:20,y:4,text:"Village Hall"}, pathingBounds:{x:16,y:3,w:8,h:6}, frontWalkBand:{ x:17, y:7, w:6, h:1 }, blockedVisualTiles:[{ x:17, y:3, w:6, h:3 }, { x:17, y:6, w:2, h:1 }, { x:21, y:6, w:2, h:1 }], occlusionDepthLine:{ x:17, y:6, w:6, h:1 }, rearExclusionZone:{ x:17, y:3, w:6, h:3 } }) },
-  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:6, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:6,y:7,w:4,h:4}, collision:{x:6,y:9,w:4,h:2}, interaction:{x:7,y:10,w:1,h:1}, label:{x:7,y:8,text:"Cottage"}, pathingBounds:{x:5,y:7,w:6,h:5} }) },
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:10, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:10,y:6,w:6,h:5}, visualBounds:{x:10,y:6,w:6,h:5}, collision:{x:10,y:9,w:6,h:2}, interaction:{x:13,y:10,w:1,h:1}, interactRect:{x:13,y:10,w:1,h:1}, frontDoorTile:{x:13,y:10}, label:{x:13,y:7,text:"Inn & Tavern"}, pathingBounds:{x:9,y:6,w:8,h:6}, frontWalkBand:{ x:10, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:10, y:6, w:6, h:3 }], occlusionDepthLine:{ x:10, y:9, w:6, h:1 }, rearExclusionZone:{ x:10, y:6, w:6, h:3 } }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:19, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:19,y:6,w:5,h:5}, visualBounds:{x:19,y:6,w:5,h:5}, collision:{x:19,y:9,w:5,h:1}, interaction:{x:21,y:10,w:1,h:1}, interactRect:{x:21,y:10,w:1,h:1}, frontDoorTile:{x:21,y:10}, label:{x:21,y:7,text:"Mercantile Shop"}, pathingBounds:{x:18,y:6,w:7,h:6}, frontWalkBand:{ x:19, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:19, y:6, w:5, h:3 }, { x:19, y:9, w:2, h:1 }, { x:22, y:9, w:2, h:1 }], occlusionDepthLine:{ x:19, y:9, w:5, h:1 }, rearExclusionZone:{ x:19, y:6, w:5, h:3 } }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:21, y:2, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:21,y:2,w:6,h:5}, visualBounds:{x:21,y:2,w:6,h:5}, collision:{x:21,y:5,w:6,h:2}, interaction:{x:24,y:6,w:1,h:1}, interactRect:{x:24,y:6,w:1,h:1}, frontDoorTile:{x:24,y:6}, label:{x:24,y:3,text:"Village Hall"}, pathingBounds:{x:20,y:2,w:8,h:6}, frontWalkBand:{ x:21, y:6, w:6, h:1 }, blockedVisualTiles:[{ x:21, y:2, w:6, h:3 }, { x:21, y:5, w:2, h:1 }, { x:25, y:5, w:2, h:1 }], occlusionDepthLine:{ x:21, y:5, w:6, h:1 }, rearExclusionZone:{ x:21, y:2, w:6, h:3 } }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:7,w:4,h:4}, collision:{x:4,y:9,w:4,h:2}, interaction:{x:5,y:10,w:1,h:1}, label:{x:5,y:8,text:"Cottage"}, pathingBounds:{x:3,y:7,w:6,h:5} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:27, y:7, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:27,y:7,w:5,h:4}, collision:{x:27,y:9,w:5,h:2}, interaction:{x:29,y:10,w:1,h:1}, label:{x:29,y:8,text:"Residence"}, pathingBounds:{x:26,y:7,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:10, y:16, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:10,y:16,w:4,h:4}, collision:{x:10,y:18,w:4,h:2}, interaction:{x:11,y:19,w:1,h:1}, label:{x:11,y:17,text:"Dock Warehouse"}, pathingBounds:{x:9,y:16,w:6,h:5} }) },
   { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:17, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:17,w:5,h:3}, collision:{x:26,y:18,w:5,h:2}, interaction:{x:28,y:19,w:1,h:1}, label:{x:28,y:17,text:"Harbor Shed"}, pathingBounds:{x:25,y:17,w:7,h:4} }) }
@@ -6458,7 +6458,7 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Phase 32AA.2F status : harbor-town structure active; village hall restored inland as civic anchor; production readiness not yet passed\n" +
+      "Phase 32AA.2F status : spatial deconfliction active; Hearthvale harbor-town structure is being refined; production readiness not yet passed\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
