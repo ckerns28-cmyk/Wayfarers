@@ -7587,6 +7587,7 @@ function drawWorld(){
     const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
     return { type:"building", b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, worldAnchorY, drawX, drawY };
   });
+  const buildingSortDebugRows=[];
 
   const entityDrawEntries=[
     { type:"npc", id:npc.id, worldAnchorY:npc.py, draw:()=>{
@@ -7652,13 +7653,7 @@ function drawWorld(){
       metadataSource:sprite?.metadataSource || "index"
     };
     buildingSortDebugRows.push(buildingSortDebug);
-    renderQueue.push({
-      type:"building",
-      id:b.id,
-      sortY:buildingSortY,
-      tieBreak:bIndex,
-      draw:()=>{
-        if(!didDraw){
+    if(!didDraw){
       const fallbackReason=spriteFailureReason || (drawDimensionsAreFinite ? "draw_failed" : "invalid_draw_position");
       warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
@@ -7765,6 +7760,7 @@ function drawWorld(){
       ty:hostile.py/TILE,
       priority:hostile===currentTarget ? 4 : 1
     }));
+  const zoneLabelEntries=[];
   drawWorldLabels([
     {text:Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5 ? npc.name : "", tx:npc.x, ty:npc.y, priority:3},
     {text:Math.abs(player.targetX-hunterNpc.x)+Math.abs(player.targetY-hunterNpc.y)<=5 ? hunterNpc.displayLabel : "", tx:hunterNpc.x, ty:hunterNpc.y, priority:3},
