@@ -5376,6 +5376,69 @@ function repairSave(save){
   }
   return { save:repaired, changed, warnings };
 }
+
+function getSaveInventoryCount(save){
+  const inventory=save?.player?.inventory;
+  if(!Array.isArray(inventory)) return 0;
+  return inventory.reduce((sum,entry)=>sum+Math.max(0, Math.floor(Number.isFinite(entry?.quantity) ? entry.quantity : 0)),0);
+}
+function getSaveCompletedQuestCount(save){
+  if(Array.isArray(save?.quests?.completedQuests)) return save.quests.completedQuests.length;
+  if(Array.isArray(save?.quests?.questStates)) return save.quests.questStates.filter((entry)=>entry?.state===QuestState.COMPLETED).length;
+  return 0;
+}
+function getSaveCurrentQuest(save){
+  if(Array.isArray(save?.quests?.activeQuests) && save.quests.activeQuests[0]) return save.quests.activeQuests[0];
+  if(Array.isArray(save?.quests?.questStates)){
+    const activeEntry=save.quests.questStates.find((entry)=>entry?.state===QuestState.ACTIVE);
+    if(activeEntry?.id) return activeEntry.id;
+  }
+  return null;
+}
+function computeSaveRichnessScore(save){
+  const level=Math.max(1, Math.floor(Number.isFinite(save?.player?.level) ? save.player.level : 1));
+  const xp=Math.max(0, Math.floor(Number.isFinite(save?.player?.xp) ? save.player.xp : 0));
+  const coins=Math.max(0, Math.floor(Number.isFinite(save?.player?.coins) ? save.player.coins : 0));
+  const inventoryCount=getSaveInventoryCount(save);
+  const completedQuestCount=getSaveCompletedQuestCount(save);
+  return (level*1000000) + (xp*100) + (completedQuestCount*10000) + (inventoryCount*1000) + coins;
+}
+function analyzeSaveSlot(key){
+  const raw=localStorage.getItem(key);
+  const result={ key, found:Boolean(raw), parseSuccess:false, valid:false, level:null, xp:null, coins:null, inventoryCount:null, currentQuest:null, completedQuestCount:null, version:null, saveSchemaVersion:null, savedAt:null, richnessScore:null, parseError:null };
+  if(!raw) return result;
+  try {
+    const parsed=JSON.parse(raw);
+    result.parseSuccess=true;
+    const migrated=repairSave(migrateSave(parsed)).save;
+    result.valid=validateSaveData(migrated);
+    result.level=Math.max(1, Math.floor(Number.isFinite(migrated?.player?.level) ? migrated.player.level : 1));
+    result.xp=Math.max(0, Math.floor(Number.isFinite(migrated?.player?.xp) ? migrated.player.xp : 0));
+    result.coins=Math.max(0, Math.floor(Number.isFinite(migrated?.player?.coins) ? migrated.player.coins : 0));
+    result.inventoryCount=getSaveInventoryCount(migrated);
+    result.currentQuest=getSaveCurrentQuest(migrated);
+    result.completedQuestCount=getSaveCompletedQuestCount(migrated);
+    result.version=Number.isInteger(parsed?.version) ? parsed.version : (Number.isInteger(migrated?.version) ? migrated.version : null);
+    result.saveSchemaVersion=Number.isInteger(parsed?.saveSchemaVersion) ? parsed.saveSchemaVersion : (Number.isInteger(migrated?.saveSchemaVersion) ? migrated.saveSchemaVersion : null);
+    result.savedAt=typeof parsed?.savedAt==='string' ? parsed.savedAt : (typeof migrated?.savedAt==='string' ? migrated.savedAt : null);
+    result.richnessScore=result.valid ? computeSaveRichnessScore(migrated) : null;
+  } catch(err){
+    result.parseError=String(err?.message || err || 'parse_failed');
+  }
+  return result;
+}
+function getAllSaveSlotDiagnostics(){
+  return [SAVE_KEY, SAVE_BACKUP_KEY, ...LEGACY_SAVE_KEYS].map((key)=>analyzeSaveSlot(key));
+}
+function findRichestValidSave(diagnostics){
+  let richest=null;
+  diagnostics.forEach((entry)=>{
+    if(!entry.valid || !Number.isFinite(entry.richnessScore)) return;
+    if(!richest || entry.richnessScore>richest.richnessScore) richest=entry;
+  });
+  return richest;
+}
+
 function createSaveData(reason){
   updateOutdoorRegionFromPosition(false);
   syncMirrorCaveChestState(false);
@@ -5481,6 +5544,13 @@ function validateSaveData(data){
 function saveGame(reason){
   try {
     const payload=createSaveData(reason);
+    const payloadRichness=computeSaveRichnessScore(payload);
+    const slots=getAllSaveSlotDiagnostics();
+    const richest=findRichestValidSave(slots);
+    if(richest && payloadRichness<richest.richnessScore){
+      if(SAVE_DEBUG_MODE) console.warn("[Save Debug] OVERWRITE_PROTECTED_RICHER_SAVE_EXISTS", { attemptedKey:SAVE_KEY, attemptedRichness:payloadRichness, richestKey:richest.key, richestScore:richest.richnessScore });
+      return;
+    }
     const existingRaw=localStorage.getItem(SAVE_KEY);
     if(existingRaw) localStorage.setItem(SAVE_BACKUP_KEY, existingRaw);
     localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
@@ -5506,6 +5576,12 @@ function loadGame(){
   saveDiagnostics.loadedFromKey=raw ? loadedKey : null;
   saveDiagnostics.saveFound=Boolean(raw);
   saveDiagnostics.backupFound=Boolean(localStorage.getItem(SAVE_BACKUP_KEY));
+  const slotDiagnostics=getAllSaveSlotDiagnostics();
+  const activeSlot=slotDiagnostics.find((entry)=>entry.key===SAVE_KEY) || null;
+  const richestSlot=findRichestValidSave(slotDiagnostics);
+  if(SAVE_DEBUG_MODE && activeSlot?.valid && richestSlot && richestSlot.key!==SAVE_KEY && Number.isFinite(activeSlot.richnessScore) && activeSlot.richnessScore<richestSlot.richnessScore){
+    console.warn("[Save Debug] RICHER_SAVE_AVAILABLE", { activeKey:SAVE_KEY, activeRichness:activeSlot.richnessScore, richerKey:richestSlot.key, richerRichness:richestSlot.richnessScore });
+  }
   if(!raw){
     saveDiagnostics.fallbackDefaultUsed=true;
     return false;
@@ -7987,6 +8063,12 @@ bootDiagnostics.worldInitialized=true;
 bootDiagnostics.saveLoadStatus=loadedFromSave ? "loaded" : "default_fallback";
 if(SAVE_DEBUG_MODE){
   const activeQuest=questSystem.getActiveQuestIds?.()[0] || null;
+  const saveSlotDiagnostics=getAllSaveSlotDiagnostics();
+  const activeSlot=saveSlotDiagnostics.find((entry)=>entry.key===SAVE_KEY) || null;
+  const backupSlot=saveSlotDiagnostics.find((entry)=>entry.key===SAVE_BACKUP_KEY) || null;
+  const legacySlots=saveSlotDiagnostics.filter((entry)=>LEGACY_SAVE_KEYS.includes(entry.key));
+  const richestSlot=findRichestValidSave(saveSlotDiagnostics);
+  const activeAppearsDefaultLike=Boolean(activeSlot?.valid && activeSlot.level===1 && activeSlot.xp===0 && activeSlot.inventoryCount<=1 && !activeSlot.currentQuest && (activeSlot.completedQuestCount||0)===0);
   const saveDebugBundle={
     activeSaveKey:SAVE_KEY,
     backupSaveKey:SAVE_BACKUP_KEY,
@@ -8003,10 +8085,21 @@ if(SAVE_DEBUG_MODE){
     xp:player.xp,
     inventoryCount:Array.isArray(player.inventory) ? player.inventory.reduce((sum,item)=>sum+Math.max(0,Math.floor(item?.quantity||0)),0) : 0,
     currentQuest:activeQuest,
-    loadResult:loadedFromSave
+    loadResult:loadedFromSave,
+    activeSaveValid:Boolean(activeSlot?.valid),
+    backupSaveValid:Boolean(backupSlot?.valid),
+    legacySaveValid:legacySlots.some((entry)=>entry.valid),
+    richestSaveKey:richestSlot?.key || null,
+    activeAppearsOverwrittenOrDefaultLike:activeAppearsDefaultLike,
+    overwriteProtectionAdded:true,
+    restorationPerformed:false,
+    diagnosticOnly:true
   };
   console.groupCollapsed("[Save Debug] Runtime save diagnostics");
   console.table(saveDebugBundle);
+  console.table(saveSlotDiagnostics.map((entry)=>(
+    { key:entry.key, found:entry.found, parseSuccess:entry.parseSuccess, valid:entry.valid, level:entry.level, xp:entry.xp, coins:entry.coins, inventoryCount:entry.inventoryCount, currentQuest:entry.currentQuest, completedQuestCount:entry.completedQuestCount, version:entry.version, saveSchemaVersion:entry.saveSchemaVersion, savedAt:entry.savedAt, richnessScore:entry.richnessScore, parseError:entry.parseError }
+  )));
   console.info("[Save Debug]", saveDebugBundle);
   console.groupEnd();
 }
