@@ -2633,6 +2633,38 @@ function emitBuildingAtlasCropAuditIfReady(){
 // per-secondary-role suitability ranking. Output goes to console as
 // [Atlas Catalog Scan] — never affects render path or game state.
 let atlasCatalogScanEmitted=false;
+const atlasCatalogScanState={
+  emitted:false,
+  timestamp:null,
+  sheetSize:null,
+  totalCandidates:0,
+  cleanCandidates:0,
+  blockedCandidates:0,
+  candidates:[],
+  roleReport:[],
+  promotableRoles:[],
+  stalledRoles:[]
+};
+function describeSecondaryRoleFit(roleId,candidate){
+  const box=candidate.boundingBox;
+  if(roleId==="residence_small"){
+    if(box.w<=280&&box.h<=320) return "good_size_for_cottage_or_small_home";
+    return "outside_residence_small_size_window";
+  }
+  if(roleId==="residence_large"){
+    if(box.w<=420&&box.h<=380) return "good_size_for_large_residence";
+    return "outside_residence_large_size_window";
+  }
+  if(roleId==="hunter_lodge_or_outfitter"){
+    if(box.w<=340&&box.h<=340) return "good_size_for_lodge_or_outfitter";
+    return "outside_hunter_lodge_size_window";
+  }
+  if(roleId==="pond_boathouse_or_waterfront_shed"){
+    if(box.w<=320&&box.h<=280) return "good_size_for_waterfront_shed";
+    return "outside_boathouse_size_window";
+  }
+  return "unknown_role";
+}
 function runAtlasCatalogScanOnce(){
   if(!ATLAS_DEBUG_MODE||atlasCatalogScanEmitted) return;
   const atlas=atlasImages.buildings;
@@ -2723,32 +2755,37 @@ function runAtlasCatalogScanOnce(){
         if(isClipped) blocking.push("clipped_to_edge");
         if(heroOverlaps.length>0) blocking.push("overlaps_hero:"+heroOverlaps.join(","));
         const clean=blocking.length===0;
-        // Role suitability: clean + size fits expected draw dimensions with 2x tolerance
         const possibleRoles=[];
-        if(clean){
-          if(w<=280&&h<=320) possibleRoles.push("residence_small");
-          if(w<=420&&h<=380) possibleRoles.push("residence_large");
-          if(w<=340&&h<=340) possibleRoles.push("hunter_lodge_or_outfitter");
-          if(w<=320&&h<=280) possibleRoles.push("pond_boathouse_or_waterfront_shed");
-        }
-        return{candidateId:"C"+String(idx).padStart(2,"0"),boundingBox:{x,y,w,h},pixelCount:blob.pixCount,sizeClass,clipEdges,heroOverlaps,possibleRoles,blocking,clean,audit:clean?"PASS":"BLOCKED"};
+        if(w<=280&&h<=320) possibleRoles.push("residence_small");
+        if(w<=420&&h<=380) possibleRoles.push("residence_large");
+        if(w<=340&&h<=340) possibleRoles.push("hunter_lodge_or_outfitter");
+        if(w<=320&&h<=280) possibleRoles.push("pond_boathouse_or_waterfront_shed");
+        const warnings=[];
+        if(isClipped) warnings.push("clipped_to_edge");
+        if(heroOverlaps.length>0) warnings.push("hero_overlap");
+        const likelyRoleFit=SECONDARY_BUILDING_IDS.map((roleId)=>({ role:roleId, fit:possibleRoles.includes(roleId), note:describeSecondaryRoleFit(roleId,{boundingBox:{x,y,w,h}}) }));
+        return{candidateId:"C"+String(idx).padStart(2,"0"),boundingBox:{x,y,w,h},pixelCount:blob.pixCount,sizeClass,clipEdges,heroOverlaps,possibleRoles,likelyRoleFit,warnings,blocking,clean,audit:clean?"PASS":"BLOCKED"};
       }).sort((a,b)=>a.boundingBox.y-b.boundingBox.y||a.boundingBox.x-b.boundingBox.x);
 
       const roleSummary=SECONDARY_BUILDING_IDS.map((roleId)=>{
         const entry=ATLAS_BUILDING_METADATA[roleId];
         const referenceCandidate=entry?{x:entry.crop.x,y:entry.crop.y,w:entry.crop.w,h:entry.crop.h}:null;
-        // Check if reference candidate itself is in any clean blob
         const refBlob=results.find((r)=>referenceCandidate&&r.boundingBox.x<=referenceCandidate.x&&r.boundingBox.y<=referenceCandidate.y&&r.boundingBox.x+r.boundingBox.w>=referenceCandidate.x+referenceCandidate.w&&r.boundingBox.y+r.boundingBox.h>=referenceCandidate.y+referenceCandidate.h);
         const fits=results.filter((r)=>r.possibleRoles.includes(roleId));
-        return{role:roleId,referenceCandidate,referenceCandidateInBlob:refBlob?refBlob.candidateId:null,referenceCandidateClean:refBlob?refBlob.clean:false,referenceCandidateBlocking:refBlob?refBlob.blocking:[],cleanCandidates:fits.filter((r)=>r.clean).map((r)=>r.candidateId),blockedCandidates:fits.filter((r)=>!r.clean).map((r)=>r.candidateId),promotable:fits.some((r)=>r.clean)};
+        const cleanCandidates=fits.filter((r)=>r.clean).map((r)=>r.candidateId);
+        const blockedCandidates=fits.filter((r)=>!r.clean).map((r)=>({candidateId:r.candidateId,blocking:r.blocking,warnings:r.warnings}));
+        const policyNote=roleId==="residence_small" ? "fallback_gated_until_clean_complete_source_crop_identified" : "promote_only_when_crop_audit_clean";
+        return{role:roleId,referenceCandidate,referenceCandidateInBlob:refBlob?refBlob.candidateId:null,referenceCandidateClean:refBlob?refBlob.clean:false,referenceCandidateBlocking:refBlob?refBlob.blocking:[],cleanCandidates,blockedCandidates,promotable:cleanCandidates.length>0,policyNote};
       });
 
       const cleanCount=results.filter((r)=>r.clean).length;
+      const promotableRoles=roleSummary.filter((r)=>r.promotable).map((r)=>r.role);
+      const stalledRoles=roleSummary.filter((r)=>!r.promotable).map((r)=>r.role);
+      Object.assign(atlasCatalogScanState,{ emitted:true, timestamp:new Date().toISOString(), sheetSize:{w:W,h:H}, totalCandidates:results.length, cleanCandidates:cleanCount, blockedCandidates:results.length-cleanCount, candidates:results, roleReport:roleSummary, promotableRoles, stalledRoles });
+      window.__atlasCatalogScanReport=atlasCatalogScanState;
       console.info("[Atlas Catalog Scan] sheetSize="+W+"x"+H+" totalCandidates="+results.length+" cleanCandidates="+cleanCount+" blockedCandidates="+(results.length-cleanCount));
       console.info("[Atlas Catalog Scan] candidates="+JSON.stringify(results));
       console.info("[Atlas Catalog Scan] roleSummary="+JSON.stringify(roleSummary));
-      const promotableRoles=roleSummary.filter((r)=>r.promotable).map((r)=>r.role);
-      const stalledRoles=roleSummary.filter((r)=>!r.promotable).map((r)=>r.role);
       console.info("[Atlas Catalog Scan] promotable_roles="+promotableRoles.join(",")+" stalled_roles="+stalledRoles.join(",")+" — secondary promotion gated until human review of above candidates");
     }catch(catalogErr){
       console.warn("[Atlas Catalog Scan] error during scan",catalogErr);
