@@ -1912,22 +1912,24 @@ function hasAtlasUsableTransparency(atlasId){
   if(runtime?.hasUsableTransparency===false) return false;
   const sheet=atlasImages[atlasId];
   if(!sheet || !sheet.complete || !(sheet.naturalWidth>0&&sheet.naturalHeight>0)) return false;
+  const W=sheet.naturalWidth, H=sheet.naturalHeight;
   const probe=document.createElement("canvas");
-  probe.width=Math.min(128, sheet.naturalWidth);
-  probe.height=Math.min(128, sheet.naturalHeight);
+  probe.width=W; probe.height=H;
   const probeCtx=probe.getContext("2d", { willReadFrequently:true });
   if(!probeCtx) return false;
   probeCtx.imageSmoothingEnabled=false;
-  probeCtx.drawImage(sheet, 0, 0, probe.width, probe.height);
-  const data=probeCtx.getImageData(0,0,probe.width,probe.height).data;
+  probeCtx.drawImage(sheet, 0, 0);
+  const data=probeCtx.getImageData(0,0,W,H).data;
+  // Sample every 32nd pixel across the full sheet — covers all sprite regions,
+  // not just the top-left corner which may be entirely opaque background.
   let alphaPixels=0;
-  for(let i=3;i<data.length;i+=4){
-    if(data[i] < 255){
-      alphaPixels += 1;
-      if(alphaPixels >= 8) break;
+  for(let i=3;i<data.length;i+=4*32){
+    if(data[i]<255){
+      alphaPixels++;
+      if(alphaPixels>=8) break;
     }
   }
-  const hasUsableTransparency=alphaPixels >= 8;
+  const hasUsableTransparency=alphaPixels>=8;
   if(runtime) runtime.hasUsableTransparency=hasUsableTransparency;
   return hasUsableTransparency;
 }
@@ -2034,6 +2036,8 @@ function isAtlasProofOverrideRequested(building, sprite){
 
 function isProofBuildingEnabled(building, sprite){
   if(!USE_HEARTHVALE_ATLAS_PROOF) return false;
+  // Catalog-resolved secondaries get a proof-only render lane in atlasDebug mode.
+  if(ATLAS_DEBUG_MODE && sprite?.catalogResolved===true && sprite?.proofEnabled===true) return true;
   if(!building || !HEARTHVALE_PROOF_BUILDING_IDS.has(building.id)) return false;
   const proofOverride=isAtlasProofOverrideRequested(building, sprite);
   if(!proofOverride && sprite?.proofEnabled!==true) return false;
@@ -2287,7 +2291,8 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   const proofOverride=isAtlasProofOverrideRequested(building, sprite);
   if(!isProofBuildingEnabled(building, sprite) && (!manifest.allowProductionSprites || !USE_PRODUCTION_BUILDING_ATLAS)) return "production_atlas_disabled";
   if(!sprite) return "missing_sprite_entry";
-  if(!proofOverride && sprite.productionReady!==true) return "sprite_not_production_ready";
+  // Catalog-resolved secondaries skip the productionReady gate (they are proof-only by design).
+  if(!proofOverride && !sprite.catalogResolved && sprite.productionReady!==true) return "sprite_not_production_ready";
   if(sprite.debugOnly===true || sprite.debug_only===true) return "debug_only_sprite";
   const runtime=atlasRuntimeInfo.buildings;
   if(runtime?.probeStatus===404) return "asset_404";
@@ -2304,7 +2309,10 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   if(!hasFinitePositiveNumber(drawW) || !hasFinitePositiveNumber(drawH)) return "invalid_atlas_metadata_draw_size";
   if(!hasFiniteNonNegativeNumber(sprite.anchorX) || !hasFiniteNonNegativeNumber(sprite.anchorY)) return "invalid_atlas_metadata_anchor";
   const metadataEntry=ATLAS_BUILDING_METADATA[spriteId];
-  if(metadataEntry){
+  if(metadataEntry && !sprite.catalogResolved){
+    // Catalog-resolved sprites already passed the catalog scan gate; skip
+    // the static ATLAS_BUILDING_METADATA audit which would test the old
+    // unverified reference crop, not the dynamically selected one.
     const auditWarnings=getSecondaryBuildingAuditWarnings(metadataEntry, atlasImages.buildings).filter(isSecondaryBlockingAuditWarning);
     if(auditWarnings.length) return "secondary_crop_audit_blocked:"+auditWarnings[0];
     if(SECONDARY_BUILDING_IDS.includes(spriteId) && metadataEntry.productionReady===true){
@@ -2750,11 +2758,49 @@ function runAtlasCatalogScanOnce(){
       const promotableRoles=roleSummary.filter((r)=>r.promotable).map((r)=>r.role);
       const stalledRoles=roleSummary.filter((r)=>!r.promotable).map((r)=>r.role);
       console.info("[Atlas Catalog Scan] promotable_roles="+promotableRoles.join(",")+" stalled_roles="+stalledRoles.join(",")+" — secondary promotion gated until human review of above candidates");
+      resolveSecondaryAtlasSelectionsFromCatalog(roleSummary, results);
     }catch(catalogErr){
       console.warn("[Atlas Catalog Scan] error during scan",catalogErr);
       atlasCatalogScanEmitted=false; // allow retry on next frame if error was transient
     }
   },200);
+}
+function resolveSecondaryAtlasSelectionsFromCatalog(roleSummary, candidates){
+  const candidateMap=new Map(candidates.map((c)=>[c.candidateId, c]));
+  const selectorReport=roleSummary.map((entry)=>{
+    const baseSprite=atlasManifests.buildings.sprites[entry.role];
+    if(!baseSprite) return {role:entry.role, result:"no_sprite_entry"};
+    const cleanCandidates=entry.cleanCandidates.map((id)=>candidateMap.get(id)).filter(Boolean);
+    if(!cleanCandidates.length){
+      return {role:entry.role, result:"no_clean_catalog_candidate"};
+    }
+    // Select the clean candidate with the most content (highest pixel count).
+    const best=cleanCandidates.reduce((a,b)=>b.pixelCount>a.pixelCount?b:a);
+    const bb=best.boundingBox;
+    // Write override into the mutable runtime manifest — NOT into the frozen
+    // ATLAS_BUILDING_METADATA. Keep all world geometry fields (anchor, footprint,
+    // collision, interaction) from the base sprite; only replace the atlas crop.
+    atlasManifests.buildings.sprites[entry.role]={
+      ...baseSprite,
+      sx:bb.x, sy:bb.y, sw:bb.w, sh:bb.h,
+      productionReady:false,
+      proofEnabled:true,
+      catalogResolved:true,
+      catalogCandidateId:best.candidateId,
+      metadataSource:"catalog_selector"
+    };
+    return {role:entry.role, result:"resolved", candidateId:best.candidateId, bbox:bb, pixelCount:best.pixelCount};
+  });
+  selectorReport.forEach((r)=>{
+    if(r.result==="resolved"){
+      console.info("[Catalog Selector] role="+r.role+" selected="+r.candidateId+" bbox="+JSON.stringify(r.bbox)+" pixelCount="+r.pixelCount+" status=proof_only_pending_human_review");
+    }else{
+      console.warn("[Catalog Selector] role="+r.role+" status="+r.result);
+    }
+  });
+  const resolved=selectorReport.filter((r)=>r.result==="resolved").map((r)=>r.role);
+  const stalled=selectorReport.filter((r)=>r.result!=="resolved").map((r)=>r.role);
+  console.info("[Catalog Selector] resolved_roles="+(resolved.join(",")||"none")+" stalled_roles="+(stalled.join(",")||"none")+" — resolved roles are proof_only in atlasDebug; explicit human promotion required for production");
 }
 function maybeEmitFrontageAudit(){
   if(!ATLAS_DEBUG_MODE && !showCollisionOverlay) return;
@@ -2766,11 +2812,14 @@ function maybeEmitFrontageAudit(){
   console.info("[Frontage QA] "+line);
 }
 function isBuildingAtlasPendingReason(reason){
-  // 32AA.2H: atlas_missing_alpha_transparency is a startup-transient warning that
-  // resolves automatically once the buildings atlas image finishes decoding.
-  // Treat it as pending (not a missing asset) so the final settled audit doesn't
-  // misreport hero buildings whose render path eventually succeeded.
-  if(reason==="atlas_missing_alpha_transparency") return true;
+  if(reason==="atlas_missing_alpha_transparency"){
+    // Treat as pending only while the transparency probe has not yet run.
+    // If hasUsableTransparency is definitively false (probe completed, no
+    // transparent pixels found), escalate to a hard failure so heroes are
+    // not trapped in pending_count forever.
+    const runtime=atlasRuntimeInfo.buildings;
+    return runtime?.hasUsableTransparency===undefined;
+  }
   if(reason!=="asset_not_loaded" && reason!=="sheet_not_complete") return false;
   const runtime=atlasRuntimeInfo.buildings;
   if(!runtime) return true;
