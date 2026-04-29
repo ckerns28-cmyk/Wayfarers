@@ -1230,6 +1230,7 @@ function atlasBuildingMetadataToSpriteMap(metadata){
 const atlasManifests = {
   terrain: {
     imagePath: "/assets/wayfarer/terrain/terrain_sheet.png",
+    optional:true,
     tileSize: 32,
     sprites: {
       grass_base:{ sx:0, sy:0, sw:32, sh:32 },
@@ -1256,6 +1257,7 @@ const atlasManifests = {
   },
   characters: {
     imagePath: "/assets/wayfarer/characters/character_sheet.png",
+    optional:true,
     tileSize: 64,
     sprites: {
       wayfarer:{ sx:0, sy:0, sw:256, sh:256 },
@@ -2112,6 +2114,11 @@ function initAtlasImages(){
     };
     const img=new Image();
     atlasImages[atlasId]=img;
+    if(manifest?.optional===true){
+      atlasRuntimeInfo[atlasId].failure="optional_atlas_not_loaded";
+      logAtlasRuntimeInfo(atlasId, "optional atlas skipped url=" + (urls[0]||"n/a"));
+      return;
+    }
     const tryLoadAt=(index)=>{
       const runtime=atlasRuntimeInfo[atlasId];
       if(index>=urls.length){
@@ -7842,9 +7849,6 @@ function drawWorld(){
     ...hostileLabelEntries,
     ...zoneLabelEntries
   ]);
-  if(showCollisionOverlay) drawCollisionOverlay();
-  drawCollisionOverlayToast(now);
-
   const area=currentLocalAreaName();
   const baseTint=area==="Hearthvale Square" ? 0.045 : area==="Mirror Pond" ? 0.065 : area==="Eastern Woods" ? 0.095 : area==="North Road" ? 0.09 : 0.08;
   const tint=baseTint+Math.max(0,Math.sin(performance.now()/9000))*.04;
@@ -7853,6 +7857,8 @@ function drawWorld(){
   const edge=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,Math.min(canvas.width,canvas.height)*.35,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.68);
   edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.78,"rgba(1,6,10,.1)"); edge.addColorStop(1,"rgba(1,6,10,.46)");
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
+  if(showCollisionOverlay) drawCollisionOverlay();
+  drawCollisionOverlayToast(now);
   drawTransitionFade(now);
   drawFloatingTexts(now);
   maybeLogBuildingRenderSummary();
@@ -7959,7 +7965,31 @@ function loop(now){
 const loadedFromSave=loadGame();
 bootDiagnostics.worldInitialized=true;
 bootDiagnostics.saveLoadStatus=loadedFromSave ? "loaded" : "default_fallback";
-if(SAVE_DEBUG_MODE) console.info("[Save Debug]", { ...saveDiagnostics, loadResult:loadedFromSave });
+if(SAVE_DEBUG_MODE){
+  const activeQuest=questSystem.getActiveQuestIds?.()[0] || null;
+  const saveDebugBundle={
+    activeSaveKey:SAVE_KEY,
+    backupSaveKey:SAVE_BACKUP_KEY,
+    attemptedKeys:[SAVE_KEY, ...LEGACY_SAVE_KEYS],
+    loadedKey:saveDiagnostics.loadedFromKey,
+    foundSave:saveDiagnostics.saveFound,
+    usedDefaultState:saveDiagnostics.fallbackDefaultUsed,
+    migrationRan:saveDiagnostics.migrationRan,
+    migrationSucceeded:saveDiagnostics.migrationSucceeded,
+    backupFound:saveDiagnostics.backupFound,
+    backupCreated:saveDiagnostics.backupCreated,
+    lastLoadError:saveDiagnostics.lastError,
+    playerLevel:player.level,
+    xp:player.xp,
+    inventoryCount:Array.isArray(player.inventory) ? player.inventory.reduce((sum,item)=>sum+Math.max(0,Math.floor(item?.quantity||0)),0) : 0,
+    currentQuest:activeQuest,
+    loadResult:loadedFromSave
+  };
+  console.groupCollapsed("[Save Debug] Runtime save diagnostics");
+  console.table(saveDebugBundle);
+  console.info("[Save Debug]", saveDebugBundle);
+  console.groupEnd();
+}
 bootDiagnostics.assetLoadStatus="ready";
 bootDiagnostics.manifestLoadStatus=atlasManifests?.buildings?.sprites ? "ready" : "fallback_index";
 enforceAllVillageNpcTerrainValidation(true);
