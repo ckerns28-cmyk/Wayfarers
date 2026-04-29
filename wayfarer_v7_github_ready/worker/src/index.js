@@ -7558,6 +7558,8 @@ function drawWorld(){
     }
   }
 
+  const renderQueue=[];
+  const buildingSortDebugRows=[];
   world.buildings.forEach((b,bIndex)=>{
     const spriteId=getBuildingSpriteId(b);
     const sprite=atlasManifests.buildings.sprites[spriteId];
@@ -7580,7 +7582,21 @@ function drawWorld(){
     const didDraw=!spriteFailureReason
       ? (drawDimensionsAreFinite ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh) : false)
       : false;
-    if(!didDraw){
+    const buildingSortY=(b.y*TILE) + (sprite?.anchorY ?? anchorPxY);
+    const buildingSortDebug={
+      id:b.id,
+      anchorY:sprite?.anchorY ?? anchorPxY,
+      sortY:Math.round(buildingSortY),
+      metadataSource:sprite?.metadataSource || "index"
+    };
+    buildingSortDebugRows.push(buildingSortDebug);
+    renderQueue.push({
+      type:"building",
+      id:b.id,
+      sortY:buildingSortY,
+      tieBreak:bIndex,
+      draw:()=>{
+        if(!didDraw){
       const fallbackReason=spriteFailureReason || (drawDimensionsAreFinite ? "draw_failed" : "invalid_draw_position");
       warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
@@ -7635,11 +7651,13 @@ function drawWorld(){
       ctx.fillStyle="rgba(94,72,54,.9)";
       ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
     }
+      }
+    });
   });
 
   const propsBehind=world.props.filter((prop)=>prop.layer!=="above_entities");
   const propsAbove=world.props.filter((prop)=>prop.layer==="above_entities");
-  propsBehind.forEach((prop)=>{
+  propsBehind.forEach((prop, propIndex)=>{
     const p = tileToScreen(prop.x,prop.y);
     const usedAtlasSprite=drawMappedPropSprite(prop,p);
     const mappedSpriteId=PROP_SPRITE_BY_WORLD_TYPE[prop.type];
@@ -7671,7 +7689,14 @@ function drawWorld(){
       renderLayer:suppressionZone ? "suppressed_ground_props:" + suppressionZone.reason : (prop.layer || "ground_props")
     });
     if(suppressionZone) return;
-    if(!usedAtlasSprite){
+    const propSortY=(prop.y+1)*TILE;
+    renderQueue.push({
+      type:"prop",
+      id:"prop_" + prop.x + "_" + prop.y + "_" + prop.type,
+      sortY:propSortY,
+      tieBreak:10000+propIndex,
+      draw:()=>{
+        if(!usedAtlasSprite){
       const img = assets.props.sprites[prop.type];
       if(!img || !img.complete || img.naturalWidth<=0){
         warnMissingAssetOnce("prop_sprite", prop.type);
@@ -7688,6 +7713,8 @@ function drawWorld(){
     }
     if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
     if(prop.type==="bench"||prop.type==="signPost") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
+      }
+    });
   });
   if(getStillWaterQuestStage()===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
     drawMirrorPondInspectionMarker(now);
@@ -7763,24 +7790,26 @@ function drawWorld(){
   if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:26, ty:12, priority:0 });
   if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
 
-  drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.42,8.6);
-  drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.86, "", 0, null, null);
-  drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.4,8.7);
-  drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.86, "", 0, null, null);
-  drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.4,8.7);
-  drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.86, "", 0, null, null);
-  wolves.forEach((wolf)=>{
+  renderQueue.push({ type:"npc", id:"npc_edrin", sortY:(npc.y+1)*TILE, tieBreak:20000, draw:()=>{ drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.42,8.6); drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.86, "", 0, null, null); } });
+  renderQueue.push({ type:"npc", id:"npc_hunter", sortY:(hunterNpc.y+1)*TILE, tieBreak:20001, draw:()=>{ drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.4,8.7); drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.86, "", 0, null, null); } });
+  renderQueue.push({ type:"npc", id:"npc_vendor", sortY:(vendorNpc.y+1)*TILE, tieBreak:20002, draw:()=>{ drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.4,8.7); drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.86, "", 0, null, null); } });
+  wolves.forEach((wolf, wolfIndex)=>{
     if(wolf.hp<=0) return;
-    drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.26,8.1);
-    drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+    renderQueue.push({ type:"wolf", id:"wolf_"+wolfIndex, sortY:wolf.py+TILE, tieBreak:21000+wolfIndex, draw:()=>{ drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.26,8.1); drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY}); } });
   });
-  bandits.forEach((bandit)=>{
+  bandits.forEach((bandit, banditIndex)=>{
     if(bandit.hp<=0) return;
-    drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.32,8.7);
-    drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.85, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit));
+    renderQueue.push({ type:"bandit", id:"bandit_"+banditIndex, sortY:bandit.py+TILE, tieBreak:22000+banditIndex, draw:()=>{ drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.32,8.7); drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.85, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit)); } });
   });
-  drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2);
-  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+  renderQueue.push({ type:"player", id:"player", sortY:player.py+TILE, tieBreak:29999, draw:()=>{ drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2); drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player)); } });
+  renderQueue.sort((a,b)=>a.sortY===b.sortY ? a.tieBreak-b.tieBreak : a.sortY-b.sortY);
+  renderQueue.forEach((entry, rank)=>{
+    if((ATLAS_DEBUG_MODE || PROP_DEBUG_MODE) && entry.type==="building"){
+      const debug=buildingSortDebugRows.find((row)=>row.id===entry.id);
+      if(debug) debug.rank=rank;
+    }
+    entry.draw();
+  });
   propsAbove.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const usedAtlasSprite=drawMappedPropSprite(prop,p);
