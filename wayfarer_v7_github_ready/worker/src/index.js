@@ -1198,7 +1198,7 @@ const ATLAS_BUILDING_METADATA = Object.freeze({
   village_hall_meeting_house:{ id:"village_hall_meeting_house", role:"village_hall_meeting_house", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:758, y:493, w:459, h:355 }, drawW:188, drawH:145, anchorX:94, anchorY:132, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
   mercantile_shop:{ id:"mercantile_shop", role:"mercantile_shop", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:473, y:67, w:329, h:403 }, drawW:131, drawH:160, anchorX:64, anchorY:126, footprint:{ w:5, h:5 }, collisionRect:{ x:0, y:4, w:5, h:1 }, interactionRect:{ x:2, y:4, w:1, h:1 }, doorTile:{ x:2, y:4 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
   inn_tavern_v1:{ id:"inn_tavern_v1", role:"inn_tavern", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:33, y:120, w:420, h:340 }, drawW:192, drawH:156, anchorX:96, anchorY:143, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
-  residence_small:{ id:"residence_small", role:"residence_small", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:160, y:480, w:160, h:160 }, drawW:116, drawH:116, anchorX:58, anchorY:102, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:1 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
+  residence_small:{ id:"residence_small", role:"residence_small", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:0, y:480, w:160, h:160 }, drawW:116, drawH:116, anchorX:58, anchorY:102, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:1 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
   residence_large:{ id:"residence_large", role:"residence_large", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:160, y:160, w:192, h:160 }, drawW:144, drawH:120, anchorX:72, anchorY:104, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, doorTile:{ x:2, y:3 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"atlas_not_used_by_world_placement" },
   hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:0, y:320, w:160, h:160 }, drawW:120, drawH:120, anchorX:60, anchorY:104, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"atlas_not_used_by_world_placement" },
   pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:160, y:320, w:192, h:128 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"atlas_not_used_by_world_placement" }
@@ -1206,6 +1206,16 @@ const ATLAS_BUILDING_METADATA = Object.freeze({
 
 const LOCKED_HERO_BUILDING_IDS=Object.freeze(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house"]);
 const SECONDARY_BUILDING_IDS=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
+const SECONDARY_BLOCKING_AUDIT_WARNING_PREFIXES=Object.freeze([
+  "overlaps_locked_hero_crop:"
+]);
+const SECONDARY_BLOCKING_AUDIT_WARNINGS=Object.freeze(new Set([
+  "clipped_to_edge",
+  "empty_crop",
+  "no_non_transparent_pixels",
+  "likely_partial_object",
+  "partial_object_bounds"
+]));
 function rectsOverlap(a,b){
   return !(a.x+a.w<=b.x || b.x+b.w<=a.x || a.y+a.h<=b.y || b.y+b.h<=a.y);
 }
@@ -1218,6 +1228,47 @@ function getCropOverlapWarnings(entry){
     if(!hero) return;
     if(rectsOverlap(crop, hero.crop)) warnings.push("overlaps_locked_hero_crop:"+heroId);
   });
+  return warnings;
+}
+function isSecondaryBlockingAuditWarning(warning){
+  if(!warning) return false;
+  if(SECONDARY_BLOCKING_AUDIT_WARNINGS.has(warning)) return true;
+  return SECONDARY_BLOCKING_AUDIT_WARNING_PREFIXES.some((prefix)=>warning.startsWith(prefix));
+}
+function getSecondaryBuildingAuditWarnings(entry, sheet){
+  if(!entry || !SECONDARY_BUILDING_IDS.includes(entry.id)) return [];
+  const warnings=[...getCropOverlapWarnings(entry)];
+  const crop=entry.crop||{};
+  if(!sheet || !sheet.complete || !(sheet.naturalWidth>0 && sheet.naturalHeight>0)) return warnings;
+  if(crop.x+crop.w>sheet.naturalWidth || crop.y+crop.h>sheet.naturalHeight) return warnings;
+  const auditCanvas=document.createElement("canvas");
+  auditCanvas.width=crop.w;
+  auditCanvas.height=crop.h;
+  const ctx=auditCanvas.getContext("2d",{ willReadFrequently:true });
+  if(!ctx) return warnings;
+  ctx.drawImage(sheet,crop.x,crop.y,crop.w,crop.h,0,0,crop.w,crop.h);
+  const data=ctx.getImageData(0,0,crop.w,crop.h).data;
+  let minX=crop.w,minY=crop.h,maxX=-1,maxY=-1,hasPixels=false;
+  for(let py=0;py<crop.h;py++){
+    for(let px=0;px<crop.w;px++){
+      if(data[(py*crop.w+px)*4+3]===0) continue;
+      hasPixels=true;
+      if(px<minX) minX=px;
+      if(py<minY) minY=py;
+      if(px>maxX) maxX=px;
+      if(py>maxY) maxY=py;
+    }
+  }
+  if(!hasPixels){
+    warnings.push("no_non_transparent_pixels");
+    return warnings;
+  }
+  const clipped=minX===0 || minY===0 || maxX===crop.w-1 || maxY===crop.h-1;
+  if(clipped) warnings.push("clipped_to_edge");
+  const bboxW=maxX-minX+1;
+  const bboxH=maxY-minY+1;
+  if(((bboxW*bboxH)/(crop.w*crop.h))<0.2) warnings.push("likely_partial_object");
+  if((minX===0 || maxX===crop.w-1) && (minY===0 || maxY===crop.h-1)) warnings.push("partial_object_bounds");
   return warnings;
 }
 
@@ -2219,6 +2270,8 @@ function getAtlasBuildingEntryValidation(entry, runtime, sheet){
   if(entry.interactionRect && (!Number.isFinite(entry.interactionRect.x) || !Number.isFinite(entry.interactionRect.y))) return "interaction_unreachable";
   if(entry.collisionRect && (!Number.isFinite(entry.collisionRect.x) || !Number.isFinite(entry.collisionRect.y))) return "interaction_unreachable";
   if(ATLAS_DEBUG_MODE && hasAtlasUsableTransparency("buildings")!==true) return "transparency_invalid";
+  const secondaryWarnings=getSecondaryBuildingAuditWarnings(entry, sheet).filter(isSecondaryBlockingAuditWarning);
+  if(secondaryWarnings.length) return "secondary_crop_audit_blocked:"+secondaryWarnings[0];
   if(entry.productionReady!==true) return entry.fallbackReason || "production_not_ready";
   return null;
 }
@@ -2249,8 +2302,8 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   if(!hasFiniteNonNegativeNumber(sprite.anchorX) || !hasFiniteNonNegativeNumber(sprite.anchorY)) return "invalid_atlas_metadata_anchor";
   const metadataEntry=ATLAS_BUILDING_METADATA[spriteId];
   if(metadataEntry){
-    const overlapWarnings=getCropOverlapWarnings(metadataEntry);
-    if(overlapWarnings.length) return overlapWarnings[0];
+    const auditWarnings=getSecondaryBuildingAuditWarnings(metadataEntry, atlasImages.buildings).filter(isSecondaryBlockingAuditWarning);
+    if(auditWarnings.length) return "secondary_crop_audit_blocked:"+auditWarnings[0];
     if(SECONDARY_BUILDING_IDS.includes(spriteId) && metadataEntry.productionReady===true){
       if(metadataEntry.crop.x===0 || metadataEntry.crop.y===0) return "secondary_crop_clipped_requires_explicit_acceptance";
     }
