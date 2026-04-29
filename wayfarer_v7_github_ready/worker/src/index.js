@@ -3311,7 +3311,7 @@ function auditBuildingAtlasMappings(){
 }
 auditBuildingAtlasMappings();
 
-const pond={x:4,y:19,w:31,h:9,cx:19,cy:24};
+const pond={x:4,y:20,w:31,h:9,cx:19,cy:25}; // pond shifted down 1 tile so harbor-row buildings (y:16..19) clear the shoreline
 for(let x=pond.x;x<pond.x+pond.w;x++){
   for(let y=pond.y;y<pond.y+pond.h;y++){
     const dx=(x+.5-pond.cx)/(pond.w/2), dy=(y+.5-pond.cy)/(pond.h/2);
@@ -3327,8 +3327,7 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
 for(let x=16;x<=20;x++){ world.fences.push({x,y:2}); } // garden plot north fence — stops at x=20 to clear village hall (x=21..26)
 for(let y=3;y<=6;y++){ world.fences.push({x:16,y}); }   // garden plot west fence
 for(let y=3;y<=6;y++){ world.fences.push({x:20,y}); }   // garden plot east fence — moved from x=23 so village hall isn't sitting on it
-for(let x=9;x<=14;x++){ world.fences.push({x,y:15}); }
-for(let x=24;x<=32;x++){ world.fences.push({x,y:15}); }
+// y=15 fences removed: were severing the upper civic/commercial district from the harbor-front in a single hard wall, breaking the Newport-style continuous-town read
 for(let y=16;y<=19;y++){ world.fences.push({x:33,y}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
