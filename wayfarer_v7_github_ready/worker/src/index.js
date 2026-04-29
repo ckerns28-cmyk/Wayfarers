@@ -2681,19 +2681,49 @@ function applySecondaryAtlasSelectionOverrides(selections){
   });
 }
 function resolveSecondaryAtlasSelectionsFromCatalog(report){
+  const safeReport=(report&&typeof report==="object")?report:{};
+  const reportKeys=Object.keys(safeReport);
+  const candidates=Array.isArray(safeReport.candidates)?safeReport.candidates:[];
+  const roleReportRaw=safeReport.roleReport;
+  const roleReports=Array.isArray(roleReportRaw)?roleReportRaw:[];
+  const roleReportByRole=new Map(roleReports.filter((r)=>r&&typeof r==="object"&&typeof r.role==="string").map((r)=>[r.role,r]));
+
+  const normalizedCandidateInfo={};
+  const normalizedRoleReports={};
+  SECONDARY_BUILDING_IDS.forEach((roleId)=>{
+    const roleEntry=roleReportByRole.get(roleId)||null;
+    const roleEntryKeys=roleEntry&&typeof roleEntry==="object"?Object.keys(roleEntry):[];
+    const cleanCandidateIds=Array.isArray(roleEntry?.cleanCandidates)?roleEntry.cleanCandidates:[];
+    const cleanIdSet=new Set(cleanCandidateIds.filter((id)=>typeof id==="string"));
+    const fromRoles=candidates.filter((candidate)=>Array.isArray(candidate?.possibleRoles)&&candidate.possibleRoles.includes(roleId));
+    const fromCleanIds=candidates.filter((candidate)=>cleanIdSet.has(candidate?.candidateId));
+    const normalizedCandidates=[...fromRoles, ...fromCleanIds].filter((candidate,index,arr)=>arr.findIndex((item)=>item?.candidateId===candidate?.candidateId)===index);
+    const sourceState=roleEntry===null?"missing":(normalizedCandidates.length===0?"empty":"populated");
+    normalizedRoleReports[roleId]={ roleEntry, roleEntryKeys, sourceState };
+    normalizedCandidateInfo[roleId]={ candidates:normalizedCandidates, sourceState };
+  });
+
+  console.info("[Catalog Selector] normalized_input="+JSON.stringify({
+    hasReport:report!==undefined&&report!==null,
+    topLevelKeys:reportKeys,
+    roleReportIsArray:Array.isArray(roleReportRaw),
+    roleReportCount:roleReports.length,
+    roleReportKeysByRole:Object.fromEntries(SECONDARY_BUILDING_IDS.map((roleId)=>[roleId,normalizedRoleReports[roleId].roleEntryKeys])),
+    candidateCountByRole:Object.fromEntries(SECONDARY_BUILDING_IDS.map((roleId)=>[roleId,normalizedCandidateInfo[roleId].candidates.length])),
+    candidateStateByRole:Object.fromEntries(SECONDARY_BUILDING_IDS.map((roleId)=>[roleId,normalizedCandidateInfo[roleId].sourceState]))
+  }));
+
   const byRole={};
   const bySpriteId={};
-  const candidates=Array.isArray(report?.candidates)?report.candidates:[];
-  const roles=Array.isArray(report?.roleReport)?report.roleReport:[];
   const transparencyOk=hasAtlasUsableTransparency("buildings")===true;
   const sheetReady=atlasImages.buildings?.complete===true && (atlasImages.buildings?.naturalWidth||0)>0 && (atlasImages.buildings?.naturalHeight||0)>0;
   SECONDARY_BUILDING_IDS.forEach((roleId)=>{
-    const roleEntry=roles.find((r)=>r.role===roleId) || null;
-    const fits=candidates.filter((c)=>Array.isArray(c?.possibleRoles) && c.possibleRoles.includes(roleId));
+    const roleEntry=normalizedRoleReports[roleId].roleEntry;
+    const fits=normalizedCandidateInfo[roleId].candidates;
     const evaluated=fits.map((candidate)=>{
       const reasons=[];
       if(!candidate?.hasNonTransparentPixels) reasons.push("no_non_transparent_pixels");
-      if(candidate?.clean!==true) reasons.push(...(candidate?.blocking||[]));
+      if(candidate?.clean!==true) reasons.push(...(Array.isArray(candidate?.blocking)?candidate.blocking:[]));
       if(candidate?.clipEdges && Object.values(candidate.clipEdges).some(Boolean)) reasons.push("clipped_to_edge");
       if((candidate?.heroOverlaps||[]).length>0) reasons.push("overlaps_locked_hero_crop:"+(candidate.heroOverlaps[0]||"unknown"));
       if(!transparencyOk) reasons.push("transparent_invalid");
@@ -2703,25 +2733,27 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
       if((candidate?.warnings||[]).some(isSecondaryBlockingAuditWarning)) reasons.push("blocking_audit_warning");
       return {candidate,reasons:[...new Set(reasons)].filter(Boolean)};
     });
-    const selected=evaluated.find((item)=>item.reasons.length===0) || null;
-    const blockReasons=selected ? [] : [...new Set(evaluated.flatMap((item)=>item.reasons))];
+    const selected=evaluated.find((item)=>item.reasons.length===0)||null;
+    const blockReasons=selected?[]:[...new Set(evaluated.flatMap((item)=>item.reasons))];
+    const fallbackReason=selected?null:"no_clean_catalog_candidate";
     const final={
       role:roleId,
       selectedCandidateId:selected?.candidate?.candidateId||null,
       selectedCrop:selected?.candidate?.boundingBox||null,
-      drawW:ATLAS_BUILDING_METADATA[roleId]?.drawW||null,
-      drawH:ATLAS_BUILDING_METADATA[roleId]?.drawH||null,
-      anchorX:ATLAS_BUILDING_METADATA[roleId]?.anchorX||null,
-      anchorY:ATLAS_BUILDING_METADATA[roleId]?.anchorY||null,
-      eligibility:selected!==null,
+      drawW:selected?(ATLAS_BUILDING_METADATA[roleId]?.drawW||null):null,
+      drawH:selected?(ATLAS_BUILDING_METADATA[roleId]?.drawH||null):null,
+      anchorX:selected?(ATLAS_BUILDING_METADATA[roleId]?.anchorX||null):null,
+      anchorY:selected?(ATLAS_BUILDING_METADATA[roleId]?.anchorY||null):null,
+      eligible:selected!==null,
       blockingReasons:selected?[]:(blockReasons.length?blockReasons:["no_clean_catalog_candidate"]),
-      fallbackReason:selected?null:"no_clean_catalog_candidate",
-      finalRenderStatus:selected?"PENDING":"FALLBACK",
+      fallbackReason,
+      finalRenderStatus:selected?"ATLAS":"FALLBACK",
       referenceCandidateId:roleEntry?.referenceCandidateInBlob||null
     };
     byRole[roleId]=final;
     bySpriteId[roleId]=final;
   });
+
   const payload={resolvedAt:new Date().toISOString(),byRole,bySpriteId};
   secondaryAtlasSelectionState.resolvedAt=payload.resolvedAt;
   secondaryAtlasSelectionState.byRole=byRole;
@@ -2886,47 +2918,31 @@ function runAtlasCatalogScanOnce(){
       console.info("[Atlas Catalog Scan] promotable_roles="+promotableRoles.join(",")+" stalled_roles="+stalledRoles.join(",")+" — secondary promotion gated until human review of above candidates");
       console.info("[Atlas Catalog Selection] "+JSON.stringify(Object.values(secondarySelections.byRole).map((row)=>({ role:row.role, selectedCandidateId:row.selectedCandidateId, crop:row.selectedCrop, drawW:row.drawW, drawH:row.drawH, anchorX:row.anchorX, anchorY:row.anchorY, eligibility:row.eligibility, blockingReasons:row.blockingReasons, finalRenderStatus:row.finalRenderStatus }))));
     }catch(catalogErr){
+      const selectorSafeFallback={
+        resolvedAt:new Date().toISOString(),
+        byRole:Object.fromEntries(SECONDARY_BUILDING_IDS.map((roleId)=>[roleId,{
+          role:roleId,
+          selectedCandidateId:null,
+          selectedCrop:null,
+          drawW:null,
+          drawH:null,
+          anchorX:null,
+          anchorY:null,
+          eligible:false,
+          blockingReasons:["selector_failed"],
+          fallbackReason:"no_clean_catalog_candidate",
+          finalRenderStatus:"FALLBACK",
+          referenceCandidateId:null
+        }])),
+        bySpriteId:{}
+      };
+      selectorSafeFallback.bySpriteId={...selectorSafeFallback.byRole};
+      applySecondaryAtlasSelectionOverrides(selectorSafeFallback);
+      console.warn("[Catalog Selector] selector_failed",{ message:catalogErr?.message||String(catalogErr), stack:catalogErr?.stack||"stack_unavailable" });
       console.warn("[Atlas Catalog Scan] error during scan",catalogErr);
       atlasCatalogScanEmitted=false; // allow retry on next frame if error was transient
     }
   },200);
-}
-function resolveSecondaryAtlasSelectionsFromCatalog(roleSummary, candidates){
-  const candidateMap=new Map(candidates.map((c)=>[c.candidateId, c]));
-  const selectorReport=roleSummary.map((entry)=>{
-    const baseSprite=atlasManifests.buildings.sprites[entry.role];
-    if(!baseSprite) return {role:entry.role, result:"no_sprite_entry"};
-    const cleanCandidates=entry.cleanCandidates.map((id)=>candidateMap.get(id)).filter(Boolean);
-    if(!cleanCandidates.length){
-      return {role:entry.role, result:"no_clean_catalog_candidate"};
-    }
-    // Select the clean candidate with the most content (highest pixel count).
-    const best=cleanCandidates.reduce((a,b)=>b.pixelCount>a.pixelCount?b:a);
-    const bb=best.boundingBox;
-    // Write override into the mutable runtime manifest — NOT into the frozen
-    // ATLAS_BUILDING_METADATA. Keep all world geometry fields (anchor, footprint,
-    // collision, interaction) from the base sprite; only replace the atlas crop.
-    atlasManifests.buildings.sprites[entry.role]={
-      ...baseSprite,
-      sx:bb.x, sy:bb.y, sw:bb.w, sh:bb.h,
-      productionReady:false,
-      proofEnabled:true,
-      catalogResolved:true,
-      catalogCandidateId:best.candidateId,
-      metadataSource:"catalog_selector"
-    };
-    return {role:entry.role, result:"resolved", candidateId:best.candidateId, bbox:bb, pixelCount:best.pixelCount};
-  });
-  selectorReport.forEach((r)=>{
-    if(r.result==="resolved"){
-      console.info("[Catalog Selector] role="+r.role+" selected="+r.candidateId+" bbox="+JSON.stringify(r.bbox)+" pixelCount="+r.pixelCount+" status=proof_only_pending_human_review");
-    }else{
-      console.warn("[Catalog Selector] role="+r.role+" status="+r.result);
-    }
-  });
-  const resolved=selectorReport.filter((r)=>r.result==="resolved").map((r)=>r.role);
-  const stalled=selectorReport.filter((r)=>r.result!=="resolved").map((r)=>r.role);
-  console.info("[Catalog Selector] resolved_roles="+(resolved.join(",")||"none")+" stalled_roles="+(stalled.join(",")||"none")+" — resolved roles are proof_only in atlasDebug; explicit human promotion required for production");
 }
 function maybeEmitFrontageAudit(){
   if(!ATLAS_DEBUG_MODE && !showCollisionOverlay) return;
