@@ -67,7 +67,7 @@ const html = String.raw`<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wayfarer — Artistic Rebuild Slice</title>
+  <title>Wayfarer — Phase 32AA.2 Hotfix</title>
   <style>
     :root {
       --ink:#0b111a;
@@ -399,7 +399,7 @@ const html = String.raw`<!DOCTYPE html>
     <aside id="sidebar">
       <section id="brand" class="panel">
         <h1>Wayfarer</h1>
-        <div class="sub">Artistic Rebuild — Hearthvale Slice</div>
+        <div class="sub">Phase 32AA.2 — Road Repair (stabilizing)</div>
         <div class="stats" style="margin-top:10px;">
           <div class="muted">Current Objective</div><div id="objectiveText">Explore Hearthvale and the surrounding roads.</div>
           <div class="muted">Current Zone</div><div id="zoneVal">Hearthvale Square</div>
