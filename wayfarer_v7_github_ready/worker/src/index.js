@@ -2177,9 +2177,10 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   if(manifest.productionReady!==true) return "asset_not_production_ready";
   if(!spriteId) return "unmapped_for_safe_rollout";
   const sprite=manifest.sprites?.[spriteId];
+  const proofOverride=isAtlasProofOverrideRequested(building, sprite);
   if(!isProofBuildingEnabled(building, sprite) && (!manifest.allowProductionSprites || !USE_PRODUCTION_BUILDING_ATLAS)) return "production_atlas_disabled";
   if(!sprite) return "missing_sprite_entry";
-  if(sprite.productionReady!==true) return "sprite_not_production_ready";
+  if(!proofOverride && sprite.productionReady!==true) return "sprite_not_production_ready";
   if(sprite.debugOnly===true || sprite.debug_only===true) return "debug_only_sprite";
   const runtime=atlasRuntimeInfo.buildings;
   if(runtime?.probeStatus===404) return "asset_404";
