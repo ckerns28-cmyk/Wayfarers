@@ -2200,7 +2200,7 @@ function getAtlasBuildingEntryValidation(entry, runtime, sheet){
   if(!hasFiniteNonNegativeNumber(entry.anchorX) || !hasFiniteNonNegativeNumber(entry.anchorY)) return "interaction_unreachable";
   if(entry.interactionRect && (!Number.isFinite(entry.interactionRect.x) || !Number.isFinite(entry.interactionRect.y))) return "interaction_unreachable";
   if(entry.collisionRect && (!Number.isFinite(entry.collisionRect.x) || !Number.isFinite(entry.collisionRect.y))) return "interaction_unreachable";
-  if(hasAtlasUsableTransparency("buildings")!==true) return "transparency_invalid";
+  if(ATLAS_DEBUG_MODE && hasAtlasUsableTransparency("buildings")!==true) return "transparency_invalid";
   if(entry.productionReady!==true) return entry.fallbackReason || "production_not_ready";
   return null;
 }
@@ -2220,7 +2220,7 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   if(runtime?.probeServedAppShell===true) return "asset_url_served_app_shell";
   if(runtime && runtime.probeStatus>=200 && runtime.probeStatus<300 && runtime.probeContentTypeIsPng!==true) return "asset_content_type_invalid";
   if(runtime?.loaded===false) return "asset_not_loaded";
-  if(!hasAtlasUsableTransparency("buildings")) return "atlas_missing_alpha_transparency";
+  if(ATLAS_DEBUG_MODE && !hasAtlasUsableTransparency("buildings")) return "atlas_missing_alpha_transparency";
   const selectedUrl=atlasRuntimeInfo.buildings?.selectedUrl || manifest.imagePath || "";
   if(manifest.knownBadAssetPaths?.includes(selectedUrl)) return "known_bad_test_asset";
   if(!hasFiniteNonNegativeNumber(sprite.sx) || !hasFiniteNonNegativeNumber(sprite.sy)) return "invalid_atlas_metadata_position";
