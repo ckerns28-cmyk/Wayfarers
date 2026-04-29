@@ -122,10 +122,10 @@
       "id": "residence_small",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 0,
-        "y": 480,
-        "w": 160,
-        "h": 160
+        "x": 439,
+        "y": 526,
+        "w": 254,
+        "h": 309
       },
       "tileFootprint": {
         "w": 4,
@@ -161,10 +161,10 @@
       "id": "residence_large",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 160,
-        "y": 160,
-        "w": 192,
-        "h": 160
+        "x": 44,
+        "y": 835,
+        "w": 367,
+        "h": 344
       },
       "tileFootprint": {
         "w": 5,
@@ -190,7 +190,7 @@
       },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": false,
+      "productionReady": true,
       "debugOnly": false,
       "calibrationOnly": false,
       "drawW": 144,
@@ -200,10 +200,10 @@
       "id": "hunter_lodge_or_outfitter",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 0,
-        "y": 320,
-        "w": 160,
-        "h": 160
+        "x": 61,
+        "y": 519,
+        "w": 309,
+        "h": 308
       },
       "tileFootprint": {
         "w": 4,
@@ -229,7 +229,7 @@
       },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": false,
+      "productionReady": true,
       "debugOnly": false,
       "calibrationOnly": false,
       "drawW": 120,
@@ -239,10 +239,10 @@
       "id": "pond_boathouse_or_waterfront_shed",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 160,
-        "y": 320,
-        "w": 192,
-        "h": 128
+        "x": 899,
+        "y": 939,
+        "w": 250,
+        "h": 245
       },
       "tileFootprint": {
         "w": 5,
@@ -268,7 +268,7 @@
       },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": false,
+      "productionReady": true,
       "debugOnly": false,
       "calibrationOnly": false,
       "drawW": 150,
