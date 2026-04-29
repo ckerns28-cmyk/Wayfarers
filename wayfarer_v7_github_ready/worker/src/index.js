@@ -5106,6 +5106,9 @@ eventSystem.on("world:pond:awakened", ()=>{
 
 const SAVE_KEY="wayfarer.save.v1";
 const SAVE_BACKUP_KEY="wayfarer.save.v1.backup";
+const LEGACY_SAVE_KEYS=Object.freeze(["wayfarer.save","wayfarer.save.v0"]);
+const SAVE_DEBUG_MODE=(new URLSearchParams(window.location.search).get("saveDebug")==="1") || (new URLSearchParams(window.location.search).get("bootDebug")==="1");
+const saveDiagnostics={ activeKey:SAVE_KEY, attemptedKeys:[SAVE_KEY,...LEGACY_SAVE_KEYS], loadedFromKey:null, saveFound:false, migrationRan:false, migrationSucceeded:false, fallbackDefaultUsed:false, backupCreated:false, backupFound:false, lastError:null };
 const SAVE_SCHEMA_VERSION=2;
 const SUPPORTED_SAVE_VERSIONS=new Set([1,2,3,4,5,6,7,8,9,10,11,12,13]);
 const DEFAULT_DEV_MODE=false;
@@ -5453,16 +5456,35 @@ function saveGame(reason){
   }
 }
 function loadGame(){
-  const raw=localStorage.getItem(SAVE_KEY);
-  if(!raw) return false;
+  let raw=localStorage.getItem(SAVE_KEY);
+  let loadedKey=SAVE_KEY;
+  if(!raw){
+    for(const legacyKey of LEGACY_SAVE_KEYS){
+      const legacyRaw=localStorage.getItem(legacyKey);
+      if(legacyRaw){
+        raw=legacyRaw;
+        loadedKey=legacyKey;
+        break;
+      }
+    }
+  }
+  saveDiagnostics.loadedFromKey=raw ? loadedKey : null;
+  saveDiagnostics.saveFound=Boolean(raw);
+  saveDiagnostics.backupFound=Boolean(localStorage.getItem(SAVE_BACKUP_KEY));
+  if(!raw){
+    saveDiagnostics.fallbackDefaultUsed=true;
+    return false;
+  }
   try {
     let parsed;
     try {
       parsed=JSON.parse(raw);
     } catch(parseError){
       localStorage.setItem(SAVE_BACKUP_KEY, raw);
+      saveDiagnostics.backupCreated=true;
       throw parseError;
     }
+    saveDiagnostics.migrationRan=true;
     const migrated=migrateSave(parsed);
     const repaired=repairSave(migrated);
     const data=repaired.save;
@@ -5472,6 +5494,7 @@ function loadGame(){
     }
     if(parsed.saveSchemaVersion!==SAVE_SCHEMA_VERSION || repaired.changed){
       localStorage.setItem(SAVE_BACKUP_KEY, raw);
+      saveDiagnostics.backupCreated=true;
       localStorage.setItem(SAVE_KEY, JSON.stringify(data));
       log("System: Save migrated to schema v" + String(SAVE_SCHEMA_VERSION) + ".");
     }
@@ -5693,11 +5716,16 @@ function loadGame(){
     syncEchoFragmentState(false);
     migrateStillWaterStateFromSave();
     log("System: Save loaded.");
+    saveDiagnostics.migrationSucceeded=true;
     return true;
   } catch(err){
+    saveDiagnostics.lastError=String(err?.message || err || "unknown_error");
     console.error("Load failed", err);
     const rawSnapshot=localStorage.getItem(SAVE_KEY);
-    if(rawSnapshot) localStorage.setItem(SAVE_BACKUP_KEY, rawSnapshot);
+    if(rawSnapshot){
+      localStorage.setItem(SAVE_BACKUP_KEY, rawSnapshot);
+      saveDiagnostics.backupCreated=true;
+    }
     log("System: Save load failed. Existing save was preserved in backup.");
     return false;
   }
@@ -7778,6 +7806,7 @@ function drawWorld(){
     ...hostileLabelEntries,
     ...zoneLabelEntries
   ]);
+  if(showCollisionOverlay) drawCollisionOverlay();
 
   const area=currentLocalAreaName();
   const baseTint=area==="Hearthvale Square" ? 0.045 : area==="Mirror Pond" ? 0.065 : area==="Eastern Woods" ? 0.095 : area==="North Road" ? 0.09 : 0.08;
@@ -7887,6 +7916,7 @@ function loop(now){
 const loadedFromSave=loadGame();
 bootDiagnostics.worldInitialized=true;
 bootDiagnostics.saveLoadStatus=loadedFromSave ? "loaded" : "default_fallback";
+if(SAVE_DEBUG_MODE) console.info("[Save Debug]", { ...saveDiagnostics, loadResult:loadedFromSave });
 bootDiagnostics.assetLoadStatus="ready";
 bootDiagnostics.manifestLoadStatus=atlasManifests?.buildings?.sprites ? "ready" : "fallback_index";
 enforceAllVillageNpcTerrainValidation(true);
