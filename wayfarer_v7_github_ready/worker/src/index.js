@@ -2436,13 +2436,13 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 
 world.roads.push(
   { x:8,  y:11, w:23, h:1 }, // main horizontal
-  { x:16, y:4,  w:1,  h:15 }, // central vertical — trimmed to end at y=18 (south district road junction)
-  { x:15, y:8,  w:3,  h:1 },  // back-alley gap between tavern and mercantile only
-  { x:9,  y:15, w:21, h:1 },  // lower horizontal
-  { x:24, y:11, w:1,  h:8 },  // east vertical
-  { x:28, y:15, w:1,  h:8 },  // far east vertical
-  { x:12, y:18, w:18, h:1 },  // south district road: village hall south approach + waterfront
-  { x:12, y:12, w:5,  h:1 }   // village hall north plaza (replaced orphan spur x:12 y:11..17)
+  { x:16, y:4,  w:1,  h:9  }, // central vertical — stops at y=12, clear of village hall visual
+  { x:15, y:8,  w:3,  h:1  }, // back-alley gap between tavern and mercantile only
+  { x:24, y:11, w:1,  h:8  }, // east vertical
+  { x:28, y:15, w:1,  h:8  }, // far east vertical
+  { x:12, y:18, w:18, h:1  }, // south district road: village hall south approach + waterfront
+  { x:12, y:12, w:5,  h:1  }, // village hall north plaza
+  { x:17, y:12, w:1,  h:7  }  // east passage alongside village hall: connects plaza (y=12) to south district (y=18)
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
