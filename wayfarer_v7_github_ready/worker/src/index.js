@@ -1321,8 +1321,11 @@ const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze({
 });
 const BUILDING_SPRITE_ID_BY_ROLE = Object.freeze({
   village_hall_meeting_house:"village_hall_meeting_house",
+  village_hall:"village_hall_meeting_house",
   mercantile_shop:"mercantile_shop",
-  inn_tavern:"inn_tavern_v1"
+  mercantile:"mercantile_shop",
+  inn_tavern:"inn_tavern_v1",
+  inn_tavern_v1:"inn_tavern_v1"
 });
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
   residence_small:{ roof:"roofC", wall:"wallTimber", window:"windowTall", door:"doorPorch", dormer:true },
@@ -2526,7 +2529,18 @@ function getBuildingSpriteId(building){
   if(!building) return null;
   const explicitSpriteId=typeof building.spriteId==="string" ? building.spriteId : null;
   if(explicitSpriteId && atlasManifests.buildings?.sprites?.[explicitSpriteId]) return explicitSpriteId;
-  return BUILDING_SPRITE_ID_BY_BUILDING_ID[building.id] || BUILDING_SPRITE_ID_BY_ROLE[building.role] || null;
+  const byMap=BUILDING_SPRITE_ID_BY_BUILDING_ID[building.id] || BUILDING_SPRITE_ID_BY_ROLE[building.role] || null;
+  if(byMap && atlasManifests.buildings?.sprites?.[byMap]) return byMap;
+  const candidates=[
+    explicitSpriteId,
+    byMap,
+    building.role,
+    building.id?.replace(/^b_/,""),
+    building.role==="inn_tavern" ? "inn_tavern_v1" : null,
+    building.role==="mercantile" ? "mercantile_shop" : null,
+    building.role==="village_hall" ? "village_hall_meeting_house" : null
+  ].filter(Boolean);
+  return candidates.find((candidate)=>atlasManifests.buildings?.sprites?.[candidate]) || byMap || explicitSpriteId || null;
 }
 function drawBuildingFallbackSprite(building){
   const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
@@ -6669,6 +6683,7 @@ function canMoveTo(x,y){
 const keys=new Set();
 let showGrid=false;
 let showCollisionOverlay=false;
+let collisionOverlayToastUntil=0;
 
 const questDefinitionById=new Map((questData.quests||[]).map((quest)=>[quest.id, quest]));
 function resetQuestToNotStarted(questId){
@@ -6745,7 +6760,11 @@ addEventListener("keydown",(e)=>{
     updateSidebar();
   }
   if(k==="g") showGrid=!showGrid;
-  if(k==="v") showCollisionOverlay=!showCollisionOverlay;
+  if(k==="v" || e.code==="KeyV"){
+    showCollisionOverlay=!showCollisionOverlay;
+    collisionOverlayToastUntil=performance.now()+900;
+    if(SAVE_DEBUG_MODE) console.info("[Collision Overlay] " + (showCollisionOverlay ? "ON" : "OFF"));
+  }
   if(k==="escape" && worldInfoPanel) closeWorldInfoPanel();
   else if(k==="escape" && dialogueSystem.activeSession) dialogueSystem.close();
   if(k==="e") interactionManager.tryInteract();
@@ -7239,6 +7258,20 @@ function drawCollisionOverlay(){
     ctx.font="11px monospace";
     ctx.fillText(playerTileDiag.walkable ? "walkable" : "blocked", playerTileScreen.x+2, playerTileScreen.y-4);
   }
+  ctx.restore();
+}
+function drawCollisionOverlayToast(now){
+  if(now>collisionOverlayToastUntil) return;
+  const text="Collision Overlay " + (showCollisionOverlay ? "ON" : "OFF");
+  ctx.save();
+  ctx.fillStyle="rgba(0,0,0,0.76)";
+  ctx.fillRect(12, 12, 196, 24);
+  ctx.strokeStyle=showCollisionOverlay ? "rgba(132,244,171,0.95)" : "rgba(255,170,170,0.95)";
+  ctx.lineWidth=1;
+  ctx.strokeRect(12.5, 12.5, 195, 23);
+  ctx.fillStyle=showCollisionOverlay ? "rgba(162,255,196,0.98)" : "rgba(255,198,198,0.98)";
+  ctx.font="12px ui-monospace, monospace";
+  ctx.fillText(text, 20, 28);
   ctx.restore();
 }
 function drawTileRotated(img, x, y, turns){
@@ -7807,6 +7840,7 @@ function drawWorld(){
     ...zoneLabelEntries
   ]);
   if(showCollisionOverlay) drawCollisionOverlay();
+  drawCollisionOverlayToast(now);
 
   const area=currentLocalAreaName();
   const baseTint=area==="Hearthvale Square" ? 0.045 : area==="Mirror Pond" ? 0.065 : area==="Eastern Woods" ? 0.095 : area==="North Road" ? 0.09 : 0.08;
