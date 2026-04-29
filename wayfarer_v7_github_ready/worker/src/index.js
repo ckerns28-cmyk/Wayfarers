@@ -2459,7 +2459,13 @@ function maybeLogBuildingRenderSummary(){
   const summaryToken=[atlasIds.join(","),fallbackEntries.join(","),pendingEntries.join(",")].join("|");
   if(buildingRenderDiagnostics.lastSummaryToken===summaryToken) return;
   buildingRenderDiagnostics.lastSummaryToken=summaryToken;
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + [...missingAssetWarnings].join(",") + " manifest_status=buildings:" + (atlasRuntimeInfo.buildings?.manifestReady===true ? "ready" : "pending") + ",props:" + (atlasRuntimeInfo.props?.manifestReady===true ? "ready" : "pending") + " atlas_image_status=buildings:" + (atlasRuntimeInfo.buildings?.loaded===true ? "loaded" : (atlasRuntimeInfo.buildings?.imageOnerrorFired ? "error" : "pending")) + ",props:" + (atlasRuntimeInfo.props?.loaded===true ? "loaded" : (atlasRuntimeInfo.props?.imageOnerrorFired ? "error" : "pending")) + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+  const finalMissingAssets=computeFinalMissingAssetTokens();
+  const nonFatalWarnings=[...missingAssetWarnings].filter((token)=>{
+    if(!token.startsWith("building_sprite:")) return false;
+    const reason=token.split(":").slice(2).join(":");
+    return isNonFatalAtlasReason(reason);
+  });
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + (atlasRuntimeInfo.buildings?.manifestReady===true ? "ready" : "pending") + ",props:" + (atlasRuntimeInfo.props?.manifestReady===true ? "ready" : "pending") + " atlas_image_status=buildings:" + (atlasRuntimeInfo.buildings?.loaded===true ? "loaded" : (atlasRuntimeInfo.buildings?.imageOnerrorFired ? "error" : "pending")) + ",props:" + (atlasRuntimeInfo.props?.loaded===true ? "loaded" : (atlasRuntimeInfo.props?.imageOnerrorFired ? "error" : "pending")) + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
 }
 
 
@@ -2508,10 +2514,40 @@ function maybeEmitFrontageAudit(){
   console.info("[Frontage QA] "+line);
 }
 function isBuildingAtlasPendingReason(reason){
+  // 32AA.2H: atlas_missing_alpha_transparency is a startup-transient warning that
+  // resolves automatically once the buildings atlas image finishes decoding.
+  // Treat it as pending (not a missing asset) so the final settled audit doesn't
+  // misreport hero buildings whose render path eventually succeeded.
+  if(reason==="atlas_missing_alpha_transparency") return true;
   if(reason!=="asset_not_loaded" && reason!=="sheet_not_complete") return false;
   const runtime=atlasRuntimeInfo.buildings;
   if(!runtime) return true;
   return runtime.loaded!==true && runtime.imageOnerrorFired!==true;
+}
+function isNonFatalAtlasReason(reason){
+  return reason==="atlas_missing_alpha_transparency";
+}
+function computeFinalMissingAssetTokens(){
+  // Filter the running missingAssetWarnings set down to the truthful final state:
+  //  - drop any "building_sprite:<spriteId>:<reason>" token whose building ultimately
+  //    rendered as atlas in this session.
+  //  - drop tokens classified as non-fatal/transient warnings.
+  const resolvedSpriteIds=new Set();
+  world.buildings.forEach((b)=>{
+    if(buildingRenderDiagnostics.atlasBuildings.has(b.id)){
+      const sId=getBuildingSpriteId(b);
+      if(sId) resolvedSpriteIds.add(sId);
+    }
+  });
+  return [...missingAssetWarnings].filter((token)=>{
+    if(!token.startsWith("building_sprite:")) return true;
+    const parts=token.split(":");
+    const sId=parts[1];
+    const reason=parts.slice(2).join(":");
+    if(isNonFatalAtlasReason(reason)) return false;
+    if(sId && resolvedSpriteIds.has(sId)) return false;
+    return true;
+  });
 }
 
 function getBuildingAtlasDebugStatus(){
@@ -3366,8 +3402,10 @@ world.roads.push(
   { x:13,y:10,w:1,h:2 },
   { x:21,y:10,w:1,h:2 },
   // Village hall frontage and civic connector to central square.
+  // 32AA.2H: extend frontage band east through door tile (25,8) and one tile beyond
+  // so the village hall door is on a clearly walkable, road-marked approach.
   { x:24,y:8,w:1,h:4 },
-  { x:22,y:8,w:3,h:1 },
+  { x:22,y:8,w:5,h:1 },
   // North and east/west continuity lanes to keep town readable without debug-like rectangles.
   { x:9,y:6,w:19,h:1 },
   { x:10,y:6,w:1,h:6 },
@@ -3382,7 +3420,7 @@ world.roads.push(
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:10, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:10,y:6,w:6,h:5}, visualBounds:{x:10,y:6,w:6,h:5}, collision:{x:10,y:9,w:6,h:2}, interaction:{x:13,y:10,w:1,h:1}, interactRect:{x:13,y:10,w:1,h:1}, frontDoorTile:{x:13,y:10}, label:{x:13,y:7,text:"Inn & Tavern"}, pathingBounds:{x:9,y:6,w:8,h:6}, frontWalkBand:{ x:10, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:10, y:6, w:6, h:3 }], occlusionDepthLine:{ x:10, y:9, w:6, h:1 }, rearExclusionZone:{ x:10, y:6, w:6, h:3 } }) },
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:10, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:10,y:6,w:6,h:5}, visualBounds:{x:10,y:6,w:6,h:5}, collision:{x:10,y:9,w:6,h:1}, interaction:{x:13,y:10,w:1,h:1}, interactRect:{x:13,y:10,w:1,h:1}, frontDoorTile:{x:13,y:10}, label:{x:13,y:7,text:"Inn & Tavern"}, pathingBounds:{x:9,y:6,w:8,h:6}, frontWalkBand:{ x:10, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:10, y:6, w:6, h:3 }, { x:10, y:9, w:3, h:1 }, { x:14, y:9, w:2, h:1 }], occlusionDepthLine:{ x:10, y:9, w:6, h:1 }, rearExclusionZone:{ x:10, y:6, w:6, h:3 } }) },
   { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, visualBounds:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, interactRect:{x:20,y:10,w:1,h:1}, frontDoorTile:{x:20,y:10}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:18, y:6, w:5, h:3 }, { x:18, y:9, w:2, h:1 }, { x:21, y:9, w:2, h:1 }], occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
   { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:22, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:22,y:3,w:6,h:5}, visualBounds:{x:22,y:3,w:6,h:5}, collision:{x:22,y:6,w:6,h:2}, interaction:{x:25,y:8,w:1,h:1}, interactRect:{x:25,y:8,w:1,h:1}, frontDoorTile:{x:25,y:8}, label:{x:25,y:4,text:"Village Hall"}, pathingBounds:{x:21,y:3,w:8,h:6}, frontWalkBand:{ x:22, y:8, w:6, h:1 }, blockedVisualTiles:[{ x:22, y:3, w:6, h:3 }, { x:22, y:6, w:2, h:1 }, { x:26, y:6, w:2, h:1 }], occlusionDepthLine:{ x:22, y:6, w:6, h:1 }, rearExclusionZone:{ x:22, y:3, w:6, h:3 } }) },
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:7,w:4,h:4}, collision:{x:4,y:9,w:4,h:2}, interaction:{x:5,y:10,w:1,h:1}, label:{x:5,y:8,text:"Cottage"}, pathingBounds:{x:3,y:7,w:6,h:5} }) },
