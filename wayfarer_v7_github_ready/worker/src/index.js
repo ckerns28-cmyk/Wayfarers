@@ -35,7 +35,7 @@ const html = String.raw`<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wayfarer — Artistic Rebuild Slice</title>
+  <title>Wayfarer — Phase 32AA.2 Hotfix</title>
   <style>
     :root {
       --ink:#0b111a;
@@ -367,7 +367,7 @@ const html = String.raw`<!DOCTYPE html>
     <aside id="sidebar">
       <section id="brand" class="panel">
         <h1>Wayfarer</h1>
-        <div class="sub">Artistic Rebuild — Hearthvale Slice</div>
+        <div class="sub">Phase 32AA.2 — Road Repair (stabilizing)</div>
         <div class="stats" style="margin-top:10px;">
           <div class="muted">Current Objective</div><div id="objectiveText">Explore Hearthvale and the surrounding roads.</div>
           <div class="muted">Current Zone</div><div id="zoneVal">Hearthvale Square</div>
@@ -2435,14 +2435,14 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  { x:8,y:11,w:23,h:1 },
-  { x:16,y:4,w:1,h:16 },
-  { x:10,y:8,w:15,h:1 },
-  { x:9,y:15,w:21,h:1 },
-  { x:24,y:11,w:1,h:8 },
-  { x:28,y:15,w:1,h:8 },
-  { x:21,y:18,w:9,h:1 },
-  { x:12,y:11,w:1,h:7 }
+  { x:8,  y:11, w:23, h:1 }, // main horizontal
+  { x:16, y:4,  w:1,  h:15 }, // central vertical — trimmed to end at y=18 (south district road junction)
+  { x:15, y:8,  w:3,  h:1 },  // back-alley gap between tavern and mercantile only
+  { x:9,  y:15, w:21, h:1 },  // lower horizontal
+  { x:24, y:11, w:1,  h:8 },  // east vertical
+  { x:28, y:15, w:1,  h:8 },  // far east vertical
+  { x:12, y:18, w:18, h:1 },  // south district road: village hall south approach + waterfront
+  { x:12, y:12, w:5,  h:1 }   // village hall north plaza (replaced orphan spur x:12 y:11..17)
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
