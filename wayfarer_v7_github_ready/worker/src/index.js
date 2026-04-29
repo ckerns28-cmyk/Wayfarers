@@ -1609,6 +1609,20 @@ const atlasProofDiagnostics={
   statusLogged:false,
   startupLogged:false
 };
+const bootDiagnostics={
+  worldInitialized:false,
+  mapRows:WORLD_H,
+  mapCols:WORLD_W,
+  terrainDrawCount:0,
+  roadDrawCount:0,
+  buildingDrawCount:0,
+  playerPosition:{ x:0, y:0 },
+  cameraPosition:{ x:0, y:0 },
+  assetLoadStatus:"pending",
+  manifestLoadStatus:"pending",
+  saveLoadStatus:"not_loaded",
+  lastRenderException:null
+};
 const spriteBlankHeuristicCache=new Map();
 const atlasDebugValidationWarnings=new Set();
 function logAtlasValidationFailureOnce(kind, token, reason){
@@ -7464,6 +7478,11 @@ function drawWorld(){
   }
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const cam=getCamera();
+  bootDiagnostics.cameraPosition={ x:cam.tileX, y:cam.tileY };
+  bootDiagnostics.playerPosition={ x:player.targetX, y:player.targetY };
+  bootDiagnostics.terrainDrawCount=0;
+  bootDiagnostics.roadDrawCount=0;
+  bootDiagnostics.buildingDrawCount=0;
   drawOutdoorBackdrop(cam, now);
   const padX=Math.ceil(Math.max(cam.offsetX, canvas.width-(cam.offsetX+VIEW_TILES_X*TILE))/TILE)+3;
   const padY=Math.ceil(Math.max(cam.offsetY, canvas.height-(cam.offsetY+VIEW_TILES_Y*TILE))/TILE)+3;
@@ -7478,7 +7497,7 @@ function drawWorld(){
     const inForest=region==="eastern_woods" || (region==="north_road" && rng(x,y,211)>0.45);
     const forestMix=Math.min(assets.forestGrass.length-1, Math.floor((layeredNoise(x+5,y+3)+rng(x,y,212)*0.2)*assets.forestGrass.length)%assets.forestGrass.length);
     const img=inForest ? assets.forestGrass[forestMix] : assets.grass[mix];
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    if(img.complete&&img.naturalWidth>0){ ctx.drawImage(img,p.x,p.y,TILE,TILE); bootDiagnostics.terrainDrawCount+=1; }
     if(!inForest && layeredNoise(x+13,y+7)>0.8){
       ctx.fillStyle="rgba(188,216,151,.012)";
       ctx.fillRect(p.x+1,p.y+1,30,30);
@@ -7492,7 +7511,7 @@ function drawWorld(){
   world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){
     const p=tileToScreen(x,y);
     const img=assets.road[Math.floor(rng(x,y,22)*assets.road.length)];
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
+    if(img.complete&&img.naturalWidth>0){ ctx.drawImage(img,p.x,p.y,32,32); bootDiagnostics.roadDrawCount+=1; }
 
     const north = world.roadTiles.has(keyOf(x,y-1));
     const south = world.roadTiles.has(keyOf(x,y+1));
@@ -7601,7 +7620,11 @@ function drawWorld(){
 
   renderQueue.forEach((entry, drawOrderRank)=>{
     if(entry.type!=="building"){
-      entry.draw();
+      try{
+        entry.draw();
+      }catch(renderEntryError){
+        if(ATLAS_DEBUG_MODE) console.warn("[Render Safety] entity draw skipped", renderEntryError);
+      }
       return;
     }
     const { b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, drawX, drawY, worldAnchorY }=entry;
@@ -7620,6 +7643,7 @@ function drawWorld(){
     const didDraw=!spriteFailureReason
       ? (drawDimensionsAreFinite ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh) : false)
       : false;
+    if(didDraw) bootDiagnostics.buildingDrawCount+=1;
     const buildingSortY=(b.y*TILE) + (sprite?.anchorY ?? anchorPxY);
     const buildingSortDebug={
       id:b.id,
@@ -7840,9 +7864,26 @@ function update(dt,now){
 }
 
 let last=performance.now();
-function loop(now){ const dt=Math.min(.033,(now-last)/1000); last=now; update(dt,now); drawWorld(); requestAnimationFrame(loop); }
+function loop(now){
+  try{
+    const dt=Math.min(.033,(now-last)/1000);
+    last=now;
+    update(dt,now);
+    drawWorld();
+    bootDiagnostics.lastRenderException=null;
+  }catch(loopError){
+    bootDiagnostics.lastRenderException=String(loopError?.message || loopError || "unknown_error");
+    console.error("[Boot Hotfix] render loop exception", loopError);
+    if(ATLAS_DEBUG_MODE) console.info("[Boot Hotfix] diagnostics", bootDiagnostics);
+  }
+  requestAnimationFrame(loop);
+}
 
 const loadedFromSave=loadGame();
+bootDiagnostics.worldInitialized=true;
+bootDiagnostics.saveLoadStatus=loadedFromSave ? "loaded" : "default_fallback";
+bootDiagnostics.assetLoadStatus="ready";
+bootDiagnostics.manifestLoadStatus=atlasManifests?.buildings?.sprites ? "ready" : "fallback_index";
 enforceAllVillageNpcTerrainValidation(true);
 updateDialogueViewportConstraints();
 ensureStarterEquipment();
