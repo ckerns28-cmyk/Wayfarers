@@ -7653,13 +7653,7 @@ function drawWorld(){
       metadataSource:sprite?.metadataSource || "index"
     };
     buildingSortDebugRows.push(buildingSortDebug);
-    renderQueue.push({
-      type:"building",
-      id:b.id,
-      sortY:buildingSortY,
-      tieBreak:bIndex,
-      draw:()=>{
-        if(!didDraw){
+    if(!didDraw){
       const fallbackReason=spriteFailureReason || (drawDimensionsAreFinite ? "draw_failed" : "invalid_draw_position");
       warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
