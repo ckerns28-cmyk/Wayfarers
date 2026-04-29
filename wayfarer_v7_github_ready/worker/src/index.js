@@ -3259,11 +3259,10 @@ world.roads.push(
   { x:8,y:11,w:23,h:1 },
   { x:16,y:4,w:1,h:16 },
   { x:10,y:8,w:15,h:1 },
-  { x:9,y:15,w:21,h:1 },
+  { x:9,y:18,w:22,h:1 },
   { x:24,y:11,w:1,h:8 },
   { x:28,y:15,w:1,h:8 },
-  { x:21,y:18,w:9,h:1 },
-  { x:12,y:11,w:1,h:7 }
+  { x:21,y:18,w:9,h:1 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
@@ -3271,8 +3270,8 @@ world.buildings.push(
   { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, visualBounds:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, interactRect:{x:12,y:10,w:1,h:1}, frontDoorTile:{x:12,y:10}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6}, frontWalkBand:{ x:9, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:9, y:6, w:6, h:3 }], occlusionDepthLine:{ x:9, y:9, w:6, h:1 }, rearExclusionZone:{ x:9, y:6, w:6, h:3 } }) },
   { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, visualBounds:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, interactRect:{x:20,y:10,w:1,h:1}, frontDoorTile:{x:20,y:10}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:18, y:6, w:5, h:3 }, { x:18, y:9, w:2, h:1 }, { x:21, y:9, w:2, h:1 }], occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
   { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:11, y:13, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:11,y:13,w:6,h:5}, visualBounds:{x:11,y:13,w:6,h:5}, collision:{x:11,y:16,w:6,h:2}, interaction:{x:14,y:17,w:1,h:1}, interactRect:{x:14,y:17,w:1,h:1}, frontDoorTile:{x:14,y:17}, label:{x:14,y:14,text:"Village Hall"}, pathingBounds:{x:10,y:13,w:8,h:6}, frontWalkBand:{ x:11, y:17, w:6, h:1 }, blockedVisualTiles:[{ x:11, y:13, w:6, h:3 }, { x:11, y:16, w:2, h:1 }, { x:15, y:16, w:2, h:1 }], occlusionDepthLine:{ x:11, y:16, w:6, h:1 }, rearExclusionZone:{ x:11, y:13, w:6, h:3 } }) },
-  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:7,y:14,w:4,h:4}, collision:{x:7,y:16,w:4,h:2}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:15,text:"Cottage"}, pathingBounds:{x:6,y:14,w:6,h:5} }) },
-  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:14, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:19,y:14,w:5,h:4}, collision:{x:19,y:16,w:5,h:2}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:15,text:"Residence"}, pathingBounds:{x:18,y:14,w:7,h:5} }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:5, y:19, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:5,y:19,w:4,h:4}, collision:{x:5,y:21,w:4,h:2}, interaction:{x:6,y:22,w:1,h:1}, label:{x:6,y:20,text:"Cottage"}, pathingBounds:{x:4,y:19,w:6,h:5} }) },
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:30, y:10, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:30,y:10,w:5,h:4}, collision:{x:30,y:12,w:5,h:2}, interaction:{x:32,y:13,w:1,h:1}, label:{x:32,y:11,text:"Residence"}, pathingBounds:{x:29,y:10,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:25, y:13, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:25,y:13,w:4,h:4}, collision:{x:25,y:15,w:4,h:2}, interaction:{x:26,y:16,w:1,h:1}, label:{x:26,y:14,text:"Hunter Lodge"}, pathingBounds:{x:24,y:13,w:6,h:5} }) },
   { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:20, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:20,w:5,h:3}, collision:{x:26,y:21,w:5,h:2}, interaction:{x:28,y:22,w:1,h:1}, label:{x:28,y:20,text:"Pond Boathouse"}, pathingBounds:{x:25,y:20,w:7,h:4} }) }
 );
@@ -3324,9 +3323,8 @@ for(let x=21;x<=24;x++){ world.fences.push({x,y:19}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
-  {x:10,y:11,type:"signPost",layer:"above_entities"},{x:11,y:11,type:"bench"},{x:12,y:11,type:"barrel"},
-  {x:15,y:11,type:"noticeBoard",layer:"above_entities"},{x:17,y:11,type:"well"},{x:18,y:11,type:"bench"},
-  {x:20,y:11,type:"handcart"},{x:21,y:11,type:"crate"},{x:22,y:12,type:"sack"},
+  {x:10,y:12,type:"signPost",layer:"above_entities"},{x:11,y:12,type:"bench"},{x:15,y:12,type:"noticeBoard",layer:"above_entities"},
+  {x:17,y:12,type:"well"},{x:18,y:12,type:"bench"},{x:20,y:12,type:"handcart"},{x:21,y:12,type:"crate"},{x:22,y:12,type:"sack"},
   {x:8,y:12,type:"barrel"},{x:9,y:12,type:"crate"},{x:10,y:12,type:"woodpile"},
   {x:13,y:9,type:"lanternPost",layer:"above_entities"},{x:19,y:9,type:"lanternPost",layer:"above_entities"},{x:20,y:9,type:"bench"},
   {x:8,y:17,type:"smallGarden"},{x:9,y:17,type:"smallGarden"},{x:10,y:17,type:"woodpile"},
@@ -6455,6 +6453,11 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
+      "Phase 32AA.2 status : stabilization active\n" +
+      "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
+      "Secondary atlas promoted : NO\n" +
+      "Fallback composition : provisional/legacy\n" +
+      "Town readiness : NOT PASSED (awaiting live QA frontage/roads/collision)\n" +
       "Building atlas entries:\n" + buildingAtlasLines + "\n" +
       "Target HP : " + (currentTarget ? (currentTarget.hp + "/" + currentTarget.maxHp) : "N/A") + "\n" +
       "Target cooldown : " + targetCooldownText;
