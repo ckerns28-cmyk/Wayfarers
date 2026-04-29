@@ -3025,6 +3025,10 @@ function createFootprint({
   label,
   pathingBounds,
   frontWalkBand,
+  visualBounds,
+  interactRect,
+  frontDoorTile,
+  blockedVisualTiles,
   occlusionDepthLine,
   rearExclusionZone
 }){
@@ -3033,6 +3037,10 @@ function createFootprint({
     collision,
     interaction,
     label,
+    visualBounds:visualBounds || visual,
+    interactRect:interactRect || interaction || null,
+    frontDoorTile:frontDoorTile || null,
+    blockedVisualTiles:Array.isArray(blockedVisualTiles) ? blockedVisualTiles : [],
     pathingBounds:pathingBounds || visual,
     frontWalkBand:frontWalkBand || null,
     occlusionDepthLine:occlusionDepthLine || null,
@@ -3130,8 +3138,8 @@ world.roads.push(
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6}, frontWalkBand:{ x:9, y:10, w:6, h:1 }, occlusionDepthLine:{ x:9, y:9, w:6, h:1 }, rearExclusionZone:{ x:9, y:6, w:6, h:3 } }) },
-  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, visualBounds:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, interactRect:{x:12,y:10,w:1,h:1}, frontDoorTile:{x:12,y:10}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6}, frontWalkBand:{ x:9, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:9, y:6, w:6, h:3 }], occlusionDepthLine:{ x:9, y:9, w:6, h:1 }, rearExclusionZone:{ x:9, y:6, w:6, h:3 } }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, visualBounds:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, interactRect:{x:20,y:10,w:1,h:1}, frontDoorTile:{x:20,y:10}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:18, y:6, w:5, h:3 }, { x:18, y:9, w:2, h:1 }, { x:21, y:9, w:2, h:1 }], occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
   { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:11, y:13, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:11,y:13,w:6,h:5}, collision:{x:11,y:16,w:6,h:2}, interaction:{x:14,y:17,w:1,h:1}, label:{x:14,y:14,text:"Village Hall"}, pathingBounds:{x:10,y:13,w:8,h:6} }) },
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:7, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:7,y:14,w:4,h:4}, collision:{x:7,y:16,w:4,h:2}, interaction:{x:8,y:17,w:1,h:1}, label:{x:8,y:15,text:"Cottage"}, pathingBounds:{x:6,y:14,w:6,h:5} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:19, y:14, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:19,y:14,w:5,h:4}, collision:{x:19,y:16,w:5,h:2}, interaction:{x:21,y:17,w:1,h:1}, label:{x:21,y:15,text:"Residence"}, pathingBounds:{x:18,y:14,w:7,h:5} }) },
@@ -3296,6 +3304,9 @@ function rebuildOverworldCollisionFromMap(){
   world.buildings.forEach((building)=>{
     addRect(building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h }, { allowRoadOverlap:false });
     addRect(building.rearExclusionZone, { allowRoadOverlap:false });
+    if(Array.isArray(building.blockedVisualTiles)){
+      building.blockedVisualTiles.forEach((blockedVisualRect)=>addRect(blockedVisualRect, { allowRoadOverlap:false }));
+    }
   });
   world.fences.forEach((fenceTile)=>rebuiltBlocked.add(keyOf(fenceTile.x, fenceTile.y)));
   world.trees.forEach((tree)=>rebuiltBlocked.add(keyOf(tree.x, tree.y)));
@@ -6910,11 +6921,19 @@ function drawCollisionOverlay(){
   if(!isInMirrorCave && !isInAbandonedTollhouse){
     world.buildings.forEach((building)=>{
       drawWorldRect(building.visual || { x:building.x, y:building.y, w:building.w, h:building.h }, "rgba(98,166,255,0.9)", null);
+      drawWorldRect(building.visualBounds, "rgba(126,205,255,0.82)", "rgba(126,205,255,0.06)");
       drawWorldRect(building.collision || building.visual || { x:building.x, y:building.y, w:building.w, h:building.h }, "rgba(255,128,88,0.95)", "rgba(255,124,88,0.08)");
       drawWorldRect(building.frontWalkBand, "rgba(124,246,171,0.9)", "rgba(124,246,171,0.1)");
       drawWorldRect(building.occlusionDepthLine, "rgba(244,212,119,0.95)", "rgba(244,212,119,0.08)");
       drawWorldRect(building.rearExclusionZone, "rgba(230,104,201,0.9)", "rgba(230,104,201,0.08)");
       drawWorldRect(building.interaction, "rgba(108,206,255,0.95)", "rgba(108,206,255,0.15)");
+      drawWorldRect(building.interactRect, "rgba(61,226,255,0.95)", null);
+      if(Array.isArray(building.blockedVisualTiles)){
+        building.blockedVisualTiles.forEach((blockedRect)=>drawWorldRect(blockedRect, "rgba(255,91,166,0.95)", "rgba(255,91,166,0.12)"));
+      }
+      if(building.frontDoorTile){
+        drawWorldRect({ x:building.frontDoorTile.x, y:building.frontDoorTile.y, w:1, h:1 }, "rgba(91,252,214,0.98)", "rgba(91,252,214,0.24)");
+      }
       drawWorldRect(building.pathingBounds, "rgba(239,199,111,0.55)", null);
     });
     getActiveWorldObjects().forEach((object)=>{
@@ -6947,6 +6966,9 @@ function drawCollisionOverlay(){
     entityRects.push({ x:hostile.targetX, y:hostile.targetY, w:1, h:1, stroke:"rgba(255,110,110,0.98)", fill:"rgba(255,110,110,0.2)" });
   });
   entityRects.forEach((rect)=>drawWorldRect(rect, rect.stroke, rect.fill));
+  if(ATLAS_DEBUG_MODE){
+    drawWorldRect({ x:player.x, y:player.y, w:1, h:1 }, "rgba(120,255,225,0.95)", null);
+  }
   ctx.restore();
 }
 function drawTileRotated(img, x, y, turns){
