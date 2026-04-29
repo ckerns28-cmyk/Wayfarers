@@ -1,105 +1,270 @@
 {
   "atlasFile": "hearthvale_buildings_atlas_v1.png",
+  "manifestVersion": "phase32aa-hearthvale-town-kit-v1",
   "tileSize": 32,
   "productionReady": true,
   "entries": [
     {
       "id": "village_hall_meeting_house",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": { "x": 0, "y": 0, "w": 192, "h": 160 },
-      "tileFootprint": { "w": 6, "h": 5 },
-      "anchorX": 96,
-      "anchorY": 128,
-      "collisionRect": { "x": 0, "y": 3, "w": 6, "h": 2 },
-      "interactionRect": { "x": 3, "y": 4, "w": 1, "h": 1 },
-      "labelAnchor": { "x": 3, "y": 1 },
+      "sourceRect": {
+        "x": 758,
+        "y": 493,
+        "w": 459,
+        "h": 355
+      },
+      "tileFootprint": {
+        "w": 6,
+        "h": 5
+      },
+      "anchorX": 94,
+      "anchorY": 132,
+      "collisionRect": {
+        "x": 0,
+        "y": 3,
+        "w": 6,
+        "h": 2
+      },
+      "interactionRect": {
+        "x": 3,
+        "y": 4,
+        "w": 1,
+        "h": 1
+      },
+      "labelAnchor": {
+        "x": 3,
+        "y": 1
+      },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true
+      "productionReady": true,
+      "debugOnly": false,
+      "drawW": 188,
+      "drawH": 145,
+      "calibrationOnly": false
     },
     {
       "id": "mercantile_shop",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": { "x": 192, "y": 0, "w": 160, "h": 160 },
-      "tileFootprint": { "w": 5, "h": 5 },
-      "anchorX": 80,
-      "anchorY": 128,
-      "collisionRect": { "x": 0, "y": 4, "w": 5, "h": 1 },
-      "interactionRect": { "x": 2, "y": 4, "w": 1, "h": 1 },
-      "labelAnchor": { "x": 2, "y": 1 },
+      "sourceRect": {
+        "x": 473,
+        "y": 67,
+        "w": 329,
+        "h": 403
+      },
+      "tileFootprint": {
+        "w": 5,
+        "h": 5
+      },
+      "anchorX": 64,
+      "anchorY": 126,
+      "drawW": 131,
+      "drawH": 160,
+      "collisionRect": {
+        "x": 0,
+        "y": 4,
+        "w": 5,
+        "h": 1
+      },
+      "interactionRect": {
+        "x": 2,
+        "y": 4,
+        "w": 1,
+        "h": 1
+      },
+      "labelAnchor": {
+        "x": 2,
+        "y": 1
+      },
+      "renderLayer": "buildings",
+      "proofEnabled": true,
+      "productionReady": true,
+      "calibrationOnly": false
+    },
+    {
+      "id": "inn_tavern_v1",
+      "atlas": "hearthvale_buildings_atlas_v1.png",
+      "sourceRect": {
+        "x": 33,
+        "y": 120,
+        "w": 420,
+        "h": 340
+      },
+      "tileFootprint": {
+        "w": 6,
+        "h": 5
+      },
+      "anchorX": 96,
+      "anchorY": 143,
+      "drawW": 192,
+      "drawH": 156,
+      "collisionRect": {
+        "x": 0,
+        "y": 3,
+        "w": 6,
+        "h": 2
+      },
+      "interactionRect": {
+        "x": 3,
+        "y": 4,
+        "w": 1,
+        "h": 1
+      },
+      "labelAnchor": {
+        "x": 3,
+        "y": 1
+      },
       "renderLayer": "buildings",
       "proofEnabled": true,
       "productionReady": true
     },
     {
-      "id": "inn_tavern",
-      "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": { "x": 0, "y": 160, "w": 192, "h": 160 },
-      "tileFootprint": { "w": 6, "h": 5 },
-      "anchorX": 96,
-      "anchorY": 128,
-      "collisionRect": { "x": 0, "y": 3, "w": 6, "h": 2 },
-      "interactionRect": { "x": 3, "y": 4, "w": 1, "h": 1 },
-      "labelAnchor": { "x": 3, "y": 1 },
-      "renderLayer": "buildings",
-      "proofEnabled": false,
-      "productionReady": false
-    },
-    {
       "id": "residence_small",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": { "x": 192, "y": 160, "w": 128, "h": 128 },
-      "tileFootprint": { "w": 4, "h": 4 },
+      "sourceRect": {
+        "x": 192,
+        "y": 160,
+        "w": 128,
+        "h": 128
+      },
+      "tileFootprint": {
+        "w": 4,
+        "h": 4
+      },
       "anchorX": 64,
       "anchorY": 96,
-      "collisionRect": { "x": 0, "y": 2, "w": 4, "h": 2 },
-      "interactionRect": { "x": 1, "y": 3, "w": 1, "h": 1 },
-      "labelAnchor": { "x": 1, "y": 1 },
+      "collisionRect": {
+        "x": 0,
+        "y": 2,
+        "w": 4,
+        "h": 2
+      },
+      "interactionRect": {
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 1
+      },
+      "labelAnchor": {
+        "x": 1,
+        "y": 1
+      },
       "renderLayer": "buildings",
-      "proofEnabled": false,
-      "productionReady": false
+      "proofEnabled": true,
+      "productionReady": true,
+      "debugOnly": false,
+      "calibrationOnly": false
     },
     {
       "id": "residence_large",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": { "x": 320, "y": 160, "w": 160, "h": 128 },
-      "tileFootprint": { "w": 5, "h": 4 },
+      "sourceRect": {
+        "x": 320,
+        "y": 160,
+        "w": 160,
+        "h": 128
+      },
+      "tileFootprint": {
+        "w": 5,
+        "h": 4
+      },
       "anchorX": 80,
       "anchorY": 96,
-      "collisionRect": { "x": 0, "y": 2, "w": 5, "h": 2 },
-      "interactionRect": { "x": 2, "y": 3, "w": 1, "h": 1 },
-      "labelAnchor": { "x": 2, "y": 1 },
+      "collisionRect": {
+        "x": 0,
+        "y": 2,
+        "w": 5,
+        "h": 2
+      },
+      "interactionRect": {
+        "x": 2,
+        "y": 3,
+        "w": 1,
+        "h": 1
+      },
+      "labelAnchor": {
+        "x": 2,
+        "y": 1
+      },
       "renderLayer": "buildings",
-      "proofEnabled": false,
-      "productionReady": false
+      "proofEnabled": true,
+      "productionReady": true,
+      "debugOnly": false,
+      "calibrationOnly": false
     },
     {
       "id": "hunter_lodge_or_outfitter",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": { "x": 0, "y": 320, "w": 128, "h": 128 },
-      "tileFootprint": { "w": 4, "h": 4 },
+      "sourceRect": {
+        "x": 0,
+        "y": 320,
+        "w": 128,
+        "h": 128
+      },
+      "tileFootprint": {
+        "w": 4,
+        "h": 4
+      },
       "anchorX": 64,
       "anchorY": 96,
-      "collisionRect": { "x": 0, "y": 2, "w": 4, "h": 2 },
-      "interactionRect": { "x": 1, "y": 3, "w": 1, "h": 1 },
-      "labelAnchor": { "x": 1, "y": 1 },
+      "collisionRect": {
+        "x": 0,
+        "y": 2,
+        "w": 4,
+        "h": 2
+      },
+      "interactionRect": {
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 1
+      },
+      "labelAnchor": {
+        "x": 1,
+        "y": 1
+      },
       "renderLayer": "buildings",
-      "proofEnabled": false,
-      "productionReady": false
+      "proofEnabled": true,
+      "productionReady": true,
+      "debugOnly": false,
+      "calibrationOnly": false
     },
     {
       "id": "pond_boathouse_or_waterfront_shed",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": { "x": 128, "y": 320, "w": 160, "h": 96 },
-      "tileFootprint": { "w": 5, "h": 3 },
+      "sourceRect": {
+        "x": 128,
+        "y": 320,
+        "w": 160,
+        "h": 96
+      },
+      "tileFootprint": {
+        "w": 5,
+        "h": 3
+      },
       "anchorX": 80,
       "anchorY": 64,
-      "collisionRect": { "x": 0, "y": 1, "w": 5, "h": 2 },
-      "interactionRect": { "x": 2, "y": 2, "w": 1, "h": 1 },
-      "labelAnchor": { "x": 2, "y": 0 },
+      "collisionRect": {
+        "x": 0,
+        "y": 1,
+        "w": 5,
+        "h": 2
+      },
+      "interactionRect": {
+        "x": 2,
+        "y": 2,
+        "w": 1,
+        "h": 1
+      },
+      "labelAnchor": {
+        "x": 2,
+        "y": 0
+      },
       "renderLayer": "buildings",
-      "proofEnabled": false,
-      "productionReady": false
+      "proofEnabled": true,
+      "productionReady": true,
+      "debugOnly": false,
+      "calibrationOnly": false
     }
   ]
 }
