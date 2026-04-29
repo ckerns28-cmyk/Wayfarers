@@ -7766,6 +7766,7 @@ function drawWorld(){
       ty:hostile.py/TILE,
       priority:hostile===currentTarget ? 4 : 1
     }));
+  const zoneLabelEntries=[];
   drawWorldLabels([
     {text:Math.abs(player.targetX-npc.x)+Math.abs(player.targetY-npc.y)<=5 ? npc.name : "", tx:npc.x, ty:npc.y, priority:3},
     {text:Math.abs(player.targetX-hunterNpc.x)+Math.abs(player.targetY-hunterNpc.y)<=5 ? hunterNpc.displayLabel : "", tx:hunterNpc.x, ty:hunterNpc.y, priority:3},
