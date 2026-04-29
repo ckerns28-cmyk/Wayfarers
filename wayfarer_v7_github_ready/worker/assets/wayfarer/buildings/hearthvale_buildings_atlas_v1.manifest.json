@@ -1,81 +1,39 @@
 {
   "atlasFile": "hearthvale_buildings_atlas_v1.png",
-  "manifestVersion": "phase32aa-hearthvale-town-kit-v1",
+  "manifestVersion": "phase33-1-1c-catalog-pipeline",
   "tileSize": 32,
   "productionReady": true,
   "entries": [
     {
       "id": "village_hall_meeting_house",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": {
-        "x": 758,
-        "y": 493,
-        "w": 459,
-        "h": 355
-      },
-      "tileFootprint": {
-        "w": 6,
-        "h": 5
-      },
+      "sourceRect": { "x": 758, "y": 493, "w": 459, "h": 355 },
+      "tileFootprint": { "w": 6, "h": 5 },
       "anchorX": 94,
       "anchorY": 132,
-      "collisionRect": {
-        "x": 0,
-        "y": 3,
-        "w": 6,
-        "h": 2
-      },
-      "interactionRect": {
-        "x": 3,
-        "y": 4,
-        "w": 1,
-        "h": 1
-      },
-      "labelAnchor": {
-        "x": 3,
-        "y": 1
-      },
+      "drawW": 188,
+      "drawH": 145,
+      "collisionRect": { "x": 0, "y": 3, "w": 6, "h": 2 },
+      "interactionRect": { "x": 3, "y": 4, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 3, "y": 1 },
       "renderLayer": "buildings",
       "proofEnabled": true,
       "productionReady": true,
       "debugOnly": false,
-      "drawW": 188,
-      "drawH": 145,
       "calibrationOnly": false
     },
     {
       "id": "mercantile_shop",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": {
-        "x": 473,
-        "y": 67,
-        "w": 329,
-        "h": 403
-      },
-      "tileFootprint": {
-        "w": 5,
-        "h": 5
-      },
+      "sourceRect": { "x": 473, "y": 67, "w": 329, "h": 403 },
+      "tileFootprint": { "w": 5, "h": 5 },
       "anchorX": 64,
       "anchorY": 126,
       "drawW": 131,
       "drawH": 160,
-      "collisionRect": {
-        "x": 0,
-        "y": 4,
-        "w": 5,
-        "h": 1
-      },
-      "interactionRect": {
-        "x": 2,
-        "y": 4,
-        "w": 1,
-        "h": 1
-      },
-      "labelAnchor": {
-        "x": 2,
-        "y": 1
-      },
+      "collisionRect": { "x": 0, "y": 4, "w": 5, "h": 1 },
+      "interactionRect": { "x": 2, "y": 4, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 2, "y": 1 },
       "renderLayer": "buildings",
       "proofEnabled": true,
       "productionReady": true,
@@ -84,195 +42,94 @@
     {
       "id": "inn_tavern_v1",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": {
-        "x": 33,
-        "y": 120,
-        "w": 420,
-        "h": 340
-      },
-      "tileFootprint": {
-        "w": 6,
-        "h": 5
-      },
+      "sourceRect": { "x": 33, "y": 120, "w": 420, "h": 340 },
+      "tileFootprint": { "w": 6, "h": 5 },
       "anchorX": 96,
       "anchorY": 143,
       "drawW": 192,
       "drawH": 156,
-      "collisionRect": {
-        "x": 0,
-        "y": 3,
-        "w": 6,
-        "h": 2
-      },
-      "interactionRect": {
-        "x": 3,
-        "y": 4,
-        "w": 1,
-        "h": 1
-      },
-      "labelAnchor": {
-        "x": 3,
-        "y": 1
-      },
+      "collisionRect": { "x": 0, "y": 3, "w": 6, "h": 2 },
+      "interactionRect": { "x": 3, "y": 4, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 3, "y": 1 },
       "renderLayer": "buildings",
       "proofEnabled": true,
       "productionReady": true
     },
     {
+      "_comment": "33.1.1C: sourceRect below is an UNVERIFIED REFERENCE CANDIDATE, not a confirmed crop. productionReady:false until [Atlas Catalog Scan] confirms a clean complete crop.",
       "id": "residence_small",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": {
-        "x": 439,
-        "y": 526,
-        "w": 254,
-        "h": 309
-      },
-      "tileFootprint": {
-        "w": 4,
-        "h": 4
-      },
+      "sourceRect": { "x": 439, "y": 526, "w": 254, "h": 309 },
+      "tileFootprint": { "w": 4, "h": 4 },
       "anchorX": 58,
       "anchorY": 102,
       "drawW": 116,
       "drawH": 116,
-      "collisionRect": {
-        "x": 0,
-        "y": 2,
-        "w": 4,
-        "h": 2
-      },
-      "interactionRect": {
-        "x": 1,
-        "y": 3,
-        "w": 1,
-        "h": 1
-      },
-      "labelAnchor": {
-        "x": 1,
-        "y": 1
-      },
+      "collisionRect": { "x": 0, "y": 2, "w": 4, "h": 2 },
+      "interactionRect": { "x": 1, "y": 3, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 1, "y": 1 },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true,
+      "productionReady": false,
       "debugOnly": false,
       "calibrationOnly": false
     },
     {
+      "_comment": "33.1.1C: UNVERIFIED REFERENCE CANDIDATE. productionReady:false until catalog verified.",
       "id": "residence_large",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": {
-        "x": 44,
-        "y": 835,
-        "w": 367,
-        "h": 344
-      },
-      "tileFootprint": {
-        "w": 5,
-        "h": 4
-      },
+      "sourceRect": { "x": 44, "y": 835, "w": 367, "h": 344 },
+      "tileFootprint": { "w": 5, "h": 4 },
       "anchorX": 72,
       "anchorY": 104,
-      "collisionRect": {
-        "x": 0,
-        "y": 2,
-        "w": 5,
-        "h": 2
-      },
-      "interactionRect": {
-        "x": 2,
-        "y": 3,
-        "w": 1,
-        "h": 1
-      },
-      "labelAnchor": {
-        "x": 2,
-        "y": 1
-      },
+      "drawW": 144,
+      "drawH": 120,
+      "collisionRect": { "x": 0, "y": 2, "w": 5, "h": 2 },
+      "interactionRect": { "x": 2, "y": 3, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 2, "y": 1 },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true,
+      "productionReady": false,
       "debugOnly": false,
-      "calibrationOnly": false,
-      "drawW": 144,
-      "drawH": 120
+      "calibrationOnly": false
     },
     {
+      "_comment": "33.1.1C: UNVERIFIED REFERENCE CANDIDATE. productionReady:false until catalog verified.",
       "id": "hunter_lodge_or_outfitter",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": {
-        "x": 61,
-        "y": 519,
-        "w": 309,
-        "h": 308
-      },
-      "tileFootprint": {
-        "w": 4,
-        "h": 4
-      },
+      "sourceRect": { "x": 61, "y": 519, "w": 309, "h": 308 },
+      "tileFootprint": { "w": 4, "h": 4 },
       "anchorX": 60,
       "anchorY": 104,
-      "collisionRect": {
-        "x": 0,
-        "y": 2,
-        "w": 4,
-        "h": 2
-      },
-      "interactionRect": {
-        "x": 1,
-        "y": 3,
-        "w": 1,
-        "h": 1
-      },
-      "labelAnchor": {
-        "x": 1,
-        "y": 1
-      },
+      "drawW": 120,
+      "drawH": 120,
+      "collisionRect": { "x": 0, "y": 2, "w": 4, "h": 2 },
+      "interactionRect": { "x": 1, "y": 3, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 1, "y": 1 },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true,
+      "productionReady": false,
       "debugOnly": false,
-      "calibrationOnly": false,
-      "drawW": 120,
-      "drawH": 120
+      "calibrationOnly": false
     },
     {
+      "_comment": "33.1.1C: UNVERIFIED REFERENCE CANDIDATE. productionReady:false until catalog verified.",
       "id": "pond_boathouse_or_waterfront_shed",
       "atlas": "hearthvale_buildings_atlas_v1.png",
-      "sourceRect": {
-        "x": 899,
-        "y": 939,
-        "w": 250,
-        "h": 245
-      },
-      "tileFootprint": {
-        "w": 5,
-        "h": 3
-      },
+      "sourceRect": { "x": 899, "y": 939, "w": 250, "h": 245 },
+      "tileFootprint": { "w": 5, "h": 3 },
       "anchorX": 75,
       "anchorY": 72,
-      "collisionRect": {
-        "x": 0,
-        "y": 1,
-        "w": 5,
-        "h": 2
-      },
-      "interactionRect": {
-        "x": 2,
-        "y": 2,
-        "w": 1,
-        "h": 1
-      },
-      "labelAnchor": {
-        "x": 2,
-        "y": 0
-      },
+      "drawW": 150,
+      "drawH": 92,
+      "collisionRect": { "x": 0, "y": 1, "w": 5, "h": 2 },
+      "interactionRect": { "x": 2, "y": 2, "w": 1, "h": 1 },
+      "labelAnchor": { "x": 2, "y": 0 },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true,
+      "productionReady": false,
       "debugOnly": false,
-      "calibrationOnly": false,
-      "drawW": 150,
-      "drawH": 92
+      "calibrationOnly": false
     }
   ]
 }

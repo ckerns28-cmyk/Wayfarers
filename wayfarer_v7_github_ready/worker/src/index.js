@@ -1192,16 +1192,19 @@ const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
   buildings:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.manifest.json",
   props:"/assets/wayfarer/props/hearthvale_props_atlas_v1.manifest.json"
 });
-const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern","b_mercantile","b_village_hall","b_res_small"]));
+const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern","b_mercantile","b_village_hall"]));
 const HEARTHVALE_PROOF_PROP_TYPES = Object.freeze(new Set(["bench","barrel","crate","signPost"]));
 const ATLAS_BUILDING_METADATA = Object.freeze({
   village_hall_meeting_house:{ id:"village_hall_meeting_house", role:"village_hall_meeting_house", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:758, y:493, w:459, h:355 }, drawW:188, drawH:145, anchorX:94, anchorY:132, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
   mercantile_shop:{ id:"mercantile_shop", role:"mercantile_shop", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:473, y:67, w:329, h:403 }, drawW:131, drawH:160, anchorX:64, anchorY:126, footprint:{ w:5, h:5 }, collisionRect:{ x:0, y:4, w:5, h:1 }, interactionRect:{ x:2, y:4, w:1, h:1 }, doorTile:{ x:2, y:4 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
   inn_tavern_v1:{ id:"inn_tavern_v1", role:"inn_tavern", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:33, y:120, w:420, h:340 }, drawW:192, drawH:156, anchorX:96, anchorY:143, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
-  residence_small:{ id:"residence_small", role:"residence_small", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:439, y:526, w:254, h:309 }, drawW:116, drawH:116, anchorX:58, anchorY:102, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:1 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
-  residence_large:{ id:"residence_large", role:"residence_large", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:44, y:835, w:367, h:344 }, drawW:144, drawH:120, anchorX:72, anchorY:104, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, doorTile:{ x:2, y:3 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
-  hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:61, y:519, w:309, h:308 }, drawW:120, drawH:120, anchorX:60, anchorY:104, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
-  pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:899, y:939, w:250, h:245 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null }
+  // 33.1.1C: secondary buildings are FALLBACK-GATED pending atlas catalog verification.
+  // crop coords are UNVERIFIED REFERENCE CANDIDATES from prior scan passes, NOT confirmed production crops.
+  // Do NOT set productionReady:true until crop passes [Atlas Catalog Scan] and human visual review.
+  residence_small:{ id:"residence_small", role:"residence_small", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:439, y:526, w:254, h:309 }, drawW:116, drawH:116, anchorX:58, anchorY:102, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
+  residence_large:{ id:"residence_large", role:"residence_large", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:44, y:835, w:367, h:344 }, drawW:144, drawH:120, anchorX:72, anchorY:104, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, doorTile:{ x:2, y:3 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
+  hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:61, y:519, w:309, h:308 }, drawW:120, drawH:120, anchorX:60, anchorY:104, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
+  pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:899, y:939, w:250, h:245 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" }
 });
 
 const LOCKED_HERO_BUILDING_IDS=Object.freeze(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house"]);
@@ -2622,6 +2625,136 @@ function emitBuildingAtlasCropAuditIfReady(){
   if(token===lastAtlasCropAuditToken) return;
   lastAtlasCropAuditToken=token;
   console.info("[Building Atlas Crop Audit] " + JSON.stringify(report));
+}
+// 33.1.1C: Full-sheet atlas catalog scan.
+// Runs ONCE in atlasDebug mode after the buildings image loads.
+// Uses DFS connected-component analysis to find every non-transparent
+// blob in the atlas, then classifies each candidate and produces a
+// per-secondary-role suitability ranking. Output goes to console as
+// [Atlas Catalog Scan] — never affects render path or game state.
+let atlasCatalogScanEmitted=false;
+function runAtlasCatalogScanOnce(){
+  if(!ATLAS_DEBUG_MODE||atlasCatalogScanEmitted) return;
+  const atlas=atlasImages.buildings;
+  if(!atlas||!atlas.complete||!(atlas.naturalWidth>0&&atlas.naturalHeight>0)) return;
+  atlasCatalogScanEmitted=true;
+  // Defer 200ms so we don't block the render tick that discovers image readiness.
+  setTimeout(()=>{
+    try{
+      const W=atlas.naturalWidth, H=atlas.naturalHeight;
+      const canvas=document.createElement("canvas");
+      canvas.width=W; canvas.height=H;
+      const c=canvas.getContext("2d",{willReadFrequently:true});
+      if(!c){ console.warn("[Atlas Catalog Scan] could not get 2d context"); return; }
+      c.drawImage(atlas,0,0);
+      const data=c.getImageData(0,0,W,H).data;
+      const ALPHA_THRESH=16;
+      const MIN_BLOB_PX=32; // ignore blobs smaller than this on any axis (noise)
+      const visited=new Uint8Array(W*H);
+      const rawBlobs=[];
+
+      for(let sy=0;sy<H;sy++){
+        for(let sx=0;sx<W;sx++){
+          const startIdx=sy*W+sx;
+          if(visited[startIdx]) continue;
+          visited[startIdx]=1;
+          if(data[startIdx*4+3]<ALPHA_THRESH) continue;
+          // Iterative DFS
+          const stack=[startIdx];
+          let minX=sx,minY=sy,maxX=sx,maxY=sy,pixCount=0;
+          while(stack.length>0){
+            const idx=stack.pop();
+            const px=idx%W, py=(idx/W)|0;
+            pixCount++;
+            if(px<minX) minX=px; if(py<minY) minY=py;
+            if(px>maxX) maxX=px; if(py>maxY) maxY=py;
+            const nbrs=[idx-1,idx+1,idx-W,idx+W];
+            for(let k=0;k<4;k++){
+              const n=nbrs[k];
+              if(n<0||n>=W*H) continue;
+              if(visited[n]) continue;
+              // prevent horizontal wrap-around
+              if(k===0&&(n%W)>=px) continue;
+              if(k===1&&(n%W)<=px) continue;
+              visited[n]=1;
+              if(data[n*4+3]>=ALPHA_THRESH) stack.push(n);
+            }
+          }
+          const bw=maxX-minX+1, bh=maxY-minY+1;
+          if(bw<MIN_BLOB_PX||bh<MIN_BLOB_PX) continue;
+          rawBlobs.push({minX,minY,maxX,maxY,pixCount});
+        }
+      }
+
+      // Merge blobs whose bounding boxes are within GAP_PX of each other.
+      // Buildings can have small internal transparent windows/details that split blobs.
+      const GAP_PX=12;
+      let merged=true;
+      const blobs=[...rawBlobs];
+      while(merged){
+        merged=false;
+        for(let i=0;i<blobs.length&&!merged;i++){
+          for(let j=i+1;j<blobs.length&&!merged;j++){
+            const a=blobs[i],b=blobs[j];
+            const gapX=Math.max(0,Math.max(a.minX,b.minX)-Math.min(a.maxX,b.maxX)-1);
+            const gapY=Math.max(0,Math.max(a.minY,b.minY)-Math.min(a.maxY,b.maxY)-1);
+            if(gapX<=GAP_PX&&gapY<=GAP_PX){
+              blobs[i]={minX:Math.min(a.minX,b.minX),minY:Math.min(a.minY,b.minY),maxX:Math.max(a.maxX,b.maxX),maxY:Math.max(a.maxY,b.maxY),pixCount:a.pixCount+b.pixCount};
+              blobs.splice(j,1);
+              merged=true;
+            }
+          }
+        }
+      }
+
+      const EDGE_MARGIN=2;
+      const heroZones=LOCKED_HERO_BUILDING_IDS.map((id)=>({id,crop:ATLAS_BUILDING_METADATA[id].crop}));
+
+      const results=blobs.map((blob,idx)=>{
+        const x=blob.minX,y=blob.minY,w=blob.maxX-blob.minX+1,h=blob.maxY-blob.minY+1;
+        const clipEdges={left:x<=EDGE_MARGIN,top:y<=EDGE_MARGIN,right:blob.maxX>=W-1-EDGE_MARGIN,bottom:blob.maxY>=H-1-EDGE_MARGIN};
+        const isClipped=Object.values(clipEdges).some(Boolean);
+        const heroOverlaps=heroZones.filter((hz)=>rectsOverlap({x,y,w,h},hz.crop)).map((hz)=>hz.id);
+        let sizeClass="extra_large";
+        if(w<=180&&h<=180) sizeClass="small";
+        else if(w<=280&&h<=280) sizeClass="medium";
+        else if(w<=480&&h<=380) sizeClass="large";
+        const blocking=[];
+        if(isClipped) blocking.push("clipped_to_edge");
+        if(heroOverlaps.length>0) blocking.push("overlaps_hero:"+heroOverlaps.join(","));
+        const clean=blocking.length===0;
+        // Role suitability: clean + size fits expected draw dimensions with 2x tolerance
+        const possibleRoles=[];
+        if(clean){
+          if(w<=280&&h<=320) possibleRoles.push("residence_small");
+          if(w<=420&&h<=380) possibleRoles.push("residence_large");
+          if(w<=340&&h<=340) possibleRoles.push("hunter_lodge_or_outfitter");
+          if(w<=320&&h<=280) possibleRoles.push("pond_boathouse_or_waterfront_shed");
+        }
+        return{candidateId:"C"+String(idx).padStart(2,"0"),boundingBox:{x,y,w,h},pixelCount:blob.pixCount,sizeClass,clipEdges,heroOverlaps,possibleRoles,blocking,clean,audit:clean?"PASS":"BLOCKED"};
+      }).sort((a,b)=>a.boundingBox.y-b.boundingBox.y||a.boundingBox.x-b.boundingBox.x);
+
+      const roleSummary=SECONDARY_BUILDING_IDS.map((roleId)=>{
+        const entry=ATLAS_BUILDING_METADATA[roleId];
+        const referenceCandidate=entry?{x:entry.crop.x,y:entry.crop.y,w:entry.crop.w,h:entry.crop.h}:null;
+        // Check if reference candidate itself is in any clean blob
+        const refBlob=results.find((r)=>referenceCandidate&&r.boundingBox.x<=referenceCandidate.x&&r.boundingBox.y<=referenceCandidate.y&&r.boundingBox.x+r.boundingBox.w>=referenceCandidate.x+referenceCandidate.w&&r.boundingBox.y+r.boundingBox.h>=referenceCandidate.y+referenceCandidate.h);
+        const fits=results.filter((r)=>r.possibleRoles.includes(roleId));
+        return{role:roleId,referenceCandidate,referenceCandidateInBlob:refBlob?refBlob.candidateId:null,referenceCandidateClean:refBlob?refBlob.clean:false,referenceCandidateBlocking:refBlob?refBlob.blocking:[],cleanCandidates:fits.filter((r)=>r.clean).map((r)=>r.candidateId),blockedCandidates:fits.filter((r)=>!r.clean).map((r)=>r.candidateId),promotable:fits.some((r)=>r.clean)};
+      });
+
+      const cleanCount=results.filter((r)=>r.clean).length;
+      console.info("[Atlas Catalog Scan] sheetSize="+W+"x"+H+" totalCandidates="+results.length+" cleanCandidates="+cleanCount+" blockedCandidates="+(results.length-cleanCount));
+      console.info("[Atlas Catalog Scan] candidates="+JSON.stringify(results));
+      console.info("[Atlas Catalog Scan] roleSummary="+JSON.stringify(roleSummary));
+      const promotableRoles=roleSummary.filter((r)=>r.promotable).map((r)=>r.role);
+      const stalledRoles=roleSummary.filter((r)=>!r.promotable).map((r)=>r.role);
+      console.info("[Atlas Catalog Scan] promotable_roles="+promotableRoles.join(",")+" stalled_roles="+stalledRoles.join(",")+" — secondary promotion gated until human review of above candidates");
+    }catch(catalogErr){
+      console.warn("[Atlas Catalog Scan] error during scan",catalogErr);
+      atlasCatalogScanEmitted=false; // allow retry on next frame if error was transient
+    }
+  },200);
 }
 function maybeEmitFrontageAudit(){
   if(!ATLAS_DEBUG_MODE && !showCollisionOverlay) return;
@@ -8165,6 +8298,7 @@ function drawWorld(){
   maybeLogBuildingRenderSummary();
   maybeEmitFrontageAudit();
   emitBuildingAtlasCropAuditIfReady();
+  runAtlasCatalogScanOnce();
   drawDecorSourceLabels();
   emitDecorSuppressionDebugReport();
   flushDecorSourceTraceFrame();
