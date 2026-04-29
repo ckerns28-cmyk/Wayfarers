@@ -7558,13 +7558,53 @@ function drawWorld(){
     }
   }
 
-  world.buildings.forEach((b,bIndex)=>{
+  const buildingDrawEntries=world.buildings.map((b,bIndex)=>{
     const spriteId=getBuildingSpriteId(b);
     const sprite=atlasManifests.buildings.sprites[spriteId];
     const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
     const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
+    const worldAnchorY=(b.y*TILE)+anchorPxY;
     const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
     const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
+    return { type:"building", b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, worldAnchorY, drawX, drawY };
+  });
+
+  const entityDrawEntries=[
+    { type:"npc", id:npc.id, worldAnchorY:npc.py, draw:()=>{
+      drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.42,8.6);
+      drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.86, "", 0, null, null);
+    } },
+    { type:"npc", id:hunterNpc.id, worldAnchorY:hunterNpc.py, draw:()=>{
+      drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.4,8.7);
+      drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.86, "", 0, null, null);
+    } },
+    { type:"npc", id:vendorNpc.id, worldAnchorY:vendorNpc.py, draw:()=>{
+      drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.4,8.7);
+      drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.86, "", 0, null, null);
+    } },
+    ...wolves.filter((wolf)=>wolf.hp>0).map((wolf)=>({ type:"wolf", id:wolf.id||"wolf", worldAnchorY:wolf.py, draw:()=>{
+      drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.26,8.1);
+      drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+    } })),
+    ...bandits.filter((bandit)=>bandit.hp>0).map((bandit)=>({ type:"bandit", id:bandit.id||"bandit", worldAnchorY:bandit.py, draw:()=>{
+      drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.32,8.7);
+      drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.85, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit));
+    } })),
+    { type:"player", id:"player", worldAnchorY:player.py, draw:()=>{
+      drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2);
+      drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+    } }
+  ];
+
+  const renderQueue=[...buildingDrawEntries, ...entityDrawEntries]
+    .sort((a,b)=>a.worldAnchorY-b.worldAnchorY);
+
+  renderQueue.forEach((entry, drawOrderRank)=>{
+    if(entry.type!=="building"){
+      entry.draw();
+      return;
+    }
+    const { b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, drawX, drawY, worldAnchorY }=entry;
 
     for(let ry=0; ry<b.h; ry++){
       const right = tileToScreen(b.x+b.w, b.y+ry);
@@ -7602,6 +7642,16 @@ function drawWorld(){
       drawAtlasProofMarker(drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh, b, "ATLAS", null);
       logAtlasProofStatusOnce("ATLAS");
     }
+    if(ATLAS_DEBUG_MODE || isDecorDebugEnabled()){
+      const anchorDebug=tileToScreen(b.x,b.y);
+      const anchorX=Math.round(anchorDebug.x + anchorPxX);
+      const anchorY=Math.round(anchorDebug.y + anchorPxY);
+      ctx.fillStyle="rgba(24,30,44,0.85)";
+      ctx.fillRect(anchorX+8, anchorY-18, 170, 14);
+      ctx.fillStyle="rgba(176,243,255,0.95)";
+      ctx.font="10px monospace";
+      ctx.fillText((b.id||"building")+" y="+Math.round(worldAnchorY)+" rank="+drawOrderRank, anchorX+10, anchorY-8);
+    }
     traceDecorSource({
       sourceSystem:"overworld_renderer",
       sourceFunction:"drawWorld.world.buildings.forEach",
@@ -7619,168 +7669,10 @@ function drawWorld(){
     const chimneyTx=b.x + (bIndex%2 ? b.w-2 : 1);
     const chimneyTy=b.y;
     const chimney=tileToScreen(chimneyTx, chimneyTy);
-    traceDecorSource({
-      sourceSystem:"procedural_building_overlay",
-      sourceFunction:"drawWorld.world.buildings.forEach.chimney",
-      objectId:b.id + ":chimney",
-      objectType:"chimney_overlay",
-      sourceLabel:"PROCEDURAL",
-      procedural:true,
-      worldTile:{ x:chimneyTx, y:chimneyTy },
-      screenDraw:{ x:chimney.x+10, y:chimney.y-7 },
-      drawSize:{ w:6, h:9 },
-      renderLayer:"buildings_overlay"
-    });
-    if(b.id!=="b_inn_tavern"){
-      ctx.fillStyle="rgba(94,72,54,.9)";
-      ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
-    }
+    traceDecorSource({ sourceSystem:"procedural_building_overlay", sourceFunction:"drawWorld.world.buildings.forEach.chimney", objectId:b.id + ":chimney", objectType:"chimney_overlay", sourceLabel:"PROCEDURAL", procedural:true, worldTile:{ x:chimneyTx, y:chimneyTy }, screenDraw:{ x:chimney.x+10, y:chimney.y-7 }, drawSize:{ w:6, h:9 }, renderLayer:"buildings_overlay" });
+    if(b.id!=="b_inn_tavern"){ ctx.fillStyle="rgba(94,72,54,.9)"; ctx.fillRect(chimney.x+10,chimney.y-7,6,9); }
   });
 
-  const propsBehind=world.props.filter((prop)=>prop.layer!=="above_entities");
-  const propsAbove=world.props.filter((prop)=>prop.layer==="above_entities");
-  propsBehind.forEach((prop)=>{
-    const p = tileToScreen(prop.x,prop.y);
-    const usedAtlasSprite=drawMappedPropSprite(prop,p);
-    const mappedSpriteId=PROP_SPRITE_BY_WORLD_TYPE[prop.type];
-    const mappedAtlasSprite=mappedSpriteId ? atlasManifests.props?.sprites?.[mappedSpriteId] : null;
-    const mappedDrawX=mappedAtlasSprite ? Math.round(p.x + TILE/2 - (mappedAtlasSprite.anchorX ?? TILE/2)) : p.x;
-    const mappedDrawY=mappedAtlasSprite ? Math.round(p.y + TILE - (mappedAtlasSprite.anchorY ?? TILE)) : p.y;
-    const mappedDrawW=mappedAtlasSprite?.drawW ?? mappedAtlasSprite?.sw ?? TILE;
-    const mappedDrawH=mappedAtlasSprite?.drawH ?? mappedAtlasSprite?.sh ?? TILE;
-    const sourceLabel=usedAtlasSprite ? "PROP_ATLAS" : "LEGACY_PROP";
-    const drawRect={
-      x:usedAtlasSprite ? mappedDrawX : p.x,
-      y:usedAtlasSprite ? mappedDrawY : p.y,
-      w:usedAtlasSprite ? mappedDrawW : TILE,
-      h:usedAtlasSprite ? mappedDrawH : TILE
-    };
-    const suppressionZone=shouldSuppressDecorObject("prop_" + prop.x + "_" + prop.y + "_" + prop.type, sourceLabel, drawRect, { objectType:prop.type, worldTile:{ x:prop.x, y:prop.y } });
-    traceDecorSource({
-      sourceSystem:"map_props",
-      sourceFunction:"drawWorld.propsBehind.forEach",
-      objectId:"prop_" + prop.x + "_" + prop.y + "_" + prop.type,
-      objectType:prop.type,
-      sourceLabel,
-      atlasFile:usedAtlasSprite ? getAtlasFilename(mappedAtlasSprite?.atlas || atlasManifests.props?.imagePath) : null,
-      crop:usedAtlasSprite && mappedAtlasSprite ? { x:mappedAtlasSprite.sx, y:mappedAtlasSprite.sy, w:mappedAtlasSprite.sw, h:mappedAtlasSprite.sh } : null,
-      procedural:!usedAtlasSprite,
-      worldTile:{ x:prop.x, y:prop.y },
-      screenDraw:{ x:drawRect.x, y:drawRect.y },
-      drawSize:{ w:drawRect.w, h:drawRect.h },
-      renderLayer:suppressionZone ? "suppressed_ground_props:" + suppressionZone.reason : (prop.layer || "ground_props")
-    });
-    if(suppressionZone) return;
-    if(!usedAtlasSprite){
-      const img = assets.props.sprites[prop.type];
-      if(!img || !img.complete || img.naturalWidth<=0){
-        warnMissingAssetOnce("prop_sprite", prop.type);
-        drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
-        return;
-      }
-      if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
-      if(prop.type==="handcart"||prop.type==="bench"||prop.type==="noticeBoard") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
-      if(prop.type==="sack"||prop.type==="stonePile") drawSoftShadow(p.x+16,p.y+26,8,3,.16);
-      if(prop.type==="bush"||prop.type==="grassTuft") drawSoftShadow(p.x+16,p.y+26,9,4,.14);
-      if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
-      ctx.drawImage(img,p.x,p.y,32,32);
-      return;
-    }
-    if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
-    if(prop.type==="bench"||prop.type==="signPost") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
-  });
-  if(getStillWaterQuestStage()===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
-    drawMirrorPondInspectionMarker(now);
-  }
-  const pondFocus=tileToScreen(pond.cx, pond.cy);
-  const pondGlow=ctx.createRadialGradient(pondFocus.x+16,pondFocus.y+12,8,pondFocus.x+16,pondFocus.y+12,92);
-  pondGlow.addColorStop(0,"rgba(173,214,255,.13)");
-  pondGlow.addColorStop(.55,"rgba(120,174,220,.07)");
-  pondGlow.addColorStop(1,"rgba(120,174,220,0)");
-  ctx.fillStyle=pondGlow;
-  ctx.fillRect(pondFocus.x-96,pondFocus.y-80,210,180);
-  const caveEntrancePos=tileToScreen(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y);
-  ctx.fillStyle="rgba(23,29,38,.9)";
-  ctx.beginPath();
-  ctx.moveTo(caveEntrancePos.x+6,caveEntrancePos.y+26);
-  ctx.lineTo(caveEntrancePos.x+16,caveEntrancePos.y+8);
-  ctx.lineTo(caveEntrancePos.x+26,caveEntrancePos.y+26);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle="rgba(168,186,204,.78)";
-  ctx.stroke();
-  const tollhouseDoorPos=tileToScreen(NORTH_ROAD_TOLLHOUSE_ENTRY.x, NORTH_ROAD_TOLLHOUSE_ENTRY.y);
-  ctx.fillStyle="rgba(71,49,32,.92)";
-  ctx.fillRect(tollhouseDoorPos.x+7,tollhouseDoorPos.y+6,18,22);
-  ctx.strokeStyle="rgba(196,164,128,.75)";
-  ctx.strokeRect(tollhouseDoorPos.x+7.5,tollhouseDoorPos.y+6.5,17,21);
-
-  world.fences.forEach((f,i)=>{
-    const p=tileToScreen(f.x,f.y);
-    drawShadowTile(assets.shadow.softTile,p.x+4,p.y+4,.42);
-    const img=assets.fence[i%assets.fence.length];
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
-  });
-  world.trees.forEach(t=>{
-    const p=tileToScreen(t.x,t.y);
-    const sway=Math.sin(performance.now()*0.0012+t.seed*8)*0.8;
-    drawShadowTile(assets.shadow.treeCircle,p.x+2,p.y+2,.72);
-    const img=assets.tree[t.type]||assets.tree.a;
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
-  });
-
-  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
-    const k = keyOf(x,y);
-    if(world.roadTiles.has(k) || world.pondWater.has(k) || world.pondShore.has(k) || world.pondNearEdge.has(k) || world.blocked.has(k)) continue;
-    const chance = rng(x,y,131);
-    if(chance > 0.045) continue;
-    const p = tileToScreen(x,y);
-    const detail = assets.detail[Math.floor(rng(x,y,137)*assets.detail.length)];
-    const suppressionZone=shouldSuppressDecorObject("detail_" + x + "_" + y, "FALLBACK_DECOR", { x:p.x, y:p.y, w:TILE, h:TILE }, { objectType:"detail_tile", worldTile:{ x, y } });
-    traceDecorSource({
-      sourceSystem:"terrain_detail_scatter",
-      sourceFunction:"drawWorld.detailScatterLoop",
-      objectId:"detail_" + x + "_" + y,
-      objectType:"detail_tile",
-      sourceLabel:"FALLBACK_DECOR",
-      procedural:true,
-      worldTile:{ x, y },
-      screenDraw:{ x:p.x, y:p.y },
-      drawSize:{ w:TILE, h:TILE },
-      renderLayer:suppressionZone ? "suppressed_ground_decor:" + suppressionZone.reason : "ground_decor"
-    });
-    if(suppressionZone) continue;
-    if(detail && detail.complete && detail.naturalWidth>0) ctx.drawImage(detail,p.x,p.y,32,32);
-  }
-
-  if(showCollisionOverlay) drawCollisionOverlay();
-  if(showGrid) drawAlignmentGrid();
-
-  const zoneName=currentLocalAreaName();
-  const zoneLabelEntries=[];
-  if(zoneName==="North Road") zoneLabelEntries.push({ text:"North Road", tx:13, ty:1, priority:0 });
-  if(zoneName==="Hearthvale Square") zoneLabelEntries.push({ text:"Hearthvale Square", tx:12, ty:7, priority:0 });
-  if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:26, ty:12, priority:0 });
-  if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
-
-  drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.42,8.6);
-  drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.86, "", 0, null, null);
-  drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.4,8.7);
-  drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.86, "", 0, null, null);
-  drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.4,8.7);
-  drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.86, "", 0, null, null);
-  wolves.forEach((wolf)=>{
-    if(wolf.hp<=0) return;
-    drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.26,8.1);
-    drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
-  });
-  bandits.forEach((bandit)=>{
-    if(bandit.hp<=0) return;
-    drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.32,8.7);
-    drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.85, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit));
-  });
-  drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2);
-  drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
   propsAbove.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const usedAtlasSprite=drawMappedPropSprite(prop,p);
