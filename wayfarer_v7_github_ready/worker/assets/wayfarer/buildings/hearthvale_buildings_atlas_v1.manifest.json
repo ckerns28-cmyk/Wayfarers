@@ -1,6 +1,6 @@
 {
   "atlasFile": "hearthvale_buildings_atlas_v1.png",
-  "manifestVersion": "phase32z4a-mercantile-lock-restore",
+  "manifestVersion": "phase32z5-village-hall-promote-lock",
   "tileSize": 32,
   "productionReady": true,
   "entries": [
@@ -36,12 +36,12 @@
         "y": 1
       },
       "renderLayer": "buildings",
-      "proofEnabled": false,
-      "productionReady": false,
+      "proofEnabled": true,
+      "productionReady": true,
       "debugOnly": false,
-      "fallbackReason": "visual_quality_below_bar",
       "drawW": 188,
-      "drawH": 145
+      "drawH": 145,
+      "calibrationOnly": false
     },
     {
       "id": "mercantile_shop",
