@@ -122,8 +122,8 @@
       "id": "residence_small",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 0,
-        "y": 160,
+        "x": 160,
+        "y": 480,
         "w": 160,
         "h": 160
       },
