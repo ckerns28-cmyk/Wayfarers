@@ -122,10 +122,10 @@
       "id": "residence_small",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 192,
+        "x": 0,
         "y": 160,
-        "w": 128,
-        "h": 128
+        "w": 160,
+        "h": 160
       },
       "tileFootprint": {
         "w": 4,
@@ -161,17 +161,17 @@
       "id": "residence_large",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 320,
+        "x": 160,
         "y": 160,
-        "w": 160,
-        "h": 128
+        "w": 192,
+        "h": 160
       },
       "tileFootprint": {
         "w": 5,
         "h": 4
       },
-      "anchorX": 80,
-      "anchorY": 96,
+      "anchorX": 72,
+      "anchorY": 104,
       "collisionRect": {
         "x": 0,
         "y": 2,
@@ -190,9 +190,11 @@
       },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true,
+      "productionReady": false,
       "debugOnly": false,
-      "calibrationOnly": false
+      "calibrationOnly": false,
+      "drawW": 144,
+      "drawH": 120
     },
     {
       "id": "hunter_lodge_or_outfitter",
@@ -200,15 +202,15 @@
       "sourceRect": {
         "x": 0,
         "y": 320,
-        "w": 128,
-        "h": 128
+        "w": 160,
+        "h": 160
       },
       "tileFootprint": {
         "w": 4,
         "h": 4
       },
-      "anchorX": 64,
-      "anchorY": 96,
+      "anchorX": 60,
+      "anchorY": 104,
       "collisionRect": {
         "x": 0,
         "y": 2,
@@ -227,25 +229,27 @@
       },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true,
+      "productionReady": false,
       "debugOnly": false,
-      "calibrationOnly": false
+      "calibrationOnly": false,
+      "drawW": 120,
+      "drawH": 120
     },
     {
       "id": "pond_boathouse_or_waterfront_shed",
       "atlas": "hearthvale_buildings_atlas_v1.png",
       "sourceRect": {
-        "x": 128,
+        "x": 160,
         "y": 320,
-        "w": 160,
-        "h": 96
+        "w": 192,
+        "h": 128
       },
       "tileFootprint": {
         "w": 5,
         "h": 3
       },
-      "anchorX": 80,
-      "anchorY": 64,
+      "anchorX": 75,
+      "anchorY": 72,
       "collisionRect": {
         "x": 0,
         "y": 1,
@@ -264,9 +268,11 @@
       },
       "renderLayer": "buildings",
       "proofEnabled": true,
-      "productionReady": true,
+      "productionReady": false,
       "debugOnly": false,
-      "calibrationOnly": false
+      "calibrationOnly": false,
+      "drawW": 150,
+      "drawH": 92
     }
   ]
 }
