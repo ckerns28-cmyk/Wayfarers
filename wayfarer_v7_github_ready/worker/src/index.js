@@ -1393,6 +1393,9 @@ function isDecorDebugEnabledFromUrl(){
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
 const ATLAS_PREVIEW_MODE = ATLAS_DEBUG_MODE && isAtlasPreviewEnabledFromUrl();
 const DECOR_DEBUG_MODE = isDecorDebugEnabledFromUrl();
+function isDecorDebugEnabled(){
+  return ATLAS_DEBUG_MODE && DECOR_DEBUG_MODE;
+}
 const PROP_DEBUG_MODE = isPropDebugEnabledFromUrl();
 const ATLAS_PROOF_REQUEST = getAtlasProofRequestFromUrl();
 const ATLAS_DEBUG_SOURCE_LABELS = (() => {
@@ -7932,6 +7935,7 @@ function update(dt,now){
 }
 
 let last=performance.now();
+let lastLoopErrorMessage=null;
 function loop(now){
   try{
     const dt=Math.min(.033,(now-last)/1000);
@@ -7939,10 +7943,15 @@ function loop(now){
     update(dt,now);
     drawWorld();
     bootDiagnostics.lastRenderException=null;
+    lastLoopErrorMessage=null;
   }catch(loopError){
-    bootDiagnostics.lastRenderException=String(loopError?.message || loopError || "unknown_error");
-    console.error("[Boot Hotfix] render loop exception", loopError);
-    if(ATLAS_DEBUG_MODE) console.info("[Boot Hotfix] diagnostics", bootDiagnostics);
+    const loopErrorMessage=String(loopError?.message || loopError || "unknown_error");
+    bootDiagnostics.lastRenderException=loopErrorMessage;
+    if(loopErrorMessage!==lastLoopErrorMessage){
+      lastLoopErrorMessage=loopErrorMessage;
+      console.error("[Boot Hotfix] render loop exception", loopError);
+      if(ATLAS_DEBUG_MODE) console.info("[Boot Hotfix] diagnostics", bootDiagnostics);
+    }
   }
   requestAnimationFrame(loop);
 }
