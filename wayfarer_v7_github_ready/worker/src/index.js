@@ -67,7 +67,7 @@ const html = String.raw`<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wayfarer — Artistic Rebuild Slice</title>
+  <title>Wayfarer — Phase 32AA.2 Hotfix</title>
   <style>
     :root {
       --ink:#0b111a;
@@ -399,7 +399,7 @@ const html = String.raw`<!DOCTYPE html>
     <aside id="sidebar">
       <section id="brand" class="panel">
         <h1>Wayfarer</h1>
-        <div class="sub">Artistic Rebuild — Hearthvale Slice</div>
+        <div class="sub">Phase 32AA.2 — Road Repair (stabilizing)</div>
         <div class="stats" style="margin-top:10px;">
           <div class="muted">Current Objective</div><div id="objectiveText">Explore Hearthvale and the surrounding roads.</div>
           <div class="muted">Current Zone</div><div id="zoneVal">Hearthvale Square</div>
@@ -3261,11 +3261,11 @@ world.roads.push(
   { x:8,y:12,w:23,h:1 },
   { x:9,y:13,w:21,h:1 },
   // Hero storefront thresholds tied into the same street spine.
-  { x:12,y:10,w:1,h:3 },
-  { x:20,y:10,w:1,h:3 },
+  { x:13,y:10,w:1,h:3 },
+  { x:21,y:10,w:1,h:3 },
   // Civic rise approach from the commercial street to the inland village hall.
-  { x:27,y:7,w:1,h:5 },
-  { x:20,y:7,w:8,h:1 },
+  { x:24,y:8,w:1,h:5 },
+  { x:20,y:8,w:5,h:1 },
   // Inland residential and landward approach lanes.
   { x:8,y:6,w:23,h:1 },
   { x:10,y:6,w:1,h:7 },
@@ -3279,10 +3279,10 @@ world.roads.push(
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:9, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:6,w:6,h:5}, visualBounds:{x:9,y:6,w:6,h:5}, collision:{x:9,y:9,w:6,h:2}, interaction:{x:12,y:10,w:1,h:1}, interactRect:{x:12,y:10,w:1,h:1}, frontDoorTile:{x:12,y:10}, label:{x:12,y:7,text:"Inn & Tavern"}, pathingBounds:{x:8,y:6,w:8,h:6}, frontWalkBand:{ x:9, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:9, y:6, w:6, h:3 }], occlusionDepthLine:{ x:9, y:9, w:6, h:1 }, rearExclusionZone:{ x:9, y:6, w:6, h:3 } }) },
-  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, visualBounds:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, interactRect:{x:20,y:10,w:1,h:1}, frontDoorTile:{x:20,y:10}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:18, y:6, w:5, h:3 }, { x:18, y:9, w:2, h:1 }, { x:21, y:9, w:2, h:1 }], occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
-  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:24, y:2, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:24,y:2,w:6,h:5}, visualBounds:{x:24,y:2,w:6,h:5}, collision:{x:24,y:5,w:6,h:2}, interaction:{x:27,y:6,w:1,h:1}, interactRect:{x:27,y:6,w:1,h:1}, frontDoorTile:{x:27,y:6}, label:{x:27,y:3,text:"Village Hall"}, pathingBounds:{x:23,y:2,w:8,h:6}, frontWalkBand:{ x:24, y:6, w:6, h:1 }, blockedVisualTiles:[{ x:24, y:2, w:6, h:3 }, { x:24, y:5, w:2, h:1 }, { x:28, y:5, w:2, h:1 }], occlusionDepthLine:{ x:24, y:5, w:6, h:1 }, rearExclusionZone:{ x:24, y:2, w:6, h:3 } }) },
-  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:6, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:6,y:7,w:4,h:4}, collision:{x:6,y:9,w:4,h:2}, interaction:{x:7,y:10,w:1,h:1}, label:{x:7,y:8,text:"Cottage"}, pathingBounds:{x:5,y:7,w:6,h:5} }) },
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:10, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:10,y:6,w:6,h:5}, visualBounds:{x:10,y:6,w:6,h:5}, collision:{x:10,y:9,w:6,h:2}, interaction:{x:13,y:10,w:1,h:1}, interactRect:{x:13,y:10,w:1,h:1}, frontDoorTile:{x:13,y:10}, label:{x:13,y:7,text:"Inn & Tavern"}, pathingBounds:{x:9,y:6,w:8,h:6}, frontWalkBand:{ x:10, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:10, y:6, w:6, h:3 }], occlusionDepthLine:{ x:10, y:9, w:6, h:1 }, rearExclusionZone:{ x:10, y:6, w:6, h:3 } }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:19, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:19,y:6,w:5,h:5}, visualBounds:{x:19,y:6,w:5,h:5}, collision:{x:19,y:9,w:5,h:1}, interaction:{x:21,y:10,w:1,h:1}, interactRect:{x:21,y:10,w:1,h:1}, frontDoorTile:{x:21,y:10}, label:{x:21,y:7,text:"Mercantile Shop"}, pathingBounds:{x:18,y:6,w:7,h:6}, frontWalkBand:{ x:19, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:19, y:6, w:5, h:3 }, { x:19, y:9, w:2, h:1 }, { x:22, y:9, w:2, h:1 }], occlusionDepthLine:{ x:19, y:9, w:5, h:1 }, rearExclusionZone:{ x:19, y:6, w:5, h:3 } }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:21, y:2, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:21,y:2,w:6,h:5}, visualBounds:{x:21,y:2,w:6,h:5}, collision:{x:21,y:5,w:6,h:2}, interaction:{x:24,y:6,w:1,h:1}, interactRect:{x:24,y:6,w:1,h:1}, frontDoorTile:{x:24,y:6}, label:{x:24,y:3,text:"Village Hall"}, pathingBounds:{x:20,y:2,w:8,h:6}, frontWalkBand:{ x:21, y:6, w:6, h:1 }, blockedVisualTiles:[{ x:21, y:2, w:6, h:3 }, { x:21, y:5, w:2, h:1 }, { x:25, y:5, w:2, h:1 }], occlusionDepthLine:{ x:21, y:5, w:6, h:1 }, rearExclusionZone:{ x:21, y:2, w:6, h:3 } }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:7,w:4,h:4}, collision:{x:4,y:9,w:4,h:2}, interaction:{x:5,y:10,w:1,h:1}, label:{x:5,y:8,text:"Cottage"}, pathingBounds:{x:3,y:7,w:6,h:5} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:27, y:7, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:27,y:7,w:5,h:4}, collision:{x:27,y:9,w:5,h:2}, interaction:{x:29,y:10,w:1,h:1}, label:{x:29,y:8,text:"Residence"}, pathingBounds:{x:26,y:7,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:10, y:16, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:10,y:16,w:4,h:4}, collision:{x:10,y:18,w:4,h:2}, interaction:{x:11,y:19,w:1,h:1}, label:{x:11,y:17,text:"Dock Warehouse"}, pathingBounds:{x:9,y:16,w:6,h:5} }) },
   { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:17, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:17,w:5,h:3}, collision:{x:26,y:18,w:5,h:2}, interaction:{x:28,y:19,w:1,h:1}, label:{x:28,y:17,text:"Harbor Shed"}, pathingBounds:{x:25,y:17,w:7,h:4} }) }
@@ -3324,9 +3324,9 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
   }
 }
 
-for(let x=16;x<=23;x++){ world.fences.push({x,y:2}); }
-for(let y=3;y<=6;y++){ world.fences.push({x:16,y}); }
-for(let y=3;y<=6;y++){ world.fences.push({x:23,y}); }
+for(let x=16;x<=20;x++){ world.fences.push({x,y:2}); } // garden plot north fence — stops at x=20 to clear village hall (x=21..26)
+for(let y=3;y<=6;y++){ world.fences.push({x:16,y}); }   // garden plot west fence
+for(let y=3;y<=6;y++){ world.fences.push({x:20,y}); }   // garden plot east fence — moved from x=23 so village hall isn't sitting on it
 for(let x=9;x<=14;x++){ world.fences.push({x,y:15}); }
 for(let x=24;x<=32;x++){ world.fences.push({x,y:15}); }
 for(let y=16;y<=19;y++){ world.fences.push({x:33,y}); }
@@ -3338,10 +3338,10 @@ world.props.push(
   {x:12,y:12,type:"lanternPost",layer:"above_entities"},{x:20,y:12,type:"lanternPost",layer:"above_entities"},
   {x:9,y:8,type:"smallGarden"},{x:28,y:8,type:"smallGarden"},{x:11,y:16,type:"barrel"},
   {x:13,y:16,type:"stonePile"},{x:27,y:16,type:"crate"},{x:30,y:16,type:"barrel"},
-  {x:13,y:6,type:"signPost",layer:"above_entities"},{x:22,y:6,type:"signPost",layer:"above_entities"},
+  {x:13,y:6,type:"signPost",layer:"above_entities"},
   {x:7,y:12,type:"bush"},{x:25,y:12,type:"bush"},{x:31,y:16,type:"bush"},
   {x:30,y:20,type:"grassTuft"},{x:32,y:20,type:"stonePile"},
-  {x:18,y:2,type:"smallGarden"},{x:22,y:2,type:"smallGarden"}
+  {x:18,y:2,type:"smallGarden"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -6458,7 +6458,7 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Phase 32AA.2F status : harbor-town structure active; village hall restored inland as civic anchor; production readiness not yet passed\n" +
+      "Phase 32AA.2F status : spatial deconfliction active; Hearthvale harbor-town structure is being refined; production readiness not yet passed\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
@@ -7558,15 +7558,53 @@ function drawWorld(){
     }
   }
 
-  const renderQueue=[];
-  const buildingSortDebugRows=[];
-  world.buildings.forEach((b,bIndex)=>{
+  const buildingDrawEntries=world.buildings.map((b,bIndex)=>{
     const spriteId=getBuildingSpriteId(b);
     const sprite=atlasManifests.buildings.sprites[spriteId];
     const anchorPxX=((b.anchorX ?? Math.floor(b.w/2))*TILE);
     const anchorPxY=((b.anchorY ?? (b.h-1))*TILE);
+    const worldAnchorY=(b.y*TILE)+anchorPxY;
     const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
     const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
+    return { type:"building", b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, worldAnchorY, drawX, drawY };
+  });
+
+  const entityDrawEntries=[
+    { type:"npc", id:npc.id, worldAnchorY:npc.py, draw:()=>{
+      drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.42,8.6);
+      drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.86, "", 0, null, null);
+    } },
+    { type:"npc", id:hunterNpc.id, worldAnchorY:hunterNpc.py, draw:()=>{
+      drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.4,8.7);
+      drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.86, "", 0, null, null);
+    } },
+    { type:"npc", id:vendorNpc.id, worldAnchorY:vendorNpc.py, draw:()=>{
+      drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.4,8.7);
+      drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.86, "", 0, null, null);
+    } },
+    ...wolves.filter((wolf)=>wolf.hp>0).map((wolf)=>({ type:"wolf", id:wolf.id||"wolf", worldAnchorY:wolf.py, draw:()=>{
+      drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.26,8.1);
+      drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
+    } })),
+    ...bandits.filter((bandit)=>bandit.hp>0).map((bandit)=>({ type:"bandit", id:bandit.id||"bandit", worldAnchorY:bandit.py, draw:()=>{
+      drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.32,8.7);
+      drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.85, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit));
+    } })),
+    { type:"player", id:"player", worldAnchorY:player.py, draw:()=>{
+      drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2);
+      drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player));
+    } }
+  ];
+
+  const renderQueue=[...buildingDrawEntries, ...entityDrawEntries]
+    .sort((a,b)=>a.worldAnchorY-b.worldAnchorY);
+
+  renderQueue.forEach((entry, drawOrderRank)=>{
+    if(entry.type!=="building"){
+      entry.draw();
+      return;
+    }
+    const { b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, drawX, drawY, worldAnchorY }=entry;
 
     for(let ry=0; ry<b.h; ry++){
       const right = tileToScreen(b.x+b.w, b.y+ry);
@@ -7618,6 +7656,16 @@ function drawWorld(){
       drawAtlasProofMarker(drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh, b, "ATLAS", null);
       logAtlasProofStatusOnce("ATLAS");
     }
+    if(ATLAS_DEBUG_MODE || isDecorDebugEnabled()){
+      const anchorDebug=tileToScreen(b.x,b.y);
+      const anchorX=Math.round(anchorDebug.x + anchorPxX);
+      const anchorY=Math.round(anchorDebug.y + anchorPxY);
+      ctx.fillStyle="rgba(24,30,44,0.85)";
+      ctx.fillRect(anchorX+8, anchorY-18, 170, 14);
+      ctx.fillStyle="rgba(176,243,255,0.95)";
+      ctx.font="10px monospace";
+      ctx.fillText((b.id||"building")+" y="+Math.round(worldAnchorY)+" rank="+drawOrderRank, anchorX+10, anchorY-8);
+    }
     traceDecorSource({
       sourceSystem:"overworld_renderer",
       sourceFunction:"drawWorld.world.buildings.forEach",
@@ -7635,181 +7683,10 @@ function drawWorld(){
     const chimneyTx=b.x + (bIndex%2 ? b.w-2 : 1);
     const chimneyTy=b.y;
     const chimney=tileToScreen(chimneyTx, chimneyTy);
-    traceDecorSource({
-      sourceSystem:"procedural_building_overlay",
-      sourceFunction:"drawWorld.world.buildings.forEach.chimney",
-      objectId:b.id + ":chimney",
-      objectType:"chimney_overlay",
-      sourceLabel:"PROCEDURAL",
-      procedural:true,
-      worldTile:{ x:chimneyTx, y:chimneyTy },
-      screenDraw:{ x:chimney.x+10, y:chimney.y-7 },
-      drawSize:{ w:6, h:9 },
-      renderLayer:"buildings_overlay"
-    });
-    if(b.id!=="b_inn_tavern"){
-      ctx.fillStyle="rgba(94,72,54,.9)";
-      ctx.fillRect(chimney.x+10,chimney.y-7,6,9);
-    }
-      }
-    });
+    traceDecorSource({ sourceSystem:"procedural_building_overlay", sourceFunction:"drawWorld.world.buildings.forEach.chimney", objectId:b.id + ":chimney", objectType:"chimney_overlay", sourceLabel:"PROCEDURAL", procedural:true, worldTile:{ x:chimneyTx, y:chimneyTy }, screenDraw:{ x:chimney.x+10, y:chimney.y-7 }, drawSize:{ w:6, h:9 }, renderLayer:"buildings_overlay" });
+    if(b.id!=="b_inn_tavern"){ ctx.fillStyle="rgba(94,72,54,.9)"; ctx.fillRect(chimney.x+10,chimney.y-7,6,9); }
   });
 
-  const propsBehind=world.props.filter((prop)=>prop.layer!=="above_entities");
-  const propsAbove=world.props.filter((prop)=>prop.layer==="above_entities");
-  propsBehind.forEach((prop, propIndex)=>{
-    const p = tileToScreen(prop.x,prop.y);
-    const usedAtlasSprite=drawMappedPropSprite(prop,p);
-    const mappedSpriteId=PROP_SPRITE_BY_WORLD_TYPE[prop.type];
-    const mappedAtlasSprite=mappedSpriteId ? atlasManifests.props?.sprites?.[mappedSpriteId] : null;
-    const mappedDrawX=mappedAtlasSprite ? Math.round(p.x + TILE/2 - (mappedAtlasSprite.anchorX ?? TILE/2)) : p.x;
-    const mappedDrawY=mappedAtlasSprite ? Math.round(p.y + TILE - (mappedAtlasSprite.anchorY ?? TILE)) : p.y;
-    const mappedDrawW=mappedAtlasSprite?.drawW ?? mappedAtlasSprite?.sw ?? TILE;
-    const mappedDrawH=mappedAtlasSprite?.drawH ?? mappedAtlasSprite?.sh ?? TILE;
-    const sourceLabel=usedAtlasSprite ? "PROP_ATLAS" : "LEGACY_PROP";
-    const drawRect={
-      x:usedAtlasSprite ? mappedDrawX : p.x,
-      y:usedAtlasSprite ? mappedDrawY : p.y,
-      w:usedAtlasSprite ? mappedDrawW : TILE,
-      h:usedAtlasSprite ? mappedDrawH : TILE
-    };
-    const suppressionZone=shouldSuppressDecorObject("prop_" + prop.x + "_" + prop.y + "_" + prop.type, sourceLabel, drawRect, { objectType:prop.type, worldTile:{ x:prop.x, y:prop.y } });
-    traceDecorSource({
-      sourceSystem:"map_props",
-      sourceFunction:"drawWorld.propsBehind.forEach",
-      objectId:"prop_" + prop.x + "_" + prop.y + "_" + prop.type,
-      objectType:prop.type,
-      sourceLabel,
-      atlasFile:usedAtlasSprite ? getAtlasFilename(mappedAtlasSprite?.atlas || atlasManifests.props?.imagePath) : null,
-      crop:usedAtlasSprite && mappedAtlasSprite ? { x:mappedAtlasSprite.sx, y:mappedAtlasSprite.sy, w:mappedAtlasSprite.sw, h:mappedAtlasSprite.sh } : null,
-      procedural:!usedAtlasSprite,
-      worldTile:{ x:prop.x, y:prop.y },
-      screenDraw:{ x:drawRect.x, y:drawRect.y },
-      drawSize:{ w:drawRect.w, h:drawRect.h },
-      renderLayer:suppressionZone ? "suppressed_ground_props:" + suppressionZone.reason : (prop.layer || "ground_props")
-    });
-    if(suppressionZone) return;
-    const propSortY=(prop.y+1)*TILE;
-    renderQueue.push({
-      type:"prop",
-      id:"prop_" + prop.x + "_" + prop.y + "_" + prop.type,
-      sortY:propSortY,
-      tieBreak:10000+propIndex,
-      draw:()=>{
-        if(!usedAtlasSprite){
-      const img = assets.props.sprites[prop.type];
-      if(!img || !img.complete || img.naturalWidth<=0){
-        warnMissingAssetOnce("prop_sprite", prop.type);
-        drawMissingSpritePlaceholder(p.x, p.y, 32, 32, "PROP");
-        return;
-      }
-      if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
-      if(prop.type==="handcart"||prop.type==="bench"||prop.type==="noticeBoard") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
-      if(prop.type==="sack"||prop.type==="stonePile") drawSoftShadow(p.x+16,p.y+26,8,3,.16);
-      if(prop.type==="bush"||prop.type==="grassTuft") drawSoftShadow(p.x+16,p.y+26,9,4,.14);
-      if(prop.type==="well"||prop.type==="lanternPost"||prop.type==="signPost") drawSoftShadow(p.x+16,p.y+27,10,4,.19);
-      ctx.drawImage(img,p.x,p.y,32,32);
-      return;
-    }
-    if(prop.type==="barrel"||prop.type==="crate") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+4,.78);
-    if(prop.type==="bench"||prop.type==="signPost") drawShadowTile(assets.shadow.softTile,p.x+3,p.y+5,.72);
-      }
-    });
-  });
-  if(getStillWaterQuestStage()===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
-    drawMirrorPondInspectionMarker(now);
-  }
-  const pondFocus=tileToScreen(pond.cx, pond.cy);
-  const pondGlow=ctx.createRadialGradient(pondFocus.x+16,pondFocus.y+12,8,pondFocus.x+16,pondFocus.y+12,92);
-  pondGlow.addColorStop(0,"rgba(173,214,255,.13)");
-  pondGlow.addColorStop(.55,"rgba(120,174,220,.07)");
-  pondGlow.addColorStop(1,"rgba(120,174,220,0)");
-  ctx.fillStyle=pondGlow;
-  ctx.fillRect(pondFocus.x-96,pondFocus.y-80,210,180);
-  const caveEntrancePos=tileToScreen(OVERWORLD_CAVE_ENTRY.x, OVERWORLD_CAVE_ENTRY.y);
-  ctx.fillStyle="rgba(23,29,38,.9)";
-  ctx.beginPath();
-  ctx.moveTo(caveEntrancePos.x+6,caveEntrancePos.y+26);
-  ctx.lineTo(caveEntrancePos.x+16,caveEntrancePos.y+8);
-  ctx.lineTo(caveEntrancePos.x+26,caveEntrancePos.y+26);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle="rgba(168,186,204,.78)";
-  ctx.stroke();
-  const tollhouseDoorPos=tileToScreen(NORTH_ROAD_TOLLHOUSE_ENTRY.x, NORTH_ROAD_TOLLHOUSE_ENTRY.y);
-  ctx.fillStyle="rgba(71,49,32,.92)";
-  ctx.fillRect(tollhouseDoorPos.x+7,tollhouseDoorPos.y+6,18,22);
-  ctx.strokeStyle="rgba(196,164,128,.75)";
-  ctx.strokeRect(tollhouseDoorPos.x+7.5,tollhouseDoorPos.y+6.5,17,21);
-
-  world.fences.forEach((f,i)=>{
-    const p=tileToScreen(f.x,f.y);
-    drawShadowTile(assets.shadow.softTile,p.x+4,p.y+4,.42);
-    const img=assets.fence[i%assets.fence.length];
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,32,32);
-  });
-  world.trees.forEach(t=>{
-    const p=tileToScreen(t.x,t.y);
-    const sway=Math.sin(performance.now()*0.0012+t.seed*8)*0.8;
-    drawShadowTile(assets.shadow.treeCircle,p.x+2,p.y+2,.72);
-    const img=assets.tree[t.type]||assets.tree.a;
-    if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x+Math.round(sway),p.y-4,32,36);
-  });
-
-  for(let y=cam.tileY;y<cam.tileY+VIEW_TILES_Y;y++) for(let x=cam.tileX;x<cam.tileX+VIEW_TILES_X;x++){
-    const k = keyOf(x,y);
-    if(world.roadTiles.has(k) || world.pondWater.has(k) || world.pondShore.has(k) || world.pondNearEdge.has(k) || world.blocked.has(k)) continue;
-    const chance = rng(x,y,131);
-    if(chance > 0.045) continue;
-    const p = tileToScreen(x,y);
-    const detail = assets.detail[Math.floor(rng(x,y,137)*assets.detail.length)];
-    const suppressionZone=shouldSuppressDecorObject("detail_" + x + "_" + y, "FALLBACK_DECOR", { x:p.x, y:p.y, w:TILE, h:TILE }, { objectType:"detail_tile", worldTile:{ x, y } });
-    traceDecorSource({
-      sourceSystem:"terrain_detail_scatter",
-      sourceFunction:"drawWorld.detailScatterLoop",
-      objectId:"detail_" + x + "_" + y,
-      objectType:"detail_tile",
-      sourceLabel:"FALLBACK_DECOR",
-      procedural:true,
-      worldTile:{ x, y },
-      screenDraw:{ x:p.x, y:p.y },
-      drawSize:{ w:TILE, h:TILE },
-      renderLayer:suppressionZone ? "suppressed_ground_decor:" + suppressionZone.reason : "ground_decor"
-    });
-    if(suppressionZone) continue;
-    if(detail && detail.complete && detail.naturalWidth>0) ctx.drawImage(detail,p.x,p.y,32,32);
-  }
-
-  if(showCollisionOverlay) drawCollisionOverlay();
-  if(showGrid) drawAlignmentGrid();
-
-  const zoneName=currentLocalAreaName();
-  const zoneLabelEntries=[];
-  if(zoneName==="North Road") zoneLabelEntries.push({ text:"North Road", tx:13, ty:1, priority:0 });
-  if(zoneName==="Hearthvale Square") zoneLabelEntries.push({ text:"Hearthvale Square", tx:12, ty:7, priority:0 });
-  if(zoneName==="Mirror Pond") zoneLabelEntries.push({ text:"Mirror Pond", tx:26, ty:12, priority:0 });
-  if(zoneName==="Eastern Woods") zoneLabelEntries.push({ text:"Eastern Woods", tx:30, ty:4, priority:0 });
-
-  renderQueue.push({ type:"npc", id:"npc_edrin", sortY:(npc.y+1)*TILE, tieBreak:20000, draw:()=>{ drawEntityRing(npc.x,npc.y,"rgba(201,227,255,__A__)",0.42,8.6); drawHumanoid(assets.sprites.edrin, npc.x, npc.y, npc.facing, false, 0.86, "", 0, null, null); } });
-  renderQueue.push({ type:"npc", id:"npc_hunter", sortY:(hunterNpc.y+1)*TILE, tieBreak:20001, draw:()=>{ drawEntityRing(hunterNpc.x,hunterNpc.y,"rgba(208,232,184,__A__)",0.4,8.7); drawHumanoid(assets.sprites.hunter, hunterNpc.x, hunterNpc.y, hunterNpc.facing, false, 0.86, "", 0, null, null); } });
-  renderQueue.push({ type:"npc", id:"npc_vendor", sortY:(vendorNpc.y+1)*TILE, tieBreak:20002, draw:()=>{ drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.4,8.7); drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.86, "", 0, null, null); } });
-  wolves.forEach((wolf, wolfIndex)=>{
-    if(wolf.hp<=0) return;
-    renderQueue.push({ type:"wolf", id:"wolf_"+wolfIndex, sortY:wolf.py+TILE, tieBreak:21000+wolfIndex, draw:()=>{ drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.26,8.1); drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY}); } });
-  });
-  bandits.forEach((bandit, banditIndex)=>{
-    if(bandit.hp<=0) return;
-    renderQueue.push({ type:"bandit", id:"bandit_"+banditIndex, sortY:bandit.py+TILE, tieBreak:22000+banditIndex, draw:()=>{ drawEntityRing(bandit.px/TILE,bandit.py/TILE,"rgba(255,120,120,__A__)",0.32,8.7); drawHumanoid(assets.sprites.bandit, bandit.px/TILE, bandit.py/TILE, bandit.facing, bandit.moving, 0.85, "", hitVisualAlpha(bandit), {x:bandit.recoilX+bandit.attackLungeX,y:bandit.recoilY+bandit.attackLungeY}, attackPose(bandit)); } });
-  });
-  renderQueue.push({ type:"player", id:"player", sortY:player.py+TILE, tieBreak:29999, draw:()=>{ drawEntityRing(player.px/TILE,player.py/TILE,"rgba(186,218,255,__A__)",0.62,10.2); drawHumanoid(assets.sprites.player, player.px/TILE, player.py/TILE, player.facing, player.moving, 0.92, "", hitVisualAlpha(player), {x:player.recoilX+player.attackLungeX,y:player.recoilY+player.attackLungeY}, attackPose(player)); } });
-  renderQueue.sort((a,b)=>a.sortY===b.sortY ? a.tieBreak-b.tieBreak : a.sortY-b.sortY);
-  renderQueue.forEach((entry, rank)=>{
-    if((ATLAS_DEBUG_MODE || PROP_DEBUG_MODE) && entry.type==="building"){
-      const debug=buildingSortDebugRows.find((row)=>row.id===entry.id);
-      if(debug) debug.rank=rank;
-    }
-    entry.draw();
-  });
   propsAbove.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
     const usedAtlasSprite=drawMappedPropSprite(prop,p);
