@@ -3270,23 +3270,24 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  // Refined Hearthvale square paths (Phase 32AA.2G): keep continuity without blockout slabs.
-  // Central square spine and frontage walkability for hero buildings.
-  { x:9,y:11,w:21,h:1 },
-  { x:11,y:12,w:17,h:1 },
+  // Refined Hearthvale square paths (Phase 32AA.2B): reduce slab-like roads and restore tighter lane rhythm.
+  // Central square spine with slimmer centerline + small market apron.
+  { x:10,y:11,w:19,h:1 },
+  { x:14,y:12,w:10,h:1 },
   // Tavern + mercantile front thresholds connect directly to square.
   { x:13,y:10,w:1,h:2 },
   { x:21,y:10,w:1,h:2 },
   // Village hall frontage and civic connector to central square.
   { x:24,y:8,w:1,h:4 },
   { x:22,y:8,w:3,h:1 },
-  // North and east/west continuity lanes to keep town readable.
-  { x:8,y:6,w:22,h:1 },
+  // North and east/west continuity lanes to keep town readable without debug-like rectangles.
+  { x:9,y:6,w:19,h:1 },
   { x:10,y:6,w:1,h:6 },
-  { x:28,y:6,w:1,h:8 },
+  { x:27,y:6,w:1,h:9 },
+  { x:16,y:6,w:1,h:3 },
   // Southern harbor/waterfront access routes toward Mirror Pond.
-  { x:8,y:16,w:24,h:1 },
-  { x:8,y:18,w:24,h:1 },
+  { x:9,y:16,w:22,h:1 },
+  { x:9,y:18,w:22,h:1 },
   { x:12,y:19,w:16,h:1 },
   { x:31,y:16,w:1,h:4 }
 );
@@ -3294,10 +3295,10 @@ world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y+
 
 world.buildings.push(
   { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern", x:10, y:6, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:10,y:6,w:6,h:5}, visualBounds:{x:10,y:6,w:6,h:5}, collision:{x:10,y:9,w:6,h:2}, interaction:{x:13,y:10,w:1,h:1}, interactRect:{x:13,y:10,w:1,h:1}, frontDoorTile:{x:13,y:10}, label:{x:13,y:7,text:"Inn & Tavern"}, pathingBounds:{x:9,y:6,w:8,h:6}, frontWalkBand:{ x:10, y:10, w:6, h:1 }, blockedVisualTiles:[{ x:10, y:6, w:6, h:3 }], occlusionDepthLine:{ x:10, y:9, w:6, h:1 }, rearExclusionZone:{ x:10, y:6, w:6, h:3 } }) },
-  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:19, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:19,y:6,w:5,h:5}, visualBounds:{x:19,y:6,w:5,h:5}, collision:{x:19,y:9,w:5,h:1}, interaction:{x:21,y:10,w:1,h:1}, interactRect:{x:21,y:10,w:1,h:1}, frontDoorTile:{x:21,y:10}, label:{x:21,y:7,text:"Mercantile Shop"}, pathingBounds:{x:18,y:6,w:7,h:6}, frontWalkBand:{ x:19, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:19, y:6, w:5, h:3 }, { x:19, y:9, w:2, h:1 }, { x:22, y:9, w:2, h:1 }], occlusionDepthLine:{ x:19, y:9, w:5, h:1 }, rearExclusionZone:{ x:19, y:6, w:5, h:3 } }) },
-  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:21, y:4, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:21,y:4,w:6,h:5}, visualBounds:{x:21,y:4,w:6,h:5}, collision:{x:21,y:7,w:6,h:2}, interaction:{x:24,y:8,w:1,h:1}, interactRect:{x:24,y:8,w:1,h:1}, frontDoorTile:{x:24,y:8}, label:{x:24,y:5,text:"Village Hall"}, pathingBounds:{x:20,y:4,w:8,h:6}, frontWalkBand:{ x:21, y:8, w:6, h:1 }, blockedVisualTiles:[{ x:21, y:4, w:6, h:3 }, { x:21, y:7, w:2, h:1 }, { x:25, y:7, w:2, h:1 }], occlusionDepthLine:{ x:21, y:7, w:6, h:1 }, rearExclusionZone:{ x:21, y:4, w:6, h:3 } }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:18, y:6, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:18,y:6,w:5,h:5}, visualBounds:{x:18,y:6,w:5,h:5}, collision:{x:18,y:9,w:5,h:1}, interaction:{x:20,y:10,w:1,h:1}, interactRect:{x:20,y:10,w:1,h:1}, frontDoorTile:{x:20,y:10}, label:{x:20,y:7,text:"Mercantile Shop"}, pathingBounds:{x:17,y:6,w:7,h:6}, frontWalkBand:{ x:18, y:10, w:5, h:1 }, blockedVisualTiles:[{ x:18, y:6, w:5, h:3 }, { x:18, y:9, w:2, h:1 }, { x:21, y:9, w:2, h:1 }], occlusionDepthLine:{ x:18, y:9, w:5, h:1 }, rearExclusionZone:{ x:18, y:6, w:5, h:3 } }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:22, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:22,y:3,w:6,h:5}, visualBounds:{x:22,y:3,w:6,h:5}, collision:{x:22,y:6,w:6,h:2}, interaction:{x:25,y:8,w:1,h:1}, interactRect:{x:25,y:8,w:1,h:1}, frontDoorTile:{x:25,y:8}, label:{x:25,y:4,text:"Village Hall"}, pathingBounds:{x:21,y:3,w:8,h:6}, frontWalkBand:{ x:22, y:8, w:6, h:1 }, blockedVisualTiles:[{ x:22, y:3, w:6, h:3 }, { x:22, y:6, w:2, h:1 }, { x:26, y:6, w:2, h:1 }], occlusionDepthLine:{ x:22, y:6, w:6, h:1 }, rearExclusionZone:{ x:22, y:3, w:6, h:3 } }) },
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:7,w:4,h:4}, collision:{x:4,y:9,w:4,h:2}, interaction:{x:5,y:10,w:1,h:1}, label:{x:5,y:8,text:"Cottage"}, pathingBounds:{x:3,y:7,w:6,h:5} }) },
-  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:27, y:7, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:27,y:7,w:5,h:4}, collision:{x:27,y:9,w:5,h:2}, interaction:{x:29,y:10,w:1,h:1}, label:{x:29,y:8,text:"Residence"}, pathingBounds:{x:26,y:7,w:7,h:5} }) },
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:29, y:8, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:8,w:5,h:4}, collision:{x:29,y:10,w:5,h:2}, interaction:{x:31,y:11,w:1,h:1}, label:{x:31,y:9,text:"Residence"}, pathingBounds:{x:28,y:8,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:10, y:16, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:10,y:16,w:4,h:4}, collision:{x:10,y:18,w:4,h:2}, interaction:{x:11,y:19,w:1,h:1}, label:{x:11,y:17,text:"Dock Warehouse"}, pathingBounds:{x:9,y:16,w:6,h:5} }) },
   { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:17, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:17,w:5,h:3}, collision:{x:26,y:18,w:5,h:2}, interaction:{x:28,y:19,w:1,h:1}, label:{x:28,y:17,text:"Harbor Shed"}, pathingBounds:{x:25,y:17,w:7,h:4} }) }
 );
