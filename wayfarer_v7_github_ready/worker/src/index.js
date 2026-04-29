@@ -3256,26 +3256,21 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  // Hand-authored Hearthvale Square layout (Phase 32AA.2C)
-  // Main horizontal town road through the hero-building square.
-  { x:8,y:11,w:23,h:1 },
-  // Tavern frontage/apron aligned to porch and front door.
-  { x:10,y:10,w:5,h:1 },
+  // Hand-authored Hearthvale Square layout (Phase 32AA.2D)
+  // One clear east-west main street for tavern + mercantile frontage.
+  { x:8,y:11,w:18,h:1 },
+  { x:9,y:10,w:14,h:1 },
+  // Hero storefront thresholds tied into the same street spine.
   { x:12,y:10,w:1,h:2 },
-  // Mercantile storefront approach kept simple/readable.
-  { x:19,y:10,w:3,h:1 },
   { x:20,y:10,w:1,h:2 },
-  // Village hall centered civic approach and apron/plaza.
+  // Village hall civic axis and forecourt, centered to the square.
   { x:14,y:11,w:1,h:7 },
-  { x:12,y:17,w:5,h:1 },
-  { x:12,y:18,w:5,h:1 },
-  // Intentional north/south support links only where composition needs it.
-  { x:16,y:4,w:1,h:7 },
-  { x:24,y:11,w:1,h:8 },
-  { x:24,y:16,w:2,h:1 },
-  { x:24,y:18,w:7,h:1 },
-  { x:28,y:15,w:1,h:8 },
-  { x:28,y:18,w:1,h:5 }
+  { x:12,y:17,w:5,h:2 },
+  // Limited, quiet peripheral connectors.
+  { x:16,y:4,w:1,h:6 },
+  { x:24,y:11,w:1,h:5 },
+  { x:24,y:18,w:6,h:1 },
+  { x:28,y:18,w:1,h:4 }
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
@@ -3326,30 +3321,23 @@ for(let x=pond.x;x<pond.x+pond.w;x++){
 }
 
 for(let x=8;x<=15;x++){ world.fences.push({x,y:4}); }
-for(let x=17;x<=24;x++){ world.fences.push({x,y:4}); }
-for(let y=5;y<=9;y++){ world.fences.push({x:24,y}); }
-for(let x=6;x<=10;x++){ world.fences.push({x,y:18}); }
-for(let y=14;y<=18;y++){ world.fences.push({x:6,y}); }
-for(let x=25;x<=27;x++){ world.fences.push({x,y:23}); }
-for(let x=30;x<=32;x++){ world.fences.push({x,y:23}); }
-for(let y=20;y<=23;y++){ world.fences.push({x:24,y}); }
-for(let x=21;x<=23;x++){ world.fences.push({x,y:19}); }
+for(let x=17;x<=23;x++){ world.fences.push({x,y:4}); }
+for(let y=5;y<=8;y++){ world.fences.push({x:24,y}); }
+for(let x=5;x<=8;x++){ world.fences.push({x,y:23}); }
+for(let x=26;x<=27;x++){ world.fences.push({x,y:23}); }
+for(let x=30;x<=31;x++){ world.fences.push({x,y:23}); }
+for(let y=21;y<=23;y++){ world.fences.push({x:24,y}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
-  {x:10,y:12,type:"signPost",layer:"above_entities"},{x:11,y:12,type:"bench"},{x:15,y:12,type:"noticeBoard",layer:"above_entities"},
-  {x:17,y:12,type:"well"},{x:18,y:12,type:"bench"},{x:20,y:12,type:"handcart"},{x:21,y:12,type:"crate"},{x:22,y:12,type:"sack"},
-  {x:8,y:12,type:"barrel"},{x:9,y:12,type:"crate"},{x:10,y:12,type:"woodpile"},
-  {x:13,y:9,type:"lanternPost",layer:"above_entities"},{x:19,y:9,type:"lanternPost",layer:"above_entities"},{x:20,y:9,type:"bench"},
-  {x:8,y:17,type:"smallGarden"},{x:9,y:17,type:"smallGarden"},{x:10,y:17,type:"woodpile"},
-  {x:19,y:17,type:"smallGarden"},{x:20,y:17,type:"smallGarden"},{x:24,y:17,type:"barrel"},
-  {x:25,y:17,type:"crate"},{x:23,y:18,type:"barrel"},{x:22,y:18,type:"sack"},
-  {x:25,y:16,type:"signPost",layer:"above_entities"},{x:26,y:17,type:"stonePile"},{x:27,y:17,type:"grassTuft"},
-  {x:27,y:22,type:"crate"},{x:28,y:22,type:"barrel"},{x:29,y:22,type:"woodpile"},
-  {x:30,y:21,type:"fenceSeg"},{x:31,y:21,type:"fenceSeg"},
-  {x:14,y:4,type:"signPost",layer:"above_entities"},{x:21,y:4,type:"signPost",layer:"above_entities"},{x:23,y:4,type:"fenceSeg"},
+  {x:11,y:12,type:"bench"},{x:15,y:12,type:"noticeBoard",layer:"above_entities"},
+  {x:17,y:12,type:"well"},{x:20,y:12,type:"handcart"},{x:21,y:12,type:"crate"},
+  {x:13,y:9,type:"lanternPost",layer:"above_entities"},{x:19,y:9,type:"lanternPost",layer:"above_entities"},
+  {x:9,y:17,type:"smallGarden"},{x:19,y:17,type:"smallGarden"},{x:24,y:17,type:"barrel"},
+  {x:26,y:17,type:"stonePile"},
+  {x:14,y:4,type:"signPost",layer:"above_entities"},{x:21,y:4,type:"signPost",layer:"above_entities"},
   {x:7,y:5,type:"bush"},{x:18,y:5,type:"bush"},{x:26,y:11,type:"bush"},
-  {x:26,y:12,type:"grassTuft"},{x:27,y:12,type:"grassTuft"},{x:28,y:12,type:"stonePile"},
+  {x:27,y:12,type:"grassTuft"},{x:28,y:12,type:"stonePile"},
   {x:12,y:3,type:"stonePile"},{x:22,y:2,type:"stonePile"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
