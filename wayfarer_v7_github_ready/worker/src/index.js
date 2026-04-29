@@ -1294,7 +1294,8 @@ const buildingFallbackWarnings=new Set();
 const buildingRenderDiagnostics={
   atlasBuildings:new Set(),
   fallbackBuildings:new Map(),
-  summaryLogged:false
+  pendingBuildings:new Map(),
+  lastSummaryToken:null
 };
 const USE_PRODUCTION_BUILDING_ATLAS = false;
 const BUILDING_SPRITE_PRODUCTION_LIMITS = Object.freeze({
@@ -2449,15 +2450,25 @@ function drawAtlasDebugPreview(){
   ctx.restore();
 }
 function maybeLogBuildingRenderSummary(){
-  if(buildingRenderDiagnostics.summaryLogged) return;
   const totalBuildings=world.buildings.length;
-  const seen=buildingRenderDiagnostics.atlasBuildings.size + buildingRenderDiagnostics.fallbackBuildings.size;
+  const seen=buildingRenderDiagnostics.atlasBuildings.size + buildingRenderDiagnostics.fallbackBuildings.size + buildingRenderDiagnostics.pendingBuildings.size;
   if(seen<totalBuildings) return;
-  buildingRenderDiagnostics.summaryLogged=true;
-  const atlasIds=[...buildingRenderDiagnostics.atlasBuildings];
-  const fallbackEntries=[...buildingRenderDiagnostics.fallbackBuildings.entries()].map(([id,reason])=>id+"("+reason+")");
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(","));
+  const atlasIds=[...buildingRenderDiagnostics.atlasBuildings].sort();
+  const fallbackEntries=[...buildingRenderDiagnostics.fallbackBuildings.entries()].map(([id,reason])=>id+"("+reason+")").sort();
+  const pendingEntries=[...buildingRenderDiagnostics.pendingBuildings.entries()].map(([id,reason])=>id+"("+reason+")").sort();
+  const summaryToken=[atlasIds.join(","),fallbackEntries.join(","),pendingEntries.join(",")].join("|");
+  if(buildingRenderDiagnostics.lastSummaryToken===summaryToken) return;
+  buildingRenderDiagnostics.lastSummaryToken=summaryToken;
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(","));
 }
+
+function isBuildingAtlasPendingReason(reason){
+  if(reason!=="asset_not_loaded" && reason!=="sheet_not_complete") return false;
+  const runtime=atlasRuntimeInfo.buildings;
+  if(!runtime) return true;
+  return runtime.loaded!==true && runtime.imageOnerrorFired!==true;
+}
+
 function getBuildingAtlasDebugStatus(){
   const buildingInfo=atlasRuntimeInfo.buildings||{};
   const propInfo=atlasRuntimeInfo.props||{};
@@ -7736,9 +7747,15 @@ function drawWorld(){
     buildingSortDebugRows.push(buildingSortDebug);
     if(!didDraw){
       const fallbackReason=spriteFailureReason || (drawDimensionsAreFinite ? "draw_failed" : "invalid_draw_position");
-      warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
-      buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
-      logBuildingFallbackOnce(b, fallbackReason);
+      const isPending=isBuildingAtlasPendingReason(fallbackReason);
+      if(isPending){
+        buildingRenderDiagnostics.pendingBuildings.set(b.id, fallbackReason);
+      }else{
+        warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
+        buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
+        logBuildingFallbackOnce(b, fallbackReason);
+      }
+      buildingRenderDiagnostics.atlasBuildings.delete(b.id);
       syncAtlasProofDiagnostics(b, spriteId, sprite, false, fallbackReason);
       if(HEARTHVALE_PROOF_BUILDING_IDS.has(b.id)){
         logAtlasProofStatusOnce("FALLBACK");
@@ -7749,6 +7766,8 @@ function drawWorld(){
       drawBuildingFallbackSprite(b);
       return;
     }
+    buildingRenderDiagnostics.pendingBuildings.delete(b.id);
+    buildingRenderDiagnostics.fallbackBuildings.delete(b.id);
     buildingRenderDiagnostics.atlasBuildings.add(b.id);
     registerAtlasBuildingDecorExclusionZone(b, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh);
     syncAtlasProofDiagnostics(b, spriteId, sprite, true, null);
