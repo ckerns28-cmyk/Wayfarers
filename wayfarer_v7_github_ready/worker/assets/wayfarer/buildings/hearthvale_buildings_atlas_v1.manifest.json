@@ -16,8 +16,8 @@
         "w": 6,
         "h": 5
       },
-      "anchorX": 96,
-      "anchorY": 128,
+      "anchorX": 92,
+      "anchorY": 138,
       "collisionRect": {
         "x": 0,
         "y": 3,
@@ -35,9 +35,11 @@
         "y": 1
       },
       "renderLayer": "buildings",
-      "proofEnabled": false,
-      "productionReady": false,
-      "debugOnly": true
+      "proofEnabled": true,
+      "productionReady": true,
+      "debugOnly": false,
+      "drawW": 184,
+      "drawH": 153
     },
     {
       "id": "mercantile_shop",
