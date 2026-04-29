@@ -2663,8 +2663,12 @@ function applySecondaryAtlasSelectionOverrides(selections){
       sprite.fallbackReason="catalog_candidate_selected_proof_pending_acceptance";
       sprite.metadataSource="catalog_selection";
     }else{
+      // Keep unsafe/unresolved secondary roles fully fallback-gated.
+      // This prevents static hand-tuned crops from re-entering proof/atlas render paths.
       sprite.productionReady=false;
+      sprite.proofEnabled=false;
       sprite.fallbackReason=selection?.fallbackReason || "no_clean_catalog_candidate";
+      sprite.metadataSource="catalog_fallback_gate";
     }
   });
 }
