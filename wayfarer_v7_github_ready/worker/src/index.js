@@ -1360,6 +1360,21 @@ function isPropDebugEnabledFromUrl(){
     return false;
   }
 }
+
+function getAtlasProofRequestFromUrl(){
+  try{
+    const raw=new URLSearchParams(window.location.search).get("atlasProof");
+    if(!raw) return { enabled:false, all:false, ids:new Set() };
+    const normalized=String(raw).trim().toLowerCase();
+    if(!normalized) return { enabled:false, all:false, ids:new Set() };
+    if(normalized==="all") return { enabled:true, all:true, ids:new Set() };
+    const ids=new Set(normalized.split(",").map((token)=>token.trim()).filter(Boolean));
+    return { enabled:ids.size>0, all:false, ids };
+  }catch(_error){
+    return { enabled:false, all:false, ids:new Set() };
+  }
+}
+
 function isDecorDebugEnabledFromUrl(){
   try{
     return new URLSearchParams(window.location.search).get("decorDebug")==="1";
@@ -1371,6 +1386,7 @@ const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
 const ATLAS_PREVIEW_MODE = ATLAS_DEBUG_MODE && isAtlasPreviewEnabledFromUrl();
 const DECOR_DEBUG_MODE = isDecorDebugEnabledFromUrl();
 const PROP_DEBUG_MODE = isPropDebugEnabledFromUrl();
+const ATLAS_PROOF_REQUEST = getAtlasProofRequestFromUrl();
 const ATLAS_DEBUG_SOURCE_LABELS = (() => {
   if(!ATLAS_DEBUG_MODE || !DECOR_DEBUG_MODE) return false;
   try{
@@ -1669,13 +1685,15 @@ function syncAtlasProofDiagnostics(building, spriteId, sprite, didDraw, fallback
     fallbackReason:fallbackReason ? toAtlasProofFallbackReason(fallbackReason, building, spriteId) : null,
     crop:sprite ? { x:sprite.sx, y:sprite.sy, w:sprite.sw, h:sprite.sh } : null,
     drawSize:sprite ? { w:sprite.drawW ?? sprite.sw, h:sprite.drawH ?? sprite.sh } : null,
-    anchor:sprite ? { x:sprite.anchorX, y:sprite.anchorY } : null
+    anchor:sprite ? { x:sprite.anchorX, y:sprite.anchorY } : null,
+    proofOverride:isAtlasProofOverrideRequested(building, sprite)
   });
 }
 function atlasProofStatusLine(pathLabel){
   return "[Atlas Proof] " +
     "atlasDebug=" + (ATLAS_DEBUG_MODE ? "true" : "false") +
     " USE_HEARTHVALE_ATLAS_PROOF=" + (USE_HEARTHVALE_ATLAS_PROOF ? "true" : "false") +
+    " atlasProofRequest=" + (ATLAS_PROOF_REQUEST.all ? "all" : (ATLAS_PROOF_REQUEST.enabled ? Array.from(ATLAS_PROOF_REQUEST.ids).join(",") : "none")) +
     " Building=" + atlasProofDiagnostics.selectedBuildingId +
     " Role=" + atlasProofDiagnostics.selectedBuildingRole +
     " Sprite=" + (atlasProofDiagnostics.selectedSpriteId||"n/a") +
@@ -1702,7 +1720,7 @@ function atlasProofCompactStatusLine(){
     const status=atlasProofDiagnostics.statuses.get(id);
     const key=id==="b_inn_tavern"?"inn_tavern":(id==="b_mercantile"?"mercantile_shop":"village_hall_meeting_house");
     if(!status) return key+"=PENDING";
-    if(status.renderPath==="ATLAS") return key+"=ATLAS";
+    if(status.renderPath==="ATLAS") return key+"=" + (status.proofOverride ? "PROOF_ATLAS:" + (status.fallbackReason || "proof_override") : "ATLAS");
     return key+"=FALLBACK:" + (status.fallbackReason||"other_specific_reason");
   }).join(" | ");
   return "atlasDebug=1 | proof=ON | " + summary;
@@ -1732,8 +1750,9 @@ function drawAtlasProofMarker(drawX, drawY, drawW, drawH, building, renderPath, 
   ctx.save();
   const isAtlas=renderPath==="ATLAS";
   const roleLabel=building?.role || buildingId || "building";
+  const proofOverride=isAtlas && isAtlasProofOverrideRequested(building, null);
   const labelText=isAtlas
-    ? roleLabel + ": ATLAS"
+    ? roleLabel + (proofOverride ? ": PROOF_ATLAS" : ": ATLAS")
     : roleLabel + ": FALLBACK: " + (fallbackReason || "other_specific_reason");
   ctx.strokeStyle=isAtlas ? "rgba(0,255,255,1)" : "rgba(255,106,0,1)";
   ctx.lineWidth=3;
@@ -1897,10 +1916,27 @@ function initExternalAtlasManifests(){
 function bootstrapAtlasPipeline(){
   initExternalAtlasManifests().finally(()=>initAtlasImages());
 }
+
+function isAtlasProofOverrideRequested(building, sprite){
+  if(!ATLAS_DEBUG_MODE || !ATLAS_PROOF_REQUEST.enabled) return false;
+  if(!building) return false;
+  if(ATLAS_PROOF_REQUEST.all) return true;
+  const tokens=[
+    building.id,
+    building.role,
+    sprite?.id,
+    sprite?.role,
+    building.id?.replace(/^b_/,""),
+    building.role?.replace(/^b_/,"")
+  ].filter(Boolean).map((value)=>String(value).trim().toLowerCase());
+  return tokens.some((token)=>ATLAS_PROOF_REQUEST.ids.has(token));
+}
+
 function isProofBuildingEnabled(building, sprite){
   if(!USE_HEARTHVALE_ATLAS_PROOF) return false;
   if(!building || !HEARTHVALE_PROOF_BUILDING_IDS.has(building.id)) return false;
-  if(sprite?.proofEnabled!==true) return false;
+  const proofOverride=isAtlasProofOverrideRequested(building, sprite);
+  if(!proofOverride && sprite?.proofEnabled!==true) return false;
   if(sprite?.calibrationOnly===true && !ATLAS_DEBUG_MODE) return false;
   return true;
 }
