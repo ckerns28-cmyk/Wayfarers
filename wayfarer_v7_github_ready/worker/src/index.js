@@ -1219,7 +1219,9 @@ function atlasBuildingMetadataToSpriteMap(metadata){
       labelAnchor:entry.labelAnchor,
       atlas:entry.atlas,
       role:entry.role,
-      fallbackReason:entry.fallbackReason || null
+      fallbackReason:entry.fallbackReason || null,
+      metadataSource:"index",
+      metadataManifestVersion:null
     };
   });
   return sprites;
@@ -1583,6 +1585,8 @@ const atlasProofDiagnostics={
   naturalHeight:0,
   crop:null,
   drawSize:null,
+  metadataSource:"index",
+  metadataManifestVersion:null,
   usedAtlasRender:false,
   fallbackReason:null,
   fallbackLogged:false,
@@ -1653,6 +1657,8 @@ function syncAtlasProofDiagnostics(building, spriteId, sprite, didDraw, fallback
   atlasProofDiagnostics.naturalHeight=buildingRuntime.height || atlasImages.buildings?.naturalHeight || 0;
   atlasProofDiagnostics.crop=sprite ? { x:sprite.sx, y:sprite.sy, w:sprite.sw, h:sprite.sh } : null;
   atlasProofDiagnostics.drawSize=sprite ? { w:sprite.drawW ?? sprite.sw, h:sprite.drawH ?? sprite.sh } : null;
+  atlasProofDiagnostics.metadataSource=sprite?.metadataSource || buildingRuntime.metadataSource || "index";
+  atlasProofDiagnostics.metadataManifestVersion=sprite?.metadataManifestVersion || buildingRuntime.manifestVersion || null;
   atlasProofDiagnostics.usedAtlasRender=!!didDraw;
   atlasProofDiagnostics.fallbackReason=fallbackReason ? toAtlasProofFallbackReason(fallbackReason, building, spriteId) : null;
   atlasProofDiagnostics.statuses.set(building.id,{
@@ -1685,6 +1691,8 @@ function atlasProofStatusLine(pathLabel){
     " Natural=" + atlasProofDiagnostics.naturalWidth + "x" + atlasProofDiagnostics.naturalHeight +
     " Crop=" + formatRect(atlasProofDiagnostics.crop) +
     " Draw=" + (atlasProofDiagnostics.drawSize ? atlasProofDiagnostics.drawSize.w + "x" + atlasProofDiagnostics.drawSize.h : "n/a") +
+    " MetadataSource=" + (atlasProofDiagnostics.metadataSource || "n/a") +
+    " ManifestVersion=" + (atlasProofDiagnostics.metadataManifestVersion || "n/a") +
     " RenderPath=" + pathLabel +
     (pathLabel==="FALLBACK" ? " Reason=" + (atlasProofDiagnostics.fallbackReason||"other_specific_reason") : "");
 }
@@ -1811,6 +1819,7 @@ function mergeAtlasManifestEntries(atlasId, externalManifest){
   const entries=Array.isArray(externalManifest.entries) ? externalManifest.entries : [];
   if(!entries.length) return false;
   const atlasFile=externalManifest.atlasFile || externalManifest.atlas || "";
+  const manifestVersion=externalManifest.manifestVersion || externalManifest.version || externalManifest.hash || externalManifest.commit || null;
   if(atlasFile){
     const atlasFolder=atlasId==="buildings" ? "/assets/wayfarer/buildings/" : "/assets/wayfarer/props/";
     runtimeManifest.imagePath=atlasFolder + atlasFile;
@@ -1838,7 +1847,11 @@ function mergeAtlasManifestEntries(atlasId, externalManifest){
       renderLayer:entry.renderLayer ?? mergedSprites[entry.id]?.renderLayer,
       productionReady:entry.productionReady ?? mergedSprites[entry.id]?.productionReady,
       proofEnabled:entry.proofEnabled ?? mergedSprites[entry.id]?.proofEnabled,
-      debugOnly:entry.debugOnly ?? entry.debug_only ?? mergedSprites[entry.id]?.debugOnly
+      debugOnly:entry.debugOnly ?? entry.debug_only ?? mergedSprites[entry.id]?.debugOnly,
+      fallbackReason:entry.fallbackReason ?? mergedSprites[entry.id]?.fallbackReason,
+      calibrationOnly:entry.calibrationOnly ?? mergedSprites[entry.id]?.calibrationOnly,
+      metadataSource:"manifest",
+      metadataManifestVersion:manifestVersion
     };
     if(atlasId==="props"){
       const mergedSprite=mergedSprites[entry.id];
@@ -1859,6 +1872,9 @@ function mergeAtlasManifestEntries(atlasId, externalManifest){
   runtimeManifest.sprites=mergedSprites;
   runtimeManifest.tileSize=Number.isFinite(externalManifest.tileSize) ? externalManifest.tileSize : runtimeManifest.tileSize;
   runtimeManifest.productionReady=externalManifest.productionReady ?? runtimeManifest.productionReady;
+  if(!atlasRuntimeInfo[atlasId]) atlasRuntimeInfo[atlasId]={};
+  atlasRuntimeInfo[atlasId].metadataSource="manifest";
+  atlasRuntimeInfo[atlasId].manifestVersion=manifestVersion;
   return true;
 }
 function initExternalAtlasManifests(){
@@ -2029,7 +2045,9 @@ function initAtlasImages(){
       probeStatus:0,
       probeContentType:"unknown",
       probeContentTypeIsPng:false,
-      probeServedAppShell:false
+      probeServedAppShell:false,
+      metadataSource:atlasId==="buildings" ? "index" : "index",
+      manifestVersion:null
     };
     const img=new Image();
     atlasImages[atlasId]=img;
@@ -2310,9 +2328,12 @@ function drawAtlasDebugPreview(){
     const dims=(info?.width||0) + "x" + (info?.height||0);
     ctx.fillText("status=" + status + " dims=" + dims, panelX+8, panelY+28);
     ctx.fillText("url=" + (info?.selectedUrl||"n/a"), panelX+8, panelY+41);
+    if(atlasId==="buildings"){
+      ctx.fillText("metadataSource=" + (info?.metadataSource||"index") + " manifestVersion=" + (info?.manifestVersion||"n/a"), panelX+8, panelY+54);
+    }
     if(sheet && sheet.complete && sheet.naturalWidth>0 && sheet.naturalHeight>0){
       const previewX=panelX+8;
-      const previewY=panelY+48;
+      const previewY=atlasId==="buildings" ? panelY+62 : panelY+48;
       const maxW=170;
       const maxH=atlasId==="buildings" ? 126 : 92;
       const scale=Math.min(maxW/sheet.naturalWidth,maxH/sheet.naturalHeight,1);
