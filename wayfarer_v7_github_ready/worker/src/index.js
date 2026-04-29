@@ -7587,6 +7587,7 @@ function drawWorld(){
     const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
     return { type:"building", b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, worldAnchorY, drawX, drawY };
   });
+  const buildingSortDebugRows=[];
 
   const entityDrawEntries=[
     { type:"npc", id:npc.id, worldAnchorY:npc.py, draw:()=>{
