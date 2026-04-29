@@ -7620,7 +7620,21 @@ function drawWorld(){
     const didDraw=!spriteFailureReason
       ? (drawDimensionsAreFinite ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh) : false)
       : false;
-    if(!didDraw){
+    const buildingSortY=(b.y*TILE) + (sprite?.anchorY ?? anchorPxY);
+    const buildingSortDebug={
+      id:b.id,
+      anchorY:sprite?.anchorY ?? anchorPxY,
+      sortY:Math.round(buildingSortY),
+      metadataSource:sprite?.metadataSource || "index"
+    };
+    buildingSortDebugRows.push(buildingSortDebug);
+    renderQueue.push({
+      type:"building",
+      id:b.id,
+      sortY:buildingSortY,
+      tieBreak:bIndex,
+      draw:()=>{
+        if(!didDraw){
       const fallbackReason=spriteFailureReason || (drawDimensionsAreFinite ? "draw_failed" : "invalid_draw_position");
       warnMissingAssetOnce("building_sprite", (spriteId||"none")+":"+fallbackReason);
       buildingRenderDiagnostics.fallbackBuildings.set(b.id, fallbackReason);
