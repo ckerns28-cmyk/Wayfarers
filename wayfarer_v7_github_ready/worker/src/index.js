@@ -849,13 +849,23 @@ const transitionFade = document.getElementById("transitionFade");
 const sidebarTabs = Array.from(document.querySelectorAll(".sidebar-tab"));
 const sidebarPanels = Array.from(document.querySelectorAll(".sidebar-tab-panel"));
 
+const bootstrapErrorDedupe=new Set();
+
 function reportBootstrapError(err,label){
   const message=(err&&err.message)?err.message:String(err);
-  console.error("[Bootstrap Error] "+label+": "+message, err);
+  if(!message) return;
+  const normalizedMessage=message.trim();
+  if(!normalizedMessage || /^script error\.?$/i.test(normalizedMessage)) return;
+
+  const dedupeKey=label+"::"+normalizedMessage;
+  if(bootstrapErrorDedupe.has(dedupeKey)) return;
+  bootstrapErrorDedupe.add(dedupeKey);
+
+  console.error("[Bootstrap Error] "+label+": "+normalizedMessage, err);
   if(chat){
     const node=document.createElement("div");
     node.className="line system";
-    node.textContent="[Startup Error] "+label+": "+message;
+    node.textContent="[Startup Error] "+label+": "+normalizedMessage;
     chat.appendChild(node);
   }
 }
