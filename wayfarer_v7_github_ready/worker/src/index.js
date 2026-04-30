@@ -1265,6 +1265,16 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
   }
 });
 
+const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
+  b_inn_tavern:{ buildingId:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", atlasIdentity:"top_left_inn_tavern", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.inn_tavern_v1.crop, productionAtlasLocked:true, productionAtlasEnabled:true },
+  b_mercantile:{ buildingId:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", atlasIdentity:"top_middle_mercantile_shop", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.mercantile_shop.crop, productionAtlasLocked:true, productionAtlasEnabled:true },
+  b_village_hall:{ buildingId:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", atlasIdentity:"top_right_meeting_house", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.village_hall_meeting_house.crop, productionAtlasLocked:true, productionAtlasEnabled:true },
+  b_res_small:{ buildingId:"b_res_small", role:"residence_small", spriteId:"residence_small", atlasIdentity:"middle_left_or_middle_center_residence", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_small.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
+  b_res_large:{ buildingId:"b_res_large", role:"residence_large", spriteId:"residence_large", atlasIdentity:"middle_right_manor", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_large.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
+  b_hunter_lodge:{ buildingId:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"bottom_left_hunter_lodge", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
+  b_boathouse:{ buildingId:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"bottom_middle_boathouse_dock", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.pond_boathouse_or_waterfront_shed.crop, productionAtlasLocked:false, productionAtlasEnabled:false }
+});
+
 const LOCKED_HERO_BUILDING_IDS=Object.freeze(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house"]);
 const SECONDARY_ATLAS_ROLES=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
 const SECONDARY_ROLE_PRIORITY=Object.freeze(["pond_boathouse_or_waterfront_shed","residence_large","residence_small","hunter_lodge_or_outfitter"]);
