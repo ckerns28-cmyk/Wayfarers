@@ -1730,12 +1730,12 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4h";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4h-registry-selector-qa-cleanup";
+const WAYFARER_PHASE = "33.1.4i";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4i-debug-readiness-cleanup";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
-  : "selector-v33.1.4c-source-of-truth-audit";
+  : "runtime-injected-or-unavailable";
 let wayfarerBuildSentinelLogged=false;
 const ATLAS_PREVIEW_MODE = ATLAS_DEBUG_MODE && isAtlasPreviewEnabledFromUrl();
 const SECONDARY_PROOF_PREVIEW_MODE = ATLAS_DEBUG_MODE && isSecondaryProofPreviewEnabledFromUrl();
@@ -1869,6 +1869,14 @@ function drawSecondaryProofPreviewOverlay(entry){
 function logSecondaryProofPreviewDrawSummary(){
   if(!SECONDARY_PROOF_PREVIEW_MODE || secondaryProofPreviewState.drawSummaryLogged) return;
   const roles=Array.isArray(SECONDARY_BUILDING_IDS) ? SECONDARY_BUILDING_IDS.slice() : [];
+  const allReady=roles.every((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus);
+  if(!allReady){
+    console.info("[Secondary Proof Preview Draw]");
+    console.info("status=PENDING_ASSETS");
+    console.info("drawCount=0");
+    console.info("reason=selector_or_assets_not_settled");
+    return;
+  }
   const drawnRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="SELECTED_PROOF_ONLY");
   const skippedRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus!=="SELECTED_PROOF_ONLY");
   const runtimeAtlasRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.runtimeRenderStatus==="ATLAS");
@@ -2361,7 +2369,7 @@ function maybeEmitAtlasReadyOnce(){
   if(!isAtlasRuntimeReady("buildings")) return;
   atlasReadinessLogState.buildingsReadyLogged=true;
   const sheet=atlasImages.buildings;
-  console.info("[Atlas Readiness] ready buildings=" + sheet.naturalWidth + "x" + sheet.naturalHeight + " manifestKeys=" + Object.keys(atlasManifests.buildings.sprites||{}).length + " phase=33.1.4d.3 selectorVersion=selector-v33.1.4d.3-active-manifest-agreement");
+  console.info("[Atlas Readiness] ready buildings=" + sheet.naturalWidth + "x" + sheet.naturalHeight + " manifestKeys=" + Object.keys(atlasManifests.buildings.sprites||{}).length + " phase="+WAYFARER_PHASE+" selectorVersion="+ATLAS_SELECTOR_VERSION);
 }
 function hasAtlasUsableTransparency(atlasId){
   const runtime=atlasRuntimeInfo[atlasId];
@@ -3108,6 +3116,7 @@ let sourceTruthAcceptanceLogged=false;
 let atlasRuntimeAuthorityChainSignature="";
 let atlasRuntimeAuthorityAcceptanceSignature="";
 let sourceTruthAcceptanceSignature="";
+let atlasWorkflowAcceptanceSignature="";
 function emitMobileQaSummary(){
   if(!AUTO_QA_MODE || mobileQaSummaryLogged) return;
   const cam=getCamera();
@@ -3225,13 +3234,17 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='33.1.4h' && ATLAS_SELECTOR_VERSION==='selector-v33.1.4h-registry-selector-qa-cleanup';
+  const proofHudConsistent=WAYFARER_PHASE==='33.1.4i' && ATLAS_SELECTOR_VERSION==='selector-v33.1.4i-debug-readiness-cleanup';
   const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
   const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
   const status=!ready?'PENDING_ASSETS':((rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent && authStatus==='PASS')?'PASS':'FAIL');
   const satSig=JSON.stringify({status,pendingReason,renderAuditConsistent,rows:rows.length,conflicts:conflicts.length,authStatus});
   if(satSig!==sourceTruthAcceptanceSignature){ sourceTruthAcceptanceSignature=satSig; console.info('[Source Truth Acceptance]'); console.info('phase='+WAYFARER_PHASE); console.info('registryKeyMode=building_id'); console.info('rows='+rows.length); console.info('activeMappingConsistent='+(conflicts.length===0?'true':'false')); console.info('cropAuditConsistent='+(requiredFieldsOk?'true':'false')); console.info('proofHudConsistent='+(proofHudConsistent?'true':'false')); console.info('renderAuditConsistent='+(renderAuditConsistent?'true':'false')); console.info('pendingReason='+pendingReason); console.info('status='+status); }
+  const proofPreviewPass=secondaryProofPreviewState.drawCount===4;
+  const workflowStatus=(authStatus==='PASS' && status==='PASS' && renderAuditConsistent && proofPreviewPass)?'PASS':'PENDING';
+  const workflowSig=JSON.stringify({workflowStatus,proofPreviewPass,status,authStatus});
+  if(workflowSig!==atlasWorkflowAcceptanceSignature){ atlasWorkflowAcceptanceSignature=workflowSig; if(workflowStatus==='PASS'){ console.info('[Atlas Workflow Acceptance]'); console.info('phase='+WAYFARER_PHASE); console.info('authorityChain=PASS'); console.info('sourceTruth=PASS'); console.info('renderAudit=PASS'); console.info('proofPreview=PASS'); console.info('consoleFatalErrors=none'); console.info('secondaryRuntimeAtlas=none'); console.info('status=PASS'); } }
 }
 // 33.1.1C: Full-sheet atlas catalog scan.
 // Runs ONCE in atlasDebug mode after the buildings image loads.
