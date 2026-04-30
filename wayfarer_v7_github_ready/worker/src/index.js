@@ -1275,6 +1275,13 @@ const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
   b_boathouse:{ buildingId:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"bottom_middle_boathouse_dock", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.pond_boathouse_or_waterfront_shed.crop, productionAtlasLocked:false, productionAtlasEnabled:false }
 });
 
+const HEARTHVALE_SEMANTIC_REGISTRY_BY_ROLE = Object.freeze(
+  Object.values(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY).reduce((acc, entry) => {
+    if (entry?.role) acc[entry.role] = entry;
+    return acc;
+  }, {})
+);
+
 const LOCKED_HERO_BUILDING_IDS=Object.freeze(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house"]);
 const SECONDARY_ATLAS_ROLES=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
 const SECONDARY_ROLE_PRIORITY=Object.freeze(["pond_boathouse_or_waterfront_shed","residence_large","residence_small","hunter_lodge_or_outfitter"]);
@@ -3284,7 +3291,7 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     .sort((a,b)=>(rolePriority.get(a)??99)-(rolePriority.get(b)??99))
     .forEach((roleId)=>{
     const roleEntry=normalizedRoleReports[roleId].roleEntry;
-    const regEntry=HEARTHVALE_BUILDING_SEMANTIC_REGISTRY[roleId]||null;
+    const regEntry=HEARTHVALE_SEMANTIC_REGISTRY_BY_ROLE[roleId]||null;
     const resolvedEntry=resolveAtlasSpriteRuntimeEntry(roleId);
     // Semantic identity gate: human_reviewed roles use registry crop directly.
     // Only human_reviewed_pending_catalog roles proceed through catalog scan selection.
