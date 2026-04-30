@@ -1188,6 +1188,13 @@ const assets = {
 };
 
 const USE_HEARTHVALE_ATLAS_PROOF = true;
+const HEARTHVALE_ATLAS_SEMANTIC_ASSIGNMENTS = Object.freeze({
+  village_hall_meeting_house:{ expectedIdentity:"top_right_meeting_house", preferredCandidateId:"C00", preferredBounds:{ x:853, y:10, w:327, h:460 } },
+  residence_large:{ expectedIdentity:"middle_right_manor", preferredCandidateId:"C03", preferredBounds:{ x:758, y:493, w:459, h:355 } },
+  residence_small:{ expectedIdentity:"middle_left_or_middle_center_residence", preferredCandidateId:"C04" },
+  hunter_lodge_or_outfitter:{ expectedIdentity:"bottom_left_hunter_lodge", preferredCandidateId:"C07" },
+  pond_boathouse_or_waterfront_shed:{ expectedIdentity:"bottom_middle_boathouse_dock", preferredCandidateId:"C06" }
+});
 const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
   buildings:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.manifest.json",
   props:"/assets/wayfarer/props/hearthvale_props_atlas_v1.manifest.json"
@@ -1231,6 +1238,10 @@ const LOCKED_HERO_METADATA_SNAPSHOT=Object.freeze({
 });
 function rectsOverlap(a,b){
   return !(a.x+a.w<=b.x || b.x+b.w<=a.x || a.y+a.h<=b.y || b.y+b.h<=a.y);
+}
+function boxesEqual(a,b){
+  if(!a||!b) return false;
+  return a.x===b.x && a.y===b.y && a.w===b.w && a.h===b.h;
 }
 function getCropOverlapWarnings(entry){
   if(!entry || !SECONDARY_BUILDING_IDS.includes(entry.id)) return [];
@@ -3055,6 +3066,9 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     .forEach((roleId)=>{
     const roleEntry=normalizedRoleReports[roleId].roleEntry;
     const fits=normalizedCandidateInfo[roleId].candidates;
+    const semanticPreferredCandidateId=atlasSemanticIdentityState.byRole?.[roleId]?.candidateId||null;
+    const semanticPreferredCandidate=fits.find((candidate)=>candidate?.candidateId===semanticPreferredCandidateId) || null;
+    const semanticPreferredAvailable=!!(semanticPreferredCandidate && semanticPreferredCandidate.clean===true && (semanticPreferredCandidate.heroOverlaps||[]).length===0);
     const evaluated=fits.map((candidate)=>{
       const reasons=[];
       if(!candidate?.hasNonTransparentPixels) reasons.push("no_non_transparent_pixels");
@@ -3068,6 +3082,9 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
       if((candidate?.warnings||[]).some(isSecondaryBlockingAuditWarning)) reasons.push("blocking_audit_warning");
       const reviewRejection=getSecondaryReviewRejection(roleId,candidate?.candidateId);
       if(reviewRejection) reasons.push("human_review_rejected_candidate");
+      if(semanticPreferredAvailable && semanticPreferredCandidateId && candidate?.candidateId!==semanticPreferredCandidateId){
+        reasons.push("semantic_identity_nonpreferred_rejected");
+      }
       const scored=scoreCandidateForRole(roleId,candidate,fitInfo);
       return {candidate,reasons:[...new Set(reasons)].filter(Boolean),score:scored.score,scoreReasons:scored.scoreReasons,reviewRejection};
     });
@@ -3466,24 +3483,44 @@ function runAtlasCatalogScanOnce(){
         });
       });
       const byPosition=Object.fromEntries(semanticAuditRows.map((row)=>[row.atlasGridPosition,row]));
+      const candidateById=Object.fromEntries(results.map((row)=>[row.candidateId,row]));
+      const resolveSemanticAssignment=(roleId, fallbackPosition)=>{
+        const cfg=HEARTHVALE_ATLAS_SEMANTIC_ASSIGNMENTS[roleId]||null;
+        const preferredById=cfg?.preferredCandidateId ? candidateById[cfg.preferredCandidateId] : null;
+        const preferredByBounds=cfg?.preferredBounds ? results.find((row)=>boxesEqual(row.boundingBox,cfg.preferredBounds)) : null;
+        const fallbackCandidate=fallbackPosition ? byPosition[fallbackPosition] : null;
+        const resolved=preferredById||preferredByBounds||fallbackCandidate||null;
+        const resolutionSource=preferredById?"preferredCandidateId":(preferredByBounds?"preferredBounds":"fallbackPosition");
+        return resolved?{ candidateId:resolved.candidateId, boundingBox:resolved.boundingBox, expectedIdentity:cfg?.expectedIdentity||null, resolutionSource }:null;
+      };
       atlasSemanticIdentityState.byRole={
-        residence_small:byPosition.middle_left?{candidateId:byPosition.middle_left.candidateId,boundingBox:byPosition.middle_left.boundingBox}:null,
-        residence_large:byPosition.middle_right?{candidateId:byPosition.middle_right.candidateId,boundingBox:byPosition.middle_right.boundingBox}:null,
-        hunter_lodge_or_outfitter:byPosition.bottom_left?{candidateId:byPosition.bottom_left.candidateId,boundingBox:byPosition.bottom_left.boundingBox}:null,
-        pond_boathouse_or_waterfront_shed:byPosition.bottom_middle?{candidateId:byPosition.bottom_middle.candidateId,boundingBox:byPosition.bottom_middle.boundingBox}:null
+        residence_small:resolveSemanticAssignment("residence_small","middle_left"),
+        residence_large:resolveSemanticAssignment("residence_large","middle_right"),
+        hunter_lodge_or_outfitter:resolveSemanticAssignment("hunter_lodge_or_outfitter","bottom_left"),
+        pond_boathouse_or_waterfront_shed:resolveSemanticAssignment("pond_boathouse_or_waterfront_shed","bottom_middle")
       };
       atlasSemanticIdentityState.byPosition=byPosition;
       atlasSemanticIdentityState.auditRows=semanticAuditRows;
-      const villageHallTarget=byPosition.top_right;
+      const villageHallTarget=resolveSemanticAssignment("village_hall_meeting_house","top_right");
       const villageSprite=atlasManifests?.buildings?.sprites?.village_hall_meeting_house;
-      if(villageSprite && villageHallTarget?.boundingBox){
+      const villageMeta=ATLAS_BUILDING_METADATA.village_hall_meeting_house;
+      if(villageSprite && villageHallTarget?.boundingBox && villageMeta){
         const oldVillageHallCrop={x:villageSprite.sx,y:villageSprite.sy,w:villageSprite.sw,h:villageSprite.sh};
+        const oldDraw={w:villageMeta.drawW,h:villageMeta.drawH};
+        const oldAnchor={x:villageMeta.anchorX,y:villageMeta.anchorY};
         villageSprite.sx=villageHallTarget.boundingBox.x;
         villageSprite.sy=villageHallTarget.boundingBox.y;
         villageSprite.sw=villageHallTarget.boundingBox.w;
         villageSprite.sh=villageHallTarget.boundingBox.h;
+        const targetFootprintHeight=villageMeta.drawH;
+        const aspect=villageHallTarget.boundingBox.w/Math.max(1,villageHallTarget.boundingBox.h);
+        villageSprite.drawH=Math.round(targetFootprintHeight);
+        villageSprite.drawW=Math.round(villageSprite.drawH*aspect);
+        villageSprite.anchorX=Math.round(villageSprite.drawW/2);
+        villageSprite.anchorY=Math.round(villageSprite.drawH*0.91);
         villageSprite.metadataSource="catalog_semantic_identity";
         console.info("[Atlas Semantic Remap] village_hall_meeting_house old="+JSON.stringify(oldVillageHallCrop)+" new="+JSON.stringify(villageHallTarget.boundingBox)+" sourceCandidate="+villageHallTarget.candidateId);
+        console.info("[Atlas Semantic Draw Profile] spriteId=village_hall_meeting_house sourceCrop="+villageHallTarget.boundingBox.w+"x"+villageHallTarget.boundingBox.h+" oldDraw="+oldDraw.w+"x"+oldDraw.h+" newDraw="+villageSprite.drawW+"x"+villageSprite.drawH+" oldAnchor="+oldAnchor.x+","+oldAnchor.y+" newAnchor="+villageSprite.anchorX+","+villageSprite.anchorY+" reason=preserve_aspect_for_top_right_meeting_house");
       }
       console.info("[Atlas Semantic Identity Audit]");
       console.info("expectedVisualIdentity="+JSON.stringify(expectedIdentityByPosition));
