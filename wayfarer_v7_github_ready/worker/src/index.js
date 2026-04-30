@@ -1459,6 +1459,13 @@ function isPropDebugEnabledFromUrl(){
     return false;
   }
 }
+function isSecondaryProofPreviewEnabledFromUrl(){
+  try{
+    return new URLSearchParams(window.location.search).get("secondaryProofPreview")==="1";
+  }catch(_error){
+    return false;
+  }
+}
 
 function getAtlasProofRequestFromUrl(){
   try{
@@ -1490,6 +1497,7 @@ const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" 
   : "selector-v33.1.2-deconflict-proof-runtime";
 let wayfarerBuildSentinelLogged=false;
 const ATLAS_PREVIEW_MODE = ATLAS_DEBUG_MODE && isAtlasPreviewEnabledFromUrl();
+const SECONDARY_PROOF_PREVIEW_MODE = ATLAS_DEBUG_MODE && isSecondaryProofPreviewEnabledFromUrl();
 const DECOR_DEBUG_MODE = isDecorDebugEnabledFromUrl();
 function isDecorDebugEnabled(){
   return ATLAS_DEBUG_MODE && DECOR_DEBUG_MODE;
@@ -1519,6 +1527,69 @@ const atlasBuildingDecorExclusionState={
   suppressionLog:new Set(),
   suppressedObjects:[]
 };
+const secondaryProofPreviewState={
+  summaryLogged:false,
+  drawCount:0
+};
+function logSecondaryProofPreviewSummary(){
+  if(secondaryProofPreviewState.summaryLogged) return;
+  const roles=SECONDARY_BUILDING_IDS.map((id)=>BUILDING_ROLE_BY_ID[id]).filter(Boolean);
+  const previewRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="SELECTED_PROOF_ONLY");
+  const fallbackGatedRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="FALLBACK_GATED");
+  const runtimeAtlasRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.runtimeRenderStatus==="ATLAS");
+  console.info("[Secondary Proof Preview]");
+  console.info("enabled="+(SECONDARY_PROOF_PREVIEW_MODE?"true":"false"));
+  console.info("previewRoles="+previewRoles.join(","));
+  console.info("fallbackGatedRoles="+fallbackGatedRoles.join(","));
+  console.info("runtimeAtlasRoles="+runtimeAtlasRoles.join(","));
+  secondaryProofPreviewState.summaryLogged=true;
+}
+function drawSecondaryProofPreviewOverlay(entry){
+  if(!SECONDARY_PROOF_PREVIEW_MODE || !entry?.b) return;
+  const role=entry.b.role;
+  const selectorRow=secondaryAtlasSelectionState.byRole?.[role];
+  if(!selectorRow || selectorRow.selectorCandidateStatus!=="SELECTED_PROOF_ONLY" || !selectorRow.selectedCrop) return;
+  const crop=selectorRow.selectedCrop;
+  const drawW=selectorRow.drawW;
+  const drawH=selectorRow.drawH;
+  if(!Number.isFinite(drawW) || !Number.isFinite(drawH)) return;
+  const anchorX=Number.isFinite(selectorRow.anchorX) ? selectorRow.anchorX : Math.floor(entry.b.w/2)*TILE;
+  const anchorY=Number.isFinite(selectorRow.anchorY) ? selectorRow.anchorY : (entry.b.h-1)*TILE;
+  const anchorPxX=((entry.b.anchorX ?? Math.floor(entry.b.w/2))*TILE);
+  const anchorPxY=((entry.b.anchorY ?? (entry.b.h-1))*TILE);
+  const base=tileToScreen(entry.b.x,entry.b.y);
+  const drawX=base.x + anchorPxX - anchorX;
+  const drawY=base.y + anchorPxY - anchorY;
+  const didPreviewDraw=drawAtlasCrop("buildings", crop, drawX, drawY, drawW, drawH);
+  if(!didPreviewDraw) return;
+  secondaryProofPreviewState.drawCount+=1;
+  ctx.save();
+  ctx.globalAlpha=0.38;
+  ctx.fillStyle="rgba(64,245,255,0.45)";
+  ctx.fillRect(drawX,drawY,drawW,drawH);
+  ctx.globalAlpha=1;
+  ctx.strokeStyle="rgba(64,245,255,0.95)";
+  ctx.lineWidth=2;
+  ctx.strokeRect(drawX+0.5,drawY+0.5,Math.max(1,drawW-1),Math.max(1,drawH-1));
+  const labelRows=[
+    "PROOF PREVIEW",
+    "role="+role+" candidateId="+(selectorRow.selectedCandidateId||"none"),
+    "crop="+[crop.x,crop.y,crop.w,crop.h].join("/"),
+    "draw="+drawW+"x"+drawH+" anchor="+(selectorRow.anchorX??"n/a")+"/"+(selectorRow.anchorY??"n/a"),
+    "selectorCandidateStatus="+selectorRow.selectorCandidateStatus,
+    "runtimeRenderStatus=FALLBACK"
+  ];
+  const panelW=380;
+  const panelH=labelRows.length*12+8;
+  ctx.fillStyle="rgba(4,22,28,0.86)";
+  ctx.fillRect(drawX,drawY-panelH-6,panelW,panelH);
+  ctx.strokeStyle="rgba(64,245,255,0.95)";
+  ctx.strokeRect(drawX+0.5,drawY-panelH-5.5,panelW-1,panelH-1);
+  ctx.fillStyle="rgba(172,255,255,0.98)";
+  ctx.font="10px monospace";
+  labelRows.forEach((line,index)=>ctx.fillText(line,drawX+6,drawY-panelH+7+(index*12)));
+  ctx.restore();
+}
 function resetAtlasBuildingDecorExclusionState(){
   atlasBuildingDecorExclusionState.zones.length=0;
   atlasBuildingDecorExclusionState.suppressedObjects.length=0;
@@ -3003,6 +3074,7 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     claimedCandidates:Object.fromEntries(claimedCandidates.entries())
   };
   console.info("[Catalog Selector] assignment_summary runtimeFallbackRoles="+assignmentSummary.runtimeFallbackRoles.join(",")+" selectorProofOnlyRoles="+assignmentSummary.selectorProofOnlyRoles.join(",")+" selectorFallbackGatedRoles="+assignmentSummary.selectorFallbackGatedRoles.join(",")+" runtimeAtlasRoles="+assignmentSummary.runtimeAtlasRoles.join(",")+" claimedCandidates="+JSON.stringify(assignmentSummary.claimedCandidates));
+  if(ATLAS_DEBUG_MODE) logSecondaryProofPreviewSummary();
   if(ATLAS_DEBUG_MODE){
     const seenIds=new Map();
     roles.forEach((roleId)=>{
@@ -3016,6 +3088,9 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
       }
       if(row.selectorCandidateStatus==="SELECTED_PROOF_ONLY"){
         console.assert(row.runtimeRenderStatus!=="ATLAS","[Catalog Selector Assert] proof_only_secondary_cannot_be_runtime_atlas role="+roleId);
+      }
+      if(!SECONDARY_PROOF_PREVIEW_MODE && row.selectorCandidateStatus==="SELECTED_PROOF_ONLY"){
+        console.assert(row.runtimeRenderStatus==="FALLBACK","[Secondary Proof Preview Assert] preview_disabled_runtime_must_remain_fallback role="+roleId);
       }
       console.assert(row.runtimeRenderStatus!=="ATLAS","[Catalog Selector Assert] secondary_runtime_atlas_blocked_until_promotion role="+roleId+" reason=production_atlas_disabled");
     });
@@ -8624,6 +8699,7 @@ function drawWorld(){
     const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
     return { type:"building", b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, worldAnchorY, drawX, drawY };
   });
+  secondaryProofPreviewState.drawCount=0;
   const buildingSortDebugRows=[];
 
   const entityDrawEntries=[
@@ -8735,6 +8811,7 @@ function drawWorld(){
         drawAtlasProofMarker(drawX, drawY, fallbackDrawW, fallbackDrawH, b, "FALLBACK", atlasProofDiagnostics.fallbackReason);
       }
       drawBuildingFallbackSprite(b);
+      drawSecondaryProofPreviewOverlay(entry);
       return;
     }
     buildingRenderDiagnostics.pendingBuildings.delete(b.id);
@@ -8776,6 +8853,11 @@ function drawWorld(){
     traceDecorSource({ sourceSystem:"procedural_building_overlay", sourceFunction:"drawWorld.world.buildings.forEach.chimney", objectId:b.id + ":chimney", objectType:"chimney_overlay", sourceLabel:"PROCEDURAL", procedural:true, worldTile:{ x:chimneyTx, y:chimneyTy }, screenDraw:{ x:chimney.x+10, y:chimney.y-7 }, drawSize:{ w:6, h:9 }, renderLayer:"buildings_overlay" });
     if(b.id!=="b_inn_tavern"){ ctx.fillStyle="rgba(94,72,54,.9)"; ctx.fillRect(chimney.x+10,chimney.y-7,6,9); }
   });
+  if(ATLAS_DEBUG_MODE){
+    if(!SECONDARY_PROOF_PREVIEW_MODE){
+      console.assert(secondaryProofPreviewState.drawCount===0,"[Secondary Proof Preview Assert] disabled_preview_must_not_draw_atlas_overlays count="+secondaryProofPreviewState.drawCount);
+    }
+  }
 
   propsAbove.forEach((prop)=>{
     const p = tileToScreen(prop.x,prop.y);
