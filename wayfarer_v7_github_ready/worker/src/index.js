@@ -2933,8 +2933,16 @@ function getAtlasCatalogReadinessSnapshot(){
   const propsImage=atlasImages.props;
   const buildingsImageLoaded=buildingsImage?.complete===true && (buildingsImage?.naturalWidth||0)>0 && (buildingsImage?.naturalHeight||0)>0;
   const propsImageLoaded=propsImage?.complete===true && (propsImage?.naturalWidth||0)>0 && (propsImage?.naturalHeight||0)>0;
-  const buildingsManifestLoaded=buildingsRuntime.metadataSource==="manifest";
-  const propsManifestLoaded=propsRuntime.metadataSource==="manifest" || propsRuntime.failure==="optional_atlas_not_loaded";
+  const buildingsManifestLoaded=(
+    buildingsRuntime.manifestReady===true ||
+    (atlasManifests.buildings?.sprites && Object.keys(atlasManifests.buildings.sprites).length>0) ||
+    buildingsRuntime.metadataSource==="manifest"
+  );
+  const propsManifestLoaded=(
+    propsRuntime.manifestReady===true ||
+    propsRuntime.metadataSource==="manifest" ||
+    propsRuntime.failure==="optional_atlas_not_loaded"
+  );
   const hasUsableTransparency=buildingsRuntime.hasUsableTransparency;
   const reasons=[];
   if(!buildingsImageLoaded) reasons.push("buildings_image_not_ready");
@@ -8565,8 +8573,8 @@ function drawWorld(){
       actualDrawSource:didDraw ? "atlas" : (drawImageAttempted ? "atlas_attempt_failed" : "fallback"),
       atlasImageObjectId:"buildings",
       imageComplete:buildingsSheet?.complete===true,
-      naturalWidth:buildingsSheet?.naturalWidth||0,
-      naturalHeight:buildingsSheet?.naturalHeight||0,
+      imageNaturalWidth:buildingsSheet?.naturalWidth||atlasRuntimeInfo.buildings?.width||0,
+      imageNaturalHeight:buildingsSheet?.naturalHeight||atlasRuntimeInfo.buildings?.height||0,
       manifestLoaded:atlasRuntimeInfo.buildings?.manifestReady===true || (atlasManifests.buildings?.sprites && Object.keys(atlasManifests.buildings.sprites).length>0),
       crop:sprite ? { x:sprite.sx, y:sprite.sy, w:sprite.sw, h:sprite.sh } : null,
       drawW:sprite?.drawW ?? sprite?.sw ?? null,
