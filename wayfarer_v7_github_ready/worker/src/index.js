@@ -1529,7 +1529,8 @@ const atlasBuildingDecorExclusionState={
 };
 const secondaryProofPreviewState={
   summaryLogged:false,
-  drawCount:0
+  drawCount:0,
+  drawSummaryLogged:false
 };
 function logSecondaryProofPreviewSummary(){
   if(secondaryProofPreviewState.summaryLogged) return;
@@ -1550,49 +1551,80 @@ function logSecondaryProofPreviewSummary(){
 }
 function drawSecondaryProofPreviewOverlay(entry){
   if(!SECONDARY_PROOF_PREVIEW_MODE || !entry?.b) return;
-  const role=entry.b.role;
-  const selectorRow=secondaryAtlasSelectionState.byRole?.[role];
-  if(!selectorRow || selectorRow.selectorCandidateStatus!=="SELECTED_PROOF_ONLY" || !selectorRow.selectedCrop) return;
-  const crop=selectorRow.selectedCrop;
-  const drawW=selectorRow.drawW;
-  const drawH=selectorRow.drawH;
-  if(!Number.isFinite(drawW) || !Number.isFinite(drawH)) return;
-  const anchorX=Number.isFinite(selectorRow.anchorX) ? selectorRow.anchorX : Math.floor(entry.b.w/2)*TILE;
-  const anchorY=Number.isFinite(selectorRow.anchorY) ? selectorRow.anchorY : (entry.b.h-1)*TILE;
-  const anchorPxX=((entry.b.anchorX ?? Math.floor(entry.b.w/2))*TILE);
-  const anchorPxY=((entry.b.anchorY ?? (entry.b.h-1))*TILE);
-  const base=tileToScreen(entry.b.x,entry.b.y);
-  const drawX=base.x + anchorPxX - anchorX;
-  const drawY=base.y + anchorPxY - anchorY;
-  const didPreviewDraw=drawAtlasCrop("buildings", crop, drawX, drawY, drawW, drawH);
-  if(!didPreviewDraw) return;
-  secondaryProofPreviewState.drawCount+=1;
-  ctx.save();
-  ctx.globalAlpha=0.38;
-  ctx.fillStyle="rgba(64,245,255,0.45)";
-  ctx.fillRect(drawX,drawY,drawW,drawH);
-  ctx.globalAlpha=1;
-  ctx.strokeStyle="rgba(64,245,255,0.95)";
-  ctx.lineWidth=2;
-  ctx.strokeRect(drawX+0.5,drawY+0.5,Math.max(1,drawW-1),Math.max(1,drawH-1));
-  const labelRows=[
-    "PROOF PREVIEW",
-    "role="+role+" candidateId="+(selectorRow.selectedCandidateId||"none"),
-    "crop="+[crop.x,crop.y,crop.w,crop.h].join("/"),
-    "draw="+drawW+"x"+drawH+" anchor="+(selectorRow.anchorX??"n/a")+"/"+(selectorRow.anchorY??"n/a"),
-    "selectorCandidateStatus="+selectorRow.selectorCandidateStatus,
-    "runtimeRenderStatus=FALLBACK"
-  ];
-  const panelW=380;
-  const panelH=labelRows.length*12+8;
-  ctx.fillStyle="rgba(4,22,28,0.86)";
-  ctx.fillRect(drawX,drawY-panelH-6,panelW,panelH);
-  ctx.strokeStyle="rgba(64,245,255,0.95)";
-  ctx.strokeRect(drawX+0.5,drawY-panelH-5.5,panelW-1,panelH-1);
-  ctx.fillStyle="rgba(172,255,255,0.98)";
-  ctx.font="10px monospace";
-  labelRows.forEach((line,index)=>ctx.fillText(line,drawX+6,drawY-panelH+7+(index*12)));
-  ctx.restore();
+  try{
+    const role=entry.b.role;
+    const selectorRow=secondaryAtlasSelectionState.byRole?.[role];
+    if(!selectorRow || selectorRow.selectorCandidateStatus!=="SELECTED_PROOF_ONLY" || !selectorRow.selectedCrop) return;
+    const crop=selectorRow.selectedCrop;
+    const drawW=selectorRow.drawW;
+    const drawH=selectorRow.drawH;
+    const hasValidGeometry=
+      Number.isFinite(crop?.x) &&
+      Number.isFinite(crop?.y) &&
+      Number.isFinite(crop?.w) &&
+      Number.isFinite(crop?.h) &&
+      Number.isFinite(drawW) &&
+      Number.isFinite(drawH);
+    if(!hasValidGeometry){
+      console.warn("[Secondary Proof Preview] draw_skipped role="+role+" reason=missing_preview_geometry");
+      return;
+    }
+    const buildingsAtlasImage=atlasImages?.buildings;
+    if(!buildingsAtlasImage?.complete || !(buildingsAtlasImage?.naturalWidth>0) || !(buildingsAtlasImage?.naturalHeight>0)){
+      console.warn("[Secondary Proof Preview] draw_skipped reason=atlas_not_ready");
+      return;
+    }
+    const anchorX=Number.isFinite(selectorRow.anchorX) ? selectorRow.anchorX : Math.floor(entry.b.w/2)*TILE;
+    const anchorY=Number.isFinite(selectorRow.anchorY) ? selectorRow.anchorY : (entry.b.h-1)*TILE;
+    const anchorPxX=((entry.b.anchorX ?? Math.floor(entry.b.w/2))*TILE);
+    const anchorPxY=((entry.b.anchorY ?? (entry.b.h-1))*TILE);
+    const base=tileToScreen(entry.b.x,entry.b.y);
+    const drawX=base.x + anchorPxX - anchorX;
+    const drawY=base.y + anchorPxY - anchorY;
+    ctx.save();
+    ctx.drawImage(buildingsAtlasImage,crop.x,crop.y,crop.w,crop.h,drawX,drawY,drawW,drawH);
+    secondaryProofPreviewState.drawCount+=1;
+    ctx.globalAlpha=0.38;
+    ctx.fillStyle="rgba(64,245,255,0.45)";
+    ctx.fillRect(drawX,drawY,drawW,drawH);
+    ctx.globalAlpha=1;
+    ctx.strokeStyle="rgba(64,245,255,0.95)";
+    ctx.lineWidth=2;
+    ctx.strokeRect(drawX+0.5,drawY+0.5,Math.max(1,drawW-1),Math.max(1,drawH-1));
+    const labelRows=[
+      "PROOF PREVIEW",
+      "role="+role+" candidateId="+(selectorRow.selectedCandidateId||"none"),
+      "crop="+[crop.x,crop.y,crop.w,crop.h].join("/"),
+      "draw="+drawW+"x"+drawH+" anchor="+(selectorRow.anchorX??"n/a")+"/"+(selectorRow.anchorY??"n/a"),
+      "selectorCandidateStatus="+selectorRow.selectorCandidateStatus,
+      "runtimeRenderStatus=FALLBACK"
+    ];
+    const panelW=380;
+    const panelH=labelRows.length*12+8;
+    ctx.fillStyle="rgba(4,22,28,0.86)";
+    ctx.fillRect(drawX,drawY-panelH-6,panelW,panelH);
+    ctx.strokeStyle="rgba(64,245,255,0.95)";
+    ctx.strokeRect(drawX+0.5,drawY-panelH-5.5,panelW-1,panelH-1);
+    ctx.fillStyle="rgba(172,255,255,0.98)";
+    ctx.font="10px monospace";
+    labelRows.forEach((line,index)=>ctx.fillText(line,drawX+6,drawY-panelH+7+(index*12)));
+    ctx.restore();
+  }catch(previewDrawError){
+    console.warn("[Secondary Proof Preview] draw_skipped role="+(entry?.b?.role||"unknown")+" reason=draw_exception message="+(previewDrawError?.message||previewDrawError));
+  }
+}
+function logSecondaryProofPreviewDrawSummary(){
+  if(!SECONDARY_PROOF_PREVIEW_MODE || secondaryProofPreviewState.drawSummaryLogged) return;
+  const roles=Array.isArray(SECONDARY_BUILDING_IDS) ? SECONDARY_BUILDING_IDS.slice() : [];
+  const drawnRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="SELECTED_PROOF_ONLY");
+  const skippedRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus!=="SELECTED_PROOF_ONLY");
+  const runtimeAtlasRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.runtimeRenderStatus==="ATLAS");
+  console.info("[Secondary Proof Preview Draw]");
+  console.info("drawnRoles="+drawnRoles.join(","));
+  console.info("skippedRoles="+skippedRoles.join(","));
+  console.info("drawCount="+secondaryProofPreviewState.drawCount);
+  console.info("runtimeAtlasRoles="+runtimeAtlasRoles.join(","));
+  secondaryProofPreviewState.drawSummaryLogged=true;
 }
 function resetAtlasBuildingDecorExclusionState(){
   atlasBuildingDecorExclusionState.zones.length=0;
@@ -8860,6 +8892,8 @@ function drawWorld(){
   if(ATLAS_DEBUG_MODE){
     if(!SECONDARY_PROOF_PREVIEW_MODE){
       console.assert(secondaryProofPreviewState.drawCount===0,"[Secondary Proof Preview Assert] disabled_preview_must_not_draw_atlas_overlays count="+secondaryProofPreviewState.drawCount);
+    }else{
+      logSecondaryProofPreviewDrawSummary();
     }
   }
 
