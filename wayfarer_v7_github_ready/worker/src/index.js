@@ -1207,6 +1207,57 @@ const ATLAS_BUILDING_METADATA = Object.freeze({
   pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:899, y:939, w:250, h:245 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" }
 });
 
+// 33.1.4D: Human-reviewed semantic identity table. This is the authoritative
+// source for crop/draw/anchor for all known atlas positions.
+// Wins over ATLAS_BUILDING_METADATA for all subsystems via resolveBuildingAtlasRuntimeEntry().
+const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
+  inn_tavern_v1:{
+    spriteId:"inn_tavern_v1", role:"inn_tavern",
+    atlasPosition:"top_left", presentationReason:"top_left_inn_tavern_confirmed",
+    crop:{x:33,y:120,w:420,h:340},
+    drawW:192, drawH:156, anchorX:96, anchorY:143,
+    productionAtlasEnabled:true, registrySource:"human_reviewed"
+  },
+  mercantile_shop:{
+    spriteId:"mercantile_shop", role:"mercantile_shop",
+    atlasPosition:"top_middle", presentationReason:"top_middle_mercantile_shop_confirmed",
+    crop:{x:473,y:67,w:329,h:403},
+    drawW:131, drawH:160, anchorX:64, anchorY:126,
+    productionAtlasEnabled:true, registrySource:"human_reviewed"
+  },
+  // Corrected from {x:758,y:493} (that was the manor/residence_large).
+  // True meeting house is top-right on the atlas sheet.
+  village_hall_meeting_house:{
+    spriteId:"village_hall_meeting_house", role:"village_hall_meeting_house",
+    atlasPosition:"top_right", presentationReason:"top_right_meeting_house_civic_anchor",
+    crop:{x:853,y:10,w:327,h:460},
+    drawW:134, drawH:188, anchorX:67, anchorY:171,
+    productionAtlasEnabled:true, registrySource:"human_reviewed"
+  },
+  // Released from old village_hall assignment {x:758,y:493} — this IS the manor.
+  residence_large:{
+    spriteId:"residence_large", role:"residence_large",
+    atlasPosition:"middle_right", presentationReason:"middle_right_manor_residence_large",
+    crop:{x:758,y:493,w:459,h:355},
+    drawW:180, drawH:124, anchorX:90, anchorY:116,
+    productionAtlasEnabled:false, registrySource:"human_reviewed"
+  },
+  hunter_lodge_or_outfitter:{
+    spriteId:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter",
+    atlasPosition:"bottom_left", presentationReason:"bottom_left_hunter_lodge",
+    crop:{x:61,y:519,w:309,h:308},
+    drawW:120, drawH:120, anchorX:60, anchorY:104,
+    productionAtlasEnabled:false, registrySource:"human_reviewed_pending_catalog"
+  },
+  pond_boathouse_or_waterfront_shed:{
+    spriteId:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed",
+    atlasPosition:"bottom_middle", presentationReason:"bottom_middle_boathouse_dock",
+    crop:{x:899,y:939,w:250,h:245},
+    drawW:150, drawH:92, anchorX:75, anchorY:72,
+    productionAtlasEnabled:false, registrySource:"human_reviewed_pending_catalog"
+  }
+});
+
 const LOCKED_HERO_BUILDING_IDS=Object.freeze(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house"]);
 const SECONDARY_BUILDING_IDS=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
 const SECONDARY_BLOCKING_AUDIT_WARNING_PREFIXES=Object.freeze([
@@ -1227,9 +1278,10 @@ function getCropOverlapWarnings(entry){
   const warnings=[];
   const crop=entry.crop;
   LOCKED_HERO_BUILDING_IDS.forEach((heroId)=>{
-    const hero=ATLAS_BUILDING_METADATA[heroId];
-    if(!hero) return;
-    if(rectsOverlap(crop, hero.crop)) warnings.push("overlaps_locked_hero_crop:"+heroId);
+    const heroResolved=resolveBuildingAtlasRuntimeEntry(heroId);
+    const heroCrop=heroResolved ? heroResolved.crop : ATLAS_BUILDING_METADATA[heroId]?.crop;
+    if(!heroCrop) return;
+    if(rectsOverlap(crop, heroCrop)) warnings.push("overlaps_locked_hero_crop:"+heroId);
   });
   return warnings;
 }
@@ -1359,6 +1411,83 @@ const atlasManifests = {
     }
   }
 };
+// 33.1.4D: Single canonical resolver. Semantic registry wins; static metadata is
+// fallback only. ALL subsystems that need crop/draw/anchor must call this.
+function resolveBuildingAtlasRuntimeEntry(spriteId){
+  if(!spriteId) return null;
+  const regEntry=HEARTHVALE_BUILDING_SEMANTIC_REGISTRY[spriteId];
+  const metaEntry=ATLAS_BUILDING_METADATA[spriteId];
+  if(regEntry){
+    return{
+      spriteId,
+      role:regEntry.role,
+      crop:regEntry.crop,
+      drawW:regEntry.drawW,
+      drawH:regEntry.drawH,
+      anchorX:regEntry.anchorX,
+      anchorY:regEntry.anchorY,
+      productionAtlasEnabled:regEntry.productionAtlasEnabled===true,
+      cropSource:"semantic_registry",
+      drawAnchorSource:"semantic_registry",
+      registryResolved:true,
+      atlasPosition:regEntry.atlasPosition||null,
+      presentationReason:regEntry.presentationReason||null,
+      registrySource:regEntry.registrySource||null
+    };
+  }
+  if(metaEntry){
+    return{
+      spriteId,
+      role:metaEntry.role,
+      crop:metaEntry.crop,
+      drawW:metaEntry.drawW,
+      drawH:metaEntry.drawH,
+      anchorX:metaEntry.anchorX,
+      anchorY:metaEntry.anchorY,
+      productionAtlasEnabled:metaEntry.productionReady===true,
+      cropSource:"static_metadata",
+      drawAnchorSource:"static_metadata",
+      registryResolved:false,
+      atlasPosition:null,
+      presentationReason:null,
+      registrySource:null
+    };
+  }
+  return null;
+}
+// Apply semantic registry overrides to the runtime sprite manifest immediately
+// after atlasManifests is initialized. Village_hall crop is corrected here from
+// the static index value {x:758,y:493} to the registry-authoritative {x:853,y:10}.
+function applySemanticRegistryToManifest(){
+  const manifest=atlasManifests.buildings;
+  if(!manifest||!manifest.sprites) return;
+  const conflicts=[];
+  Object.values(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY).forEach((regEntry)=>{
+    const sprite=manifest.sprites[regEntry.spriteId];
+    if(!sprite) return;
+    const prevSx=sprite.sx, prevSy=sprite.sy, prevSw=sprite.sw, prevSh=sprite.sh;
+    sprite.sx=regEntry.crop.x;
+    sprite.sy=regEntry.crop.y;
+    sprite.sw=regEntry.crop.w;
+    sprite.sh=regEntry.crop.h;
+    sprite.drawW=regEntry.drawW;
+    sprite.drawH=regEntry.drawH;
+    sprite.anchorX=regEntry.anchorX;
+    sprite.anchorY=regEntry.anchorY;
+    sprite.metadataSource="semantic_registry";
+    const cropChanged=(prevSx!==sprite.sx||prevSy!==sprite.sy||prevSw!==sprite.sw||prevSh!==sprite.sh);
+    if(cropChanged){
+      conflicts.push({spriteId:regEntry.spriteId,static:{sx:prevSx,sy:prevSy,sw:prevSw,sh:prevSh},registry:{sx:sprite.sx,sy:sprite.sy,sw:sprite.sw,sh:sprite.sh}});
+    }
+  });
+  if(conflicts.length){
+    conflicts.forEach((c)=>{
+      console.error("[Building Source of Truth Conflict] spriteId="+c.spriteId+" static_crop="+JSON.stringify(c.static)+" registry_crop="+JSON.stringify(c.registry)+" => registry wins, static discarded cropSource=semantic_registry");
+    });
+  }
+}
+applySemanticRegistryToManifest();
+
 const atlasImages = {};
 const atlasRuntimeInfo = {};
 const missingAssetWarnings=new Set();
@@ -1984,7 +2113,7 @@ function maybeEmitAtlasReadyOnce(){
   if(!isAtlasRuntimeReady("buildings")) return;
   atlasReadinessLogState.buildingsReadyLogged=true;
   const sheet=atlasImages.buildings;
-  console.info("[Atlas Readiness] ready buildings=" + sheet.naturalWidth + "x" + sheet.naturalHeight + " manifestKeys=" + Object.keys(atlasManifests.buildings.sprites||{}).length);
+  console.info("[Atlas Readiness] ready buildings=" + sheet.naturalWidth + "x" + sheet.naturalHeight + " manifestKeys=" + Object.keys(atlasManifests.buildings.sprites||{}).length + " phase=33.1.4d selectorVersion=selector-v33.1.4d-registry-authoritative");
 }
 function hasAtlasUsableTransparency(atlasId){
   const runtime=atlasRuntimeInfo[atlasId];
@@ -2669,7 +2798,22 @@ function maybeLogBuildingRenderSummary(){
   const propsImageStatus = isAtlasRuntimeReady("props") ? "loaded" : (atlasRuntimeInfo.props?.imageOnerrorFired ? "error" : "pending");
   const buildingsManifestStatus = (atlasRuntimeInfo.buildings?.manifestReady===true || isAtlasRuntimeReady("buildings")) ? "ready" : "pending";
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(",") + " phase=33.1.4d selectorVersion=selector-v33.1.4d-registry-authoritative");
+  // [Building Source of Truth Audit] — verify resolver active crop matches runtime sprite for each mapped building.
+  // Emits [Building Source of Truth Conflict] if any mismatch is detected.
+  const spriteMap=atlasManifests.buildings?.sprites||{};
+  const truthRows=Object.keys(spriteMap).map((spriteId)=>{
+    const resolved=resolveBuildingAtlasRuntimeEntry(spriteId);
+    const sprite=spriteMap[spriteId];
+    const activeCrop=sprite ? {sx:sprite.sx,sy:sprite.sy,sw:sprite.sw,sh:sprite.sh} : null;
+    const resolvedCrop=resolved ? {sx:resolved.crop.x,sy:resolved.crop.y,sw:resolved.crop.w,sh:resolved.crop.h} : null;
+    const match=resolvedCrop&&activeCrop ? (activeCrop.sx===resolvedCrop.sx&&activeCrop.sy===resolvedCrop.sy&&activeCrop.sw===resolvedCrop.sw&&activeCrop.sh===resolvedCrop.sh) : true;
+    if(!match){
+      console.error("[Building Source of Truth Conflict] spriteId="+spriteId+" resolver_crop="+JSON.stringify(resolvedCrop)+" active_sprite_crop="+JSON.stringify(activeCrop)+" cropSource="+(resolved?.cropSource||"unknown")+" — registry should have been applied at manifest init");
+    }
+    return{spriteId,cropSource:resolved?.cropSource||"unknown",activeCrop,resolvedCrop,match,registryResolved:resolved?.registryResolved===true};
+  });
+  console.info("[Building Source of Truth Audit] "+JSON.stringify(truthRows.map((r)=>({spriteId:r.spriteId,cropSource:r.cropSource,match:r.match,registryResolved:r.registryResolved,activeSx:r.activeCrop?.sx,activeSy:r.activeCrop?.sy}))));
 }
 
 
@@ -2719,7 +2863,11 @@ function emitBuildingAtlasCropAuditIfReady(){
   const c=canvas.getContext("2d",{ willReadFrequently:true });
   if(!c) return;
   c.drawImage(atlas,0,0);
-  const report=Object.values(ATLAS_BUILDING_METADATA).map((entry)=>{
+  // Use resolver so crops are pulled from semantic registry where available.
+  const allSpriteIds=Object.keys(atlasManifests.buildings?.sprites||{});
+  const report=allSpriteIds.map((spriteId)=>{
+    const resolved=resolveBuildingAtlasRuntimeEntry(spriteId)||{spriteId,crop:{x:0,y:0,w:1,h:1},drawW:32,drawH:32,anchorX:0,anchorY:0,cropSource:"unknown"};
+    const entry={...resolved, id:resolved.spriteId||spriteId};
     const { x, y, w, h }=entry.crop;
     const data=c.getImageData(x,y,w,h).data;
     let minX=w,minY=h,maxX=-1,maxY=-1,hasPixels=false;
@@ -2741,7 +2889,7 @@ function emitBuildingAtlasCropAuditIfReady(){
     if(clip && (clip.left||clip.right||clip.top||clip.bottom)) warnings.push("clipped_to_edge");
     if(bbox && ((bbox.w*bbox.h)/(w*h))<0.2) warnings.push("likely_partial_object");
     warnings.push(...getCropOverlapWarnings(entry));
-    return { id:entry.id, crop:{x,y,w,h}, drawW:entry.drawW, drawH:entry.drawH, anchorX:entry.anchorX, anchorY:entry.anchorY, hasNonTransparentPixels:hasPixels, nonTransparentBounds:bbox, transparentMargins:margins, clipEdges:clip, warnings };
+    return { id:entry.id, cropSource:resolved.cropSource||"unknown", crop:{x,y,w,h}, drawW:entry.drawW, drawH:entry.drawH, anchorX:entry.anchorX, anchorY:entry.anchorY, hasNonTransparentPixels:hasPixels, nonTransparentBounds:bbox, transparentMargins:margins, clipEdges:clip, warnings };
   });
   const token=JSON.stringify(report);
   if(token===lastAtlasCropAuditToken) return;
@@ -2767,29 +2915,37 @@ function applySecondaryAtlasSelectionOverrides(selections){
   if(!manifest || !manifest.sprites) return;
   SECONDARY_BUILDING_IDS.forEach((roleId)=>{
     const selection=selections.byRole?.[roleId];
-    const base=ATLAS_BUILDING_METADATA[roleId];
-    if(!base || !manifest.sprites[roleId]) return;
+    if(!manifest.sprites[roleId]) return;
     const sprite=manifest.sprites[roleId];
+    // Use resolver for draw/anchor — semantic registry wins over static metadata.
+    const base=resolveBuildingAtlasRuntimeEntry(roleId);
     if(selection?.eligible===true && selection.selectedCrop){
       sprite.sx=selection.selectedCrop.x;
       sprite.sy=selection.selectedCrop.y;
       sprite.sw=selection.selectedCrop.w;
       sprite.sh=selection.selectedCrop.h;
-      sprite.drawW=base.drawW;
-      sprite.drawH=base.drawH;
-      sprite.anchorX=base.anchorX;
-      sprite.anchorY=base.anchorY;
+      sprite.drawW=base?.drawW ?? ATLAS_BUILDING_METADATA[roleId]?.drawW;
+      sprite.drawH=base?.drawH ?? ATLAS_BUILDING_METADATA[roleId]?.drawH;
+      sprite.anchorX=base?.anchorX ?? ATLAS_BUILDING_METADATA[roleId]?.anchorX;
+      sprite.anchorY=base?.anchorY ?? ATLAS_BUILDING_METADATA[roleId]?.anchorY;
       sprite.productionReady=false;
       sprite.proofEnabled=true;
       sprite.debugOnly=false;
       sprite.fallbackReason="catalog_candidate_selected_proof_pending_acceptance";
       sprite.metadataSource="catalog_selection";
+    }else if(selection?.selectedCandidateId==="semantic_registry"){
+      // Registry-confirmed secondaries: crop already applied by applySemanticRegistryToManifest.
+      // Mark proof-only, do not overwrite crop/draw/anchor again.
+      sprite.productionReady=false;
+      sprite.proofEnabled=false; // proof-only via ATLAS_DEBUG_MODE gate
+      sprite.fallbackReason=selection?.fallbackReason||"semantic_registry_confirmed_proof_only";
+      sprite.metadataSource="semantic_registry";
     }else{
       // Keep unsafe/unresolved secondary roles fully fallback-gated.
       // This prevents static hand-tuned crops from re-entering proof/atlas render paths.
       sprite.productionReady=false;
       sprite.proofEnabled=false;
-      sprite.fallbackReason=selection?.fallbackReason || "no_clean_catalog_candidate";
+      sprite.fallbackReason=selection?.fallbackReason||"semantic_identity_unresolved";
       sprite.metadataSource="catalog_fallback_gate";
     }
   });
@@ -2804,6 +2960,34 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   console.info("[Catalog Selector] normalized_input roles="+roles.length+" candidates="+candidates.length+" clean="+candidates.filter((c)=>c?.clean===true).length+" transparencyOk="+transparencyOk+" sheetReady="+sheetReady);
   SECONDARY_BUILDING_IDS.forEach((roleId)=>{
     const roleEntry=roles.find((r)=>r.role===roleId) || null;
+    const regEntry=HEARTHVALE_BUILDING_SEMANTIC_REGISTRY[roleId]||null;
+    const resolvedEntry=resolveBuildingAtlasRuntimeEntry(roleId);
+    // Semantic identity gate: human_reviewed roles use registry crop directly.
+    // Only human_reviewed_pending_catalog roles proceed through catalog scan selection.
+    if(regEntry && regEntry.registrySource==="human_reviewed"){
+      const final={
+        role:roleId,
+        selectedCandidateId:"semantic_registry",
+        selectedCrop:regEntry.crop,
+        drawW:regEntry.drawW,
+        drawH:regEntry.drawH,
+        anchorX:regEntry.anchorX,
+        anchorY:regEntry.anchorY,
+        eligibility:false, // secondaries remain proof-only; no runtime promotion
+        blockingReasons:["semantic_registry_confirmed_proof_only"],
+        fallbackReason:"semantic_registry_confirmed_proof_only",
+        finalRenderStatus:"PROOF_PENDING_ACCEPTANCE",
+        referenceCandidateId:null,
+        cropSource:"semantic_registry",
+        registryResolved:true
+      };
+      byRole[roleId]=final;
+      bySpriteId[roleId]=final;
+      console.info("[Catalog Selector] role_result "+roleId+" status=semantic_registry_confirmed crop="+JSON.stringify(regEntry.crop)+" cropSource=semantic_registry gate=proof_only_pending_acceptance");
+      return;
+    }
+    // Catalog-pending roles: use scan candidates. Fallback to semantic_identity_unresolved
+    // if no clean candidate found (not ambiguous_duplicate_candidate).
     const fits=candidates.filter((c)=>Array.isArray(c?.possibleRoles) && c.possibleRoles.includes(roleId));
     const evaluated=fits.map((candidate)=>{
       const reasons=[];
@@ -2820,19 +3004,25 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     });
     const selected=evaluated.find((item)=>item.reasons.length===0) || null;
     const blockReasons=selected ? [] : [...new Set(evaluated.flatMap((item)=>item.reasons))];
+    const fallbackReason=selected ? null : (fits.length===0 ? "semantic_identity_unresolved" : "no_clean_catalog_candidate");
+    // Boathouse and catalog-pending roles: previewCandidateId=pending_selector until settled.
+    const previewCandidateId=selected ? selected.candidate.candidateId : "pending_selector";
     const final={
       role:roleId,
       selectedCandidateId:selected?.candidate?.candidateId||null,
+      previewCandidateId,
       selectedCrop:selected?.candidate?.boundingBox||null,
-      drawW:ATLAS_BUILDING_METADATA[roleId]?.drawW||null,
-      drawH:ATLAS_BUILDING_METADATA[roleId]?.drawH||null,
-      anchorX:ATLAS_BUILDING_METADATA[roleId]?.anchorX||null,
-      anchorY:ATLAS_BUILDING_METADATA[roleId]?.anchorY||null,
+      drawW:resolvedEntry?.drawW||null,
+      drawH:resolvedEntry?.drawH||null,
+      anchorX:resolvedEntry?.anchorX||null,
+      anchorY:resolvedEntry?.anchorY||null,
       eligibility:selected!==null,
-      blockingReasons:selected?[]:(blockReasons.length?blockReasons:["no_clean_catalog_candidate"]),
-      fallbackReason:selected?null:"no_clean_catalog_candidate",
+      blockingReasons:selected?[]:(blockReasons.length?blockReasons:[fallbackReason]),
+      fallbackReason,
       finalRenderStatus:selected?"PENDING":"FALLBACK",
-      referenceCandidateId:roleEntry?.referenceCandidateInBlob||null
+      referenceCandidateId:roleEntry?.referenceCandidateInBlob||null,
+      cropSource:resolvedEntry?.cropSource||"static_metadata",
+      registryResolved:resolvedEntry?.registryResolved===true
     };
     byRole[roleId]=final;
     bySpriteId[roleId]=final;
@@ -2845,10 +3035,13 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   SECONDARY_BUILDING_IDS.forEach((roleId)=>{
     const r=byRole[roleId];
     if(!r){ console.warn("[Catalog Selector] role_result "+roleId+" status=missing"); return; }
+    if(r.selectedCandidateId==="semantic_registry"){
+      return; // already logged above
+    }
     if(r.eligibility===true){
-      console.info("[Catalog Selector] role_result "+roleId+" status=resolved candidate="+r.selectedCandidateId+" bbox="+JSON.stringify(r.selectedCrop)+" finalRender="+r.finalRenderStatus+" gate=proof_only_pending_human_review");
+      console.info("[Catalog Selector] role_result "+roleId+" status=resolved candidate="+r.selectedCandidateId+" previewCandidateId="+r.previewCandidateId+" bbox="+JSON.stringify(r.selectedCrop)+" finalRender="+r.finalRenderStatus+" gate=proof_only_pending_human_review");
     }else{
-      console.warn("[Catalog Selector] role_result "+roleId+" status="+(r.fallbackReason||"no_clean_catalog_candidate")+" blocking="+(r.blockingReasons||[]).join("|")+" finalRender="+r.finalRenderStatus);
+      console.warn("[Catalog Selector] role_result "+roleId+" status="+(r.fallbackReason||"semantic_identity_unresolved")+" previewCandidateId="+r.previewCandidateId+" blocking="+(r.blockingReasons||[]).join("|")+" finalRender="+r.finalRenderStatus);
     }
   });
   return payload;
@@ -2964,7 +3157,11 @@ function runAtlasCatalogScanOnce(){
       }
 
       const EDGE_MARGIN=2;
-      const heroZones=LOCKED_HERO_BUILDING_IDS.map((id)=>({id,crop:ATLAS_BUILDING_METADATA[id].crop}));
+      // Use semantic registry crops for hero zones — village_hall is corrected here.
+      const heroZones=LOCKED_HERO_BUILDING_IDS.map((id)=>{
+        const resolved=resolveBuildingAtlasRuntimeEntry(id);
+        return{id,crop:resolved?resolved.crop:ATLAS_BUILDING_METADATA[id].crop};
+      });
 
       const results=blobs.map((blob,idx)=>{
         const x=blob.minX,y=blob.minY,w=blob.maxX-blob.minX+1,h=blob.maxY-blob.minY+1;
@@ -2992,8 +3189,8 @@ function runAtlasCatalogScanOnce(){
       }).sort((a,b)=>a.boundingBox.y-b.boundingBox.y||a.boundingBox.x-b.boundingBox.x);
 
       const roleSummary=SECONDARY_BUILDING_IDS.map((roleId)=>{
-        const entry=ATLAS_BUILDING_METADATA[roleId];
-        const referenceCandidate=entry?{x:entry.crop.x,y:entry.crop.y,w:entry.crop.w,h:entry.crop.h}:null;
+        const resolved=resolveBuildingAtlasRuntimeEntry(roleId);
+        const referenceCandidate=resolved?{x:resolved.crop.x,y:resolved.crop.y,w:resolved.crop.w,h:resolved.crop.h}:null;
         const refBlob=results.find((r)=>referenceCandidate&&r.boundingBox.x<=referenceCandidate.x&&r.boundingBox.y<=referenceCandidate.y&&r.boundingBox.x+r.boundingBox.w>=referenceCandidate.x+referenceCandidate.w&&r.boundingBox.y+r.boundingBox.h>=referenceCandidate.y+referenceCandidate.h);
         const fits=results.filter((r)=>r.possibleRoles.includes(roleId));
         const cleanCandidates=fits.filter((r)=>r.clean).map((r)=>r.candidateId);
@@ -3073,14 +3270,25 @@ function getBuildingAtlasDebugStatus(){
   const buildingSheet=atlasImages.buildings;
   const propSheet=atlasImages.props;
   const buildingEntries=Object.values(ATLAS_BUILDING_METADATA).map((entry)=>{
-    const validationReason=getAtlasBuildingEntryValidation(entry, buildingInfo, buildingSheet);
+    // Resolver provides authoritative crop/draw/anchor; static entry provides structural metadata.
+    const resolved=resolveBuildingAtlasRuntimeEntry(entry.id);
+    const auditEntry={
+      ...entry,
+      crop:resolved?.crop || entry.crop,
+      drawW:resolved?.drawW || entry.drawW,
+      drawH:resolved?.drawH || entry.drawH,
+      anchorX:resolved?.anchorX !== undefined ? resolved.anchorX : entry.anchorX,
+      anchorY:resolved?.anchorY !== undefined ? resolved.anchorY : entry.anchorY
+    };
+    const validationReason=getAtlasBuildingEntryValidation(auditEntry, buildingInfo, buildingSheet);
     return {
       id:entry.id,
       role:entry.role,
       renderStatus:validationReason ? "FALLBACK" : "ATLAS",
-      crop:entry.crop,
-      draw:{ w:entry.drawW, h:entry.drawH },
-      anchor:{ x:entry.anchorX, y:entry.anchorY },
+      crop:auditEntry.crop,
+      cropSource:resolved?.cropSource||"static_metadata",
+      draw:{ w:auditEntry.drawW, h:auditEntry.drawH },
+      anchor:{ x:auditEntry.anchorX, y:auditEntry.anchorY },
       footprint:entry.footprint,
       collision:entry.collisionRect,
       interaction:entry.interactionRect,
