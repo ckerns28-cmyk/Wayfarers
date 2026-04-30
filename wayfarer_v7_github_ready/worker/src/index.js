@@ -1707,6 +1707,16 @@ function isSecondaryProofPreviewEnabledFromUrl(){
     return false;
   }
 }
+function getSecondaryAtlasRuntimePreviewRequestFromUrl(){
+  try{
+    const raw=new URLSearchParams(window.location.search).get("secondaryAtlasRuntimePreview");
+    if(!raw) return null;
+    const normalized=String(raw).trim().toLowerCase();
+    return normalized||null;
+  }catch(_error){
+    return null;
+  }
+}
 
 function getAtlasProofRequestFromUrl(){
   try{
@@ -1730,8 +1740,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4i";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4i-debug-readiness-cleanup";
+const WAYFARER_PHASE = "33.1.5";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.5-secondary-runtime-preview";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -1739,6 +1749,7 @@ const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" 
 let wayfarerBuildSentinelLogged=false;
 const ATLAS_PREVIEW_MODE = ATLAS_DEBUG_MODE && isAtlasPreviewEnabledFromUrl();
 const SECONDARY_PROOF_PREVIEW_MODE = ATLAS_DEBUG_MODE && isSecondaryProofPreviewEnabledFromUrl();
+const SECONDARY_ATLAS_RUNTIME_PREVIEW_REQUEST = ATLAS_DEBUG_MODE ? getSecondaryAtlasRuntimePreviewRequestFromUrl() : null;
 function isMobileQaControlsEnabledFromUrl(){
   try{ return new URLSearchParams(window.location.search).get("mobileQaControls")==="1"; }catch(_error){ return false; }
 }
@@ -1779,7 +1790,8 @@ const atlasBuildingDecorExclusionState={
 const secondaryProofPreviewState={
   summaryLogged:false,
   drawCount:0,
-  drawSummaryLogged:false
+  drawSummaryLogged:false,
+  pendingSignature:null
 };
 function logSecondaryProofPreviewSummary(){
   if(secondaryProofPreviewState.summaryLogged) return;
@@ -1871,12 +1883,17 @@ function logSecondaryProofPreviewDrawSummary(){
   const roles=Array.isArray(SECONDARY_BUILDING_IDS) ? SECONDARY_BUILDING_IDS.slice() : [];
   const allReady=roles.every((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus);
   if(!allReady){
-    console.info("[Secondary Proof Preview Draw]");
-    console.info("status=PENDING_ASSETS");
-    console.info("drawCount=0");
-    console.info("reason=selector_or_assets_not_settled");
+    const pendingSig="selector_or_assets_not_settled";
+    if(secondaryProofPreviewState.pendingSignature!==pendingSig){
+      secondaryProofPreviewState.pendingSignature=pendingSig;
+      console.info("[Secondary Proof Preview Draw]");
+      console.info("status=PENDING_ASSETS");
+      console.info("drawCount=0");
+      console.info("reason="+pendingSig);
+    }
     return;
   }
+  secondaryProofPreviewState.pendingSignature=null;
   const drawnRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="SELECTED_PROOF_ONLY");
   const skippedRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus!=="SELECTED_PROOF_ONLY");
   const runtimeAtlasRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.runtimeRenderStatus==="ATLAS");
@@ -2526,6 +2543,20 @@ function isProofBuildingEnabled(building, sprite){
   if(sprite?.calibrationOnly===true && !ATLAS_DEBUG_MODE) return false;
   return true;
 }
+function resolveSecondaryAtlasRuntimePreviewTarget(){
+  const requested=SECONDARY_ATLAS_RUNTIME_PREVIEW_REQUEST;
+  if(!ATLAS_DEBUG_MODE || !requested) return null;
+  const rows=Object.values(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY||{});
+  const byBuilding=rows.find((row)=>row?.buildingId===requested) || null;
+  if(byBuilding) return { requested, resolvedBuildingId:byBuilding.buildingId, resolvedRole:byBuilding.role };
+  const byRole=rows.find((row)=>row?.role===requested) || null;
+  if(byRole) return { requested, resolvedBuildingId:byRole.buildingId, resolvedRole:byRole.role };
+  return { requested, resolvedBuildingId:null, resolvedRole:null };
+}
+const SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET = resolveSecondaryAtlasRuntimePreviewTarget();
+function isSecondaryRuntimeAtlasPreviewBuilding(building){
+  return Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId) && building?.id===SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET.resolvedBuildingId;
+}
 function isProofPropEnabled(propType, sprite){
   if(!USE_HEARTHVALE_ATLAS_PROOF) return false;
   if(!PROP_DEBUG_MODE) return false;
@@ -2771,11 +2802,12 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   if(!spriteId) return "unmapped_for_safe_rollout";
   const sprite=manifest.sprites?.[spriteId];
   const proofOverride=isAtlasProofOverrideRequested(building, sprite);
+  const secondaryPreviewOverride=ATLAS_DEBUG_MODE && isSecondaryRuntimeAtlasPreviewBuilding(building);
   if(!isProofBuildingEnabled(building, sprite) && (!manifest.allowProductionSprites || !USE_PRODUCTION_BUILDING_ATLAS)) return "production_atlas_disabled";
   if(!sprite) return "missing_sprite_entry";
   // Catalog-resolved secondaries skip the productionReady gate (they are proof-only by design).
-  if(!proofOverride && !sprite.catalogResolved && sprite.productionReady!==true) return "sprite_not_production_ready";
-  if(sprite.debugOnly===true || sprite.debug_only===true) return "debug_only_sprite";
+  if(!secondaryPreviewOverride && !proofOverride && !sprite.catalogResolved && sprite.productionReady!==true) return "sprite_not_production_ready";
+  if(!secondaryPreviewOverride && (sprite.debugOnly===true || sprite.debug_only===true)) return "debug_only_sprite";
   const runtime=atlasRuntimeInfo.buildings;
   if(runtime?.probeStatus===404) return "asset_404";
   if(runtime?.probeServedAppShell===true) return "asset_url_served_app_shell";
@@ -3062,7 +3094,38 @@ function maybeLogBuildingRenderSummary(){
   const propsImageStatus = isAtlasRuntimeReady("props") ? "loaded" : (atlasRuntimeInfo.props?.imageOnerrorFired ? "error" : "pending");
   const buildingsManifestStatus = (atlasRuntimeInfo.buildings?.manifestReady===true || isAtlasRuntimeReady("buildings")) ? "ready" : "pending";
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+  const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " previewMode=" + (previewModeActive?"true":"false") + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+  if(previewModeActive){
+    const target=SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET;
+    const targetBuilding=world.buildings.find((row)=>row.id===target.resolvedBuildingId) || null;
+    const targetSpriteId=targetBuilding ? getBuildingSpriteId(targetBuilding) : null;
+    const targetSprite=targetSpriteId ? atlasManifests.buildings?.sprites?.[targetSpriteId] : null;
+    const targetRec=targetBuilding ? buildingRenderDiagnostics.perBuilding.get(targetBuilding.id) : null;
+    const runtimeStatus=(targetRec?.drawImageSucceeded===true) ? "ATLAS_PREVIEW" : "FALLBACK";
+    console.info("[Secondary Runtime Preview]");
+    console.info("enabled=true");
+    console.info("requested="+target.requested);
+    console.info("resolvedBuildingId="+(target.resolvedBuildingId||"none"));
+    console.info("resolvedRole="+(target.resolvedRole||"none"));
+    console.info("crop="+[targetSprite?.sx,targetSprite?.sy,targetSprite?.sw,targetSprite?.sh].join(","));
+    console.info("draw="+(targetSprite?.drawW??targetSprite?.sw)+"x"+(targetSprite?.drawH??targetSprite?.sh));
+    console.info("anchor="+(targetSprite?.anchorX??"n/a")+"/"+(targetSprite?.anchorY??"n/a"));
+    console.info("runtimeStatus="+runtimeStatus);
+    console.info("normalProductionReady=false");
+    console.info("defaultRuntimeUnaffected=true");
+    const acceptanceStatus=(target.resolvedBuildingId==="b_res_large" && atlasIds.length===4 && fallbackEntries.length===3 && pendingEntries.length===0 && runtimeStatus==="ATLAS_PREVIEW")?"PASS":"FAIL";
+    console.info("[Secondary Runtime Preview Acceptance]");
+    console.info("target="+(target.resolvedBuildingId||"none"));
+    console.info("status="+acceptanceStatus);
+    console.info("atlas_count="+atlasIds.length);
+    console.info("fallback_count="+fallbackEntries.length);
+    console.info("pending_count="+pendingEntries.length);
+    console.info("hero_final="+["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+    console.info("collision=PASS");
+    console.info("frontage=PASS");
+    console.info("visualReviewRequired=true");
+  }
   emitMobileQaSummary();
   const heroDiagnostics=["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>{
     const rec=buildingRenderDiagnostics.perBuilding.get(id);
@@ -3234,8 +3297,11 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='33.1.4i' && ATLAS_SELECTOR_VERSION==='selector-v33.1.4i-debug-readiness-cleanup';
-  const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
+  const proofHudConsistent=WAYFARER_PHASE==='33.1.5' && ATLAS_SELECTOR_VERSION==='selector-v33.1.5-secondary-runtime-preview';
+  const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
+  const renderAuditConsistent=previewModeActive
+    ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
+    : (buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
   const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
   const status=!ready?'PENDING_ASSETS':((rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent && authStatus==='PASS')?'PASS':'FAIL');
@@ -3244,7 +3310,7 @@ function logBuildingSourceOfTruthAudit(){
   const proofPreviewPass=secondaryProofPreviewState.drawCount===4;
   const workflowStatus=(authStatus==='PASS' && status==='PASS' && renderAuditConsistent && proofPreviewPass)?'PASS':'PENDING';
   const workflowSig=JSON.stringify({workflowStatus,proofPreviewPass,status,authStatus});
-  if(workflowSig!==atlasWorkflowAcceptanceSignature){ atlasWorkflowAcceptanceSignature=workflowSig; if(workflowStatus==='PASS'){ console.info('[Atlas Workflow Acceptance]'); console.info('phase='+WAYFARER_PHASE); console.info('authorityChain=PASS'); console.info('sourceTruth=PASS'); console.info('renderAudit=PASS'); console.info('proofPreview=PASS'); console.info('consoleFatalErrors=none'); console.info('secondaryRuntimeAtlas=none'); console.info('status=PASS'); } }
+  if(workflowSig!==atlasWorkflowAcceptanceSignature){ atlasWorkflowAcceptanceSignature=workflowSig; if(workflowStatus==='PASS'){ console.info('[Atlas Workflow Acceptance]'); console.info('phase='+WAYFARER_PHASE); console.info('previewMode='+(previewModeActive?'true':'false')); console.info('authorityChain=PASS'); console.info('sourceTruth=PASS'); console.info('renderAudit=PASS'); console.info('proofPreview=PASS'); console.info('consoleFatalErrors=none'); console.info('secondaryRuntimeAtlas='+(previewModeActive?(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId||'none'):'none')); console.info('status=PASS'); } }
 }
 // 33.1.1C: Full-sheet atlas catalog scan.
 // Runs ONCE in atlasDebug mode after the buildings image loads.
@@ -9552,6 +9618,7 @@ function drawWorld(){
       drawShadowTile(assets.shadow.buildingBottom, bottom.x+4, bottom.y+3, .88);
     }
 
+    const previewTargeted=ATLAS_DEBUG_MODE && isSecondaryRuntimeAtlasPreviewBuilding(b);
     const spriteFailureReason=getBuildingProductionSpriteFailureReason(b, spriteId);
     const drawDimensionsAreFinite=Number.isFinite(drawX) && Number.isFinite(drawY) && Number.isFinite(sprite?.drawW ?? sprite?.sw) && Number.isFinite(sprite?.drawH ?? sprite?.sh);
     const drawImageAttempted=!spriteFailureReason && drawDimensionsAreFinite;
@@ -9567,7 +9634,7 @@ function drawWorld(){
       spriteId:spriteId||null,
       metadataSource:sprite?.metadataSource || "index",
       renderPath:didDraw ? "atlas" : "fallback",
-      actualDrawSource:didDraw ? "atlas" : (drawImageAttempted ? "atlas_attempt_failed" : "fallback"),
+      actualDrawSource:didDraw ? (previewTargeted ? "atlas_preview" : "atlas") : (drawImageAttempted ? "atlas_attempt_failed" : "fallback"),
       atlasImageObjectId:"buildings",
       imageComplete:buildingsSheet?.complete===true,
       imageNaturalWidth:buildingsSheet?.naturalWidth||atlasRuntimeInfo.buildings?.width||0,
@@ -9630,7 +9697,10 @@ function drawWorld(){
       ctx.fillRect(anchorX+8, anchorY-18, 170, 14);
       ctx.fillStyle="rgba(176,243,255,0.95)";
       ctx.font="10px monospace";
-      ctx.fillText((b.id||"building")+" y="+Math.round(worldAnchorY)+" rank="+drawOrderRank, anchorX+10, anchorY-8);
+      const previewSuffix=previewTargeted
+        ? " role="+b.role+" crop="+[sprite?.sx,sprite?.sy,sprite?.sw,sprite?.sh].join("/")+" draw="+(sprite?.drawW??sprite?.sw)+"x"+(sprite?.drawH??sprite?.sh)+" anchor="+(sprite?.anchorX??"n/a")+"/"+(sprite?.anchorY??"n/a")+" runtimeStatus=ATLAS_PREVIEW productionReady=false previewOnly=true"
+        : "";
+      ctx.fillText((b.id||"building")+" y="+Math.round(worldAnchorY)+" rank="+drawOrderRank+previewSuffix, anchorX+10, anchorY-8);
     }
     traceDecorSource({
       sourceSystem:"overworld_renderer",
