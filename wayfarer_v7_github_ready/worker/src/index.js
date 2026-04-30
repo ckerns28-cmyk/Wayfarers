@@ -849,6 +849,23 @@ const transitionFade = document.getElementById("transitionFade");
 const sidebarTabs = Array.from(document.querySelectorAll(".sidebar-tab"));
 const sidebarPanels = Array.from(document.querySelectorAll(".sidebar-tab-panel"));
 
+function reportBootstrapError(err,label){
+  const message=(err&&err.message)?err.message:String(err);
+  console.error("[Bootstrap Error] "+label+": "+message, err);
+  if(chat){
+    const node=document.createElement("div");
+    node.className="line system";
+    node.textContent="[Startup Error] "+label+": "+message;
+    chat.appendChild(node);
+  }
+}
+window.addEventListener("error",(event)=>{
+  reportBootstrapError(event?.error||event?.message||"unknown error","window.error");
+});
+window.addEventListener("unhandledrejection",(event)=>{
+  reportBootstrapError(event?.reason||"unknown rejection","unhandledrejection");
+});
+
 function setActiveSidebarTab(tabId){
   sidebarTabs.forEach((tab)=>{
     const isActive=tab.dataset.sidebarTab===tabId;
@@ -1276,7 +1293,7 @@ const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
 });
 
 const HEARTHVALE_SEMANTIC_REGISTRY_BY_ROLE = Object.freeze(
-  Object.values(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY).reduce((acc, entry) => {
+  Object.values(HEARTHVALE_ATLAS_SPRITE_PRESENTATION).reduce((acc, entry) => {
     if (entry?.role) acc[entry.role] = entry;
     return acc;
   }, {})
@@ -3393,7 +3410,7 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
       selectorCandidateStatus:"SELECTED_PROOF_ONLY",
       runtimeRenderStatus:"FALLBACK",
       selectedCandidateId:selected?.candidate?.candidateId||null,
-      previewCandidateId,
+      previewCandidateId:selected?.candidate?.candidateId||null,
       selectedCrop:selected?.candidate?.boundingBox||null,
       drawW:selected?(ATLAS_BUILDING_METADATA[roleId]?.drawW||null):null,
       drawH:selected?(ATLAS_BUILDING_METADATA[roleId]?.drawH||null):null,
