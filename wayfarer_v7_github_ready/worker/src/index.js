@@ -2996,12 +2996,13 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     console.info("[Catalog Selector] role_result role="+roleId+" selectorCandidateStatus="+(r.selectorCandidateStatus||"REJECTED")+" runtimeRenderStatus="+(r.runtimeRenderStatus||"FALLBACK")+" selectedCandidateId="+(r.selectedCandidateId||"none")+" bbox="+JSON.stringify(r.selectedCrop||null)+" score="+String(r.score||0)+" scoreReasons="+(r.scoreReasons||[]).join("|")+" blockingReasons="+(r.blockingReasons||[]).join("|")+" fallbackReason="+(r.fallbackReason||"none")+" duplicateRejectedCandidateId="+(r.duplicateRejectedCandidateId||"none")+" claimedByRole="+(r.claimedByRole||"none"));
   });
   const assignmentSummary={
-    claimedCandidates:Object.fromEntries(claimedCandidates.entries()),
-    fallbackRoles:roles.filter((roleId)=>(byRole[roleId]?.runtimeRenderStatus||"FALLBACK")==="FALLBACK"),
-    proofOnlyRoles:roles.filter((roleId)=>(byRole[roleId]?.selectorCandidateStatus||"FALLBACK_GATED")==="SELECTED_PROOF_ONLY"),
-    runtimeAtlasRoles:roles.filter((roleId)=>(byRole[roleId]?.runtimeRenderStatus||"FALLBACK")==="ATLAS")
+    runtimeFallbackRoles:roles.filter((roleId)=>(byRole[roleId]?.runtimeRenderStatus||"FALLBACK")==="FALLBACK"),
+    selectorProofOnlyRoles:roles.filter((roleId)=>(byRole[roleId]?.selectorCandidateStatus||"FALLBACK_GATED")==="SELECTED_PROOF_ONLY"),
+    selectorFallbackGatedRoles:roles.filter((roleId)=>(byRole[roleId]?.selectorCandidateStatus||"FALLBACK_GATED")==="FALLBACK_GATED"),
+    runtimeAtlasRoles:roles.filter((roleId)=>(byRole[roleId]?.runtimeRenderStatus||"FALLBACK")==="ATLAS"),
+    claimedCandidates:Object.fromEntries(claimedCandidates.entries())
   };
-  console.info("[Catalog Selector] assignment_summary claimedCandidates="+JSON.stringify(assignmentSummary.claimedCandidates)+" fallbackRoles="+assignmentSummary.fallbackRoles.join(",")+" proofOnlyRoles="+assignmentSummary.proofOnlyRoles.join(",")+" runtimeAtlasRoles="+assignmentSummary.runtimeAtlasRoles.join(","));
+  console.info("[Catalog Selector] assignment_summary runtimeFallbackRoles="+assignmentSummary.runtimeFallbackRoles.join(",")+" selectorProofOnlyRoles="+assignmentSummary.selectorProofOnlyRoles.join(",")+" selectorFallbackGatedRoles="+assignmentSummary.selectorFallbackGatedRoles.join(",")+" runtimeAtlasRoles="+assignmentSummary.runtimeAtlasRoles.join(",")+" claimedCandidates="+JSON.stringify(assignmentSummary.claimedCandidates));
   if(ATLAS_DEBUG_MODE){
     const seenIds=new Map();
     roles.forEach((roleId)=>{
