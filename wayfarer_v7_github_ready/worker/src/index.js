@@ -1533,15 +1533,19 @@ const secondaryProofPreviewState={
 };
 function logSecondaryProofPreviewSummary(){
   if(secondaryProofPreviewState.summaryLogged) return;
-  const roles=SECONDARY_BUILDING_IDS.map((id)=>BUILDING_ROLE_BY_ID[id]).filter(Boolean);
-  const previewRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="SELECTED_PROOF_ONLY");
-  const fallbackGatedRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="FALLBACK_GATED");
-  const runtimeAtlasRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.runtimeRenderStatus==="ATLAS");
-  console.info("[Secondary Proof Preview]");
-  console.info("enabled="+(SECONDARY_PROOF_PREVIEW_MODE?"true":"false"));
-  console.info("previewRoles="+previewRoles.join(","));
-  console.info("fallbackGatedRoles="+fallbackGatedRoles.join(","));
-  console.info("runtimeAtlasRoles="+runtimeAtlasRoles.join(","));
+  const roles=Array.isArray(SECONDARY_BUILDING_IDS) ? SECONDARY_BUILDING_IDS.slice() : [];
+  try{
+    const previewRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="SELECTED_PROOF_ONLY");
+    const fallbackGatedRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.selectorCandidateStatus==="FALLBACK_GATED");
+    const runtimeAtlasRoles=roles.filter((roleId)=>secondaryAtlasSelectionState.byRole?.[roleId]?.runtimeRenderStatus==="ATLAS");
+    console.info("[Secondary Proof Preview]");
+    console.info("enabled="+(SECONDARY_PROOF_PREVIEW_MODE?"true":"false"));
+    console.info("previewRoles="+previewRoles.join(","));
+    console.info("fallbackGatedRoles="+fallbackGatedRoles.join(","));
+    console.info("runtimeAtlasRoles="+runtimeAtlasRoles.join(","));
+  }catch(summaryError){
+    console.warn("[Secondary Proof Preview] summary_failed",summaryError?.message||summaryError);
+  }
   secondaryProofPreviewState.summaryLogged=true;
 }
 function drawSecondaryProofPreviewOverlay(entry){
