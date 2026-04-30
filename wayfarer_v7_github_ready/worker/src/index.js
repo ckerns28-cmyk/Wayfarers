@@ -1595,14 +1595,16 @@ const PROP_SPRITE_PRODUCTION_LIMITS = Object.freeze({
 const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze(Object.fromEntries(
   Object.entries(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY).map(([buildingId, entry])=>[buildingId, entry.spriteId])
 ));
-const BUILDING_SPRITE_ID_BY_ROLE = Object.freeze({
-  village_hall_meeting_house:"village_hall_meeting_house",
-  village_hall:"village_hall_meeting_house",
-  mercantile_shop:"mercantile_shop",
-  mercantile:"mercantile_shop",
-  inn_tavern:"inn_tavern_v1",
-  inn_tavern_v1:"inn_tavern_v1"
-});
+const BUILDING_SPRITE_ID_BY_ROLE = Object.freeze((()=>{
+  const byRole={};
+  Object.values(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY).forEach((entry)=>{
+    if(entry?.role && entry?.spriteId) byRole[entry.role]=entry.spriteId;
+  });
+  byRole.village_hall=byRole.village_hall_meeting_house||"village_hall_meeting_house";
+  byRole.mercantile=byRole.mercantile_shop||"mercantile_shop";
+  byRole.inn_tavern_v1=byRole.inn_tavern||"inn_tavern_v1";
+  return byRole;
+})());
 const BUILDING_FALLBACK_STYLE_BY_ROLE = Object.freeze({
   residence_small:{ roof:"roofC", wall:"wallTimber", window:"windowTall", door:"doorPorch", dormer:true },
   residence_large:{ roof:"roofSlate", wall:"wall", window:"window", door:"door", dormer:true },
