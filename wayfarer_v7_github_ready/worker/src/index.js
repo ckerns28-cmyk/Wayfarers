@@ -1214,9 +1214,21 @@ const ATLAS_BUILDING_METADATA = Object.freeze({
   pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:899, y:939, w:250, h:245 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" }
 });
 
+// 33.1.4d: Authoritative building-keyed semantic identity registry. Maps world
+// building IDs to role/spriteId/atlasIdentity and optional crop overrides. Looked
+// up via resolveBuildingAtlasRuntimeEntry(buildingId).
+const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
+  b_inn_tavern:{ role:"inn_tavern", spriteId:"inn_tavern_v1", atlasIdentity:"top_left_inn_tavern", productionAtlasLocked:true, productionAtlasEnabled:true },
+  b_mercantile:{ role:"mercantile_shop", spriteId:"mercantile_shop", atlasIdentity:"top_middle_mercantile_shop", productionAtlasLocked:true, productionAtlasEnabled:true },
+  b_village_hall:{ role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", atlasIdentity:"top_right_meeting_house", crop:{ x:853, y:10, w:327, h:460 }, productionAtlasLocked:true, productionAtlasEnabled:true },
+  b_res_small:{ role:"residence_small", spriteId:"residence_small", atlasIdentity:"middle_left_or_middle_center_residence_small", productionAtlasLocked:false, productionAtlasEnabled:false },
+  b_res_large:{ role:"residence_large", spriteId:"residence_large", atlasIdentity:"middle_right_manor_residence_large", crop:{ x:758, y:493, w:459, h:355 }, productionAtlasLocked:false, productionAtlasEnabled:false },
+  b_hunter_lodge:{ role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"bottom_left_hunter_lodge", productionAtlasLocked:false, productionAtlasEnabled:false },
+  b_boathouse:{ role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"bottom_middle_boathouse_dock", productionAtlasLocked:false, productionAtlasEnabled:false }
+});
+
 // 33.1.4d: Sprite-keyed atlas presentation table — downstream helper providing
 // crop/draw/anchor data per spriteId. Looked up via resolveAtlasSpriteRuntimeEntry().
-// The authoritative semantic identity table is HEARTHVALE_BUILDING_SEMANTIC_REGISTRY (building-keyed).
 const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
   inn_tavern_v1:{
     spriteId:"inn_tavern_v1", role:"inn_tavern",
@@ -1658,7 +1670,7 @@ function isDecorDebugEnabledFromUrl(){
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
 const WAYFARER_PHASE = "33.1.4d";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d-registry-authoritative-parsefix3";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d-registry-authoritative-parsefix4";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3274,7 +3286,7 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     .sort((a,b)=>(rolePriority.get(a)??99)-(rolePriority.get(b)??99))
     .forEach((roleId)=>{
     const roleEntry=normalizedRoleReports[roleId].roleEntry;
-    const regEntry=HEARTHVALE_BUILDING_SEMANTIC_REGISTRY[roleId]||null;
+    const regEntry=HEARTHVALE_ATLAS_SPRITE_PRESENTATION[roleId]||null;
     const resolvedEntry=resolveAtlasSpriteRuntimeEntry(roleId);
     // Semantic identity gate: human_reviewed roles use registry crop directly.
     // Only human_reviewed_pending_catalog roles proceed through catalog scan selection.
