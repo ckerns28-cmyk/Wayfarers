@@ -1740,8 +1740,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.5";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.5-secondary-runtime-preview";
+const WAYFARER_PHASE = "33.1.5b";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.5b-runtime-preview-gate-bypass";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -2803,7 +2803,11 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   const sprite=manifest.sprites?.[spriteId];
   const proofOverride=isAtlasProofOverrideRequested(building, sprite);
   const secondaryPreviewOverride=ATLAS_DEBUG_MODE && isSecondaryRuntimeAtlasPreviewBuilding(building);
-  if(!isProofBuildingEnabled(building, sprite) && (!manifest.allowProductionSprites || !USE_PRODUCTION_BUILDING_ATLAS)) return "production_atlas_disabled";
+  if(
+    !secondaryPreviewOverride &&
+    !isProofBuildingEnabled(building, sprite) &&
+    (!manifest.allowProductionSprites || !USE_PRODUCTION_BUILDING_ATLAS)
+  ) return "production_atlas_disabled";
   if(!sprite) return "missing_sprite_entry";
   // Catalog-resolved secondaries skip the productionReady gate (they are proof-only by design).
   if(!secondaryPreviewOverride && !proofOverride && !sprite.catalogResolved && sprite.productionReady!==true) return "sprite_not_production_ready";
@@ -3073,6 +3077,10 @@ function maybeLogBuildingRenderSummary(){
   isAtlasRuntimeReady("props");
   maybeEmitAtlasReadyOnce();
   const atlasIds=[...buildingRenderDiagnostics.atlasBuildings].sort();
+  const previewRuntimeIds=atlasIds.filter((id)=>{
+    const rec=buildingRenderDiagnostics.perBuilding.get(id);
+    return rec?.actualDrawSource==="atlas_preview";
+  });
   const fallbackEntries=[...buildingRenderDiagnostics.fallbackBuildings.entries()].map(([id,reason])=>id+"("+reason+")").sort();
   const pendingEntries=[...buildingRenderDiagnostics.pendingBuildings.entries()].map(([id,reason])=>id+"("+reason+")").sort();
   const summaryToken=[atlasIds.join(","),fallbackEntries.join(","),pendingEntries.join(",")].join("|");
@@ -3095,7 +3103,7 @@ function maybeLogBuildingRenderSummary(){
   const buildingsManifestStatus = (atlasRuntimeInfo.buildings?.manifestReady===true || isAtlasRuntimeReady("buildings")) ? "ready" : "pending";
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " previewMode=" + (previewModeActive?"true":"false") + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " previewMode=" + (previewModeActive?"true":"false") + " atlas_buildings=" + atlasIds.join(",") + " preview_runtime_buildings=" + previewRuntimeIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
   if(previewModeActive){
     const target=SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET;
     const targetBuilding=world.buildings.find((row)=>row.id===target.resolvedBuildingId) || null;
@@ -3114,6 +3122,11 @@ function maybeLogBuildingRenderSummary(){
     console.info("runtimeStatus="+runtimeStatus);
     console.info("normalProductionReady=false");
     console.info("defaultRuntimeUnaffected=true");
+    if(runtimeStatus==="FALLBACK" && targetRec?.failureReason==="production_atlas_disabled"){
+      console.error("[Secondary Runtime Preview Error]");
+      console.error("reason=preview_target_still_blocked_by_production_gate");
+      console.error("target="+(target.resolvedBuildingId||"none"));
+    }
     const acceptanceStatus=(target.resolvedBuildingId==="b_res_large" && atlasIds.length===4 && fallbackEntries.length===3 && pendingEntries.length===0 && runtimeStatus==="ATLAS_PREVIEW")?"PASS":"FAIL";
     console.info("[Secondary Runtime Preview Acceptance]");
     console.info("target="+(target.resolvedBuildingId||"none"));
@@ -3297,7 +3310,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='33.1.5' && ATLAS_SELECTOR_VERSION==='selector-v33.1.5-secondary-runtime-preview';
+  const proofHudConsistent=WAYFARER_PHASE==='33.1.5b' && ATLAS_SELECTOR_VERSION==='selector-v33.1.5b-runtime-preview-gate-bypass';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -3306,7 +3319,7 @@ function logBuildingSourceOfTruthAudit(){
   const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
   const status=!ready?'PENDING_ASSETS':((rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent && authStatus==='PASS')?'PASS':'FAIL');
   const satSig=JSON.stringify({status,pendingReason,renderAuditConsistent,rows:rows.length,conflicts:conflicts.length,authStatus});
-  if(satSig!==sourceTruthAcceptanceSignature){ sourceTruthAcceptanceSignature=satSig; console.info('[Source Truth Acceptance]'); console.info('phase='+WAYFARER_PHASE); console.info('registryKeyMode=building_id'); console.info('rows='+rows.length); console.info('activeMappingConsistent='+(conflicts.length===0?'true':'false')); console.info('cropAuditConsistent='+(requiredFieldsOk?'true':'false')); console.info('proofHudConsistent='+(proofHudConsistent?'true':'false')); console.info('renderAuditConsistent='+(renderAuditConsistent?'true':'false')); console.info('pendingReason='+pendingReason); console.info('status='+status); }
+  if(satSig!==sourceTruthAcceptanceSignature){ sourceTruthAcceptanceSignature=satSig; console.info('[Source Truth Acceptance]'); console.info('phase='+WAYFARER_PHASE); console.info('previewMode='+(previewModeActive?'true':'false')); console.info('registryKeyMode=building_id'); console.info('rows='+rows.length); console.info('activeMappingConsistent='+(conflicts.length===0?'true':'false')); console.info('cropAuditConsistent='+(requiredFieldsOk?'true':'false')); console.info('proofHudConsistent='+(proofHudConsistent?'true':'false')); console.info('renderAuditConsistent='+(renderAuditConsistent?'true':'false')); console.info('pendingReason='+pendingReason); console.info('status='+status); }
   const proofPreviewPass=secondaryProofPreviewState.drawCount===4;
   const workflowStatus=(authStatus==='PASS' && status==='PASS' && renderAuditConsistent && proofPreviewPass)?'PASS':'PENDING';
   const workflowSig=JSON.stringify({workflowStatus,proofPreviewPass,status,authStatus});
