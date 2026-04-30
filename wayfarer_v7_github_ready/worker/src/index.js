@@ -1367,7 +1367,13 @@ const buildingRenderDiagnostics={
   atlasBuildings:new Set(),
   fallbackBuildings:new Map(),
   pendingBuildings:new Map(),
+  perBuilding:new Map(),
   lastSummaryToken:null
+};
+const atlasReadinessLogState={
+  buildingsReadyLogged:false,
+  catalogScanReadyLogged:false,
+  lastDebugToken:null
 };
 const USE_PRODUCTION_BUILDING_ATLAS = false;
 const BUILDING_SPRITE_PRODUCTION_LIMITS = Object.freeze({
@@ -1913,30 +1919,113 @@ function drawAtlasProofTopLeftLine(){
   ctx.fillText(line, 14, 23);
   ctx.restore();
 }
+// Canonical atlas readiness — uses the actual <img> element as the source of
+// truth, then back-fills runtime.loaded/width/height. Browser-cached images may
+// have already fired onload before the listener was attached, leaving
+// runtime.loaded=false even though the image is fully decoded and drawable.
+// Every subsystem (render, audit, proof HUD, catalog scan, selector) routes
+// through this so they all see the same readiness state.
+function isAtlasRuntimeReady(atlasId){
+  const sheet=atlasImages[atlasId];
+  const runtime=atlasRuntimeInfo[atlasId];
+  const manifest=atlasManifests[atlasId];
+  if(!sheet || !manifest) return false;
+  const imageReady=sheet.complete===true && sheet.naturalWidth>0 && sheet.naturalHeight>0;
+  if(!imageReady) return false;
+  if(runtime){
+    if(runtime.loaded!==true){
+      runtime.loaded=true;
+      runtime.imageOnloadFired=runtime.imageOnloadFired || true;
+      runtime.failure=null;
+    }
+    if(runtime.width!==sheet.naturalWidth) runtime.width=sheet.naturalWidth;
+    if(runtime.height!==sheet.naturalHeight) runtime.height=sheet.naturalHeight;
+    if(runtime.manifestReady!==true && manifest.sprites && Object.keys(manifest.sprites).length>0){
+      runtime.manifestReady=true;
+    }
+  }
+  return true;
+}
+function emitAtlasReadinessDebug(reasonTag){
+  const sheet=atlasImages.buildings;
+  const runtime=atlasRuntimeInfo.buildings || {};
+  const manifest=atlasManifests.buildings || {};
+  const manifestKeys=manifest.sprites ? Object.keys(manifest.sprites) : [];
+  const renderImageNatural=(sheet?.naturalWidth||0)+"x"+(sheet?.naturalHeight||0);
+  const tokenParts=[
+    reasonTag,
+    sheet?.src||"",
+    sheet?.complete===true,
+    renderImageNatural,
+    runtime.loaded===true,
+    runtime.manifestReady===true,
+    runtime.imageOnloadFired===true,
+    runtime.imageOnerrorFired===true,
+    manifestKeys.length
+  ];
+  const token=tokenParts.join("|");
+  if(atlasReadinessLogState.lastDebugToken===token) return;
+  atlasReadinessLogState.lastDebugToken=token;
+  console.info(
+    "[Atlas Readiness Debug] "+
+    "reason="+reasonTag+
+    " buildingsCanonicalSrc="+(sheet?.src||"n/a")+
+    " proofHudSrc="+(atlasProofDiagnostics.requestedAssetUrl||"n/a")+
+    " renderImageSrc="+(sheet?.src||"n/a")+
+    " sameImageObject="+(sheet === atlasImages.buildings)+
+    " renderImageComplete="+(sheet?.complete===true)+
+    " renderImageNatural="+renderImageNatural+
+    " proofImageComplete="+(sheet?.complete===true)+
+    " proofImageNatural="+renderImageNatural+
+    " manifestLoaded="+(runtime.manifestReady===true)+
+    " manifestKeys="+manifestKeys.join(",")+
+    " lastOnLoad="+(runtime.imageOnloadFired===true)+
+    " lastOnError="+(runtime.imageOnerrorFired===true)+
+    " directFetchStatus="+(runtime.probeStatus||0)+
+    " directFetchContentType="+(runtime.probeContentType||"unknown")+
+    " directFetchIsPng="+(runtime.probeContentTypeIsPng===true)
+  );
+}
+function maybeEmitAtlasReadyOnce(){
+  if(atlasReadinessLogState.buildingsReadyLogged) return;
+  if(!isAtlasRuntimeReady("buildings")) return;
+  atlasReadinessLogState.buildingsReadyLogged=true;
+  const sheet=atlasImages.buildings;
+  console.info("[Atlas Readiness] ready buildings=" + sheet.naturalWidth + "x" + sheet.naturalHeight + " manifestKeys=" + Object.keys(atlasManifests.buildings.sprites||{}).length);
+}
 function hasAtlasUsableTransparency(atlasId){
   const runtime=atlasRuntimeInfo[atlasId];
   if(runtime?.hasUsableTransparency===true) return true;
   if(runtime?.hasUsableTransparency===false) return false;
+  if(!isAtlasRuntimeReady(atlasId)) return false; // image not yet decoded; do not cache
   const sheet=atlasImages[atlasId];
-  if(!sheet || !sheet.complete || !(sheet.naturalWidth>0&&sheet.naturalHeight>0)) return false;
   const W=sheet.naturalWidth, H=sheet.naturalHeight;
-  const probe=document.createElement("canvas");
-  probe.width=W; probe.height=H;
-  const probeCtx=probe.getContext("2d", { willReadFrequently:true });
-  if(!probeCtx) return false;
-  probeCtx.imageSmoothingEnabled=false;
-  probeCtx.drawImage(sheet, 0, 0);
-  const data=probeCtx.getImageData(0,0,W,H).data;
-  // Sample every 32nd pixel across the full sheet — covers all sprite regions,
-  // not just the top-left corner which may be entirely opaque background.
-  let alphaPixels=0;
-  for(let i=3;i<data.length;i+=4*32){
-    if(data[i]<255){
-      alphaPixels++;
-      if(alphaPixels>=8) break;
+  let hasUsableTransparency=false;
+  try{
+    const probe=document.createElement("canvas");
+    probe.width=W; probe.height=H;
+    const probeCtx=probe.getContext("2d", { willReadFrequently:true });
+    if(!probeCtx) return false;
+    probeCtx.imageSmoothingEnabled=false;
+    probeCtx.drawImage(sheet, 0, 0);
+    const data=probeCtx.getImageData(0,0,W,H).data;
+    // Sample every 32nd pixel across the full sheet — covers all sprite regions,
+    // not just the top-left corner which may be entirely opaque background.
+    let alphaPixels=0;
+    for(let i=3;i<data.length;i+=4*32){
+      if(data[i]<255){
+        alphaPixels++;
+        if(alphaPixels>=8) break;
+      }
     }
+    hasUsableTransparency=alphaPixels>=8;
+  }catch(probeErr){
+    // CORS-tainted canvas or other read failure: fall back to assuming usable
+    // transparency exists. The image is decoded and drawable; refusing to render
+    // the atlas just because we cannot inspect pixels would be a false negative.
+    if(ATLAS_DEBUG_MODE) console.warn("[Atlas Transparency] probe failed, assuming transparent", probeErr?.message||probeErr);
+    hasUsableTransparency=true;
   }
-  const hasUsableTransparency=alphaPixels>=8;
   if(runtime) runtime.hasUsableTransparency=hasUsableTransparency;
   return hasUsableTransparency;
 }
@@ -2555,21 +2644,46 @@ function drawAtlasDebugPreview(){
 }
 function maybeLogBuildingRenderSummary(){
   const totalBuildings=world.buildings.length;
+  // Reconcile the bucket sets against the per-building diagnostic records.
+  // The per-building record is the authoritative source: drawImageSucceeded=true
+  // MUST count as atlas. This guarantees the overlay (which uses the same record)
+  // and the audit cannot disagree.
+  buildingRenderDiagnostics.perBuilding.forEach((rec, id)=>{
+    if(rec.drawImageSucceeded===true){
+      buildingRenderDiagnostics.atlasBuildings.add(id);
+      buildingRenderDiagnostics.fallbackBuildings.delete(id);
+      buildingRenderDiagnostics.pendingBuildings.delete(id);
+    }
+  });
   const seen=buildingRenderDiagnostics.atlasBuildings.size + buildingRenderDiagnostics.fallbackBuildings.size + buildingRenderDiagnostics.pendingBuildings.size;
   if(seen<totalBuildings) return;
+  // Trigger the canonical readiness probe + ready log on every audit emit.
+  isAtlasRuntimeReady("buildings");
+  isAtlasRuntimeReady("props");
+  maybeEmitAtlasReadyOnce();
   const atlasIds=[...buildingRenderDiagnostics.atlasBuildings].sort();
   const fallbackEntries=[...buildingRenderDiagnostics.fallbackBuildings.entries()].map(([id,reason])=>id+"("+reason+")").sort();
   const pendingEntries=[...buildingRenderDiagnostics.pendingBuildings.entries()].map(([id,reason])=>id+"("+reason+")").sort();
   const summaryToken=[atlasIds.join(","),fallbackEntries.join(","),pendingEntries.join(",")].join("|");
   if(buildingRenderDiagnostics.lastSummaryToken===summaryToken) return;
   buildingRenderDiagnostics.lastSummaryToken=summaryToken;
+  // If a hero rendered as atlas but the runtime/onload tracking still claims pending,
+  // emit the readiness debug to surface the contract mismatch.
+  const heroAtlasCount=["b_inn_tavern","b_mercantile","b_village_hall"].filter((id)=>buildingRenderDiagnostics.atlasBuildings.has(id)).length;
+  if(heroAtlasCount>0 && atlasRuntimeInfo.buildings?.loaded!==true){
+    emitAtlasReadinessDebug("hero_atlas_but_runtime_pending");
+  }
   const finalMissingAssets=computeFinalMissingAssetTokens();
   const nonFatalWarnings=[...missingAssetWarnings].filter((token)=>{
     if(!token.startsWith("building_sprite:")) return false;
     const reason=token.split(":").slice(2).join(":");
     return isNonFatalAtlasReason(reason);
   });
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + (atlasRuntimeInfo.buildings?.manifestReady===true ? "ready" : "pending") + ",props:" + (atlasRuntimeInfo.props?.manifestReady===true ? "ready" : "pending") + " atlas_image_status=buildings:" + (atlasRuntimeInfo.buildings?.loaded===true ? "loaded" : (atlasRuntimeInfo.buildings?.imageOnerrorFired ? "error" : "pending")) + ",props:" + (atlasRuntimeInfo.props?.loaded===true ? "loaded" : (atlasRuntimeInfo.props?.imageOnerrorFired ? "error" : "pending")) + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+  const buildingsImageStatus = isAtlasRuntimeReady("buildings") ? "loaded" : (atlasRuntimeInfo.buildings?.imageOnerrorFired ? "error" : "pending");
+  const propsImageStatus = isAtlasRuntimeReady("props") ? "loaded" : (atlasRuntimeInfo.props?.imageOnerrorFired ? "error" : "pending");
+  const buildingsManifestStatus = (atlasRuntimeInfo.buildings?.manifestReady===true || isAtlasRuntimeReady("buildings")) ? "ready" : "pending";
+  const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
 }
 
 
@@ -2730,7 +2844,8 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   const byRole={};
   const bySpriteId={};
   const transparencyOk=hasAtlasUsableTransparency("buildings")===true;
-  const sheetReady=atlasImages.buildings?.complete===true && (atlasImages.buildings?.naturalWidth||0)>0 && (atlasImages.buildings?.naturalHeight||0)>0;
+  const sheetReady=isAtlasRuntimeReady("buildings");
+  console.info("[Catalog Selector] normalized_input roles="+roles.length+" candidates="+candidates.length+" clean="+candidates.filter((c)=>c?.clean===true).length+" transparencyOk="+transparencyOk+" sheetReady="+sheetReady);
   SECONDARY_BUILDING_IDS.forEach((roleId)=>{
     const roleEntry=normalizedRoleReports[roleId].roleEntry;
     const fits=normalizedCandidateInfo[roleId].candidates;
@@ -2773,6 +2888,15 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   secondaryAtlasSelectionState.byRole=byRole;
   secondaryAtlasSelectionState.bySpriteId=bySpriteId;
   applySecondaryAtlasSelectionOverrides(payload);
+  SECONDARY_BUILDING_IDS.forEach((roleId)=>{
+    const r=byRole[roleId];
+    if(!r){ console.warn("[Catalog Selector] role_result "+roleId+" status=missing"); return; }
+    if(r.eligibility===true){
+      console.info("[Catalog Selector] role_result "+roleId+" status=resolved candidate="+r.selectedCandidateId+" bbox="+JSON.stringify(r.selectedCrop)+" finalRender="+r.finalRenderStatus+" gate=proof_only_pending_human_review");
+    }else{
+      console.warn("[Catalog Selector] role_result "+roleId+" status="+(r.fallbackReason||"no_clean_catalog_candidate")+" blocking="+(r.blockingReasons||[]).join("|")+" finalRender="+r.finalRenderStatus);
+    }
+  });
   return payload;
 }
 const atlasCatalogScanState={
@@ -3035,15 +3159,14 @@ function maybeEmitFrontageAudit(){
   console.info("[Frontage QA] "+line);
 }
 function isBuildingAtlasPendingReason(reason){
+  // Pending = atlas image is still loading. Once the atlas image is fully
+  // decoded (isAtlasRuntimeReady), nothing about its render is pending — any
+  // remaining failure is a hard failure that belongs in fallback, not pending.
   if(reason==="atlas_missing_alpha_transparency"){
-    // Treat as pending only while the transparency probe has not yet run.
-    // If hasUsableTransparency is definitively false (probe completed, no
-    // transparent pixels found), escalate to a hard failure so heroes are
-    // not trapped in pending_count forever.
-    const runtime=atlasRuntimeInfo.buildings;
-    return runtime?.hasUsableTransparency===undefined;
+    return !isAtlasRuntimeReady("buildings");
   }
   if(reason!=="asset_not_loaded" && reason!=="sheet_not_complete") return false;
+  if(isAtlasRuntimeReady("buildings")) return false;
   const runtime=atlasRuntimeInfo.buildings;
   if(!runtime) return true;
   return runtime.loaded!==true && runtime.imageOnerrorFired!==true;
@@ -8420,9 +8543,34 @@ function drawWorld(){
 
     const spriteFailureReason=getBuildingProductionSpriteFailureReason(b, spriteId);
     const drawDimensionsAreFinite=Number.isFinite(drawX) && Number.isFinite(drawY) && Number.isFinite(sprite?.drawW ?? sprite?.sw) && Number.isFinite(sprite?.drawH ?? sprite?.sh);
-    const didDraw=!spriteFailureReason
-      ? (drawDimensionsAreFinite ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh) : false)
+    const drawImageAttempted=!spriteFailureReason && drawDimensionsAreFinite;
+    const didDraw=drawImageAttempted
+      ? drawAtlasSprite("buildings", spriteId, drawX, drawY, sprite?.drawW ?? sprite?.sw, sprite?.drawH ?? sprite?.sh)
       : false;
+    // Per-building diagnostic record — single source of truth shared by audit,
+    // overlay, proof HUD. If drawImageSucceeded=true the audit MUST count it as
+    // ATLAS; if false the overlay MUST NOT label it ATLAS.
+    const buildingsSheet=atlasImages.buildings;
+    buildingRenderDiagnostics.perBuilding.set(b.id, {
+      buildingId:b.id,
+      spriteId:spriteId||null,
+      metadataSource:sprite?.metadataSource || "index",
+      renderPath:didDraw ? "atlas" : "fallback",
+      actualDrawSource:didDraw ? "atlas" : (drawImageAttempted ? "atlas_attempt_failed" : "fallback"),
+      atlasImageObjectId:"buildings",
+      imageComplete:buildingsSheet?.complete===true,
+      naturalWidth:buildingsSheet?.naturalWidth||0,
+      naturalHeight:buildingsSheet?.naturalHeight||0,
+      manifestLoaded:atlasRuntimeInfo.buildings?.manifestReady===true || (atlasManifests.buildings?.sprites && Object.keys(atlasManifests.buildings.sprites).length>0),
+      crop:sprite ? { x:sprite.sx, y:sprite.sy, w:sprite.sw, h:sprite.sh } : null,
+      drawW:sprite?.drawW ?? sprite?.sw ?? null,
+      drawH:sprite?.drawH ?? sprite?.sh ?? null,
+      anchorX:sprite?.anchorX ?? null,
+      anchorY:sprite?.anchorY ?? null,
+      drawImageAttempted,
+      drawImageSucceeded:didDraw===true,
+      failureReason:didDraw ? null : (spriteFailureReason || (drawDimensionsAreFinite ? "draw_failed" : "invalid_draw_position"))
+    });
     if(didDraw) bootDiagnostics.buildingDrawCount+=1;
     const buildingSortY=(b.y*TILE) + (sprite?.anchorY ?? anchorPxY);
     const buildingSortDebug={
