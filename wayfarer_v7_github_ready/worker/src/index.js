@@ -1473,11 +1473,11 @@ function isDecorDebugEnabledFromUrl(){
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
 const WAYFARER_PHASE = "33.1.2";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.2-readiness-sm";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.2-canonical-audit-codex";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
-  : "unknown";
+  : "ec77b15";
 let wayfarerBuildSentinelLogged=false;
 const ATLAS_PREVIEW_MODE = ATLAS_DEBUG_MODE && isAtlasPreviewEnabledFromUrl();
 const DECOR_DEBUG_MODE = isDecorDebugEnabledFromUrl();
@@ -2684,6 +2684,12 @@ function maybeLogBuildingRenderSummary(){
   const buildingsManifestStatus = (atlasRuntimeInfo.buildings?.manifestReady===true || isAtlasRuntimeReady("buildings")) ? "ready" : "pending";
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
   console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " atlas_buildings=" + atlasIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+  const heroDiagnostics=["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>{
+    const rec=buildingRenderDiagnostics.perBuilding.get(id);
+    if(!rec) return id+" actualDrawSource=missing drawImageSucceeded=false imageComplete=false natural=0x0 manifestLoaded="+String(atlasRuntimeInfo.buildings?.manifestReady===true)+" failureReason=no_record";
+    return id+" actualDrawSource="+(rec.actualDrawSource||"unknown")+" drawImageSucceeded="+String(rec.drawImageSucceeded===true)+" imageComplete="+String(rec.imageComplete===true)+" natural="+String(rec.imageNaturalWidth||0)+"x"+String(rec.imageNaturalHeight||0)+" manifestLoaded="+String(rec.manifestLoaded===true)+" failureReason="+(rec.failureReason||"none");
+  });
+  console.info("[Hero Atlas Draw Diagnostics] "+heroDiagnostics.join(" | "));
 }
 
 
