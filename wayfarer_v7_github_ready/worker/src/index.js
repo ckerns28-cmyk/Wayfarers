@@ -3961,20 +3961,26 @@ function emitBoathousePlacementQA(){
   const mainRoadRect={ x:9, y:16, w:22, h:1 };
   const overlaps=(a,bRect)=>a.x<bRect.x+bRect.w && a.x+a.w>bRect.x && a.y<bRect.y+bRect.h && a.y+a.h>bRect.y;
   let adjacentToWater=false;
-  let overlapsWater=false;
+  let visualOverlapsWater=false;
+  let collisionOverlapsInvalidWater=false;
   for(let x=visual.x;x<visual.x+visual.w;x++){
     for(let y=visual.y;y<visual.y+visual.h;y++){
       const touchingNeighbor=[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>world.pondWater.has(keyOf(x+dx,y+dy))||world.pondShore.has(keyOf(x+dx,y+dy)));
       if(touchingNeighbor) adjacentToWater=true;
-      if(world.pondWater.has(keyOf(x,y))) overlapsWater=true;
+      if(world.pondWater.has(keyOf(x,y))) visualOverlapsWater=true;
     }
   }
   const doorReachable=!!(interaction && !world.pondWater.has(keyOf(interaction.x,interaction.y)) && !world.blocked.has(keyOf(interaction.x,interaction.y)));
   const roadOrPathConnected=!!(interaction && [[0,0],[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>world.roadTiles.has(keyOf(interaction.x+dx,interaction.y+dy))));
   const blocksMainRoad=overlaps(collision,mainRoadRect);
-  const collisionValid=!overlapsWater;
+  for(let x=collision.x;x<collision.x+collision.w;x++){
+    for(let y=collision.y;y<collision.y+collision.h;y++){
+      if(world.pondWater.has(keyOf(x,y)) && !world.roadTiles.has(keyOf(x,y))) collisionOverlapsInvalidWater=true;
+    }
+  }
+  const collisionValid=!collisionOverlapsInvalidWater;
   const candidateId=secondaryAtlasSelectionState.byRole?.pond_boathouse_or_waterfront_shed?.selectedCandidateId || "none";
-  console.info("[Boathouse Placement QA] buildingId=b_boathouse role=pond_boathouse_or_waterfront_shed position=tile("+b.x+","+b.y+") adjacentToWater="+adjacentToWater+" doorReachable="+doorReachable+" roadOrPathConnected="+roadOrPathConnected+" blocksMainRoad="+blocksMainRoad+" overlapsWater="+overlapsWater+" collisionValid="+collisionValid+" previewCandidateId="+candidateId+" runtimeRenderStatus=FALLBACK");
+  console.info("[Boathouse Placement QA] buildingId=b_boathouse role=pond_boathouse_or_waterfront_shed position=tile("+b.x+","+b.y+") adjacentToWater="+adjacentToWater+" doorReachable="+doorReachable+" roadOrPathConnected="+roadOrPathConnected+" blocksMainRoad="+blocksMainRoad+" visualOverlapsWater="+visualOverlapsWater+" collisionOverlapsInvalidWater="+collisionOverlapsInvalidWater+" collisionValid="+collisionValid+" previewCandidateId="+candidateId+" runtimeRenderStatus=FALLBACK");
 }
 function isBuildingAtlasPendingReason(reason){
   // Pending = atlas image is still loading. Once the atlas image is fully
@@ -4905,7 +4911,7 @@ world.buildings.push(
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:7,w:4,h:4}, visualBounds:{x:4,y:7,w:4,h:4}, collision:{x:4,y:9,w:4,h:1}, interaction:{x:5,y:10,w:1,h:1}, interactRect:{x:5,y:10,w:1,h:1}, frontDoorTile:{x:5,y:10}, frontWalkBand:{ x:4, y:11, w:4, h:1 }, blockedVisualTiles:[{ x:4, y:7, w:4, h:2 }, { x:4, y:9, w:4, h:1 }, { x:4, y:10, w:1, h:1 }, { x:6, y:10, w:2, h:1 }], occlusionDepthLine:{ x:4, y:9, w:4, h:1 }, rearExclusionZone:{ x:4, y:7, w:4, h:2 }, label:{x:5,y:8,text:"Cottage"}, pathingBounds:{x:3,y:7,w:6,h:6} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:29, y:8, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:8,w:5,h:4}, collision:{x:29,y:10,w:5,h:2}, interaction:{x:31,y:11,w:1,h:1}, label:{x:31,y:9,text:"Residence"}, pathingBounds:{x:28,y:8,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:10, y:16, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:10,y:16,w:4,h:4}, collision:{x:10,y:18,w:4,h:2}, interaction:{x:11,y:19,w:1,h:1}, label:{x:11,y:17,text:"Dock Warehouse"}, pathingBounds:{x:9,y:16,w:6,h:5} }) },
-  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:19, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:19,w:5,h:3}, collision:{x:26,y:20,w:5,h:2}, interaction:{x:28,y:19,w:1,h:1}, label:{x:28,y:19,text:"Harbor Shed"}, pathingBounds:{x:25,y:18,w:7,h:5} }) }
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:26, y:19, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:26,y:19,w:5,h:3}, collision:{x:26,y:18,w:5,h:1}, interaction:{x:28,y:18,w:1,h:1}, label:{x:28,y:19,text:"Harbor Shed"}, pathingBounds:{x:25,y:17,w:7,h:6} }) }
 );
 world.buildings.forEach((b)=>{
   const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
@@ -8478,8 +8484,8 @@ function createMobileQaControls(){
     {label:"Center Town",x:HEARTHVALE_LANDMARKS.townCenterSpawn.x,y:HEARTHVALE_LANDMARKS.townCenterSpawn.y},
     {label:"Village Hall",x:17,y:13},
     {label:"Residence Large",x:20,y:22},
-    {label:"Boathouse",x:27,y:19},
-    {label:"Pond Edge",x:29,y:28}
+    {label:"Boathouse",x:28,y:18},
+    {label:"Pond Edge",x:30,y:18}
   ];
   teleportButtons.forEach((entry)=>{
     const b=document.createElement("button");
