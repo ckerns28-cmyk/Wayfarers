@@ -960,6 +960,11 @@ const OUTDOOR_REGION_DEFS = {
     name: "Hearthvale Square",
     bounds: { x:0, y:7, w:27, h:WORLD_H-7 }
   },
+  hearthvale_residence_district: {
+    id: "hearthvale_residence_district",
+    name: "Hearthvale Residence District",
+    bounds: { x:27, y:7, w:WORLD_W-27, h:9 }
+  },
   eastern_woods: {
     id: "eastern_woods",
     name: "Eastern Woods",
@@ -7925,9 +7930,20 @@ function evaluateQuickNavTile(x,y){
     valid:inBounds && diag?.walkable===true && tileType!=="water" && !buildingBodyOrRoof && !decorativeOnly
   };
 }
-function resolveQuickNavDestination(label, requestedX, requestedY){
+const QUICK_NAV_DESTINATIONS = Object.freeze({
+  center_town:{ destinationKey:"center_town", label:"Center Town", x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y, expectedZoneId:"hearthvale_square" },
+  village_hall:{ destinationKey:"village_hall", label:"Village Hall", x:17, y:13, expectedZoneId:"hearthvale_square" },
+  residence_large:{ destinationKey:"residence_large", label:"Residence Large", x:31, y:12, expectedZoneId:"hearthvale_residence_district" },
+  boathouse:{ destinationKey:"boathouse", label:"Boathouse", x:28, y:18, expectedZoneId:"eastern_woods" },
+  pond_edge:{ destinationKey:"pond_edge", label:"Pond Edge", x:30, y:18, expectedZoneId:"eastern_woods" }
+});
+
+function resolveQuickNavDestination(destination){
+  const requestedX=destination.x;
+  const requestedY=destination.y;
   const requested=evaluateQuickNavTile(requestedX, requestedY);
   let resolved=requested;
+  let usedFallbackResolution=false;
   if(!requested.valid){
     const maxRadius=3;
     let found=null;
@@ -7940,19 +7956,33 @@ function resolveQuickNavDestination(label, requestedX, requestedY){
         }
       }
     }
-    if(found) resolved=found;
+    if(found){
+      resolved=found;
+      usedFallbackResolution=true;
+    }
   }
   if(!resolved.valid){
     resolved=evaluateQuickNavTile(HEARTHVALE_LANDMARKS.townCenterSpawn.x, HEARTHVALE_LANDMARKS.townCenterSpawn.y);
-    console.warn("[QuickNav] no valid nearby tile for " + label + " requested=(" + requestedX + "," + requestedY + "); falling back to town spawn (" + resolved.x + "," + resolved.y + ") zone=" + currentZoneId);
+    usedFallbackResolution=true;
+    console.warn("[QuickNav] no valid nearby tile for " + destination.label + " requested=(" + requestedX + "," + requestedY + "); falling back to town spawn (" + resolved.x + "," + resolved.y + ") zone=" + currentZoneId);
   }
-  console.info("[QuickNav] destination=" + label + " requested=(" + requestedX + "," + requestedY + ") resolved=(" + resolved.x + "," + resolved.y + ") requestedTileType=" + requested.tileType + " resolvedTileType=" + resolved.tileType + " resolvedCollision=" + resolved.collision + " resolvedWalkable=" + resolved.walkable + " resolvedBlockedReason=" + (resolved.blockedReason || "none") + " zone=" + resolved.zone);
-  return resolved;
+  return { requested, resolved, usedFallbackResolution };
 }
-function quickNavTeleport(label,x,y){
-  const resolved=resolveQuickNavDestination(label,x,y);
+function quickNavTeleport(destination){
+  const navResolution=resolveQuickNavDestination(destination);
+  const { requested, resolved, usedFallbackResolution }=navResolution;
   setPlayerTilePosition(resolved.x,resolved.y);
-  updateOutdoorRegionFromPosition(false);
+  if(!isInMirrorCave && !isInAbandonedTollhouse && destination.expectedZoneId){
+    currentZoneId=destination.expectedZoneId;
+  }
+  const detectedZoneId=getOutdoorRegionIdAt(resolved.x, resolved.y);
+  const expectedZoneName=getZoneDefinition(destination.expectedZoneId || currentZoneId).name;
+  const detectedZoneName=getZoneDefinition(detectedZoneId).name;
+  const finalDisplayedZone=getCurrentZoneName();
+  if(destination.expectedZoneId && destination.expectedZoneId!==detectedZoneId){
+    console.warn("[QuickNav Zone Mismatch] " + destination.label + " expected " + expectedZoneName + " but detected " + detectedZoneName + ".");
+  }
+  console.info("[QuickNav] destinationKey=" + destination.destinationKey + " requestedTile=(" + destination.x + "," + destination.y + ") resolvedTile=(" + resolved.x + "," + resolved.y + ") expectedZone=" + expectedZoneName + " detectedZone=" + detectedZoneName + " finalDisplayedZone=" + finalDisplayedZone + " fallbackSpawnResolutionUsed=" + usedFallbackResolution + " requestedTileType=" + requested.tileType + " resolvedTileType=" + resolved.tileType + " resolvedCollision=" + resolved.collision + " resolvedWalkable=" + resolved.walkable + " resolvedBlockedReason=" + (resolved.blockedReason || "none"));
 }
 
 function clearDirectionalInput(){
@@ -8542,17 +8572,17 @@ function createMobileQaControls(){
   const tele=document.createElement("div");
   tele.style.cssText="display:flex;flex-direction:column;gap:4px;background:#0b1422cc;border:1px solid #4c6281;border-radius:8px;padding:6px;";
   const teleportButtons=[
-    {label:"Center Town",x:HEARTHVALE_LANDMARKS.townCenterSpawn.x,y:HEARTHVALE_LANDMARKS.townCenterSpawn.y},
-    {label:"Village Hall",x:17,y:13},
-    {label:"Residence Large",x:31,y:12},
-    {label:"Boathouse",x:28,y:18},
-    {label:"Pond Edge",x:30,y:18}
+    QUICK_NAV_DESTINATIONS.center_town,
+    QUICK_NAV_DESTINATIONS.village_hall,
+    QUICK_NAV_DESTINATIONS.residence_large,
+    QUICK_NAV_DESTINATIONS.boathouse,
+    QUICK_NAV_DESTINATIONS.pond_edge
   ];
   teleportButtons.forEach((entry)=>{
     const b=document.createElement("button");
     b.textContent=entry.label;
     b.style.cssText="border:1px solid #4c6281;background:#13263acc;color:#e6ecf5;border-radius:6px;font-size:11px;";
-    b.addEventListener("click",(ev)=>{ ev.preventDefault(); quickNavTeleport(entry.label,entry.x,entry.y); },{passive:false});
+    b.addEventListener("click",(ev)=>{ ev.preventDefault(); quickNavTeleport(entry); },{passive:false});
     tele.appendChild(b);
   });
   host.append(dpad,tele);
