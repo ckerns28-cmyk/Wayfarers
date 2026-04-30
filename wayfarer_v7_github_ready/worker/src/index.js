@@ -1589,6 +1589,13 @@ function applySemanticRegistryToManifest(){
     if(cropChanged){
       overrides.push({spriteId:presEntry.spriteId,staticCrop:{sx:prevSx,sy:prevSy,sw:prevSw,sh:prevSh},registryCrop:{sx:sprite.sx,sy:sprite.sy,sw:sprite.sw,sh:sprite.sh}});
     }
+    if(presEntry.spriteId==="residence_large"){
+      console.info("[Semantic Registry Apply]");
+      console.info("spriteId=residence_large");
+      console.info("registryCrop="+JSON.stringify({x:presEntry.crop.x,y:presEntry.crop.y,w:presEntry.crop.w,h:presEntry.crop.h}));
+      console.info("activeManifestCrop="+JSON.stringify({x:sprite.sx,y:sprite.sy,w:sprite.sw,h:sprite.sh}));
+      console.info("status=applied");
+    }
   });
   if(overrides.length){
     overrides.forEach((o)=>{
@@ -1718,8 +1725,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4d.2";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d.2-source-truth-mobile-qa";
+const WAYFARER_PHASE = "33.1.4d.3";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d.3-active-manifest-agreement";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -2349,7 +2356,7 @@ function maybeEmitAtlasReadyOnce(){
   if(!isAtlasRuntimeReady("buildings")) return;
   atlasReadinessLogState.buildingsReadyLogged=true;
   const sheet=atlasImages.buildings;
-  console.info("[Atlas Readiness] ready buildings=" + sheet.naturalWidth + "x" + sheet.naturalHeight + " manifestKeys=" + Object.keys(atlasManifests.buildings.sprites||{}).length + " phase=33.1.4d selectorVersion=selector-v33.1.4d-registry-authoritative-parsefix");
+  console.info("[Atlas Readiness] ready buildings=" + sheet.naturalWidth + "x" + sheet.naturalHeight + " manifestKeys=" + Object.keys(atlasManifests.buildings.sprites||{}).length + " phase=33.1.4d.3 selectorVersion=selector-v33.1.4d.3-active-manifest-agreement");
 }
 function hasAtlasUsableTransparency(atlasId){
   const runtime=atlasRuntimeInfo[atlasId];
@@ -2461,6 +2468,7 @@ function initExternalAtlasManifests(){
       })
       .then((payload)=>{
         const merged=mergeAtlasManifestEntries(atlasId, payload);
+        if(merged && atlasId==="buildings") applySemanticRegistryToManifest();
         logAtlasRuntimeInfo(atlasId, "manifest_loaded=" + (merged ? "true" : "false") + " path=" + manifestPath);
       })
       .catch((error)=>{
@@ -3198,7 +3206,7 @@ function logBuildingSourceOfTruthAudit(){
   if(!sourceTruthAcceptanceLogged){
     const expectedRows=7;
     const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-    const proofHudConsistent=WAYFARER_PHASE==="33.1.4d.2" && ATLAS_SELECTOR_VERSION==="selector-v33.1.4d.2-source-truth-mobile-qa";
+    const proofHudConsistent=WAYFARER_PHASE==="33.1.4d.3" && ATLAS_SELECTOR_VERSION==="selector-v33.1.4d.3-active-manifest-agreement";
     const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
     const status=rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent ? "PASS" : "FAIL";
     console.info("[Source Truth Acceptance]");
