@@ -1232,8 +1232,8 @@ const HEARTHVALE_ATLAS_SEMANTIC_ASSIGNMENTS = Object.freeze({
   village_hall_meeting_house:{ expectedIdentity:"top_right_meeting_house", preferredCandidateId:"C00", preferredBounds:{ x:853, y:10, w:327, h:460 } },
   residence_large:{ expectedIdentity:"middle_right_manor", preferredCandidateId:"C03", preferredBounds:{ x:758, y:493, w:459, h:355 } },
   residence_small:{ expectedIdentity:"middle_left_or_middle_center_residence", preferredCandidateId:"C04" },
-  hunter_lodge_or_outfitter:{ expectedIdentity:"bottom_left_hunter_lodge", preferredCandidateId:"C07" },
-  pond_boathouse_or_waterfront_shed:{ expectedIdentity:"bottom_middle_boathouse_dock", preferredCandidateId:"C06" }
+  hunter_lodge_or_outfitter:{ expectedIdentity:"bottom_left_hunter_lodge" },
+  pond_boathouse_or_waterfront_shed:{ expectedIdentity:"bottom_middle_boathouse_dock" }
 });
 const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
   buildings:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.manifest.json",
@@ -1250,8 +1250,8 @@ const ATLAS_BUILDING_METADATA = Object.freeze({
   // Do NOT set productionReady:true until crop passes [Atlas Catalog Scan] and human visual review.
   residence_small:{ id:"residence_small", role:"residence_small", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:439, y:526, w:254, h:309 }, drawW:116, drawH:116, anchorX:58, anchorY:102, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
   residence_large:{ id:"residence_large", role:"residence_large", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:44, y:835, w:367, h:344 }, drawW:144, drawH:120, anchorX:72, anchorY:104, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, doorTile:{ x:2, y:3 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
-  hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:61, y:519, w:309, h:308 }, drawW:120, drawH:120, anchorX:60, anchorY:104, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
-  pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:899, y:939, w:250, h:245 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" }
+  hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:61, y:939, w:309, h:308 }, drawW:120, drawH:120, anchorX:60, anchorY:104, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
+  pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:470, y:939, w:320, h:250 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" }
 });
 
 // 33.1.4d: Sprite-keyed atlas presentation table — downstream helper providing
@@ -1730,8 +1730,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4d";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d-registry-authoritative-parsefix2";
+const WAYFARER_PHASE = "33.1.4e";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4e-bottom-row-identity-and-log-throttle";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3101,6 +3101,8 @@ function getHeroFrontageDiagnostics(){
 }
 let lastFrontageAuditToken="";
 let lastAtlasCropAuditToken="";
+let sourceOfTruthAuditSignature="";
+let boathousePlacementQaSignature="";
 let mobileQaSummaryLogged=false;
 let sourceTruthAcceptanceLogged=false;
 function emitMobileQaSummary(){
@@ -3202,7 +3204,16 @@ function logBuildingSourceOfTruthAudit(){
       collisionFrontageSource:meta?"ATLAS_BUILDING_METADATA+world.buildings.createFootprint":"world.buildings"
     };
   });
-  console.info("[Building Source of Truth Audit] "+JSON.stringify(rows));
+  const sourceOfTruthAuditPayload={
+    rows,
+    conflicts,
+    cacheBust:(new URLSearchParams(window.location.search).get("cacheBust")||"none")
+  };
+  const nextSourceOfTruthAuditSignature=JSON.stringify(sourceOfTruthAuditPayload);
+  if(nextSourceOfTruthAuditSignature!==sourceOfTruthAuditSignature){
+    sourceOfTruthAuditSignature=nextSourceOfTruthAuditSignature;
+    console.info("[Building Source of Truth Audit] "+JSON.stringify(rows));
+  }
   if(conflicts.length){
     conflicts.forEach((c)=>{
       console.error("[Building Source of Truth Conflict] buildingId="+c.buildingId+" spriteId="+c.spriteId+" resolver_crop="+JSON.stringify(c.resolverCrop)+" active_manifest_crop="+JSON.stringify(c.activeCrop)+" => active runtime disagreement");
@@ -3211,7 +3222,7 @@ function logBuildingSourceOfTruthAudit(){
   if(!sourceTruthAcceptanceLogged){
     const expectedRows=7;
     const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-    const proofHudConsistent=WAYFARER_PHASE==="33.1.4d" && ATLAS_SELECTOR_VERSION==="selector-v33.1.4d-registry-authoritative-parsefix2";
+    const proofHudConsistent=WAYFARER_PHASE==="33.1.4e" && ATLAS_SELECTOR_VERSION==="selector-v33.1.4e-bottom-row-identity-and-log-throttle";
     const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
     const status=rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent ? "PASS" : "FAIL";
     console.info("[Source Truth Acceptance]");
@@ -3985,7 +3996,11 @@ function emitBoathousePlacementQA(){
   }
   const collisionValid=!collisionOverlapsInvalidWater;
   const candidateId=secondaryAtlasSelectionState.byRole?.pond_boathouse_or_waterfront_shed?.selectedCandidateId || "none";
-  console.info("[Boathouse Placement QA] buildingId=b_boathouse role=pond_boathouse_or_waterfront_shed position=tile("+b.x+","+b.y+") adjacentToWater="+adjacentToWater+" doorReachable="+doorReachable+" roadOrPathConnected="+roadOrPathConnected+" blocksMainRoad="+blocksMainRoad+" visualOverlapsWater="+visualOverlapsWater+" collisionOverlapsInvalidWater="+collisionOverlapsInvalidWater+" collisionValid="+collisionValid+" previewCandidateId="+candidateId+" runtimeRenderStatus=FALLBACK");
+  const qaLine="[Boathouse Placement QA] buildingId=b_boathouse role=pond_boathouse_or_waterfront_shed position=tile("+b.x+","+b.y+") adjacentToWater="+adjacentToWater+" doorReachable="+doorReachable+" roadOrPathConnected="+roadOrPathConnected+" blocksMainRoad="+blocksMainRoad+" visualOverlapsWater="+visualOverlapsWater+" collisionOverlapsInvalidWater="+collisionOverlapsInvalidWater+" collisionValid="+collisionValid+" previewCandidateId="+candidateId+" runtimeRenderStatus=FALLBACK";
+  const nextBoathousePlacementQaSignature=qaLine+"|cacheBust="+(new URLSearchParams(window.location.search).get("cacheBust")||"none");
+  if(nextBoathousePlacementQaSignature===boathousePlacementQaSignature) return;
+  boathousePlacementQaSignature=nextBoathousePlacementQaSignature;
+  console.info(qaLine);
 }
 function isBuildingAtlasPendingReason(reason){
   // Pending = atlas image is still loading. Once the atlas image is fully
