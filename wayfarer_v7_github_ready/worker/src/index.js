@@ -1558,6 +1558,10 @@ function drawSecondaryProofPreviewOverlay(entry){
   try{
     const role=entry.b.role;
     const selectorRow=secondaryAtlasSelectionState.byRole?.[role];
+    if(selectorRow?.fallbackReason==="human_review_rejected_candidate"){
+      console.assert(selectorRow.selectorCandidateStatus!=="SELECTED_PROOF_ONLY","[Secondary Proof Preview Assert] human_rejected_role_must_not_draw_preview role="+role+" rejectedCandidateId="+(selectorRow.rejectedCandidateId||"none")+" rejectionReason="+(selectorRow.rejectionReason||"none"));
+      return;
+    }
     if(!selectorRow || selectorRow.selectorCandidateStatus!=="SELECTED_PROOF_ONLY" || !selectorRow.selectedCrop) return;
     const crop=selectorRow.selectedCrop;
     const drawW=selectorRow.drawW;
@@ -2902,6 +2906,28 @@ const secondaryAtlasSelectionState={
   byRole:{},
   bySpriteId:{}
 };
+const SECONDARY_REVIEW_OVERRIDES=Object.freeze({
+  rejectedCandidates:Object.freeze({
+    residence_large:Object.freeze({
+      C06:Object.freeze({
+        reason:"visual_role_mismatch",
+        note:"candidate visually reads as boathouse/waterfront/rustic shed, not large residence"
+      })
+    })
+  })
+});
+function getSecondaryReviewRejection(roleId,candidateId){
+  if(typeof roleId!=="string" || typeof candidateId!=="string") return null;
+  return SECONDARY_REVIEW_OVERRIDES.rejectedCandidates?.[roleId]?.[candidateId] || null;
+}
+function formatSecondaryRejectedCandidatesSummary(){
+  const summary={};
+  Object.entries(SECONDARY_REVIEW_OVERRIDES.rejectedCandidates||{}).forEach(([roleId,candidates])=>{
+    const entries=Object.entries(candidates||{}).map(([candidateId,meta])=>candidateId+":"+(meta?.reason||"unspecified_reason"));
+    if(entries.length>0) summary[roleId]=entries;
+  });
+  return summary;
+}
 function applySecondaryAtlasSelectionOverrides(selections){
   if(!selections || typeof selections!=="object") return;
   const manifest=atlasManifests.buildings;
@@ -2976,6 +3002,8 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   const sheetReady=isAtlasRuntimeReady("buildings");
   console.info("[Catalog Selector] normalized_input roles="+roles.length+" candidates="+candidates.length+" clean="+candidates.filter((c)=>c?.clean===true).length+" transparencyOk="+transparencyOk+" sheetReady="+sheetReady);
   const rolePriority=new Map(SECONDARY_ROLE_PRIORITY.map((roleId,index)=>[roleId,index]));
+  console.info("[Secondary Review Overrides]");
+  console.info("rejectedCandidates="+JSON.stringify(formatSecondaryRejectedCandidatesSummary()));
   const scoreCandidateForRole=(roleId,candidate,fitInfo)=>{
     const box=candidate?.boundingBox||{};
     const w=box.w||0;
@@ -3028,8 +3056,10 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
       const fitInfo=Array.isArray(candidate?.likelyRoleFit)?candidate.likelyRoleFit.find((fit)=>fit.role===roleId):null;
       if(!fitInfo?.fit) reasons.push("role_fit_failed");
       if((candidate?.warnings||[]).some(isSecondaryBlockingAuditWarning)) reasons.push("blocking_audit_warning");
+      const reviewRejection=getSecondaryReviewRejection(roleId,candidate?.candidateId);
+      if(reviewRejection) reasons.push("human_review_rejected_candidate");
       const scored=scoreCandidateForRole(roleId,candidate,fitInfo);
-      return {candidate,reasons:[...new Set(reasons)].filter(Boolean),score:scored.score,scoreReasons:scored.scoreReasons};
+      return {candidate,reasons:[...new Set(reasons)].filter(Boolean),score:scored.score,scoreReasons:scored.scoreReasons,reviewRejection};
     });
     const cleanEvaluated=evaluated.filter((item)=>item.reasons.length===0).sort((a,b)=>b.score-a.score||a.candidate.candidateId.localeCompare(b.candidate.candidateId));
     let selected=null;
@@ -3065,7 +3095,9 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
         fallbackReason,
         duplicateRejectedCandidateId,
         claimedByRole,
-        referenceCandidateId:roleEntry?.referenceCandidateInBlob||null
+        referenceCandidateId:roleEntry?.referenceCandidateInBlob||null,
+        rejectedCandidateId:null,
+        rejectionReason:null
       };
       byRole[roleId]=rejected;
       bySpriteId[roleId]=rejected;
@@ -3090,10 +3122,35 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
       duplicateRejectedCandidateId,
       claimedByRole,
       finalRenderStatus:"FALLBACK",
-      referenceCandidateId:roleEntry?.referenceCandidateInBlob||null
+      referenceCandidateId:roleEntry?.referenceCandidateInBlob||null,
+      rejectedCandidateId:null,
+      rejectionReason:null
     };
     byRole[roleId]=final;
     bySpriteId[roleId]=final;
+    const humanRejectedSelected=getSecondaryReviewRejection(roleId,final.selectedCandidateId);
+    if(humanRejectedSelected){
+      const blockedFinal={
+        ...final,
+        selectorCandidateStatus:"FALLBACK_GATED",
+        selectedCandidateId:null,
+        selectedCrop:null,
+        drawW:null,
+        drawH:null,
+        anchorX:null,
+        anchorY:null,
+        score:0,
+        scoreReasons:[],
+        eligible:false,
+        blockingReasons:[...(final.blockingReasons||[]),"human_review_rejected_candidate"],
+        fallbackReason:"human_review_rejected_candidate",
+        rejectedCandidateId:humanRejectedSelected ? final.selectedCandidateId : null,
+        rejectionReason:humanRejectedSelected?.reason||"unspecified_reason"
+      };
+      byRole[roleId]=blockedFinal;
+      bySpriteId[roleId]=blockedFinal;
+      claimedCandidates.delete(final.selectedCandidateId);
+    }
   });
 
   const payload={resolvedAt:new Date().toISOString(),byRole,bySpriteId};
@@ -3104,7 +3161,7 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   roles.forEach((roleId)=>{
     const r=byRole[roleId];
     if(!r){ console.warn("[Catalog Selector] role_result "+roleId+" status=missing"); return; }
-    console.info("[Catalog Selector] role_result role="+roleId+" selectorCandidateStatus="+(r.selectorCandidateStatus||"REJECTED")+" runtimeRenderStatus="+(r.runtimeRenderStatus||"FALLBACK")+" selectedCandidateId="+(r.selectedCandidateId||"none")+" bbox="+JSON.stringify(r.selectedCrop||null)+" score="+String(r.score||0)+" scoreReasons="+(r.scoreReasons||[]).join("|")+" blockingReasons="+(r.blockingReasons||[]).join("|")+" fallbackReason="+(r.fallbackReason||"none")+" duplicateRejectedCandidateId="+(r.duplicateRejectedCandidateId||"none")+" claimedByRole="+(r.claimedByRole||"none"));
+    console.info("[Catalog Selector] role_result role="+roleId+" selectorCandidateStatus="+(r.selectorCandidateStatus||"REJECTED")+" runtimeRenderStatus="+(r.runtimeRenderStatus||"FALLBACK")+" selectedCandidateId="+(r.selectedCandidateId||"none")+" bbox="+JSON.stringify(r.selectedCrop||null)+" score="+String(r.score||0)+" scoreReasons="+(r.scoreReasons||[]).join("|")+" blockingReasons="+(r.blockingReasons||[]).join("|")+" fallbackReason="+(r.fallbackReason||"none")+" duplicateRejectedCandidateId="+(r.duplicateRejectedCandidateId||"none")+" claimedByRole="+(r.claimedByRole||"none")+" rejectedCandidateId="+(r.rejectedCandidateId||"none")+" rejectionReason="+(r.rejectionReason||"none"));
   });
   const assignmentSummary={
     runtimeFallbackRoles:roles.filter((roleId)=>(byRole[roleId]?.runtimeRenderStatus||"FALLBACK")==="FALLBACK"),
