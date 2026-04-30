@@ -1657,8 +1657,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4c";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d-registry-authoritative-parsefix";
+const WAYFARER_PHASE = "33.1.4d";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d-registry-authoritative-parsefix3";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
