@@ -1731,7 +1731,7 @@ function isDecorDebugEnabledFromUrl(){
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
 const WAYFARER_PHASE = "33.1.4f";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4f-authority-chain-bottom-row";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4f-authority-chain-bottom-row-parsefix";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -8288,7 +8288,9 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Build Phase : 33.1.4F — Atlas Runtime Authority Chain\n" +\n      "Selector Version : "+ATLAS_SELECTOR_VERSION+"\n" +\n      "Cache Bust : 33-1-4f-authority-chain-bottom-row\n" +
+      "Build Phase : 33.1.4F — Atlas Runtime Authority Chain\n" +
+      "Selector Version : " + ATLAS_SELECTOR_VERSION + "\n" +
+      "Cache Bust : 33-1-4f-authority-chain-bottom-row-parsefix\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
