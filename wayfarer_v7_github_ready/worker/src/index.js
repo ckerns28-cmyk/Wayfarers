@@ -1408,7 +1408,11 @@ const PROP_SPRITE_PRODUCTION_LIMITS = Object.freeze({
 const BUILDING_SPRITE_ID_BY_BUILDING_ID = Object.freeze({
   b_village_hall:"village_hall_meeting_house",
   b_mercantile:"mercantile_shop",
-  b_inn_tavern:"inn_tavern_v1"
+  b_inn_tavern:"inn_tavern_v1",
+  b_res_small:"residence_small",
+  b_res_large:"residence_large",
+  b_hunter_lodge:"hunter_lodge_or_outfitter",
+  b_boathouse:"pond_boathouse_or_waterfront_shed"
 });
 const BUILDING_SPRITE_ID_BY_ROLE = Object.freeze({
   village_hall_meeting_house:"village_hall_meeting_house",
