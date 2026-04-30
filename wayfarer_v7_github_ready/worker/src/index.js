@@ -2800,7 +2800,8 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   const candidates=Array.isArray(report?.candidates)?report.candidates:[];
   const roles=Array.isArray(report?.roleReport)?report.roleReport:[];
   const transparencyOk=hasAtlasUsableTransparency("buildings")===true;
-  const sheetReady=atlasImages.buildings?.complete===true && (atlasImages.buildings?.naturalWidth||0)>0 && (atlasImages.buildings?.naturalHeight||0)>0;
+  const sheetReady=isAtlasRuntimeReady("buildings");
+  console.info("[Catalog Selector] normalized_input roles="+roles.length+" candidates="+candidates.length+" clean="+candidates.filter((c)=>c?.clean===true).length+" transparencyOk="+transparencyOk+" sheetReady="+sheetReady);
   SECONDARY_BUILDING_IDS.forEach((roleId)=>{
     const roleEntry=roles.find((r)=>r.role===roleId) || null;
     const fits=candidates.filter((c)=>Array.isArray(c?.possibleRoles) && c.possibleRoles.includes(roleId));
@@ -2841,6 +2842,15 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   secondaryAtlasSelectionState.byRole=byRole;
   secondaryAtlasSelectionState.bySpriteId=bySpriteId;
   applySecondaryAtlasSelectionOverrides(payload);
+  SECONDARY_BUILDING_IDS.forEach((roleId)=>{
+    const r=byRole[roleId];
+    if(!r){ console.warn("[Catalog Selector] role_result "+roleId+" status=missing"); return; }
+    if(r.eligibility===true){
+      console.info("[Catalog Selector] role_result "+roleId+" status=resolved candidate="+r.selectedCandidateId+" bbox="+JSON.stringify(r.selectedCrop)+" finalRender="+r.finalRenderStatus+" gate=proof_only_pending_human_review");
+    }else{
+      console.warn("[Catalog Selector] role_result "+roleId+" status="+(r.fallbackReason||"no_clean_catalog_candidate")+" blocking="+(r.blockingReasons||[]).join("|")+" finalRender="+r.finalRenderStatus);
+    }
+  });
   return payload;
 }
 const atlasCatalogScanState={
@@ -3008,43 +3018,6 @@ function runAtlasCatalogScanOnce(){
       atlasCatalogScanEmitted=false; // allow retry on next frame if error was transient
     }
   },200);
-}
-function resolveSecondaryAtlasSelectionsFromCatalog(roleSummary, candidates){
-  const candidateMap=new Map(candidates.map((c)=>[c.candidateId, c]));
-  console.info("[Catalog Selector] normalized_input roles="+roleSummary.length+" candidates="+candidates.length+" clean="+candidates.filter((c)=>c.clean).length);
-  const selectorReport=roleSummary.map((entry)=>{
-    const baseSprite=atlasManifests.buildings.sprites[entry.role];
-    if(!baseSprite) return {role:entry.role, result:"no_sprite_entry"};
-    const cleanCandidates=entry.cleanCandidates.map((id)=>candidateMap.get(id)).filter(Boolean);
-    if(!cleanCandidates.length){
-      return {role:entry.role, result:"no_clean_catalog_candidate"};
-    }
-    const best=cleanCandidates.reduce((a,b)=>b.pixelCount>a.pixelCount?b:a);
-    const bb=best.boundingBox;
-    // Write override into the mutable runtime manifest — NOT into the frozen
-    // ATLAS_BUILDING_METADATA. Keep all world geometry fields from the base
-    // sprite; only replace the atlas crop with catalog-discovered coords.
-    atlasManifests.buildings.sprites[entry.role]={
-      ...baseSprite,
-      sx:bb.x, sy:bb.y, sw:bb.w, sh:bb.h,
-      productionReady:false,
-      proofEnabled:true,
-      catalogResolved:true,
-      catalogCandidateId:best.candidateId,
-      metadataSource:"catalog_selector"
-    };
-    return {role:entry.role, result:"resolved", candidateId:best.candidateId, bbox:bb, pixelCount:best.pixelCount};
-  });
-  selectorReport.forEach((r)=>{
-    if(r.result==="resolved"){
-      console.info("[Catalog Selector] role_result "+r.role+" status=resolved candidate="+r.candidateId+" bbox="+JSON.stringify(r.bbox)+" pixelCount="+r.pixelCount+" gate=proof_only_pending_human_review");
-    }else{
-      console.warn("[Catalog Selector] role_result "+r.role+" status="+r.result+" gate=fallback");
-    }
-  });
-  const resolved=selectorReport.filter((r)=>r.result==="resolved").map((r)=>r.role);
-  const stalled=selectorReport.filter((r)=>r.result!=="resolved").map((r)=>r.role);
-  console.info("[Catalog Selector] resolved_roles="+(resolved.join(",")||"none")+" stalled_roles="+(stalled.join(",")||"none")+" — resolved roles are proof_only in atlasDebug; explicit human promotion required for production");
 }
 function maybeEmitFrontageAudit(){
   if(!ATLAS_DEBUG_MODE && !showCollisionOverlay) return;
