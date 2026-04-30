@@ -1268,6 +1268,13 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
     drawW:134, drawH:188, anchorX:67, anchorY:171,
     productionAtlasEnabled:true, registrySource:"human_reviewed"
   },
+  residence_small:{
+    spriteId:"residence_small", role:"residence_small",
+    atlasPosition:"middle_left", presentationReason:"middle_left_or_center_residence_small_candidate",
+    crop:{x:439,y:526,w:254,h:309},
+    drawW:116, drawH:116, anchorX:58, anchorY:102,
+    productionAtlasEnabled:false, registrySource:"human_reviewed_pending_catalog"
+  },
   // Released from old village_hall assignment {x:758,y:493} — this IS the manor.
   residence_large:{
     spriteId:"residence_large", role:"residence_large",
