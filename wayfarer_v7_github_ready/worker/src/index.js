@@ -7893,6 +7893,67 @@ function setPlayerTilePosition(x,y){
   player.py=player.targetY*TILE;
   player.moving=false;
 }
+function isTileInsideBuildingBodyOrRoof(x,y){
+  return world.buildings.some((building)=>{
+    if(tileInRect(x,y,building.rearExclusionZone)) return true;
+    if(Array.isArray(building.blockedVisualTiles) && building.blockedVisualTiles.some((rect)=>tileInRect(x,y,rect))) return true;
+    return false;
+  });
+}
+function isTileDecorativeOnly(x,y){
+  return getActiveWorldObjects().some((object)=>{
+    if(object.collision) return false;
+    const tile=getWorldObjectTile(object);
+    return tile.x===x && tile.y===y;
+  });
+}
+function evaluateQuickNavTile(x,y){
+  const inBounds=isTileInCurrentZone(x,y);
+  const diag=inBounds ? getMovementBlockDiagnostics(x,y) : null;
+  const tileType=inBounds ? describeOverworldTerrainType(x,y) : "out_of_bounds";
+  const buildingBodyOrRoof=inBounds ? isTileInsideBuildingBodyOrRoof(x,y) : false;
+  const decorativeOnly=inBounds ? isTileDecorativeOnly(x,y) : false;
+  return {
+    x,y,inBounds,tileType,
+    zone:isInMirrorCave ? "mirror_cave" : (isInAbandonedTollhouse ? "abandoned_tollhouse" : currentZoneId),
+    collision:diag?.blocked===true,
+    walkable:diag?.walkable===true,
+    blockedReason:diag?.reason || null,
+    isWater:tileType==="water",
+    isBuildingBodyOrRoof:buildingBodyOrRoof,
+    isDecorativeOnly:decorativeOnly,
+    valid:inBounds && diag?.walkable===true && tileType!=="water" && !buildingBodyOrRoof && !decorativeOnly
+  };
+}
+function resolveQuickNavDestination(label, requestedX, requestedY){
+  const requested=evaluateQuickNavTile(requestedX, requestedY);
+  let resolved=requested;
+  if(!requested.valid){
+    const maxRadius=3;
+    let found=null;
+    for(let radius=1; radius<=maxRadius && !found; radius++){
+      for(let dy=-radius; dy<=radius && !found; dy++){
+        for(let dx=-radius; dx<=radius; dx++){
+          if(Math.abs(dx)!==radius && Math.abs(dy)!==radius) continue;
+          const candidate=evaluateQuickNavTile(requestedX+dx, requestedY+dy);
+          if(candidate.valid){ found=candidate; break; }
+        }
+      }
+    }
+    if(found) resolved=found;
+  }
+  if(!resolved.valid){
+    resolved=evaluateQuickNavTile(HEARTHVALE_LANDMARKS.townCenterSpawn.x, HEARTHVALE_LANDMARKS.townCenterSpawn.y);
+    console.warn("[QuickNav] no valid nearby tile for " + label + " requested=(" + requestedX + "," + requestedY + "); falling back to town spawn (" + resolved.x + "," + resolved.y + ") zone=" + currentZoneId);
+  }
+  console.info("[QuickNav] destination=" + label + " requested=(" + requestedX + "," + requestedY + ") resolved=(" + resolved.x + "," + resolved.y + ") requestedTileType=" + requested.tileType + " resolvedTileType=" + resolved.tileType + " resolvedCollision=" + resolved.collision + " resolvedWalkable=" + resolved.walkable + " resolvedBlockedReason=" + (resolved.blockedReason || "none") + " zone=" + resolved.zone);
+  return resolved;
+}
+function quickNavTeleport(label,x,y){
+  const resolved=resolveQuickNavDestination(label,x,y);
+  setPlayerTilePosition(resolved.x,resolved.y);
+  updateOutdoorRegionFromPosition(false);
+}
 
 function clearDirectionalInput(){
   DIRECTION_KEYS.forEach((key)=>keys.delete(key));
@@ -8483,7 +8544,7 @@ function createMobileQaControls(){
   const teleportButtons=[
     {label:"Center Town",x:HEARTHVALE_LANDMARKS.townCenterSpawn.x,y:HEARTHVALE_LANDMARKS.townCenterSpawn.y},
     {label:"Village Hall",x:17,y:13},
-    {label:"Residence Large",x:20,y:22},
+    {label:"Residence Large",x:31,y:12},
     {label:"Boathouse",x:28,y:18},
     {label:"Pond Edge",x:30,y:18}
   ];
@@ -8491,7 +8552,7 @@ function createMobileQaControls(){
     const b=document.createElement("button");
     b.textContent=entry.label;
     b.style.cssText="border:1px solid #4c6281;background:#13263acc;color:#e6ecf5;border-radius:6px;font-size:11px;";
-    b.addEventListener("click",(ev)=>{ ev.preventDefault(); setPlayerTilePosition(entry.x,entry.y); },{passive:false});
+    b.addEventListener("click",(ev)=>{ ev.preventDefault(); quickNavTeleport(entry.label,entry.x,entry.y); },{passive:false});
     tele.appendChild(b);
   });
   host.append(dpad,tele);
