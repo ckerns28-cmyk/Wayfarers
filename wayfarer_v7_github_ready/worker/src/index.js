@@ -67,7 +67,7 @@ const html = String.raw`<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wayfarer — Phase 32AA.2 Hotfix</title>
+  <title>Wayfarer — Story Phase 32AA.2 / Build 33.1.4F</title>
   <style>
     :root {
       --ink:#0b111a;
@@ -399,7 +399,7 @@ const html = String.raw`<!DOCTYPE html>
     <aside id="sidebar">
       <section id="brand" class="panel">
         <h1>Wayfarer</h1>
-        <div class="sub">Phase 32AA.2 — Road Repair (stabilizing)</div>
+        <div class="sub">Story Phase 32AA.2 — Road Repair (stabilizing)</div>
         <div class="stats" style="margin-top:10px;">
           <div class="muted">Current Objective</div><div id="objectiveText">Explore Hearthvale and the surrounding roads.</div>
           <div class="muted">Current Zone</div><div id="zoneVal">Hearthvale Square</div>
@@ -1299,14 +1299,14 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
   hunter_lodge_or_outfitter:{
     spriteId:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter",
     atlasPosition:"bottom_left", presentationReason:"bottom_left_hunter_lodge",
-    crop:{x:61,y:519,w:309,h:308},
+    crop:{x:61,y:939,w:309,h:308},
     drawW:120, drawH:120, anchorX:60, anchorY:104,
     productionAtlasEnabled:false, registrySource:"human_reviewed_pending_catalog"
   },
   pond_boathouse_or_waterfront_shed:{
     spriteId:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed",
     atlasPosition:"bottom_middle", presentationReason:"bottom_middle_boathouse_dock",
-    crop:{x:899,y:939,w:250,h:245},
+    crop:{x:470,y:939,w:320,h:250},
     drawW:150, drawH:92, anchorX:75, anchorY:72,
     productionAtlasEnabled:false, registrySource:"human_reviewed_pending_catalog"
   }
@@ -1730,8 +1730,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4e";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4e-bottom-row-identity-and-log-throttle";
+const WAYFARER_PHASE = "33.1.4f";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4f-authority-chain-bottom-row";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3105,6 +3105,9 @@ let sourceOfTruthAuditSignature="";
 let boathousePlacementQaSignature="";
 let mobileQaSummaryLogged=false;
 let sourceTruthAcceptanceLogged=false;
+let atlasRuntimeAuthorityChainSignature="";
+let atlasRuntimeAuthorityAcceptanceSignature="";
+let sourceTruthAcceptanceSignature="";
 function emitMobileQaSummary(){
   if(!AUTO_QA_MODE || mobileQaSummaryLogged) return;
   const cam=getCamera();
@@ -3169,75 +3172,66 @@ function emitBuildingAtlasCropAuditIfReady(){
   lastAtlasCropAuditToken=token;
   console.info("[Building Atlas Crop Audit] " + JSON.stringify(report));
 }
+function toCropObj(entry){
+  if(!entry) return null;
+  if(entry.x!=null) return {x:entry.x,y:entry.y,w:entry.w,h:entry.h};
+  if(entry.sx!=null) return {x:entry.sx,y:entry.sy,w:entry.sw,h:entry.sh};
+  return null;
+}
+function sameCrop(a,b){ return !!(a&&b&&a.x===b.x&&a.y===b.y&&a.w===b.w&&a.h===b.h); }
 function logBuildingSourceOfTruthAudit(){
   if(!ATLAS_DEBUG_MODE) return;
-  const conflicts=[];
-  const rows=Object.keys(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY).map((buildingId)=>{
+  const ids=["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"];
+  const rows=[]; const chainRows=[]; const conflicts=[];
+  ids.forEach((buildingId)=>{
     const resolved=resolveBuildingAtlasRuntimeEntry(buildingId);
-    const building=world.buildings.find((b)=>b.id===buildingId) || null;
-    const spriteId=resolved?.spriteId || null;
-    const sprite=spriteId ? (atlasManifests.buildings?.sprites?.[spriteId] || null) : null;
-    const meta=spriteId ? (ATLAS_BUILDING_METADATA[spriteId] || null) : null;
-    const selection=resolved ? (secondaryAtlasSelectionState.byRole?.[resolved.role] || null) : null;
-    const resolverCrop=resolved?.crop ? {x:resolved.crop.x,y:resolved.crop.y,w:resolved.crop.w,h:resolved.crop.h} : null;
-    const activeCrop=sprite ? {x:sprite.sx,y:sprite.sy,w:sprite.sw,h:sprite.sh} : null;
-    if(resolverCrop && activeCrop && (resolverCrop.x!==activeCrop.x||resolverCrop.y!==activeCrop.y||resolverCrop.w!==activeCrop.w||resolverCrop.h!==activeCrop.h)){
-      conflicts.push({buildingId,spriteId,resolverCrop,activeCrop});
-    }
-    return {
-      buildingId,
-      worldRole:building?.role || resolved?.role || null,
-      requestedSpriteId:spriteId,
-      fallbackSpriteId:building?.spriteId||null,
-      atlasSpriteId:spriteId,
-      manifestSpriteId:spriteId,
-      atlasIdentity:resolved?.atlasIdentity||null,
-      activeCrop,
-      activeDraw:sprite?{w:sprite.drawW,h:sprite.drawH}:null,
-      activeAnchor:sprite?{x:sprite.anchorX,y:sprite.anchorY}:null,
-      cropSource:sprite?.metadataSource||resolved?.cropSource||"unknown",
-      drawAnchorSource:sprite?.metadataSource||resolved?.drawAnchorSource||"unknown",
-      productionAtlasLocked:resolved?.productionAtlasLocked===true,
-      productionAtlasEnabled:resolved?.productionAtlasEnabled===true,
-      runtimeRenderDecision:buildingRenderDiagnostics.perBuilding.get(buildingId)?.finalRenderSource||"pending",
-      selectorProofCandidate:selection?.selectedCandidateId||null,
-      collisionFrontageSource:meta?"ATLAS_BUILDING_METADATA+world.buildings.createFootprint":"world.buildings"
-    };
+    const spriteId=resolved?.spriteId||null;
+    const role=resolved?.role||null;
+    const sprite=atlasManifests.buildings?.sprites?.[spriteId]||null;
+    const meta=ATLAS_BUILDING_METADATA[spriteId]||null;
+    const reg=HEARTHVALE_BUILDING_SEMANTIC_REGISTRY[buildingId]||null;
+    const selection=secondaryAtlasSelectionState.byRole?.[role]||null;
+    const staticCrop=toCropObj(meta?.crop);
+    const registryCrop=toCropObj(reg?.crop);
+    const manifestCrop=toCropObj(sprite);
+    const resolverCrop=toCropObj(resolved?.crop);
+    const mappingCrop=manifestCrop;
+    const auditCrop=manifestCrop;
+    const proofPreviewCrop=toCropObj(resolved?.proofCrop||resolverCrop);
+    const selectorCrop=toCropObj(selection?.selectedCrop);
+    const winners=[['manifest',manifestCrop],['resolver',resolverCrop],['registry',registryCrop],['static',staticCrop]];
+    const winner=winners.find((w)=>w[1])?.[0]||'none';
+    const active=manifestCrop||resolverCrop||registryCrop||staticCrop;
+    const disagrees=[];
+    [['static',staticCrop],['registry',registryCrop],['manifest',manifestCrop],['resolver',resolverCrop],['mapping',mappingCrop],['sourceTruthAudit',auditCrop],['proofPreview',proofPreviewCrop],['selectorCandidate',selectorCrop]].forEach(([k,v])=>{ if(v && active && !sameCrop(v,active)) disagrees.push(k); });
+    chainRows.push({buildingId,spriteId,role,staticCrop,registryCrop,activeManifestCrop:manifestCrop,resolverCrop,mappingCrop,sourceTruthAuditCrop:auditCrop,proofPreviewCrop,selectorSelectedCandidateCrop:selectorCrop,winnerSource:winner,whyWinner:winner==='manifest'?'atlasManifests.buildings.sprites is render-authoritative':'fallback resolution order',disagreements:disagrees});
+    if(resolverCrop && manifestCrop && !sameCrop(resolverCrop,manifestCrop)) conflicts.push({buildingId,spriteId,resolverCrop,activeCrop:manifestCrop});
+    rows.push({buildingId,worldRole:role,requestedSpriteId:spriteId,activeCrop:manifestCrop,cropSource:sprite?.metadataSource||resolved?.cropSource||'unknown',drawAnchorSource:sprite?.metadataSource||resolved?.drawAnchorSource||'unknown',selectorProofCandidate:selection?.selectedCandidateId||null,runtimeRenderDecision:buildingRenderDiagnostics.perBuilding.get(buildingId)?.finalRenderSource||'pending'});
   });
-  const sourceOfTruthAuditPayload={
-    rows,
-    conflicts,
-    cacheBust:(new URLSearchParams(window.location.search).get("cacheBust")||"none")
-  };
-  const nextSourceOfTruthAuditSignature=JSON.stringify(sourceOfTruthAuditPayload);
-  if(nextSourceOfTruthAuditSignature!==sourceOfTruthAuditSignature){
-    sourceOfTruthAuditSignature=nextSourceOfTruthAuditSignature;
-    console.info("[Building Source of Truth Audit] "+JSON.stringify(rows));
-  }
-  if(conflicts.length){
-    conflicts.forEach((c)=>{
-      console.error("[Building Source of Truth Conflict] buildingId="+c.buildingId+" spriteId="+c.spriteId+" resolver_crop="+JSON.stringify(c.resolverCrop)+" active_manifest_crop="+JSON.stringify(c.activeCrop)+" => active runtime disagreement");
-    });
-  }
-  if(!sourceTruthAcceptanceLogged){
-    const expectedRows=7;
-    const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-    const proofHudConsistent=WAYFARER_PHASE==="33.1.4e" && ATLAS_SELECTOR_VERSION==="selector-v33.1.4e-bottom-row-identity-and-log-throttle";
-    const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
-    const status=rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent ? "PASS" : "FAIL";
-    console.info("[Source Truth Acceptance]");
-    console.info("phase="+WAYFARER_PHASE);
-    console.info("registryKeyMode=building_id");
-    console.info("rows="+rows.length);
-    console.info("activeMappingConsistent="+(conflicts.length===0?"true":"false"));
-    console.info("cropAuditConsistent="+(requiredFieldsOk?"true":"false"));
-    console.info("proofHudConsistent="+(proofHudConsistent?"true":"false"));
-    console.info("renderAuditConsistent="+(renderAuditConsistent?"true":"false"));
-    console.info("conflicts="+(conflicts.length?JSON.stringify(conflicts):"none"));
-    console.info("overrides=legacy_static_overridden:ok");
-    console.info("status="+status);
-    sourceTruthAcceptanceLogged=true;
-  }
+  const chainSig=JSON.stringify({chainRows,cacheBust:(new URLSearchParams(window.location.search).get('cacheBust')||'none')});
+  if(chainSig!==atlasRuntimeAuthorityChainSignature){ atlasRuntimeAuthorityChainSignature=chainSig; console.info('[Atlas Runtime Authority Chain] '+JSON.stringify(chainRows)); }
+  const sourceSig=JSON.stringify({rows,conflicts,cacheBust:(new URLSearchParams(window.location.search).get('cacheBust')||'none')});
+  if(sourceSig!==sourceOfTruthAuditSignature){ sourceOfTruthAuditSignature=sourceSig; console.info('[Building Source of Truth Audit] '+JSON.stringify(rows)); }
+  const hunter=chainRows.find(r=>r.buildingId==='b_hunter_lodge');
+  const boat=chainRows.find(r=>r.buildingId==='b_boathouse');
+  const expH={x:61,y:939,w:309,h:308}, expB={x:470,y:939,w:320,h:250}, forbiddenB={x:899,y:939,w:250,h:245}, forbiddenH={x:61,y:519,w:309,h:308};
+  const acceptanceFailures=[];
+  const mustEq=(row,name,exp)=>{['registryCrop','activeManifestCrop','resolverCrop','mappingCrop','sourceTruthAuditCrop'].forEach((k)=>{ if(!sameCrop(row?.[k],exp)) acceptanceFailures.push(name+':'+k+'_mismatch'); });};
+  mustEq(hunter,'b_hunter_lodge',expH); mustEq(boat,'b_boathouse',expB);
+  if(sameCrop(boat?.activeManifestCrop,forbiddenB)) acceptanceFailures.push('b_boathouse_forbidden_bottom_right_shed');
+  if(sameCrop(hunter?.activeManifestCrop,forbiddenH)) acceptanceFailures.push('b_hunter_lodge_forbidden_old_middle_row');
+  const authStatus=acceptanceFailures.length===0?'PASS':'FAIL';
+  const authSig=JSON.stringify({authStatus,acceptanceFailures});
+  if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
+  const expectedRows=7;
+  const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
+  const proofHudConsistent=WAYFARER_PHASE==='33.1.4f' && ATLAS_SELECTOR_VERSION==='selector-v33.1.4f-authority-chain-bottom-row';
+  const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
+  const ready=!!atlasRuntimeInfo.buildings?.loaded;
+  const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
+  const status=!ready?'PENDING_ASSETS':((rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent && authStatus==='PASS')?'PASS':'FAIL');
+  const satSig=JSON.stringify({status,pendingReason,renderAuditConsistent,rows:rows.length,conflicts:conflicts.length,authStatus});
+  if(satSig!==sourceTruthAcceptanceSignature){ sourceTruthAcceptanceSignature=satSig; console.info('[Source Truth Acceptance]'); console.info('phase='+WAYFARER_PHASE); console.info('registryKeyMode=building_id'); console.info('rows='+rows.length); console.info('activeMappingConsistent='+(conflicts.length===0?'true':'false')); console.info('cropAuditConsistent='+(requiredFieldsOk?'true':'false')); console.info('proofHudConsistent='+(proofHudConsistent?'true':'false')); console.info('renderAuditConsistent='+(renderAuditConsistent?'true':'false')); console.info('pendingReason='+pendingReason); console.info('status='+status); }
 }
 // 33.1.1C: Full-sheet atlas catalog scan.
 // Runs ONCE in atlasDebug mode after the buildings image loads.
@@ -8294,7 +8288,7 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Phase 32AA.2F status : spatial deconfliction active; Hearthvale harbor-town structure is being refined; production readiness not yet passed\n" +
+      "Build Phase : 33.1.4F — Atlas Runtime Authority Chain\n" +\n      "Selector Version : "+ATLAS_SELECTOR_VERSION+"\n" +\n      "Cache Bust : 33-1-4f-authority-chain-bottom-row\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
