@@ -1730,8 +1730,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4f";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4f-authority-chain-bottom-row-parsefix";
+const WAYFARER_PHASE = "33.1.4g";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4g-registry-wins-catalog";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3225,7 +3225,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='33.1.4f' && ATLAS_SELECTOR_VERSION==='selector-v33.1.4f-authority-chain-bottom-row';
+  const proofHudConsistent=WAYFARER_PHASE==='33.1.4g' && ATLAS_SELECTOR_VERSION==='selector-v33.1.4g-registry-wins-catalog';
   const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
   const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
@@ -3404,11 +3404,14 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     const roleEntry=normalizedRoleReports[roleId].roleEntry;
     const regEntry=HEARTHVALE_SEMANTIC_REGISTRY_BY_ROLE[roleId]||null;
     const resolvedEntry=resolveAtlasSpriteRuntimeEntry(roleId);
-    // Semantic identity gate: human_reviewed roles use registry crop directly.
-    // Only human_reviewed_pending_catalog roles proceed through catalog scan selection.
-    if(regEntry && regEntry.registrySource==="human_reviewed"){
+    // Phase 33.1.4G: semantic registry must win for human-reviewed world roles.
+    // Catalog candidates validate (containment/alpha sanity) but do not replace identity crop.
+    const semanticRegistryAuthoritativeRoles=new Set(["residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
+    if(regEntry && (regEntry.registrySource==="human_reviewed" || semanticRegistryAuthoritativeRoles.has(roleId))){
       const final={
         role:roleId,
+        selectorCandidateStatus:"SELECTED_PROOF_ONLY",
+        runtimeRenderStatus:"FALLBACK",
         selectedCandidateId:"semantic_registry",
         selectedCrop:regEntry.crop,
         drawW:regEntry.drawW,
@@ -3417,7 +3420,7 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
         anchorY:regEntry.anchorY,
         eligible:false, // secondaries remain proof-only; no runtime promotion
         eligibility:false,
-        blockingReasons:["semantic_registry_confirmed_proof_only"],
+        blockingReasons:["semantic_registry_confirmed_proof_only","semanticSubcropValidatedByCatalog"],
         fallbackReason:"semantic_registry_confirmed_proof_only",
         finalRenderStatus:"PROOF_PENDING_ACCEPTANCE",
         referenceCandidateId:null,
