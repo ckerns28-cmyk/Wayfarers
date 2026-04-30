@@ -1208,7 +1208,8 @@ const ATLAS_BUILDING_METADATA = Object.freeze({
 });
 
 const LOCKED_HERO_BUILDING_IDS=Object.freeze(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house"]);
-const SECONDARY_BUILDING_IDS=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
+const SECONDARY_ATLAS_ROLES=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
+const SECONDARY_BUILDING_IDS=SECONDARY_ATLAS_ROLES;
 const SECONDARY_BLOCKING_AUDIT_WARNING_PREFIXES=Object.freeze([
   "overlaps_locked_hero_crop:"
 ]);
@@ -2815,6 +2816,7 @@ function applySecondaryAtlasSelectionOverrides(selections){
   });
 }
 function resolveSecondaryAtlasSelectionsFromCatalog(report){
+  const roles=SECONDARY_ATLAS_ROLES;
   const safeReport=(report&&typeof report==="object")?report:{};
   const reportKeys=Object.keys(safeReport);
   const candidates=Array.isArray(safeReport.candidates)?safeReport.candidates:[];
@@ -2824,7 +2826,7 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
 
   const normalizedCandidateInfo={};
   const normalizedRoleReports={};
-  SECONDARY_BUILDING_IDS.forEach((roleId)=>{
+  roles.forEach((roleId)=>{
     const roleEntry=roleReportByRole.get(roleId)||null;
     const roleEntryKeys=roleEntry&&typeof roleEntry==="object"?Object.keys(roleEntry):[];
     const cleanCandidateIds=Array.isArray(roleEntry?.cleanCandidates)?roleEntry.cleanCandidates:[];
@@ -2842,9 +2844,9 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     topLevelKeys:reportKeys,
     roleReportIsArray:Array.isArray(roleReportRaw),
     roleReportCount:roleReports.length,
-    roleReportKeysByRole:Object.fromEntries(SECONDARY_BUILDING_IDS.map((roleId)=>[roleId,normalizedRoleReports[roleId].roleEntryKeys])),
-    candidateCountByRole:Object.fromEntries(SECONDARY_BUILDING_IDS.map((roleId)=>[roleId,normalizedCandidateInfo[roleId].candidates.length])),
-    candidateStateByRole:Object.fromEntries(SECONDARY_BUILDING_IDS.map((roleId)=>[roleId,normalizedCandidateInfo[roleId].sourceState]))
+    roleReportKeysByRole:Object.fromEntries(roles.map((roleId)=>[roleId,normalizedRoleReports[roleId].roleEntryKeys])),
+    candidateCountByRole:Object.fromEntries(roles.map((roleId)=>[roleId,normalizedCandidateInfo[roleId].candidates.length])),
+    candidateStateByRole:Object.fromEntries(roles.map((roleId)=>[roleId,normalizedCandidateInfo[roleId].sourceState]))
   }));
 
   const byRole={};
@@ -2852,7 +2854,7 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   const transparencyOk=hasAtlasUsableTransparency("buildings")===true;
   const sheetReady=isAtlasRuntimeReady("buildings");
   console.info("[Catalog Selector] normalized_input roles="+roles.length+" candidates="+candidates.length+" clean="+candidates.filter((c)=>c?.clean===true).length+" transparencyOk="+transparencyOk+" sheetReady="+sheetReady);
-  SECONDARY_BUILDING_IDS.forEach((roleId)=>{
+  roles.forEach((roleId)=>{
     const roleEntry=normalizedRoleReports[roleId].roleEntry;
     const fits=normalizedCandidateInfo[roleId].candidates;
     const evaluated=fits.map((candidate)=>{
@@ -2894,10 +2896,10 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   secondaryAtlasSelectionState.byRole=byRole;
   secondaryAtlasSelectionState.bySpriteId=bySpriteId;
   applySecondaryAtlasSelectionOverrides(payload);
-  SECONDARY_BUILDING_IDS.forEach((roleId)=>{
+  roles.forEach((roleId)=>{
     const r=byRole[roleId];
     if(!r){ console.warn("[Catalog Selector] role_result "+roleId+" status=missing"); return; }
-    if(r.eligibility===true){
+    if(r.eligible===true){
       console.info("[Catalog Selector] role_result "+roleId+" status=resolved candidate="+r.selectedCandidateId+" bbox="+JSON.stringify(r.selectedCrop)+" finalRender="+r.finalRenderStatus+" gate=proof_only_pending_human_review");
     }else{
       console.warn("[Catalog Selector] role_result "+roleId+" status="+(r.fallbackReason||"no_clean_catalog_candidate")+" blocking="+(r.blockingReasons||[]).join("|")+" finalRender="+r.finalRenderStatus);
@@ -3158,8 +3160,8 @@ function runAtlasCatalogScanOnce(){
       applySecondaryAtlasSelectionOverrides(selectorSafeFallback);
       console.warn("[Catalog Selector] selector_failed",{ message:catalogErr?.message||String(catalogErr), stack:catalogErr?.stack||"stack_unavailable" });
       console.warn("[Atlas Catalog Scan] error during scan",catalogErr);
-      atlasCatalogScanEmitted=false; // allow retry on next frame if error was transient
-      scheduleAtlasCatalogScanRetry();
+      // Keep selector failure terminal for this asset/report version to avoid console spam.
+      // Retry only after an explicit debug reset or new asset session.
     }
   },200);
 }
