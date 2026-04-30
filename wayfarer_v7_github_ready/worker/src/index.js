@@ -8462,7 +8462,7 @@ function createMobileQaControls(){
   const mkDir=(label,key,col,row)=>{
     const b=document.createElement("button");
     b.textContent=label;
-    b.style.cssText=`grid-column:${col};grid-row:${row};border:1px solid #4c6281;background:#112034cc;color:#e6ecf5;border-radius:6px;`;
+    b.style.cssText="grid-column:"+col+";"+"grid-row:"+row+";"+"border:1px solid #4c6281;background:#112034cc;color:#e6ecf5;border-radius:6px;";
     const press=(ev)=>{ ev.preventDefault(); touchDirectionKeys.add(key); };
     const release=(ev)=>{ ev.preventDefault(); touchDirectionKeys.delete(key); };
     b.addEventListener("pointerdown",press,{passive:false});
