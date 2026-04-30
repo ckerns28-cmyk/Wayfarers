@@ -1209,6 +1209,10 @@ const ATLAS_BUILDING_METADATA = Object.freeze({
 
 const LOCKED_HERO_BUILDING_IDS=Object.freeze(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house"]);
 const SECONDARY_ATLAS_ROLES=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
+const SECONDARY_ROLE_PRIORITY=Object.freeze(["pond_boathouse_or_waterfront_shed","residence_large","residence_small","hunter_lodge_or_outfitter"]);
+const SECONDARY_ROLE_DUPLICATE_POLICY=Object.freeze({
+  allowDuplicateForRoles:false
+});
 const SECONDARY_BUILDING_IDS=SECONDARY_ATLAS_ROLES;
 const SECONDARY_BLOCKING_AUDIT_WARNING_PREFIXES=Object.freeze([
   "overlaps_locked_hero_crop:"
@@ -1220,6 +1224,11 @@ const SECONDARY_BLOCKING_AUDIT_WARNINGS=Object.freeze(new Set([
   "likely_partial_object",
   "partial_object_bounds"
 ]));
+const LOCKED_HERO_METADATA_SNAPSHOT=Object.freeze({
+  inn_tavern_v1:JSON.stringify({ crop:ATLAS_BUILDING_METADATA.inn_tavern_v1.crop, drawW:ATLAS_BUILDING_METADATA.inn_tavern_v1.drawW, drawH:ATLAS_BUILDING_METADATA.inn_tavern_v1.drawH, anchorX:ATLAS_BUILDING_METADATA.inn_tavern_v1.anchorX, anchorY:ATLAS_BUILDING_METADATA.inn_tavern_v1.anchorY, proofEnabled:ATLAS_BUILDING_METADATA.inn_tavern_v1.proofEnabled }),
+  mercantile_shop:JSON.stringify({ crop:ATLAS_BUILDING_METADATA.mercantile_shop.crop, drawW:ATLAS_BUILDING_METADATA.mercantile_shop.drawW, drawH:ATLAS_BUILDING_METADATA.mercantile_shop.drawH, anchorX:ATLAS_BUILDING_METADATA.mercantile_shop.anchorX, anchorY:ATLAS_BUILDING_METADATA.mercantile_shop.anchorY, proofEnabled:ATLAS_BUILDING_METADATA.mercantile_shop.proofEnabled }),
+  village_hall_meeting_house:JSON.stringify({ crop:ATLAS_BUILDING_METADATA.village_hall_meeting_house.crop, drawW:ATLAS_BUILDING_METADATA.village_hall_meeting_house.drawW, drawH:ATLAS_BUILDING_METADATA.village_hall_meeting_house.drawH, anchorX:ATLAS_BUILDING_METADATA.village_hall_meeting_house.anchorX, anchorY:ATLAS_BUILDING_METADATA.village_hall_meeting_house.anchorY, proofEnabled:ATLAS_BUILDING_METADATA.village_hall_meeting_house.proofEnabled })
+});
 function rectsOverlap(a,b){
   return !(a.x+a.w<=b.x || b.x+b.w<=a.x || a.y+a.h<=b.y || b.y+b.h<=a.y);
 }
@@ -1474,11 +1483,11 @@ function isDecorDebugEnabledFromUrl(){
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
 const WAYFARER_PHASE = "33.1.2";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.2-canonical-audit-codex";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.2-deconflict-proof-runtime";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
-  : "ec77b15";
+  : "selector-v33.1.2-deconflict-proof-runtime";
 let wayfarerBuildSentinelLogged=false;
 const ATLAS_PREVIEW_MODE = ATLAS_DEBUG_MODE && isAtlasPreviewEnabledFromUrl();
 const DECOR_DEBUG_MODE = isDecorDebugEnabledFromUrl();
@@ -2851,10 +2860,50 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
 
   const byRole={};
   const bySpriteId={};
+  const claimedCandidates=new Map();
   const transparencyOk=hasAtlasUsableTransparency("buildings")===true;
   const sheetReady=isAtlasRuntimeReady("buildings");
   console.info("[Catalog Selector] normalized_input roles="+roles.length+" candidates="+candidates.length+" clean="+candidates.filter((c)=>c?.clean===true).length+" transparencyOk="+transparencyOk+" sheetReady="+sheetReady);
-  roles.forEach((roleId)=>{
+  const rolePriority=new Map(SECONDARY_ROLE_PRIORITY.map((roleId,index)=>[roleId,index]));
+  const scoreCandidateForRole=(roleId,candidate,fitInfo)=>{
+    const box=candidate?.boundingBox||{};
+    const w=box.w||0;
+    const h=box.h||0;
+    const area=w*h;
+    const aspect=h>0?(w/h):0;
+    let score=0;
+    const scoreReasons=[];
+    if(fitInfo?.fit===true){ score+=40; scoreReasons.push("role_fit_pass"); }
+    if(roleId==="pond_boathouse_or_waterfront_shed"){
+      if(w<=320&&h<=280){ score+=28; scoreReasons.push("waterfront_size_window"); }
+      if(w>h){ score+=6; scoreReasons.push("wide_waterfront_shape"); }
+    }
+    if(roleId==="residence_large"){
+      if(area>=76000){ score+=20; scoreReasons.push("large_area_bonus"); }
+      if(w>=300){ score+=8; scoreReasons.push("wide_frontage_bonus"); }
+    }
+    if(roleId==="residence_small"){
+      if(area>0&&area<=82000){ score+=16; scoreReasons.push("small_residence_area_window"); }
+      if(w<=300&&h<=320){ score+=8; scoreReasons.push("compact_residence_shape"); }
+    }
+    if(roleId==="hunter_lodge_or_outfitter"){
+      if(area>=62000&&area<=98000){ score+=16; scoreReasons.push("lodge_area_window"); }
+      if(aspect>=0.75&&aspect<=1.35){ score+=6; scoreReasons.push("lodge_aspect_window"); }
+    }
+    if(Array.isArray(candidate?.possibleRoles) && candidate.possibleRoles.length===1 && candidate.possibleRoles[0]===roleId){
+      score+=24;
+      scoreReasons.push("single_role_specific_candidate");
+    }
+    if(Array.isArray(candidate?.possibleRoles) && candidate.possibleRoles.length>=3){
+      score-=12;
+      scoreReasons.push("ambiguous_multi_role_penalty");
+    }
+    return {score,scoreReasons};
+  };
+  roles
+    .slice()
+    .sort((a,b)=>(rolePriority.get(a)??99)-(rolePriority.get(b)??99))
+    .forEach((roleId)=>{
     const roleEntry=normalizedRoleReports[roleId].roleEntry;
     const fits=normalizedCandidateInfo[roleId].candidates;
     const evaluated=fits.map((candidate)=>{
@@ -2868,23 +2917,68 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
       const fitInfo=Array.isArray(candidate?.likelyRoleFit)?candidate.likelyRoleFit.find((fit)=>fit.role===roleId):null;
       if(!fitInfo?.fit) reasons.push("role_fit_failed");
       if((candidate?.warnings||[]).some(isSecondaryBlockingAuditWarning)) reasons.push("blocking_audit_warning");
-      return {candidate,reasons:[...new Set(reasons)].filter(Boolean)};
+      const scored=scoreCandidateForRole(roleId,candidate,fitInfo);
+      return {candidate,reasons:[...new Set(reasons)].filter(Boolean),score:scored.score,scoreReasons:scored.scoreReasons};
     });
-    const selected=evaluated.find((item)=>item.reasons.length===0)||null;
-    const blockReasons=selected?[]:[...new Set(evaluated.flatMap((item)=>item.reasons))];
-    const fallbackReason=selected?null:"no_clean_catalog_candidate";
+    const cleanEvaluated=evaluated.filter((item)=>item.reasons.length===0).sort((a,b)=>b.score-a.score||a.candidate.candidateId.localeCompare(b.candidate.candidateId));
+    let selected=null;
+    let duplicateRejectedCandidateId=null;
+    let claimedByRole=null;
+    let fallbackReason=null;
+    for(const item of cleanEvaluated){
+      const claim=claimedCandidates.get(item.candidate?.candidateId);
+      if(claim && SECONDARY_ROLE_DUPLICATE_POLICY.allowDuplicateForRoles!==true){
+        duplicateRejectedCandidateId=item.candidate?.candidateId||null;
+        claimedByRole=claim;
+        fallbackReason="ambiguous_duplicate_candidate";
+        continue;
+      }
+      selected=item;
+      break;
+    }
+    if(!selected){
+      const blockReasons=[...new Set(evaluated.flatMap((item)=>item.reasons))];
+      if(!fallbackReason) fallbackReason=cleanEvaluated.length>0?"no_unique_clean_catalog_candidate":"no_clean_catalog_candidate";
+      const blockingReasons=(blockReasons.length?blockReasons:["no_clean_catalog_candidate"]);
+      const rejected={
+        role:roleId,
+        selectorCandidateStatus:"FALLBACK_GATED",
+        runtimeRenderStatus:"FALLBACK",
+        selectedCandidateId:null,
+        selectedCrop:null,
+        drawW:null, drawH:null, anchorX:null, anchorY:null,
+        score:0,
+        scoreReasons:[],
+        eligible:false,
+        blockingReasons,
+        fallbackReason,
+        duplicateRejectedCandidateId,
+        claimedByRole,
+        referenceCandidateId:roleEntry?.referenceCandidateInBlob||null
+      };
+      byRole[roleId]=rejected;
+      bySpriteId[roleId]=rejected;
+      return;
+    }
+    claimedCandidates.set(selected.candidate.candidateId,roleId);
     const final={
       role:roleId,
+      selectorCandidateStatus:"SELECTED_PROOF_ONLY",
+      runtimeRenderStatus:"FALLBACK",
       selectedCandidateId:selected?.candidate?.candidateId||null,
       selectedCrop:selected?.candidate?.boundingBox||null,
       drawW:selected?(ATLAS_BUILDING_METADATA[roleId]?.drawW||null):null,
       drawH:selected?(ATLAS_BUILDING_METADATA[roleId]?.drawH||null):null,
       anchorX:selected?(ATLAS_BUILDING_METADATA[roleId]?.anchorX||null):null,
       anchorY:selected?(ATLAS_BUILDING_METADATA[roleId]?.anchorY||null):null,
+      score:selected?.score||0,
+      scoreReasons:selected?.scoreReasons||[],
       eligible:selected!==null,
-      blockingReasons:selected?[]:(blockReasons.length?blockReasons:["no_clean_catalog_candidate"]),
+      blockingReasons:[],
       fallbackReason,
-      finalRenderStatus:selected?"ATLAS":"FALLBACK",
+      duplicateRejectedCandidateId,
+      claimedByRole,
+      finalRenderStatus:"FALLBACK",
       referenceCandidateId:roleEntry?.referenceCandidateInBlob||null
     };
     byRole[roleId]=final;
@@ -2899,12 +2993,37 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   roles.forEach((roleId)=>{
     const r=byRole[roleId];
     if(!r){ console.warn("[Catalog Selector] role_result "+roleId+" status=missing"); return; }
-    if(r.eligible===true){
-      console.info("[Catalog Selector] role_result "+roleId+" status=resolved candidate="+r.selectedCandidateId+" bbox="+JSON.stringify(r.selectedCrop)+" finalRender="+r.finalRenderStatus+" gate=proof_only_pending_human_review");
-    }else{
-      console.warn("[Catalog Selector] role_result "+roleId+" status="+(r.fallbackReason||"no_clean_catalog_candidate")+" blocking="+(r.blockingReasons||[]).join("|")+" finalRender="+r.finalRenderStatus);
-    }
+    console.info("[Catalog Selector] role_result role="+roleId+" selectorCandidateStatus="+(r.selectorCandidateStatus||"REJECTED")+" runtimeRenderStatus="+(r.runtimeRenderStatus||"FALLBACK")+" selectedCandidateId="+(r.selectedCandidateId||"none")+" bbox="+JSON.stringify(r.selectedCrop||null)+" score="+String(r.score||0)+" scoreReasons="+(r.scoreReasons||[]).join("|")+" blockingReasons="+(r.blockingReasons||[]).join("|")+" fallbackReason="+(r.fallbackReason||"none")+" duplicateRejectedCandidateId="+(r.duplicateRejectedCandidateId||"none")+" claimedByRole="+(r.claimedByRole||"none"));
   });
+  const assignmentSummary={
+    claimedCandidates:Object.fromEntries(claimedCandidates.entries()),
+    fallbackRoles:roles.filter((roleId)=>(byRole[roleId]?.runtimeRenderStatus||"FALLBACK")==="FALLBACK"),
+    proofOnlyRoles:roles.filter((roleId)=>(byRole[roleId]?.selectorCandidateStatus||"FALLBACK_GATED")==="SELECTED_PROOF_ONLY"),
+    runtimeAtlasRoles:roles.filter((roleId)=>(byRole[roleId]?.runtimeRenderStatus||"FALLBACK")==="ATLAS")
+  };
+  console.info("[Catalog Selector] assignment_summary claimedCandidates="+JSON.stringify(assignmentSummary.claimedCandidates)+" fallbackRoles="+assignmentSummary.fallbackRoles.join(",")+" proofOnlyRoles="+assignmentSummary.proofOnlyRoles.join(",")+" runtimeAtlasRoles="+assignmentSummary.runtimeAtlasRoles.join(","));
+  if(ATLAS_DEBUG_MODE){
+    const seenIds=new Map();
+    roles.forEach((roleId)=>{
+      const row=byRole[roleId];
+      if(!row?.selectedCandidateId) return;
+      const previous=seenIds.get(row.selectedCandidateId);
+      if(previous){
+        console.assert(false,"[Catalog Selector Assert] duplicate_secondary_candidate candidateId="+row.selectedCandidateId+" role="+roleId+" claimedBy="+previous);
+      }else{
+        seenIds.set(row.selectedCandidateId,roleId);
+      }
+      if(row.selectorCandidateStatus==="SELECTED_PROOF_ONLY"){
+        console.assert(row.runtimeRenderStatus!=="ATLAS","[Catalog Selector Assert] proof_only_secondary_cannot_be_runtime_atlas role="+roleId);
+      }
+      console.assert(row.runtimeRenderStatus!=="ATLAS","[Catalog Selector Assert] secondary_runtime_atlas_blocked_until_promotion role="+roleId+" reason=production_atlas_disabled");
+    });
+    Object.entries(LOCKED_HERO_METADATA_SNAPSHOT).forEach(([heroId,snapshot])=>{
+      const hero=ATLAS_BUILDING_METADATA[heroId];
+      const current=JSON.stringify({ crop:hero?.crop, drawW:hero?.drawW, drawH:hero?.drawH, anchorX:hero?.anchorX, anchorY:hero?.anchorY, proofEnabled:hero?.proofEnabled });
+      console.assert(current===snapshot,"[Catalog Selector Assert] locked_hero_metadata_changed heroId="+heroId);
+    });
+  }
   return payload;
 }
 const atlasCatalogScanState={
