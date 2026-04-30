@@ -1315,9 +1315,9 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
 const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
   b_inn_tavern:{ buildingId:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", atlasIdentity:"top_left_inn_tavern", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.inn_tavern_v1.crop, productionAtlasLocked:true, productionAtlasEnabled:true },
   b_mercantile:{ buildingId:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", atlasIdentity:"top_middle_mercantile_shop", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.mercantile_shop.crop, productionAtlasLocked:true, productionAtlasEnabled:true },
-  b_village_hall:{ buildingId:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", atlasIdentity:"top_right_meeting_house", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.village_hall_meeting_house.crop, productionAtlasLocked:true, productionAtlasEnabled:true },
-  b_res_small:{ buildingId:"b_res_small", role:"residence_small", spriteId:"residence_small", atlasIdentity:"middle_left_or_middle_center_residence", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_small.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
-  b_res_large:{ buildingId:"b_res_large", role:"residence_large", spriteId:"residence_large", atlasIdentity:"middle_right_manor", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_large.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
+  b_village_hall:{ buildingId:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", atlasIdentity:"top_right_meeting_house", crop:{x:853,y:10,w:327,h:460}, productionAtlasLocked:true, productionAtlasEnabled:true },
+  b_res_small:{ buildingId:"b_res_small", role:"residence_small", spriteId:"residence_small", atlasIdentity:"middle_left_or_middle_center_residence_small", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_small.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
+  b_res_large:{ buildingId:"b_res_large", role:"residence_large", spriteId:"residence_large", atlasIdentity:"middle_right_manor_residence_large", crop:{x:758,y:493,w:459,h:355}, productionAtlasLocked:false, productionAtlasEnabled:false },
   b_hunter_lodge:{ buildingId:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"bottom_left_hunter_lodge", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
   b_boathouse:{ buildingId:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"bottom_middle_boathouse_dock", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.pond_boathouse_or_waterfront_shed.crop, productionAtlasLocked:false, productionAtlasEnabled:false }
 });
@@ -1730,8 +1730,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4d.3";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d.3-active-manifest-agreement";
+const WAYFARER_PHASE = "33.1.4d";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4d-registry-authoritative-parsefix2";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3211,7 +3211,7 @@ function logBuildingSourceOfTruthAudit(){
   if(!sourceTruthAcceptanceLogged){
     const expectedRows=7;
     const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-    const proofHudConsistent=WAYFARER_PHASE==="33.1.4d.3" && ATLAS_SELECTOR_VERSION==="selector-v33.1.4d.3-active-manifest-agreement";
+    const proofHudConsistent=WAYFARER_PHASE==="33.1.4d" && ATLAS_SELECTOR_VERSION==="selector-v33.1.4d-registry-authoritative-parsefix2";
     const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
     const status=rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent ? "PASS" : "FAIL";
     console.info("[Source Truth Acceptance]");
