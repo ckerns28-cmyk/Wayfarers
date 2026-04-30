@@ -1730,8 +1730,8 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.4g";
-const ATLAS_SELECTOR_VERSION = "selector-v33.1.4g-registry-wins-catalog";
+const WAYFARER_PHASE = "33.1.4h";
+const ATLAS_SELECTOR_VERSION = "selector-v33.1.4h-registry-selector-qa-cleanup";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3225,7 +3225,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='33.1.4g' && ATLAS_SELECTOR_VERSION==='selector-v33.1.4g-registry-wins-catalog';
+  const proofHudConsistent=WAYFARER_PHASE==='33.1.4h' && ATLAS_SELECTOR_VERSION==='selector-v33.1.4h-registry-selector-qa-cleanup';
   const renderAuditConsistent=buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0;
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
   const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
@@ -3571,14 +3571,21 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
   if(ATLAS_DEBUG_MODE) logSecondaryProofPreviewSummary();
   if(ATLAS_DEBUG_MODE){
     const seenIds=new Map();
+    const getDuplicateTrackingKey=(row,roleId)=>{
+      if(!row?.selectedCandidateId) return null;
+      if(row.selectedCandidateId==="semantic_registry") return "semantic_registry:"+roleId;
+      return row.selectedCandidateId;
+    };
     roles.forEach((roleId)=>{
       const row=byRole[roleId];
       if(!row?.selectedCandidateId) return;
-      const previous=seenIds.get(row.selectedCandidateId);
+      const duplicateTrackingKey=getDuplicateTrackingKey(row,roleId);
+      if(!duplicateTrackingKey) return;
+      const previous=seenIds.get(duplicateTrackingKey);
       if(previous){
         console.assert(false,"[Catalog Selector Assert] duplicate_secondary_candidate candidateId="+row.selectedCandidateId+" role="+roleId+" claimedBy="+previous);
       }else{
-        seenIds.set(row.selectedCandidateId,roleId);
+        seenIds.set(duplicateTrackingKey,roleId);
       }
       if(row.selectorCandidateStatus==="SELECTED_PROOF_ONLY"){
         console.assert(row.runtimeRenderStatus!=="ATLAS","[Catalog Selector Assert] proof_only_secondary_cannot_be_runtime_atlas role="+roleId);
@@ -3906,7 +3913,8 @@ function runAtlasCatalogScanOnce(){
         console.info("[Atlas Semantic Remap] village_hall_meeting_house old="+JSON.stringify(oldVillageHallCrop)+" new="+JSON.stringify(villageHallTarget.boundingBox)+" sourceCandidate="+villageHallTarget.candidateId);
         console.info("[Atlas Semantic Draw Profile] spriteId=village_hall_meeting_house sourceCrop="+villageHallTarget.boundingBox.w+"x"+villageHallTarget.boundingBox.h+" oldDraw="+oldDraw.w+"x"+oldDraw.h+" newDraw="+villageSprite.drawW+"x"+villageSprite.drawH+" oldAnchor="+oldAnchor.x+","+oldAnchor.y+" newAnchor="+villageSprite.anchorX+","+villageSprite.anchorY+" reason=preserve_aspect_for_top_right_meeting_house");
       }
-      console.info("[Atlas Semantic Identity Audit]");
+      console.info("[Atlas Component Scan Diagnostic]");
+      console.info("semanticAuthority=human_reviewed_registry componentIdentityIsAdvisory=true");
       console.info("expectedVisualIdentity="+JSON.stringify(expectedIdentityByPosition));
       console.info("rows="+JSON.stringify(semanticAuditRows));
       const cleanCount=results.filter((r)=>r.clean).length;
@@ -3914,10 +3922,15 @@ function runAtlasCatalogScanOnce(){
       const stalledRoles=roleSummary.filter((r)=>!r.promotable).map((r)=>r.role);
       const secondarySelections=resolveSecondaryAtlasSelectionsFromCatalog({ candidates:results, roleReport:roleSummary });
       atlasSemanticIdentityState.auditRows=atlasSemanticIdentityState.auditRows.map((row)=>{
+        const authoritativeRole=Object.entries(atlasSemanticIdentityState.byRole||{}).find(([,entry])=>entry?.candidateId===row.candidateId)?.[0]||"none";
         const selectedRole=Object.entries(secondarySelections?.byRole||{}).find(([,entry])=>entry?.selectedCandidateId===row.candidateId)?.[0]||"none";
-        return { ...row, currentSelectedRole:selectedRole };
+        return {
+          ...row,
+          currentSelectedRole:authoritativeRole!=="none" ? authoritativeRole : selectedRole,
+          currentMappedSpriteId:authoritativeRole!=="none" ? authoritativeRole : row.currentMappedSpriteId
+        };
       });
-      console.info("[Atlas Semantic Identity Audit] selectedRoles="+JSON.stringify(atlasSemanticIdentityState.auditRows));
+      console.info("[Atlas Component Scan Diagnostic] selectedRoles="+JSON.stringify(atlasSemanticIdentityState.auditRows));
       Object.assign(atlasCatalogScanState,{ status:"selector_complete", emitted:true, timestamp:new Date().toISOString(), sheetSize:{w:W,h:H}, totalCandidates:results.length, cleanCandidates:cleanCount, blockedCandidates:results.length-cleanCount, candidates:results, roleReport:roleSummary, promotableRoles, stalledRoles, secondarySelections });
       window.__atlasCatalogScanReport=atlasCatalogScanState;
       console.info("[Atlas Catalog Scan] sheetSize="+W+"x"+H+" totalCandidates="+results.length+" cleanCandidates="+cleanCount+" blockedCandidates="+(results.length-cleanCount));
