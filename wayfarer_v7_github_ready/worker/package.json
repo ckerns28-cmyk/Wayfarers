@@ -3,7 +3,9 @@
   "version": "0.7.0",
   "private": true,
   "scripts": {
-    "dev": "wrangler dev"
+    "dev": "wrangler dev",
+    "check:parse": "node --check src/index.js",
+    "check:served": "node scripts/validate-served-bundle.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.84.1"
