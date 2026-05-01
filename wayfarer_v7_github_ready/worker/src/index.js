@@ -5432,7 +5432,7 @@ function getTraversalTargets(){
   const resolveTarget=(preferred,fallbackKey)=>{
     const fallbackBuilding=world.buildings.find((b)=>b.id===fallbackKey);
     if(preferred && canMoveTo(preferred.x, preferred.y)) return preferred;
-    const resolved=findNearestValidLandTile(preferred?.x ?? fallbackBuilding?.interaction?.x ?? HEARTHVALE_LANDMARKS.townCenterSpawn.x, preferred?.y ?? fallbackBuilding?.interaction?.y ?? HEARTHVALE_LANDMARKS.townCenterSpawn.y, 10);
+    const resolved=findNearestValidPlayerSpawnTile(preferred?.x ?? fallbackBuilding?.interaction?.x ?? HEARTHVALE_LANDMARKS.townCenterSpawn.x, preferred?.y ?? fallbackBuilding?.interaction?.y ?? HEARTHVALE_LANDMARKS.townCenterSpawn.y, 10);
     return resolved || (fallbackBuilding?.interaction || null);
   };
   return [
@@ -5523,7 +5523,7 @@ function emitTraversalQA(startTile={ x:player.targetX, y:player.targetY }){
   traversalQaResult={ status, checks };
   console.info("[Traversal QA] "+checks.map((check)=>check.key+" reachable="+check.reachable+" pathLength="+check.pathLength).join(" | ")+" status="+status);
 }
-function emitPhase342EAcceptance(){
+function emitPhase342FAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
   const buildPhaseMatches=WAYFARER_PHASE==="34.2F" && ATLAS_SELECTOR_VERSION==="selector-v34.2f-runtime-helper-and-qa-lock";
@@ -10122,7 +10122,7 @@ function drawWorld(){
     emitPlayerStateQA("runtime_validation");
   }
   emitHarborCompositionQA();
-  emitPhase342EAcceptance();
+  emitPhase342FAcceptance();
   emitBuildingAtlasCropAuditIfReady();
   runAtlasCatalogScanOnce();
   drawDecorSourceLabels();
