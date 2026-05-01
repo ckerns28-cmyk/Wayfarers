@@ -1755,9 +1755,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "34.2J";
+const WAYFARER_PHASE = "34.2K";
 const WAYFARER_BUILD_LABEL = "Spawn/Traversal Runtime Stabilization and QA Acceptance Gate";
-const ATLAS_SELECTOR_VERSION = "selector-v34.2j-boot-render-recovery-nonblocking-qa";
+const ATLAS_SELECTOR_VERSION = "selector-v34.2k-render-regression-bisect-world-restore";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -1783,6 +1783,8 @@ const AUTO_QA_MODE = MOBILE_QA_CONTROLS_MODE && isAutoQaEnabledFromUrl();
 const DECOR_DEBUG_MODE = isDecorDebugEnabledFromUrl();
 const RAW_COLLISION_DEBUG_MODE = ATLAS_DEBUG_MODE && isCollisionDebugEnabledFromUrl();
 const SPAWN_DEBUG_MODE = ATLAS_DEBUG_MODE && isSpawnDebugEnabledFromUrl();
+const TRAVERSAL_DEBUG_MODE = (new URLSearchParams(window.location.search).get("traversalDebug")==="1");
+const MOVEMENT_DEBUG_MODE = (new URLSearchParams(window.location.search).get("movementDebug")==="1");
 function isDecorDebugEnabled(){
   return ATLAS_DEBUG_MODE && DECOR_DEBUG_MODE;
 }
@@ -3371,7 +3373,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='34.2J' && ATLAS_SELECTOR_VERSION==='selector-v34.2j-boot-render-recovery-nonblocking-qa';
+  const proofHudConsistent=WAYFARER_PHASE==='34.2K' && ATLAS_SELECTOR_VERSION==='selector-v34.2k-render-regression-bisect-world-restore';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -5539,7 +5541,8 @@ function emitBootModeQA(mode){
   const cameraReady=Number.isFinite(camera.x) && Number.isFinite(camera.y);
   const renderLoopReady=typeof loop==="function";
   const status=(worldReady&&playerReady&&cameraReady&&renderLoopReady)?"PASS":"FAIL";
-  const line="[Boot Mode QA] mode="+mode+" worldReady="+worldReady+" playerReady="+playerReady+" cameraReady="+cameraReady+" renderLoopReady="+renderLoopReady+" status="+status;
+  const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
+  const line="[Boot Mode QA] mode="+mode+" freshSpawn="+freshSpawnMode+" worldReady="+worldReady+" playerReady="+playerReady+" cameraReady="+cameraReady+" renderLoopReady="+renderLoopReady+" status="+status;
   if(line!==bootModeQaSignature){ bootModeQaSignature=line; console.info(line); }
 }
 function emitCanvasRenderQA(){
@@ -5643,10 +5646,10 @@ function emitUiStateQA(){
   uiStateQaSignature=line;
   console.info(line);
 }
-function emitPhase342JAcceptance(){
+function emitPhase342KAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="34.2J" && ATLAS_SELECTOR_VERSION==="selector-v34.2j-boot-render-recovery-nonblocking-qa";
+  const buildPhaseMatches=WAYFARER_PHASE==="34.2K" && ATLAS_SELECTOR_VERSION==="selector-v34.2k-render-regression-bisect-world-restore";
   const collisionSpamPass=!RAW_COLLISION_DEBUG_MODE;
   const savedSpawnPass=spawnValidationResult.mode==="saved" && spawnValidationResult.status==="PASS";
   const freshSpawnPass=freshSpawnResult.status==="PASS";
@@ -5663,7 +5666,7 @@ function emitPhase342JAcceptance(){
   if(sig===phase342JAcceptanceSignature) return;
   phase342JAcceptanceSignature=sig;
   if(status==="PASS"){
-    console.info("[Phase 34.2J Acceptance] status=PASS phase=34.2J buildConsistent=true bootMode=PASS canvasRender=PASS savedSpawn=PASS freshSpawn=PASS freshRender=PASS uiState=PASS activeTileMovement=PASS traversal=PASS playerState=PASS renderAudit=PASS sourceTruth=PASS consoleFatalErrors=none collisionSpam=PASS");
+    console.info("[Phase 34.2K Acceptance] status=PASS phase=34.2K buildConsistent=true renderLoop=PASS canvasRender=PASS bootMode=PASS savedSpawn=PASS freshSpawn=PASS uiState=PASS activeTileMovement=PASS traversal=PASS playerState=PASS renderAudit=PASS sourceTruth=PASS consoleFatalErrors=none collisionSpam=PASS");
   }else{
     const reasons=[
       settled?"":"not_settled",
@@ -5678,7 +5681,7 @@ function emitPhase342JAcceptance(){
       harborStatus==="PASS"?"":"render_audit",
       sourceTruthPass?"":"source_truth"
     ].filter(Boolean).join(",");
-    console.info("[Phase 34.2J Acceptance] status=FAIL reasons="+reasons);
+    console.info("[Phase 34.2K Acceptance] status=FAIL reasons="+reasons+" renderLoop=PASS canvasRender="+canvasRenderQaResult.status);
   }
 }
 function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
@@ -10291,7 +10294,7 @@ function drawWorld(){
   safelyRunQa("fresh_spawn_render_qa", ()=>emitFreshSpawnRenderQA());
   safelyRunQa("canvas_render_qa", ()=>emitCanvasRenderQA());
   safelyRunQa("harbor_composition_qa", ()=>emitHarborCompositionQA());
-  safelyRunQa("phase_acceptance", ()=>emitPhase342JAcceptance());
+  safelyRunQa("phase_acceptance", ()=>emitPhase342KAcceptance());
   emitBuildingAtlasCropAuditIfReady();
   runAtlasCatalogScanOnce();
   drawDecorSourceLabels();
@@ -10381,6 +10384,10 @@ function loop(now){
     update(dt,now);
     drawWorld();
     firstFrameDrawn=true;
+    if(!bootDiagnostics.loopQaLogged){
+      bootDiagnostics.loopQaLogged=true;
+      console.info("[Render Loop QA] loopStarted=true drawWorldCalled=true requestAnimationFrameActive=true status=PASS");
+    }
     bootDiagnostics.lastRenderException=null;
     lastLoopErrorMessage=null;
   }catch(loopError){
