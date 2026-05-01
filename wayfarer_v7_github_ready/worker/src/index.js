@@ -1754,9 +1754,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "34.2E";
+const WAYFARER_PHASE = "34.2F";
 const WAYFARER_BUILD_LABEL = "Spawn/Traversal Runtime Stabilization and QA Acceptance Gate";
-const ATLAS_SELECTOR_VERSION = "selector-v34.2e-spawn-traversal-runtime-stability";
+const ATLAS_SELECTOR_VERSION = "selector-v34.2f-runtime-helper-and-qa-lock";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3339,7 +3339,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='34.2' && ATLAS_SELECTOR_VERSION==='selector-v33.1.5b-runtime-preview-gate-bypass';
+  const proofHudConsistent=WAYFARER_PHASE==="34.2F" && ATLAS_SELECTOR_VERSION==="selector-v34.2f-runtime-helper-and-qa-lock";
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -5412,7 +5412,7 @@ function getTraversalTargets(){
   const resolveTarget=(preferred,fallbackKey)=>{
     const fallbackBuilding=world.buildings.find((b)=>b.id===fallbackKey);
     if(preferred && canMoveTo(preferred.x, preferred.y)) return preferred;
-    const resolved=findNearestValidLandTile(preferred?.x ?? fallbackBuilding?.interaction?.x ?? HEARTHVALE_LANDMARKS.townCenterSpawn.x, preferred?.y ?? fallbackBuilding?.interaction?.y ?? HEARTHVALE_LANDMARKS.townCenterSpawn.y, 10);
+    const resolved=findNearestValidPlayerSpawnTile(preferred?.x ?? fallbackBuilding?.interaction?.x ?? HEARTHVALE_LANDMARKS.townCenterSpawn.x, preferred?.y ?? fallbackBuilding?.interaction?.y ?? HEARTHVALE_LANDMARKS.townCenterSpawn.y, 10);
     return resolved || (fallbackBuilding?.interaction || null);
   };
   return [
@@ -5503,17 +5503,17 @@ function emitTraversalQA(startTile={ x:player.targetX, y:player.targetY }){
   traversalQaResult={ status, checks };
   console.info("[Traversal QA] "+checks.map((check)=>check.key+" reachable="+check.reachable+" pathLength="+check.pathLength).join(" | ")+" status="+status);
 }
-function emitPhase342EAcceptance(){
+function emitPhase342FAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="34.2E" && ATLAS_SELECTOR_VERSION==="selector-v34.2e-spawn-traversal-runtime-stability";
+  const buildPhaseMatches=WAYFARER_PHASE==="34.2F" && ATLAS_SELECTOR_VERSION==="selector-v34.2f-runtime-helper-and-qa-lock";
   const collisionSpamPass=!RAW_COLLISION_DEBUG_MODE;
   const status=(buildPhaseMatches&&spawnQaResult.status==="PASS"&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass) ? "PASS" : "FAIL";
   const sig=status+"|"+buildPhaseMatches+"|"+spawnQaResult.status+"|"+traversalQaResult.status+"|"+harborStatus+"|"+playerStatePass;
   if(sig===phase342BAcceptanceSignature) return;
   phase342BAcceptanceSignature=sig;
   if(status==="PASS"){
-    console.info("[Phase 34.2E Acceptance] status=PASS phase=34.2E buildConsistent=true spawn=PASS traversal=PASS playerState=PASS renderAudit=PASS sourceTruth=PASS consoleFatalErrors=none collisionSpam=PASS");
+    console.info("[Phase 34.2F Acceptance] status=PASS phase=34.2F buildConsistent=true spawn=PASS traversal=PASS playerState=PASS renderAudit=PASS sourceTruth=PASS consoleFatalErrors=none collisionSpam=PASS");
   }else{
     const reasons=[
       buildPhaseMatches?"":"build_consistency",
@@ -5522,7 +5522,7 @@ function emitPhase342EAcceptance(){
       playerStatePass?"":"player_state",
       harborStatus==="PASS"?"":"render_audit"
     ].filter(Boolean).join(",");
-    console.info("[Phase 34.2E Acceptance] status=FAIL reasons="+reasons);
+    console.info("[Phase 34.2F Acceptance] status=FAIL reasons="+reasons);
   }
 }
 function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
@@ -10102,7 +10102,7 @@ function drawWorld(){
     emitPlayerStateQA("runtime_validation");
   }
   emitHarborCompositionQA();
-  emitPhase342EAcceptance();
+  emitPhase342FAcceptance();
   emitBuildingAtlasCropAuditIfReady();
   runAtlasCatalogScanOnce();
   drawDecorSourceLabels();
