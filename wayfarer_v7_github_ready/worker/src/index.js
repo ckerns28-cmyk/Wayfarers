@@ -3198,6 +3198,7 @@ let harborCompositionQaSignature="";
 let phase342BAcceptanceSignature="";
 let spawnQaResult={ status:"FAIL" };
 let traversalQaResult={ status:"FAIL" };
+let collisionDebugSummaryState={ suppressed:0, unique:new Map(), lastSummaryAt:0 };
 let playerStateQaSignature="";
 let mobileQaSummaryLogged=false;
 let sourceTruthAcceptanceLogged=false;
@@ -5360,6 +5361,31 @@ function buildRoadConnectivityGraph(){
   }
   return graph;
 }
+function findPathLength(start,target){
+  const visited=new Set([keyOf(start.x,start.y)]);
+  const queue=[{ x:start.x, y:start.y, dist:0 }];
+  for(let i=0;i<queue.length;i++){
+    const cur=queue[i];
+    if(cur.x===target.x&&cur.y===target.y) return cur.dist;
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx=cur.x+dx, ny=cur.y+dy, k=keyOf(nx,ny);
+      if(visited.has(k) || !canMoveTo(nx,ny)) continue;
+      visited.add(k);
+      queue.push({x:nx,y:ny,dist:cur.dist+1});
+    }
+  }
+  return -1;
+}
+function getTraversalTargets(){
+  return [
+    { key:"inn door", tile:world.buildings.find((b)=>b.id==="b_inn_tavern")?.interaction },
+    { key:"mercantile door", tile:world.buildings.find((b)=>b.id==="b_mercantile")?.interaction },
+    { key:"village hall door", tile:world.buildings.find((b)=>b.id==="b_village_hall")?.interaction },
+    { key:"boathouse frontage", tile:world.buildings.find((b)=>b.id==="b_boathouse")?.interaction },
+    { key:"central pier", tile:{ x:19, y:20 } },
+    { key:"waterfront spine", tile:{ x:20, y:16 } }
+  ];
+}
 function validateHearthvaleSpawnTile(tile){
   const tileKey=keyOf(tile.x,tile.y);
   const overlapsBuilding=isAtlasBuildingBlockedTile(tile.x,tile.y);
@@ -5371,14 +5397,30 @@ function validateHearthvaleSpawnTile(tile){
   const walkable=canMoveTo(tile.x,tile.y) && !overlapsProp && !overlapsFence && !overlapsNpc;
   const adjacentWalkableCount=[[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy])=>canMoveTo(tile.x+dx,tile.y+dy)).length;
   const connectedToRoadGraph=buildRoadConnectivityGraph().has(tileKey);
-  const status=walkable && !overlapsBuilding && !overlapsParcel && !overlapsWater && !overlapsProp && adjacentWalkableCount>=2 && connectedToRoadGraph ? "PASS" : "FAIL";
-  const result={ spawnTile:"("+tile.x+","+tile.y+")", walkable, overlapsBuilding, overlapsParcel, overlapsWater, overlapsProp, adjacentWalkableCount, connectedToRoadGraph, status };
-  console.info("[Spawn QA] spawnTile="+result.spawnTile+" walkable="+walkable+" overlapsBuilding="+overlapsBuilding+" overlapsParcel="+overlapsParcel+" overlapsWater="+overlapsWater+" overlapsProp="+overlapsProp+" adjacentWalkableCount="+adjacentWalkableCount+" connectedToRoadGraph="+connectedToRoadGraph+" status="+status);
+  const reachableCount=getTraversalTargets().filter((target)=>target.tile&&findPathLength(tile,target.tile)>0).length;
+  const status=walkable && !overlapsBuilding && !overlapsParcel && !overlapsWater && !overlapsProp && !overlapsFence && adjacentWalkableCount>=2 && connectedToRoadGraph && reachableCount===6 ? "PASS" : "FAIL";
+  const result={ spawnTile:"("+tile.x+","+tile.y+")", walkable, overlapsBuilding, overlapsParcel, overlapsWater, overlapsProp, overlapsFence, adjacentWalkableCount, connectedToRoadGraph, reachableCount, status };
+  console.info("[Spawn QA] spawnTile="+result.spawnTile+" walkable="+walkable+" overlapsBuilding="+overlapsBuilding+" overlapsParcel="+overlapsParcel+" overlapsWater="+overlapsWater+" overlapsProp="+overlapsProp+" overlapsFence="+overlapsFence+" adjacentWalkableCount="+adjacentWalkableCount+" connectedToRoadGraph="+connectedToRoadGraph+" reachableTargets="+reachableCount+"/6 status="+status);
   spawnQaResult=result;
   return result;
 }
-function findSafeHearthvaleSpawnTile(){
-  return findNearestValidPlayerSpawnTile(HEARTHVALE_LANDMARKS.townCenterSpawn.x,HEARTHVALE_LANDMARKS.townCenterSpawn.y,28);
+function resolveSafeHearthvaleSpawn(){
+  const center=HEARTHVALE_LANDMARKS.townCenterSpawn;
+  const candidates=[];
+  for(let r=0;r<=24;r++){
+    for(let dx=-r;dx<=r;dx++){
+      for(let dy=-r;dy<=r;dy++){
+        if(Math.abs(dx)+Math.abs(dy)!==r) continue;
+        const x=center.x+dx, y=center.y+dy;
+        if(world.buildings.some((b)=>tileInRect(x,y,b.frontWalkBand))) candidates.push({ x,y });
+      }
+    }
+  }
+  candidates.push({ x:center.x, y:center.y });
+  for(const candidate of candidates){
+    if(validateHearthvaleSpawnTile(candidate).status==="PASS") return candidate;
+  }
+  return null;
 }
 function emitPlayerStateQA(spawnReason){
   const defeated=player.hp<=0;
@@ -5404,29 +5446,24 @@ function isTraversalReachable(start,target){
   }
   return false;
 }
-function emitTraversalQA(){
-  const targets=[
-    { key:"inn_door", tile:world.buildings.find((b)=>b.id==="b_inn_tavern")?.interaction },
-    { key:"mercantile_door", tile:world.buildings.find((b)=>b.id==="b_mercantile")?.interaction },
-    { key:"village_hall_door", tile:world.buildings.find((b)=>b.id==="b_village_hall")?.interaction },
-    { key:"boathouse_frontage", tile:world.buildings.find((b)=>b.id==="b_boathouse")?.interaction },
-    { key:"central_pier_wharf", tile:{ x:19, y:20 } },
-    { key:"waterfront_spine", tile:{ x:20, y:16 } }
-  ];
-  const start={ x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y };
-  const checks=targets.map((target)=>({ key:target.key, reachable:!!target.tile&&isTraversalReachable(start,target.tile) }));
-  const status=checks.every((check)=>check.reachable) ? "PASS" : "FAIL";
+function emitTraversalQA(startTile={ x:player.targetX, y:player.targetY }){
+  const targets=getTraversalTargets();
+  const checks=targets.map((target)=>{
+    const pathLength=target.tile ? findPathLength(startTile,target.tile) : -1;
+    return { key:target.key, reachable:pathLength>0, pathLength };
+  });
+  const status=checks.every((check)=>check.reachable&&check.pathLength>0) ? "PASS" : "FAIL";
   traversalQaResult={ status, checks };
-  console.info("[Traversal QA] "+checks.map((check)=>check.key+"="+check.reachable).join(" ")+" status="+status);
+  console.info("[Traversal QA] "+checks.map((check)=>check.key+" reachable="+check.reachable+" pathLength="+check.pathLength).join(" | ")+" status="+status);
 }
-function emitPhase342BAcceptance(){
+function emitPhase342CAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const status=(spawnQaResult.status==="PASS"&&traversalQaResult.status==="PASS"&&harborStatus==="PASS") ? "PASS" : "FAIL";
   const sig=status+"|"+spawnQaResult.status+"|"+traversalQaResult.status+"|"+harborStatus;
   if(sig===phase342BAcceptanceSignature) return;
   phase342BAcceptanceSignature=sig;
-  console.info("[Phase 34.2B Acceptance]");
-  console.info("buildPhase=34.2B");
+  console.info("[Phase 34.2C Acceptance]");
+  console.info("buildPhase=34.2C");
   console.info("renderAudit=PASS");
   console.info("sourceTruth=PASS");
   console.info("harborComposition="+harborStatus);
@@ -7464,11 +7501,13 @@ function loadGame(){
     if(!isInMirrorCave && !isInAbandonedTollhouse){
       const savedValid=validateHearthvaleSpawnTile({ x:loadedX, y:loadedY }).status==="PASS";
       if(!savedValid){
-        const relocated=findSafeHearthvaleSpawnTile();
+        const relocated=resolveSafeHearthvaleSpawn();
         if(relocated){
           spawnX=relocated.x;
           spawnY=relocated.y;
-          console.info("[Spawn Recovery] old=(" + loadedX + "," + loadedY + ") new=(" + spawnX + "," + spawnY + ") reason=invalid_saved_position_after_layout_change");
+          const recoveredQa=validateHearthvaleSpawnTile({ x:spawnX, y:spawnY });
+          if(recoveredQa.status!=="PASS") console.error("[Spawn Recovery Error] status=FAIL reason=recovery_target_invalid");
+          console.info("[Spawn Recovery] old=(" + loadedX + "," + loadedY + ") new=(" + spawnX + "," + spawnY + ") reason=invalid_saved_position_after_layout_change validated="+(recoveredQa.status==="PASS"));
         }
       }
     }
@@ -8355,7 +8394,7 @@ function respawnPlayerAtSquare(){
   isInMirrorCave=false;
   isInAbandonedTollhouse=false;
   currentZoneId="hearthvale_square";
-  const safeSpawn=findSafeHearthvaleSpawnTile() || { x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y };
+  const safeSpawn=resolveSafeHearthvaleSpawn() || { x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y };
   setPlayerTilePosition(safeSpawn.x, safeSpawn.y);
   zoneTransitionLockedUntil=0;
   blockedDirectionalKeysUntilRelease.clear();
@@ -8689,7 +8728,16 @@ function emitMovementBlockDiagnostics(diag){
     y:diag.attemptedTile?.y,
     reasons:diag.causeChain
   });
-  if(signature===lastMovementBlockSignature && now-lastMovementBlockLogAt<280) return;
+  if(signature===lastMovementBlockSignature && now-lastMovementBlockLogAt<280){ collisionDebugSummaryState.suppressed++; return; }
+  if(collisionDebugSummaryState.unique.has(signature)){
+    collisionDebugSummaryState.suppressed++;
+    if(now-collisionDebugSummaryState.lastSummaryAt>=5000){
+      collisionDebugSummaryState.lastSummaryAt=now;
+      console.info("[CollisionDebug Summary] suppressed="+collisionDebugSummaryState.suppressed+" uniqueSignatures="+collisionDebugSummaryState.unique.size+" topCauses="+Array.from(collisionDebugSummaryState.unique.keys()).slice(0,3).join(","));
+    }
+    return;
+  }
+  collisionDebugSummaryState.unique.set(signature,1);
   lastMovementBlockSignature=signature;
   lastMovementBlockLogAt=now;
   const detailLines=[
@@ -9986,12 +10034,12 @@ function drawWorld(){
   maybeEmitFrontageAudit();
   emitBoathousePlacementQA();
   if(!isInMirrorCave && !isInAbandonedTollhouse){
-    validateHearthvaleSpawnTile({ x:HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:HEARTHVALE_LANDMARKS.townCenterSpawn.y });
-    emitTraversalQA();
+    validateHearthvaleSpawnTile({ x:player.targetX, y:player.targetY });
+    emitTraversalQA({ x:player.targetX, y:player.targetY });
     emitPlayerStateQA("runtime_validation");
   }
   emitHarborCompositionQA();
-  emitPhase342BAcceptance();
+  emitPhase342CAcceptance();
   emitBuildingAtlasCropAuditIfReady();
   runAtlasCatalogScanOnce();
   drawDecorSourceLabels();
