@@ -3339,7 +3339,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==="34.2F" && ATLAS_SELECTOR_VERSION==="selector-v34.2f-runtime-helper-and-qa-lock";
+  const proofHudConsistent=WAYFARER_PHASE==='34.2F' && ATLAS_SELECTOR_VERSION==='selector-v34.2f-runtime-helper-and-qa-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -5389,6 +5389,26 @@ function findNearestRoadSeed(originX,originY,maxRadius=24){
         if(!canMoveTo(x,y)) continue;
         return { x,y };
       }
+    }
+  }
+  return null;
+}
+function findNearestValidLandTile(startX,startY,maxDepth=12){
+  if(canMoveTo(startX,startY)) return { x:startX, y:startY };
+  const visited=new Set([keyOf(startX,startY)]);
+  const queue=[{ x:startX, y:startY, depth:0 }];
+  for(let cursor=0;cursor<queue.length;cursor++){
+    const current=queue[cursor];
+    if(current.depth>=maxDepth) continue;
+    for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){
+      const nx=current.x+dx;
+      const ny=current.y+dy;
+      if(nx<0||ny<0||nx>=WORLD_W||ny>=WORLD_H) continue;
+      const tileKey=keyOf(nx,ny);
+      if(visited.has(tileKey)) continue;
+      visited.add(tileKey);
+      if(canMoveTo(nx,ny)) return { x:nx, y:ny };
+      queue.push({ x:nx, y:ny, depth:current.depth+1 });
     }
   }
   return null;
