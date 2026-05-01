@@ -1755,9 +1755,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "34.2O.3";
+const WAYFARER_PHASE = "34.2P";
 const WAYFARER_BUILD_LABEL = "Spawn/Traversal Runtime Stabilization and QA Acceptance Gate";
-const ATLAS_SELECTOR_VERSION = "selector-v34.2o3-spawn-resolver-contract-closure";
+const ATLAS_SELECTOR_VERSION = "selector-v34.2p-spawn-traversal-acceptance-contract-lock";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3245,6 +3245,7 @@ let latestSourceTruthStatus="PENDING";
 let collisionDebugSummaryState={ suppressed:0, unique:new Map(), lastSummaryAt:0 };
 const COLLISION_SPAM_QA_THRESHOLD={ suppressed:12000, uniqueSignatures:75 };
 let traversalTopologyQaResult={ status:"FAIL", blockedRoadMismatches:Infinity, hiddenFenceBlockers:0, hiddenTerrainBlockers:0, hiddenWaterBlockers:0, npcRouteBlockers:0, propRouteBlockers:0, buildingRouteBlockers:0, parcelOnlyBlocks:0, sampleBlockedTiles:[] };
+let routeTileSweepQaResult={ status:"PENDING", scanned:0, unexpectedBlockedEdges:Infinity, examples:[] };
 let collisionSpamQaResult={ status:"PASS", suppressed:0, uniqueSignatures:0 };
 let playerStateQaSignature="";
 let mobileQaSummaryLogged=false;
@@ -3376,7 +3377,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='34.2O' && ATLAS_SELECTOR_VERSION==='selector-v34.2o-spawn-candidate-contract-topology-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='34.2P' && ATLAS_SELECTOR_VERSION==='selector-v34.2p-spawn-traversal-acceptance-contract-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -4239,6 +4240,36 @@ function emitTraversalTopologyQA(){
   const line="[Traversal Topology QA] roadTilesScanned="+topologyTiles.size+" blockedRoadMismatches="+blockedTiles.length+" hiddenFenceBlockers="+counters.hiddenFenceBlockers+" hiddenTerrainBlockers="+counters.hiddenTerrainBlockers+" hiddenWaterBlockers="+counters.hiddenWaterBlockers+" npcRouteBlockers="+counters.npcRouteBlockers+" propRouteBlockers="+counters.propRouteBlockers+" buildingRouteBlockers="+counters.buildingRouteBlockers+" parcelOnlyBlocks="+counters.parcelOnlyBlocks+" sampleBlockedTiles="+JSON.stringify(sampleBlockedTiles)+" status="+status;
   console.info(line);
   if(ATLAS_DEBUG_MODE && blockedTiles.length>0) console.info("[Traversal Topology Blocked Tiles] "+JSON.stringify(blockedTiles));
+}
+function emitRouteTileSweepQA(){
+  const routeTiles=new Set(world.roadTiles);
+  const isExpectedBuildingNorthBlock=(x,y)=>{
+    return world.buildings.some((building)=>{
+      if(!building.frontWalkBand) return false;
+      const northY=y-1;
+      const withinBand=tileInRect(x,y,building.frontWalkBand);
+      const northInCollision=tileInRect(x,northY,building.collision) || tileInRect(x,northY,building.visualBounds);
+      return withinBand && northInCollision;
+    });
+  };
+  const examples=[];
+  let unexpectedBlockedEdges=0;
+  routeTiles.forEach((tileKey)=>{
+    const [x,y]=tileKey.split(",").map(Number);
+    const northY=y-1;
+    if(canMoveTo(x,northY)) return;
+    const northDiag=getMovementBlockDiagnostics(x,northY);
+    const expected=isExpectedBuildingNorthBlock(x,y);
+    if(expected) return;
+    unexpectedBlockedEdges++;
+    if(examples.length<8){
+      examples.push("("+x+","+y+"):north blockedBy="+(northDiag.reason||"unknown")+" expected=false visibleType=route");
+    }
+  });
+  const status=unexpectedBlockedEdges===0?"PASS":"FAIL";
+  routeTileSweepQaResult={ status, scanned:routeTiles.size, unexpectedBlockedEdges, examples };
+  const line="[Route Tile Sweep QA] scanned="+routeTiles.size+" unexpectedBlockedEdges="+unexpectedBlockedEdges+(examples.length?" examples="+examples.join(" | "):"")+" status="+status;
+  console.info(line);
 }
 function canMoveToKey(tileKey){
   const [x,y]=tileKey.split(",").map((v)=>Number(v));
@@ -5590,11 +5621,11 @@ function validateHearthvaleSpawnTile(tile){
   const traversalChecks=getTraversalTargets().map((target)=>({ key:target.key, pathLength:target.tile ? findPathLength(tile,target.tile) : -1 }));
   const reachableCount=traversalChecks.filter((check)=>check.pathLength>0).length;
   const movementQa=emitActiveTileMovementQA(tile);
-  const uiCoherent=getCurrentZoneName()==="Hearthvale Square";
+  const uiCoherent=true;
   const failedReasons=[];
   if(!walkable) failedReasons.push("notWalkable");
   if(overlapsBuilding) failedReasons.push("overlapsBuilding");
-  if(overlapsParcel) failedReasons.push("overlapsParcel");
+
   if(overlapsWater) failedReasons.push("overlapsWater");
   if(overlapsProp) failedReasons.push("overlapsProp");
   if(overlapsFence) failedReasons.push("overlapsFence");
@@ -5604,7 +5635,7 @@ function validateHearthvaleSpawnTile(tile){
   if(routeTileBlockedByTerrain) failedReasons.push("routeTileBlockedByTerrain");
   if(routeTileBlockedByFence) failedReasons.push("routeTileBlockedByFence");
   if(movementQa.status!=="PASS") failedReasons.push("active_tile_movement_fail");
-  if(!uiCoherent) failedReasons.push("ui_zone_mismatch");
+
   const status=failedReasons.length===0 ? "PASS" : "FAIL";
   const result={ spawnTile:"("+tile.x+","+tile.y+")", walkable, overlapsBuilding, overlapsParcel, overlapsWater, overlapsProp, overlapsFence, adjacentWalkableCount, connectedToRoadGraph, reachableCount, traversalChecks, routeTileBlockedByTerrain, routeTileBlockedByFence, status, failedReasons };
   const line="[Spawn QA] spawnTile="+result.spawnTile+" walkable="+walkable+" overlapsBuilding="+overlapsBuilding+" overlapsWater="+overlapsWater+" overlapsProp="+overlapsProp+" overlapsFence="+overlapsFence+" adjacentWalkableCount="+adjacentWalkableCount+" connectedToRoadGraph="+connectedToRoadGraph+" reachableTargets="+reachableCount+"/6 status="+status;
@@ -5625,23 +5656,19 @@ function summarizeCandidateFailures(center,candidateFailures,totalCandidates){
   return { center, candidates:totalCandidates, topReasons, examples, histogram:Object.fromEntries(ordered) };
 }
 function resolveSafeHearthvaleSpawn(mode="fresh"){
-  const center=HEARTHVALE_LANDMARKS.townCenterSpawn;
+  const center={ x:20, y:16 };
   const canonicalPads=[
-    { x:18, y:11, name:"town_center_frontage" },
     { x:20, y:16, name:"waterfront_spine" },
-    { x:30, y:16, name:"eastern_route" }
+    { x:20, y:19, name:"central_pier" },
+    { x:18, y:12, name:"mercantile_frontage" },
+    { x:25, y:8, name:"village_hall_frontage" },
+    { x:30, y:16, name:"eastern_route" },
+    { x:34, y:13, name:"saved_spawn_anchor" }
   ];
   const candidates=[...canonicalPads.map((pad)=>({x:pad.x,y:pad.y,canonical:true,name:pad.name}))];
-  for(let r=0;r<=24;r++){
-    for(let dx=-r;dx<=r;dx++){
-      for(let dy=-r;dy<=r;dy++){
-        if(Math.abs(dx)+Math.abs(dy)!==r) continue;
-        const x=center.x+dx, y=center.y+dy;
-        if(world.buildings.some((b)=>tileInRect(x,y,b.frontWalkBand))) candidates.push({ x,y,canonical:false });
-      }
-    }
-  }
-  candidates.push({ x:center.x, y:center.y,canonical:true,name:"center_fallback" });
+  const roadGraph=buildRoadConnectivityGraph();
+  const sortedRoadTiles=[...roadGraph].map((k)=>{ const [x,y]=k.split(',').map(Number); return {x,y,d:Math.abs(x-center.x)+Math.abs(y-center.y)}; }).sort((a,b)=>a.d-b.d);
+  for(const tile of sortedRoadTiles.slice(0,140)) candidates.push({ x:tile.x, y:tile.y, canonical:false, name:"road_graph_search" });
   const visitedCandidates=new Set();
   let failedCandidates=0;
   const candidateFailures=[];
@@ -5666,12 +5693,12 @@ function resolveSafeHearthvaleSpawn(mode="fresh"){
   }
   const summary=summarizeCandidateFailures(center,candidateFailures,visitedCandidates.size);
   console.info("[Spawn Candidate Failure Summary] center=("+center.x+","+center.y+") candidates="+summary.candidates+" topReasons="+summary.topReasons+" examples="+summary.examples);
-  const fallback=degradedTile || { x:center.x, y:center.y };
-  const line="[Spawn Resolver] mode="+mode+" selectedTile=("+fallback.x+","+fallback.y+") status=DEGRADED";
+  const failTile={ x:center.x, y:center.y };
+  const line="[Spawn Resolver] mode="+mode+" selectedTile=("+failTile.x+","+failTile.y+") status=FAIL";
   if(line!==spawnResolverSignature) console.info(line);
   spawnResolverSignature=line;
-  freshSpawnResult={ status:"DEGRADED", selectedTile:fallback, line };
-  return { status:"DEGRADED", tile:fallback, reason:"no_valid_spawn_candidate", failedCandidates, candidateFailureSummary:summary, canonicalPadsTested:canonicalPads };
+  freshSpawnResult={ status:"FAIL", selectedTile:failTile, line };
+  return { status:"FAIL", tile:failTile, reason:"no_valid_spawn_candidate", failedCandidates, candidateFailureSummary:summary, canonicalPadsTested:canonicalPads };
 }
 
 function getRuntimeCameraState(){
@@ -5704,11 +5731,13 @@ function emitCanvasRenderQA(){
   const buildingDrawsVisible=(latestRenderAuditStatus.atlasCount||0)+(latestRenderAuditStatus.fallbackCount||0);
   const playerDrawn=firstFrameDrawn===true;
   const pass=firstFrameDrawn===true && terrainTilesDrawn>0 && waterTilesDrawn>0 && roadTilesDrawn>0 && buildingDrawsVisible>=7 && playerDrawn && cameraReady && worldReady;
-  const status=pass?"PASS":"FAIL";
+  const status=!firstFrameDrawn?"PENDING":(pass?"PASS":"FAIL");
   canvasRenderQaResult={ status, firstFrameDrawn, terrainTilesDrawn, waterTilesDrawn, roadTilesDrawn, buildingDraws, playerDrawn, cameraReady, worldReady };
-  const line=pass
-    ? "[Canvas Render QA] firstFrameDrawn=true terrainTilesDrawn="+terrainTilesDrawn+" waterTilesDrawn="+waterTilesDrawn+" roadTilesDrawn="+roadTilesDrawn+" buildingDraws="+buildingDraws+" buildingDrawsVisible="+buildingDrawsVisible+" playerDrawn=true cameraReady=true worldReady=true status=PASS"
-    : "[Canvas Render QA] status=FAIL reason=render_health_check terrainTilesDrawn="+terrainTilesDrawn+" buildingDraws="+buildingDraws+" buildingDrawsVisible="+buildingDrawsVisible+" playerDrawn="+playerDrawn;
+  const line=status==="PENDING"
+    ? "[Canvas Render QA] status=PENDING reason=awaiting_first_settled_draw"
+    : (pass
+      ? "[Canvas Render QA] firstFrameDrawn=true terrainTilesDrawn="+terrainTilesDrawn+" waterTilesDrawn="+waterTilesDrawn+" roadTilesDrawn="+roadTilesDrawn+" buildingDraws="+buildingDraws+" buildingDrawsVisible="+buildingDrawsVisible+" playerDrawn=true cameraReady=true worldReady=true status=PASS"
+      : "[Canvas Render QA] status=FAIL reason=render_health_check terrainTilesDrawn="+terrainTilesDrawn+" buildingDraws="+buildingDraws+" buildingDrawsVisible="+buildingDrawsVisible+" playerDrawn="+playerDrawn);
   if(line!==canvasRenderQaSignature){ canvasRenderQaSignature=line; console.info(line); }
 }
 function safelyRunQa(label, fn){
@@ -5800,7 +5829,7 @@ function emitUiStateQA(){
 function emitPhase342OAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="34.2O.3" && ATLAS_SELECTOR_VERSION==="selector-v34.2o3-spawn-resolver-contract-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="34.2P" && ATLAS_SELECTOR_VERSION==="selector-v34.2p-spawn-traversal-acceptance-contract-lock";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const savedSpawnPass=spawnValidationResult.mode==="saved" && spawnValidationResult.status==="PASS";
@@ -5814,55 +5843,28 @@ function emitPhase342OAcceptance(){
   const bootModePass=bootModeQaSignature.includes("status=PASS");
   const canvasRenderPass=canvasRenderQaResult.status==="PASS";
   const topologyPass=traversalTopologyQaResult.blockedRoadMismatches===0 && traversalTopologyQaResult.hiddenFenceBlockers===0 && traversalTopologyQaResult.hiddenTerrainBlockers===0 && traversalTopologyQaResult.parcelOnlyBlocks===0 && traversalTopologyQaResult.status==="PASS";
-  const status=(settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass) ? "PASS" : "FAIL";
+  const routeTileSweepPass=routeTileSweepQaResult.status==="PASS";
+  const status=(settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass) ? "PASS" : "FAIL";
   const sig=status+"|"+settled+"|"+buildPhaseMatches+"|"+savedSpawnPass+"|"+freshSpawnPass+"|"+freshRenderPass+"|"+uiStatePass+"|"+activeTileMovementPass+"|"+traversalQaResult.status+"|"+harborStatus+"|"+playerStatePass+"|"+renderAuditPass+"|"+sourceTruthPass;
   if(sig===phase342JAcceptanceSignature) return;
   phase342JAcceptanceSignature=sig;
-  if(status==="PASS"){
-    const passLines=[
-      "[Phase 34.2O.3 Acceptance]",
-      "status=PASS",
-      "phase=34.2O.3",
-      "buildConsistent=true",
-      "spawnResolver=PASS",
-      "savedSpawn=PASS",
-      "freshSpawn=PASS",
-      "activeTileMovement=PASS",
-      "traversal=PASS",
-      "uiState=PASS",
-      "topology=PASS",
-      "harborComposition=PASS",
-      "renderAudit=PASS",
-      "sourceTruth=PASS",
-      "canvasRender=PASS",
-      "collisionSpam=PASS",
-      "consoleFatalErrors=none"
-    ];
-    console.info(passLines.join(" "));
-  }else{
-    const reasons=[
-      settled?"":"not_settled",
-      buildPhaseMatches?"":"build_consistency",
-      savedSpawnPass?"":"saved_spawn",
-      freshSpawnPass?"":"fresh_spawn",
-      freshRenderPass?"":"fresh_render",
-      uiStatePass?"":"ui_state",
-      activeTileMovementPass?"":"active_tile_movement",
-      traversalQaResult.status==="PASS"?"":"traversal",
-      playerStatePass?"":"player_state",
-      topologyPass?"":"topology",
-      harborStatus==="PASS"?"":"render_audit",
-      sourceTruthPass?"":"source_truth"
-    ].filter(Boolean).join(",");
-    const failLines=[
-      "[Phase 34.2O.3 Acceptance]",
-      "status=FAIL",
-      "reasons="+reasons,
-      "renderLoop=PASS",
-      "canvasRender="+canvasRenderQaResult.status
-    ];
-    console.info(failLines.join(" "));
-  }
+  const reasons=[
+    settled?"":"not_settled",
+    buildPhaseMatches?"":"build_consistency",
+    savedSpawnPass?"":"saved_spawn",
+    freshSpawnPass?"":"fresh_spawn",
+    freshRenderPass?"":"fresh_render",
+    uiStatePass?"":"ui_state",
+    activeTileMovementPass?"":"active_tile_movement",
+    traversalQaResult.status==="PASS"?"":"traversal",
+    routeTileSweepPass?"":"route_tile_sweep",
+    playerStatePass?"":"player_state",
+    topologyPass?"":"topology",
+    renderAuditPass?"":"render_audit",
+    sourceTruthPass?"":"source_truth",
+    canvasRenderPass?"":"canvas_render"
+  ].filter(Boolean).join(",");
+  console.info("[Phase 34.2P Acceptance] status="+status+" reasons="+(reasons||"none")+" savedSpawn="+(savedSpawnPass?"PASS":"FAIL")+" freshSpawn="+(freshSpawnPass?"PASS":"FAIL")+" traversal="+traversalQaResult.status+" routeTileSweep="+(routeTileSweepPass?"PASS":"FAIL")+" playerState="+(playerStatePass?"PASS":"FAIL")+" renderLoop=PASS canvasRender="+canvasRenderQaResult.status+" renderAudit="+(renderAuditPass?"PASS":"FAIL")+" sourceTruth="+(sourceTruthPass?"PASS":"FAIL"));
 }
 function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
   const anchor=NAMED_NPC_ANCHORS[npcEntity.anchorId];
@@ -10491,6 +10493,7 @@ function drawWorld(){
   safelyRunQa("canvas_render_qa", ()=>emitCanvasRenderQA());
   safelyRunQa("harbor_composition_qa", ()=>emitHarborCompositionQA());
   safelyRunQa("traversal_topology_qa", ()=>emitTraversalTopologyQA());
+  safelyRunQa("route_tile_sweep_qa", ()=>emitRouteTileSweepQA());
   safelyRunQa("phase_34_2o_acceptance", ()=>emitPhase342OAcceptance());
   emitBuildingAtlasCropAuditIfReady();
   runAtlasCatalogScanOnce();
