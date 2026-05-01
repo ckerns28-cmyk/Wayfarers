@@ -1755,9 +1755,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "34.2O.2";
+const WAYFARER_PHASE = "34.2O.3";
 const WAYFARER_BUILD_LABEL = "Spawn/Traversal Runtime Stabilization and QA Acceptance Gate";
-const ATLAS_SELECTOR_VERSION = "selector-v34.2o2-served-bundle-parse-recovery";
+const ATLAS_SELECTOR_VERSION = "selector-v34.2o3-spawn-resolver-contract-closure";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -5580,6 +5580,10 @@ function validateHearthvaleSpawnTile(tile){
   const overlapsProp=world.props.some((p)=>p.x===tile.x&&p.y===tile.y);
   const overlapsFence=world.fences.some((f)=>f.x===tile.x&&f.y===tile.y);
   const overlapsNpc=namedVillageNpcs.some((villageNpc)=>villageNpc.targetX===tile.x&&villageNpc.targetY===tile.y);
+  const routeTile=world.roadTiles.has(tileKey);
+  const movementDiagnostic=getMovementBlockDiagnostics(tile.x,tile.y);
+  const routeTileBlockedByTerrain=routeTile && movementDiagnostic.reason==="terrain";
+  const routeTileBlockedByFence=routeTile && movementDiagnostic.reason==="fence";
   const walkable=canMoveTo(tile.x,tile.y) && !overlapsProp && !overlapsFence && !overlapsNpc;
   const adjacentWalkableCount=[[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy])=>canMoveTo(tile.x+dx,tile.y+dy)).length;
   const connectedToRoadGraph=buildRoadConnectivityGraph().has(tileKey);
@@ -5588,20 +5592,22 @@ function validateHearthvaleSpawnTile(tile){
   const movementQa=emitActiveTileMovementQA(tile);
   const uiCoherent=getCurrentZoneName()==="Hearthvale Square";
   const failedReasons=[];
-  if(!walkable) failedReasons.push("not_walkable");
-  if(overlapsBuilding) failedReasons.push("overlaps_building");
-  if(overlapsParcel) failedReasons.push("overlaps_parcel");
-  if(overlapsWater) failedReasons.push("overlaps_water");
-  if(overlapsProp) failedReasons.push("overlaps_prop");
-  if(overlapsFence) failedReasons.push("overlaps_fence");
-  if(adjacentWalkableCount<2) failedReasons.push("adjacent_walkable_lt_2");
-  if(!connectedToRoadGraph) failedReasons.push("disconnected_from_road_graph");
-  if(reachableCount!==6) failedReasons.push("reachable_targets_"+reachableCount+"_of_6");
+  if(!walkable) failedReasons.push("notWalkable");
+  if(overlapsBuilding) failedReasons.push("overlapsBuilding");
+  if(overlapsParcel) failedReasons.push("overlapsParcel");
+  if(overlapsWater) failedReasons.push("overlapsWater");
+  if(overlapsProp) failedReasons.push("overlapsProp");
+  if(overlapsFence) failedReasons.push("overlapsFence");
+  if(adjacentWalkableCount<2) failedReasons.push("adjacentWalkableCount_lt_2");
+  if(!connectedToRoadGraph) failedReasons.push("connectedToRoadGraph_false");
+  if(reachableCount!==6) failedReasons.push("reachableTargets_lt_6");
+  if(routeTileBlockedByTerrain) failedReasons.push("routeTileBlockedByTerrain");
+  if(routeTileBlockedByFence) failedReasons.push("routeTileBlockedByFence");
   if(movementQa.status!=="PASS") failedReasons.push("active_tile_movement_fail");
   if(!uiCoherent) failedReasons.push("ui_zone_mismatch");
   const status=failedReasons.length===0 ? "PASS" : "FAIL";
-  const result={ spawnTile:"("+tile.x+","+tile.y+")", walkable, overlapsBuilding, overlapsParcel, overlapsWater, overlapsProp, overlapsFence, adjacentWalkableCount, connectedToRoadGraph, reachableCount, traversalChecks, status };
-  const line="[Spawn QA] spawnTile="+result.spawnTile+" walkable="+walkable+" overlapsBuilding="+overlapsBuilding+" overlapsParcel="+overlapsParcel+" overlapsWater="+overlapsWater+" overlapsProp="+overlapsProp+" overlapsFence="+overlapsFence+" adjacentWalkableCount="+adjacentWalkableCount+" connectedToRoadGraph="+connectedToRoadGraph+" reachableTargets="+reachableCount+"/6 activeTileMovement="+movementQa.status+" uiState="+(uiCoherent?"PASS":"FAIL")+" status="+status;
+  const result={ spawnTile:"("+tile.x+","+tile.y+")", walkable, overlapsBuilding, overlapsParcel, overlapsWater, overlapsProp, overlapsFence, adjacentWalkableCount, connectedToRoadGraph, reachableCount, traversalChecks, routeTileBlockedByTerrain, routeTileBlockedByFence, status, failedReasons };
+  const line="[Spawn QA] spawnTile="+result.spawnTile+" walkable="+walkable+" overlapsBuilding="+overlapsBuilding+" overlapsWater="+overlapsWater+" overlapsProp="+overlapsProp+" overlapsFence="+overlapsFence+" adjacentWalkableCount="+adjacentWalkableCount+" connectedToRoadGraph="+connectedToRoadGraph+" reachableTargets="+reachableCount+"/6 status="+status;
   if(SPAWN_DEBUG_MODE || (status==="PASS" && line!==spawnQaSignature)) console.info(line);
   spawnQaSignature=line;
   spawnQaResult=result;
@@ -5610,67 +5616,62 @@ function validateHearthvaleSpawnTile(tile){
 function isSpawnPlayableResult(result){
   return Boolean(result && result.walkable && !result.overlapsBuilding && !result.overlapsWater && result.adjacentWalkableCount>=1);
 }
-function resolveSafeHearthvaleSpawn(){
+function summarizeCandidateFailures(center,candidateFailures,totalCandidates){
+  const histogram=new Map();
+  candidateFailures.forEach((entry)=>entry.reasons.forEach((reason)=>histogram.set(reason,(histogram.get(reason)||0)+1)));
+  const ordered=[...histogram.entries()].sort((a,b)=>b[1]-a[1]);
+  const topReasons=ordered.slice(0,6).map(([reason,count])=>reason+":"+count).join(",")||"none";
+  const examples=candidateFailures.slice(0,3).map((entry)=>"("+entry.tile.x+","+entry.tile.y+")=>"+entry.reasons.slice(0,3).join("+")).join(" | ")||"none";
+  return { center, candidates:totalCandidates, topReasons, examples, histogram:Object.fromEntries(ordered) };
+}
+function resolveSafeHearthvaleSpawn(mode="fresh"){
   const center=HEARTHVALE_LANDMARKS.townCenterSpawn;
-  const candidates=[
-    {x:18,y:11},{x:16,y:11},{x:17,y:11},{x:19,y:11},
-    {x:30,y:15},{x:31,y:16},{x:30,y:16},{x:29,y:16},{x:28,y:16},{x:27,y:16},
-    {x:30,y:17},{x:20,y:16},{x:20,y:19}
+  const canonicalPads=[
+    { x:18, y:11, name:"town_center_frontage" },
+    { x:20, y:16, name:"waterfront_spine" },
+    { x:30, y:16, name:"eastern_route" }
   ];
-  let failedCandidates=0;
+  const candidates=[...canonicalPads.map((pad)=>({x:pad.x,y:pad.y,canonical:true,name:pad.name}))];
   for(let r=0;r<=24;r++){
     for(let dx=-r;dx<=r;dx++){
       for(let dy=-r;dy<=r;dy++){
         if(Math.abs(dx)+Math.abs(dy)!==r) continue;
         const x=center.x+dx, y=center.y+dy;
-        if(world.buildings.some((b)=>tileInRect(x,y,b.frontWalkBand))) candidates.push({ x,y });
+        if(world.buildings.some((b)=>tileInRect(x,y,b.frontWalkBand))) candidates.push({ x,y,canonical:false });
       }
     }
   }
-  candidates.push({ x:center.x, y:center.y });
+  candidates.push({ x:center.x, y:center.y,canonical:true,name:"center_fallback" });
   const visitedCandidates=new Set();
+  let failedCandidates=0;
+  const candidateFailures=[];
+  let degradedTile=null;
   for(const candidate of candidates){
     const candidateKey=keyOf(candidate.x,candidate.y);
     if(visitedCandidates.has(candidateKey)) continue;
     visitedCandidates.add(candidateKey);
     const qa=validateHearthvaleSpawnTile(candidate);
-    if(qa.status!=="PASS"){
-      failedCandidates++;
-      const failedReasons=[];
-      if(!qa.walkable) failedReasons.push("not_walkable");
-      if(qa.overlapsBuilding) failedReasons.push("overlaps_building");
-      if(qa.overlapsWater) failedReasons.push("overlaps_water");
-      if(qa.overlapsProp) failedReasons.push("overlaps_prop");
-      if(qa.overlapsFence) failedReasons.push("overlaps_fence");
-      if(qa.overlapsParcel) failedReasons.push("overlaps_parcel");
-      if(qa.adjacentWalkableCount<2) failedReasons.push("adjacent_walkable_lt_2");
-      if(!qa.connectedToRoadGraph) failedReasons.push("disconnected_from_road_graph");
-      if(qa.reachableCount!==6) failedReasons.push("reachable_targets_"+qa.reachableCount+"_of_6");
-      const spawnCandidateLines=[
-        "[Spawn Candidate QA]",
-        "candidate=("+candidate.x+","+candidate.y+")",
-        "walkable="+qa.walkable,
-        "overlapsBuilding="+qa.overlapsBuilding,
-        "overlapsWater="+qa.overlapsWater,
-        "overlapsProp="+qa.overlapsProp,
-        "overlapsFence="+qa.overlapsFence,
-        "overlapsParcel="+qa.overlapsParcel,
-        "adjacentWalkableCount="+qa.adjacentWalkableCount,
-        "connectedToRoadGraph="+qa.connectedToRoadGraph,
-        "reachableTargets="+qa.reachableCount+"/6",
-        "failedReasons="+JSON.stringify(failedReasons)
-      ];
-      console.info(spawnCandidateLines.join(" "));
-    }
     if(qa.status==="PASS"){
-      const line="[Spawn Resolver] mode=fresh selectedTile=("+candidate.x+","+candidate.y+") status=PASS failedCandidates="+failedCandidates;
+      const line="[Spawn Resolver] mode="+mode+" selectedTile=("+candidate.x+","+candidate.y+") status=PASS";
       if(line!==spawnResolverSignature) console.info(line);
       spawnResolverSignature=line;
+      const summary=summarizeCandidateFailures(center,candidateFailures,visitedCandidates.size);
+      const result={ status:"PASS", tile:{x:candidate.x,y:candidate.y}, reason:"validated_spawn", failedCandidates, candidateFailureSummary:summary, canonicalPadsTested:canonicalPads };
       freshSpawnResult={ status:"PASS", selectedTile:candidate, line };
-      return candidate;
+      return result;
     }
+    failedCandidates++;
+    candidateFailures.push({ tile:{x:candidate.x,y:candidate.y}, reasons:qa.failedReasons });
+    if(!degradedTile && isSpawnPlayableResult(qa)) degradedTile={x:candidate.x,y:candidate.y};
   }
-  throw new Error("[Spawn Resolver Error] status=FAIL reason=no_valid_spawn_candidate failedCandidates="+failedCandidates+" center=("+center.x+","+center.y+")");
+  const summary=summarizeCandidateFailures(center,candidateFailures,visitedCandidates.size);
+  console.info("[Spawn Candidate Failure Summary] center=("+center.x+","+center.y+") candidates="+summary.candidates+" topReasons="+summary.topReasons+" examples="+summary.examples);
+  const fallback=degradedTile || { x:center.x, y:center.y };
+  const line="[Spawn Resolver] mode="+mode+" selectedTile=("+fallback.x+","+fallback.y+") status=DEGRADED";
+  if(line!==spawnResolverSignature) console.info(line);
+  spawnResolverSignature=line;
+  freshSpawnResult={ status:"DEGRADED", selectedTile:fallback, line };
+  return { status:"DEGRADED", tile:fallback, reason:"no_valid_spawn_candidate", failedCandidates, candidateFailureSummary:summary, canonicalPadsTested:canonicalPads };
 }
 
 function getRuntimeCameraState(){
@@ -5799,7 +5800,7 @@ function emitUiStateQA(){
 function emitPhase342OAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="34.2O.2" && ATLAS_SELECTOR_VERSION==="selector-v34.2o2-served-bundle-parse-recovery";
+  const buildPhaseMatches=WAYFARER_PHASE==="34.2O.3" && ATLAS_SELECTOR_VERSION==="selector-v34.2o3-spawn-resolver-contract-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const savedSpawnPass=spawnValidationResult.mode==="saved" && spawnValidationResult.status==="PASS";
@@ -5819,9 +5820,9 @@ function emitPhase342OAcceptance(){
   phase342JAcceptanceSignature=sig;
   if(status==="PASS"){
     const passLines=[
-      "[Phase 34.2O.2 Acceptance]",
+      "[Phase 34.2O.3 Acceptance]",
       "status=PASS",
-      "phase=34.2O.2",
+      "phase=34.2O.3",
       "buildConsistent=true",
       "spawnResolver=PASS",
       "savedSpawn=PASS",
@@ -5854,7 +5855,7 @@ function emitPhase342OAcceptance(){
       sourceTruthPass?"":"source_truth"
     ].filter(Boolean).join(",");
     const failLines=[
-      "[Phase 34.2O.2 Acceptance]",
+      "[Phase 34.2O.3 Acceptance]",
       "status=FAIL",
       "reasons="+reasons,
       "renderLoop=PASS",
@@ -7853,20 +7854,20 @@ function loadGame(){
   if(!raw || forceFreshSpawn){
     saveDiagnostics.fallbackDefaultUsed=true;
     if(forceFreshSpawn){
-      const safeSpawn=resolveSafeHearthvaleSpawn();
-      if(safeSpawn){
-        setPlayerTilePosition(safeSpawn.x, safeSpawn.y);
+      const safeSpawn=resolveSafeHearthvaleSpawn("fresh");
+      if(safeSpawn?.tile){
+        setPlayerTilePosition(safeSpawn.tile.x, safeSpawn.tile.y);
         isInMirrorCave=false;
         isInAbandonedTollhouse=false;
-        currentZoneId=getOutdoorRegionIdAt(safeSpawn.x, safeSpawn.y);
+        currentZoneId=getOutdoorRegionIdAt(safeSpawn.tile.x, safeSpawn.tile.y);
         lastLoggedZoneEntryId=currentZoneId;
         zoneTransitionLockedUntil=0;
         blockedDirectionalKeysUntilRelease.clear();
         questSystem.applyState([]);
-        const spawnQa=validateHearthvaleSpawnTile({ x:safeSpawn.x, y:safeSpawn.y });
-        spawnValidationResult={ mode:"fresh", status:spawnQa.status, line:"[Spawn Validation] mode=fresh activeTile=("+safeSpawn.x+","+safeSpawn.y+") status="+spawnQa.status };
+        const spawnQa=validateHearthvaleSpawnTile({ x:safeSpawn.tile.x, y:safeSpawn.tile.y });
+        spawnValidationResult={ mode:"fresh", status:spawnQa.status, line:"[Spawn Validation] mode=fresh activeTile=("+safeSpawn.tile.x+","+safeSpawn.tile.y+") status="+spawnQa.status };
         emitSpawnValidationLine();
-        emitTraversalQA({ x:safeSpawn.x, y:safeSpawn.y });
+        emitTraversalQA({ x:safeSpawn.tile.x, y:safeSpawn.tile.y });
         emitPlayerStateQA("fresh_spawn_validation");
         emitUiStateQA();
       }
@@ -7917,10 +7918,10 @@ function loadGame(){
       spawnValidationResult={ mode:"saved", status:savedValidation.status, line:"[Spawn Validation] mode=saved activeTile=("+loadedX+","+loadedY+") status="+savedValidation.status };
       emitSpawnValidationLine();
       if(!savedValid){
-        const relocated=resolveSafeHearthvaleSpawn();
-        if(relocated){
-          spawnX=relocated.x;
-          spawnY=relocated.y;
+        const relocated=resolveSafeHearthvaleSpawn("saved");
+        if(relocated?.tile){
+          spawnX=relocated.tile.x;
+          spawnY=relocated.tile.y;
           const recoveredQa=validateHearthvaleSpawnTile({ x:spawnX, y:spawnY });
           const recoveredPlayable=isSpawnPlayableResult(recoveredQa);
           if(!recoveredPlayable) console.error("[Spawn Recovery Error] status=DEGRADED reason=recovery_target_limited_playability");
@@ -8824,12 +8825,12 @@ function respawnPlayerAtSquare(){
   isInMirrorCave=false;
   isInAbandonedTollhouse=false;
   currentZoneId="hearthvale_square";
-  const safeSpawn=resolveSafeHearthvaleSpawn();
-  if(!safeSpawn){
+  const safeSpawn=resolveSafeHearthvaleSpawn("fresh");
+  if(!safeSpawn?.tile){
     console.error("[Spawn Recovery Error] status=FAIL reason=recovery_target_invalid");
     return;
   }
-  setPlayerTilePosition(safeSpawn.x, safeSpawn.y);
+  setPlayerTilePosition(safeSpawn.tile.x, safeSpawn.tile.y);
   zoneTransitionLockedUntil=0;
   blockedDirectionalKeysUntilRelease.clear();
   lastLoggedZoneEntryId=currentZoneId;
@@ -10600,9 +10601,9 @@ function loop(now){
 
 const loadedFromSave=loadGame();
 if(freshSpawnResult.status==="PENDING"){
-  const freshCandidate=resolveSafeHearthvaleSpawn();
-  if(freshCandidate){
-    validateHearthvaleSpawnTile({ x:freshCandidate.x, y:freshCandidate.y });
+  const freshCandidate=resolveSafeHearthvaleSpawn("fresh");
+  if(freshCandidate?.tile){
+    validateHearthvaleSpawnTile({ x:freshCandidate.tile.x, y:freshCandidate.tile.y });
   }
 }
 bootDiagnostics.worldInitialized=true;
