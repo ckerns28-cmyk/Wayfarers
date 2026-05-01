@@ -67,6 +67,7 @@ const html = String.raw`<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" />
   <title>Wayfarer — Build Phase</title>
   <style>
     :root {
@@ -1754,9 +1755,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "34.2G";
+const WAYFARER_PHASE = "34.2H";
 const WAYFARER_BUILD_LABEL = "Spawn/Traversal Runtime Stabilization and QA Acceptance Gate";
-const ATLAS_SELECTOR_VERSION = "selector-v34.2g-spawn-contract-acceptance-coherence";
+const ATLAS_SELECTOR_VERSION = "selector-v34.2h-final-acceptance-ui-qa-lock";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3126,7 +3127,15 @@ function maybeLogBuildingRenderSummary(){
   const buildingsManifestStatus = (atlasRuntimeInfo.buildings?.manifestReady===true || isAtlasRuntimeReady("buildings")) ? "ready" : "pending";
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " previewMode=" + (previewModeActive?"true":"false") + " atlas_buildings=" + atlasIds.join(",") + " preview_runtime_buildings=" + previewRuntimeIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + ["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+  const heroFinalLine=["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(",");
+  latestRenderAuditStatus={
+    atlasCount:atlasIds.length,
+    fallbackCount:fallbackEntries.length,
+    pendingCount:pendingEntries.length,
+    heroFinal:heroFinalLine,
+    status:(atlasIds.length===3 && fallbackEntries.length===4 && pendingEntries.length===0 && heroFinalLine==="b_inn_tavern:atlas,b_mercantile:atlas,b_village_hall:atlas") ? "PASS" : "PENDING"
+  };
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " previewMode=" + (previewModeActive?"true":"false") + " atlas_buildings=" + atlasIds.join(",") + " preview_runtime_buildings=" + previewRuntimeIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + heroFinalLine);
   if(previewModeActive){
     const target=SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET;
     const targetBuilding=world.buildings.find((row)=>row.id===target.resolvedBuildingId) || null;
@@ -3216,6 +3225,13 @@ let spawnQaResult={ status:"FAIL" };
 let traversalQaResult={ status:"FAIL" };
 let spawnValidationResult={ mode:"none", status:"PENDING", line:"" };
 let freshSpawnResult={ status:"PENDING", selectedTile:null, line:"" };
+let spawnQaSignature="";
+let traversalQaSignature="";
+let spawnValidationSignature="";
+let spawnResolverSignature="";
+let uiStateQaSignature="";
+let latestRenderAuditStatus={ atlasCount:0, fallbackCount:0, pendingCount:0, heroFinal:"", status:"PENDING" };
+let latestSourceTruthStatus="PENDING";
 let collisionDebugSummaryState={ suppressed:0, unique:new Map(), lastSummaryAt:0 };
 let playerStateQaSignature="";
 let mobileQaSummaryLogged=false;
@@ -3224,6 +3240,12 @@ let atlasRuntimeAuthorityChainSignature="";
 let atlasRuntimeAuthorityAcceptanceSignature="";
 let sourceTruthAcceptanceSignature="";
 let atlasWorkflowAcceptanceSignature="";
+function emitSpawnValidationLine(){
+  if(!spawnValidationResult?.line) return;
+  if(spawnValidationResult.line===spawnValidationSignature) return;
+  spawnValidationSignature=spawnValidationResult.line;
+  console.info(spawnValidationResult.line);
+}
 function emitMobileQaSummary(){
   if(!AUTO_QA_MODE || mobileQaSummaryLogged) return;
   const cam=getCamera();
@@ -3341,7 +3363,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='34.2G' && ATLAS_SELECTOR_VERSION==='selector-v34.2g-spawn-contract-acceptance-coherence';
+  const proofHudConsistent=WAYFARER_PHASE==='34.2H' && ATLAS_SELECTOR_VERSION==='selector-v34.2h-final-acceptance-ui-qa-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -3349,6 +3371,7 @@ function logBuildingSourceOfTruthAudit(){
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
   const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
   const status=!ready?'PENDING_ASSETS':((rows.length===expectedRows && conflicts.length===0 && requiredFieldsOk && proofHudConsistent && renderAuditConsistent && authStatus==='PASS')?'PASS':'FAIL');
+  latestSourceTruthStatus=status==="PASS" ? "PASS" : "PENDING";
   const satSig=JSON.stringify({status,pendingReason,renderAuditConsistent,rows:rows.length,conflicts:conflicts.length,authStatus});
   if(satSig!==sourceTruthAcceptanceSignature){ sourceTruthAcceptanceSignature=satSig; console.info('[Source Truth Acceptance]'); console.info('phase='+WAYFARER_PHASE); console.info('previewMode='+(previewModeActive?'true':'false')); console.info('registryKeyMode=building_id'); console.info('rows='+rows.length); console.info('activeMappingConsistent='+(conflicts.length===0?'true':'false')); console.info('cropAuditConsistent='+(requiredFieldsOk?'true':'false')); console.info('proofHudConsistent='+(proofHudConsistent?'true':'false')); console.info('renderAuditConsistent='+(renderAuditConsistent?'true':'false')); console.info('pendingReason='+pendingReason); console.info('status='+status); }
   const proofPreviewPass=secondaryProofPreviewState.drawCount===4;
@@ -5461,7 +5484,9 @@ function validateHearthvaleSpawnTile(tile){
   const reachableCount=traversalChecks.filter((check)=>check.pathLength>0).length;
   const status=walkable && !overlapsBuilding && !overlapsWater && !overlapsProp && !overlapsFence && adjacentWalkableCount>=2 && connectedToRoadGraph && reachableCount===6 ? "PASS" : "FAIL";
   const result={ spawnTile:"("+tile.x+","+tile.y+")", walkable, overlapsBuilding, overlapsParcel, overlapsWater, overlapsProp, overlapsFence, adjacentWalkableCount, connectedToRoadGraph, reachableCount, traversalChecks, status };
-  if(SPAWN_DEBUG_MODE || status==="PASS") console.info("[Spawn QA] spawnTile="+result.spawnTile+" walkable="+walkable+" overlapsBuilding="+overlapsBuilding+" overlapsParcel="+overlapsParcel+" overlapsWater="+overlapsWater+" overlapsProp="+overlapsProp+" overlapsFence="+overlapsFence+" adjacentWalkableCount="+adjacentWalkableCount+" connectedToRoadGraph="+connectedToRoadGraph+" reachableTargets="+reachableCount+"/6 status="+status);
+  const line="[Spawn QA] spawnTile="+result.spawnTile+" walkable="+walkable+" overlapsBuilding="+overlapsBuilding+" overlapsParcel="+overlapsParcel+" overlapsWater="+overlapsWater+" overlapsProp="+overlapsProp+" overlapsFence="+overlapsFence+" adjacentWalkableCount="+adjacentWalkableCount+" connectedToRoadGraph="+connectedToRoadGraph+" reachableTargets="+reachableCount+"/6 status="+status;
+  if(SPAWN_DEBUG_MODE || (status==="PASS" && line!==spawnQaSignature)) console.info(line);
+  spawnQaSignature=line;
   spawnQaResult=result;
   return result;
 }
@@ -5486,7 +5511,8 @@ function resolveSafeHearthvaleSpawn(){
     const qa=validateHearthvaleSpawnTile(candidate);
     if(qa.status==="PASS"){
       const line="[Spawn Resolver] mode=fresh selectedTile=("+candidate.x+","+candidate.y+") status=PASS";
-      console.info(line);
+      if(line!==spawnResolverSignature) console.info(line);
+      spawnResolverSignature=line;
       freshSpawnResult={ status:"PASS", selectedTile:candidate, line };
       return candidate;
     }
@@ -5534,31 +5560,51 @@ function emitTraversalQA(startTile={ x:player.targetX, y:player.targetY }){
   });
   const status=checks.every((check)=>check.reachable&&check.pathLength>0) ? "PASS" : "FAIL";
   traversalQaResult={ status, checks };
-  console.info("[Traversal QA] "+checks.map((check)=>check.key+" reachable="+check.reachable+" pathLength="+check.pathLength).join(" | ")+" status="+status);
+  const line="[Traversal QA] "+checks.map((check)=>check.key+" reachable="+check.reachable+" pathLength="+check.pathLength).join(" | ")+" status="+status;
+  if(TRAVERSAL_DEBUG_MODE || line!==traversalQaSignature) console.info(line);
+  traversalQaSignature=line;
 }
-function emitPhase342GAcceptance(){
+function emitUiStateQA(){
+  const mapName=(isInMirrorCave?"Mirror Cave":(isInAbandonedTollhouse?"Abandoned Tollhouse":"Hearthvale"));
+  const zoneName=getCurrentZoneName();
+  const hudZone=String(zoneVal?.textContent||"").trim();
+  const playerTile="("+player.targetX+","+player.targetY+")";
+  const status=(mapName==="Hearthvale" && zoneName==="Hearthvale Square" && hudZone==="Hearthvale Square")?"PASS":"FAIL";
+  const line="[UI State QA] map="+mapName+" zone="+zoneName+" hudZone="+hudZone+" playerTile="+playerTile+" status="+status;
+  if(line===uiStateQaSignature) return;
+  uiStateQaSignature=line;
+  console.info(line);
+}
+function emitPhase342HAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="34.2G" && ATLAS_SELECTOR_VERSION==="selector-v34.2g-spawn-contract-acceptance-coherence";
+  const buildPhaseMatches=WAYFARER_PHASE==="34.2H" && ATLAS_SELECTOR_VERSION==="selector-v34.2h-final-acceptance-ui-qa-lock";
   const collisionSpamPass=!RAW_COLLISION_DEBUG_MODE;
   const savedSpawnPass=spawnValidationResult.mode==="saved" && spawnValidationResult.status==="PASS";
   const freshSpawnPass=freshSpawnResult.status==="PASS";
-  const status=(buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass) ? "PASS" : "FAIL";
-  const sig=status+"|"+buildPhaseMatches+"|"+savedSpawnPass+"|"+freshSpawnPass+"|"+traversalQaResult.status+"|"+harborStatus+"|"+playerStatePass;
+  const renderAuditPass=latestRenderAuditStatus.status==="PASS";
+  const sourceTruthPass=latestSourceTruthStatus==="PASS";
+  const uiStatePass=uiStateQaSignature.includes("status=PASS");
+  const settled=renderAuditPass&&sourceTruthPass;
+  const status=(settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&uiStatePass) ? "PASS" : "FAIL";
+  const sig=status+"|"+settled+"|"+buildPhaseMatches+"|"+savedSpawnPass+"|"+freshSpawnPass+"|"+traversalQaResult.status+"|"+harborStatus+"|"+playerStatePass+"|"+renderAuditPass+"|"+sourceTruthPass+"|"+uiStatePass;
   if(sig===phase342BAcceptanceSignature) return;
   phase342BAcceptanceSignature=sig;
   if(status==="PASS"){
-    console.info("[Phase 34.2G Acceptance] status=PASS phase=34.2G buildConsistent=true savedSpawn=PASS freshSpawn=PASS traversal=PASS playerState=PASS renderAudit=PASS sourceTruth=PASS consoleFatalErrors=none collisionSpam=PASS");
+    console.info("[Phase 34.2H Acceptance] status=PASS phase=34.2H buildConsistent=true savedSpawn=PASS freshSpawn=PASS traversal=PASS playerState=PASS renderAudit=PASS sourceTruth=PASS consoleFatalErrors=none collisionSpam=PASS uiState=PASS");
   }else{
     const reasons=[
+      settled?"":"not_settled",
       buildPhaseMatches?"":"build_consistency",
       savedSpawnPass?"":"saved_spawn",
       freshSpawnPass?"":"fresh_spawn",
       traversalQaResult.status==="PASS"?"":"traversal",
       playerStatePass?"":"player_state",
-      harborStatus==="PASS"?"":"render_audit"
+      harborStatus==="PASS"?"":"render_audit",
+      sourceTruthPass?"":"source_truth",
+      uiStatePass?"":"ui_state"
     ].filter(Boolean).join(",");
-    console.info("[Phase 34.2G Acceptance] status=FAIL reasons="+reasons);
+    console.info("[Phase 34.2H Acceptance] status=FAIL reasons="+reasons);
   }
 }
 function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
@@ -7555,14 +7601,14 @@ function loadGame(){
         setPlayerTilePosition(safeSpawn.x, safeSpawn.y);
         const spawnQa=validateHearthvaleSpawnTile({ x:safeSpawn.x, y:safeSpawn.y });
         spawnValidationResult={ mode:"fresh", status:spawnQa.status, line:"[Spawn Validation] mode=fresh activeTile=("+safeSpawn.x+","+safeSpawn.y+") status="+spawnQa.status };
-        console.info(spawnValidationResult.line);
+        emitSpawnValidationLine();
         emitTraversalQA({ x:safeSpawn.x, y:safeSpawn.y });
         emitPlayerStateQA("fresh_spawn_validation");
       }
     }else{
       const defaultQa=validateHearthvaleSpawnTile({ x:player.targetX, y:player.targetY });
       spawnValidationResult={ mode:"saved", status:defaultQa.status, line:"[Spawn Validation] mode=saved activeTile=("+player.targetX+","+player.targetY+") status="+defaultQa.status };
-      console.info(spawnValidationResult.line);
+      emitSpawnValidationLine();
     }
     return false;
   }
@@ -7604,7 +7650,7 @@ function loadGame(){
       const savedValidation=validateHearthvaleSpawnTile({ x:loadedX, y:loadedY });
       const savedValid=savedValidation.status==="PASS";
       spawnValidationResult={ mode:"saved", status:savedValidation.status, line:"[Spawn Validation] mode=saved activeTile=("+loadedX+","+loadedY+") status="+savedValidation.status };
-      console.info(spawnValidationResult.line);
+      emitSpawnValidationLine();
       if(!savedValid){
         const relocated=resolveSafeHearthvaleSpawn();
         if(relocated){
@@ -7614,7 +7660,7 @@ function loadGame(){
           if(recoveredQa.status!=="PASS") console.error("[Spawn Recovery Error] status=FAIL reason=recovery_target_invalid");
           console.info("[Spawn Recovery] old=(" + loadedX + "," + loadedY + ") new=(" + spawnX + "," + spawnY + ") reason=invalid_saved_position_after_layout_change validated="+(recoveredQa.status==="PASS")+" status="+(recoveredQa.status==="PASS"?"PASS":"FAIL"));
           spawnValidationResult={ mode:"saved", status:recoveredQa.status, line:"[Spawn Validation] mode=saved activeTile=("+spawnX+","+spawnY+") status="+recoveredQa.status };
-          console.info(spawnValidationResult.line);
+          emitSpawnValidationLine();
         }
       }
     }
@@ -10158,8 +10204,9 @@ function drawWorld(){
     emitTraversalQA({ x:player.targetX, y:player.targetY });
     emitPlayerStateQA("runtime_validation");
   }
+  emitUiStateQA();
   emitHarborCompositionQA();
-  emitPhase342GAcceptance();
+  emitPhase342HAcceptance();
   emitBuildingAtlasCropAuditIfReady();
   runAtlasCatalogScanOnce();
   drawDecorSourceLabels();
