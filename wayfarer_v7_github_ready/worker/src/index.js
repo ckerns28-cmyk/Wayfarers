@@ -67,7 +67,7 @@ const html = String.raw`<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wayfarer — Story Phase 32AA.2 / Build 33.1.4F</title>
+  <title>Wayfarer — Build Phase</title>
   <style>
     :root {
       --ink:#0b111a;
@@ -399,7 +399,7 @@ const html = String.raw`<!DOCTYPE html>
     <aside id="sidebar">
       <section id="brand" class="panel">
         <h1>Wayfarer</h1>
-        <div class="sub">Story Phase 32AA.2 — Road Repair (stabilizing)</div>
+        <div class="sub" id="buildPhaseBanner">Build Phase</div>
         <div class="stats" style="margin-top:10px;">
           <div class="muted">Current Objective</div><div id="objectiveText">Explore Hearthvale and the surrounding roads.</div>
           <div class="muted">Current Zone</div><div id="zoneVal">Hearthvale Square</div>
@@ -1740,12 +1740,19 @@ function isDecorDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "33.1.5b";
+const WAYFARER_PHASE = "34.1";
+const WAYFARER_BUILD_LABEL = "Harbor Silhouette & Wharf Framework";
 const ATLAS_SELECTOR_VERSION = "selector-v33.1.5b-runtime-preview-gate-bypass";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
   : "runtime-injected-or-unavailable";
+const WAYFARER_BUILD_PHASE_TEXT = "Build Phase " + WAYFARER_PHASE + " — " + WAYFARER_BUILD_LABEL;
+if(typeof document!=="undefined"){
+  const phaseBanner=document.getElementById("buildPhaseBanner");
+  if(phaseBanner) phaseBanner.textContent=WAYFARER_BUILD_PHASE_TEXT;
+  document.title="Wayfarer — "+WAYFARER_BUILD_PHASE_TEXT;
+}
 let wayfarerBuildSentinelLogged=false;
 const ATLAS_PREVIEW_MODE = ATLAS_DEBUG_MODE && isAtlasPreviewEnabledFromUrl();
 const SECONDARY_PROOF_PREVIEW_MODE = ATLAS_DEBUG_MODE && isSecondaryProofPreviewEnabledFromUrl();
@@ -3310,7 +3317,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='33.1.5b' && ATLAS_SELECTOR_VERSION==='selector-v33.1.5b-runtime-preview-gate-bypass';
+  const proofHudConsistent=WAYFARER_PHASE==='34.1' && ATLAS_SELECTOR_VERSION==='selector-v33.1.5b-runtime-preview-gate-bypass';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -4999,20 +5006,27 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 world.roads.push(
-  // Phase 34.0 harbor recomposition: define a Thames Street-style waterfront spine.
+  // Phase 34.1 harbor framework: emphasize open-ended harbor silhouette and working wharf edge.
+  { x:6,y:14,w:30,h:1 },
   { x:7,y:15,w:28,h:1 },
-  { x:8,y:16,w:26,h:1 },
   // Harbor service circulation and wharf-side work lane.
-  { x:8,y:18,w:25,h:1 },
-  { x:18,y:19,w:14,h:1 },
+  { x:8,y:17,w:27,h:1 },
+  { x:9,y:18,w:25,h:1 },
+  { x:20,y:19,w:13,h:1 },
+  // Wharf projections extending into harbor water.
+  { x:10,y:19,w:2,h:4 },
+  { x:16,y:19,w:2,h:3 },
+  { x:24,y:19,w:2,h:4 },
+  { x:31,y:19,w:2,h:3 },
   // Inland connectors tying civic/residential fabric to waterfront commerce.
-  { x:13,y:7,w:1,h:9 },
-  { x:20,y:7,w:1,h:9 },
-  { x:26,y:8,w:1,h:8 },
-  { x:9,y:10,w:13,h:1 },
+  { x:12,y:7,w:1,h:8 },
+  { x:18,y:8,w:1,h:7 },
+  { x:24,y:8,w:1,h:8 },
+  { x:28,y:9,w:1,h:7 },
+  { x:8,y:10,w:15,h:1 },
   // Frontage stubs for key doors.
-  { x:11,y:13,w:1,h:2 },
-  { x:19,y:13,w:1,h:2 },
+  { x:12,y:13,w:1,h:2 },
+  { x:18,y:13,w:1,h:2 },
   { x:25,y:8,w:1,h:2 },
   { x:30,y:17,w:1,h:2 },
   // West-lane neighborhood tie-in.
@@ -5021,13 +5035,13 @@ world.roads.push(
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
 world.buildings.push(
-  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:8, y:9, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:8,y:9,w:6,h:5}, visualBounds:{x:8,y:9,w:6,h:5}, collision:{x:8,y:12,w:6,h:1}, interaction:{x:11,y:13,w:1,h:1}, interactRect:{x:11,y:13,w:1,h:1}, frontDoorTile:{x:11,y:13}, label:{x:11,y:10,text:"Inn & Tavern"}, pathingBounds:{x:7,y:9,w:8,h:6}, frontWalkBand:{ x:8, y:13, w:6, h:1 }, blockedVisualTiles:[{ x:8, y:9, w:6, h:3 }, { x:8, y:12, w:3, h:1 }, { x:12, y:12, w:2, h:1 }], occlusionDepthLine:{ x:8, y:12, w:6, h:1 }, rearExclusionZone:{ x:8, y:9, w:6, h:3 } }) },
-  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:17, y:9, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:17,y:9,w:5,h:5}, visualBounds:{x:17,y:9,w:5,h:5}, collision:{x:17,y:12,w:5,h:1}, interaction:{x:19,y:13,w:1,h:1}, interactRect:{x:19,y:13,w:1,h:1}, frontDoorTile:{x:19,y:13}, label:{x:19,y:10,text:"Mercantile Shop"}, pathingBounds:{x:16,y:9,w:7,h:6}, frontWalkBand:{ x:17, y:13, w:5, h:1 }, blockedVisualTiles:[{ x:17, y:9, w:5, h:3 }, { x:17, y:12, w:2, h:1 }, { x:20, y:12, w:2, h:1 }], occlusionDepthLine:{ x:17, y:12, w:5, h:1 }, rearExclusionZone:{ x:17, y:9, w:5, h:3 } }) },
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:9, y:9, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:9,w:6,h:5}, visualBounds:{x:9,y:9,w:6,h:5}, collision:{x:9,y:12,w:6,h:1}, interaction:{x:12,y:13,w:1,h:1}, interactRect:{x:12,y:13,w:1,h:1}, frontDoorTile:{x:12,y:13}, label:{x:12,y:10,text:"Inn & Tavern"}, pathingBounds:{x:8,y:9,w:8,h:6}, frontWalkBand:{ x:9, y:13, w:6, h:1 }, blockedVisualTiles:[{ x:9, y:9, w:6, h:3 }, { x:9, y:12, w:3, h:1 }, { x:13, y:12, w:2, h:1 }], occlusionDepthLine:{ x:9, y:12, w:6, h:1 }, rearExclusionZone:{ x:9, y:9, w:6, h:3 } }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:16, y:9, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:16,y:9,w:5,h:5}, visualBounds:{x:16,y:9,w:5,h:5}, collision:{x:16,y:12,w:5,h:1}, interaction:{x:18,y:13,w:1,h:1}, interactRect:{x:18,y:13,w:1,h:1}, frontDoorTile:{x:18,y:13}, label:{x:18,y:10,text:"Mercantile Shop"}, pathingBounds:{x:15,y:9,w:7,h:6}, frontWalkBand:{ x:16, y:13, w:5, h:1 }, blockedVisualTiles:[{ x:16, y:9, w:5, h:3 }, { x:16, y:12, w:2, h:1 }, { x:19, y:12, w:2, h:1 }], occlusionDepthLine:{ x:16, y:12, w:5, h:1 }, rearExclusionZone:{ x:16, y:9, w:5, h:3 } }) },
   { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:22, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:22,y:3,w:6,h:5}, visualBounds:{x:22,y:3,w:6,h:5}, collision:{x:22,y:6,w:6,h:2}, interaction:{x:25,y:8,w:1,h:1}, interactRect:{x:25,y:8,w:1,h:1}, frontDoorTile:{x:25,y:8}, label:{x:25,y:4,text:"Village Hall"}, pathingBounds:{x:21,y:3,w:8,h:6}, frontWalkBand:{ x:22, y:8, w:6, h:1 }, blockedVisualTiles:[{ x:22, y:3, w:6, h:3 }, { x:22, y:6, w:2, h:1 }, { x:26, y:6, w:2, h:1 }], occlusionDepthLine:{ x:22, y:6, w:6, h:1 }, rearExclusionZone:{ x:22, y:3, w:6, h:3 } }) },
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:7,w:4,h:4}, visualBounds:{x:4,y:7,w:4,h:4}, collision:{x:4,y:9,w:4,h:1}, interaction:{x:5,y:10,w:1,h:1}, interactRect:{x:5,y:10,w:1,h:1}, frontDoorTile:{x:5,y:10}, frontWalkBand:{ x:4, y:11, w:4, h:1 }, blockedVisualTiles:[{ x:4, y:7, w:4, h:2 }, { x:4, y:9, w:4, h:1 }, { x:4, y:10, w:1, h:1 }, { x:6, y:10, w:2, h:1 }], occlusionDepthLine:{ x:4, y:9, w:4, h:1 }, rearExclusionZone:{ x:4, y:7, w:4, h:2 }, label:{x:5,y:8,text:"Cottage"}, pathingBounds:{x:3,y:7,w:6,h:6} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:29, y:6, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:6,w:5,h:4}, collision:{x:29,y:8,w:5,h:2}, interaction:{x:31,y:9,w:1,h:1}, label:{x:31,y:7,text:"Residence"}, pathingBounds:{x:28,y:6,w:7,h:5} }) },
-  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:24, y:16, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:24,y:16,w:4,h:4}, collision:{x:24,y:18,w:4,h:2}, interaction:{x:25,y:19,w:1,h:1}, label:{x:25,y:17,text:"Dock Warehouse"}, pathingBounds:{x:23,y:16,w:6,h:5} }) },
-  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:28, y:19, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:28,y:19,w:5,h:3}, collision:{x:28,y:18,w:5,h:1}, interaction:{x:30,y:18,w:1,h:1}, label:{x:30,y:19,text:"Harbor Shed"}, pathingBounds:{x:27,y:17,w:7,h:6} }) }
+  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:22, y:17, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:22,y:17,w:4,h:4}, collision:{x:22,y:19,w:4,h:2}, interaction:{x:23,y:21,w:1,h:1}, label:{x:23,y:18,text:"Outfitter"}, pathingBounds:{x:21,y:16,w:6,h:6} }) },
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:30, y:18, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:30,y:18,w:5,h:3}, collision:{x:30,y:20,w:5,h:1}, interaction:{x:32,y:21,w:1,h:1}, label:{x:32,y:18,text:"Boathouse"}, pathingBounds:{x:29,y:17,w:7,h:6} }) }
 );
 world.buildings.forEach((b)=>{
   const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
@@ -5053,7 +5067,7 @@ function auditBuildingAtlasMappings(){
 }
 auditBuildingAtlasMappings();
 
-const pond={x:-2,y:18,w:43,h:14,cx:20,cy:27};
+const pond={x:-8,y:17,w:58,h:18,cx:22,cy:28};
 for(let x=pond.x;x<pond.x+pond.w;x++){
   for(let y=pond.y;y<pond.y+pond.h;y++){
     const dx=(x+.5-pond.cx)/(pond.w/2), dy=(y+.5-pond.cy)/(pond.h/2);
@@ -5079,7 +5093,7 @@ world.props.push(
   {x:19,y:14,type:"well"},{x:22,y:14,type:"handcart"},{x:23,y:14,type:"crate"},
   {x:12,y:12,type:"lanternPost",layer:"above_entities"},{x:20,y:12,type:"lanternPost",layer:"above_entities"},
   {x:9,y:8,type:"smallGarden"},{x:28,y:8,type:"smallGarden"},{x:11,y:16,type:"barrel"},
-  {x:13,y:16,type:"stonePile"},{x:27,y:16,type:"crate"},{x:30,y:16,type:"barrel"},
+  {x:13,y:16,type:"stonePile"},{x:15,y:17,type:"crate"},{x:17,y:17,type:"barrel"},{x:23,y:17,type:"crate"},{x:27,y:16,type:"crate"},{x:30,y:16,type:"barrel"},{x:31,y:18,type:"crate"},
   {x:13,y:6,type:"signPost",layer:"above_entities"},
   {x:7,y:12,type:"bush"},{x:25,y:12,type:"bush"},{x:31,y:16,type:"bush"},
   {x:30,y:20,type:"grassTuft"},{x:32,y:20,type:"stonePile"},
