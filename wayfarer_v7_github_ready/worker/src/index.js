@@ -1755,9 +1755,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "34.2O";
+const WAYFARER_PHASE = "34.2O.1";
 const WAYFARER_BUILD_LABEL = "Spawn/Traversal Runtime Stabilization and QA Acceptance Gate";
-const ATLAS_SELECTOR_VERSION = "selector-v34.2o-spawn-candidate-contract-topology-closure";
+const ATLAS_SELECTOR_VERSION = "selector-v34.2o1-parse-fatal-recovery-served-bundle-gate";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -5775,7 +5775,7 @@ function emitUiStateQA(){
 function emitPhase342OAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="34.2O" && ATLAS_SELECTOR_VERSION==="selector-v34.2o-spawn-candidate-contract-topology-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="34.2O.1" && ATLAS_SELECTOR_VERSION==="selector-v34.2o1-parse-fatal-recovery-served-bundle-gate";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const savedSpawnPass=spawnValidationResult.mode==="saved" && spawnValidationResult.status==="PASS";
@@ -5794,7 +5794,7 @@ function emitPhase342OAcceptance(){
   if(sig===phase342JAcceptanceSignature) return;
   phase342JAcceptanceSignature=sig;
   if(status==="PASS"){
-    console.info("[Phase 34.2O Acceptance] status=PASS phase=34.2O buildConsistent=true spawnResolver=PASS savedSpawn=PASS freshSpawn=PASS activeTileMovement=PASS traversal=PASS uiState=PASS topology=PASS harborComposition=PASS renderAudit=PASS sourceTruth=PASS canvasRender=PASS collisionSpam=PASS consoleFatalErrors=none");
+    console.info("[Phase 34.2O.1 Acceptance] status=PASS phase=34.2O.1 buildConsistent=true spawnResolver=PASS savedSpawn=PASS freshSpawn=PASS activeTileMovement=PASS traversal=PASS uiState=PASS topology=PASS harborComposition=PASS renderAudit=PASS sourceTruth=PASS canvasRender=PASS collisionSpam=PASS consoleFatalErrors=none");
   }else{
     const reasons=[
       settled?"":"not_settled",
@@ -5810,7 +5810,7 @@ function emitPhase342OAcceptance(){
       harborStatus==="PASS"?"":"render_audit",
       sourceTruthPass?"":"source_truth"
     ].filter(Boolean).join(",");
-    console.info("[Phase 34.2O Acceptance] status=FAIL reasons="+reasons+" renderLoop=PASS canvasRender="+canvasRenderQaResult.status);
+    console.info("[Phase 34.2O.1 Acceptance] status=FAIL reasons="+reasons+" renderLoop=PASS canvasRender="+canvasRenderQaResult.status);
   }
 }
 function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
@@ -8982,9 +8982,9 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Build Phase : 33.1.4F — Atlas Runtime Authority Chain\n" +
+      "Build Phase : 34.2O.1 — Parse Fatal Recovery + Served Bundle Validation Gate\n" +
       "Selector Version : " + ATLAS_SELECTOR_VERSION + "\n" +
-      "Cache Bust : 33-1-4f-authority-chain-bottom-row-parsefix\n" +
+      "Cache Bust : 34-2o1-parse-fatal-recovery-served-bundle-gate\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
