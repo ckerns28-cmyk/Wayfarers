@@ -5013,11 +5013,14 @@ world.roads.push(
   { x:8,y:17,w:27,h:1 },
   { x:9,y:18,w:25,h:1 },
   { x:20,y:19,w:13,h:1 },
+  { x:26,y:16,w:8,h:1 },
+  { x:27,y:17,w:8,h:1 },
   // Wharf projections extending into harbor water.
   { x:10,y:19,w:2,h:4 },
-  { x:16,y:19,w:2,h:3 },
+  { x:16,y:19,w:2,h:5 },
+  { x:19,y:18,w:3,h:5 },
   { x:24,y:19,w:2,h:4 },
-  { x:31,y:19,w:2,h:3 },
+  { x:31,y:19,w:2,h:4 },
   // Inland connectors tying civic/residential fabric to waterfront commerce.
   { x:12,y:7,w:1,h:8 },
   { x:18,y:8,w:1,h:7 },
@@ -5028,7 +5031,7 @@ world.roads.push(
   { x:12,y:13,w:1,h:2 },
   { x:18,y:13,w:1,h:2 },
   { x:25,y:8,w:1,h:2 },
-  { x:30,y:17,w:1,h:2 },
+  { x:30,y:16,w:1,h:2 },
   // West-lane neighborhood tie-in.
   { x:6,y:10,w:4,h:1 }
 );
@@ -5041,7 +5044,7 @@ world.buildings.push(
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:7,w:4,h:4}, visualBounds:{x:4,y:7,w:4,h:4}, collision:{x:4,y:9,w:4,h:1}, interaction:{x:5,y:10,w:1,h:1}, interactRect:{x:5,y:10,w:1,h:1}, frontDoorTile:{x:5,y:10}, frontWalkBand:{ x:4, y:11, w:4, h:1 }, blockedVisualTiles:[{ x:4, y:7, w:4, h:2 }, { x:4, y:9, w:4, h:1 }, { x:4, y:10, w:1, h:1 }, { x:6, y:10, w:2, h:1 }], occlusionDepthLine:{ x:4, y:9, w:4, h:1 }, rearExclusionZone:{ x:4, y:7, w:4, h:2 }, label:{x:5,y:8,text:"Cottage"}, pathingBounds:{x:3,y:7,w:6,h:6} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:29, y:6, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:6,w:5,h:4}, collision:{x:29,y:8,w:5,h:2}, interaction:{x:31,y:9,w:1,h:1}, label:{x:31,y:7,text:"Residence"}, pathingBounds:{x:28,y:6,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:22, y:17, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:22,y:17,w:4,h:4}, collision:{x:22,y:19,w:4,h:2}, interaction:{x:23,y:21,w:1,h:1}, label:{x:23,y:18,text:"Outfitter"}, pathingBounds:{x:21,y:16,w:6,h:6} }) },
-  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:30, y:18, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:30,y:18,w:5,h:3}, collision:{x:30,y:20,w:5,h:1}, interaction:{x:32,y:21,w:1,h:1}, label:{x:32,y:18,text:"Boathouse"}, pathingBounds:{x:29,y:17,w:7,h:6} }) }
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:29, y:16, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:29,y:16,w:5,h:3}, collision:{x:29,y:18,w:5,h:1}, interaction:{x:31,y:17,w:1,h:1}, label:{x:31,y:16,text:"Boathouse"}, pathingBounds:{x:28,y:15,w:7,h:6} }) }
 );
 world.buildings.forEach((b)=>{
   const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
@@ -5085,7 +5088,7 @@ for(let y=3;y<=6;y++){ world.fences.push({x:16,y}); }   // garden plot west fenc
 for(let y=3;y<=6;y++){ world.fences.push({x:20,y}); }   // garden plot east fence — moved from x=23 so village hall isn't sitting on it
 for(let x=9;x<=14;x++){ world.fences.push({x,y:15}); }
 for(let x=24;x<=32;x++){ world.fences.push({x,y:15}); }
-for(let y=16;y<=19;y++){ world.fences.push({x:33,y}); }
+for(let y=18;y<=19;y++){ world.fences.push({x:33,y}); }
 world.fences.forEach(f=>world.blocked.add(keyOf(f.x,f.y)));
 
 world.props.push(
@@ -5093,7 +5096,9 @@ world.props.push(
   {x:19,y:14,type:"well"},{x:22,y:14,type:"handcart"},{x:23,y:14,type:"crate"},
   {x:12,y:12,type:"lanternPost",layer:"above_entities"},{x:20,y:12,type:"lanternPost",layer:"above_entities"},
   {x:9,y:8,type:"smallGarden"},{x:28,y:8,type:"smallGarden"},{x:11,y:16,type:"barrel"},
-  {x:13,y:16,type:"stonePile"},{x:15,y:17,type:"crate"},{x:17,y:17,type:"barrel"},{x:23,y:17,type:"crate"},{x:27,y:16,type:"crate"},{x:30,y:16,type:"barrel"},{x:31,y:18,type:"crate"},
+  {x:13,y:16,type:"stonePile"},{x:15,y:17,type:"crate"},{x:17,y:17,type:"barrel"},{x:23,y:17,type:"crate"},
+  {x:26,y:18,type:"crate"},{x:28,y:18,type:"barrel"},{x:30,y:18,type:"crate"},{x:32,y:18,type:"barrel"},
+  {x:21,y:19,type:"crate"},{x:21,y:20,type:"crate"},{x:20,y:22,type:"barrel"},
   {x:13,y:6,type:"signPost",layer:"above_entities"},
   {x:7,y:12,type:"bush"},{x:25,y:12,type:"bush"},{x:31,y:16,type:"bush"},
   {x:30,y:20,type:"grassTuft"},{x:32,y:20,type:"stonePile"},
