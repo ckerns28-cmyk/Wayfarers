@@ -1758,9 +1758,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.1D";
+const WAYFARER_PHASE = "35.1E";
 const WAYFARER_BUILD_LABEL = "Hearthvale Foundation Recovery Sprint";
-const ATLAS_SELECTOR_VERSION = "selector-v35.1d-contract-closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.1e-final-foundation-lock";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3390,7 +3390,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.1D' && ATLAS_SELECTOR_VERSION==='selector-v35.1d-contract-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.1E' && ATLAS_SELECTOR_VERSION==='selector-v35.1e-final-foundation-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -4200,7 +4200,7 @@ function emitHarborCompositionQA(){
   const wharfRects=world.roads.filter((r)=>r.y>=18&&r.h>=4&&r.w<=4);
   const wharfCount=wharfRects.length;
   const centralPierTiles=[[20,17],[20,18],[20,19],[20,20],[20,21]];
-  const centralPier=centralPierTiles.every(([x,y])=>hasRoad(x,y) && !world.pondWater.has(keyOf(x,y)));
+  const centralPier=centralPierTiles.every(([x,y])=>hasRoad(x,y) && canMoveTo(x,y));
   const inlandConnectorCount=world.roads.filter((r)=>r.w===1&&r.h>=6&&r.y<=8).length;
   const boathouse=world.buildings.find((row)=>row.id==="b_boathouse");
   const boathouseReachable=Boolean(boathouse?.interaction && !world.blocked.has(keyOf(boathouse.interaction.x,boathouse.interaction.y)));
@@ -4209,7 +4209,7 @@ function emitHarborCompositionQA(){
     return !!(b?.interaction && [[0,0],[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>hasRoad(b.interaction.x+dx,b.interaction.y+dy)));
   });
   const blockedRoadMismatches=Array.from(world.roadTiles).filter((tileKey)=>world.blocked.has(tileKey)).length;
-  const harborOnlyPass=waterfrontSpineContinuous&&wharfCount>=3&&centralPier&&boathouseReachable&&commercialFrontage&&inlandConnectorCount>=1&&blockedRoadMismatches===0;
+  const harborOnlyPass=waterfrontSpineContinuous&&wharfCount>=4&&centralPier&&boathouseReachable&&commercialFrontage&&inlandConnectorCount>=4&&blockedRoadMismatches===0;
   const gatePass=harborOnlyPass&&spawnQaResult.status==="PASS"&&traversalQaResult.status==="PASS";
   const status=gatePass ? "PASS" : "FAIL";
   const sig=JSON.stringify({ harborOnlyPass, gatePass, waterfrontSpineContinuous, wharfCount, centralPier, boathouseReachable, commercialFrontage, inlandConnectorCount, blockedRoadMismatches, spawnQa:spawnQaResult.status, traversalQa:traversalQaResult.status, status });
@@ -5352,9 +5352,9 @@ world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stoneP
 const treeData = [
   [1,1,"a"],[2,2,"b"],[3,3,"a"],[1,5,"c"],[2,7,"a"],[3,9,"b"],[1,11,"a"],[2,14,"c"],[1,17,"a"],[2,20,"b"],[3,22,"a"],
   [5,2,"a"],[7,2,"c"],[9,1,"b"],[11,2,"a"],[26,1,"c"],[28,2,"a"],[31,1,"b"],[34,2,"a"],[36,3,"c"],[37,6,"a"],[36,9,"b"],
-  [37,12,"a"],[35,14,"c"],[36,17,"a"],[37,20,"b"],[35,22,"a"],[32,22,"c"],[29,23,"a"],[26,22,"b"],[22,23,"a"],[17,23,"c"],
+  [37,12,"a"],[36,17,"a"],[37,20,"b"],[35,22,"a"],[32,22,"c"],[29,23,"a"],[26,22,"b"],[22,23,"a"],[17,23,"c"],
   [13,23,"a"],[10,22,"b"],[7,23,"a"],[5,22,"c"],
-  [30,5,"a"],[31,7,"b"],[30,9,"a"],[32,10,"c"],[29,20,"c"],
+  [30,5,"a"],[31,7,"b"],[32,10,"c"],[29,20,"c"],
   [6,6,"a"],[7,8,"b"],[6,18,"a"],[8,20,"c"],[9,5,"c"],[27,19,"b"],[24,20,"c"],[22,19,"a"],[19,21,"b"]
 ];
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
@@ -5681,7 +5681,7 @@ function getTraversalTargets(){
     { key:"mercantile door", tile:world.buildings.find((b)=>b.id==="b_mercantile")?.interaction },
     { key:"village hall door", tile:world.buildings.find((b)=>b.id==="b_village_hall")?.interaction },
     { key:"boathouse frontage", tile:world.buildings.find((b)=>b.id==="b_boathouse")?.interaction },
-    { key:"waterfront spine", tile:resolveTarget({ x:20, y:16 }, "b_mercantile") },
+    { key:"waterfront spine", tile:resolveTarget({ x:20, y:16 }, "b_boathouse") },
     { key:"mirror pond", tile:resolveTarget({ x:33, y:20 }, "b_boathouse") }
   ];
 }
@@ -5922,7 +5922,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.1D" && ATLAS_SELECTOR_VERSION==="selector-v35.1d-contract-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.1E" && ATLAS_SELECTOR_VERSION==="selector-v35.1e-final-foundation-lock";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const savedSpawnPass=spawnValidationResult.mode==="saved" && spawnValidationResult.status==="PASS";
@@ -5950,6 +5950,8 @@ function buildWayfarerQaReport(){
   const status=(!renderAuditSettled || !sourceTruthSettled)?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&consoleFatalErrors==="none") ? "PASS" : "FAIL");
   const failedDomains={};
   const addFailure=(k,pass,reason)=>{ if(pass) return; failedDomains[k]=reason; };
+  const includeFailures=status!=="PENDING_ASSETS";
+  if(includeFailures){
   addFailure("buildPhase",buildPhaseMatches,"phase_or_selector_mismatch");
   addFailure("savedSpawn",savedSpawnPass,"saved_spawn_validation_failed");
   addFailure("freshSpawn",freshSpawnPass,"fresh_spawn_validation_failed");
@@ -5966,6 +5968,7 @@ function buildWayfarerQaReport(){
   addFailure("routeTopology",topologyPass&&routeTileSweepPass,"route_topology_layout_mismatch");
   addFailure("questLoop",questLoopPass,"quest_loop_smoke_failed");
   if(consoleFatalErrors!=="none") failedDomains.fatalErrors="fatal_js_errors_present";
+  }
   const warnings=Array.from(new Set([
     ...Object.values(failedDomains),
     ...(latestRenderAuditStatus.pendingCount>0?["pending_assets"]:[])
@@ -6048,11 +6051,12 @@ function emitQuestLoopQA(){
   const quest=getActiveQuestSafe() || questSystem?.getQuest?.("the_still_water") || questSystem?.getQuest?.("still_water") || null;
   const stage=resolveStillWaterStageSafe();
   const hasStillWater=Boolean(quest && (quest.id==="still_water" || quest.id==="the_still_water"));
-  const stageValid=Number.isFinite(stage) && stage>=StillWaterQuestStage.NOT_STARTED && stage<=StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN_WITH_FRAGMENT;
   const stillWaterObjective=questSystem?.getObjective?.("the_still_water","speak_with_edrin") || questSystem?.getObjective?.("still_water","speak_with_edrin");
   const objectiveTextValue=String(objectiveText?.textContent||"").trim();
   const objectiveReady=Boolean(stillWaterObjective || objectiveTextValue.length>0);
-  const status=(hasStillWater && stageValid && objectiveReady)?"PASS":"PENDING_ASSETS";
+  const stageIsNullInitial=stage===null && hasStillWater && objectiveReady;
+  const stageValid=stageIsNullInitial || (Number.isFinite(stage) && stage>=StillWaterQuestStage.NOT_STARTED && stage<=StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN_WITH_FRAGMENT);
+  const status=(hasStillWater && stageValid && objectiveReady)?"PASS":"FAIL";
   questLoopQaResult={ status, hasStillWater, stage, stageValid, objectiveReady };
   const line="[Quest Loop QA] activeQuest="+(quest?.id||"none")+" stage="+String(stage)+" stageValid="+stageValid+" objectiveReady="+objectiveReady+" status="+status;
   if(line!==questLoopQaSignature){ questLoopQaSignature=line; console.info(line); }
