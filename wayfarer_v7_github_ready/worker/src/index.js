@@ -5462,6 +5462,12 @@ function isOverworldTerrainBlocked(x,y){
   const tileKey=keyOf(x,y);
   return world.blocked.has(tileKey) || world.pondBlocked.has(tileKey) || world.pondShore.has(tileKey);
 }
+function isHarborPierWharfTile(x,y){
+  if(!world.roadTiles.has(keyOf(x,y))) return false;
+  if(!world.pondWater.has(keyOf(x,y))) return false;
+  if(x<18 || x>22 || y<17 || y>23) return false;
+  return world.roadTiles.has(keyOf(x,16));
+}
 function tileInRect(tileX,tileY,rect){
   return !!rect && tileX>=rect.x && tileX<rect.x+rect.w && tileY>=rect.y && tileY<rect.y+rect.h;
 }
@@ -6073,24 +6079,13 @@ function buildWayfarerQaReport(){
 }
 async function copyWayfarerQA(){
   const payload=wayfarerQaReportState.report || buildWayfarerQaReport();
-  const text=JSON.stringify(payload);
+  const failedDomainKeys=Object.keys(payload.failedDomains||{});
+  const text="[Wayfarer QA Report] status="+payload.status+" phase="+payload.phase+" savedSpawn="+payload.domains.savedSpawnValidation+" freshSpawn="+payload.domains.freshSpawnResolver+" traversal="+payload.domains.traversalQA.status+" playerState="+payload.domains.playerStateQA+" uiState="+payload.domains.uiStateQA+" bootMode="+payload.domains.bootModeQA+" renderAudit="+payload.domains.buildingRenderAudit+" atlasProof="+payload.domains.atlasProof+" sourceTruth="+payload.domains.sourceTruth+" routeCollision="+payload.domains.routeCollision+" routeTopology="+payload.domains.routeTopology+" harborComposition="+payload.domains.harborComposition+" fatalErrors="+((payload.fatalJsErrorsSinceBoot.length===0&&payload.qaEmitterErrors.length===0)?"none":String(payload.fatalJsErrorsSinceBoot.length+payload.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(payload.failedDomains):"");
   try{
     await navigator.clipboard.writeText(text);
     console.info("[Wayfarer QA Report] copied_to_clipboard=true size="+text.length);
   }catch(err){
-    let fallback=document.getElementById("qaReportFallback");
-    if(!fallback){
-      fallback=document.createElement("textarea");
-      fallback.id="qaReportFallback";
-      fallback.setAttribute("readonly","readonly");
-      fallback.style.position="fixed"; fallback.style.left="12px"; fallback.style.right="12px"; fallback.style.bottom="12px"; fallback.style.height="160px"; fallback.style.zIndex="9999";
-      document.body.appendChild(fallback);
-    }
-    fallback.value=text;
-    fallback.focus();
-    fallback.select();
-    console.info("[Wayfarer QA Report] copied_to_clipboard=false fallback=textarea size="+text.length);
-    console.info(text);
+    console.info("[Wayfarer QA Report Copy Fallback] "+text);
   }
   return text;
 }
@@ -6139,7 +6134,7 @@ function emitPhase351BAcceptance(){
   if(report.status.startsWith("PENDING")) return;
   if(line===wayfarerQaReportSignature) return;
   wayfarerQaReportSignature=line;
-  wayfarerQaReportState={ status:report.status, generatedAt:Date.now(), report, text:JSON.stringify(report) };
+  wayfarerQaReportState={ status:report.status, generatedAt:Date.now(), report, text:line };
   window.__WAYFARER_QA_REPORT=report;
   console.info(line);
 }
@@ -9468,7 +9463,7 @@ function getMovementBlockDiagnostics(x,y){
   if(isInMirrorCave && mirrorCave.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
   if(isInAbandonedTollhouse && abandonedTollhouse.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
   if(!isInMirrorCave && !isInAbandonedTollhouse){
-    if(world.pondWater.has(tileKey)){ causes.push("water"); sourceFlags.water=true; }
+    if(world.pondWater.has(tileKey) && !isHarborPierWharfTile(x,y)){ causes.push("water"); sourceFlags.water=true; }
     if(world.pondShore.has(tileKey) && !isTraversalRouteTile){ causes.push("terrain"); sourceFlags.terrain=true; }
     if(blockingFence && !hearthvaleTraversalAuthority.nonBlockingFenceTiles.has(tileKey)){ causes.push("fence"); sourceFlags.fence=true; }
     if(blockingTree){ causes.push("terrain"); sourceFlags.terrain=true; }
