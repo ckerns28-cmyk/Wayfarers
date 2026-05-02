@@ -1758,9 +1758,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.0A";
-const WAYFARER_BUILD_LABEL = "First Playable Acceptance Hardening";
-const ATLAS_SELECTOR_VERSION = "selector-v35.0a-first-playable-acceptance-hardening";
+const WAYFARER_PHASE = "35.1B";
+const WAYFARER_BUILD_LABEL = "Hearthvale Foundation Recovery Sprint";
+const ATLAS_SELECTOR_VERSION = "selector-v35.1b-hearthvale-foundation-recovery";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3255,6 +3255,8 @@ const COLLISION_SPAM_QA_THRESHOLD={ suppressed:12000, uniqueSignatures:75 };
 let traversalTopologyQaResult={ status:"FAIL", blockedRoadMismatches:Infinity, hiddenFenceBlockers:0, hiddenTerrainBlockers:0, hiddenWaterBlockers:0, npcRouteBlockers:0, propRouteBlockers:0, buildingRouteBlockers:0, parcelOnlyBlocks:0, sampleBlockedTiles:[] };
 let routeTileSweepQaResult={ status:"PENDING", scanned:0, unexpectedBlockedEdges:Infinity, examples:[] };
 let routeCollisionQaResult={ status:"PENDING", scanned:0, invalidHiddenBlockers:Infinity, intentionalBlocks:0, examples:[] };
+let questLoopQaSignature="";
+let questLoopQaResult={ status:"FAIL", hasStillWater:false, stage:-1, stageValid:false, objectiveReady:false };
 let collisionSpamQaResult={ status:"PASS", suppressed:0, uniqueSignatures:0 };
 let playerStateQaSignature="";
 let mobileQaSummaryLogged=false;
@@ -3388,7 +3390,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.0A' && ATLAS_SELECTOR_VERSION==='selector-v35.0a-first-playable-acceptance-hardening';
+  const proofHudConsistent=WAYFARER_PHASE==='35.1B' && ATLAS_SELECTOR_VERSION==='selector-v35.1b-hearthvale-foundation-recovery';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -4301,7 +4303,7 @@ function classifyRouteTiles(){
   const intentionalBlockedRouteTiles=new Set();
   const invalidHiddenBlockers=new Set();
   const examples=[];
-  const intentionalCauses=new Set(["npc","enemy","prop","sign","building","water","shore","out_of_bounds","bounds"]);
+  const intentionalCauses=new Set(["npc","enemy"]);
   const explicitIntentionalBlockedRouteTiles=new Set();
   visualRouteTiles.forEach((tileKey)=>{
     const [x,y]=tileKey.split(",").map(Number);
@@ -4348,6 +4350,922 @@ function computeFinalMissingAssetTokens(){
   //  - drop tokens classified as non-fatal/transient warnings.
   const resolvedSpriteIds=new Set();
   world.buildings.forEach((b)=>{
+    if(buildingRenderDiagnostics.atlasBuildings.has(b.id)){
+      const sId=getBuildingSpriteId(b);
+      if(sId) resolvedSpriteIds.add(sId);
+    }
+  });
+  return [...missingAssetWarnings].filter((token)=>{
+    if(!token.startsWith("building_sprite:")) return true;
+    const parts=token.split(":");
+    const sId=parts[1];
+    const reason=parts.slice(2).join(":");
+    if(isNonFatalAtlasReason(reason)) return false;
+    if(sId && resolvedSpriteIds.has(sId)) return false;
+    return true;
+  });
+}
+
+function getBuildingAtlasDebugStatus(){
+  const buildingInfo=atlasRuntimeInfo.buildings||{};
+  const propInfo=atlasRuntimeInfo.props||{};
+  const buildingSheet=atlasImages.buildings;
+  const propSheet=atlasImages.props;
+  const buildingEntries=Object.values(ATLAS_BUILDING_METADATA).map((entry)=>{
+    // Resolver provides authoritative crop/draw/anchor; static entry provides structural metadata.
+    const resolved=resolveAtlasSpriteRuntimeEntry(entry.id);
+    const auditEntry={
+      ...entry,
+      crop:resolved?.crop || entry.crop,
+      drawW:resolved?.drawW || entry.drawW,
+      drawH:resolved?.drawH || entry.drawH,
+      anchorX:resolved?.anchorX !== undefined ? resolved.anchorX : entry.anchorX,
+      anchorY:resolved?.anchorY !== undefined ? resolved.anchorY : entry.anchorY
+    };
+    const validationReason=getAtlasBuildingEntryValidation(auditEntry, buildingInfo, buildingSheet);
+    return {
+      id:entry.id,
+      role:entry.role,
+      renderStatus:validationReason ? "FALLBACK" : "ATLAS",
+      crop:auditEntry.crop,
+      cropSource:resolved?.cropSource||"static_metadata",
+      draw:{ w:auditEntry.drawW, h:auditEntry.drawH },
+      anchor:{ x:auditEntry.anchorX, y:auditEntry.anchorY },
+      footprint:entry.footprint,
+      collision:entry.collisionRect,
+      interaction:entry.interactionRect,
+      doorTile:entry.doorTile,
+      labelAnchor:entry.labelAnchor,
+      decorExclusion:entry.decorExclusionRect,
+      productionReady:entry.productionReady===true,
+      fallbackReason:validationReason
+    };
+  });
+  return {
+    buildingRequestedUrl:buildingInfo.selectedUrl || buildingInfo.urls?.[0] || "n/a",
+    buildingLoaded:!!buildingInfo.loaded,
+    buildingNaturalWidth:buildingInfo.width || buildingSheet?.naturalWidth || 0,
+    buildingNaturalHeight:buildingInfo.height || buildingSheet?.naturalHeight || 0,
+    assetRequestedUrl:propInfo.selectedUrl || propInfo.urls?.[0] || "n/a",
+    assetLoaded:!!propInfo.loaded,
+    assetNaturalWidth:propInfo.width || propSheet?.naturalWidth || 0,
+    assetNaturalHeight:propInfo.height || propSheet?.naturalHeight || 0,
+    spriteRenderingPathActive:buildingRenderDiagnostics.atlasBuildings.size>0 || buildingSpriteProofState.drawn,
+    fallbackRenderingUsed:buildingRenderDiagnostics.fallbackBuildings.size>0,
+    atlasProofEnabled:USE_HEARTHVALE_ATLAS_PROOF,
+    atlasProofDebugEnabled:USE_HEARTHVALE_ATLAS_PROOF_DEBUG,
+    atlasProofSelectedAtlasFilename:atlasProofDiagnostics.selectedAtlasFilename,
+    atlasProofRequestedAssetUrl:atlasProofDiagnostics.requestedAssetUrl,
+    atlasProofImageLoaded:atlasProofDiagnostics.imageLoaded,
+    atlasProofNaturalWidth:atlasProofDiagnostics.naturalWidth,
+    atlasProofNaturalHeight:atlasProofDiagnostics.naturalHeight,
+    atlasProofBuildingId:atlasProofDiagnostics.selectedBuildingId,
+    atlasProofBuildingRole:atlasProofDiagnostics.selectedBuildingRole,
+    atlasProofSpriteId:atlasProofDiagnostics.selectedSpriteId||"n/a",
+    atlasProofCrop:formatRect(atlasProofDiagnostics.crop),
+    atlasProofDrawSize:atlasProofDiagnostics.drawSize ? (atlasProofDiagnostics.drawSize.w + "x" + atlasProofDiagnostics.drawSize.h) : "n/a",
+    atlasProofRenderPath:atlasProofDiagnostics.usedAtlasRender ? "ATLAS" : "FALLBACK",
+    atlasProofFallbackReason:atlasProofDiagnostics.fallbackReason || "none",
+    buildingEntries
+  };
+}
+function drawBuildingSpriteProof(){
+  if(!BUILDING_SPRITE_PROOF_DEBUG) return;
+  const spriteId="village_hall_meeting_house";
+  const sprite=atlasManifests.buildings.sprites[spriteId];
+  if(!sprite) return;
+  const panelX=12;
+  const panelY=86;
+  const scale=0.22;
+  const drawW=Math.max(1,Math.round(sprite.sw*scale));
+  const drawH=Math.max(1,Math.round(sprite.sh*scale));
+  ctx.save();
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.imageSmoothingEnabled=false;
+  ctx.fillStyle="rgba(8,14,22,.82)";
+  ctx.fillRect(panelX,panelY,drawW+18,drawH+28);
+  ctx.strokeStyle="rgba(145,194,255,.75)";
+  ctx.strokeRect(panelX+0.5,panelY+0.5,drawW+17,drawH+27);
+  const didDraw=drawAtlasSprite("buildings", spriteId, panelX+9, panelY+14, drawW, drawH);
+  buildingSpriteProofState.attempted=true;
+  buildingSpriteProofState.drawn=!!didDraw;
+  ctx.fillStyle=didDraw ? "rgba(189,231,178,.95)" : "rgba(255,177,177,.95)";
+  ctx.font="11px ui-monospace, monospace";
+  ctx.fillText("Sprite proof: " + (didDraw ? "drawImage OK" : "fallback"), panelX+8, panelY+11);
+  ctx.restore();
+}
+function getBuildingSpriteId(building){
+  if(!building) return null;
+  const explicitSpriteId=typeof building.spriteId==="string" ? building.spriteId : null;
+  if(explicitSpriteId && atlasManifests.buildings?.sprites?.[explicitSpriteId]) return explicitSpriteId;
+  const byMap=BUILDING_SPRITE_ID_BY_BUILDING_ID[building.id] || BUILDING_SPRITE_ID_BY_ROLE[building.role] || null;
+  if(byMap && atlasManifests.buildings?.sprites?.[byMap]) return byMap;
+  const candidates=[
+    explicitSpriteId,
+    byMap,
+    building.role,
+    building.id?.replace(/^b_/,""),
+    building.role==="inn_tavern" ? "inn_tavern_v1" : null,
+    building.role==="mercantile" ? "mercantile_shop" : null,
+    building.role==="village_hall" ? "village_hall_meeting_house" : null
+  ].filter(Boolean);
+  return candidates.find((candidate)=>atlasManifests.buildings?.sprites?.[candidate]) || byMap || explicitSpriteId || null;
+}
+function drawBuildingFallbackSprite(building){
+  const visual=building.visual || { x:building.x, y:building.y, w:building.w, h:building.h };
+  const style=BUILDING_FALLBACK_STYLE_BY_ROLE[building.role] || BUILDING_FALLBACK_STYLE_BY_ROLE.residence_small;
+  const roofMidTile=assets.building[style.roof] || assets.building.roofC;
+  const wallTile=assets.building[style.wall] || assets.building.wall;
+  const windowTile=assets.building[style.window] || assets.building.window;
+  const doorTile=assets.building[style.door] || assets.building.door;
+  const drawTile=(img,tx,ty)=>{
+    if(!img || !img.complete || img.naturalWidth<=0) return false;
+    const p=tileToScreen(tx,ty);
+    ctx.drawImage(img,p.x,p.y,TILE,TILE);
+    return true;
+  };
+  for(let y=0;y<visual.h;y++){
+    for(let x=0;x<visual.w;x++){
+      const tx=visual.x+x;
+      const ty=visual.y+y;
+      if(y===0){
+        const roofTile=(x===0) ? assets.building.roofL : (x===visual.w-1 ? assets.building.roofR : roofMidTile);
+        drawTile(roofTile, tx, ty);
+        continue;
+      }
+      drawTile(wallTile, tx, ty);
+    }
+  }
+  if(style.dormer && visual.w>=3) drawTile(assets.building.roofDormer, visual.x+Math.floor(visual.w/2), visual.y);
+  const interaction=building.interaction || { x:visual.x+Math.floor(visual.w/2), y:visual.y+visual.h-1 };
+  drawTile(doorTile, interaction.x, interaction.y);
+  if(visual.h>=3){
+    const windowY=visual.y+Math.min(visual.h-2, 2);
+    drawTile(windowTile, visual.x+1, windowY);
+    if(visual.w>=4) drawTile(windowTile, visual.x+visual.w-2, windowY);
+  }
+}
+
+function buildTerrainTiles() {
+  const grassBases = ["#4f7347", "#517548", "#4c7044", "#53774a"];
+  const forestBases = [palette.forestGrass[0], "#3f6540", palette.forestGrass[1], "#314f34"];
+  for (let i=0;i<4;i++) {
+    assets.grass.push(makeTile((p)=>{
+      p.fillStyle = grassBases[i]; p.fillRect(0,0,32,32);
+      for (let y=0;y<32;y+=4){
+        for (let x=0;x<32;x+=4){
+          const n=rng(x+i*7,y+i*5,31+i);
+          if(n>0.92){ p.fillStyle = "rgba(198,226,162,.03)"; p.fillRect(x,y,3,1); }
+          else if(n<0.06){ p.fillStyle = "rgba(29,47,28,.055)"; p.fillRect(x,y+1,3,1); }
+        }
+      }
+      p.fillStyle = "rgba(220,239,180,.028)";
+      for (let k=0;k<8;k++) {
+        const gx = ((k*5+i*6)%30)+1;
+        const gy = ((k*7+i*3)%25)+3;
+        const dotW = rng(k+i,gy,145)>0.82 ? 2 : 1;
+        p.fillRect(gx,gy,dotW,1);
+      }
+      p.fillStyle="rgba(255,255,255,.012)"; p.fillRect(0,0,32,1);
+      p.fillStyle="rgba(0,0,0,.048)"; p.fillRect(0,30,32,2);
+    }));
+    if(i<4){
+      assets.forestGrass.push(makeTile((p)=>{
+        p.fillStyle=forestBases[i]; p.fillRect(0,0,32,32);
+        for(let y=0;y<32;y+=2){
+          for(let x=0;x<32;x+=2){
+            const n=rng(x+i*8,y+i*6,53+i);
+            if(n>0.83){ p.fillStyle="rgba(112,152,96,.1)"; p.fillRect(x,y,2,1); }
+            else if(n<0.14){ p.fillStyle="rgba(18,31,20,.2)"; p.fillRect(x,y,2,1); }
+          }
+        }
+        p.fillStyle="rgba(0,0,0,.15)"; p.fillRect(0,29,32,3);
+      }));
+    }
+
+    if(i<4) {
+      assets.road.push(makeTile((p)=>{
+        const base = i%2? "#7f6847" : "#7a6344";
+        p.fillStyle = base; p.fillRect(0,0,32,32);
+        p.fillStyle = "rgba(98,78,53,.14)";
+        for(let y=0;y<32;y+=5){
+          const wob=Math.floor((Math.sin((y+i)*0.45)+1.3)*1.5);
+          p.fillRect((y+i*2)%11, y, 7+wob, 1);
+        }
+        p.fillStyle = "rgba(196,166,128,.09)";
+        for(let k=0;k<6;k++){
+          const x=((k*7+i*5)%26)+2;
+          const y=((k*6+i*8)%24)+4;
+          p.fillRect(x,y,2+(k%2),1);
+        }
+        p.fillStyle="rgba(0,0,0,.06)";
+        p.fillRect(0,0,32,2);
+        p.fillStyle = "rgba(0,0,0,.1)"; p.fillRect(0,29,32,3);
+      }));
+    }
+
+    assets.shore.push(makeTile((p)=>{
+      p.fillStyle = i%2?palette.shore[0]:palette.shore[1]; p.fillRect(0,0,32,32);
+      p.fillStyle = "rgba(132,111,79,.46)"; p.fillRect(0,22,32,10);
+      p.fillStyle = "rgba(194,178,132,.22)"; p.fillRect(0,20,32,2);
+      for(let x=3;x<30;x+=6){ p.fillStyle="rgba(90,116,72,.45)"; p.fillRect(x,14+(x%5),2,8); }
+    }));
+  }
+
+  for(let i=0;i<4;i++) {
+    assets.roadEdge.push(makeTile((p)=>{
+      p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32);
+      p.fillStyle=i%2? "rgba(123,102,74,.52)" : "rgba(138,114,84,.46)";
+      for(let x=0;x<32;x+=2){
+        const h = 2 + Math.floor(rng(x,i,77) * 3);
+        p.fillRect(x,32-h,2,h);
+      }
+      p.fillStyle="rgba(78,104,57,.22)"; p.fillRect(0,0,32,2);
+    }));
+  }
+
+  assets.detail = [
+    makeTile((p)=>{ p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32); p.fillStyle="#7f7a71"; p.fillRect(12,18,2,2); p.fillRect(15,17,2,2); p.fillStyle="#9c988d"; p.fillRect(13,16,1,1); }),
+    makeTile((p)=>{ p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32); p.fillStyle="#704f35"; p.fillRect(8,20,7,3); p.fillRect(14,19,5,2); p.fillStyle="rgba(156,124,86,.42)"; p.fillRect(10,20,5,1); }),
+    makeTile((p)=>{ p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32); p.fillStyle="#587e45"; p.fillRect(18,17,1,5); p.fillRect(20,16,1,6); p.fillRect(22,18,1,4); p.fillStyle="#8fb871"; p.fillRect(19,16,1,2); p.fillRect(21,15,1,2); })
+  ];
+
+  assets.water.deep = makeTile((p)=>{
+    p.fillStyle = palette.water[1]; p.fillRect(0,0,32,32);
+    const g = p.createLinearGradient(0,0,0,32);
+    g.addColorStop(0,"#3a6b99"); g.addColorStop(.55,palette.water[1]); g.addColorStop(1,palette.water[0]);
+    p.fillStyle = g; p.fillRect(0,0,32,32);
+    p.fillStyle = "rgba(126,187,226,.17)";
+    for(let y=3;y<28;y+=5) p.fillRect(3+(y%4),y,24,1);
+    p.fillStyle = "rgba(201,235,255,.12)"; p.fillRect(2,4,19,2);
+  });
+  assets.water.shallow = makeTile((p)=>{
+    const g = p.createLinearGradient(0,0,0,32);
+    g.addColorStop(0,"#79acd2"); g.addColorStop(.35,palette.water[2]); g.addColorStop(1,"#356996");
+    p.fillStyle = g; p.fillRect(0,0,32,32);
+    p.fillStyle = "rgba(195,230,248,.24)"; p.fillRect(1,1,30,5);
+    p.fillStyle = "rgba(63,115,165,.28)"; p.fillRect(0,24,32,8);
+    p.fillStyle = "rgba(225,246,255,.24)"; p.fillRect(3,12,24,2);
+  });
+  assets.water.edge = makeTile((p)=>{
+    p.fillStyle="rgba(0,0,0,0)"; p.fillRect(0,0,32,32);
+    const g = p.createLinearGradient(0,0,0,32);
+    g.addColorStop(0,"rgba(235,222,176,.32)");
+    g.addColorStop(.4,"rgba(185,198,149,.2)");
+    g.addColorStop(1,"rgba(84,124,155,0)");
+    p.fillStyle=g; p.fillRect(0,0,32,32);
+    p.fillStyle="rgba(245,245,220,.22)"; p.fillRect(1,1,30,1);
+  });
+}
+
+function makeBuildingTiles(){
+  assets.building.roofL = makeTile((p)=>{
+    p.fillStyle="#835147"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6d4037"; for(let y=0;y<24;y++) p.fillRect(0,y,Math.max(0,12-Math.floor(y/2)),1);
+    p.fillStyle="#bf8774"; for(let y=3;y<24;y+=3) p.fillRect(4,y,25,1);
+    p.fillStyle="#3b251f"; p.fillRect(0,24,32,8);
+    p.fillStyle="rgba(255,231,206,.18)"; p.fillRect(3,3,15,2);
+  });
+  assets.building.roofC = makeTile((p)=>{
+    p.fillStyle="#87554a"; p.fillRect(0,0,32,32);
+    p.fillStyle="#bc816f"; for(let y=2;y<24;y+=3) p.fillRect(2,y,28,1);
+    p.fillStyle="rgba(73,42,33,.2)"; for(let x=3;x<29;x+=6) p.fillRect(x,5,1,17);
+    p.fillStyle="#4a2b24"; p.fillRect(0,23,32,9);
+    p.fillStyle="rgba(235,197,157,.16)"; p.fillRect(2,24,28,1);
+  });
+  assets.building.roofR = makeTile((p)=>{
+    p.fillStyle="#835147"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6d4037"; for(let y=0;y<24;y++){const w=Math.max(0,12-Math.floor(y/2)); p.fillRect(32-w,y,w,1);}
+    p.fillStyle="#bf8774"; for(let y=3;y<24;y+=3) p.fillRect(3,y,25,1);
+    p.fillStyle="#3b251f"; p.fillRect(0,24,32,8);
+    p.fillStyle="rgba(255,231,206,.18)"; p.fillRect(14,3,15,2);
+  });
+  assets.building.roofSlate = makeTile((p)=>{
+    p.fillStyle="#6d6966"; p.fillRect(0,0,32,32);
+    p.fillStyle="#8a847f"; for(let y=2;y<24;y+=3) p.fillRect(3,y,26,1);
+    p.fillStyle="#4a4746"; for(let x=4;x<30;x+=7) p.fillRect(x,4,1,18);
+    p.fillStyle="#353334"; p.fillRect(0,23,32,9);
+    p.fillStyle="rgba(206,212,221,.16)"; p.fillRect(4,4,18,1);
+  });
+  assets.building.roofDormer = makeTile((p)=>{
+    p.drawImage(assets.building.roofC,0,0);
+    p.fillStyle="#6f4d35"; p.fillRect(9,8,14,10);
+    p.fillStyle="#4f3624"; p.fillRect(10,9,12,9);
+    p.fillStyle="#a6c2d6"; p.fillRect(12,10,8,6);
+    p.fillStyle="#2d3e4e"; p.fillRect(15,10,1,6);
+    p.fillStyle="rgba(232,246,255,.34)"; p.fillRect(12,10,7,1);
+  });
+  assets.building.wall = makeTile((p)=>{
+    p.fillStyle="#b8ad98"; p.fillRect(0,0,32,32);
+    p.fillStyle="#d4c8af"; p.fillRect(0,0,32,5);
+    p.fillStyle="#7b6d5b"; p.fillRect(0,28,32,4);
+    p.fillStyle="rgba(84,63,41,.16)"; for(let x=0;x<32;x+=8) p.fillRect(x,5,1,23);
+    p.fillStyle="rgba(255,250,236,.06)"; for(let y=8;y<28;y+=6) p.fillRect(2,y,28,1);
+    p.fillStyle="rgba(34,26,19,.14)"; p.fillRect(29,0,3,32);
+  });
+  assets.building.wallTimber = makeTile((p)=>{
+    p.fillStyle="#d4c3a8"; p.fillRect(0,0,32,32);
+    p.fillStyle="#8b6544"; p.fillRect(0,0,32,4); p.fillRect(0,28,32,4);
+    p.fillStyle="#7a5538"; p.fillRect(4,4,3,24); p.fillRect(25,4,3,24);
+    p.fillStyle="#7a5538"; p.fillRect(14,4,3,24);
+    p.fillStyle="#a9825b"; p.fillRect(7,4,7,24); p.fillRect(17,4,8,24);
+    p.fillStyle="rgba(255,243,218,.08)"; p.fillRect(8,7,6,1); p.fillRect(18,10,7,1);
+  });
+  assets.building.wallBrick = makeTile((p)=>{
+    p.fillStyle="#8f6552"; p.fillRect(0,0,32,32);
+    p.fillStyle="#6e4a3a"; for(let y=4;y<28;y+=5) p.fillRect(0,y,32,1);
+    p.fillStyle="#a97b62"; for(let x=2;x<30;x+=8){ for(let y=1;y<29;y+=10) p.fillRect(x,y,1,3); }
+    p.fillStyle="#5a3a2f"; p.fillRect(0,28,32,4);
+    p.fillStyle="rgba(255,215,185,.08)"; p.fillRect(2,3,10,1);
+  });
+  assets.building.window = makeTile((p)=>{
+    p.drawImage(assets.building.wall,0,0);
+    p.fillStyle="#5d4330"; p.fillRect(8,8,16,13);
+    p.fillStyle="#2f241b"; p.fillRect(9,9,14,11);
+    p.fillStyle="#9fbfd5"; p.fillRect(10,10,12,9);
+    p.fillStyle="#42576a"; p.fillRect(15,10,2,9); p.fillRect(10,14,12,1);
+    p.fillStyle="rgba(240,248,255,.35)"; p.fillRect(11,10,9,1);
+  });
+  assets.building.windowTall = makeTile((p)=>{
+    p.drawImage(assets.building.wallTimber,0,0);
+    p.fillStyle="#5d4330"; p.fillRect(10,6,12,18);
+    p.fillStyle="#2f241b"; p.fillRect(11,7,10,16);
+    p.fillStyle="#a8c8dc"; p.fillRect(12,8,8,14);
+    p.fillStyle="#456074"; p.fillRect(15,8,1,14); p.fillRect(12,15,8,1);
+    p.fillStyle="rgba(248,253,255,.4)"; p.fillRect(13,8,6,1);
+  });
+  assets.building.windowWide = makeTile((p)=>{
+    p.drawImage(assets.building.wallBrick,0,0);
+    p.fillStyle="#513726"; p.fillRect(6,10,20,11);
+    p.fillStyle="#2b2018"; p.fillRect(7,11,18,9);
+    p.fillStyle="#98b8ce"; p.fillRect(8,12,16,7);
+    p.fillStyle="#3f586e"; p.fillRect(15,12,1,7);
+    p.fillStyle="rgba(240,248,255,.32)"; p.fillRect(9,12,11,1);
+  });
+  assets.building.door = makeTile((p)=>{
+    p.drawImage(assets.building.wall,0,0);
+    p.fillStyle="#6a4a35"; p.fillRect(8,7,16,24);
+    p.fillStyle="#3a291d"; p.fillRect(9,8,14,22);
+    p.fillStyle="#ba8a58"; p.fillRect(15,10,2,20);
+    p.fillStyle="#e5bd89"; p.fillRect(20,21,2,2);
+    p.fillStyle="rgba(246,222,171,.2)"; p.fillRect(10,10,4,18);
+    p.fillStyle="rgba(0,0,0,.23)"; p.fillRect(8,30,16,1);
+  });
+  assets.building.doorPorch = makeTile((p)=>{
+    p.drawImage(assets.building.wallTimber,0,0);
+    p.fillStyle="#6a4b34"; p.fillRect(9,8,14,19);
+    p.fillStyle="#33261c"; p.fillRect(10,9,12,17);
+    p.fillStyle="#b98754"; p.fillRect(15,11,1,14);
+    p.fillStyle="#8a6444"; p.fillRect(6,24,20,2);
+    p.fillStyle="#a67c57"; p.fillRect(5,26,22,3);
+    p.fillStyle="rgba(236,213,181,.22)"; p.fillRect(11,10,3,14);
+  });
+  assets.building.doorShop = makeTile((p)=>{
+    p.drawImage(assets.building.wallBrick,0,0);
+    p.fillStyle="#6f4d36"; p.fillRect(7,10,18,18);
+    p.fillStyle="#32241a"; p.fillRect(8,11,16,16);
+    p.fillStyle="#b58959"; p.fillRect(15,12,1,13);
+    p.fillStyle="#9f744f"; p.fillRect(6,27,20,3);
+    p.fillStyle="#c89d6f"; p.fillRect(9,8,14,2);
+    p.fillStyle="rgba(234,206,170,.2)"; p.fillRect(10,12,3,13);
+  });
+}
+
+function makeTreeSprites(){
+  function tree(canopy,shade,trunk){
+    return makeTile((p)=>{
+      p.fillStyle=trunk; p.fillRect(14,17,4,12);
+      p.fillStyle=shade; p.fillRect(9,10,14,9);
+      p.fillStyle=canopy; p.fillRect(6,6,20,9);
+      p.fillStyle="rgba(220,255,196,.14)"; p.fillRect(8,8,8,2);
+      p.fillStyle="rgba(0,0,0,.2)"; p.fillRect(9,15,14,3);
+    });
+  }
+  assets.tree.a = tree("#5f864b", "#3d5f34", "#6c4c32");
+  assets.tree.b = tree("#4f7640", "#324f2b", "#5e422c");
+  assets.tree.c = tree("#73945b", "#4c6d40", "#775338");
+}
+
+function makeFenceTiles(){
+  for(let i=0;i<3;i++) assets.fence.push(makeTile((p)=>{
+    const rail = i===1 ? "#876448" : i===2 ? "#7b5a3f" : palette.fence[0];
+    p.fillStyle = rail; p.fillRect(2,11,28,4); p.fillRect(2,17,28,3);
+    p.fillStyle = palette.fence[1]; p.fillRect(5,4,4,24); p.fillRect(23,4,4,24);
+    p.fillStyle = palette.fence[2]; p.fillRect(2,10,28,1); p.fillRect(2,16,28,1);
+    p.fillStyle = "rgba(255,229,189,.16)"; p.fillRect(3,11,26,1);
+    p.fillStyle = "rgba(0,0,0,.16)"; p.fillRect(2,20,28,1);
+  }));
+}
+
+function makeShadowTiles(){
+  assets.shadow.softTile = makeTile((p)=>{
+    p.clearRect(0,0,32,32);
+    const g = p.createRadialGradient(12,12,2,17,17,15);
+    g.addColorStop(0,"rgba(8,12,18,.2)");
+    g.addColorStop(.55,"rgba(8,12,18,.12)");
+    g.addColorStop(1,"rgba(8,12,18,0)");
+    p.fillStyle = g;
+    p.fillRect(0,0,32,32);
+  });
+
+  assets.shadow.treeCircle = makeTile((p)=>{
+    p.clearRect(0,0,32,32);
+    p.fillStyle = "rgba(7,11,16,.11)";
+    p.beginPath();
+    p.ellipse(18,24,8,4,0,0,Math.PI*2);
+    p.fill();
+    p.fillStyle = "rgba(7,11,16,.06)";
+    p.beginPath();
+    p.ellipse(19,24,10,5,0,0,Math.PI*2);
+    p.fill();
+  });
+
+  assets.shadow.oval = makeTile((p)=>{
+    p.clearRect(0,0,32,32);
+    p.fillStyle = "rgba(7,11,16,.17)";
+    p.beginPath();
+    p.ellipse(18,25,8,4,0,0,Math.PI*2);
+    p.fill();
+    p.fillStyle = "rgba(7,11,16,.09)";
+    p.beginPath();
+    p.ellipse(19,25,10,5,0,0,Math.PI*2);
+    p.fill();
+  });
+
+  assets.shadow.buildingRight = makeTile((p)=>{
+    p.clearRect(0,0,32,32);
+    const g = p.createLinearGradient(0,0,32,0);
+    g.addColorStop(0,"rgba(8,12,18,0)");
+    g.addColorStop(.55,"rgba(8,12,18,.08)");
+    g.addColorStop(1,"rgba(8,12,18,.18)");
+    p.fillStyle = g;
+    p.fillRect(0,2,32,30);
+  });
+
+  assets.shadow.buildingBottom = makeTile((p)=>{
+    p.clearRect(0,0,32,32);
+    const g = p.createLinearGradient(0,0,0,32);
+    g.addColorStop(0,"rgba(8,12,18,0)");
+    g.addColorStop(.52,"rgba(8,12,18,.08)");
+    g.addColorStop(1,"rgba(8,12,18,.2)");
+    p.fillStyle = g;
+    p.fillRect(0,0,32,32);
+  });
+}
+
+function makePropSprites(){
+  const sheet = document.createElement("canvas");
+  sheet.width = 480;
+  sheet.height = 32;
+  const p = sheet.getContext("2d");
+  p.imageSmoothingEnabled = false;
+  p.clearRect(0,0,480,32);
+
+  function cell(col, drawFn){
+    p.save();
+    p.translate(col*32,0);
+    drawFn(p);
+    p.restore();
+  }
+
+  cell(0,(q)=>{ // barrel
+    q.fillStyle="#6f4d31"; q.fillRect(8,7,16,20);
+    q.fillStyle="#8e6645"; q.fillRect(10,9,12,16);
+    q.fillStyle="#3f2b1c"; q.fillRect(8,11,16,2); q.fillRect(8,20,16,2);
+    q.fillStyle="rgba(255,225,184,.18)"; q.fillRect(11,10,3,12);
+    q.fillStyle="rgba(0,0,0,.2)"; q.fillRect(8,27,16,1);
+  });
+  cell(1,(q)=>{ // crate
+    q.fillStyle="#7a583a"; q.fillRect(7,9,18,16);
+    q.fillStyle="#9b7852"; q.fillRect(8,10,16,14);
+    q.fillStyle="#5e412a"; q.fillRect(7,9,18,1); q.fillRect(7,24,18,1);
+    q.fillStyle="#6b4a2f"; q.fillRect(15,10,2,14); q.fillRect(8,16,16,2);
+  });
+  cell(2,(q)=>{ // sack
+    q.fillStyle="#b59a72"; q.fillRect(9,10,14,15);
+    q.fillStyle="#d2bc95"; q.fillRect(10,11,12,13);
+    q.fillStyle="#8b7352"; q.fillRect(13,9,6,3); q.fillRect(14,12,4,1);
+    q.fillStyle="rgba(0,0,0,.15)"; q.fillRect(9,25,14,1);
+  });
+  cell(3,(q)=>{ // lantern post
+    q.fillStyle="#6a4c33"; q.fillRect(15,6,3,21);
+    q.fillStyle="#8f6c48"; q.fillRect(14,6,5,2);
+    q.fillStyle="#2b2622"; q.fillRect(11,9,11,8);
+    q.fillStyle="#d7b769"; q.fillRect(13,11,7,5);
+    q.fillStyle="rgba(255,232,152,.26)"; q.fillRect(12,10,9,1);
+  });
+  cell(4,(q)=>{ // sign post
+    q.fillStyle="#664a31"; q.fillRect(15,10,3,17);
+    q.fillStyle="#8a6445"; q.fillRect(8,8,16,7);
+    q.fillStyle="#b28963"; q.fillRect(9,9,14,5);
+    q.fillStyle="#5a3f2a"; q.fillRect(11,11,10,1);
+  });
+  cell(5,(q)=>{ // fence segment
+    q.fillStyle="#7a593b"; q.fillRect(4,14,24,3); q.fillRect(4,19,24,2);
+    q.fillStyle="#5d432b"; q.fillRect(7,9,3,16); q.fillRect(22,9,3,16);
+    q.fillStyle="#ad8960"; q.fillRect(4,13,24,1); q.fillRect(4,18,24,1);
+  });
+  cell(6,(q)=>{ // bush cluster
+    q.fillStyle="#4a6e3c"; q.fillRect(7,15,18,11);
+    q.fillStyle="#5c8448"; q.fillRect(9,13,14,8); q.fillRect(6,17,7,7); q.fillRect(19,17,7,7);
+    q.fillStyle="rgba(186,225,144,.2)"; q.fillRect(11,15,3,2); q.fillRect(17,16,3,2);
+  });
+  cell(7,(q)=>{ // grass tuft
+    q.fillStyle="#5d8747"; q.fillRect(12,18,2,8); q.fillRect(16,16,2,10); q.fillRect(20,19,2,7);
+    q.fillStyle="#84ad61"; q.fillRect(13,17,1,3); q.fillRect(17,15,1,3); q.fillRect(21,18,1,2);
+  });
+  cell(8,(q)=>{ // well
+    q.fillStyle="#6f7782"; q.fillRect(7,14,18,12);
+    q.fillStyle="#9099a4"; q.fillRect(9,15,14,10);
+    q.fillStyle="#2f557f"; q.fillRect(12,18,8,5);
+    q.fillStyle="#8b6f4d"; q.fillRect(9,8,2,8); q.fillRect(21,8,2,8); q.fillRect(10,8,12,2);
+  });
+  cell(9,(q)=>{ // stone pile
+    q.fillStyle="#70756f"; q.fillRect(10,20,4,3); q.fillRect(14,18,5,4); q.fillRect(19,20,3,3);
+    q.fillStyle="#8c928b"; q.fillRect(11,19,2,1); q.fillRect(15,17,2,1); q.fillRect(20,19,1,1);
+  });
+  cell(10,(q)=>{ // bench
+    q.fillStyle="#6f5035"; q.fillRect(6,17,20,3); q.fillRect(8,12,16,2);
+    q.fillStyle="#9c734d"; q.fillRect(7,16,18,1); q.fillRect(9,11,14,1);
+    q.fillStyle="#4e3827"; q.fillRect(8,20,2,6); q.fillRect(22,20,2,6);
+  });
+  cell(11,(q)=>{ // notice board
+    q.fillStyle="#5f432d"; q.fillRect(8,8,2,19); q.fillRect(22,8,2,19);
+    q.fillStyle="#8f6948"; q.fillRect(9,8,14,12);
+    q.fillStyle="#d3be96"; q.fillRect(10,9,12,10);
+    q.fillStyle="#826247"; q.fillRect(12,11,7,1); q.fillRect(11,14,8,1); q.fillRect(13,16,6,1);
+  });
+  cell(12,(q)=>{ // handcart
+    q.fillStyle="#6f4e35"; q.fillRect(7,14,18,9);
+    q.fillStyle="#8f6847"; q.fillRect(8,15,16,7);
+    q.fillStyle="#523927"; q.fillRect(9,13,14,1); q.fillRect(9,23,14,1);
+    q.fillStyle="#503626"; q.fillRect(3,16,4,2); q.fillRect(25,16,4,2);
+    q.fillStyle="#3b2a1f"; q.fillRect(5,22,3,3); q.fillRect(24,22,3,3);
+    q.fillStyle="#9f9a8f"; q.fillRect(5,23,3,1); q.fillRect(24,23,3,1);
+  });
+
+  cell(13,(q)=>{ // woodpile
+    q.fillStyle="#6a4a30"; q.fillRect(6,16,20,8);
+    q.fillStyle="#8a6340"; q.fillRect(8,14,16,3);
+    q.fillStyle="#4e3523"; q.fillRect(9,18,2,6); q.fillRect(14,18,2,6); q.fillRect(19,18,2,6);
+  });
+  cell(14,(q)=>{ // small garden
+    q.fillStyle="#6d5137"; q.fillRect(7,20,18,4);
+    q.fillStyle="#557d45"; q.fillRect(8,17,16,3);
+    q.fillStyle="#7fa55e"; q.fillRect(10,15,3,2); q.fillRect(15,14,3,3); q.fillRect(20,15,2,2);
+  });
+
+  const sheetImg = new Image();
+  sheetImg.src = sheet.toDataURL("image/png");
+  assets.props.sheet = sheetImg;
+
+  const names = ["barrel","crate","sack","lanternPost","signPost","fenceSeg","bush","grassTuft","well","stonePile","bench","noticeBoard","handcart","woodpile","smallGarden"];
+  names.forEach((name, i)=>{
+    assets.props.sprites[name] = makeTile((q)=>{ q.drawImage(sheet, i*32, 0, 32, 32, 0, 0, 32, 32); });
+  });
+}
+
+function paintHumanoidSheet(colors, variant = "adventurer") {
+  const size = 64;
+  const c = document.createElement("canvas");
+  c.width = size * 4;
+  c.height = size * 4;
+  const p = c.getContext("2d"); p.imageSmoothingEnabled=false;
+
+  const dirs = ["down","left","right","up"];
+  const gait = [0,1,0,-1];
+
+  function drawFrame(baseX, baseY, dir, step){
+    const px = 2;
+    const ox = baseX + 8;
+    const oy = baseY + 7;
+    const elder = variant === "elder";
+    const merchant = variant === "merchant";
+    const ranger = variant === "ranger";
+    const bob = Math.abs(step) > 0 ? 1 : 0;
+    const armSwing = elder ? Math.round(step * 0.5) : step;
+    const outline = "rgba(8,12,18,.84)";
+    const skinShadow = elder ? "#b59a7a" : "#cfad89";
+    const cloakShadow = "rgba(10,14,22,.35)";
+    const edge = (x,y,w=1,h=1)=>dot(x,y,w,h,outline);
+
+    const dot = (x,y,w=1,h=1,color=outline) => { p.fillStyle=color; p.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
+
+    if (dir==="down" || dir==="up") {
+      const front = dir==="down";
+      dot(10,4+bob,8,6,colors.skin);
+      dot(10,3+bob,8,3,colors.hair);
+      if(ranger) dot(9,3+bob,10,2,"#4b5f2f");
+      if(merchant && front) dot(9,2+bob,10,2,colors.accent || "#d9bf84");
+      if(front){
+        dot(11,8+bob,1,1,"#1b2632");
+        dot(15,8+bob,1,1,"#1b2632");
+      }
+      if(elder && front) dot(12,9+bob,4,1,"#e7ecf7");
+      dot(10,10+bob,8,2,colors.tunicShade);
+      dot(10,12+bob,8,8,colors.tunic);
+      dot(11,12+bob,6,2,"rgba(255,255,255,.16)");
+      dot(9,13+bob,10,6,colors.cloak);
+      dot(10,16+bob,8,1,colors.accent || "#d8dfef");
+      dot(10,19+bob,3,3,colors.tunicShade);
+      dot(15,19+bob,3,3,colors.tunicShade);
+      dot(10,22+step,2,3,colors.boots);
+      dot(16,22-step,2,3,colors.boots);
+      dot(10,20+bob,1,2,cloakShadow);
+      dot(17,20+bob,1,2,cloakShadow);
+      dot(8,14+armSwing,2,4,skinShadow);
+      dot(18,14-armSwing,2,4,skinShadow);
+      if(ranger) dot(18,15+bob,1,5,"#5e422d");
+      if(merchant && front) dot(13,20+bob,2,2,"#b98952");
+    } else {
+      const left = dir==="left";
+      const headX = left ? 9 : 14;
+      dot(headX,4+bob,6,6,colors.skin);
+      dot(left ? 8 : 14,3+bob,7,3,colors.hair);
+      if(merchant) dot(left ? 8 : 14,2+bob,7,2,colors.accent || "#d9bf84");
+      if(ranger) dot(left ? 7 : 15,3+bob,6,2,"#4b5f2f");
+      dot(left ? 11 : 15,8+bob,1,1,"#1b2632");
+      dot(left ? 11 : 14,8+bob,2,2,skinShadow);
+      dot(10,11+bob,8,2,colors.tunicShade);
+      dot(10,13+bob,8,7,colors.tunic);
+      dot(9,14+bob,10,5,colors.cloak);
+      dot(11,16+bob,6,1,colors.accent || "#d8dfef");
+      dot(left ? 7 : 19,14+armSwing,2,4,skinShadow);
+      dot(left ? 10 : 15,19+step,3,4,colors.tunicShade);
+      dot(left ? 15 : 10,21-step,2,3,colors.boots);
+      dot(left ? 11 : 14,22+step,2,2,colors.boots);
+      dot(left ? 9 : 17,13+bob,1,5,cloakShadow);
+      if(ranger) dot(left ? 18 : 9,15+bob,1,5,"#5e422d");
+    }
+
+    edge(9,4+bob,1,7); edge(18,4+bob,1,7); edge(10,3+bob,8,1); edge(10,10+bob,8,1);
+    edge(8,12+bob,1,9); edge(19,12+bob,1,9); edge(9,20+bob,10,1);
+  }
+
+  dirs.forEach((d,row)=> gait.forEach((s,col)=> drawFrame(col*size,row*size,d,s)));
+  const img = new Image(); img.src = c.toDataURL("image/png"); return img;
+}
+
+function paintWolfSheet() {
+  const size = 64;
+  const c = document.createElement("canvas"); c.width = size*4; c.height = size*4;
+  const p = c.getContext("2d"); p.imageSmoothingEnabled=false;
+
+  function frame(baseX,baseY,dir,step){
+    const px = 2;
+    const ox = baseX + 6;
+    const oy = baseY + 10;
+    const dot = (x,y,w=1,h=1,color="rgba(8,12,18,.82)") => { p.fillStyle=color; p.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
+
+    const fur = "#747f8a";
+    const furShade = "#56606d";
+    const furHi = "#a0aab5";
+    const muzzle = "#c9c1b2";
+    const nose = "#242d3a";
+
+    if (dir==="left" || dir==="right") {
+      const left = dir==="left";
+      const headX = left ? 7 : 19;
+      const tailBaseX = left ? 24 : 6;
+      dot(11,12,12,5,fur);
+      dot(12,11,9,2,furHi);
+      dot(12,15,10,3,furShade);
+      dot(11,17,12,1,furHi);
+      dot(10,18-step,2,4,fur);
+      dot(15,19+step,2,4,furShade);
+      dot(20,18+step,2,4,fur);
+      dot(23,19-step,2,4,furShade);
+      dot(headX,9,6,5,fur);
+      dot(headX+(left?0:1),8,1,2,furShade);
+      dot(headX+(left?4:5),8,1,2,furShade);
+      dot(headX+1,11,4,2,muzzle);
+      dot(headX+(left?0:5),11,1,1,nose);
+      dot(headX+(left?2:3),10,1,1,nose);
+      dot(tailBaseX,13,3,2,furShade);
+      dot(tailBaseX+(left?2:-2),12,2,1,furShade);
+      dot(tailBaseX+(left?4:-4),11,1,1,furShade);
+      dot(10,12,1,7);
+      dot(23,12,1,7);
+      dot(11,11,12,1);
+      dot(11,18,12,1);
+    } else {
+      const back = dir==="up";
+      dot(12,11,10,3,back ? furShade : furHi);
+      dot(11,14,12,6,fur);
+      dot(12,20+step,2,3,furShade);
+      dot(15,21-step,2,3,fur);
+      dot(18,20-step,2,3,furShade);
+      dot(21,21+step,2,3,fur);
+      dot(13,9,8,3,back ? furShade : muzzle);
+      if (!back){ dot(14,10,1,1,nose); dot(18,10,1,1,nose); }
+      dot(12,8,1,2,furShade);
+      dot(20,8,1,2,furShade);
+      dot(11,13,1,8);
+      dot(22,13,1,8);
+      dot(12,12,10,1);
+      dot(12,20,10,1);
+      if(back){ dot(10,15,1,2,furShade); dot(23,15,1,2,furShade); }
+    }
+  }
+
+  ["down","left","right","up"].forEach((dir,row)=>[0,1,0,-1].forEach((s,col)=>frame(col*size,row*size,dir,s)));
+  const img = new Image(); img.src = c.toDataURL("image/png"); return img;
+}
+
+emitWayfarerBuildSentinel();
+bootstrapAtlasPipeline();
+buildTerrainTiles();
+makeBuildingTiles();
+makeTreeSprites();
+makeFenceTiles();
+makeShadowTiles();
+makePropSprites();
+assets.sprites.player = paintHumanoidSheet({ skin:"#e4c8a2", hair:"#4f3a2c", tunic:"#3f719f", tunicShade:"#2d5275", cloak:"#e2e8f3", boots:"#4f3826", accent:"#f2d37c" }, "adventurer");
+assets.sprites.npc = paintHumanoidSheet({ skin:"#ccb79b", hair:"#dbe4f6", tunic:"#626a86", tunicShade:"#4b5167", cloak:"#2d3345", boots:"#2f2418", accent:"#c5cee3" }, "elder");
+assets.sprites.edrin = paintHumanoidSheet({ skin:"#c8ae8d", hair:"#f0f4fc", tunic:"#6c6b96", tunicShade:"#4f4d73", cloak:"#2a3148", boots:"#2f2418", accent:"#c9d0f0" }, "elder");
+assets.sprites.hunter = paintHumanoidSheet({ skin:"#d3b999", hair:"#4d3a2b", tunic:"#5f7948", tunicShade:"#425736", cloak:"#3a2f24", boots:"#312519", accent:"#b7c986" }, "ranger");
+assets.sprites.merchant = paintHumanoidSheet({ skin:"#dabf9e", hair:"#6d4a30", tunic:"#8b5537", tunicShade:"#633b27", cloak:"#b69458", boots:"#3b2a1d", accent:"#e5c57e" }, "merchant");
+assets.sprites.bandit = paintHumanoidSheet({ skin:"#b99b7b", hair:"#231d1a", tunic:"#6b3940", tunicShade:"#46262b", cloak:"#17141d", boots:"#21170f", accent:"#b4797f" }, "adventurer");
+assets.sprites.rook = paintHumanoidSheet({ skin:"#b4916c", hair:"#100d13", tunic:"#8a2e3b", tunicShade:"#651f2a", cloak:"#2b0e15", boots:"#1f1310", accent:"#cc8a8f" }, "adventurer");
+assets.sprites.wolf = paintWolfSheet();
+
+const world = { blocked:new Set(), trees:[], fences:[], buildings:[], roads:[], roadTiles:new Set(), props:[], zones:[], pondBlocked:new Set(), pondWater:new Set(), pondShore:new Set(), pondNearEdge:new Set() };
+const hearthvaleTraversalAuthority={ routeTiles:new Set(), nonBlockingFenceTiles:new Set(), nonBlockingTerrainTiles:new Set(), mismatchRows:[] };
+function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) world.blocked.add(keyOf(ix,iy)); }
+const HEARTHVALE_LANDMARKS = Object.freeze({
+  mirrorPond:{ x:27, y:14 },
+  caveEntrance:{ x:34, y:11 },
+  mainCrossroads:{ x:16, y:11 },
+  townCenterSpawn:{ x:18, y:11 },
+  merchantRowanArea:{ x:20, y:10 },
+  edrinValeArea:{ x:16, y:12 },
+  hunterGarranArea:{ x:30, y:11 },
+  noticeSignNode:{ x:26, y:11 },
+  zoneExits:Object.freeze({
+    mirrorCaveEntrance:{ x:34, y:11 },
+    abandonedTollhouseEntrance:{ x:22, y:2 },
+    northRoadBoundary:{ x:16, y:0 },
+    westLaneBoundary:{ x:0, y:12 },
+    easternWoodsBoundary:{ x:37, y:14 }
+  })
+});
+const OVERWORLD_CAVE_ENTRY = Object.freeze({ ...HEARTHVALE_LANDMARKS.caveEntrance });
+const MIRROR_CAVE_EXIT = Object.freeze({ x:13, y:16 });
+const MIRROR_CAVE_CHEST_TILE = Object.freeze({ x:13, y:2 });
+const NORTH_ROAD_TOLLHOUSE_ENTRY = Object.freeze({ x:22, y:2 });
+const TOLLHOUSE_EXIT = Object.freeze({ x:13, y:18 });
+const TOLLHOUSE_CHEST_TILE = Object.freeze({ x:22, y:4 });
+function createFootprint({
+  visual,
+  collision,
+  interaction,
+  label,
+  pathingBounds,
+  frontWalkBand,
+  visualBounds,
+  interactRect,
+  frontDoorTile,
+  blockedVisualTiles,
+  occlusionDepthLine,
+  rearExclusionZone
+}){
+  return {
+    visual,
+    collision,
+    interaction,
+    label,
+    visualBounds:visualBounds || visual,
+    interactRect:interactRect || interaction || null,
+    frontDoorTile:frontDoorTile || null,
+    blockedVisualTiles:Array.isArray(blockedVisualTiles) ? blockedVisualTiles : [],
+    pathingBounds:pathingBounds || visual,
+    frontWalkBand:frontWalkBand || null,
+    occlusionDepthLine:occlusionDepthLine || null,
+    rearExclusionZone:rearExclusionZone || null
+  };
+}
+const WORLD_OBJECT_TYPE = Object.freeze({
+  CAVE_ENTRANCE:"caveEntrance",
+  DUNGEON_EXIT:"dungeonExit",
+  CHEST:"chest",
+  SIGN:"sign",
+  DOOR:"door",
+  DECORATION:"decoration"
+});
+const mirrorCave = {
+  width:26,
+  height:18,
+  floor:new Set(),
+  blocked:new Set(),
+  walls:new Set(),
+  spawn:{ x:13, y:15 },
+  exit:{ ...MIRROR_CAVE_EXIT },
+  chest:{ ...MIRROR_CAVE_CHEST_TILE, opened:false },
+  cleared:false,
+  returnTile:{ x:OVERWORLD_CAVE_ENTRY.x, y:OVERWORLD_CAVE_ENTRY.y+1 }
+};
+const abandonedTollhouse = {
+  width:24,
+  height:20,
+  floor:new Set(),
+  blocked:new Set(),
+  walls:new Set(),
+  spawn:{ x:13, y:17 },
+  exit:{ ...TOLLHOUSE_EXIT },
+  chest:{ ...TOLLHOUSE_CHEST_TILE },
+  returnTile:{ x:NORTH_ROAD_TOLLHOUSE_ENTRY.x, y:NORTH_ROAD_TOLLHOUSE_ENTRY.y+1 }
+};
+function carveMirrorCaveRoom(x,y,w,h){
+  for(let tx=x;tx<x+w;tx++){
+    for(let ty=y;ty<y+h;ty++){
+      mirrorCave.floor.add(keyOf(tx,ty));
+      mirrorCave.blocked.delete(keyOf(tx,ty));
+    }
+  }
+}
+function carveTollhouseRoom(x,y,w,h){
+  for(let tx=x;tx<x+w;tx++){
+    for(let ty=y;ty<y+h;ty++){
+      abandonedTollhouse.floor.add(keyOf(tx,ty));
+      abandonedTollhouse.blocked.delete(keyOf(tx,ty));
+    }
+  }
+}
+for(let x=0;x<mirrorCave.width;x++) for(let y=0;y<mirrorCave.height;y++) mirrorCave.blocked.add(keyOf(x,y));
+carveMirrorCaveRoom(11,14,5,3);
+carveMirrorCaveRoom(12,11,3,3);
+carveMirrorCaveRoom(12,8,3,3);
+carveMirrorCaveRoom(11,5,5,3);
+carveMirrorCaveRoom(8,5,3,2);
+carveMirrorCaveRoom(13,3,2,2);
+carveMirrorCaveRoom(9,2,9,3);
+for(let x=0;x<mirrorCave.width;x++){
+  for(let y=0;y<mirrorCave.height;y++){
+    if(!mirrorCave.blocked.has(keyOf(x,y))) continue;
+    const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
+    if(neighbors.some(([dx,dy])=>!mirrorCave.blocked.has(keyOf(x+dx,y+dy)))) mirrorCave.walls.add(keyOf(x,y));
+  }
+}
+for(let x=0;x<abandonedTollhouse.width;x++) for(let y=0;y<abandonedTollhouse.height;y++) abandonedTollhouse.blocked.add(keyOf(x,y));
+carveTollhouseRoom(12,17,3,2);
+carveTollhouseRoom(12,14,3,3);
+carveTollhouseRoom(11,10,5,4);
+carveTollhouseRoom(7,8,4,4);
+carveTollhouseRoom(11,6,10,4);
+carveTollhouseRoom(20,4,3,2);
+carveTollhouseRoom(17,8,4,2);
+for(let x=0;x<abandonedTollhouse.width;x++){
+  for(let y=0;y<abandonedTollhouse.height;y++){
+    if(!abandonedTollhouse.blocked.has(keyOf(x,y))) continue;
+    const neighbors=[[1,0],[-1,0],[0,1],[0,-1]];
+    if(neighbors.some(([dx,dy])=>!abandonedTollhouse.blocked.has(keyOf(x+dx,y+dy)))) abandonedTollhouse.walls.add(keyOf(x,y));
+  }
+}
+
+world.roads.push(
+  // Phase 35.1B Hearthvale foundation recovery: harbor-first hierarchy, civic rise, residential district, and Mirror Pond outbound route.
+  // 1) Main east-west harbor commercial street.
+  { x:3,y:12,w:35,h:1 },
+  { x:4,y:13,w:33,h:1 },
+  // 2) Waterfront / wharf service lane and working edge.
+  { x:5,y:15,w:32,h:1 },
+  { x:6,y:16,w:30,h:1 },
+  // 3) Inland civic connector.
+  { x:7,y:8,w:22,h:1 },
+  { x:8,y:9,w:20,h:1 },
+  // 4) Residence district connector (west cluster).
+  { x:2,y:9,w:8,h:1 },
+  { x:4,y:7,w:1,h:5 },
+  { x:6,y:6,w:5,h:1 },
+  // 5) Mirror Pond outbound route.
+  { x:27,y:12,w:7,h:1 },
+  { x:33,y:12,w:1,h:7 },
+  { x:30,y:18,w:4,h:1 },
+  // Vertical knit streets between harbor, civic, and wharf.
+  { x:10,y:8,w:1,h:9 },
+  { x:15,y:8,w:1,h:9 },
+  { x:20,y:8,w:1,h:9 },
+  { x:25,y:8,w:1,h:9 },
+  { x:30,y:12,w:1,h:5 },
+  // Wharf piers and boardwalk links.
+  { x:9,y:16,w:2,h:7 },
+  { x:14,y:16,w:2,h:8 },
+  { x:19,y:16,w:2,h:8 },
+  { x:24,y:16,w:2,h:7 },
+  { x:29,y:16,w:2,h:6 }
+);
+world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
+
+world.buildings.push(
+  { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:8, y:7, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:8,y:7,w:6,h:5}, visualBounds:{x:8,y:7,w:6,h:5}, collision:{x:8,y:10,w:6,h:1}, interaction:{x:11,y:11,w:1,h:1}, interactRect:{x:11,y:11,w:1,h:1}, frontDoorTile:{x:11,y:11}, label:{x:11,y:8,text:"Inn & Tavern"}, pathingBounds:{x:7,y:7,w:8,h:6}, frontWalkBand:{ x:8, y:12, w:6, h:1 }, blockedVisualTiles:[{ x:8, y:7, w:6, h:3 }, { x:8, y:10, w:2, h:1 }, { x:12, y:10, w:2, h:1 }], occlusionDepthLine:{ x:8, y:10, w:6, h:1 }, rearExclusionZone:{ x:8, y:7, w:6, h:3 } }) },
+  { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:16, y:7, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:16,y:7,w:5,h:5}, visualBounds:{x:16,y:7,w:5,h:5}, collision:{x:16,y:10,w:5,h:1}, interaction:{x:18,y:11,w:1,h:1}, interactRect:{x:18,y:11,w:1,h:1}, frontDoorTile:{x:18,y:11}, label:{x:18,y:8,text:"Mercantile Shop"}, pathingBounds:{x:15,y:7,w:7,h:6}, frontWalkBand:{ x:16, y:12, w:5, h:1 }, blockedVisualTiles:[{ x:16, y:7, w:5, h:3 }, { x:16, y:10, w:2, h:1 }, { x:19, y:10, w:2, h:1 }], occlusionDepthLine:{ x:16, y:10, w:5, h:1 }, rearExclusionZone:{ x:16, y:7, w:5, h:3 } }) },
+  { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:22, y:2, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:22,y:2,w:6,h:5}, visualBounds:{x:22,y:2,w:6,h:5}, collision:{x:22,y:5,w:6,h:2}, interaction:{x:24,y:7,w:1,h:1}, interactRect:{x:24,y:7,w:1,h:1}, frontDoorTile:{x:24,y:7}, label:{x:24,y:3,text:"Village Hall"}, pathingBounds:{x:21,y:2,w:8,h:6}, frontWalkBand:{ x:22, y:8, w:6, h:1 }, blockedVisualTiles:[{ x:22, y:2, w:6, h:3 }, { x:22, y:5, w:2, h:1 }, { x:26, y:5, w:2, h:1 }], occlusionDepthLine:{ x:22, y:5, w:6, h:1 }, rearExclusionZone:{ x:22, y:2, w:6, h:3 } }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:5, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:5,w:4,h:4}, visualBounds:{x:4,y:5,w:4,h:4}, collision:{x:4,y:7,w:4,h:1}, interaction:{x:5,y:9,w:1,h:1}, interactRect:{x:5,y:9,w:1,h:1}, frontDoorTile:{x:5,y:9}, frontWalkBand:{ x:4, y:9, w:4, h:1 }, blockedVisualTiles:[{ x:4, y:5, w:4, h:2 }, { x:4, y:7, w:4, h:1 }, { x:4, y:8, w:1, h:1 }, { x:6, y:8, w:2, h:1 }], occlusionDepthLine:{ x:4, y:7, w:4, h:1 }, rearExclusionZone:{ x:4, y:5, w:4, h:2 }, label:{x:6,y:6,text:"Cottage"}, pathingBounds:{x:3,y:5,w:6,h:6} }) },
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:28, y:4, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:28,y:4,w:5,h:4}, collision:{x:28,y:6,w:5,h:2}, interaction:{x:30,y:8,w:1,h:1}, label:{x:30,y:5,text:"Residence"}, pathingBounds:{x:27,y:4,w:7,h:5} }) },
+  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:22, y:13, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:22,y:13,w:4,h:4}, collision:{x:22,y:15,w:4,h:2}, interaction:{x:23,y:17,w:1,h:1}, label:{x:23,y:14,text:"Outfitter"}, pathingBounds:{x:21,y:12,w:6,h:6} }) },
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:28, y:15, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:28,y:15,w:5,h:3}, collision:{x:28,y:17,w:5,h:1}, interaction:{x:30,y:14,w:1,h:1}, label:{x:30,y:15,text:"Boathouse"}, pathingBounds:{x:27,y:13,w:7,h:6} }) }
+);
+world.buildings.forEach((b)=>{
     if(buildingRenderDiagnostics.atlasBuildings.has(b.id)){
       const sId=getBuildingSpriteId(b);
       if(sId) resolvedSpriteIds.add(sId);
@@ -5892,7 +6810,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.0A" && ATLAS_SELECTOR_VERSION==="selector-v35.0a-first-playable-acceptance-hardening";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.1B" && ATLAS_SELECTOR_VERSION==="selector-v35.1b-hearthvale-foundation-recovery";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const savedSpawnPass=spawnValidationResult.mode==="saved" && spawnValidationResult.status==="PASS";
@@ -5992,7 +6910,20 @@ async function copyWayfarerQA(){
 }
 window.__WAYFARER_QA_REPORT=wayfarerQaReportState.report;
 window.copyWayfarerQA=copyWayfarerQA;
-function emitPhase350AAcceptance(){
+function emitQuestLoopQA(){
+  const quest=getActiveQuest?.();
+  const stage=getStillWaterStage?.();
+  const hasStillWater=Boolean(quest && quest.id==="still_water");
+  const stageValid=Number.isFinite(stage) && stage>=StillWaterQuestStage.NOT_STARTED && stage<=StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN_WITH_FRAGMENT;
+  const objectiveTextValue=String(objectiveText?.textContent||"").trim();
+  const objectiveReady=objectiveTextValue.length>0;
+  const status=(hasStillWater && stageValid && objectiveReady)?"PASS":"FAIL";
+  questLoopQaResult={ status, hasStillWater, stage, stageValid, objectiveReady };
+  const line="[Quest Loop QA] activeQuest="+(quest?.id||"none")+" stage="+String(stage)+" stageValid="+stageValid+" objectiveReady="+objectiveReady+" status="+status;
+  if(line!==questLoopQaSignature){ questLoopQaSignature=line; console.info(line); }
+  return questLoopQaResult;
+}
+function emitPhase351BAcceptance(){
   const report=buildWayfarerQaReport();
   const line="[Wayfarer QA Report] status="+report.status+" phase="+report.phase+" savedSpawn="+report.domains.savedSpawnValidation+" freshSpawn="+report.domains.freshSpawnResolver+" traversal="+report.domains.traversalQA.status+" playerState="+report.domains.playerStateQA+" uiState="+report.domains.uiStateQA+" bootMode="+report.domains.bootModeQA+" renderAudit="+report.domains.buildingRenderAudit+" atlasProof="+report.domains.atlasProof+" sourceTruth="+report.domains.sourceTruth+" routeCollision="+report.domains.routeCollision+" routeTopology="+report.domains.routeTopology+" fatalErrors="+(report.fatalJsErrorsSinceBoot.length===0?"none":String(report.fatalJsErrorsSinceBoot.length))+(Object.keys(report.failedDomains||{}).length?" failedDomains="+Object.keys(report.failedDomains).join(",")+" firstFailureReasons="+JSON.stringify(report.failedDomains):"");
   if(line===wayfarerQaReportSignature) return;
@@ -9234,9 +10165,9 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Build Phase : 34.2O.2 — Served-Bundle Parse Recovery, No-Assumptions Fix\n" +
+      "Build Phase : 35.1B — Hearthvale Foundation Recovery Sprint\n" +
       "Selector Version : " + ATLAS_SELECTOR_VERSION + "\n" +
-      "Cache Bust : 34-2o2-served-bundle-parse-recovery\n" +
+      "Cache Bust : 35-1b-hearthvale-foundation-recovery\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
@@ -10708,7 +11639,7 @@ function drawWorld(){
   safelyRunQa("route_tile_sweep_qa", ()=>emitRouteTileSweepQA());
   safelyRunQa("route_collision_qa", ()=>emitRouteCollisionConflictQA());
   safelyRunQa("quest_loop_qa", ()=>emitQuestLoopQA());
-  safelyRunQa("phase_35_0a_acceptance", ()=>emitPhase350AAcceptance());
+  safelyRunQa("phase_35_1b_acceptance", ()=>emitPhase351BAcceptance());
   emitBuildingAtlasCropAuditIfReady();
   runAtlasCatalogScanOnce();
   drawDecorSourceLabels();
