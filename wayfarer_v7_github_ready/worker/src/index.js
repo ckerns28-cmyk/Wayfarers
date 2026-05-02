@@ -476,9 +476,9 @@ const html = String.raw`<!DOCTYPE html>
       "root": "greeting",
       "rootByCondition": [
         { "if": { "questId": "the_still_water", "state": "Completed" }, "next": "still_water_complete" },
-        { "if": { "questId": "the_still_water", "state": "Ready To Turn In", "progress": "stage_6_return_to_edrin" }, "next": "still_water_final_turn_in" },
-        { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_6_return_to_edrin" }, "next": "still_water_final_turn_in" },
-        { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_3_return_to_edrin" }, "next": "still_water_stage_3_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Ready To Turn In", "progress": "stage_7_return_to_edrin" }, "next": "still_water_final_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_7_return_to_edrin" }, "next": "still_water_final_turn_in" },
+        { "if": { "questId": "the_still_water", "state": "Active", "progress": "stage_4_return_to_edrin" }, "next": "still_water_stage_3_turn_in" },
         { "if": { "questId": "the_still_water", "state": "Ready To Turn In" }, "next": "still_water_active" },
         { "if": { "questId": "the_still_water", "state": "Active" }, "next": "still_water_active" },
         { "if": { "questId": "mirror_pond_listening", "state": "Completed" }, "next": "after_pond_rite" },
@@ -785,6 +785,7 @@ const html = String.raw`<!DOCTYPE html>
       "initialProgress": "stage_1_speak_with_edrin",
       "status": "Not Started",
       "objectives": [
+        { "id": "gather_town_clues", "label": "Ask around Hearthvale (tavern and waterfront)", "type": "interact", "targetId": "still_water_town_loop", "requiredAmount": 1, "currentAmount": 0, "completed": false },
         { "id": "inspect_pond", "label": "Inspect Mirror Pond", "type": "interact", "targetId": "mirror_pond", "requiredAmount": 1, "currentAmount": 0, "completed": false },
         { "id": "enter_cave", "label": "Enter Mirror Cave", "type": "reach", "targetId": "mirror_cave", "requiredAmount": 1, "currentAmount": 0, "completed": false },
         { "id": "recover_echo_fragment", "label": "Recover the Echo Fragment from Mirror Cave", "type": "interact", "targetId": "echo_fragment", "requiredAmount": 1, "currentAmount": 0, "completed": false },
@@ -5646,8 +5647,8 @@ function getTraversalTargets(){
     { key:"mercantile door", tile:world.buildings.find((b)=>b.id==="b_mercantile")?.interaction },
     { key:"village hall door", tile:world.buildings.find((b)=>b.id==="b_village_hall")?.interaction },
     { key:"boathouse frontage", tile:world.buildings.find((b)=>b.id==="b_boathouse")?.interaction },
-    { key:"central pier", tile:resolveTarget({ x:20, y:19 }, "b_boathouse") },
-    { key:"waterfront spine", tile:resolveTarget({ x:20, y:16 }, "b_mercantile") }
+    { key:"waterfront spine", tile:resolveTarget({ x:20, y:16 }, "b_mercantile") },
+    { key:"mirror pond", tile:resolveTarget({ x:33, y:20 }, "b_boathouse") }
   ];
 }
 function validateHearthvaleSpawnTile(tile){
@@ -6709,11 +6710,12 @@ const HunterQuestStage = Object.freeze({
 const StillWaterQuestStage = Object.freeze({
   NOT_STARTED:"not_started",
   STAGE_1_SPEAK_WITH_EDRIN:"stage_1_speak_with_edrin",
-  STAGE_2_INSPECT_MIRROR_POND:"stage_2_inspect_mirror_pond",
-  STAGE_3_RETURN_TO_EDRIN:"stage_3_return_to_edrin",
-  STAGE_4_ENTER_MIRROR_CAVE:"stage_4_enter_mirror_cave",
-  STAGE_5_RECOVER_ECHO_FRAGMENT:"stage_5_recover_echo_fragment",
-  STAGE_6_RETURN_TO_EDRIN:"stage_6_return_to_edrin",
+  STAGE_2_GATHER_TOWN_CLUES:"stage_2_gather_town_clues",
+  STAGE_3_INSPECT_MIRROR_POND:"stage_3_inspect_mirror_pond",
+  STAGE_4_RETURN_TO_EDRIN:"stage_4_return_to_edrin",
+  STAGE_5_ENTER_MIRROR_CAVE:"stage_5_enter_mirror_cave",
+  STAGE_6_RECOVER_ECHO_FRAGMENT:"stage_6_recover_echo_fragment",
+  STAGE_7_RETURN_TO_EDRIN:"stage_7_return_to_edrin",
   COMPLETED:"completed"
 });
 let mirrorCaveChestDiscovered=false;
@@ -7317,19 +7319,22 @@ function getStillWaterObjectiveText(){
   if(stage===StillWaterQuestStage.NOT_STARTED || stage===StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN){
     return "The Still Water\nObjective: Speak with Edrin Vale";
   }
-  if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+  if(stage===StillWaterQuestStage.STAGE_3_INSPECT_MIRROR_POND){
+    return "The Still Water\nObjective: Ask at the inn and waterfront";
+  }
+  if(stage===StillWaterQuestStage.STAGE_3_INSPECT_MIRROR_POND){
     return "The Still Water\nObjective: Inspect Mirror Pond";
   }
-  if(stage===StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN){
+  if(stage===StillWaterQuestStage.STAGE_4_RETURN_TO_EDRIN){
     return "The Still Water\nObjective: Return to Edrin Vale";
   }
-  if(stage===StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE){
+  if(stage===StillWaterQuestStage.STAGE_5_ENTER_MIRROR_CAVE){
     return "The Still Water\nObjective: Enter Mirror Cave";
   }
-  if(stage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+  if(stage===StillWaterQuestStage.STAGE_6_RECOVER_ECHO_FRAGMENT){
     return "The Still Water\nObjective: Recover the Echo Fragment";
   }
-  if(stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
+  if(stage===StillWaterQuestStage.STAGE_7_RETURN_TO_EDRIN){
     if(quest?.state===QuestState.READY_TO_TURN_IN){
       return "The Still Water\nObjective: Speak with Edrin Vale";
     }
@@ -7388,9 +7393,9 @@ function migrateStillWaterStateFromSave(){
   const stage=getStillWaterQuestStage();
   const hasFragment=isStillWaterEchoFragmentCollected();
   if(!hasFragment) return;
-  if(stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN) return;
+  if(stage===StillWaterQuestStage.STAGE_7_RETURN_TO_EDRIN) return;
   questSystem.completeObjective("the_still_water", "recover_echo_fragment");
-  setStillWaterQuestStage(StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN);
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_7_RETURN_TO_EDRIN);
 }
 
 eventSystem.registerZoneTrigger("Mirror Pond", "zone:entered:mirror_pond");
@@ -7417,9 +7422,9 @@ eventSystem.on("zone:entered:mirror_cave", ()=>{
   if(questSystem.completeObjective("hunters_request", "enter_cave")) log("Objective Complete: Entered Mirror Cave");
 });
 eventSystem.on("zone:entered:mirror_cave", ()=>{
-  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE) return;
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_5_ENTER_MIRROR_CAVE) return;
   questSystem.completeObjective("the_still_water", "enter_cave");
-  setStillWaterQuestStage(StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT);
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_6_RECOVER_ECHO_FRAGMENT);
   log("Objective Updated: Recover the Echo Fragment from Mirror Cave.");
 });
 eventSystem.on("object:opened:mirror_cave_chest", ()=>{
@@ -7437,24 +7442,24 @@ eventSystem.on("quest:activate:hunters_request", ()=>{
 eventSystem.on("quest:activate:the_still_water", ()=>{
   const quest=questSystem.getQuest("the_still_water");
   if(!quest || quest.state===QuestState.COMPLETED) return;
-  setStillWaterQuestStage(StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND);
-  log("Edrin Vale sent you to inspect Mirror Pond.");
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_2_GATHER_TOWN_CLUES);
+  log("Edrin Vale asked you to ask at the inn and waterfront before approaching Mirror Pond.");
 });
 eventSystem.on("quest:still_water:report_pond", ()=>{
-  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN) return;
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_4_RETURN_TO_EDRIN) return;
   if(getHunterQuestStage()===HunterQuestStage.COMPLETED || mirrorCave.chest.opened){
     log("Edrin: You already walked the cave once. Go again — now with eyes open.");
   }
-  setStillWaterQuestStage(StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE);
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_5_ENTER_MIRROR_CAVE);
 });
 eventSystem.on("object:collected:echo_fragment", ()=>{
-  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT) return;
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_6_RECOVER_ECHO_FRAGMENT) return;
   questSystem.completeObjective("the_still_water", "recover_echo_fragment");
-  setStillWaterQuestStage(StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN);
+  setStillWaterQuestStage(StillWaterQuestStage.STAGE_7_RETURN_TO_EDRIN);
   log("Objective Updated: Return to Edrin Vale with the Echo Fragment.");
 });
 eventSystem.on("quest:still_water:final_turn_in", ()=>{
-  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN){
+  if(getStillWaterQuestStage()!==StillWaterQuestStage.STAGE_7_RETURN_TO_EDRIN){
     log("Return after recovering the Echo Fragment.");
     return;
   }
@@ -8283,6 +8288,21 @@ interactionManager.register({
   promptLabel:"Talk to Merchant Rowan",
   onInteract:()=>dialogueSystem.start("merchant_rowan")
 });
+function updateStillWaterTownLoopProgress(clueId){
+  const stage=getStillWaterQuestStage();
+  if(stage!==StillWaterQuestStage.STAGE_2_GATHER_TOWN_CLUES) return;
+  const persistent=getPersistentObject("still_water_town_loop");
+  const clues={ tavern:Boolean(persistent.tavern), waterfront:Boolean(persistent.waterfront) };
+  if(clueId==="tavern") clues.tavern=true;
+  if(clueId==="waterfront") clues.waterfront=true;
+  patchPersistentObject("still_water_town_loop", { ...clues, state:(clues.tavern && clues.waterfront) ? "complete" : "active" }, false);
+  if(clues.tavern && clues.waterfront){
+    questSystem.completeObjective("the_still_water", "gather_town_clues");
+    setStillWaterQuestStage(StillWaterQuestStage.STAGE_3_INSPECT_MIRROR_POND);
+    log("You have enough local guidance. Inspect Mirror Pond.");
+    saveGame("object_state_change");
+  }
+}
 registerWorldObject({
   objectId:"town_well",
   type:WORLD_OBJECT_TYPE.DECORATION,
@@ -8367,6 +8387,51 @@ registerWorldObject({
   }
 });
 registerWorldObject({
+  objectId:"inn_stillwater_ledger",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:12, y:12,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Inspect tavern ledger",
+  onInteract:()=>{
+    log("The tavern ledger notes: 'Boats held at dawn. Pond too glass-still to trust.'");
+    updateStillWaterTownLoopProgress("tavern");
+  }
+});
+registerWorldObject({
+  objectId:"village_hall_notice_board",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:25, y:8,
+  state:"unread",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Read village notice",
+  onInteract:()=>{
+    patchPersistentObject("village_hall_notice_board", { state:"read", read:true });
+    openWorldInfoPanel("Village Hall Notice", "Meeting at dusk: harbor workers report still water and delayed barges.");
+  }
+});
+registerWorldObject({
+  objectId:"boathouse_mooring_post",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:29, y:17,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Inspect mooring post",
+  onInteract:()=>{
+    log("The mooring rope is wet though no boat has moved. Fresh pond-silt clings to the knot.");
+    updateStillWaterTownLoopProgress("waterfront");
+  }
+});
+registerWorldObject({
   objectId:"mirror_pond",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
@@ -8377,16 +8442,16 @@ registerWorldObject({
   persistence:true,
   promptLabel:()=>{
     const stage=getStillWaterQuestStage();
-    return stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND ? "Inspect Mirror Pond" : "Inspect still water";
+    return stage===StillWaterQuestStage.STAGE_3_INSPECT_MIRROR_POND ? "Inspect Mirror Pond" : "Inspect still water";
   },
   onInteract:()=>{
     const stage=getStillWaterQuestStage();
-    if(stage===StillWaterQuestStage.STAGE_2_INSPECT_MIRROR_POND){
+    if(stage===StillWaterQuestStage.STAGE_2_GATHER_TOWN_CLUES){
       log("For a moment, your reflection moves half a breath late.");
       log("Mirror Pond stirs beneath your reflection.");
       patchPersistentObject("mirror_pond", { inspected:true, state:"inspected" }, false);
       questSystem.completeObjective("the_still_water", "inspect_pond");
-      setStillWaterQuestStage(StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN);
+      setStillWaterQuestStage(StillWaterQuestStage.STAGE_4_RETURN_TO_EDRIN);
       eventSystem.emit("object:used:mirror_pond",{ stage });
       saveGame("object_state_change");
       return;
@@ -8395,7 +8460,7 @@ registerWorldObject({
       log("The water is still.");
       return;
     }
-    if(stage===StillWaterQuestStage.STAGE_3_RETURN_TO_EDRIN || stage===StillWaterQuestStage.STAGE_4_ENTER_MIRROR_CAVE || stage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT || stage===StillWaterQuestStage.STAGE_6_RETURN_TO_EDRIN || stage===StillWaterQuestStage.COMPLETED){
+    if(stage===StillWaterQuestStage.STAGE_4_RETURN_TO_EDRIN || stage===StillWaterQuestStage.STAGE_5_ENTER_MIRROR_CAVE || stage===StillWaterQuestStage.STAGE_6_RECOVER_ECHO_FRAGMENT || stage===StillWaterQuestStage.STAGE_7_RETURN_TO_EDRIN || stage===StillWaterQuestStage.COMPLETED){
       log("The pond is still again, but not empty.");
       return;
     }
@@ -8544,7 +8609,7 @@ registerWorldObject({
       saveGame("object_state_change");
       return;
     }
-    if(stage!==StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+    if(stage!==StillWaterQuestStage.STAGE_6_RECOVER_ECHO_FRAGMENT){
       log("A pale shard rests in silence, as if waiting.");
       return;
     }
@@ -10130,7 +10195,7 @@ function drawMirrorCaveScene(now){
   const echoPersistent=getPersistentObject("echo_fragment_object");
   const echoCollected=Boolean(echoPersistent.collected) || getItemQuantity("echo_fragment")>0;
   const stillWaterStage=getStillWaterQuestStage();
-  if(!echoCollected && stillWaterStage===StillWaterQuestStage.STAGE_5_RECOVER_ECHO_FRAGMENT){
+  if(!echoCollected && stillWaterStage===StillWaterQuestStage.STAGE_6_RECOVER_ECHO_FRAGMENT){
     const fp=tileToScreen(12,5);
     const pulse=0.45+Math.sin(now*0.006)*0.2;
     ctx.fillStyle="rgba(146,192,246," + pulse.toFixed(3) + ")";
