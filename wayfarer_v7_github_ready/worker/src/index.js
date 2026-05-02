@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.1J";
+const WAYFARER_PHASE = "35.1K";
 const WAYFARER_BUILD_LABEL = "Hearthvale Foundation Recovery Sprint";
-const ATLAS_SELECTOR_VERSION = "selector-v35.1j-central-pier-authority-lock";
+const ATLAS_SELECTOR_VERSION = "selector-v35.1k-real-pier-authority";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3393,7 +3393,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.1J' && ATLAS_SELECTOR_VERSION==='selector-v35.1j-central-pier-authority-lock';
+  const proofHudConsistent=WAYFARER_PHASE==='35.1K' && ATLAS_SELECTOR_VERSION==='selector-v35.1k-real-pier-authority';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -4211,6 +4211,12 @@ function emitHarborCompositionQA(){
     && expectedCentralPierTiles.every(([x,y])=>hasRoad(x,y) && isHarborPierWharfTile(x,y) && canMoveToIgnoringDynamicBlockers(x,y))
     && centralPierAllReachable
     && centralPierPathLength>0;
+  const centralPierDetails=expectedCentralPierTiles.map(([x,y])=>{
+    const tileKey=keyOf(x,y);
+    const terrainRow=Array.isArray(world.terrain) ? world.terrain[y] : null;
+    const terrain=Array.isArray(terrainRow) ? terrainRow[x] : undefined;
+    return "tile("+x+","+y+") road="+hasRoad(x,y)+" terrain="+String(terrain??"void")+" waterOverlap="+world.pondWater.has(tileKey)+" pierOverride="+isHarborPierTile(x,y)+" reachability="+canMoveToIgnoringDynamicBlockers(x,y);
+  }).join(" | ");
   const inlandConnectorCount=world.roads.filter((r)=>r.w===1&&r.h>=6&&r.y<=8).length;
   const boathouse=world.buildings.find((row)=>row.id==="b_boathouse");
   const boathouseReachable=Boolean(boathouse?.interaction && !world.blocked.has(keyOf(boathouse.interaction.x,boathouse.interaction.y)));
@@ -4230,17 +4236,12 @@ function emitHarborCompositionQA(){
   console.info("waterfrontSpine="+(waterfrontSpineContinuous?"PASS":"FAIL"));
   console.info("wharfCount="+wharfCount);
   console.info("centralPier="+(centralPier?"PASS":"FAIL"));
+  console.info("centralPierDetails="+centralPierDetails);
+  console.info("centralPierAuthorityCheck tile(19,21)="+isHarborPierTile(19,21));
   if(!centralPier){
-    const details=expectedCentralPierTiles.map(([x,y])=>{
-      const tileKey=keyOf(x,y);
-      const terrainRow=Array.isArray(world.terrain) ? world.terrain[y] : null;
-      const terrain=Array.isArray(terrainRow) ? terrainRow[x] : undefined;
-      return "tile("+x+","+y+") road="+hasRoad(x,y)+" terrain="+String(terrain??"void")+" waterOverlap="+world.pondWater.has(tileKey)+" pierOverride="+hasCentralPierOverride(x,y)+" reachability="+canMoveToIgnoringDynamicBlockers(x,y);
-    }).join(" | ");
     console.info("centralPierExpected="+JSON.stringify(expectedCentralPierTiles));
     console.info("centralPierResolved="+JSON.stringify(resolvedCentralPierTiles));
     console.info("centralPierReachabilityPathLength="+centralPierPathLength);
-    console.info("centralPierDetails="+details);
   }
   console.info("boathouseReachable="+(boathouseReachable?"PASS":"FAIL"));
   console.info("commercialFrontage="+(commercialFrontage?"PASS":"FAIL"));
@@ -4280,11 +4281,13 @@ function emitTraversalTopologyQA(){
     blockedTiles.push({ x,y,visibleType:"route",blockers,owningObject:diag.blockingBuildingId||diag.blockingObjectId||diag.blockingEntityId||null,terrain:diag.terrainType,reason:diag.reason });
   });
   const sampleBlockedTiles=blockedTiles.slice(0,12);
+  const pierBlockedTile=blockedTiles.find((tile)=>tile.x===19 && tile.y===21) || null;
   const classificationMismatchCount=Math.max(0, routeClassification.visualRouteTiles.size-routeClassification.navigableRouteTiles.size-routeClassification.intentionalBlockedRouteTiles.size);
   const status=classificationMismatchCount===0?"PASS":"FAIL";
   traversalTopologyQaResult={ status, blockedRoadMismatches:blockedTiles.length, classificationMismatchCount, ...counters, sampleBlockedTiles, routeClassification };
   const line="[Route Topology QA] visualRouteTiles="+routeClassification.visualRouteTiles.size+" navigableRouteTiles="+routeClassification.navigableRouteTiles.size+" intentionalBlockedRouteTiles="+routeClassification.intentionalBlockedRouteTiles.size+" invalidHiddenBlockers="+routeClassification.invalidHiddenBlockers.size+" classificationMismatches="+classificationMismatchCount+" sampleBlockedTiles="+JSON.stringify(sampleBlockedTiles)+" status="+status;
   console.info(line);
+  if(ATLAS_DEBUG_MODE) console.info("[Route Topology Pier Tile 19,21] "+JSON.stringify(pierBlockedTile||{ x:19, y:21, blocked:false, blockers:[] }));
   if(ATLAS_DEBUG_MODE && blockedTiles.length>0) console.info("[Traversal Topology Blocked Tiles] "+JSON.stringify(blockedTiles));
 }
 function emitRouteTileSweepQA(){
@@ -5457,8 +5460,11 @@ const CENTRAL_PIER_TILE_KEYS=new Set(CENTRAL_PIER_TILES.map(([x,y])=>keyOf(x,y))
 function hasCentralPierOverride(x,y){
   return CENTRAL_PIER_TILE_KEYS.has(keyOf(x,y));
 }
+function isHarborPierTile(x,y){
+  return hasCentralPierOverride(x,y);
+}
 function isHarborPierWharfTile(x,y){
-  if(hasCentralPierOverride(x,y)) return true;
+  if(isHarborPierTile(x,y)) return true;
   if(!world.roadTiles.has(keyOf(x,y))) return false;
   if(!world.pondWater.has(keyOf(x,y))) return false;
   if(x<18 || x>22 || y<17 || y>23) return false;
@@ -5986,7 +5992,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.1J" && ATLAS_SELECTOR_VERSION==="selector-v35.1j-central-pier-authority-lock";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.1K" && ATLAS_SELECTOR_VERSION==="selector-v35.1k-real-pier-authority";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -9459,11 +9465,11 @@ function getMovementBlockDiagnostics(x,y){
   if(isInMirrorCave && mirrorCave.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
   if(isInAbandonedTollhouse && abandonedTollhouse.blocked.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
   if(!isInMirrorCave && !isInAbandonedTollhouse){
-    if(world.pondWater.has(tileKey) && !isHarborPierWharfTile(x,y)){ causes.push("water"); sourceFlags.water=true; }
-    if(world.pondShore.has(tileKey) && !isTraversalRouteTile){ causes.push("terrain"); sourceFlags.terrain=true; }
+    if(world.pondWater.has(tileKey) && !isHarborPierTile(x,y) && !isHarborPierWharfTile(x,y)){ causes.push("water"); sourceFlags.water=true; }
+    if(world.pondShore.has(tileKey) && !isTraversalRouteTile && !isHarborPierTile(x,y)){ causes.push("terrain"); sourceFlags.terrain=true; }
     if(blockingFence && !hearthvaleTraversalAuthority.nonBlockingFenceTiles.has(tileKey)){ causes.push("fence"); sourceFlags.fence=true; }
     if(blockingTree){ causes.push("terrain"); sourceFlags.terrain=true; }
-    if(world.blocked.has(tileKey) && !hearthvaleTraversalAuthority.nonBlockingTerrainTiles.has(tileKey)){ causes.push("terrain"); sourceFlags.terrain=true; }
+    if(world.blocked.has(tileKey) && !hearthvaleTraversalAuthority.nonBlockingTerrainTiles.has(tileKey) && !isHarborPierTile(x,y)){ causes.push("terrain"); sourceFlags.terrain=true; }
     if(blockingBuilding){ causes.push("building"); sourceFlags.building=true; }
   }
   if(buildingParcel){ sourceFlags.parcel=true; }
