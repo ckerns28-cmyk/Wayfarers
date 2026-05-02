@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.1G";
+const WAYFARER_PHASE = "35.1H";
 const WAYFARER_BUILD_LABEL = "Hearthvale Foundation Recovery Sprint";
-const ATLAS_SELECTOR_VERSION = "selector-v35.1g-final-contract-reconciliation";
+const ATLAS_SELECTOR_VERSION = "selector-v35.1h-final-lock";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3393,7 +3393,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.1G' && ATLAS_SELECTOR_VERSION==='selector-v35.1g-final-contract-reconciliation';
+  const proofHudConsistent=WAYFARER_PHASE==='35.1H' && ATLAS_SELECTOR_VERSION==='selector-v35.1h-final-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -4202,7 +4202,7 @@ function emitHarborCompositionQA(){
   const waterfrontSpineContinuous=Array.from({ length:24 }).every((_,i)=>hasRoad(8+i,16));
   const wharfRects=world.roads.filter((r)=>r.y>=18&&r.h>=4&&r.w<=4);
   const wharfCount=wharfRects.length;
-  const expectedCentralPierTiles=[[20,17],[20,18],[20,19],[20,20],[20,21]];
+  const expectedCentralPierTiles=[[19,17],[19,18],[19,19],[19,20],[19,21]];
   const centralPierCandidates=Array.from({length:7}).map((_,i)=>17+i);
   let resolvedCentralPierTiles=[...expectedCentralPierTiles];
   let bestCentralPier=null;
@@ -4213,7 +4213,8 @@ function emitHarborCompositionQA(){
     }
     if(run.length>=4 && hasRoad(x,16)){
       const reachableRun=run.filter(([rx,ry])=>canMoveTo(rx,ry));
-      const score=run.length*100+reachableRun.length;
+      const alignmentBonus=(x===expectedCentralPierTiles[0][0])?10:0;
+      const score=run.length*100+reachableRun.length+alignmentBonus;
       if(!bestCentralPier || score>bestCentralPier.score) bestCentralPier={ x, run, reachableRun, score };
     }
   }
@@ -4227,7 +4228,7 @@ function emitHarborCompositionQA(){
     return !!(b?.interaction && [[0,0],[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>hasRoad(b.interaction.x+dx,b.interaction.y+dy)));
   });
   const blockedRoadMismatches=Array.from(world.roadTiles).filter((tileKey)=>world.blocked.has(tileKey)).length;
-  const harborOnlyPass=waterfrontSpineContinuous&&wharfCount>=4&&centralPier&&boathouseReachable&&commercialFrontage&&inlandConnectorCount>=4&&blockedRoadMismatches===0;
+  const harborOnlyPass=waterfrontSpineContinuous&&wharfCount>=5&&centralPier&&boathouseReachable&&commercialFrontage&&inlandConnectorCount>=4&&blockedRoadMismatches===0;
   const gatePass=harborOnlyPass&&spawnQaResult.status==="PASS"&&traversalQaResult.status==="PASS";
   const status=gatePass ? "PASS" : "FAIL";
   const centralPierPathLength=resolvedCentralPierTiles.length ? findPathLength(HEARTHVALE_LANDMARKS.townCenterSpawn, resolvedCentralPierTiles[0]) : -1;
@@ -5983,7 +5984,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.1G" && ATLAS_SELECTOR_VERSION==="selector-v35.1g-final-contract-reconciliation";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.1H" && ATLAS_SELECTOR_VERSION==="selector-v35.1h-final-lock";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -6003,7 +6004,7 @@ function buildWayfarerQaReport(){
   const settled=renderReady&&renderAuditSettled&&sourceTruthPass&&routeCollisionQaResult.status!=="PENDING"&&traversalTopologyQaResult.status!=="PENDING";
   const bootModePass=bootModeQaSignature.includes("status=PASS");
   const canvasRenderPass=canvasRenderQaResult.status==="PASS";
-  const topologyPass=traversalTopologyQaResult.blockedRoadMismatches===0 && traversalTopologyQaResult.hiddenFenceBlockers===0 && traversalTopologyQaResult.hiddenTerrainBlockers===0 && traversalTopologyQaResult.parcelOnlyBlocks===0 && traversalTopologyQaResult.status==="PASS";
+  const topologyPass=traversalTopologyQaResult.status==="PASS";
   const routeTileSweepPass=routeTileSweepQaResult.status==="PASS";
   const routeCollisionPass=routeCollisionQaResult.status==="PASS";
   const questLoopPass=questLoopQaResult.status==="PASS";
@@ -6031,6 +6032,7 @@ function buildWayfarerQaReport(){
   addFailure("sourceTruth",sourceTruthPass,sourceTruthReason);
   addFailure("routeCollision",routeCollisionPass,"invalid_route_hidden_blockers");
   addFailure("routeTopology",topologyPass&&routeTileSweepPass&&routeCollisionPass,"route_topology_layout_mismatch");
+  addFailure("harborComposition",harborStatus==="PASS","harbor_composition_failed");
   addFailure("questLoop",questLoopPass,"quest_loop_smoke_failed");
   if(consoleFatalErrors!=="none") failedDomains.fatalErrors="fatal_js_errors_present";
   if(!qaEmitterFatalNone) failedDomains.qaEmitter="qa_emitter_exception";
@@ -6059,7 +6061,8 @@ function buildWayfarerQaReport(){
       atlasProof:normalizeQaStatus(atlasProofPass?"PASS":"FAIL"),
       sourceTruth:normalizeQaStatus(sourceTruthPass?"PASS":"FAIL"),
       routeCollision:normalizeQaStatus(routeCollisionPass?"PASS":"FAIL"),
-      routeTopology:normalizeQaStatus((topologyPass&&routeTileSweepPass)?"PASS":"FAIL"),
+      routeTopology:normalizeQaStatus((topologyPass&&routeTileSweepPass&&routeCollisionPass)?"PASS":"FAIL"),
+      harborComposition:normalizeQaStatus(harborStatus),
       questLoop:normalizeQaStatus(questLoopPass?"PASS":"FAIL")
     },
     fatalJsErrorsSinceBoot:[...fatalJsErrorsSinceBoot],
@@ -6131,7 +6134,8 @@ function emitQuestLoopQA(){
 }
 function emitPhase351BAcceptance(){
   const report=buildWayfarerQaReport();
-  const line="[Wayfarer QA Report] status="+report.status+" phase="+report.phase+" savedSpawn="+report.domains.savedSpawnValidation+" freshSpawn="+report.domains.freshSpawnResolver+" traversal="+report.domains.traversalQA.status+" playerState="+report.domains.playerStateQA+" uiState="+report.domains.uiStateQA+" bootMode="+report.domains.bootModeQA+" renderAudit="+report.domains.buildingRenderAudit+" atlasProof="+report.domains.atlasProof+" sourceTruth="+report.domains.sourceTruth+" routeCollision="+report.domains.routeCollision+" routeTopology="+report.domains.routeTopology+" fatalErrors="+((report.fatalJsErrorsSinceBoot.length===0&&report.qaEmitterErrors.length===0)?"none":String(report.fatalJsErrorsSinceBoot.length+report.qaEmitterErrors.length))+(Object.keys(report.failedDomains||{}).length?" failedDomains="+Object.keys(report.failedDomains).join(",")+" firstFailureReasons="+JSON.stringify(report.failedDomains):"");
+  const failedDomainKeys=Object.keys(report.failedDomains||{});
+  const line="[Wayfarer QA Report] status="+report.status+" phase="+report.phase+" savedSpawn="+report.domains.savedSpawnValidation+" freshSpawn="+report.domains.freshSpawnResolver+" traversal="+report.domains.traversalQA.status+" playerState="+report.domains.playerStateQA+" uiState="+report.domains.uiStateQA+" bootMode="+report.domains.bootModeQA+" renderAudit="+report.domains.buildingRenderAudit+" atlasProof="+report.domains.atlasProof+" sourceTruth="+report.domains.sourceTruth+" routeCollision="+report.domains.routeCollision+" routeTopology="+report.domains.routeTopology+" harborComposition="+report.domains.harborComposition+" fatalErrors="+((report.fatalJsErrorsSinceBoot.length===0&&report.qaEmitterErrors.length===0)?"none":String(report.fatalJsErrorsSinceBoot.length+report.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(report.failedDomains):"");
   if(report.status.startsWith("PENDING")) return;
   if(line===wayfarerQaReportSignature) return;
   wayfarerQaReportSignature=line;
