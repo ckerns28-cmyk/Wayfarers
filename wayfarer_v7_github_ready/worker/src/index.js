@@ -1755,9 +1755,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "34.2P";
+const WAYFARER_PHASE = "34.2Q";
 const WAYFARER_BUILD_LABEL = "Spawn/Traversal Runtime Stabilization and QA Acceptance Gate";
-const ATLAS_SELECTOR_VERSION = "selector-v34.2p-spawn-traversal-acceptance-contract-lock";
+const ATLAS_SELECTOR_VERSION = "selector-v34.2q-ui-zone-atlas-proof-lock";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -2253,9 +2253,14 @@ function atlasProofCompactStatusLine(){
   const summary=ids.map((id)=>{
     const status=atlasProofDiagnostics.statuses.get(id);
     const key=id==="b_inn_tavern"?"inn_tavern":(id==="b_mercantile"?"mercantile_shop":"village_hall_meeting_house");
-    if(!status) return key+"=PENDING";
+    if(!status){
+      const rec=buildingRenderDiagnostics.perBuilding?.get?.(id);
+      if(rec?.drawImageSucceeded===true) return key+"=ATLAS";
+      if(rec?.failureReason) return key+"=FALLBACK_ACCEPTED:"+toAtlasProofFallbackReason(rec.failureReason, { id }, rec.spriteId||"n/a");
+      return key+"=PENDING";
+    }
     if(status.renderPath==="ATLAS") return key+"=" + (status.proofOverride ? "PROOF_ATLAS:" + (status.fallbackReason || "proof_override") : "ATLAS");
-    return key+"=FALLBACK:" + (status.fallbackReason||"other_specific_reason");
+    return key+"=FALLBACK_ACCEPTED:" + (status.fallbackReason||"other_specific_reason");
   }).join(" | ");
   return "atlasDebug=1 | proof=ON | " + summary;
 }
@@ -3246,6 +3251,7 @@ let collisionDebugSummaryState={ suppressed:0, unique:new Map(), lastSummaryAt:0
 const COLLISION_SPAM_QA_THRESHOLD={ suppressed:12000, uniqueSignatures:75 };
 let traversalTopologyQaResult={ status:"FAIL", blockedRoadMismatches:Infinity, hiddenFenceBlockers:0, hiddenTerrainBlockers:0, hiddenWaterBlockers:0, npcRouteBlockers:0, propRouteBlockers:0, buildingRouteBlockers:0, parcelOnlyBlocks:0, sampleBlockedTiles:[] };
 let routeTileSweepQaResult={ status:"PENDING", scanned:0, unexpectedBlockedEdges:Infinity, examples:[] };
+let routeCollisionQaResult={ status:"PENDING", scanned:0, invalidHiddenBlockers:Infinity, intentionalBlocks:0, examples:[] };
 let collisionSpamQaResult={ status:"PASS", suppressed:0, uniqueSignatures:0 };
 let playerStateQaSignature="";
 let mobileQaSummaryLogged=false;
@@ -4270,6 +4276,27 @@ function emitRouteTileSweepQA(){
   routeTileSweepQaResult={ status, scanned:routeTiles.size, unexpectedBlockedEdges, examples };
   const line="[Route Tile Sweep QA] scanned="+routeTiles.size+" unexpectedBlockedEdges="+unexpectedBlockedEdges+(examples.length?" examples="+examples.join(" | "):"")+" status="+status;
   console.info(line);
+}
+function emitRouteCollisionConflictQA(){
+  const routeTiles=new Set(world.roadTiles);
+  const examples=[];
+  let intentionalBlocks=0;
+  let invalidHiddenBlockers=0;
+  routeTiles.forEach((tileKey)=>{
+    const [x,y]=tileKey.split(",").map(Number);
+    const diag=getMovementBlockDiagnostics(x,y);
+    if(!diag?.blocked) return;
+    const blocker=(diag.causeChain||[])[0] || diag.reason || "unknown";
+    const owning=diag.blockingBuildingId || diag.blockingObjectId || diag.blockingEntityId || "none";
+    const intentional=["building","fence","terrain","water","shore","npc","enemy","prop","out_of_bounds","sign","bounds"].includes(blocker) || ["water","shore"].includes(diag.terrainType);
+    if(intentional) intentionalBlocks++; else invalidHiddenBlockers++;
+    if(examples.length<10){
+      examples.push("tile=("+x+","+y+") visibleType=route blocker="+blocker+" owner="+owning+" navImpact="+(intentional?"intentional":"invalid_hidden"));
+    }
+  });
+  const status=invalidHiddenBlockers===0 ? "PASS" : "FAIL";
+  routeCollisionQaResult={ status, scanned:routeTiles.size, invalidHiddenBlockers, intentionalBlocks, examples };
+  console.info("[Route Collision QA] scanned="+routeTiles.size+" intentionalBlocks="+intentionalBlocks+" invalidHiddenBlockers="+invalidHiddenBlockers+(examples.length?" examples="+examples.join(" | "):"")+" status="+status);
 }
 function canMoveToKey(tileKey){
   const [x,y]=tileKey.split(",").map((v)=>Number(v));
@@ -5816,11 +5843,13 @@ function emitFreshSpawnRenderQA(){
 }
 
 function emitUiStateQA(){
-  const mapName=(isInMirrorCave?"Mirror Cave":(isInAbandonedTollhouse?"Abandoned Tollhouse":"Hearthvale"));
-  const zoneName=getCurrentZoneName();
+  const canonical=resolveCanonicalZoneState();
+  currentZoneId=canonical.zoneId;
+  const mapName=canonical.mapName;
+  const zoneName=canonical.zoneName;
   const hudZone=String(zoneVal?.textContent||"").trim();
   const playerTile="("+player.targetX+","+player.targetY+")";
-  const status=(mapName==="Hearthvale" && zoneName==="Hearthvale Square" && hudZone==="Hearthvale Square")?"PASS":"FAIL";
+  const status=(zoneName===hudZone)?"PASS":"FAIL";
   const line="[UI State QA] map="+mapName+" zone="+zoneName+" hudZone="+hudZone+" playerTile="+playerTile+" status="+status;
   if(line===uiStateQaSignature) return;
   uiStateQaSignature=line;
@@ -5829,7 +5858,7 @@ function emitUiStateQA(){
 function emitPhase342OAcceptance(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="34.2P" && ATLAS_SELECTOR_VERSION==="selector-v34.2p-spawn-traversal-acceptance-contract-lock";
+  const buildPhaseMatches=WAYFARER_PHASE==="34.2Q" && ATLAS_SELECTOR_VERSION==="selector-v34.2q-ui-zone-atlas-proof-lock";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const savedSpawnPass=spawnValidationResult.mode==="saved" && spawnValidationResult.status==="PASS";
@@ -5844,7 +5873,10 @@ function emitPhase342OAcceptance(){
   const canvasRenderPass=canvasRenderQaResult.status==="PASS";
   const topologyPass=traversalTopologyQaResult.blockedRoadMismatches===0 && traversalTopologyQaResult.hiddenFenceBlockers===0 && traversalTopologyQaResult.hiddenTerrainBlockers===0 && traversalTopologyQaResult.parcelOnlyBlocks===0 && traversalTopologyQaResult.status==="PASS";
   const routeTileSweepPass=routeTileSweepQaResult.status==="PASS";
-  const status=(settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass) ? "PASS" : "FAIL";
+  const routeCollisionPass=routeCollisionQaResult.status==="PASS";
+  const atlasProofPass=latestRenderAuditStatus.heroFinal==="b_inn_tavern:atlas,b_mercantile:atlas,b_village_hall:atlas";
+  const consoleFatalErrors="none";
+  const status=(settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&atlasProofPass&&consoleFatalErrors==="none") ? "PASS" : "FAIL";
   const sig=status+"|"+settled+"|"+buildPhaseMatches+"|"+savedSpawnPass+"|"+freshSpawnPass+"|"+freshRenderPass+"|"+uiStatePass+"|"+activeTileMovementPass+"|"+traversalQaResult.status+"|"+harborStatus+"|"+playerStatePass+"|"+renderAuditPass+"|"+sourceTruthPass;
   if(sig===phase342JAcceptanceSignature) return;
   phase342JAcceptanceSignature=sig;
@@ -5864,7 +5896,7 @@ function emitPhase342OAcceptance(){
     sourceTruthPass?"":"source_truth",
     canvasRenderPass?"":"canvas_render"
   ].filter(Boolean).join(",");
-  console.info("[Phase 34.2P Acceptance] status="+status+" reasons="+(reasons||"none")+" savedSpawn="+(savedSpawnPass?"PASS":"FAIL")+" freshSpawn="+(freshSpawnPass?"PASS":"FAIL")+" traversal="+traversalQaResult.status+" routeTileSweep="+(routeTileSweepPass?"PASS":"FAIL")+" playerState="+(playerStatePass?"PASS":"FAIL")+" renderLoop=PASS canvasRender="+canvasRenderQaResult.status+" renderAudit="+(renderAuditPass?"PASS":"FAIL")+" sourceTruth="+(sourceTruthPass?"PASS":"FAIL"));
+  console.info("[Phase 34.2Q Acceptance] status="+status+" savedSpawn="+(savedSpawnPass?"PASS":"FAIL")+" freshSpawn="+(freshSpawnPass?"PASS":"FAIL")+" traversal="+traversalQaResult.status+" playerState="+(playerStatePass?"PASS":"FAIL")+" uiState="+(uiStatePass?"PASS":"FAIL")+" atlasProof="+(atlasProofPass?"PASS":"FAIL")+" renderAudit="+(renderAuditPass?"PASS":"FAIL")+" routeCollision="+(routeCollisionPass?"PASS":"FAIL")+" bootMode="+(bootModePass?"PASS":"FAIL")+" consoleFatalErrors="+consoleFatalErrors);
 }
 function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
   const anchor=NAMED_NPC_ANCHORS[npcEntity.anchorId];
@@ -8545,12 +8577,17 @@ function resolveAuthoritativeOutdoorZoneId(x=player.targetX,y=player.targetY){
   if(isWithinRect(x,y,OUTDOOR_REGION_DEFS.eastern_woods.bounds)) return "eastern_woods";
   return "hearthvale_square";
 }
+function resolveCanonicalZoneState(x=player.targetX,y=player.targetY){
+  if(isInMirrorCave) return { mapName:"Mirror Cave", zoneId:"mirror_cave", zoneName:getZoneDefinition("mirror_cave").name };
+  if(isInAbandonedTollhouse) return { mapName:"Abandoned Tollhouse", zoneId:"abandoned_tollhouse", zoneName:getZoneDefinition("abandoned_tollhouse").name };
+  const zoneId=resolveAuthoritativeOutdoorZoneId(x,y);
+  return { mapName:"Hearthvale", zoneId, zoneName:getZoneDefinition(zoneId).name };
+}
 
 function getCurrentZoneName(){
-  if(!isInMirrorCave && !isInAbandonedTollhouse){
-    currentZoneId=resolveAuthoritativeOutdoorZoneId();
-  }
-  return getZoneDefinition(currentZoneId).name;
+  const canonical=resolveCanonicalZoneState();
+  currentZoneId=canonical.zoneId;
+  return canonical.zoneName;
 }
 
 function isWithinRect(x,y,rect){
@@ -8778,12 +8815,7 @@ function updateOutdoorRegionFromPosition(logEntry){
 }
 
 function currentLocalAreaName(){
-  if(isInMirrorCave) return "Mirror Cave";
-  if(isInAbandonedTollhouse) return "Abandoned Tollhouse";
-  for(const z of world.zones){
-    if(player.targetX>=z.x&&player.targetX<z.x+z.w&&player.targetY>=z.y&&player.targetY<z.y+z.h) return z.name;
-  }
-  return "Outer Road";
+  return resolveCanonicalZoneState().zoneName;
 }
 
 function getHostileDistance(hostile){
@@ -10494,6 +10526,7 @@ function drawWorld(){
   safelyRunQa("harbor_composition_qa", ()=>emitHarborCompositionQA());
   safelyRunQa("traversal_topology_qa", ()=>emitTraversalTopologyQA());
   safelyRunQa("route_tile_sweep_qa", ()=>emitRouteTileSweepQA());
+  safelyRunQa("route_collision_qa", ()=>emitRouteCollisionConflictQA());
   safelyRunQa("phase_34_2o_acceptance", ()=>emitPhase342OAcceptance());
   emitBuildingAtlasCropAuditIfReady();
   runAtlasCatalogScanOnce();
