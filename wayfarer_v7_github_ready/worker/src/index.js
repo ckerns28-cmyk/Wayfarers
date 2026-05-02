@@ -5266,28 +5266,21 @@ world.buildings.push(
   { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:28, y:15, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:28,y:15,w:5,h:3}, collision:{x:28,y:17,w:5,h:1}, interaction:{x:30,y:14,w:1,h:1}, label:{x:30,y:15,text:"Boathouse"}, pathingBounds:{x:27,y:13,w:7,h:6} }) }
 );
 world.buildings.forEach((b)=>{
-  const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
-  blockRect(c.x,c.y,c.w,c.h);
-});
-function auditBuildingAtlasMappings(){
-  const atlasEntries=[];
-  const fallbackEntries=[];
-  world.buildings.forEach((building)=>{
-    const spriteId=getBuildingSpriteId(building);
-    if(!spriteId){
-      fallbackEntries.push(building.id + "(unmapped_for_safe_rollout)");
-      return;
+    if(buildingRenderDiagnostics.atlasBuildings.has(b.id)){
+      const sId=getBuildingSpriteId(b);
+      if(sId) resolvedSpriteIds.add(sId);
     }
-    const sprite=atlasManifests.buildings.sprites?.[spriteId];
-    if(!sprite){
-      fallbackEntries.push(building.id + "(missing_atlas_entry:" + spriteId + ")");
-      return;
-    }
-    atlasEntries.push(building.id + "->" + spriteId + "[sx=" + sprite.sx + ",sy=" + sprite.sy + ",sw=" + sprite.sw + ",sh=" + sprite.sh + "]");
   });
-  console.info("[Building Atlas Mapping] atlas=" + atlasEntries.join(",") + " fallback=" + (fallbackEntries.join(",") || "none"));
+  return [...missingAssetWarnings].filter((token)=>{
+    if(!token.startsWith("building_sprite:")) return true;
+    const parts=token.split(":");
+    const sId=parts[1];
+    const reason=parts.slice(2).join(":");
+    if(isNonFatalAtlasReason(reason)) return false;
+    if(sId && resolvedSpriteIds.has(sId)) return false;
+    return true;
+  });
 }
-auditBuildingAtlasMappings();
 
 function getBuildingAtlasDebugStatus(){
   const buildingInfo=atlasRuntimeInfo.buildings||{};
