@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.1I";
+const WAYFARER_PHASE = "35.1J";
 const WAYFARER_BUILD_LABEL = "Hearthvale Foundation Recovery Sprint";
-const ATLAS_SELECTOR_VERSION = "selector-v35.1i-central-pier-harbor-lock";
+const ATLAS_SELECTOR_VERSION = "selector-v35.1j-central-pier-authority-lock";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3393,7 +3393,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.1I' && ATLAS_SELECTOR_VERSION==='selector-v35.1i-central-pier-harbor-lock';
+  const proofHudConsistent=WAYFARER_PHASE==='35.1J' && ATLAS_SELECTOR_VERSION==='selector-v35.1j-central-pier-authority-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -4202,10 +4202,15 @@ function emitHarborCompositionQA(){
   const waterfrontSpineContinuous=Array.from({ length:24 }).every((_,i)=>hasRoad(8+i,16));
   const wharfRects=world.roads.filter((r)=>r.y>=18&&r.h>=4&&r.w<=4);
   const wharfCount=wharfRects.length;
-  const expectedCentralPierTiles=[[19,17],[19,18],[19,19],[19,20],[19,21]];
+  const expectedCentralPierTiles=CENTRAL_PIER_TILES;
   const resolvedCentralPierTiles=expectedCentralPierTiles.filter(([x,y])=>hasRoad(x,y));
+  const centralPierTileReachability=expectedCentralPierTiles.map(([x,y])=>findPathLength(HEARTHVALE_LANDMARKS.townCenterSpawn,{ x,y }));
+  const centralPierPathLength=centralPierTileReachability.length ? Math.min(...centralPierTileReachability) : -1;
+  const centralPierAllReachable=centralPierTileReachability.every((pathLength)=>pathLength>0);
   const centralPier=resolvedCentralPierTiles.length===expectedCentralPierTiles.length
-    && resolvedCentralPierTiles.every(([x,y])=>hasRoad(x,y) && canMoveToIgnoringDynamicBlockers(x,y));
+    && expectedCentralPierTiles.every(([x,y])=>hasRoad(x,y) && isHarborPierWharfTile(x,y) && canMoveToIgnoringDynamicBlockers(x,y))
+    && centralPierAllReachable
+    && centralPierPathLength>0;
   const inlandConnectorCount=world.roads.filter((r)=>r.w===1&&r.h>=6&&r.y<=8).length;
   const boathouse=world.buildings.find((row)=>row.id==="b_boathouse");
   const boathouseReachable=Boolean(boathouse?.interaction && !world.blocked.has(keyOf(boathouse.interaction.x,boathouse.interaction.y)));
@@ -4217,7 +4222,6 @@ function emitHarborCompositionQA(){
   const harborOnlyPass=waterfrontSpineContinuous&&wharfCount>=5&&centralPier&&boathouseReachable&&commercialFrontage&&inlandConnectorCount>=4&&blockedRoadMismatches===0;
   const gatePass=harborOnlyPass&&spawnQaResult.status==="PASS"&&traversalQaResult.status==="PASS";
   const status=gatePass ? "PASS" : "FAIL";
-  const centralPierPathLength=resolvedCentralPierTiles.length ? findPathLength(HEARTHVALE_LANDMARKS.townCenterSpawn, resolvedCentralPierTiles[0]) : -1;
   const sig=JSON.stringify({ harborOnlyPass, gatePass, waterfrontSpineContinuous, wharfCount, centralPier, boathouseReachable, commercialFrontage, inlandConnectorCount, blockedRoadMismatches, spawnQa:spawnQaResult.status, traversalQa:traversalQaResult.status, status, expectedCentralPierTiles, resolvedCentralPierTiles, centralPierPathLength });
   if(sig===harborCompositionQaSignature) return;
   harborCompositionQaSignature=sig;
@@ -4227,11 +4231,11 @@ function emitHarborCompositionQA(){
   console.info("wharfCount="+wharfCount);
   console.info("centralPier="+(centralPier?"PASS":"FAIL"));
   if(!centralPier){
-    const details=resolvedCentralPierTiles.map(([x,y])=>{
+    const details=expectedCentralPierTiles.map(([x,y])=>{
       const tileKey=keyOf(x,y);
       const terrainRow=Array.isArray(world.terrain) ? world.terrain[y] : null;
       const terrain=Array.isArray(terrainRow) ? terrainRow[x] : undefined;
-      return "tile("+x+","+y+") road="+hasRoad(x,y)+" terrain="+String(terrain??"void")+" waterOverlap="+world.pondWater.has(tileKey)+" reachability="+canMoveToIgnoringDynamicBlockers(x,y);
+      return "tile("+x+","+y+") road="+hasRoad(x,y)+" terrain="+String(terrain??"void")+" waterOverlap="+world.pondWater.has(tileKey)+" pierOverride="+hasCentralPierOverride(x,y)+" reachability="+canMoveToIgnoringDynamicBlockers(x,y);
     }).join(" | ");
     console.info("centralPierExpected="+JSON.stringify(expectedCentralPierTiles));
     console.info("centralPierResolved="+JSON.stringify(resolvedCentralPierTiles));
@@ -5448,7 +5452,13 @@ function isOverworldTerrainBlocked(x,y){
   const tileKey=keyOf(x,y);
   return world.blocked.has(tileKey) || world.pondBlocked.has(tileKey) || world.pondShore.has(tileKey);
 }
+const CENTRAL_PIER_TILES=Object.freeze([[19,17],[19,18],[19,19],[19,20],[19,21]]);
+const CENTRAL_PIER_TILE_KEYS=new Set(CENTRAL_PIER_TILES.map(([x,y])=>keyOf(x,y)));
+function hasCentralPierOverride(x,y){
+  return CENTRAL_PIER_TILE_KEYS.has(keyOf(x,y));
+}
 function isHarborPierWharfTile(x,y){
+  if(hasCentralPierOverride(x,y)) return true;
   if(!world.roadTiles.has(keyOf(x,y))) return false;
   if(!world.pondWater.has(keyOf(x,y))) return false;
   if(x<18 || x>22 || y<17 || y>23) return false;
@@ -5976,7 +5986,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.1I" && ATLAS_SELECTOR_VERSION==="selector-v35.1i-central-pier-harbor-lock";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.1J" && ATLAS_SELECTOR_VERSION==="selector-v35.1j-central-pier-authority-lock";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
