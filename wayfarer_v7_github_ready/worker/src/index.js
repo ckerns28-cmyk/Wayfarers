@@ -851,6 +851,7 @@ const sidebarTabs = Array.from(document.querySelectorAll(".sidebar-tab"));
 const sidebarPanels = Array.from(document.querySelectorAll(".sidebar-tab-panel"));
 
 const bootstrapErrorDedupe=new Set();
+const fatalJsErrorsSinceBoot=[];
 
 function reportBootstrapError(err,label){
   if(err===null){
@@ -865,6 +866,7 @@ function reportBootstrapError(err,label){
   const dedupeKey=label+"::"+normalizedMessage;
   if(bootstrapErrorDedupe.has(dedupeKey)) return;
   bootstrapErrorDedupe.add(dedupeKey);
+  fatalJsErrorsSinceBoot.push({ label, message:normalizedMessage, timestamp:new Date().toISOString() });
 
   console.error("[Bootstrap Error] "+label+": "+normalizedMessage, err);
   if(chat){
@@ -3260,6 +3262,8 @@ let atlasRuntimeAuthorityChainSignature="";
 let atlasRuntimeAuthorityAcceptanceSignature="";
 let sourceTruthAcceptanceSignature="";
 let atlasWorkflowAcceptanceSignature="";
+let wayfarerQaReportSignature="";
+let wayfarerQaReportState={ status:"PENDING", generatedAt:null, report:null, text:"" };
 function emitSpawnValidationLine(){
   if(!spawnValidationResult?.line) return;
   if(spawnValidationResult.line===spawnValidationSignature) return;
@@ -5855,7 +5859,13 @@ function emitUiStateQA(){
   uiStateQaSignature=line;
   console.info(line);
 }
-function emitPhase342OAcceptance(){
+function normalizeQaStatus(value){
+  const raw=String(value||"PENDING").toUpperCase();
+  if(raw==="PASS"||raw==="FAIL"||raw==="DEGRADED"||raw==="PENDING_ASSETS"||raw==="ACCEPTED_FALLBACK") return raw;
+  if(raw.includes("PENDING")) return "PENDING_ASSETS";
+  return "DEGRADED";
+}
+function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
   const buildPhaseMatches=WAYFARER_PHASE==="34.2Q" && ATLAS_SELECTOR_VERSION==="selector-v34.2q-ui-zone-atlas-proof-lock";
@@ -5875,28 +5885,76 @@ function emitPhase342OAcceptance(){
   const routeTileSweepPass=routeTileSweepQaResult.status==="PASS";
   const routeCollisionPass=routeCollisionQaResult.status==="PASS";
   const atlasProofPass=latestRenderAuditStatus.heroFinal==="b_inn_tavern:atlas,b_mercantile:atlas,b_village_hall:atlas";
-  const consoleFatalErrors="none";
+  const fatalErrorCount=fatalJsErrorsSinceBoot.length;
+  const consoleFatalErrors=fatalErrorCount===0?"none":String(fatalErrorCount);
   const status=(settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&atlasProofPass&&consoleFatalErrors==="none") ? "PASS" : "FAIL";
-  const sig=status+"|"+settled+"|"+buildPhaseMatches+"|"+savedSpawnPass+"|"+freshSpawnPass+"|"+freshRenderPass+"|"+uiStatePass+"|"+activeTileMovementPass+"|"+traversalQaResult.status+"|"+harborStatus+"|"+playerStatePass+"|"+renderAuditPass+"|"+sourceTruthPass;
-  if(sig===phase342JAcceptanceSignature) return;
-  phase342JAcceptanceSignature=sig;
-  const reasons=[
-    settled?"":"not_settled",
-    buildPhaseMatches?"":"build_consistency",
-    savedSpawnPass?"":"saved_spawn",
-    freshSpawnPass?"":"fresh_spawn",
-    freshRenderPass?"":"fresh_render",
-    uiStatePass?"":"ui_state",
-    activeTileMovementPass?"":"active_tile_movement",
-    traversalQaResult.status==="PASS"?"":"traversal",
-    routeTileSweepPass?"":"route_tile_sweep",
-    playerStatePass?"":"player_state",
-    topologyPass?"":"topology",
-    renderAuditPass?"":"render_audit",
-    sourceTruthPass?"":"source_truth",
-    canvasRenderPass?"":"canvas_render"
-  ].filter(Boolean).join(",");
-  console.info("[Phase 34.2Q Acceptance] status="+status+" savedSpawn="+(savedSpawnPass?"PASS":"FAIL")+" freshSpawn="+(freshSpawnPass?"PASS":"FAIL")+" traversal="+traversalQaResult.status+" playerState="+(playerStatePass?"PASS":"FAIL")+" uiState="+(uiStatePass?"PASS":"FAIL")+" atlasProof="+(atlasProofPass?"PASS":"FAIL")+" renderAudit="+(renderAuditPass?"PASS":"FAIL")+" routeCollision="+(routeCollisionPass?"PASS":"FAIL")+" bootMode="+(bootModePass?"PASS":"FAIL")+" consoleFatalErrors="+consoleFatalErrors);
+  const failedDomains={};
+  const addFailure=(k,pass,reason)=>{ if(pass) return; failedDomains[k]=reason; };
+  addFailure("buildPhase",buildPhaseMatches,"phase_or_selector_mismatch");
+  addFailure("savedSpawn",savedSpawnPass,"saved_spawn_validation_failed");
+  addFailure("freshSpawn",freshSpawnPass,"fresh_spawn_validation_failed");
+  addFailure("spawnQA",spawnQaResult.status==="PASS","spawn_qa_failed");
+  addFailure("activeTileMovement",activeTileMovementPass,"active_tile_movement_failed");
+  addFailure("traversal",traversalQaResult.status==="PASS","target_unreachable");
+  addFailure("playerState",playerStatePass,"player_state_signature_failed");
+  addFailure("uiState",uiStatePass,"zone_hud_mismatch");
+  addFailure("bootMode",bootModePass,"boot_mode_signature_failed");
+  addFailure("renderAudit",renderAuditPass,"render_audit_not_pass");
+  addFailure("atlasProof",atlasProofPass,"hero_atlas_proof_mismatch");
+  addFailure("sourceTruth",sourceTruthPass,"source_truth_not_pass");
+  addFailure("routeCollision",routeCollisionPass,"invalid_route_hidden_blockers");
+  if(consoleFatalErrors!=="none") failedDomains.fatalErrors="fatal_js_errors_present";
+  const warnings=Array.from(new Set([
+    ...Object.values(failedDomains),
+    ...(latestRenderAuditStatus.pendingCount>0?["pending_assets"]:[])
+  ]));
+  return {
+    status:normalizeQaStatus(status),
+    phase:WAYFARER_PHASE,
+    selectorVersion:ATLAS_SELECTOR_VERSION,
+    cacheBust:new URLSearchParams(window.location.search).get("cacheBust")||"none",
+    url:window.location.href,
+    timestamp:new Date().toISOString(),
+    domains:{
+      savedSpawnValidation:normalizeQaStatus(savedSpawnPass?"PASS":spawnValidationResult.status),
+      freshSpawnResolver:normalizeQaStatus(freshSpawnResult.status),
+      spawnQA:normalizeQaStatus(spawnQaResult.status),
+      activeTileMovementQA:normalizeQaStatus(activeTileMovementQaResult.status),
+      traversalQA:{ status:normalizeQaStatus(traversalQaResult.status), pathLengths:(traversalQaResult.checks||[]).map((c)=>({ key:c.key, pathLength:c.pathLength })) },
+      playerStateQA:normalizeQaStatus(playerStatePass?"PASS":"FAIL"),
+      uiStateQA:normalizeQaStatus(uiStatePass?"PASS":"FAIL"),
+      bootModeQA:normalizeQaStatus(bootModePass?"PASS":"FAIL"),
+      buildingRenderAudit:normalizeQaStatus(latestRenderAuditStatus.pendingCount>0?"PENDING_ASSETS":latestRenderAuditStatus.status),
+      atlasProof:normalizeQaStatus(atlasProofPass?"PASS":"FAIL"),
+      sourceTruth:normalizeQaStatus(sourceTruthPass?"PASS":"FAIL"),
+      routeCollisionTopology:normalizeQaStatus((topologyPass&&routeTileSweepPass&&routeCollisionPass)?"PASS":"FAIL")
+    },
+    fatalJsErrorsSinceBoot:[...fatalJsErrorsSinceBoot],
+    warningSummary:warnings,
+    failedDomains
+  };
+}
+async function copyWayfarerQA(){
+  const payload=wayfarerQaReportState.report || buildWayfarerQaReport();
+  const text=JSON.stringify(payload);
+  try{
+    await navigator.clipboard.writeText(text);
+    console.info("[Wayfarer QA Report] copied_to_clipboard=true size="+text.length);
+  }catch(err){
+    console.info(text);
+  }
+  return text;
+}
+window.__WAYFARER_QA_REPORT=wayfarerQaReportState.report;
+window.copyWayfarerQA=copyWayfarerQA;
+function emitPhase342OAcceptance(){
+  const report=buildWayfarerQaReport();
+  const line="[Wayfarer QA Report] status="+report.status+" phase="+report.phase+" savedSpawn="+report.domains.savedSpawnValidation+" freshSpawn="+report.domains.freshSpawnResolver+" traversal="+report.domains.traversalQA.status+" playerState="+report.domains.playerStateQA+" uiState="+report.domains.uiStateQA+" bootMode="+report.domains.bootModeQA+" renderAudit="+report.domains.buildingRenderAudit+" atlasProof="+report.domains.atlasProof+" sourceTruth="+report.domains.sourceTruth+" routeCollision="+report.domains.routeCollisionTopology+" fatalErrors="+(report.fatalJsErrorsSinceBoot.length===0?"none":String(report.fatalJsErrorsSinceBoot.length));
+  if(line===wayfarerQaReportSignature) return;
+  wayfarerQaReportSignature=line;
+  wayfarerQaReportState={ status:report.status, generatedAt:Date.now(), report, text:JSON.stringify(report) };
+  window.__WAYFARER_QA_REPORT=report;
+  console.info(line);
 }
 function ensureNpcAnchorAndPositionValid(npcEntity,alignImmediately=false){
   const anchor=NAMED_NPC_ANCHORS[npcEntity.anchorId];
@@ -9400,6 +9458,19 @@ function createMobileQaControls(){
   document.body.appendChild(host);
 }
 createMobileQaControls();
+function createAtlasDebugQaCopyButton(){
+  if(!ATLAS_DEBUG_MODE) return;
+  const b=document.createElement("button");
+  b.type="button";
+  b.textContent="Copy QA Report";
+  b.style.cssText="position:fixed;right:10px;bottom:10px;z-index:60;border:1px solid #4c6281;background:#13263acc;color:#e6ecf5;border-radius:6px;padding:6px 10px;font-size:12px;";
+  b.addEventListener("click",(event)=>{
+    event.preventDefault();
+    void copyWayfarerQA();
+  });
+  document.body.appendChild(b);
+}
+createAtlasDebugQaCopyButton();
 canvas.addEventListener("click",(e)=>{ const clicked=screenToWorld(e.clientX,e.clientY); interactionManager.interactAt(clicked.x, clicked.y); });
 inventoryList.addEventListener("click",(e)=>{
   const useTarget=e.target instanceof Element ? e.target.closest("button[data-use-item]") : null;
