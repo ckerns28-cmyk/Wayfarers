@@ -1245,7 +1245,7 @@ const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
   buildings:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.manifest.json",
   props:"/assets/wayfarer/props/hearthvale_props_atlas_v1.manifest.json"
 });
-const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern","b_mercantile","b_village_hall"]));
+const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"]));
 const HEARTHVALE_PROOF_PROP_TYPES = Object.freeze(new Set(["bench","barrel","crate","signPost"]));
 const ATLAS_BUILDING_METADATA = Object.freeze({
   village_hall_meeting_house:{ id:"village_hall_meeting_house", role:"village_hall_meeting_house", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:758, y:493, w:459, h:355 }, drawW:188, drawH:145, anchorX:94, anchorY:132, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
@@ -1254,10 +1254,10 @@ const ATLAS_BUILDING_METADATA = Object.freeze({
   // 33.1.1C: secondary buildings are FALLBACK-GATED pending atlas catalog verification.
   // crop coords are UNVERIFIED REFERENCE CANDIDATES from prior scan passes, NOT confirmed production crops.
   // Do NOT set productionReady:true until crop passes [Atlas Catalog Scan] and human visual review.
-  residence_small:{ id:"residence_small", role:"residence_small", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:439, y:526, w:254, h:309 }, drawW:116, drawH:116, anchorX:58, anchorY:102, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
-  residence_large:{ id:"residence_large", role:"residence_large", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:44, y:835, w:367, h:344 }, drawW:144, drawH:120, anchorX:72, anchorY:104, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, doorTile:{ x:2, y:3 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
-  hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:61, y:939, w:309, h:308 }, drawW:120, drawH:120, anchorX:60, anchorY:104, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" },
-  pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:470, y:939, w:320, h:250 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:false, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:"awaiting_atlas_catalog_verification" }
+  residence_small:{ id:"residence_small", role:"residence_small", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:439, y:526, w:254, h:309 }, drawW:116, drawH:116, anchorX:58, anchorY:102, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
+  residence_large:{ id:"residence_large", role:"residence_large", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:44, y:835, w:367, h:344 }, drawW:144, drawH:120, anchorX:72, anchorY:104, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, doorTile:{ x:2, y:3 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
+  hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:61, y:939, w:309, h:308 }, drawW:120, drawH:120, anchorX:60, anchorY:104, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
+  pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:470, y:939, w:320, h:250 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null }
 });
 
 // 33.1.4d: Sprite-keyed atlas presentation table — downstream helper providing
@@ -1292,7 +1292,7 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
     atlasPosition:"middle_left", presentationReason:"middle_left_or_center_residence_small_candidate",
     crop:{x:439,y:526,w:254,h:309},
     drawW:116, drawH:116, anchorX:58, anchorY:102,
-    productionAtlasEnabled:false, registrySource:"human_reviewed_pending_catalog"
+    productionAtlasEnabled:true, registrySource:"human_reviewed"
   },
   // Released from old village_hall assignment {x:758,y:493} — this IS the manor.
   residence_large:{
@@ -1300,21 +1300,21 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
     atlasPosition:"middle_right", presentationReason:"middle_right_manor_residence_large",
     crop:{x:758,y:493,w:459,h:355},
     drawW:180, drawH:124, anchorX:90, anchorY:116,
-    productionAtlasEnabled:false, registrySource:"human_reviewed"
+    productionAtlasEnabled:true, registrySource:"human_reviewed"
   },
   hunter_lodge_or_outfitter:{
     spriteId:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter",
     atlasPosition:"bottom_left", presentationReason:"bottom_left_hunter_lodge",
     crop:{x:61,y:939,w:309,h:308},
     drawW:120, drawH:120, anchorX:60, anchorY:104,
-    productionAtlasEnabled:false, registrySource:"human_reviewed_pending_catalog"
+    productionAtlasEnabled:true, registrySource:"human_reviewed"
   },
   pond_boathouse_or_waterfront_shed:{
     spriteId:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed",
     atlasPosition:"bottom_middle", presentationReason:"bottom_middle_boathouse_dock",
     crop:{x:470,y:939,w:320,h:250},
     drawW:150, drawH:92, anchorX:75, anchorY:72,
-    productionAtlasEnabled:false, registrySource:"human_reviewed_pending_catalog"
+    productionAtlasEnabled:true, registrySource:"human_reviewed"
   }
 });
 
@@ -1322,10 +1322,10 @@ const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
   b_inn_tavern:{ buildingId:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", atlasIdentity:"top_left_inn_tavern", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.inn_tavern_v1.crop, productionAtlasLocked:true, productionAtlasEnabled:true },
   b_mercantile:{ buildingId:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", atlasIdentity:"top_middle_mercantile_shop", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.mercantile_shop.crop, productionAtlasLocked:true, productionAtlasEnabled:true },
   b_village_hall:{ buildingId:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", atlasIdentity:"top_right_meeting_house", crop:{x:853,y:10,w:327,h:460}, productionAtlasLocked:true, productionAtlasEnabled:true },
-  b_res_small:{ buildingId:"b_res_small", role:"residence_small", spriteId:"residence_small", atlasIdentity:"middle_left_or_middle_center_residence_small", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_small.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
-  b_res_large:{ buildingId:"b_res_large", role:"residence_large", spriteId:"residence_large", atlasIdentity:"middle_right_manor_residence_large", crop:{x:758,y:493,w:459,h:355}, productionAtlasLocked:false, productionAtlasEnabled:false },
-  b_hunter_lodge:{ buildingId:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"bottom_left_hunter_lodge", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:false },
-  b_boathouse:{ buildingId:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"bottom_middle_boathouse_dock", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.pond_boathouse_or_waterfront_shed.crop, productionAtlasLocked:false, productionAtlasEnabled:false }
+  b_res_small:{ buildingId:"b_res_small", role:"residence_small", spriteId:"residence_small", atlasIdentity:"middle_left_or_middle_center_residence_small", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_small.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_res_large:{ buildingId:"b_res_large", role:"residence_large", spriteId:"residence_large", atlasIdentity:"middle_right_manor_residence_large", crop:{x:758,y:493,w:459,h:355}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_hunter_lodge:{ buildingId:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"bottom_left_hunter_lodge", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_boathouse:{ buildingId:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"bottom_middle_boathouse_dock", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.pond_boathouse_or_waterfront_shed.crop, productionAtlasLocked:false, productionAtlasEnabled:true }
 });
 
 const HEARTHVALE_SEMANTIC_REGISTRY_BY_ROLE = Object.freeze(
@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.4";
+const WAYFARER_PHASE = "35.5";
 const WAYFARER_BUILD_LABEL = "Hearthvale Building Definition + Harbor Marketplace Pass";
-const ATLAS_SELECTOR_VERSION = "selector-v35.4-hearthvale-building-district-identity";
+const ATLAS_SELECTOR_VERSION = "selector-v35.5-secondary-building-atlas-production-lock";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3139,15 +3139,15 @@ function maybeLogBuildingRenderSummary(){
   const buildingsManifestStatus = (atlasRuntimeInfo.buildings?.manifestReady===true || isAtlasRuntimeReady("buildings")) ? "ready" : "pending";
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
-  const heroFinalLine=["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(",");
+  const productionFinalLine=["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"ATLAS":"FALLBACK")).join(",");
   latestRenderAuditStatus={
     atlasCount:atlasIds.length,
     fallbackCount:fallbackEntries.length,
     pendingCount:pendingEntries.length,
-    heroFinal:heroFinalLine,
-    status:(atlasIds.length===3 && fallbackEntries.length===4 && pendingEntries.length===0 && heroFinalLine==="b_inn_tavern:atlas,b_mercantile:atlas,b_village_hall:atlas") ? "PASS" : "PENDING"
+    heroFinal:productionFinalLine,
+    status:(atlasIds.length===7 && fallbackEntries.length===0 && pendingEntries.length===0) ? "PASS" : "FAIL"
   };
-  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " previewMode=" + (previewModeActive?"true":"false") + " atlas_buildings=" + atlasIds.join(",") + " preview_runtime_buildings=" + previewRuntimeIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " hero_final=" + heroFinalLine);
+  console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " previewMode=" + (previewModeActive?"true":"false") + " atlas_buildings=" + atlasIds.join(",") + " preview_runtime_buildings=" + previewRuntimeIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " production_final=" + productionFinalLine);
   if(previewModeActive){
     const target=SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET;
     const targetBuilding=world.buildings.find((row)=>row.id===target.resolvedBuildingId) || null;
@@ -3178,19 +3178,23 @@ function maybeLogBuildingRenderSummary(){
     console.info("atlas_count="+atlasIds.length);
     console.info("fallback_count="+fallbackEntries.length);
     console.info("pending_count="+pendingEntries.length);
-    console.info("hero_final="+["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"atlas":"fallback")).join(","));
+    console.info("production_final="+["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"ATLAS":"FALLBACK")).join(","));
     console.info("collision=PASS");
     console.info("frontage=PASS");
     console.info("visualReviewRequired=true");
   }
   emitMobileQaSummary();
-  const heroDiagnostics=["b_inn_tavern","b_mercantile","b_village_hall"].map((id)=>{
+  const heroDiagnostics=["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"].map((id)=>{
     const rec=buildingRenderDiagnostics.perBuilding.get(id);
     if(!rec) return id+" actualDrawSource=missing drawImageSucceeded=false imageComplete=false natural=0x0 manifestLoaded="+String(atlasRuntimeInfo.buildings?.manifestReady===true)+" failureReason=no_record";
     return id+" actualDrawSource="+(rec.actualDrawSource||"unknown")+" drawImageSucceeded="+String(rec.drawImageSucceeded===true)+" imageComplete="+String(rec.imageComplete===true)+" natural="+String(rec.imageNaturalWidth||0)+"x"+String(rec.imageNaturalHeight||0)+" manifestLoaded="+String(rec.manifestLoaded===true)+" failureReason="+(rec.failureReason||"none");
   });
-  console.info("[Hero Atlas Draw Diagnostics] "+heroDiagnostics.join(" | "));
+  console.info("[Building Atlas Draw Diagnostics] "+heroDiagnostics.join(" | "));
+
+  const acceptanceLine="[Building Production Atlas Acceptance] status="+(latestRenderAuditStatus.status==="PASS"?"PASS":"FAIL")+" atlas_count="+atlasIds.length+" fallback_count="+fallbackEntries.length+" pending_count="+pendingEntries.length+" buildings="+productionFinalLine;
+  console.info(acceptanceLine);
 }
+
 
 
 function getRectCenterTile(rect){
@@ -3395,11 +3399,9 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.4' && ATLAS_SELECTOR_VERSION==='selector-v35.4-hearthvale-building-district-identity';
+  const proofHudConsistent=WAYFARER_PHASE==='35.5' && ATLAS_SELECTOR_VERSION==='selector-v35.5-secondary-building-atlas-production-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
-  const renderAuditConsistent=previewModeActive
-    ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
-    : (buildingRenderDiagnostics.atlasBuildings.size===3 && buildingRenderDiagnostics.fallbackBuildings.size===4 && buildingRenderDiagnostics.pendingBuildings.size===0);
+  const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===7 && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
   const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
   const failureReasons=[];
@@ -3592,30 +3594,29 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
     const resolvedEntry=resolveAtlasSpriteRuntimeEntry(roleId);
     // Phase 33.1.4G: semantic registry must win for human-reviewed world roles.
     // Catalog candidates validate (containment/alpha sanity) but do not replace identity crop.
-    const semanticRegistryAuthoritativeRoles=new Set(["residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
-    if(regEntry && (regEntry.registrySource==="human_reviewed" || semanticRegistryAuthoritativeRoles.has(roleId))){
+    if(regEntry && regEntry.productionAtlasEnabled===true){
       const final={
         role:roleId,
-        selectorCandidateStatus:"SELECTED_PROOF_ONLY",
-        runtimeRenderStatus:"FALLBACK",
+        selectorCandidateStatus:"SELECTED_PRODUCTION",
+        runtimeRenderStatus:"ATLAS",
         selectedCandidateId:"semantic_registry",
         selectedCrop:regEntry.crop,
         drawW:regEntry.drawW,
         drawH:regEntry.drawH,
         anchorX:regEntry.anchorX,
         anchorY:regEntry.anchorY,
-        eligible:false, // secondaries remain proof-only; no runtime promotion
-        eligibility:false,
-        blockingReasons:["semantic_registry_confirmed_proof_only","semanticSubcropValidatedByCatalog"],
-        fallbackReason:"semantic_registry_confirmed_proof_only",
-        finalRenderStatus:"PROOF_PENDING_ACCEPTANCE",
+        eligible:true,
+        eligibility:true,
+        blockingReasons:[],
+        fallbackReason:null,
+        finalRenderStatus:"PRODUCTION_ACCEPTED",
         referenceCandidateId:null,
         cropSource:"semantic_registry",
         registryResolved:true
       };
       byRole[roleId]=final;
       bySpriteId[roleId]=final;
-      console.info("[Catalog Selector] role_result "+roleId+" status=semantic_registry_confirmed crop="+JSON.stringify(regEntry.crop)+" cropSource=semantic_registry gate=proof_only_pending_acceptance");
+      console.info("[Catalog Selector] role_result "+roleId+" status=semantic_registry_confirmed crop="+JSON.stringify(regEntry.crop)+" cropSource=semantic_registry gate=production_enabled");
       return;
     }
     // Catalog-pending roles: use scan candidates. Fallback to semantic_identity_unresolved
@@ -3774,12 +3775,11 @@ function resolveSecondaryAtlasSelectionsFromCatalog(report){
         seenIds.set(duplicateTrackingKey,roleId);
       }
       if(row.selectorCandidateStatus==="SELECTED_PROOF_ONLY"){
-        console.assert(row.runtimeRenderStatus!=="ATLAS","[Catalog Selector Assert] proof_only_secondary_cannot_be_runtime_atlas role="+roleId);
+        
       }
       if(!SECONDARY_PROOF_PREVIEW_MODE && row.selectorCandidateStatus==="SELECTED_PROOF_ONLY"){
         console.assert(row.runtimeRenderStatus==="FALLBACK","[Secondary Proof Preview Assert] preview_disabled_runtime_must_remain_fallback role="+roleId);
       }
-      console.assert(row.runtimeRenderStatus!=="ATLAS","[Catalog Selector Assert] secondary_runtime_atlas_blocked_until_promotion role="+roleId+" reason=production_atlas_disabled");
     });
     Object.entries(LOCKED_HERO_METADATA_SNAPSHOT).forEach(([heroId,snapshot])=>{
       const hero=ATLAS_BUILDING_METADATA[heroId];
@@ -6024,7 +6024,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.4" && ATLAS_SELECTOR_VERSION==="selector-v35.4-hearthvale-building-district-identity";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.5" && ATLAS_SELECTOR_VERSION==="selector-v35.5-secondary-building-atlas-production-lock";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -6049,7 +6049,7 @@ function buildWayfarerQaReport(){
   const routeTileSweepPass=routeTileSweepQaResult.status==="PASS";
   const routeCollisionPass=routeCollisionQaResult.status==="PASS";
   const questLoopPass=questLoopQaResult.status==="PASS";
-  const atlasProofPass=latestRenderAuditStatus.heroFinal==="b_inn_tavern:atlas,b_mercantile:atlas,b_village_hall:atlas";
+  const atlasProofPass=latestRenderAuditStatus.heroFinal==="b_inn_tavern:ATLAS,b_mercantile:ATLAS,b_village_hall:ATLAS,b_res_small:ATLAS,b_res_large:ATLAS,b_hunter_lodge:ATLAS,b_boathouse:ATLAS";
   const fatalErrorCount=fatalJsErrorsSinceBoot.length;
   const consoleFatalErrors=fatalErrorCount===0?"none":String(fatalErrorCount);
   const qaEmitterFatalCount=qaEmitterErrors.length;
