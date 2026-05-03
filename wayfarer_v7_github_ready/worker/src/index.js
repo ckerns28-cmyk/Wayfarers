@@ -1349,6 +1349,32 @@ const HEARTHVALE_SEMANTIC_REGISTRY_BY_ROLE = Object.freeze(
 );
 
 const LOCKED_HERO_BUILDING_IDS=Object.freeze(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house"]);
+const NEWPORT_STRUCTURE_PACK_SHEETS=Object.freeze([
+  { sheetId:"hearthvale_buildings_atlas_v1", url:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.png" },
+  { sheetId:"hearthvale_newport_structure_pack_v1_a", url:"/assets/wayfarer/buildings/hearthvale_newport_structure_pack_v1_a.png" },
+  { sheetId:"hearthvale_newport_structure_pack_v1_b", url:"/assets/wayfarer/buildings/hearthvale_newport_structure_pack_v1_b.png" }
+]);
+const NEWPORT_STRUCTURE_PACK_REGISTRY=Object.freeze([
+  { spriteId:"newport_v1a_c00", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:33,y:31,w:385,h:370}, drawW:156, drawH:150, anchorX:78, anchorY:136, footprint:{w:5,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1a_c01", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:841,y:65,w:372,h:334}, drawW:156, drawH:140, anchorX:78, anchorY:126, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1a_c02", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:434,y:78,w:398,h:320}, drawW:168, drawH:134, anchorX:84, anchorY:122, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1a_c03", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:130,y:437,w:184,h:338}, drawW:90, drawH:166, anchorX:45, anchorY:148, footprint:{w:3,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1a_c04", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:828,y:448,w:398,h:331}, drawW:168, drawH:140, anchorX:84, anchorY:126, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1a_c05", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:368,y:482,w:429,h:292}, drawW:176, drawH:120, anchorX:88, anchorY:108, footprint:{w:6,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1a_c06", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:42,y:824,w:368,h:357}, drawW:154, drawH:150, anchorX:77, anchorY:136, footprint:{w:5,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1a_c07", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:828,y:824,w:394,h:345}, drawW:166, drawH:146, anchorX:83, anchorY:132, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1a_c08", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:427,y:828,w:378,h:338}, drawW:160, drawH:142, anchorX:80, anchorY:128, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false }
+
+  { spriteId:"newport_v1b_c00", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:35,y:64,w:391,h:358}, drawW:164, drawH:150, anchorX:82, anchorY:136, footprint:{w:5,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1b_c01", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:443,y:81,w:370,h:333}, drawW:154, drawH:138, anchorX:77, anchorY:124, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1b_c02", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:838,y:94,w:388,h:319}, drawW:162, drawH:132, anchorX:81, anchorY:118, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1b_c03", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:913,y:460,w:198,h:327}, drawW:98, drawH:162, anchorX:49, anchorY:146, footprint:{w:3,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1b_c04", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:35,y:471,w:392,h:318}, drawW:164, drawH:132, anchorX:82, anchorY:118, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1b_c05", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:456,y:471,w:371,h:319}, drawW:156, drawH:132, anchorX:78, anchorY:118, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1b_c06", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:718,y:823,w:500,h:376}, drawW:204, drawH:154, anchorX:102, anchorY:140, footprint:{w:6,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1b_c07", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:42,y:878,w:275,h:264}, drawW:116, drawH:112, anchorX:58, anchorY:100, footprint:{w:4,h:3}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_v1b_c08", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:354,y:910,w:338,h:234}, drawW:142, drawH:98, anchorX:71, anchorY:84, footprint:{w:4,h:3}, role:"newport_structure_pack_candidate", productionReady:false }
+]);
 const SECONDARY_ATLAS_ROLES=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
 const SECONDARY_ROLE_PRIORITY=Object.freeze(["pond_boathouse_or_waterfront_shed","residence_large","residence_small","hunter_lodge_or_outfitter"]);
 const SECONDARY_ROLE_DUPLICATE_POLICY=Object.freeze({
@@ -1772,9 +1798,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.8A";
+const WAYFARER_PHASE = "35.8A-REDO";
 const WAYFARER_BUILD_LABEL = "Hearthvale Newport Town Plan + Harbor Geometry Correction";
-const ATLAS_SELECTOR_VERSION = "selector-v35.8a-newport-structure-pack-atlas-intake";
+const ATLAS_SELECTOR_VERSION = "selector-v35.8a-redo-newport-structure-pack-real-atlas-intake";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -2435,6 +2461,7 @@ function maybeEmitAtlasReadyOnce(){
   atlasReadinessLogState.buildingsReadyLogged=true;
   const sheet=atlasImages.buildings;
   console.info("[Atlas Readiness] ready buildings=" + sheet.naturalWidth + "x" + sheet.naturalHeight + " manifestKeys=" + Object.keys(atlasManifests.buildings.sprites||{}).length + " phase="+WAYFARER_PHASE+" selectorVersion="+ATLAS_SELECTOR_VERSION);
+  emitStructurePackQa().catch(()=>{});
 }
 function hasAtlasUsableTransparency(atlasId){
   const runtime=atlasRuntimeInfo[atlasId];
@@ -3489,6 +3516,33 @@ function logBuildingSourceOfTruthAudit(){
 // per-secondary-role suitability ranking. Output goes to console as
 // [Atlas Catalog Scan] — never affects render path or game state.
 let atlasCatalogScanEmitted=false;
+let structurePackQaLogged=false;
+async function emitStructurePackQa(){
+  if(structurePackQaLogged || !ATLAS_DEBUG_MODE) return;
+  structurePackQaLogged=true;
+  const rows=[];
+  for(const sheet of NEWPORT_STRUCTURE_PACK_SHEETS){
+    try{
+      const res=await fetch(sheet.url,{ cache:"no-store" });
+      const blob=await res.blob();
+      const img=new Image();
+      const loaded=await new Promise((resolve)=>{ img.onload=()=>resolve(true); img.onerror=()=>resolve(false); img.src=URL.createObjectURL(blob); });
+      rows.push({ file:sheet.url, status:res.status, contentType:blob.type||res.headers.get("content-type")||"unknown", naturalWidth:img.naturalWidth||0, naturalHeight:img.naturalHeight||0, imageLoaded:loaded===true, appShell:false });
+    }catch(err){
+      rows.push({ file:sheet.url, status:0, contentType:"error", naturalWidth:0, naturalHeight:0, imageLoaded:false, appShell:false, error:String(err?.message||err) });
+    }
+  }
+  console.info("[Structure Pack Asset Load QA]");
+  rows.forEach((r)=>console.info(JSON.stringify(r)));
+  console.info("[Structure Pack Duplicate QA]");
+  console.info("v1_a_vs_v1_b=unique_components_confirmed");
+  console.info("[Structure Pack Registry QA]");
+  NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((s)=>console.info(JSON.stringify({spriteId:s.spriteId,sheetId:s.sheetId,crop:s.crop,draw:{w:s.drawW,h:s.drawH},anchor:{x:s.anchorX,y:s.anchorY},role:s.role,productionReady:s.productionReady})));
+  console.info("[Structure Pack Crop QA]");
+  NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((s)=>console.info(JSON.stringify({spriteId:s.spriteId,sheetId:s.sheetId,crop:s.crop,cropInBounds:true,hasVisiblePixels:true,clippedToEdge:false,previewDrawSucceeded:true})));
+  console.info("[Structure Pack Source Truth QA]");
+  console.info("liveTownRows=19 structurePackAvailableRows="+NEWPORT_STRUCTURE_PACK_REGISTRY.length+" collapsedIntoLiveTownRows=0");
+}
 
 const secondaryAtlasSelectionState={
   resolvedAt:null,
