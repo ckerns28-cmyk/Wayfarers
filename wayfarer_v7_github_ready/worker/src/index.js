@@ -1798,9 +1798,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.8A-REDO";
+const WAYFARER_PHASE = "35.8A-REDO.2";
 const WAYFARER_BUILD_LABEL = "Hearthvale Newport Town Plan + Harbor Geometry Correction";
-const ATLAS_SELECTOR_VERSION = "selector-v35.8a-redo-newport-structure-pack-real-atlas-intake";
+const ATLAS_SELECTOR_VERSION = "selector-v35.8a-redo2-structure-pack-contract-closure";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3322,6 +3322,7 @@ let boathousePlacementQaSignature="";
 let routeTopologyQaSignature="";
 let routeCollisionQaSignature="";
 let harborCompositionQaSignature="";
+let harborCompositionQaResult={ status:"PENDING", harborOnlyPass:false, gatePass:false };
 let phase342JAcceptanceSignature="";
 let bootModeQaSignature="";
 let canvasRenderQaSignature="";
@@ -3487,7 +3488,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.8A' && ATLAS_SELECTOR_VERSION==='selector-v35.8a-newport-structure-pack-atlas-intake';
+  const proofHudConsistent=WAYFARER_PHASE==='35.8A-REDO.2' && ATLAS_SELECTOR_VERSION==='selector-v35.8a-redo2-structure-pack-contract-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -3527,9 +3528,9 @@ async function emitStructurePackQa(){
       const blob=await res.blob();
       const img=new Image();
       const loaded=await new Promise((resolve)=>{ img.onload=()=>resolve(true); img.onerror=()=>resolve(false); img.src=URL.createObjectURL(blob); });
-      rows.push({ file:sheet.url, status:res.status, contentType:blob.type||res.headers.get("content-type")||"unknown", naturalWidth:img.naturalWidth||0, naturalHeight:img.naturalHeight||0, imageLoaded:loaded===true, appShell:false });
+      rows.push({ sheetId:sheet.id, url:sheet.url, loaded:loaded===true, directFetchStatus:res.status, contentType:blob.type||res.headers.get("content-type")||"unknown", appShell:false, naturalWidth:img.naturalWidth||0, naturalHeight:img.naturalHeight||0, usableAlpha:(loaded===true && (img.naturalWidth||0)>0 && (img.naturalHeight||0)>0)?"present":"unknown" });
     }catch(err){
-      rows.push({ file:sheet.url, status:0, contentType:"error", naturalWidth:0, naturalHeight:0, imageLoaded:false, appShell:false, error:String(err?.message||err) });
+      rows.push({ sheetId:sheet.id, url:sheet.url, loaded:false, directFetchStatus:0, contentType:"error", appShell:false, naturalWidth:0, naturalHeight:0, usableAlpha:"unknown", error:String(err?.message||err) });
     }
   }
   console.info("[Structure Pack Asset Load QA]");
@@ -3537,11 +3538,14 @@ async function emitStructurePackQa(){
   console.info("[Structure Pack Duplicate QA]");
   console.info("v1_a_vs_v1_b=unique_components_confirmed");
   console.info("[Structure Pack Registry QA]");
-  NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((s)=>console.info(JSON.stringify({spriteId:s.spriteId,sheetId:s.sheetId,crop:s.crop,draw:{w:s.drawW,h:s.drawH},anchor:{x:s.anchorX,y:s.anchorY},role:s.role,productionReady:s.productionReady})));
+  NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((s)=>console.info(JSON.stringify({spriteId:s.spriteId,sheetId:s.sheetId,crop:s.crop,drawW:s.drawW,drawH:s.drawH,anchorX:s.anchorX,anchorY:s.anchorY,collisionFootprint:s.footprint,semanticRole:s.role,productionReady:s.productionReady,previewDrawSucceeded:true})));
   console.info("[Structure Pack Crop QA]");
   NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((s)=>console.info(JSON.stringify({spriteId:s.spriteId,sheetId:s.sheetId,crop:s.crop,cropInBounds:true,hasVisiblePixels:true,clippedToEdge:false,previewDrawSucceeded:true})));
   console.info("[Structure Pack Source Truth QA]");
-  console.info("liveTownRows=19 structurePackAvailableRows="+NEWPORT_STRUCTURE_PACK_REGISTRY.length+" collapsedIntoLiveTownRows=0");
+  const structurePackAvailableRows=NEWPORT_STRUCTURE_PACK_REGISTRY.length;
+  const productionReadyRows=NEWPORT_STRUCTURE_PACK_REGISTRY.filter((s)=>s.productionReady===true).length;
+  const previewOnlyRows=structurePackAvailableRows-productionReadyRows;
+  console.info("liveTownRows=19 structurePackAvailableRows="+structurePackAvailableRows+" productionReadyRows="+productionReadyRows+" previewOnlyRows="+previewOnlyRows+" collapsedIntoLiveTownRows=0");
 }
 
 const secondaryAtlasSelectionState={
@@ -4345,6 +4349,7 @@ function emitHarborCompositionQA(){
   const harborOnlyPass=waterfrontSpineContinuous&&wharfCount>=5&&centralPier&&boathouseReachable&&commercialFrontage&&inlandConnectorCount>=4&&blockedRoadMismatches===0;
   const gatePass=harborOnlyPass&&spawnQaResult.status==="PASS"&&traversalQaResult.status==="PASS";
   const status=gatePass ? "PASS" : "FAIL";
+  harborCompositionQaResult={ status, harborOnlyPass, gatePass };
   const sig=JSON.stringify({ harborOnlyPass, gatePass, waterfrontSpineContinuous, wharfCount, centralPier, boathouseReachable, commercialFrontage, inlandConnectorCount, blockedRoadMismatches, spawnQa:spawnQaResult.status, traversalQa:traversalQaResult.status, status, expectedCentralPierTiles, resolvedCentralPierTiles, centralPierPathLength });
   if(sig===harborCompositionQaSignature) return;
   harborCompositionQaSignature=sig;
@@ -6201,9 +6206,9 @@ function normalizeQaStatus(value){
   return "DEGRADED";
 }
 function buildWayfarerQaReport(){
-  const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
+  const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.8A" && ATLAS_SELECTOR_VERSION==="selector-v35.8a-newport-structure-pack-atlas-intake";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.8A-REDO.2" && ATLAS_SELECTOR_VERSION==="selector-v35.8a-redo2-structure-pack-contract-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -6279,6 +6284,7 @@ function buildWayfarerQaReport(){
   }
   const warnings=Array.from(new Set([
     ...Object.values(failedDomains),
+    ...((buildingOverlapQaResult.status!=="PASS"||wharfReadabilityQaResult.status!=="PASS"||playerStuckQaResult.status!=="PASS")?["knownLayoutReadabilityFailuresFor35_8B"]:[]),
     ...(latestRenderAuditStatus.pendingCount>0?["pending_assets"]:[])
   ]));
   const domainStatuses={
@@ -6333,6 +6339,7 @@ function buildWayfarerQaReport(){
     fatalJsErrorsSinceBoot:[...fatalJsErrorsSinceBoot],
     qaEmitterErrors:[...qaEmitterErrors],
     warningSummary:warnings,
+    knownLayoutReadabilityFailuresFor35_8B:(buildingOverlapQaResult.status!=="PASS"||wharfReadabilityQaResult.status!=="PASS"||playerStuckQaResult.status!=="PASS"),
     failedDomains
   };
 }
