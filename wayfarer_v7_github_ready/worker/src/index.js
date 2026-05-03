@@ -1375,6 +1375,9 @@ const NEWPORT_STRUCTURE_PACK_REGISTRY=Object.freeze([
   { spriteId:"newport_market_shed_stalls", sourceCandidateId:"newport_v1b_c07", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:42,y:878,w:275,h:264}, drawW:116, drawH:112, anchorX:58, anchorY:100, footprint:{w:4,h:3}, role:"market_shed_harbor_stall", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_service_dependency_backlot", sourceCandidateId:"newport_v1b_c08", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:354,y:910,w:338,h:234}, drawW:142, drawH:98, anchorX:71, anchorY:84, footprint:{w:4,h:3}, role:"service_dependency_outbuilding", productionReady:true, acceptedForLiveTownUse:true }
 ]);
+
+const NEWPORT_SHEET_URL_BY_ID=Object.freeze(Object.fromEntries(NEWPORT_STRUCTURE_PACK_SHEETS.map((sheet)=>[sheet.sheetId,sheet.url])));
+const NEWPORT_SPRITE_BY_ID=Object.freeze(Object.fromEntries(NEWPORT_STRUCTURE_PACK_REGISTRY.map((entry)=>[entry.spriteId,entry])));
 const SECONDARY_ATLAS_ROLES=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
 const SECONDARY_ROLE_PRIORITY=Object.freeze(["pond_boathouse_or_waterfront_shed","residence_large","residence_small","hunter_lodge_or_outfitter"]);
 const SECONDARY_ROLE_DUPLICATE_POLICY=Object.freeze({
@@ -1652,9 +1655,28 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
+function applyNewportStructurePackToManifest(){
+  const manifest=atlasManifests.buildings;
+  if(!manifest||!manifest.sprites) return;
+  NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((entry)=>{
+    manifest.sprites[entry.spriteId]={
+      ...(manifest.sprites[entry.spriteId]||{}),
+      atlas:NEWPORT_SHEET_URL_BY_ID[entry.sheetId]||manifest.imagePath,
+      sheetId:entry.sheetId,
+      sourceCandidateId:entry.sourceCandidateId,
+      sx:entry.crop.x,sy:entry.crop.y,sw:entry.crop.w,sh:entry.crop.h,
+      drawW:entry.drawW,drawH:entry.drawH,anchorX:entry.anchorX,anchorY:entry.anchorY,
+      productionReady:entry.productionReady===true,proofEnabled:true,catalogResolved:true,
+      footprint:entry.footprint,
+      metadataSource:"manifest",metadataManifestVersion:ATLAS_SELECTOR_VERSION
+    };
+  });
+}
 applySemanticRegistryToManifest();
+applyNewportStructurePackToManifest();
 
 const atlasImages = {};
+const atlasSheetByUrl = {};
 const atlasRuntimeInfo = {};
 const missingAssetWarnings=new Set();
 const buildingFallbackWarnings=new Set();
@@ -1798,9 +1820,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.8B";
+const WAYFARER_PHASE = "35.8B-REDO";
 const WAYFARER_BUILD_LABEL = "Hearthvale Newport Town Plan + Harbor Geometry Correction";
-const ATLAS_SELECTOR_VERSION = "selector-v35.8b-newport-production-archetype-promotion";
+const ATLAS_SELECTOR_VERSION = "selector-v35.8b-redo-real-newport-production-promotion";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -2573,7 +2595,10 @@ function initExternalAtlasManifests(){
       })
       .then((payload)=>{
         const merged=mergeAtlasManifestEntries(atlasId, payload);
-        if(merged && atlasId==="buildings") applySemanticRegistryToManifest();
+        if(merged && atlasId==="buildings"){
+          applySemanticRegistryToManifest();
+          applyNewportStructurePackToManifest();
+        }
         logAtlasRuntimeInfo(atlasId, "manifest_loaded=" + (merged ? "true" : "false") + " path=" + manifestPath);
       })
       .catch((error)=>{
@@ -2826,6 +2851,12 @@ function initAtlasImages(){
     };
     tryLoadAt(0);
   });
+  NEWPORT_STRUCTURE_PACK_SHEETS.forEach((sheet)=>{
+    if(!sheet?.url || sheet.sheetId==="hearthvale_buildings_atlas_v1") return;
+    const img=new Image();
+    atlasSheetByUrl[sheet.url]=img;
+    img.src=sheet.url;
+  });
 }
 function getAtlasSpriteFailureReason(atlasId, spriteId){
   const manifest=atlasManifests[atlasId];
@@ -3047,8 +3078,8 @@ function drawMissingSpritePlaceholder(dx,dy,dw,dh,label="MISSING"){
 }
 function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
   const manifest=atlasManifests[atlasId];
-  const sheet=atlasImages[atlasId];
   const sprite=manifest?.sprites?.[spriteId];
+  const sheet=sprite?.atlas ? (atlasSheetByUrl[sprite.atlas]||atlasImages[atlasId]) : atlasImages[atlasId];
   updateSpriteBlankHeuristic(atlasId, spriteId);
   const reason=getAtlasSpriteFailureReason(atlasId, spriteId);
   if(reason){
@@ -3488,7 +3519,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.8B' && ATLAS_SELECTOR_VERSION==='selector-v35.8b-newport-production-archetype-promotion';
+  const proofHudConsistent=WAYFARER_PHASE==='35.8B-REDO' && ATLAS_SELECTOR_VERSION==='selector-v35.8b-redo-real-newport-production-promotion';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6208,7 +6239,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.8B" && ATLAS_SELECTOR_VERSION==="selector-v35.8b-newport-production-archetype-promotion";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.8B-REDO" && ATLAS_SELECTOR_VERSION==="selector-v35.8b-redo-real-newport-production-promotion";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
