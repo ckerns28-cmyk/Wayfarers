@@ -1772,9 +1772,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.6D";
-const WAYFARER_BUILD_LABEL = "Hearthvale Newport Identity Expansion + Structure Pack Integration";
-const ATLAS_SELECTOR_VERSION = "selector-v35.6d-source-truth-proof-contract-closure";
+const WAYFARER_PHASE = "35.7";
+const WAYFARER_BUILD_LABEL = "Hearthvale Newport District Readability + Lived-In Composition Pass";
+const ATLAS_SELECTOR_VERSION = "selector-v35.7-newport-district-readability";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3457,7 +3457,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.6D' && ATLAS_SELECTOR_VERSION==='selector-v35.6d-source-truth-proof-contract-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.7' && ATLAS_SELECTOR_VERSION==='selector-v35.7-newport-district-readability';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5380,18 +5380,18 @@ world.buildings.push(
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:29, y:4, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:4,w:5,h:4}, collision:{x:29,y:6,w:5,h:2}, interaction:{x:31,y:8,w:1,h:1}, label:{x:31,y:5,text:"Harbor Captain's House"}, pathingBounds:{x:28,y:4,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:22, y:15, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:22,y:15,w:4,h:4}, collision:{x:22,y:17,w:4,h:2}, interaction:{x:23,y:19,w:1,h:1}, label:{x:23,y:16,text:"Woodsman's Outfitter"}, pathingBounds:{x:21,y:14,w:6,h:6} }) },
   { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:27, y:16, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:27,y:16,w:5,h:3}, collision:{x:27,y:18,w:5,h:1}, interaction:{x:29,y:17,w:1,h:1}, label:{x:29,y:16,text:"Boathouse"}, pathingBounds:{x:26,y:15,w:7,h:6} }) },
-  { id:"b_counting_house", role:"warehouse_counting_house", spriteId:"mercantile_shop", x:23, y:8, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:23,y:8,w:5,h:5}, collision:{x:23,y:11,w:5,h:1}, interaction:{x:25,y:12,w:1,h:1}, label:{x:25,y:9,text:"Counting House"}, pathingBounds:{x:22,y:8,w:7,h:6}, frontWalkBand:{ x:23, y:12, w:5, h:1 } }) },
+  { id:"b_counting_house", role:"warehouse_counting_house", spriteId:"mercantile_shop", x:24, y:9, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:23,y:8,w:5,h:5}, collision:{x:23,y:11,w:5,h:1}, interaction:{x:25,y:12,w:1,h:1}, label:{x:25,y:9,text:"Counting House"}, pathingBounds:{x:22,y:8,w:7,h:6}, frontWalkBand:{ x:23, y:12, w:5, h:1 } }) },
   { id:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"pond_boathouse_or_waterfront_shed", x:7, y:15, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:7,y:15,w:5,h:3}, collision:{x:7,y:17,w:5,h:1}, interaction:{x:9,y:16,w:1,h:1}, label:{x:9,y:15,text:"Dock Storehouse"}, pathingBounds:{x:6,y:14,w:7,h:6} }) },
   { id:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"hunter_lodge_or_outfitter", x:13, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:13,y:14,w:4,h:4}, collision:{x:13,y:16,w:4,h:2}, interaction:{x:14,y:18,w:1,h:1}, label:{x:14,y:15,text:"Ship Chandlery"}, pathingBounds:{x:12,y:13,w:6,h:6} }) },
   { id:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"pond_boathouse_or_waterfront_shed", x:17, y:15, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:17,y:15,w:5,h:3}, collision:{x:17,y:16,w:5,h:1}, interaction:{x:19,y:16,w:1,h:1}, label:{x:19,y:15,text:"Harbor Market Shed"}, pathingBounds:{x:16,y:14,w:7,h:5} }) },
-  { id:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"residence_small", x:30, y:9, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:30,y:9,w:4,h:4}, collision:{x:30,y:11,w:4,h:2}, interaction:{x:31,y:13,w:1,h:1}, label:{x:31,y:10,text:"Sailmaker's Shop-House"}, pathingBounds:{x:29,y:9,w:6,h:5} }) },
-  { id:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"residence_small", x:3, y:11, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:3,y:11,w:4,h:4}, collision:{x:3,y:13,w:4,h:2}, interaction:{x:4,y:15,w:1,h:1}, label:{x:4,y:12,text:"Merchant Row I"}, pathingBounds:{x:2,y:10,w:6,h:6} }) },
-  { id:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"residence_small", x:3, y:6, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:3,y:6,w:4,h:4}, collision:{x:3,y:8,w:4,h:2}, interaction:{x:4,y:10,w:1,h:1}, label:{x:4,y:7,text:"Merchant Row II"}, pathingBounds:{x:2,y:6,w:6,h:5} }) },
+  { id:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"residence_small", x:30, y:10, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:30,y:9,w:4,h:4}, collision:{x:30,y:11,w:4,h:2}, interaction:{x:31,y:13,w:1,h:1}, label:{x:31,y:10,text:"Sailmaker's Shop-House"}, pathingBounds:{x:29,y:9,w:6,h:5} }) },
+  { id:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"residence_small", x:5, y:11, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:3,y:11,w:4,h:4}, collision:{x:3,y:13,w:4,h:2}, interaction:{x:4,y:15,w:1,h:1}, label:{x:4,y:12,text:"Merchant Row I"}, pathingBounds:{x:2,y:10,w:6,h:6} }) },
+  { id:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"residence_small", x:2, y:7, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:3,y:6,w:4,h:4}, collision:{x:3,y:8,w:4,h:2}, interaction:{x:4,y:10,w:1,h:1}, label:{x:4,y:7,text:"Merchant Row II"}, pathingBounds:{x:2,y:6,w:6,h:5} }) },
   { id:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"residence_large", x:11, y:3, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:11,y:3,w:5,h:4}, collision:{x:11,y:5,w:5,h:2}, interaction:{x:13,y:7,w:1,h:1}, label:{x:13,y:4,text:"Georgian Residence"}, pathingBounds:{x:10,y:3,w:7,h:5} }) },
-  { id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"hunter_lodge_or_outfitter", x:33, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:33,y:14,w:4,h:4}, collision:{x:33,y:16,w:4,h:2}, interaction:{x:34,y:18,w:1,h:1}, label:{x:34,y:15,text:"Service Yard"}, pathingBounds:{x:32,y:13,w:6,h:7} }) },
+  { id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"hunter_lodge_or_outfitter", x:32, y:15, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:33,y:14,w:4,h:4}, collision:{x:33,y:16,w:4,h:2}, interaction:{x:34,y:18,w:1,h:1}, label:{x:34,y:15,text:"Service Yard"}, pathingBounds:{x:32,y:13,w:6,h:7} }) },
   { id:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"village_hall_meeting_house", x:15, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:15,y:3,w:6,h:5}, collision:{x:15,y:6,w:6,h:2}, interaction:{x:18,y:8,w:1,h:1}, label:{x:18,y:4,text:"Custom House"}, pathingBounds:{x:14,y:3,w:8,h:6}, frontWalkBand:{ x:15, y:8, w:6, h:1 } }) },
   { id:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"residence_large", x:26, y:2, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:26,y:2,w:5,h:4}, collision:{x:26,y:4,w:5,h:2}, interaction:{x:28,y:6,w:1,h:1}, label:{x:28,y:3,text:"Ashcroft Manor"}, pathingBounds:{x:25,y:2,w:7,h:5} }) },
-  { id:"b_prestige_block", role:"formal_townhouse_block", spriteId:"village_hall_meeting_house", x:31, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:31,y:3,w:6,h:5}, collision:{x:31,y:6,w:6,h:2}, interaction:{x:34,y:8,w:1,h:1}, label:{x:34,y:4,text:"King's Exchange Row"}, pathingBounds:{x:30,y:3,w:8,h:6} }) }
+  { id:"b_prestige_block", role:"formal_townhouse_block", spriteId:"village_hall_meeting_house", x:31, y:4, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:31,y:3,w:6,h:5}, collision:{x:31,y:6,w:6,h:2}, interaction:{x:34,y:8,w:1,h:1}, label:{x:34,y:4,text:"King's Exchange Row"}, pathingBounds:{x:30,y:3,w:8,h:6} }) }
 );
 world.buildings.forEach((b)=>{
   const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h};
@@ -5474,7 +5474,9 @@ world.props.push(
   {x:24,y:18,type:"crate"},{x:26,y:18,type:"barrel"},{x:28,y:18,type:"crate"},{x:30,y:18,type:"barrel"},
   {x:32,y:18,type:"crate"},{x:34,y:18,type:"barrel"},{x:35,y:9,type:"smallGarden"},{x:33,y:9,type:"smallGarden"},
   {x:27,y:6,type:"smallGarden"},{x:29,y:6,type:"smallGarden"},{x:12,y:8,type:"noticeBoard",layer:"above_entities"},
-  {x:18,y:9,type:"signPost",layer:"above_entities"}
+  {x:18,y:9,type:"signPost",layer:"above_entities"},
+  {x:17,y:17,type:"handcart"},{x:18,y:17,type:"crate"},{x:19,y:18,type:"crate"},{x:20,y:18,type:"barrel"},{x:21,y:17,type:"crate"},{x:22,y:18,type:"barrel"},
+  {x:23,y:16,type:"signPost",layer:"above_entities"},{x:15,y:16,type:"barrel"},{x:11,y:15,type:"crate"},{x:27,y:16,type:"signPost",layer:"above_entities"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -5532,11 +5534,11 @@ const hunterNpc={id:"npc_hunter_garran",anchorId:"hunter_garran",x:NAMED_NPC_ANC
 const vendorNpc={id:"npc_merchant_rowan",anchorId:"merchant_rowan",x:NAMED_NPC_ANCHORS.merchant_rowan.home.x,y:NAMED_NPC_ANCHORS.merchant_rowan.home.y,targetX:NAMED_NPC_ANCHORS.merchant_rowan.home.x,targetY:NAMED_NPC_ANCHORS.merchant_rowan.home.y,px:NAMED_NPC_ANCHORS.merchant_rowan.home.x*TILE,py:NAMED_NPC_ANCHORS.merchant_rowan.home.y*TILE,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down",speed:86,moving:false,nextDecisionAt:0};
 const namedVillageNpcs=[npc,hunterNpc,vendorNpc];
 const ambientVillageNpcs=[
-  {id:"npc_dockhand_mira",anchorId:"merchant_rowan",x:18,y:16,targetX:18,targetY:16,px:18*TILE,py:16*TILE,name:"Dockhand Mira",displayLabel:"Dockhand Mira",facing:"right",speed:82,moving:false,nextDecisionAt:0},
+  {id:"npc_dockhand_mira",anchorId:"merchant_rowan",x:19,y:17,targetX:19,targetY:17,px:19*TILE,py:17*TILE,name:"Dockhand Mira",displayLabel:"Dockhand Mira",facing:"right",speed:82,moving:false,nextDecisionAt:0},
   {id:"npc_inn_patron_elsa",anchorId:"edrin_vale",x:13,y:12,targetX:13,targetY:12,px:13*TILE,py:12*TILE,name:"Patron Elsa",displayLabel:"Patron Elsa",facing:"left",speed:80,moving:false,nextDecisionAt:0},
   {id:"npc_mercantile_apprentice_len",anchorId:"merchant_rowan",x:21,y:12,targetX:21,targetY:12,px:21*TILE,py:12*TILE,name:"Apprentice Len",displayLabel:"Apprentice Len",facing:"left",speed:79,moving:false,nextDecisionAt:0},
-  {id:"npc_clerk_bram",anchorId:"edrin_vale",x:24,y:9,targetX:24,targetY:9,px:24*TILE,py:9*TILE,name:"Clerk Bram",displayLabel:"Clerk Bram",facing:"down",speed:78,moving:false,nextDecisionAt:0},
-  {id:"npc_fisher_tobin",anchorId:"hunter_garran",x:30,y:17,targetX:30,targetY:17,px:30*TILE,py:17*TILE,name:"Fisher Tobin",displayLabel:"Fisher Tobin",facing:"left",speed:80,moving:false,nextDecisionAt:0},
+  {id:"npc_clerk_bram",anchorId:"edrin_vale",x:25,y:10,targetX:25,targetY:10,px:25*TILE,py:10*TILE,name:"Clerk Bram",displayLabel:"Clerk Bram",facing:"down",speed:78,moving:false,nextDecisionAt:0},
+  {id:"npc_fisher_tobin",anchorId:"hunter_garran",x:28,y:17,targetX:28,targetY:17,px:28*TILE,py:17*TILE,name:"Fisher Tobin",displayLabel:"Fisher Tobin",facing:"left",speed:80,moving:false,nextDecisionAt:0},
   {id:"npc_resident_nora",anchorId:"edrin_vale",x:8,y:11,targetX:8,targetY:11,px:8*TILE,py:11*TILE,name:"Resident Nora",displayLabel:"Resident Nora",facing:"right",speed:76,moving:false,nextDecisionAt:0},
   {id:"npc_porter_hale",anchorId:"merchant_rowan",x:25,y:13,targetX:25,targetY:13,px:25*TILE,py:13*TILE,name:"Porter Hale",displayLabel:"Porter Hale",facing:"left",speed:75,moving:false,nextDecisionAt:0},
   {id:"npc_outfitter_sela",anchorId:"hunter_garran",x:24,y:19,targetX:24,targetY:19,px:24*TILE,py:19*TILE,name:"Outfitter Sela",displayLabel:"Outfitter Sela",facing:"up",speed:75,moving:false,nextDecisionAt:0}
@@ -6105,7 +6107,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.6D" && ATLAS_SELECTOR_VERSION==="selector-v35.6d-source-truth-proof-contract-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.7" && ATLAS_SELECTOR_VERSION==="selector-v35.7-newport-district-readability";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
