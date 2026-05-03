@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.3";
-const WAYFARER_BUILD_LABEL = "Hearthvale Lived-In Density + District Identity Pass";
-const ATLAS_SELECTOR_VERSION = "selector-v35.3-hearthvale-lived-in-density";
+const WAYFARER_PHASE = "35.4";
+const WAYFARER_BUILD_LABEL = "Hearthvale Building Definition + Harbor Marketplace Pass";
+const ATLAS_SELECTOR_VERSION = "selector-v35.4-hearthvale-building-district-identity";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3395,7 +3395,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.3' && ATLAS_SELECTOR_VERSION==='selector-v35.3-hearthvale-lived-in-density';
+  const proofHudConsistent=WAYFARER_PHASE==='35.4' && ATLAS_SELECTOR_VERSION==='selector-v35.4-hearthvale-building-district-identity';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -5318,9 +5318,9 @@ world.buildings.push(
   { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:9, y:8, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:9,y:8,w:6,h:5}, visualBounds:{x:9,y:8,w:6,h:5}, collision:{x:9,y:11,w:6,h:1}, interaction:{x:12,y:12,w:1,h:1}, interactRect:{x:12,y:12,w:1,h:1}, frontDoorTile:{x:12,y:12}, label:{x:12,y:9,text:"Inn & Tavern"}, pathingBounds:{x:8,y:8,w:8,h:6}, frontWalkBand:{ x:9, y:12, w:6, h:1 }, blockedVisualTiles:[{ x:9, y:8, w:6, h:3 }, { x:9, y:11, w:3, h:1 }, { x:13, y:11, w:2, h:1 }], occlusionDepthLine:{ x:9, y:11, w:6, h:1 }, rearExclusionZone:{ x:9, y:8, w:6, h:3 } }) },
   { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:17, y:8, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:17,y:8,w:5,h:5}, visualBounds:{x:17,y:8,w:5,h:5}, collision:{x:17,y:11,w:5,h:1}, interaction:{x:19,y:12,w:1,h:1}, interactRect:{x:19,y:12,w:1,h:1}, frontDoorTile:{x:19,y:12}, label:{x:19,y:9,text:"Mercantile Shop"}, pathingBounds:{x:16,y:8,w:7,h:6}, frontWalkBand:{ x:17, y:12, w:5, h:1 }, blockedVisualTiles:[{ x:17, y:8, w:5, h:3 }, { x:17, y:11, w:2, h:1 }, { x:20, y:11, w:2, h:1 }], occlusionDepthLine:{ x:17, y:11, w:5, h:1 }, rearExclusionZone:{ x:17, y:8, w:5, h:3 } }) },
   { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:21, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:21,y:3,w:6,h:5}, visualBounds:{x:21,y:3,w:6,h:5}, collision:{x:21,y:6,w:6,h:2}, interaction:{x:24,y:8,w:1,h:1}, interactRect:{x:24,y:8,w:1,h:1}, frontDoorTile:{x:24,y:8}, label:{x:24,y:4,text:"Village Hall"}, pathingBounds:{x:20,y:3,w:8,h:6}, frontWalkBand:{ x:21, y:8, w:6, h:1 }, blockedVisualTiles:[{ x:21, y:3, w:6, h:3 }, { x:21, y:6, w:2, h:1 }, { x:25, y:6, w:2, h:1 }], occlusionDepthLine:{ x:21, y:6, w:6, h:1 }, rearExclusionZone:{ x:21, y:3, w:6, h:3 } }) },
-  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:5, y:6, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:5,y:6,w:4,h:4}, visualBounds:{x:5,y:6,w:4,h:4}, collision:{x:5,y:8,w:4,h:1}, interaction:{x:6,y:9,w:1,h:1}, interactRect:{x:6,y:9,w:1,h:1}, frontDoorTile:{x:6,y:9}, frontWalkBand:{ x:5, y:10, w:4, h:1 }, blockedVisualTiles:[{ x:5, y:6, w:4, h:2 }, { x:5, y:8, w:4, h:1 }, { x:5, y:9, w:1, h:1 }, { x:7, y:9, w:2, h:1 }], occlusionDepthLine:{ x:5, y:8, w:4, h:1 }, rearExclusionZone:{ x:5, y:6, w:4, h:2 }, label:{x:6,y:7,text:"Cottage"}, pathingBounds:{x:4,y:6,w:6,h:6} }) },
-  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:29, y:4, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:4,w:5,h:4}, collision:{x:29,y:6,w:5,h:2}, interaction:{x:31,y:8,w:1,h:1}, label:{x:31,y:5,text:"Residence"}, pathingBounds:{x:28,y:4,w:7,h:5} }) },
-  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:22, y:15, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:22,y:15,w:4,h:4}, collision:{x:22,y:17,w:4,h:2}, interaction:{x:23,y:19,w:1,h:1}, label:{x:23,y:16,text:"Outfitter"}, pathingBounds:{x:21,y:14,w:6,h:6} }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:5, y:6, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:5,y:6,w:4,h:4}, visualBounds:{x:5,y:6,w:4,h:4}, collision:{x:5,y:8,w:4,h:1}, interaction:{x:6,y:9,w:1,h:1}, interactRect:{x:6,y:9,w:1,h:1}, frontDoorTile:{x:6,y:9}, frontWalkBand:{ x:5, y:10, w:4, h:1 }, blockedVisualTiles:[{ x:5, y:6, w:4, h:2 }, { x:5, y:8, w:4, h:1 }, { x:5, y:9, w:1, h:1 }, { x:7, y:9, w:2, h:1 }], occlusionDepthLine:{ x:5, y:8, w:4, h:1 }, rearExclusionZone:{ x:5, y:6, w:4, h:2 }, label:{x:6,y:7,text:"Miller Cottage"}, pathingBounds:{x:4,y:6,w:6,h:6} }) },
+  { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:29, y:4, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:4,w:5,h:4}, collision:{x:29,y:6,w:5,h:2}, interaction:{x:31,y:8,w:1,h:1}, label:{x:31,y:5,text:"Harbor Captain's House"}, pathingBounds:{x:28,y:4,w:7,h:5} }) },
+  { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:22, y:15, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:22,y:15,w:4,h:4}, collision:{x:22,y:17,w:4,h:2}, interaction:{x:23,y:19,w:1,h:1}, label:{x:23,y:16,text:"Woodsman's Outfitter"}, pathingBounds:{x:21,y:14,w:6,h:6} }) },
   { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:27, y:16, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:27,y:16,w:5,h:3}, collision:{x:27,y:18,w:5,h:1}, interaction:{x:29,y:17,w:1,h:1}, label:{x:29,y:16,text:"Boathouse"}, pathingBounds:{x:26,y:15,w:7,h:6} }) }
 );
 world.buildings.forEach((b)=>{
@@ -5388,7 +5388,12 @@ world.props.push(
   {x:23,y:8,type:"noticeBoard",layer:"above_entities"},{x:27,y:8,type:"signPost",layer:"above_entities"},
   {x:28,y:16,type:"barrel"},{x:31,y:16,type:"crate"},{x:32,y:17,type:"barrel"},
   {x:5,y:10,type:"smallGarden"},{x:8,y:10,type:"crate"},
-  {x:33,y:10,type:"signPost",layer:"above_entities"},{x:34,y:11,type:"grassTuft"}
+  {x:33,y:10,type:"signPost",layer:"above_entities"},{x:34,y:11,type:"grassTuft"},
+  {x:13,y:12,type:"bench"},{x:18,y:13,type:"barrel"},{x:23,y:13,type:"crate"},{x:26,y:13,type:"barrel"},
+  {x:9,y:16,type:"crate"},{x:11,y:17,type:"barrel"},{x:13,y:17,type:"crate"},{x:15,y:17,type:"barrel"},
+  {x:24,y:17,type:"barrel"},{x:26,y:17,type:"crate"},{x:33,y:17,type:"crate"},
+  {x:28,y:8,type:"lanternPost",layer:"above_entities"},{x:30,y:8,type:"crate"},{x:32,y:8,type:"barrel"},
+  {x:6,y:11,type:"barrel"},{x:6,y:10,type:"crate"},{x:23,y:20,type:"grassTuft"},{x:27,y:20,type:"grassTuft"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -5446,12 +5451,14 @@ const hunterNpc={id:"npc_hunter_garran",anchorId:"hunter_garran",x:NAMED_NPC_ANC
 const vendorNpc={id:"npc_merchant_rowan",anchorId:"merchant_rowan",x:NAMED_NPC_ANCHORS.merchant_rowan.home.x,y:NAMED_NPC_ANCHORS.merchant_rowan.home.y,targetX:NAMED_NPC_ANCHORS.merchant_rowan.home.x,targetY:NAMED_NPC_ANCHORS.merchant_rowan.home.y,px:NAMED_NPC_ANCHORS.merchant_rowan.home.x*TILE,py:NAMED_NPC_ANCHORS.merchant_rowan.home.y*TILE,name:"Merchant Rowan",displayLabel:"Merchant Rowan",facing:"down",speed:86,moving:false,nextDecisionAt:0};
 const namedVillageNpcs=[npc,hunterNpc,vendorNpc];
 const ambientVillageNpcs=[
-  {id:"npc_dockhand_mira",anchorId:"merchant_rowan",x:17,y:16,targetX:17,targetY:16,px:17*TILE,py:16*TILE,name:"Dockhand Mira",displayLabel:"Dockhand Mira",facing:"right",speed:82,moving:false,nextDecisionAt:0},
-  {id:"npc_inn_patron_elsa",anchorId:"edrin_vale",x:14,y:12,targetX:14,targetY:12,px:14*TILE,py:12*TILE,name:"Patron Elsa",displayLabel:"Patron Elsa",facing:"left",speed:80,moving:false,nextDecisionAt:0},
+  {id:"npc_dockhand_mira",anchorId:"merchant_rowan",x:18,y:16,targetX:18,targetY:16,px:18*TILE,py:16*TILE,name:"Dockhand Mira",displayLabel:"Dockhand Mira",facing:"right",speed:82,moving:false,nextDecisionAt:0},
+  {id:"npc_inn_patron_elsa",anchorId:"edrin_vale",x:13,y:12,targetX:13,targetY:12,px:13*TILE,py:12*TILE,name:"Patron Elsa",displayLabel:"Patron Elsa",facing:"left",speed:80,moving:false,nextDecisionAt:0},
   {id:"npc_mercantile_apprentice_len",anchorId:"merchant_rowan",x:21,y:12,targetX:21,targetY:12,px:21*TILE,py:12*TILE,name:"Apprentice Len",displayLabel:"Apprentice Len",facing:"left",speed:79,moving:false,nextDecisionAt:0},
   {id:"npc_clerk_bram",anchorId:"edrin_vale",x:24,y:9,targetX:24,targetY:9,px:24*TILE,py:9*TILE,name:"Clerk Bram",displayLabel:"Clerk Bram",facing:"down",speed:78,moving:false,nextDecisionAt:0},
-  {id:"npc_fisher_tobin",anchorId:"hunter_garran",x:30,y:16,targetX:30,targetY:16,px:30*TILE,py:16*TILE,name:"Fisher Tobin",displayLabel:"Fisher Tobin",facing:"left",speed:80,moving:false,nextDecisionAt:0},
-  {id:"npc_resident_nora",anchorId:"edrin_vale",x:8,y:11,targetX:8,targetY:11,px:8*TILE,py:11*TILE,name:"Resident Nora",displayLabel:"Resident Nora",facing:"right",speed:76,moving:false,nextDecisionAt:0}
+  {id:"npc_fisher_tobin",anchorId:"hunter_garran",x:30,y:17,targetX:30,targetY:17,px:30*TILE,py:17*TILE,name:"Fisher Tobin",displayLabel:"Fisher Tobin",facing:"left",speed:80,moving:false,nextDecisionAt:0},
+  {id:"npc_resident_nora",anchorId:"edrin_vale",x:8,y:11,targetX:8,targetY:11,px:8*TILE,py:11*TILE,name:"Resident Nora",displayLabel:"Resident Nora",facing:"right",speed:76,moving:false,nextDecisionAt:0},
+  {id:"npc_porter_hale",anchorId:"merchant_rowan",x:25,y:13,targetX:25,targetY:13,px:25*TILE,py:13*TILE,name:"Porter Hale",displayLabel:"Porter Hale",facing:"left",speed:75,moving:false,nextDecisionAt:0},
+  {id:"npc_outfitter_sela",anchorId:"hunter_garran",x:24,y:19,targetX:24,targetY:19,px:24*TILE,py:19*TILE,name:"Outfitter Sela",displayLabel:"Outfitter Sela",facing:"up",speed:75,moving:false,nextDecisionAt:0}
 ];
 const npcTerrainForbiddenTiles=new Set();
 function fillSetRect(set,x,y,w,h){
@@ -6017,7 +6024,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.3" && ATLAS_SELECTOR_VERSION==="selector-v35.3-hearthvale-lived-in-density";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.4" && ATLAS_SELECTOR_VERSION==="selector-v35.4-hearthvale-building-district-identity";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -8531,6 +8538,16 @@ interactionManager.register({
   promptLabel:"Talk to Resident Nora",
   onInteract:()=>log("Resident Nora says: 'Doors are latched early now. Town still works, but everyone listens for the water.'")
 });
+interactionManager.register({
+  id:"npc_porter_hale", type:"npc", x:()=>ambientVillageNpcs[6].x, y:()=>ambientVillageNpcs[6].y,
+  promptLabel:"Talk to Porter Hale",
+  onInteract:()=>log("Porter Hale says: 'Harbor loads go from dock to market all day. Nobody likes how quiet the pond side gets at dusk.'")
+});
+interactionManager.register({
+  id:"npc_outfitter_sela", type:"npc", x:()=>ambientVillageNpcs[7].x, y:()=>ambientVillageNpcs[7].y,
+  promptLabel:"Talk to Outfitter Sela",
+  onInteract:()=>log("Outfitter Sela says: 'If you're headed toward Mirror Pond, bring cord and a dry lantern. The eastern trail drinks light.'")
+});
 function updateStillWaterTownLoopProgress(clueId){
   const stage=getStillWaterQuestStage();
   if(stage!==StillWaterQuestStage.STAGE_2_GATHER_TOWN_CLUES) return;
@@ -8645,6 +8662,18 @@ registerWorldObject({
   onInteract:()=>{ log("Cargo chalk marks list delayed nets, lamp oil, and river salt. Hearthvale's piers are still working."); }
 });
 registerWorldObject({
+  objectId:"miller_cottage_door",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:6, y:9,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Knock on cottage door",
+  onInteract:()=>{ log("A child answers through the door: 'Da's at the docks. Please wipe your boots if you come by later.'"); }
+});
+registerWorldObject({
   objectId:"residence_chimney_note",
   type:WORLD_OBJECT_TYPE.DECORATION,
   zone:"overworld",
@@ -8655,6 +8684,30 @@ registerWorldObject({
   persistence:true,
   promptLabel:"Knock on residence door",
   onInteract:()=>{ log("The door is latched. Warm smoke curls from the chimney — someone's home, but not receiving visitors."); }
+});
+registerWorldObject({
+  objectId:"harbor_captain_plaque",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:30, y:8,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Read brass plaque",
+  onInteract:()=>{ openWorldInfoPanel("Brass Plaque", "Harbor Captain Elra Dane — freight, moorings, and tide ledgers."); }
+});
+registerWorldObject({
+  objectId:"outfitter_supply_rack",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:23, y:19,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Inspect outfitter rack",
+  onInteract:()=>{ log("Waxed packs, snare wire, and pond reeds hang in tidy bundles. A note warns: 'Mirror Pond trail turns slick before dawn.'"); }
 });
 registerWorldObject({
   objectId:"mirror_pond_sign",
@@ -9536,9 +9589,9 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Build Phase : 35.3 — Hearthvale Lived-In Density + District Identity Pass\n" +
+      "Build Phase : " + WAYFARER_PHASE + " — " + WAYFARER_BUILD_LABEL + "\n" +
       "Selector Version : " + ATLAS_SELECTOR_VERSION + "\n" +
-      "Cache Bust : 35-3-hearthvale-lived-in-density\n" +
+      "Cache Bust : 35-4-hearthvale-building-district-identity\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
