@@ -1245,7 +1245,7 @@ const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
   buildings:"/assets/wayfarer/buildings/hearthvale_buildings_atlas_v1.manifest.json",
   props:"/assets/wayfarer/props/hearthvale_props_atlas_v1.manifest.json"
 });
-const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"]));
+const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse","b_counting_house","b_dock_storehouse","b_chandlery_front","b_market_shed","b_shop_house","b_townhouse_row_a","b_townhouse_row_b","b_georgian_residence","b_service_dependency","b_custom_house","b_elite_mansion","b_prestige_block"]));
 const HEARTHVALE_PROOF_PROP_TYPES = Object.freeze(new Set(["bench","barrel","crate","signPost"]));
 const ATLAS_BUILDING_METADATA = Object.freeze({
   village_hall_meeting_house:{ id:"village_hall_meeting_house", role:"village_hall_meeting_house", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:758, y:493, w:459, h:355 }, drawW:188, drawH:145, anchorX:94, anchorY:132, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
@@ -1339,6 +1339,7 @@ const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
   b_elite_mansion:{ buildingId:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"residence_large", atlasIdentity:"elite_mansion_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_large.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_prestige_block:{ buildingId:"b_prestige_block", role:"formal_townhouse_block", spriteId:"village_hall_meeting_house", atlasIdentity:"prestige_frontage_block_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.village_hall_meeting_house.crop, productionAtlasLocked:false, productionAtlasEnabled:true }
 });
+const HEARTHVALE_PRODUCTION_BUILDING_IDS=Object.freeze(Object.keys(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY));
 
 const HEARTHVALE_SEMANTIC_REGISTRY_BY_ROLE = Object.freeze(
   Object.values(HEARTHVALE_ATLAS_SPRITE_PRESENTATION).reduce((acc, entry) => {
@@ -2921,16 +2922,10 @@ function isHearthvaleBuildingRoleProductionAccepted(building, spriteId){
   if(hasAtlasUsableTransparency("buildings")!==true) return false;
   if(getAtlasSpriteFailureReason("buildings", spriteId)!==null) return false;
   const role=building.role || ATLAS_BUILDING_METADATA[spriteId]?.role || null;
-  const allowedRoles=new Set([
-    "inn_tavern",
-    "mercantile_shop",
-    "village_hall_meeting_house",
-    "residence_small",
-    "residence_large",
-    "hunter_lodge_or_outfitter",
-    "pond_boathouse_or_waterfront_shed"
-  ]);
-  if(!allowedRoles.has(role)) return false;
+  const reg=building.id ? HEARTHVALE_BUILDING_SEMANTIC_REGISTRY[building.id] : null;
+  if(reg && reg.productionAtlasEnabled!==true) return false;
+  if(reg && reg.spriteId!==spriteId) return false;
+  if(!reg && !role) return false;
   const selectorState=secondaryAtlasSelectionState.byRole?.[role]||null;
   const selectorAccepted=selectorState?.selectorCandidateStatus==="SELECTED_PRODUCTION" && selectorState?.runtimeRenderStatus==="ATLAS";
   const productionGate=selectorState?.gate==="production_enabled" || selectorState?.status==="semantic_registry_confirmed";
@@ -3192,14 +3187,14 @@ function maybeLogBuildingRenderSummary(){
   const buildingsManifestStatus = (atlasRuntimeInfo.buildings?.manifestReady===true || isAtlasRuntimeReady("buildings")) ? "ready" : "pending";
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
-  const productionFinalLine=["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"ATLAS":"FALLBACK")).join(",");
+  const productionFinalLine=HEARTHVALE_PRODUCTION_BUILDING_IDS.map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"ATLAS":"FALLBACK")).join(",");
   const buildingsReadyForAcceptance=
     atlasRuntimeInfo.buildings?.loaded===true &&
     (atlasImages.buildings?.naturalWidth||0)===1254 &&
     (atlasImages.buildings?.naturalHeight||0)===1254 &&
     hasAtlasUsableTransparency("buildings")===true &&
     Object.keys(atlasManifests.buildings?.sprites||{}).length===7;
-  const settledStatus=(atlasIds.length===7 && fallbackEntries.length===0 && pendingEntries.length===0) ? "PASS" : "FAIL";
+  const settledStatus=(atlasIds.length===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && fallbackEntries.length===0 && pendingEntries.length===0) ? "PASS" : "FAIL";
   latestRenderAuditStatus={
     atlasCount:atlasIds.length,
     fallbackCount:fallbackEntries.length,
@@ -3238,7 +3233,7 @@ function maybeLogBuildingRenderSummary(){
     console.info("atlas_count="+atlasIds.length);
     console.info("fallback_count="+fallbackEntries.length);
     console.info("pending_count="+pendingEntries.length);
-    console.info("production_final="+["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"ATLAS":"FALLBACK")).join(","));
+    console.info("production_final="+HEARTHVALE_PRODUCTION_BUILDING_IDS.map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"ATLAS":"FALLBACK")).join(","));
     console.info("collision=PASS");
     console.info("frontage=PASS");
     console.info("visualReviewRequired=true");
@@ -3457,11 +3452,11 @@ function logBuildingSourceOfTruthAudit(){
   const authStatus=acceptanceFailures.length===0?'PASS':'FAIL';
   const authSig=JSON.stringify({authStatus,acceptanceFailures});
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
-  const expectedRows=7;
+  const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
   const proofHudConsistent=WAYFARER_PHASE==='35.6' && ATLAS_SELECTOR_VERSION==='selector-v35.6-newport-identity-expansion';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
-  const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===7 && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
+  const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
   const pendingReason=!ready?'assets_not_settled':(buildingRenderDiagnostics.pendingBuildings.size>0?'render_pending':'none');
   const failureReasons=[];
