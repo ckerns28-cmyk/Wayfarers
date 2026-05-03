@@ -1346,7 +1346,6 @@ const SECONDARY_BLOCKING_AUDIT_WARNING_PREFIXES=Object.freeze([
   "overlaps_locked_hero_crop:"
 ]);
 const SECONDARY_BLOCKING_AUDIT_WARNINGS=Object.freeze(new Set([
-  "clipped_to_edge",
   "empty_crop",
   "no_non_transparent_pixels",
   "likely_partial_object",
@@ -1760,9 +1759,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.5A";
+const WAYFARER_PHASE = "35.5B";
 const WAYFARER_BUILD_LABEL = "Hearthvale Building Definition + Harbor Marketplace Pass";
-const ATLAS_SELECTOR_VERSION = "selector-v35.5a-secondary-atlas-runtime-gate-closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.5b-secondary-hard-gate-closure";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -2846,7 +2845,8 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   ) return "production_atlas_disabled";
   if(!sprite) return "missing_sprite_entry";
   const roleProductionAccepted=isHearthvaleBuildingRoleProductionAccepted(building, spriteId);
-  if(!secondaryPreviewOverride && !proofOverride && !roleProductionAccepted && !sprite.catalogResolved && sprite.productionReady!==true) return "sprite_not_production_ready";
+  const canonicalProductionAccepted=isHearthvaleProductionSpriteAtlasEligible(building, spriteId, sprite);
+  if(!secondaryPreviewOverride && !proofOverride && !roleProductionAccepted && !canonicalProductionAccepted && !sprite.catalogResolved && sprite.productionReady!==true) return "sprite_not_production_ready";
   if(!secondaryPreviewOverride && (sprite.debugOnly===true || sprite.debug_only===true)) return "debug_only_sprite";
   const runtime=atlasRuntimeInfo.buildings;
   if(runtime?.probeStatus===404) return "asset_404";
@@ -2868,10 +2868,7 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
     // the static ATLAS_BUILDING_METADATA audit which would test the old
     // unverified reference crop, not the dynamically selected one.
     const auditWarnings=getSecondaryBuildingAuditWarnings(metadataEntry, atlasImages.buildings).filter(isSecondaryBlockingAuditWarning);
-    if(auditWarnings.length) return "secondary_crop_audit_blocked:"+auditWarnings[0];
-    if(SECONDARY_BUILDING_IDS.includes(spriteId) && metadataEntry.productionReady===true){
-      if(metadataEntry.crop.x===0 || metadataEntry.crop.y===0) return "secondary_crop_clipped_requires_explicit_acceptance";
-    }
+    if(auditWarnings.length && !roleProductionAccepted) return "secondary_crop_audit_blocked:"+auditWarnings[0];
   }
   const maxDrawW=TILE*BUILDING_SPRITE_PRODUCTION_LIMITS.maxDrawTilesWide;
   const maxDrawH=TILE*BUILDING_SPRITE_PRODUCTION_LIMITS.maxDrawTilesHigh;
@@ -2884,6 +2881,24 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
   }
   return getAtlasSpriteFailureReason("buildings", spriteId);
 }
+function isHearthvaleProductionSpriteAtlasEligible(building, spriteId, spriteOverride){
+  if(!building || !spriteId) return false;
+  const allowlist=new Set(["inn_tavern_v1","mercantile_shop","village_hall_meeting_house","residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
+  if(!allowlist.has(spriteId)) return false;
+  const manifest=atlasManifests.buildings;
+  const sprite=spriteOverride || manifest?.sprites?.[spriteId];
+  const sheet=atlasImages.buildings;
+  if(!manifest || !sprite || manifest.productionReady!==true) return false;
+  if(!atlasRuntimeInfo.buildings?.loaded) return false;
+  if(!(sheet?.naturalWidth>0 && sheet?.naturalHeight>0) && !(atlasRuntimeInfo.buildings?.width>0 && atlasRuntimeInfo.buildings?.height>0)) return false;
+  if(hasAtlasUsableTransparency("buildings")!==true) return false;
+  const selectorState=secondaryAtlasSelectionState.byRole?.[building.role]||null;
+  const selectorAccepted=selectorState?.selectorCandidateStatus==="SELECTED_PRODUCTION" || selectorState?.status==="semantic_registry_confirmed" || selectorState?.gate==="production_enabled";
+  if(!selectorAccepted && !LOCKED_HERO_BUILDING_IDS.includes(spriteId)) return false;
+  const fail=getAtlasSpriteFailureReason("buildings", spriteId);
+  return fail===null;
+}
+
 function isHearthvaleBuildingRoleProductionAccepted(building, spriteId){
   if(!building || !spriteId) return false;
   const manifest=atlasManifests.buildings;
@@ -3432,7 +3447,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.5A' && ATLAS_SELECTOR_VERSION==='selector-v35.5a-secondary-atlas-runtime-gate-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.5B' && ATLAS_SELECTOR_VERSION==='selector-v35.5b-secondary-hard-gate-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===7 && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6057,7 +6072,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.5A" && ATLAS_SELECTOR_VERSION==="selector-v35.5a-secondary-atlas-runtime-gate-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.5B" && ATLAS_SELECTOR_VERSION==="selector-v35.5b-secondary-hard-gate-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
