@@ -1772,9 +1772,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.6C";
+const WAYFARER_PHASE = "35.6D";
 const WAYFARER_BUILD_LABEL = "Hearthvale Newport Identity Expansion + Structure Pack Integration";
-const ATLAS_SELECTOR_VERSION = "selector-v35.6c-hard-runtime-identity-alias-pier-closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.6d-source-truth-proof-contract-closure";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3331,6 +3331,7 @@ let atlasRuntimeAuthorityChainSignature="";
 let atlasRuntimeAuthorityAcceptanceSignature="";
 let sourceTruthAcceptanceSignature="";
 let atlasWorkflowAcceptanceSignature="";
+let lastAtlasProofAcceptanceSignature="";
 let wayfarerQaReportSignature="";
 let wayfarerQaReportState={ status:"PENDING", generatedAt:null, report:null, text:"" };
 function emitSpawnValidationLine(){
@@ -3412,7 +3413,7 @@ function toCropObj(entry){
 function sameCrop(a,b){ return !!(a&&b&&a.x===b.x&&a.y===b.y&&a.w===b.w&&a.h===b.h); }
 function logBuildingSourceOfTruthAudit(){
   if(!ATLAS_DEBUG_MODE) return;
-  const ids=["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"];
+  const ids=HEARTHVALE_PRODUCTION_BUILDING_IDS;
   const rows=[]; const chainRows=[]; const conflicts=[];
   ids.forEach((buildingId)=>{
     const resolved=resolveBuildingAtlasRuntimeEntry(buildingId);
@@ -3456,7 +3457,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.6C' && ATLAS_SELECTOR_VERSION==='selector-v35.6c-hard-runtime-identity-alias-pier-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.6D' && ATLAS_SELECTOR_VERSION==='selector-v35.6d-source-truth-proof-contract-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6104,7 +6105,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.6C" && ATLAS_SELECTOR_VERSION==="selector-v35.6c-hard-runtime-identity-alias-pier-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.6D" && ATLAS_SELECTOR_VERSION==="selector-v35.6d-source-truth-proof-contract-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -6129,7 +6130,24 @@ function buildWayfarerQaReport(){
   const routeTileSweepPass=routeTileSweepQaResult.status==="PASS";
   const routeCollisionPass=routeCollisionQaResult.status==="PASS";
   const questLoopPass=questLoopQaResult.status==="PASS";
-  const atlasProofPass=latestRenderAuditStatus.heroFinal==="b_inn_tavern:ATLAS,b_mercantile:ATLAS,b_village_hall:ATLAS,b_res_small:ATLAS,b_res_large:ATLAS,b_hunter_lodge:ATLAS,b_boathouse:ATLAS";
+  const heroAtlasBuildingIds=["b_inn_tavern","b_mercantile","b_village_hall"];
+  const heroAtlasProofPass=heroAtlasBuildingIds.every((id)=>buildingRenderDiagnostics.atlasBuildings.has(id));
+  const productionAtlasProofPass=HEARTHVALE_PRODUCTION_BUILDING_IDS.every((id)=>buildingRenderDiagnostics.atlasBuildings.has(id));
+  const atlasProofPass=heroAtlasProofPass && productionAtlasProofPass;
+  const atlasProofMismatch=!atlasProofPass
+    ? (!heroAtlasProofPass?"hero_atlas_missing":(!productionAtlasProofPass?"production_atlas_missing":"unknown"))
+    : "none";
+  const atlasProofAcceptanceSig=JSON.stringify({heroAtlasProofPass,productionAtlasProofPass,heroProofCount:heroAtlasBuildingIds.length,productionAtlasCount:HEARTHVALE_PRODUCTION_BUILDING_IDS.length,atlasProofPass,atlasProofMismatch});
+  if(atlasProofAcceptanceSig!==lastAtlasProofAcceptanceSignature){
+    lastAtlasProofAcceptanceSignature=atlasProofAcceptanceSig;
+    console.info("[Atlas Proof Acceptance]");
+    console.info("heroAtlasProof="+(heroAtlasProofPass?"PASS":"FAIL"));
+    console.info("heroProofCount="+heroAtlasBuildingIds.length);
+    console.info("productionAtlasProof="+(productionAtlasProofPass?"PASS":"FAIL"));
+    console.info("productionAtlasCount="+HEARTHVALE_PRODUCTION_BUILDING_IDS.length);
+    console.info("mismatch="+atlasProofMismatch);
+    console.info("status="+(atlasProofPass?"PASS":"FAIL"));
+  }
   const fatalErrorCount=fatalJsErrorsSinceBoot.length;
   const consoleFatalErrors=fatalErrorCount===0?"none":String(fatalErrorCount);
   const qaEmitterFatalCount=qaEmitterErrors.length;
@@ -6149,7 +6167,7 @@ function buildWayfarerQaReport(){
   addFailure("uiState",uiStatePass,"zone_hud_mismatch");
   addFailure("bootMode",bootModePass,"boot_mode_signature_failed");
   addFailure("renderAudit",renderAuditPass,"render_audit_not_pass");
-  addFailure("atlasProof",atlasProofPass,"hero_atlas_proof_mismatch");
+  addFailure("atlasProof",atlasProofPass,atlasProofMismatch);
   addFailure("sourceTruth",sourceTruthPass,sourceTruthReason);
   addFailure("routeCollision",routeCollisionPass,"invalid_route_hidden_blockers");
   addFailure("routeTopology",topologyPass&&routeTileSweepPass&&routeCollisionPass,"route_topology_layout_mismatch");
