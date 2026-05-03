@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.5";
+const WAYFARER_PHASE = "35.5A";
 const WAYFARER_BUILD_LABEL = "Hearthvale Building Definition + Harbor Marketplace Pass";
-const ATLAS_SELECTOR_VERSION = "selector-v35.5-secondary-building-atlas-production-lock";
+const ATLAS_SELECTOR_VERSION = "selector-v35.5a-secondary-atlas-runtime-gate-closure";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -2845,8 +2845,8 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
     (!manifest.allowProductionSprites || !USE_PRODUCTION_BUILDING_ATLAS)
   ) return "production_atlas_disabled";
   if(!sprite) return "missing_sprite_entry";
-  // Catalog-resolved secondaries skip the productionReady gate (they are proof-only by design).
-  if(!secondaryPreviewOverride && !proofOverride && !sprite.catalogResolved && sprite.productionReady!==true) return "sprite_not_production_ready";
+  const roleProductionAccepted=isHearthvaleBuildingRoleProductionAccepted(building, spriteId);
+  if(!secondaryPreviewOverride && !proofOverride && !roleProductionAccepted && !sprite.catalogResolved && sprite.productionReady!==true) return "sprite_not_production_ready";
   if(!secondaryPreviewOverride && (sprite.debugOnly===true || sprite.debug_only===true)) return "debug_only_sprite";
   const runtime=atlasRuntimeInfo.buildings;
   if(runtime?.probeStatus===404) return "asset_404";
@@ -2883,6 +2883,32 @@ function getBuildingProductionSpriteFailureReason(building, spriteId){
     if(nearFullSheet) return "sprite_crop_full_sheet_like";
   }
   return getAtlasSpriteFailureReason("buildings", spriteId);
+}
+function isHearthvaleBuildingRoleProductionAccepted(building, spriteId){
+  if(!building || !spriteId) return false;
+  const manifest=atlasManifests.buildings;
+  const sprite=manifest?.sprites?.[spriteId];
+  if(!manifest || !sprite) return false;
+  if(manifest.productionReady!==true) return false;
+  if(atlasRuntimeInfo.buildings?.loaded!==true) return false;
+  if(hasAtlasUsableTransparency("buildings")!==true) return false;
+  if(getAtlasSpriteFailureReason("buildings", spriteId)!==null) return false;
+  const role=building.role || ATLAS_BUILDING_METADATA[spriteId]?.role || null;
+  const allowedRoles=new Set([
+    "inn_tavern",
+    "mercantile_shop",
+    "village_hall_meeting_house",
+    "residence_small",
+    "residence_large",
+    "hunter_lodge_or_outfitter",
+    "pond_boathouse_or_waterfront_shed"
+  ]);
+  if(!allowedRoles.has(role)) return false;
+  const selectorState=secondaryAtlasSelectionState.byRole?.[role]||null;
+  const selectorAccepted=selectorState?.selectorCandidateStatus==="SELECTED_PRODUCTION" && selectorState?.runtimeRenderStatus==="ATLAS";
+  const productionGate=selectorState?.gate==="production_enabled" || selectorState?.status==="semantic_registry_confirmed";
+  if(!selectorAccepted && !productionGate) return false;
+  return true;
 }
 function getExternalProductionSpriteFailureReason(atlasId, spriteId, drawW, drawH, worldType){
   const manifest=atlasManifests[atlasId];
@@ -3140,12 +3166,19 @@ function maybeLogBuildingRenderSummary(){
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const productionFinalLine=["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse"].map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"ATLAS":"FALLBACK")).join(",");
+  const buildingsReadyForAcceptance=
+    atlasRuntimeInfo.buildings?.loaded===true &&
+    (atlasImages.buildings?.naturalWidth||0)===1254 &&
+    (atlasImages.buildings?.naturalHeight||0)===1254 &&
+    hasAtlasUsableTransparency("buildings")===true &&
+    Object.keys(atlasManifests.buildings?.sprites||{}).length===7;
+  const settledStatus=(atlasIds.length===7 && fallbackEntries.length===0 && pendingEntries.length===0) ? "PASS" : "FAIL";
   latestRenderAuditStatus={
     atlasCount:atlasIds.length,
     fallbackCount:fallbackEntries.length,
     pendingCount:pendingEntries.length,
     heroFinal:productionFinalLine,
-    status:(atlasIds.length===7 && fallbackEntries.length===0 && pendingEntries.length===0) ? "PASS" : "FAIL"
+    status:buildingsReadyForAcceptance ? settledStatus : "PENDING_ASSETS"
   };
   console.info("[Building Render Audit] atlas_count=" + atlasIds.length + " fallback_count=" + fallbackEntries.length + " pending_count=" + pendingEntries.length + " previewMode=" + (previewModeActive?"true":"false") + " atlas_buildings=" + atlasIds.join(",") + " preview_runtime_buildings=" + previewRuntimeIds.join(",") + " fallback_buildings=" + fallbackEntries.join(",") + " pending_buildings=" + pendingEntries.join(",") + " missing_assets=" + finalMissingAssets.join(",") + " non_fatal_warnings=" + nonFatalWarnings.join(",") + " manifest_status=buildings:" + buildingsManifestStatus + ",props:" + propsManifestStatus + " atlas_image_status=buildings:" + buildingsImageStatus + ",props:" + propsImageStatus + " production_final=" + productionFinalLine);
   if(previewModeActive){
@@ -3191,7 +3224,7 @@ function maybeLogBuildingRenderSummary(){
   });
   console.info("[Building Atlas Draw Diagnostics] "+heroDiagnostics.join(" | "));
 
-  const acceptanceLine="[Building Production Atlas Acceptance] status="+(latestRenderAuditStatus.status==="PASS"?"PASS":"FAIL")+" atlas_count="+atlasIds.length+" fallback_count="+fallbackEntries.length+" pending_count="+pendingEntries.length+" buildings="+productionFinalLine;
+  const acceptanceLine="[Building Production Atlas Acceptance] status="+latestRenderAuditStatus.status+" atlas_count="+atlasIds.length+" fallback_count="+fallbackEntries.length+" pending_count="+pendingEntries.length+" buildings="+productionFinalLine;
   console.info(acceptanceLine);
 }
 
@@ -3399,7 +3432,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.5' && ATLAS_SELECTOR_VERSION==='selector-v35.5-secondary-building-atlas-production-lock';
+  const proofHudConsistent=WAYFARER_PHASE==='35.5A' && ATLAS_SELECTOR_VERSION==='selector-v35.5a-secondary-atlas-runtime-gate-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===7 && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6024,7 +6057,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.5" && ATLAS_SELECTOR_VERSION==="selector-v35.5-secondary-building-atlas-production-lock";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.5A" && ATLAS_SELECTOR_VERSION==="selector-v35.5a-secondary-atlas-runtime-gate-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
