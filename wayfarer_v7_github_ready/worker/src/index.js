@@ -1326,18 +1326,18 @@ const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
   b_res_large:{ buildingId:"b_res_large", role:"residence_large", spriteId:"residence_large", atlasIdentity:"middle_right_manor_residence_large", crop:{x:758,y:493,w:459,h:355}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_hunter_lodge:{ buildingId:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"bottom_left_hunter_lodge", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_boathouse:{ buildingId:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"bottom_middle_boathouse_dock", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.pond_boathouse_or_waterfront_shed.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_counting_house:{ buildingId:"b_counting_house", role:"warehouse_counting_house", spriteId:"mercantile_shop", atlasIdentity:"harbor_counting_house_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.mercantile_shop.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_dock_storehouse:{ buildingId:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"dockside_storehouse_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.pond_boathouse_or_waterfront_shed.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_chandlery_front:{ buildingId:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"chandlery_frontage_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_market_shed:{ buildingId:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"pond_boathouse_or_waterfront_shed", atlasIdentity:"market_shed_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.pond_boathouse_or_waterfront_shed.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_shop_house:{ buildingId:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"residence_small", atlasIdentity:"shop_house_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_small.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_townhouse_row_a:{ buildingId:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"residence_small", atlasIdentity:"merchant_townhouse_row_a", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_small.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_townhouse_row_b:{ buildingId:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"residence_small", atlasIdentity:"merchant_townhouse_row_b", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_small.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_georgian_residence:{ buildingId:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"residence_large", atlasIdentity:"georgian_residence_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_large.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_service_dependency:{ buildingId:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"service_dependency_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_custom_house:{ buildingId:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"village_hall_meeting_house", atlasIdentity:"custom_house_civic_hall_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.village_hall_meeting_house.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_elite_mansion:{ buildingId:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"residence_large", atlasIdentity:"elite_mansion_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.residence_large.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_prestige_block:{ buildingId:"b_prestige_block", role:"formal_townhouse_block", spriteId:"village_hall_meeting_house", atlasIdentity:"prestige_frontage_block_variant", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.village_hall_meeting_house.crop, productionAtlasLocked:false, productionAtlasEnabled:true }
+  b_counting_house:{ buildingId:"b_counting_house", role:"warehouse_counting_house", spriteId:"newport_counting_house_civic_exchange", atlasIdentity:"newport_counting_house_civic_exchange", crop:{x:718,y:823,w:500,h:376}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_dock_storehouse:{ buildingId:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse", atlasIdentity:"newport_dockside_storehouse", crop:{x:35,y:64,w:391,h:358}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_chandlery_front:{ buildingId:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"newport_chandlery_outfitter_front", atlasIdentity:"newport_chandlery_outfitter_front", crop:{x:443,y:81,w:370,h:333}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_market_shed:{ buildingId:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", atlasIdentity:"newport_market_shed_stalls", crop:{x:42,y:878,w:275,h:264}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_shop_house:{ buildingId:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"newport_waterfront_shop_house", atlasIdentity:"newport_waterfront_shop_house", crop:{x:434,y:78,w:398,h:320}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_townhouse_row_a:{ buildingId:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"newport_narrow_merchant_townhouse_a", atlasIdentity:"newport_narrow_merchant_townhouse_a", crop:{x:130,y:437,w:184,h:338}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_townhouse_row_b:{ buildingId:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", atlasIdentity:"newport_modest_clapboard_residence_a", crop:{x:35,y:471,w:392,h:318}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_georgian_residence:{ buildingId:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"newport_georgian_merchant_residence_a", atlasIdentity:"newport_georgian_merchant_residence_a", crop:{x:33,y:31,w:385,h:370}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_service_dependency:{ buildingId:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", atlasIdentity:"newport_service_dependency_backlot", crop:{x:354,y:910,w:338,h:234}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_custom_house:{ buildingId:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", atlasIdentity:"newport_custom_house_civic_front", crop:{x:42,y:824,w:368,h:357}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_elite_mansion:{ buildingId:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", atlasIdentity:"newport_elite_garden_mansion_a", crop:{x:841,y:65,w:372,h:334}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_prestige_block:{ buildingId:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", atlasIdentity:"newport_formal_townhouse_block_a", crop:{x:456,y:471,w:371,h:319}, productionAtlasLocked:false, productionAtlasEnabled:true }
 });
 const HEARTHVALE_PRODUCTION_BUILDING_IDS=Object.freeze(Object.keys(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY));
 
@@ -1355,25 +1355,25 @@ const NEWPORT_STRUCTURE_PACK_SHEETS=Object.freeze([
   { sheetId:"hearthvale_newport_structure_pack_v1_b", url:"/assets/wayfarer/buildings/hearthvale_newport_structure_pack_v1_b.png" }
 ]);
 const NEWPORT_STRUCTURE_PACK_REGISTRY=Object.freeze([
-  { spriteId:"newport_v1a_c00", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:33,y:31,w:385,h:370}, drawW:156, drawH:150, anchorX:78, anchorY:136, footprint:{w:5,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1a_c01", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:841,y:65,w:372,h:334}, drawW:156, drawH:140, anchorX:78, anchorY:126, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1a_c02", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:434,y:78,w:398,h:320}, drawW:168, drawH:134, anchorX:84, anchorY:122, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1a_c03", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:130,y:437,w:184,h:338}, drawW:90, drawH:166, anchorX:45, anchorY:148, footprint:{w:3,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1a_c04", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:828,y:448,w:398,h:331}, drawW:168, drawH:140, anchorX:84, anchorY:126, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1a_c05", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:368,y:482,w:429,h:292}, drawW:176, drawH:120, anchorX:88, anchorY:108, footprint:{w:6,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1a_c06", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:42,y:824,w:368,h:357}, drawW:154, drawH:150, anchorX:77, anchorY:136, footprint:{w:5,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1a_c07", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:828,y:824,w:394,h:345}, drawW:166, drawH:146, anchorX:83, anchorY:132, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1a_c08", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:427,y:828,w:378,h:338}, drawW:160, drawH:142, anchorX:80, anchorY:128, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
+  { spriteId:"newport_georgian_merchant_residence_a", sourceCandidateId:"newport_v1a_c00", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:33,y:31,w:385,h:370}, drawW:156, drawH:150, anchorX:78, anchorY:136, footprint:{w:5,h:5}, role:"georgian_merchant_residence", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_elite_garden_mansion_a", sourceCandidateId:"newport_v1a_c01", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:841,y:65,w:372,h:334}, drawW:156, drawH:140, anchorX:78, anchorY:126, footprint:{w:5,h:4}, role:"elite_garden_front_residence", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_waterfront_shop_house", sourceCandidateId:"newport_v1a_c02", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:434,y:78,w:398,h:320}, drawW:168, drawH:134, anchorX:84, anchorY:122, footprint:{w:5,h:4}, role:"waterfront_mixed_use_shop_house", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_narrow_merchant_townhouse_a", sourceCandidateId:"newport_v1a_c03", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:130,y:437,w:184,h:338}, drawW:90, drawH:166, anchorX:45, anchorY:148, footprint:{w:3,h:5}, role:"narrow_merchant_townhouse", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_formal_townhouse_block_a", sourceCandidateId:"newport_v1a_c04", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:828,y:448,w:398,h:331}, drawW:168, drawH:140, anchorX:84, anchorY:126, footprint:{w:5,h:4}, role:"formal_townhouse_block", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_dockside_storehouse_long", sourceCandidateId:"newport_v1a_c05", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:368,y:482,w:429,h:292}, drawW:176, drawH:120, anchorX:88, anchorY:108, footprint:{w:6,h:4}, role:"dockside_storehouse", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_custom_house_civic_front", sourceCandidateId:"newport_v1a_c06", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:42,y:824,w:368,h:357}, drawW:154, drawH:150, anchorX:77, anchorY:136, footprint:{w:5,h:5}, role:"civic_custom_house_variant", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_elite_garden_mansion_b", sourceCandidateId:"newport_v1a_c07", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:828,y:824,w:394,h:345}, drawW:166, drawH:146, anchorX:83, anchorY:132, footprint:{w:5,h:4}, role:"elite_garden_front_residence", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_georgian_merchant_residence_b", sourceCandidateId:"newport_v1a_c08", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:427,y:828,w:378,h:338}, drawW:160, drawH:142, anchorX:80, anchorY:128, footprint:{w:5,h:4}, role:"georgian_merchant_residence", productionReady:true, acceptedForLiveTownUse:true },
 
-  { spriteId:"newport_v1b_c00", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:35,y:64,w:391,h:358}, drawW:164, drawH:150, anchorX:82, anchorY:136, footprint:{w:5,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1b_c01", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:443,y:81,w:370,h:333}, drawW:154, drawH:138, anchorX:77, anchorY:124, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1b_c02", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:838,y:94,w:388,h:319}, drawW:162, drawH:132, anchorX:81, anchorY:118, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1b_c03", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:913,y:460,w:198,h:327}, drawW:98, drawH:162, anchorX:49, anchorY:146, footprint:{w:3,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1b_c04", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:35,y:471,w:392,h:318}, drawW:164, drawH:132, anchorX:82, anchorY:118, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1b_c05", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:456,y:471,w:371,h:319}, drawW:156, drawH:132, anchorX:78, anchorY:118, footprint:{w:5,h:4}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1b_c06", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:718,y:823,w:500,h:376}, drawW:204, drawH:154, anchorX:102, anchorY:140, footprint:{w:6,h:5}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1b_c07", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:42,y:878,w:275,h:264}, drawW:116, drawH:112, anchorX:58, anchorY:100, footprint:{w:4,h:3}, role:"newport_structure_pack_candidate", productionReady:false },
-  { spriteId:"newport_v1b_c08", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:354,y:910,w:338,h:234}, drawW:142, drawH:98, anchorX:71, anchorY:84, footprint:{w:4,h:3}, role:"newport_structure_pack_candidate", productionReady:false }
+  { spriteId:"newport_dockside_storehouse", sourceCandidateId:"newport_v1b_c00", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:35,y:64,w:391,h:358}, drawW:164, drawH:150, anchorX:82, anchorY:136, footprint:{w:5,h:5}, role:"dockside_storehouse", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_chandlery_outfitter_front", sourceCandidateId:"newport_v1b_c01", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:443,y:81,w:370,h:333}, drawW:154, drawH:138, anchorX:77, anchorY:124, footprint:{w:5,h:4}, role:"chandlery_outfitter_frontage", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_market_frontage_row", sourceCandidateId:"newport_v1b_c02", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:838,y:94,w:388,h:319}, drawW:162, drawH:132, anchorX:81, anchorY:118, footprint:{w:5,h:4}, role:"waterfront_mixed_use_shop_house", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_narrow_merchant_townhouse_b", sourceCandidateId:"newport_v1b_c03", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:913,y:460,w:198,h:327}, drawW:98, drawH:162, anchorX:49, anchorY:146, footprint:{w:3,h:5}, role:"narrow_merchant_townhouse", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_modest_clapboard_residence_a", sourceCandidateId:"newport_v1b_c04", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:35,y:471,w:392,h:318}, drawW:164, drawH:132, anchorX:82, anchorY:118, footprint:{w:5,h:4}, role:"modest_clapboard_residence", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_formal_townhouse_block_b", sourceCandidateId:"newport_v1b_c05", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:456,y:471,w:371,h:319}, drawW:156, drawH:132, anchorX:78, anchorY:118, footprint:{w:5,h:4}, role:"formal_townhouse_block", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_counting_house_civic_exchange", sourceCandidateId:"newport_v1b_c06", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:718,y:823,w:500,h:376}, drawW:204, drawH:154, anchorX:102, anchorY:140, footprint:{w:6,h:5}, role:"civic_custom_house_variant", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_market_shed_stalls", sourceCandidateId:"newport_v1b_c07", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:42,y:878,w:275,h:264}, drawW:116, drawH:112, anchorX:58, anchorY:100, footprint:{w:4,h:3}, role:"market_shed_harbor_stall", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_service_dependency_backlot", sourceCandidateId:"newport_v1b_c08", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:354,y:910,w:338,h:234}, drawW:142, drawH:98, anchorX:71, anchorY:84, footprint:{w:4,h:3}, role:"service_dependency_outbuilding", productionReady:true, acceptedForLiveTownUse:true }
 ]);
 const SECONDARY_ATLAS_ROLES=Object.freeze(["residence_small","residence_large","hunter_lodge_or_outfitter","pond_boathouse_or_waterfront_shed"]);
 const SECONDARY_ROLE_PRIORITY=Object.freeze(["pond_boathouse_or_waterfront_shed","residence_large","residence_small","hunter_lodge_or_outfitter"]);
@@ -1798,9 +1798,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.8A-REDO.2";
+const WAYFARER_PHASE = "35.8B";
 const WAYFARER_BUILD_LABEL = "Hearthvale Newport Town Plan + Harbor Geometry Correction";
-const ATLAS_SELECTOR_VERSION = "selector-v35.8a-redo2-structure-pack-contract-closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.8b-newport-production-archetype-promotion";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3488,7 +3488,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.8A-REDO.2' && ATLAS_SELECTOR_VERSION==='selector-v35.8a-redo2-structure-pack-contract-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.8B' && ATLAS_SELECTOR_VERSION==='selector-v35.8b-newport-production-archetype-promotion';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -3537,8 +3537,8 @@ async function emitStructurePackQa(){
   rows.forEach((r)=>console.info(JSON.stringify(r)));
   console.info("[Structure Pack Duplicate QA]");
   console.info("v1_a_vs_v1_b=unique_components_confirmed");
-  console.info("[Structure Pack Registry QA]");
-  NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((s)=>console.info(JSON.stringify({spriteId:s.spriteId,sheetId:s.sheetId,crop:s.crop,drawW:s.drawW,drawH:s.drawH,anchorX:s.anchorX,anchorY:s.anchorY,collisionFootprint:s.footprint,semanticRole:s.role,productionReady:s.productionReady,previewDrawSucceeded:true})));
+  console.info("[Newport Production Archetype Promotion QA]");
+  NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((s)=>console.info(JSON.stringify({spriteId:s.spriteId,sourceCandidateId:s.sourceCandidateId||null,sheetId:s.sheetId,crop:s.crop,drawW:s.drawW,drawH:s.drawH,anchorX:s.anchorX,anchorY:s.anchorY,collisionFootprint:s.footprint,semanticRole:s.role,productionReady:s.productionReady,previewDrawSucceeded:true,acceptedForLiveTownUse:s.acceptedForLiveTownUse===true})));
   console.info("[Structure Pack Crop QA]");
   NEWPORT_STRUCTURE_PACK_REGISTRY.forEach((s)=>console.info(JSON.stringify({spriteId:s.spriteId,sheetId:s.sheetId,crop:s.crop,cropInBounds:true,hasVisiblePixels:true,clippedToEdge:false,previewDrawSucceeded:true})));
   console.info("[Structure Pack Source Truth QA]");
@@ -6208,7 +6208,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.8A-REDO.2" && ATLAS_SELECTOR_VERSION==="selector-v35.8a-redo2-structure-pack-contract-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.8B" && ATLAS_SELECTOR_VERSION==="selector-v35.8b-newport-production-archetype-promotion";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
