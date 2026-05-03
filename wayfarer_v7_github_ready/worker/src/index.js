@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.1L";
+const WAYFARER_PHASE = "35.1M";
 const WAYFARER_BUILD_LABEL = "Hearthvale Foundation Recovery Sprint";
-const ATLAS_SELECTOR_VERSION = "selector-v35.1l-authoritative-pier-blocker-and-spawn-qa-settlement";
+const ATLAS_SELECTOR_VERSION = "selector-v35.1m-central-pier-consumer-pathfinding-closure";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3393,7 +3393,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.1L' && ATLAS_SELECTOR_VERSION==='selector-v35.1l-authoritative-pier-blocker-and-spawn-qa-settlement';
+  const proofHudConsistent=WAYFARER_PHASE==='35.1M' && ATLAS_SELECTOR_VERSION==='selector-v35.1m-central-pier-consumer-pathfinding-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -5995,7 +5995,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.1L" && ATLAS_SELECTOR_VERSION==="selector-v35.1l-authoritative-pier-blocker-and-spawn-qa-settlement";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.1M" && ATLAS_SELECTOR_VERSION==="selector-v35.1m-central-pier-consumer-pathfinding-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -9382,9 +9382,9 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Build Phase : 35.1B — Hearthvale Foundation Recovery Sprint\n" +
+      "Build Phase : 35.1M — Final Central Pier Consumer Fix\n" +
       "Selector Version : " + ATLAS_SELECTOR_VERSION + "\n" +
-      "Cache Bust : 35-1b-hearthvale-foundation-recovery\n" +
+      "Cache Bust : 35-1m-central-pier-consumer-pathfinding-closure\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
@@ -9473,7 +9473,7 @@ function getMovementBlockDiagnostics(x,y){
     if(world.pondWater.has(tileKey) && !pierTerrainBypass && !isHarborPierWharfTile(x,y)){ causes.push("water"); sourceFlags.water=true; }
     if(world.pondShore.has(tileKey) && !isTraversalRouteTile && !pierTerrainBypass){ causes.push("terrain"); sourceFlags.terrain=true; }
     if(blockingFence && !hearthvaleTraversalAuthority.nonBlockingFenceTiles.has(tileKey)){ causes.push("fence"); sourceFlags.fence=true; }
-    if(blockingTree){ causes.push("terrain"); sourceFlags.terrain=true; }
+    if(blockingTree && !pierTerrainBypass){ causes.push("terrain"); sourceFlags.terrain=true; }
     if(world.blocked.has(tileKey) && !hearthvaleTraversalAuthority.nonBlockingTerrainTiles.has(tileKey) && !pierTerrainBypass){ causes.push("terrain"); sourceFlags.terrain=true; }
     if(blockingBuilding){ causes.push("building"); sourceFlags.building=true; }
   }
