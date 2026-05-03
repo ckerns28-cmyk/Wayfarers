@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.2";
-const WAYFARER_BUILD_LABEL = "Hearthvale Foundation Recovery Sprint";
-const ATLAS_SELECTOR_VERSION = "selector-v35.2-hearthvale-alive-first-playable-town";
+const WAYFARER_PHASE = "35.3";
+const WAYFARER_BUILD_LABEL = "Hearthvale Lived-In Density + District Identity Pass";
+const ATLAS_SELECTOR_VERSION = "selector-v35.3-hearthvale-lived-in-density";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3231,6 +3231,8 @@ let lastFrontageAuditToken="";
 let lastAtlasCropAuditToken="";
 let sourceOfTruthAuditSignature="";
 let boathousePlacementQaSignature="";
+let routeTopologyQaSignature="";
+let routeCollisionQaSignature="";
 let harborCompositionQaSignature="";
 let phase342JAcceptanceSignature="";
 let bootModeQaSignature="";
@@ -3393,7 +3395,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.2' && ATLAS_SELECTOR_VERSION==='selector-v35.2-hearthvale-alive-first-playable-town';
+  const proofHudConsistent=WAYFARER_PHASE==='35.3' && ATLAS_SELECTOR_VERSION==='selector-v35.3-hearthvale-lived-in-density';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -4286,7 +4288,10 @@ function emitTraversalTopologyQA(){
   const status=classificationMismatchCount===0?"PASS":"FAIL";
   traversalTopologyQaResult={ status, blockedRoadMismatches:blockedTiles.length, classificationMismatchCount, ...counters, sampleBlockedTiles, routeClassification };
   const line="[Route Topology QA] visualRouteTiles="+routeClassification.visualRouteTiles.size+" navigableRouteTiles="+routeClassification.navigableRouteTiles.size+" intentionalBlockedRouteTiles="+routeClassification.intentionalBlockedRouteTiles.size+" invalidHiddenBlockers="+routeClassification.invalidHiddenBlockers.size+" classificationMismatches="+classificationMismatchCount+" sampleBlockedTiles="+JSON.stringify(sampleBlockedTiles)+" status="+status;
-  console.info(line);
+  if(line!==routeTopologyQaSignature){
+    routeTopologyQaSignature=line;
+    console.info(line);
+  }
   if(ATLAS_DEBUG_MODE) console.info("[Route Topology Pier Tile 19,21] "+JSON.stringify(pierBlockedTile||{ x:19, y:21, blocked:false, blockers:[] }));
   if(ATLAS_DEBUG_MODE && blockedTiles.length>0) console.info("[Traversal Topology Blocked Tiles] "+JSON.stringify(blockedTiles));
 }
@@ -4321,7 +4326,11 @@ function emitRouteCollisionConflictQA(){
   const examples=routeClassification.examples.slice(0,10);
   const status=invalidHiddenBlockers===0 ? "PASS" : "FAIL";
   routeCollisionQaResult={ status, scanned:routeTiles.size, invalidHiddenBlockers, intentionalBlocks, examples };
-  console.info("[Route Collision QA] scanned="+routeTiles.size+" intentionalBlocks="+intentionalBlocks+" invalidHiddenBlockers="+invalidHiddenBlockers+(examples.length?" examples="+examples.join(" | "):"")+" status="+status);
+  const line="[Route Collision QA] scanned="+routeTiles.size+" intentionalBlocks="+intentionalBlocks+" invalidHiddenBlockers="+invalidHiddenBlockers+(examples.length?" examples="+examples.join(" | "):"")+" status="+status;
+  if(line!==routeCollisionQaSignature){
+    routeCollisionQaSignature=line;
+    console.info(line);
+  }
 }
 function classifyRouteTiles(){
   const visualRouteTiles=new Set(world.roadTiles);
@@ -5373,7 +5382,13 @@ world.props.push(
   {x:18,y:2,type:"smallGarden"},
   {x:11,y:12,type:"barrel"},{x:20,y:12,type:"crate"},{x:24,y:9,type:"signPost",layer:"above_entities"},
   {x:26,y:8,type:"lanternPost",layer:"above_entities"},{x:18,y:18,type:"crate"},{x:21,y:18,type:"barrel"},
-  {x:28,y:17,type:"crate"},{x:30,y:17,type:"barrel"}
+  {x:28,y:17,type:"crate"},{x:30,y:17,type:"barrel"},
+  {x:9,y:13,type:"barrel"},{x:14,y:13,type:"crate"},{x:16,y:13,type:"signPost",layer:"above_entities"},
+  {x:17,y:12,type:"bench"},{x:22,y:12,type:"barrel"},
+  {x:23,y:8,type:"noticeBoard",layer:"above_entities"},{x:27,y:8,type:"signPost",layer:"above_entities"},
+  {x:28,y:16,type:"barrel"},{x:31,y:16,type:"crate"},{x:32,y:17,type:"barrel"},
+  {x:5,y:10,type:"smallGarden"},{x:8,y:10,type:"crate"},
+  {x:33,y:10,type:"signPost",layer:"above_entities"},{x:34,y:11,type:"grassTuft"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -5433,8 +5448,10 @@ const namedVillageNpcs=[npc,hunterNpc,vendorNpc];
 const ambientVillageNpcs=[
   {id:"npc_dockhand_mira",anchorId:"merchant_rowan",x:17,y:16,targetX:17,targetY:16,px:17*TILE,py:16*TILE,name:"Dockhand Mira",displayLabel:"Dockhand Mira",facing:"right",speed:82,moving:false,nextDecisionAt:0},
   {id:"npc_inn_patron_elsa",anchorId:"edrin_vale",x:14,y:12,targetX:14,targetY:12,px:14*TILE,py:12*TILE,name:"Patron Elsa",displayLabel:"Patron Elsa",facing:"left",speed:80,moving:false,nextDecisionAt:0},
+  {id:"npc_mercantile_apprentice_len",anchorId:"merchant_rowan",x:21,y:12,targetX:21,targetY:12,px:21*TILE,py:12*TILE,name:"Apprentice Len",displayLabel:"Apprentice Len",facing:"left",speed:79,moving:false,nextDecisionAt:0},
   {id:"npc_clerk_bram",anchorId:"edrin_vale",x:24,y:9,targetX:24,targetY:9,px:24*TILE,py:9*TILE,name:"Clerk Bram",displayLabel:"Clerk Bram",facing:"down",speed:78,moving:false,nextDecisionAt:0},
-  {id:"npc_fisher_tobin",anchorId:"hunter_garran",x:30,y:16,targetX:30,targetY:16,px:30*TILE,py:16*TILE,name:"Fisher Tobin",displayLabel:"Fisher Tobin",facing:"left",speed:80,moving:false,nextDecisionAt:0}
+  {id:"npc_fisher_tobin",anchorId:"hunter_garran",x:30,y:16,targetX:30,targetY:16,px:30*TILE,py:16*TILE,name:"Fisher Tobin",displayLabel:"Fisher Tobin",facing:"left",speed:80,moving:false,nextDecisionAt:0},
+  {id:"npc_resident_nora",anchorId:"edrin_vale",x:8,y:11,targetX:8,targetY:11,px:8*TILE,py:11*TILE,name:"Resident Nora",displayLabel:"Resident Nora",facing:"right",speed:76,moving:false,nextDecisionAt:0}
 ];
 const npcTerrainForbiddenTiles=new Set();
 function fillSetRect(set,x,y,w,h){
@@ -6000,7 +6017,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.2" && ATLAS_SELECTOR_VERSION==="selector-v35.2-hearthvale-alive-first-playable-town";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.3" && ATLAS_SELECTOR_VERSION==="selector-v35.3-hearthvale-lived-in-density";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -7509,10 +7526,12 @@ function getStillWaterObjectiveText(){
     return "The Still Water\nObjective: Speak with Edrin Vale";
   }
   if(stage===StillWaterQuestStage.STAGE_3_INSPECT_MIRROR_POND){
-    return "The Still Water\nObjective: Ask at the inn and waterfront";
-  }
-  if(stage===StillWaterQuestStage.STAGE_3_INSPECT_MIRROR_POND){
     return "The Still Water\nObjective: Inspect Mirror Pond";
+  }
+  if(stage===StillWaterQuestStage.STAGE_2_GATHER_TOWN_CLUES){
+    const loopState=getPersistentObject("still_water_town_loop");
+    const foundCount=(loopState.tavern?1:0)+(loopState.waterfront?1:0);
+    return "The Still Water\nObjective: Gather town clues before Mirror Pond ("+foundCount+"/2)";
   }
   if(stage===StillWaterQuestStage.STAGE_4_RETURN_TO_EDRIN){
     return "The Still Water\nObjective: Return to Edrin Vale";
@@ -8493,14 +8512,24 @@ interactionManager.register({
   onInteract:()=>log("Patron Elsa says: 'The inn's keeping two ledgers now — coin, and rumors about the still water.'")
 });
 interactionManager.register({
-  id:"npc_clerk_bram", type:"npc", x:()=>ambientVillageNpcs[2].x, y:()=>ambientVillageNpcs[2].y,
+  id:"npc_mercantile_apprentice_len", type:"npc", x:()=>ambientVillageNpcs[2].x, y:()=>ambientVillageNpcs[2].y,
+  promptLabel:"Talk to Apprentice Len",
+  onInteract:()=>log("Apprentice Len says: 'Half the manifests are late. Folks blame Still Water, not the roads.'")
+});
+interactionManager.register({
+  id:"npc_clerk_bram", type:"npc", x:()=>ambientVillageNpcs[3].x, y:()=>ambientVillageNpcs[3].y,
   promptLabel:"Talk to Clerk Bram",
   onInteract:()=>log("Clerk Bram sighs: 'Village hall notices are piling up. Harbor delays, ferry delays, fisher complaints.'")
 });
 interactionManager.register({
-  id:"npc_fisher_tobin", type:"npc", x:()=>ambientVillageNpcs[3].x, y:()=>ambientVillageNpcs[3].y,
+  id:"npc_fisher_tobin", type:"npc", x:()=>ambientVillageNpcs[4].x, y:()=>ambientVillageNpcs[4].y,
   promptLabel:"Talk to Fisher Tobin",
   onInteract:()=>log("Fisher Tobin says: 'If the pond goes mirror-flat at dawn, nets come back light and birds go quiet.'")
+});
+interactionManager.register({
+  id:"npc_resident_nora", type:"npc", x:()=>ambientVillageNpcs[5].x, y:()=>ambientVillageNpcs[5].y,
+  promptLabel:"Talk to Resident Nora",
+  onInteract:()=>log("Resident Nora says: 'Doors are latched early now. Town still works, but everyone listens for the water.'")
 });
 function updateStillWaterTownLoopProgress(clueId){
   const stage=getStillWaterQuestStage();
@@ -8685,6 +8714,33 @@ registerWorldObject({
   onInteract:()=>{
     log("The mooring rope is wet though no boat has moved. Fresh pond-silt clings to the knot.");
     updateStillWaterTownLoopProgress("waterfront");
+  }
+});
+registerWorldObject({
+  objectId:"boathouse_waterline_marker",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:31, y:17,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Inspect waterline marker",
+  onInteract:()=>{ log("A chalk line marks last week's tide. The water sits lower, but the ropes are soaked."); }
+});
+registerWorldObject({
+  objectId:"east_road_waymarker",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:33, y:10,
+  state:"unread",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Read waymarker",
+  onInteract:()=>{
+    patchPersistentObject("east_road_waymarker", { state:"read", read:true });
+    openWorldInfoPanel("Waymarker", "East: Mirror Pond and the Eastern Woods trail.");
   }
 });
 registerWorldObject({
@@ -9480,9 +9536,9 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Build Phase : 35.2 — Hearthvale Alive: First Playable Town Experience Pass\n" +
+      "Build Phase : 35.3 — Hearthvale Lived-In Density + District Identity Pass\n" +
       "Selector Version : " + ATLAS_SELECTOR_VERSION + "\n" +
-      "Cache Bust : 35-2-hearthvale-alive-first-playable-town\n" +
+      "Cache Bust : 35-3-hearthvale-lived-in-density\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
