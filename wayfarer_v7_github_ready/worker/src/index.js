@@ -1772,9 +1772,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.7";
-const WAYFARER_BUILD_LABEL = "Hearthvale Newport District Readability + Lived-In Composition Pass";
-const ATLAS_SELECTOR_VERSION = "selector-v35.7-newport-district-readability";
+const WAYFARER_PHASE = "35.8";
+const WAYFARER_BUILD_LABEL = "Hearthvale Newport Town Plan + Harbor Geometry Correction";
+const ATLAS_SELECTOR_VERSION = "selector-v35.8-newport-town-plan-harbor-geometry";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3321,6 +3321,9 @@ const COLLISION_SPAM_QA_THRESHOLD={ suppressed:12000, uniqueSignatures:75 };
 let traversalTopologyQaResult={ status:"FAIL", blockedRoadMismatches:Infinity, hiddenFenceBlockers:0, hiddenTerrainBlockers:0, hiddenWaterBlockers:0, npcRouteBlockers:0, propRouteBlockers:0, buildingRouteBlockers:0, parcelOnlyBlocks:0, sampleBlockedTiles:[] };
 let routeTileSweepQaResult={ status:"PENDING", scanned:0, unexpectedBlockedEdges:Infinity, examples:[] };
 let routeCollisionQaResult={ status:"PENDING", scanned:0, invalidHiddenBlockers:Infinity, intentionalBlocks:0, examples:[] };
+let buildingOverlapQaResult={ status:"PENDING", overlaps:[], scanned:0 };
+let wharfReadabilityQaResult={ status:"PENDING", walkableOverWater:0, invalidWalkableOverWater:0, unreachableWharfTiles:0, boathouseAligned:false };
+let playerStuckQaResult={ status:"PENDING", tested:0, reachable:0, blockedPockets:0 };
 let questLoopQaSignature="";
 let questLoopQaResult={ status:"FAIL", hasStillWater:false, stage:-1, stageValid:false, objectiveReady:false };
 let collisionSpamQaResult={ status:"PASS", suppressed:0, uniqueSignatures:0 };
@@ -3457,7 +3460,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.7' && ATLAS_SELECTOR_VERSION==='selector-v35.7-newport-district-readability';
+  const proofHudConsistent=WAYFARER_PHASE==='35.8' && ATLAS_SELECTOR_VERSION==='selector-v35.8-newport-town-plan-harbor-geometry';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4437,6 +4440,45 @@ function classifyRouteTiles(){
     }
   });
   return { visualRouteTiles, navigableRouteTiles, intentionalBlockedRouteTiles, invalidHiddenBlockers, coveredByBuildingTiles, waterRouteVisualTiles, frontageRouteTiles, publicRouteTiles, examples };
+}
+function emitBuildingOverlapQA(){
+  const rows=world.buildings||[];
+  const overlaps=[];
+  for(let i=0;i<rows.length;i++){
+    for(let j=i+1;j<rows.length;j++){
+      const a=rows[i], b=rows[j];
+      const ra=a.visualBounds||a.visual||{ x:a.x,y:a.y,w:a.w,h:a.h };
+      const rb=b.visualBounds||b.visual||{ x:b.x,y:b.y,w:b.w,h:b.h };
+      const ox=Math.max(0, Math.min(ra.x+ra.w, rb.x+rb.w)-Math.max(ra.x, rb.x));
+      const oy=Math.max(0, Math.min(ra.y+ra.h, rb.y+rb.h)-Math.max(ra.y, rb.y));
+      const area=ox*oy;
+      if(area>1) overlaps.push({ a:a.id, b:b.id, area });
+    }
+  }
+  const status=overlaps.length===0?"PASS":"FAIL";
+  buildingOverlapQaResult={ status, overlaps, scanned:rows.length };
+  console.info("[Building Overlap QA] scanned="+rows.length+" overlaps="+overlaps.length+" status="+status+(overlaps.length?" sample="+JSON.stringify(overlaps.slice(0,6)):""));
+}
+function emitWharfReadabilityQA(){
+  const routeClassification=classifyRouteTiles();
+  const overWater=[...routeClassification.visualRouteTiles].filter((k)=>world.pondWater.has(k));
+  const invalidOverWater=overWater.filter((k)=>!isHarborPierWharfTile(...k.split(",").map(Number)));
+  const wharfTiles=[...world.roadTiles].filter((k)=>isHarborPierWharfTile(...k.split(",").map(Number)));
+  const unreachableWharfTiles=wharfTiles.filter((k)=>!canMoveTo(...k.split(",").map(Number))).length;
+  const boathouse=world.buildings.find((b)=>b.id==="b_boathouse");
+  const bv=boathouse?.visual||{x:0,y:0,w:0,h:0};
+  const boathouseAligned=Array.from({length:bv.w}).some((_,i)=>world.pondWater.has(keyOf(bv.x+i,bv.y+bv.h-1)));
+  const status=(invalidOverWater.length===0 && unreachableWharfTiles===0 && boathouseAligned)?"PASS":"FAIL";
+  wharfReadabilityQaResult={ status, walkableOverWater:overWater.length, invalidWalkableOverWater:invalidOverWater.length, unreachableWharfTiles, boathouseAligned };
+  console.info("[Wharf Water Readability QA] walkableOverWater="+overWater.length+" invalidWalkableOverWater="+invalidOverWater.length+" unreachableWharfTiles="+unreachableWharfTiles+" boathouseAligned="+boathouseAligned+" status="+status);
+}
+function emitPlayerStuckReadabilityQA(){
+  const probes=[{x:20,y:16},{x:12,y:13},{x:19,y:12},{x:24,y:8},{x:29,y:17},{x:34,y:8}];
+  const reachable=probes.filter((p)=>findPathLength({x:player.targetX,y:player.targetY},p)>0).length;
+  const blockedPockets=probes.length-reachable;
+  const status=blockedPockets===0?"PASS":"FAIL";
+  playerStuckQaResult={ status, tested:probes.length, reachable, blockedPockets };
+  console.info("[Player Stuck Readability QA] tested="+probes.length+" reachable="+reachable+" blockedPockets="+blockedPockets+" status="+status);
 }
 function canMoveToKey(tileKey){
   const [x,y]=tileKey.split(",").map((v)=>Number(v));
@@ -6107,7 +6149,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.7" && ATLAS_SELECTOR_VERSION==="selector-v35.7-newport-district-readability";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.8" && ATLAS_SELECTOR_VERSION==="selector-v35.8-newport-town-plan-harbor-geometry";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -6154,7 +6196,7 @@ function buildWayfarerQaReport(){
   const consoleFatalErrors=fatalErrorCount===0?"none":String(fatalErrorCount);
   const qaEmitterFatalCount=qaEmitterErrors.length;
   const qaEmitterFatalNone=qaEmitterFatalCount===0;
-  const preliminaryStatus=(!renderAuditSettled || !sourceTruthSettled)?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL");
+  const preliminaryStatus=(!renderAuditSettled || !sourceTruthSettled)?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&wharfReadabilityQaResult.status==="PASS"&&playerStuckQaResult.status==="PASS"&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL");
   const failedDomains={};
   const addFailure=(k,pass,reason)=>{ if(pass) return; failedDomains[k]=reason; };
   const includeFailures=preliminaryStatus!=="PENDING_ASSETS";
@@ -6174,6 +6216,9 @@ function buildWayfarerQaReport(){
   addFailure("routeCollision",routeCollisionPass,"invalid_route_hidden_blockers");
   addFailure("routeTopology",topologyPass&&routeTileSweepPass&&routeCollisionPass,"route_topology_layout_mismatch");
   addFailure("harborComposition",harborStatus==="PASS","harbor_composition_failed");
+  addFailure("buildingOverlap",buildingOverlapQaResult.status==="PASS","building_visual_overlap_detected");
+  addFailure("wharfReadability",wharfReadabilityQaResult.status==="PASS","wharf_water_readability_failed");
+  addFailure("playerStuckReadability",playerStuckQaResult.status==="PASS","player_stuck_readability_failed");
   addFailure("questLoop",questLoopPass,"quest_loop_smoke_failed");
   if(consoleFatalErrors!=="none") failedDomains.fatalErrors="fatal_js_errors_present";
   if(!qaEmitterFatalNone) failedDomains.qaEmitter="qa_emitter_exception";
@@ -6196,9 +6241,12 @@ function buildWayfarerQaReport(){
     sourceTruth:normalizeQaStatus(sourceTruthPass?"PASS":"FAIL"),
     routeCollision:normalizeQaStatus(routeCollisionPass?"PASS":"FAIL"),
     routeTopology:normalizeQaStatus((topologyPass&&routeTileSweepPass&&routeCollisionPass)?"PASS":"FAIL"),
-    harborComposition:normalizeQaStatus(harborStatus)
+    harborComposition:normalizeQaStatus(harborStatus),
+    buildingOverlap:normalizeQaStatus(buildingOverlapQaResult.status),
+    wharfReadability:normalizeQaStatus(wharfReadabilityQaResult.status),
+    playerStuckReadability:normalizeQaStatus(playerStuckQaResult.status)
   };
-  const allRequiredPass=domainStatuses.savedSpawnValidation==="PASS"&&domainStatuses.freshSpawnResolver==="PASS"&&domainStatuses.traversalQA==="PASS"&&domainStatuses.playerStateQA==="PASS"&&domainStatuses.uiStateQA==="PASS"&&domainStatuses.bootModeQA==="PASS"&&domainStatuses.buildingRenderAudit==="PASS"&&domainStatuses.atlasProof==="PASS"&&domainStatuses.sourceTruth==="PASS"&&domainStatuses.routeCollision==="PASS"&&domainStatuses.routeTopology==="PASS"&&domainStatuses.harborComposition==="PASS";
+  const allRequiredPass=domainStatuses.savedSpawnValidation==="PASS"&&domainStatuses.freshSpawnResolver==="PASS"&&domainStatuses.traversalQA==="PASS"&&domainStatuses.playerStateQA==="PASS"&&domainStatuses.uiStateQA==="PASS"&&domainStatuses.bootModeQA==="PASS"&&domainStatuses.buildingRenderAudit==="PASS"&&domainStatuses.atlasProof==="PASS"&&domainStatuses.sourceTruth==="PASS"&&domainStatuses.routeCollision==="PASS"&&domainStatuses.routeTopology==="PASS"&&domainStatuses.harborComposition==="PASS"&&domainStatuses.buildingOverlap==="PASS"&&domainStatuses.wharfReadability==="PASS"&&domainStatuses.playerStuckReadability==="PASS";
   const hasFailures=Object.keys(failedDomains).length>0 || consoleFatalErrors!=="none";
   const finalStatus=(allRequiredPass && !hasFailures) ? "PASS" : normalizeQaStatus(preliminaryStatus);
   return {
@@ -6223,6 +6271,9 @@ function buildWayfarerQaReport(){
       routeCollision:domainStatuses.routeCollision,
       routeTopology:domainStatuses.routeTopology,
       harborComposition:domainStatuses.harborComposition,
+      buildingOverlap:domainStatuses.buildingOverlap,
+      wharfReadability:domainStatuses.wharfReadability,
+      playerStuckReadability:domainStatuses.playerStuckReadability,
       questLoop:normalizeQaStatus(questLoopPass?"PASS":"FAIL")
     },
     fatalJsErrorsSinceBoot:[...fatalJsErrorsSinceBoot],
@@ -11173,6 +11224,9 @@ function drawWorld(){
   safelyRunQa("traversal_topology_qa", ()=>emitTraversalTopologyQA());
   safelyRunQa("route_tile_sweep_qa", ()=>emitRouteTileSweepQA());
   safelyRunQa("route_collision_qa", ()=>emitRouteCollisionConflictQA());
+  safelyRunQa("building_overlap_qa", ()=>emitBuildingOverlapQA());
+  safelyRunQa("wharf_readability_qa", ()=>emitWharfReadabilityQA());
+  safelyRunQa("player_stuck_readability_qa", ()=>emitPlayerStuckReadabilityQA());
   safelyRunQa("quest_loop_qa", ()=>emitQuestLoopQA());
   safelyRunQa("phase_35_1n_acceptance", ()=>emitPhase351NAcceptance());
   emitBuildingAtlasCropAuditIfReady();
