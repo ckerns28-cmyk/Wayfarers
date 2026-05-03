@@ -1760,9 +1760,9 @@ function isSpawnDebugEnabledFromUrl(){
   }
 }
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
-const WAYFARER_PHASE = "35.1N";
+const WAYFARER_PHASE = "35.2";
 const WAYFARER_BUILD_LABEL = "Hearthvale Foundation Recovery Sprint";
-const ATLAS_SELECTOR_VERSION = "selector-v35.1n-central-pier-consumer-pathfinding-closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.2-hearthvale-alive-first-playable-town";
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
   ? globalThis.__WAYFARER_COMMIT__.trim()
@@ -3393,7 +3393,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=7;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.1N' && ATLAS_SELECTOR_VERSION==='selector-v35.1n-central-pier-consumer-pathfinding-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.2' && ATLAS_SELECTOR_VERSION==='selector-v35.2-hearthvale-alive-first-playable-town';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=previewModeActive
     ? (buildingRenderDiagnostics.atlasBuildings.size===4 && buildingRenderDiagnostics.fallbackBuildings.size===3 && buildingRenderDiagnostics.pendingBuildings.size===0)
@@ -5370,7 +5370,10 @@ world.props.push(
   {x:13,y:6,type:"signPost",layer:"above_entities"},
   {x:7,y:11,type:"bush"},{x:24,y:12,type:"bush"},{x:32,y:15,type:"bush"},
   {x:30,y:21,type:"grassTuft"},{x:32,y:21,type:"stonePile"},
-  {x:18,y:2,type:"smallGarden"}
+  {x:18,y:2,type:"smallGarden"},
+  {x:11,y:12,type:"barrel"},{x:20,y:12,type:"crate"},{x:24,y:9,type:"signPost",layer:"above_entities"},
+  {x:26,y:8,type:"lanternPost",layer:"above_entities"},{x:18,y:18,type:"crate"},{x:21,y:18,type:"barrel"},
+  {x:28,y:17,type:"crate"},{x:30,y:17,type:"barrel"}
 );
 world.props.push({x:OVERWORLD_CAVE_ENTRY.x,y:OVERWORLD_CAVE_ENTRY.y,type:"stonePile"});
 
@@ -5429,6 +5432,8 @@ const vendorNpc={id:"npc_merchant_rowan",anchorId:"merchant_rowan",x:NAMED_NPC_A
 const namedVillageNpcs=[npc,hunterNpc,vendorNpc];
 const ambientVillageNpcs=[
   {id:"npc_dockhand_mira",anchorId:"merchant_rowan",x:17,y:16,targetX:17,targetY:16,px:17*TILE,py:16*TILE,name:"Dockhand Mira",displayLabel:"Dockhand Mira",facing:"right",speed:82,moving:false,nextDecisionAt:0},
+  {id:"npc_inn_patron_elsa",anchorId:"edrin_vale",x:14,y:12,targetX:14,targetY:12,px:14*TILE,py:12*TILE,name:"Patron Elsa",displayLabel:"Patron Elsa",facing:"left",speed:80,moving:false,nextDecisionAt:0},
+  {id:"npc_clerk_bram",anchorId:"edrin_vale",x:24,y:9,targetX:24,targetY:9,px:24*TILE,py:9*TILE,name:"Clerk Bram",displayLabel:"Clerk Bram",facing:"down",speed:78,moving:false,nextDecisionAt:0},
   {id:"npc_fisher_tobin",anchorId:"hunter_garran",x:30,y:16,targetX:30,targetY:16,px:30*TILE,py:16*TILE,name:"Fisher Tobin",displayLabel:"Fisher Tobin",facing:"left",speed:80,moving:false,nextDecisionAt:0}
 ];
 const npcTerrainForbiddenTiles=new Set();
@@ -5995,7 +6000,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaSignature.includes("\"status\":\"PASS\"") ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.1N" && ATLAS_SELECTOR_VERSION==="selector-v35.1n-central-pier-consumer-pathfinding-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.2" && ATLAS_SELECTOR_VERSION==="selector-v35.2-hearthvale-alive-first-playable-town";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -6070,12 +6075,8 @@ function buildWayfarerQaReport(){
     harborComposition:normalizeQaStatus(harborStatus)
   };
   const allRequiredPass=domainStatuses.savedSpawnValidation==="PASS"&&domainStatuses.freshSpawnResolver==="PASS"&&domainStatuses.traversalQA==="PASS"&&domainStatuses.playerStateQA==="PASS"&&domainStatuses.uiStateQA==="PASS"&&domainStatuses.bootModeQA==="PASS"&&domainStatuses.buildingRenderAudit==="PASS"&&domainStatuses.atlasProof==="PASS"&&domainStatuses.sourceTruth==="PASS"&&domainStatuses.routeCollision==="PASS"&&domainStatuses.routeTopology==="PASS"&&domainStatuses.harborComposition==="PASS";
-  let finalStatus=normalizeQaStatus(preliminaryStatus);
-  if(finalStatus==="FAIL"&&Object.keys(failedDomains).length===0&&consoleFatalErrors==="none"){
-    console.error("[QA Report Invariant Error] status=FAIL reason=top_level_status_mismatch");
-    finalStatus="PASS";
-  }
-  if(allRequiredPass&&Object.keys(failedDomains).length===0&&consoleFatalErrors==="none") finalStatus="PASS";
+  const hasFailures=Object.keys(failedDomains).length>0 || consoleFatalErrors!=="none";
+  const finalStatus=(allRequiredPass && !hasFailures) ? "PASS" : normalizeQaStatus(preliminaryStatus);
   return {
     status:finalStatus,
     phase:WAYFARER_PHASE,
@@ -8481,6 +8482,26 @@ interactionManager.register({
   promptLabel:"Talk to Merchant Rowan",
   onInteract:()=>dialogueSystem.start("merchant_rowan")
 });
+interactionManager.register({
+  id:"npc_dockhand_mira", type:"npc", x:()=>ambientVillageNpcs[0].x, y:()=>ambientVillageNpcs[0].y,
+  promptLabel:"Talk to Dockhand Mira",
+  onInteract:()=>log("Dockhand Mira mutters: 'Boats tie up full, leave half-empty. Tide's wrong, and everyone knows it.'")
+});
+interactionManager.register({
+  id:"npc_inn_patron_elsa", type:"npc", x:()=>ambientVillageNpcs[1].x, y:()=>ambientVillageNpcs[1].y,
+  promptLabel:"Talk to Patron Elsa",
+  onInteract:()=>log("Patron Elsa says: 'The inn's keeping two ledgers now — coin, and rumors about the still water.'")
+});
+interactionManager.register({
+  id:"npc_clerk_bram", type:"npc", x:()=>ambientVillageNpcs[2].x, y:()=>ambientVillageNpcs[2].y,
+  promptLabel:"Talk to Clerk Bram",
+  onInteract:()=>log("Clerk Bram sighs: 'Village hall notices are piling up. Harbor delays, ferry delays, fisher complaints.'")
+});
+interactionManager.register({
+  id:"npc_fisher_tobin", type:"npc", x:()=>ambientVillageNpcs[3].x, y:()=>ambientVillageNpcs[3].y,
+  promptLabel:"Talk to Fisher Tobin",
+  onInteract:()=>log("Fisher Tobin says: 'If the pond goes mirror-flat at dawn, nets come back light and birds go quiet.'")
+});
 function updateStillWaterTownLoopProgress(clueId){
   const stage=getStillWaterQuestStage();
   if(stage!==StillWaterQuestStage.STAGE_2_GATHER_TOWN_CLUES) return;
@@ -8489,10 +8510,16 @@ function updateStillWaterTownLoopProgress(clueId){
   if(clueId==="tavern") clues.tavern=true;
   if(clueId==="waterfront") clues.waterfront=true;
   patchPersistentObject("still_water_town_loop", { ...clues, state:(clues.tavern && clues.waterfront) ? "complete" : "active" }, false);
+  const foundCount=(clues.tavern?1:0)+(clues.waterfront?1:0);
+  log("Still Water clues: "+foundCount+"/2.");
   if(clues.tavern && clues.waterfront){
     questSystem.completeObjective("the_still_water", "gather_town_clues");
     setStillWaterQuestStage(StillWaterQuestStage.STAGE_3_INSPECT_MIRROR_POND);
     log("You have enough local guidance. Inspect Mirror Pond.");
+    saveGame("object_state_change");
+  } else {
+    const missingHint=!clues.tavern ? "Check the inn frontage for local rumors." : "Check the working waterfront for signs of trouble.";
+    log(missingHint);
     saveGame("object_state_change");
   }
 }
@@ -8563,6 +8590,42 @@ registerWorldObject({
     log("You found a Small Potion in the roadside crate.");
     saveGame("object_state_change");
   }
+});
+registerWorldObject({
+  objectId:"mercantile_counter_notice",
+  type:WORLD_OBJECT_TYPE.SIGN,
+  zone:"overworld",
+  x:19, y:12,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Check mercantile counter",
+  onInteract:()=>{ log("A slate reads: 'Full trade ledgers reopen after harbor deliveries normalize.'"); }
+});
+registerWorldObject({
+  objectId:"central_pier_manifest",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:19, y:18,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Inspect pier manifest post",
+  onInteract:()=>{ log("Cargo chalk marks list delayed nets, lamp oil, and river salt. Hearthvale's piers are still working."); }
+});
+registerWorldObject({
+  objectId:"residence_chimney_note",
+  type:WORLD_OBJECT_TYPE.DECORATION,
+  zone:"overworld",
+  x:31, y:8,
+  state:"default",
+  interactable:true,
+  collision:false,
+  persistence:true,
+  promptLabel:"Knock on residence door",
+  onInteract:()=>{ log("The door is latched. Warm smoke curls from the chimney — someone's home, but not receiving visitors."); }
 });
 registerWorldObject({
   objectId:"mirror_pond_sign",
@@ -8640,6 +8703,18 @@ registerWorldObject({
   onInteract:()=>{
     const stage=getStillWaterQuestStage();
     if(stage===StillWaterQuestStage.STAGE_2_GATHER_TOWN_CLUES){
+      const loopState=getPersistentObject("still_water_town_loop");
+      const tavernFound=Boolean(loopState.tavern);
+      const waterfrontFound=Boolean(loopState.waterfront);
+      if(!tavernFound || !waterfrontFound){
+        const remaining=[];
+        if(!tavernFound) remaining.push("the inn ledger");
+        if(!waterfrontFound) remaining.push("the waterfront moorings");
+        const hint=remaining.length===1 ? "Try " + remaining[0] + " before you listen at the pond." : "Ask in town first: check " + remaining.join(" and ") + ".";
+        log("The surface is quiet, but you are missing local context.");
+        log(hint);
+        return;
+      }
       log("For a moment, your reflection moves half a breath late.");
       log("Mirror Pond stirs beneath your reflection.");
       patchPersistentObject("mirror_pond", { inspected:true, state:"inspected" }, false);
@@ -8650,7 +8725,7 @@ registerWorldObject({
       return;
     }
     if(stage===StillWaterQuestStage.NOT_STARTED || stage===StillWaterQuestStage.STAGE_1_SPEAK_WITH_EDRIN){
-      log("The water is still.");
+      log("The water is still. Edrin asked you to ask around Hearthvale before returning here.");
       return;
     }
     if(stage===StillWaterQuestStage.STAGE_4_RETURN_TO_EDRIN || stage===StillWaterQuestStage.STAGE_5_ENTER_MIRROR_CAVE || stage===StillWaterQuestStage.STAGE_6_RECOVER_ECHO_FRAGMENT || stage===StillWaterQuestStage.STAGE_7_RETURN_TO_EDRIN || stage===StillWaterQuestStage.COMPLETED){
@@ -9405,9 +9480,9 @@ function updateSidebar(){
       "Proof draw size : " + atlasStatus.atlasProofDrawSize + "\n" +
       "Proof render path : " + atlasStatus.atlasProofRenderPath + "\n" +
       "Proof fallback reason : " + atlasStatus.atlasProofFallbackReason + "\n" +
-      "Build Phase : 35.1N — QA Report Top-Level Status Coherence Fix\n" +
+      "Build Phase : 35.2 — Hearthvale Alive: First Playable Town Experience Pass\n" +
       "Selector Version : " + ATLAS_SELECTOR_VERSION + "\n" +
-      "Cache Bust : 35-1m-central-pier-consumer-pathfinding-closure\n" +
+      "Cache Bust : 35-2-hearthvale-alive-first-playable-town\n" +
       "Hero atlas lock : inn_tavern + mercantile_shop + village_hall_meeting_house\n" +
       "Secondary atlas promoted : NO\n" +
       "Fallback composition : provisional/legacy\n" +
@@ -10643,6 +10718,10 @@ function drawWorld(){
       drawEntityRing(vendorNpc.x,vendorNpc.y,"rgba(250,221,164,__A__)",0.4,8.7);
       drawHumanoid(assets.sprites.merchant, vendorNpc.x, vendorNpc.y, vendorNpc.facing, false, 0.86, "", 0, null, null);
     } },
+    ...ambientVillageNpcs.map((ambientNpc)=>({ type:"npc", id:ambientNpc.id, worldAnchorY:ambientNpc.py, draw:()=>{
+      drawEntityRing(ambientNpc.x,ambientNpc.y,"rgba(188,224,245,__A__)",0.35,8.4);
+      drawHumanoid(assets.sprites.merchant, ambientNpc.x, ambientNpc.y, ambientNpc.facing, false, 0.83, "", 0, null, null);
+    } })),
     ...wolves.filter((wolf)=>wolf.hp>0).map((wolf)=>({ type:"wolf", id:wolf.id||"wolf", worldAnchorY:wolf.py, draw:()=>{
       drawEntityRing(wolf.px/TILE,wolf.py/TILE,"rgba(255,149,122,__A__)",0.26,8.1);
       drawWolf(wolf, wolf.px/TILE, wolf.py/TILE, wolf.facing, wolf.moving, 0.82, hitVisualAlpha(wolf), {x:wolf.recoilX+wolf.attackLungeX,y:wolf.recoilY+wolf.attackLungeY});
