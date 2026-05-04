@@ -1337,7 +1337,7 @@ const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
   b_service_dependency:{ buildingId:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", atlasIdentity:"newport_service_dependency_backlot", crop:{x:354,y:910,w:338,h:234}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_custom_house:{ buildingId:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", atlasIdentity:"newport_custom_house_civic_front", crop:{x:42,y:824,w:368,h:357}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_elite_mansion:{ buildingId:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", atlasIdentity:"newport_elite_garden_mansion_a", crop:{x:841,y:65,w:372,h:334}, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_prestige_block:{ buildingId:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", atlasIdentity:"newport_formal_townhouse_block_a", crop:{x:456,y:471,w:371,h:319}, productionAtlasLocked:false, productionAtlasEnabled:true }
+  b_prestige_block:{ buildingId:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", atlasIdentity:"newport_formal_townhouse_block_a", crop:{x:828,y:448,w:398,h:331}, productionAtlasLocked:false, productionAtlasEnabled:true }
 });
 const HEARTHVALE_PRODUCTION_BUILDING_IDS=Object.freeze(Object.keys(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY));
 
@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.8E";
-const WAYFARER_BUILD_LABEL = "Hearthvale Newport Geometry + Readability Stabilization";
-const ATLAS_SELECTOR_VERSION = "selector-v35.8e-newport-geometry-readability-stabilization";
+const WAYFARER_PHASE = "35.8F";
+const WAYFARER_BUILD_LABEL = "Phase 35.8F — Hearthvale Newport Wharf/Stuck/Source Closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.8f-wharf-stuck-source-closure";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3275,12 +3275,24 @@ function maybeLogBuildingRenderSummary(){
   const propsManifestStatus = (atlasRuntimeInfo.props?.manifestReady===true || isAtlasRuntimeReady("props")) ? "ready" : "pending";
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const productionFinalLine=HEARTHVALE_PRODUCTION_BUILDING_IDS.map((id)=>id+":"+(buildingRenderDiagnostics.atlasBuildings.has(id)?"ATLAS":"FALLBACK")).join(",");
+  // Phase 35.8F: replaced legacy fixed-count manifest check (length===7 was the hero-atlas-
+  // only state) with a production-sprite presence check that stays accurate after the
+  // Newport structure pack adds its sprite manifest entries. The render audit must reach
+  // settled state once every production building has its sprite in the manifest, the hero
+  // sheet image is loaded with the expected 1254x1254 dimensions, and the alpha probe has
+  // resolved — so the final QA report can match the settled Atlas Proof Acceptance.
+  const allProductionSpritesPresent=HEARTHVALE_PRODUCTION_BUILDING_IDS.every((id)=>{
+    const reg=HEARTHVALE_BUILDING_SEMANTIC_REGISTRY[id];
+    if(!reg||!reg.spriteId) return false;
+    const sprite=atlasManifests.buildings?.sprites?.[reg.spriteId];
+    return Boolean(sprite && Number.isFinite(sprite.sx) && Number.isFinite(sprite.sy) && Number.isFinite(sprite.sw) && Number.isFinite(sprite.sh));
+  });
   const buildingsReadyForAcceptance=
     atlasRuntimeInfo.buildings?.loaded===true &&
     (atlasImages.buildings?.naturalWidth||0)===1254 &&
     (atlasImages.buildings?.naturalHeight||0)===1254 &&
     hasAtlasUsableTransparency("buildings")===true &&
-    Object.keys(atlasManifests.buildings?.sprites||{}).length===7;
+    allProductionSpritesPresent;
   const settledStatus=(atlasIds.length===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && fallbackEntries.length===0 && pendingEntries.length===0) ? "PASS" : "FAIL";
   latestRenderAuditStatus={
     atlasCount:atlasIds.length,
@@ -3546,7 +3558,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.8E' && ATLAS_SELECTOR_VERSION==='selector-v35.8e-newport-geometry-readability-stabilization';
+  const proofHudConsistent=WAYFARER_PHASE==='35.8F' && ATLAS_SELECTOR_VERSION==='selector-v35.8f-wharf-stuck-source-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4581,21 +4593,36 @@ function emitWharfReadabilityQA(){
   const overWater=[...routeClassification.visualRouteTiles].filter((k)=>world.pondWater.has(k));
   const invalidOverWater=overWater.filter((k)=>!isHarborPierWharfTile(...k.split(",").map(Number)));
   const wharfTiles=[...world.roadTiles].filter((k)=>isHarborPierWharfTile(...k.split(",").map(Number)));
-  const unreachableWharfTiles=wharfTiles.filter((k)=>!canMoveTo(...k.split(",").map(Number))).length;
+  const unreachableWharfTileKeys=wharfTiles.filter((k)=>!canMoveTo(...k.split(",").map(Number)));
+  const unreachableWharfTiles=unreachableWharfTileKeys.length;
   const boathouse=world.buildings.find((b)=>b.id==="b_boathouse");
   const bv=boathouse?.visual||{x:0,y:0,w:0,h:0};
   const boathouseAligned=Array.from({length:bv.w}).some((_,i)=>world.pondWater.has(keyOf(bv.x+i,bv.y+bv.h-1)));
   const status=(invalidOverWater.length===0 && unreachableWharfTiles===0 && boathouseAligned)?"PASS":"FAIL";
   wharfReadabilityQaResult={ status, walkableOverWater:overWater.length, invalidWalkableOverWater:invalidOverWater.length, unreachableWharfTiles, boathouseAligned };
-  console.info("[Wharf Water Readability QA] walkableOverWater="+overWater.length+" invalidWalkableOverWater="+invalidOverWater.length+" unreachableWharfTiles="+unreachableWharfTiles+" boathouseAligned="+boathouseAligned+" status="+status);
+  const unreachableSample=unreachableWharfTileKeys.slice(0,12).map((k)=>{
+    const [x,y]=k.split(",").map(Number);
+    const diag=getMovementBlockDiagnostics(x,y);
+    return "("+x+","+y+"):"+(diag.causeChain?.join("|")||diag.reason||"unknown");
+  }).join(" ");
+  console.info("[Wharf Water Readability QA] walkableOverWater="+overWater.length+" invalidWalkableOverWater="+invalidOverWater.length+" unreachableWharfTiles="+unreachableWharfTiles+" boathouseAligned="+boathouseAligned+" status="+status+(unreachableSample?" unreachable="+unreachableSample:""));
 }
 function emitPlayerStuckReadabilityQA(){
   const probes=[{x:20,y:16},{x:12,y:13},{x:19,y:12},{x:24,y:8},{x:29,y:17},{x:34,y:8}];
-  const reachable=probes.filter((p)=>findPathLength({x:player.targetX,y:player.targetY},p)>0).length;
+  const start={x:player.targetX,y:player.targetY};
+  // dist===0 means player is already at the probe (a canonical spawn pad coincides with a
+  // probe tile in fresh-spawn mode) — that is reachable, not a blocked pocket.
+  // dist===-1 means the BFS could not reach the probe at all.
+  const probeResults=probes.map((p)=>({ p, dist:findPathLength(start,p) }));
+  const reachable=probeResults.filter((r)=>r.dist>=0).length;
   const blockedPockets=probes.length-reachable;
   const status=blockedPockets===0?"PASS":"FAIL";
   playerStuckQaResult={ status, tested:probes.length, reachable, blockedPockets };
-  console.info("[Player Stuck Readability QA] tested="+probes.length+" reachable="+reachable+" blockedPockets="+blockedPockets+" status="+status);
+  const blockedProbes=probeResults.filter((r)=>r.dist<0).map((r)=>{
+    const diag=getMovementBlockDiagnostics(r.p.x,r.p.y);
+    return "("+r.p.x+","+r.p.y+"):dist="+r.dist+" diag="+(diag.causeChain?.join("|")||diag.reason||"none");
+  }).join(" ");
+  console.info("[Player Stuck Readability QA] start=("+start.x+","+start.y+") tested="+probes.length+" reachable="+reachable+" blockedPockets="+blockedPockets+" status="+status+(blockedProbes?" blocked="+blockedProbes:""));
 }
 function canMoveToKey(tileKey){
   const [x,y]=tileKey.split(",").map((v)=>Number(v));
@@ -5544,7 +5571,7 @@ world.buildings.push(
   { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:3, y:5, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:3,y:5,w:4,h:4}, visualBounds:{x:3,y:5,w:4,h:4}, collision:{x:3,y:7,w:4,h:1}, interaction:{x:4,y:9,w:1,h:1}, interactRect:{x:4,y:9,w:1,h:1}, frontDoorTile:{x:4,y:9}, frontWalkBand:{ x:3, y:9, w:4, h:1 }, blockedVisualTiles:[{ x:3, y:5, w:4, h:2 }, { x:3, y:7, w:4, h:1 }, { x:3, y:8, w:1, h:1 }, { x:5, y:8, w:2, h:1 }], occlusionDepthLine:{ x:3, y:7, w:4, h:1 }, rearExclusionZone:{ x:3, y:5, w:4, h:2 }, label:{x:4,y:6,text:"Miller Cottage"}, pathingBounds:{x:2,y:5,w:6,h:6} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:30, y:1, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:4,w:5,h:4}, collision:{x:29,y:6,w:5,h:2}, interaction:{x:31,y:8,w:1,h:1}, label:{x:31,y:5,text:"Harbor Captain's House"}, pathingBounds:{x:28,y:4,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:22, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:22,y:14,w:4,h:4}, collision:{x:22,y:16,w:4,h:2}, interaction:{x:23,y:18,w:1,h:1}, label:{x:23,y:15,text:"Woodsman's Outfitter"}, pathingBounds:{x:21,y:13,w:6,h:6} }) },
-  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:24, y:18, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:24,y:18,w:5,h:3}, collision:{x:24,y:19,w:5,h:1}, interaction:{x:26,y:18,w:1,h:1}, label:{x:26,y:18,text:"Boathouse"}, pathingBounds:{x:23,y:17,w:7,h:6} }) },
+  { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:24, y:18, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:24,y:18,w:5,h:3}, collision:{x:24,y:17,w:5,h:1}, interaction:{x:26,y:18,w:1,h:1}, label:{x:26,y:18,text:"Boathouse"}, pathingBounds:{x:23,y:17,w:7,h:6} }) },
   { id:"b_counting_house", role:"warehouse_counting_house", spriteId:"newport_counting_house_civic_exchange", x:23, y:9, w:6, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:23,y:9,w:5,h:5}, collision:{x:23,y:12,w:5,h:1}, interaction:{x:25,y:14,w:1,h:1}, label:{x:25,y:10,text:"Counting House"}, pathingBounds:{x:22,y:9,w:7,h:6}, frontWalkBand:{ x:23, y:14, w:5, h:1 } }) },
   { id:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse", x:7, y:15, w:5, h:5, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:7,y:15,w:5,h:3}, collision:{x:7,y:17,w:5,h:1}, interaction:{x:9,y:16,w:1,h:1}, label:{x:9,y:15,text:"Dock Storehouse"}, pathingBounds:{x:6,y:14,w:7,h:6} }) },
   { id:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"newport_chandlery_outfitter_front", x:13, y:14, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:13,y:14,w:4,h:4}, collision:{x:13,y:16,w:4,h:2}, interaction:{x:14,y:18,w:1,h:1}, label:{x:14,y:15,text:"Ship Chandlery"}, pathingBounds:{x:12,y:13,w:6,h:6} }) },
@@ -5649,9 +5676,11 @@ const treeData = [
   [1,1,"a"],[2,2,"b"],[3,3,"a"],[1,5,"c"],[2,7,"a"],[3,9,"b"],[1,11,"a"],[2,14,"c"],[1,17,"a"],[2,20,"b"],[3,22,"a"],
   [5,2,"a"],[7,2,"c"],[9,1,"b"],[11,2,"a"],[26,1,"c"],[28,2,"a"],[31,1,"b"],[34,2,"a"],[36,3,"c"],[37,6,"a"],[36,9,"b"],
   [37,12,"a"],[36,17,"a"],[37,20,"b"],[35,22,"a"],[32,22,"c"],[29,23,"a"],[26,22,"b"],[22,23,"a"],[17,23,"c"],
-  [13,23,"a"],[10,22,"b"],[7,23,"a"],[5,22,"c"],
-  [30,5,"a"],[31,7,"b"],[32,10,"c"],[29,20,"c"],
-  [6,6,"a"],[7,8,"b"],[6,18,"a"],[8,20,"c"],[9,5,"c"],[27,19,"b"],[24,20,"c"],[22,19,"a"],[19,21,"b"]
+  [13,23,"a"],[7,23,"a"],[5,22,"c"],
+  [30,5,"a"],[31,7,"b"],[32,10,"c"],
+  [6,6,"a"],[7,8,"b"],[6,18,"a"],[8,20,"c"],[9,5,"c"],[27,19,"b"],[22,19,"a"]
+  // Phase 35.8F: removed (10,22), (19,21), (24,20), (29,20) — these tree positions overlapped
+  // walkable wharf/pier road tiles and produced unreachable wharf tiles in the readability QA.
 ];
 treeData.forEach(([x,y,type])=>{ world.trees.push({x,y,type,seed:rng(x,y,91)}); world.blocked.add(keyOf(x,y)); });
 rebuildOverworldCollisionFromMap();
@@ -6275,7 +6304,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.8E" && ATLAS_SELECTOR_VERSION==="selector-v35.8e-newport-geometry-readability-stabilization";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.8F" && ATLAS_SELECTOR_VERSION==="selector-v35.8f-wharf-stuck-source-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -6291,8 +6320,13 @@ function buildWayfarerQaReport(){
   const sourceTruthReason=window.__WAYFARER_SOURCE_TRUTH_REASON||"source_truth_not_settled";
   const renderLoopActive=typeof loop==="function";
   const renderReady=freshSpawnRenderQaResult.firstFrameDrawn===true&&freshSpawnRenderQaResult.renderLoopReady===true&&renderLoopActive;
-  const renderAuditSettled=latestRenderAuditStatus.pendingCount===0;
-  const sourceTruthSettled=sourceTruthPass || sourceTruthReason!=="source_truth_not_settled";
+  // Phase 35.8F: also treat PENDING_ASSETS as "not settled" so the final QA report waits
+  // for the hero atlas image to load and the Newport structure pack manifest to apply
+  // before deciding pass/fail. Previously a status of PENDING_ASSETS with pendingCount=0
+  // could be misread as settled and cause the QA report to disagree with the eventual
+  // settled Atlas Proof Acceptance.
+  const renderAuditSettled=latestRenderAuditStatus.pendingCount===0 && latestRenderAuditStatus.status!=="PENDING_ASSETS" && latestRenderAuditStatus.status!=="PENDING";
+  const sourceTruthSettled=(latestSourceTruthStatus==="PASS"||latestSourceTruthStatus==="FAIL") && sourceTruthReason!=="source_truth_not_settled" && sourceTruthReason!=="assets_not_settled";
   const settled=renderReady&&renderAuditSettled&&sourceTruthPass&&routeCollisionQaResult.status!=="PENDING"&&traversalTopologyQaResult.status!=="PENDING";
   const bootModePass=bootModeQaSignature.includes("status=PASS");
   const canvasRenderPass=canvasRenderQaResult.status==="PASS";
