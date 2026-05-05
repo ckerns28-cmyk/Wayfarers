@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.9";
-const WAYFARER_BUILD_LABEL = "Phase 35.9 — Hearthvale Newport District Masterplan Pass";
-const ATLAS_SELECTOR_VERSION = "selector-v35.9-newport-district-masterplan";
+const WAYFARER_PHASE = "35.9A";
+const WAYFARER_BUILD_LABEL = "Phase 35.9A — Hearthvale Newport Overlap + Spawn Closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.9a-newport-overlap-spawn-closure";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3558,7 +3558,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.9' && ATLAS_SELECTOR_VERSION==='selector-v35.9-newport-district-masterplan';
+  const proofHudConsistent=WAYFARER_PHASE==='35.9A' && ATLAS_SELECTOR_VERSION==='selector-v35.9a-newport-overlap-spawn-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5574,7 +5574,7 @@ world.buildings.push(
   { id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:10, y:9, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:10,y:9,w:6,h:5}, visualBounds:{x:10,y:9,w:6,h:5}, collision:{x:10,y:12,w:6,h:1}, interaction:{x:13,y:13,w:1,h:1}, interactRect:{x:13,y:13,w:1,h:1}, frontDoorTile:{x:13,y:13}, label:{x:13,y:10,text:"Inn & Tavern"}, pathingBounds:{x:9,y:9,w:8,h:6}, frontWalkBand:{ x:10, y:13, w:6, h:1 }, blockedVisualTiles:[{ x:10, y:9, w:6, h:3 }, { x:10, y:12, w:3, h:1 }, { x:14, y:12, w:2, h:1 }], occlusionDepthLine:{ x:10, y:12, w:6, h:1 }, rearExclusionZone:{ x:10, y:9, w:6, h:3 } }) },
   { id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:17, y:8, w:5, h:5, anchorX:2, anchorY:4, ...createFootprint({ visual:{x:17,y:8,w:5,h:5}, visualBounds:{x:17,y:8,w:5,h:5}, collision:{x:17,y:11,w:5,h:1}, interaction:{x:19,y:12,w:1,h:1}, interactRect:{x:19,y:12,w:1,h:1}, frontDoorTile:{x:19,y:12}, label:{x:19,y:9,text:"Mercantile Shop"}, pathingBounds:{x:16,y:8,w:7,h:6}, frontWalkBand:{ x:17, y:12, w:5, h:1 }, blockedVisualTiles:[{ x:17, y:8, w:5, h:3 }, { x:17, y:11, w:2, h:1 }, { x:20, y:11, w:2, h:1 }], occlusionDepthLine:{ x:17, y:11, w:5, h:1 }, rearExclusionZone:{ x:17, y:8, w:5, h:3 } }) },
   { id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:19, y:3, w:6, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:19,y:3,w:6,h:5}, visualBounds:{x:19,y:3,w:6,h:5}, collision:{x:19,y:6,w:6,h:2}, interaction:{x:22,y:8,w:1,h:1}, interactRect:{x:22,y:8,w:1,h:1}, frontDoorTile:{x:22,y:8}, label:{x:22,y:4,text:"Village Hall"}, pathingBounds:{x:18,y:3,w:8,h:6}, frontWalkBand:{ x:19, y:8, w:6, h:1 }, blockedVisualTiles:[{ x:19, y:3, w:6, h:3 }, { x:19, y:6, w:2, h:1 }, { x:23, y:6, w:2, h:1 }], occlusionDepthLine:{ x:19, y:6, w:6, h:1 }, rearExclusionZone:{ x:19, y:3, w:6, h:3 } }) },
-  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:3, y:5, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:3,y:5,w:4,h:4}, visualBounds:{x:3,y:5,w:4,h:4}, collision:{x:3,y:7,w:4,h:1}, interaction:{x:4,y:9,w:1,h:1}, interactRect:{x:4,y:9,w:1,h:1}, frontDoorTile:{x:4,y:9}, frontWalkBand:{ x:3, y:9, w:4, h:1 }, blockedVisualTiles:[{ x:3, y:5, w:4, h:2 }, { x:3, y:7, w:4, h:1 }, { x:3, y:8, w:1, h:1 }, { x:5, y:8, w:2, h:1 }], occlusionDepthLine:{ x:3, y:7, w:4, h:1 }, rearExclusionZone:{ x:3, y:5, w:4, h:2 }, label:{x:4,y:6,text:"Miller Cottage"}, pathingBounds:{x:2,y:5,w:6,h:6} }) },
+  { id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:4, y:5, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:4,y:5,w:4,h:4}, visualBounds:{x:4,y:5,w:4,h:4}, collision:{x:4,y:7,w:4,h:1}, interaction:{x:5,y:9,w:1,h:1}, interactRect:{x:5,y:9,w:1,h:1}, frontDoorTile:{x:5,y:9}, frontWalkBand:{ x:4, y:9, w:4, h:1 }, blockedVisualTiles:[{ x:4, y:5, w:4, h:2 }, { x:4, y:7, w:4, h:1 }, { x:4, y:8, w:1, h:1 }, { x:6, y:8, w:2, h:1 }], occlusionDepthLine:{ x:4, y:7, w:4, h:1 }, rearExclusionZone:{ x:4, y:5, w:4, h:2 }, label:{x:5,y:6,text:"Miller Cottage"}, pathingBounds:{x:3,y:5,w:6,h:6} }) },
   { id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:30, y:1, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:29,y:4,w:5,h:4}, collision:{x:29,y:6,w:5,h:2}, interaction:{x:31,y:8,w:1,h:1}, label:{x:31,y:5,text:"Harbor Captain's House"}, pathingBounds:{x:28,y:4,w:7,h:5} }) },
   { id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:22, y:14, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:22,y:14,w:4,h:4}, collision:{x:22,y:16,w:4,h:2}, interaction:{x:23,y:18,w:1,h:1}, label:{x:23,y:15,text:"Woodsman's Outfitter"}, pathingBounds:{x:21,y:13,w:6,h:6} }) },
   { id:"b_boathouse", role:"pond_boathouse_or_waterfront_shed", spriteId:"pond_boathouse_or_waterfront_shed", x:24, y:18, w:5, h:3, anchorX:2, anchorY:2, ...createFootprint({ visual:{x:24,y:18,w:5,h:3}, collision:{x:24,y:17,w:5,h:1}, interaction:{x:26,y:18,w:1,h:1}, label:{x:26,y:18,text:"Boathouse"}, pathingBounds:{x:23,y:17,w:7,h:6} }) },
@@ -5587,7 +5587,7 @@ world.buildings.push(
   { id:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", x:1, y:6, w:4, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:1,y:6,w:4,h:4}, collision:{x:1,y:8,w:4,h:1}, interaction:{x:3,y:10,w:1,h:1}, label:{x:3,y:7,text:"Merchant Row II"}, pathingBounds:{x:0,y:6,w:6,h:5} }) },
   { id:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"newport_georgian_merchant_residence_a", x:8, y:1, w:5, h:5, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:8,y:1,w:5,h:4}, collision:{x:8,y:3,w:5,h:2}, interaction:{x:10,y:6,w:1,h:1}, label:{x:10,y:2,text:"Georgian Residence"}, pathingBounds:{x:7,y:1,w:7,h:6} }) },
   { id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", x:32, y:15, w:4, h:3, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:33,y:14,w:4,h:4}, collision:{x:33,y:16,w:4,h:2}, interaction:{x:34,y:18,w:1,h:1}, label:{x:34,y:15,text:"Service Yard"}, pathingBounds:{x:32,y:13,w:6,h:7} }) },
-  { id:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", x:27, y:8, w:5, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:27,y:8,w:6,h:5}, collision:{x:27,y:11,w:6,h:2}, interaction:{x:30,y:13,w:1,h:1}, label:{x:30,y:9,text:"Custom House"}, pathingBounds:{x:26,y:8,w:9,h:6}, frontWalkBand:{ x:27, y:13, w:6, h:1 } }) },
+  { id:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", x:25, y:7, w:5, h:5, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:25,y:7,w:6,h:5}, collision:{x:25,y:10,w:6,h:2}, interaction:{x:28,y:12,w:1,h:1}, label:{x:28,y:8,text:"Custom House"}, pathingBounds:{x:24,y:7,w:9,h:6}, frontWalkBand:{ x:25, y:12, w:6, h:1 } }) },
   { id:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", x:25, y:1, w:5, h:4, anchorX:2, anchorY:3, ...createFootprint({ visual:{x:25,y:1,w:5,h:4}, collision:{x:25,y:3,w:5,h:2}, interaction:{x:27,y:6,w:1,h:1}, label:{x:27,y:2,text:"Ashcroft Manor"}, pathingBounds:{x:24,y:1,w:7,h:6} }) },
   { id:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", x:33, y:0, w:5, h:4, anchorX:3, anchorY:4, ...createFootprint({ visual:{x:33,y:0,w:5,h:4}, collision:{x:33,y:2,w:5,h:1}, interaction:{x:35,y:4,w:1,h:1}, label:{x:35,y:1,text:"King's Exchange Row"}, pathingBounds:{x:32,y:0,w:6,h:6} }) }
 );
@@ -6318,7 +6318,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.9" && ATLAS_SELECTOR_VERSION==="selector-v35.9-newport-district-masterplan";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.9A" && ATLAS_SELECTOR_VERSION==="selector-v35.9a-newport-overlap-spawn-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
