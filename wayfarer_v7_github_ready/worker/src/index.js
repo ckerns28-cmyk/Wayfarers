@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.8F";
-const WAYFARER_BUILD_LABEL = "Phase 35.8F — Hearthvale Newport Wharf/Stuck/Source Closure";
-const ATLAS_SELECTOR_VERSION = "selector-v35.8f-wharf-stuck-source-closure";
+const WAYFARER_PHASE = "35.8G";
+const WAYFARER_BUILD_LABEL = "Phase 35.8G — Hearthvale Newport Invisible Wharf Bounds Closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.8g-invisible-wharf-bounds-closure";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3558,7 +3558,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.8F' && ATLAS_SELECTOR_VERSION==='selector-v35.8f-wharf-stuck-source-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.8G' && ATLAS_SELECTOR_VERSION==='selector-v35.8g-invisible-wharf-bounds-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5535,8 +5535,8 @@ world.roads.push(
   { x:8,y:18,w:27,h:1 },
   // Long piers and boardwalk connectors.
   { x:9,y:18,w:2,h:6 },
-  { x:14,y:18,w:2,h:7 },
-  { x:19,y:18,w:3,h:7 },
+  { x:14,y:18,w:2,h:6 },
+  { x:19,y:18,w:3,h:6 },
   { x:24,y:18,w:2,h:6 },
   { x:29,y:18,w:2,h:5 },
   // Inland civic + residential streets.
@@ -6304,7 +6304,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.8F" && ATLAS_SELECTOR_VERSION==="selector-v35.8f-wharf-stuck-source-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.8G" && ATLAS_SELECTOR_VERSION==="selector-v35.8g-invisible-wharf-bounds-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
