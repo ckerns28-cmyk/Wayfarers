@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.9F";
-const WAYFARER_BUILD_LABEL = "Phase 35.9F — Hearthvale Newport Wharf Deck Authority Closure";
-const ATLAS_SELECTOR_VERSION = "selector-v35.9f-newport-wharf-deck-authority-closure";
+const WAYFARER_PHASE = "35.9G";
+const WAYFARER_BUILD_LABEL = "Phase 35.9G — Hearthvale Newport Wharf Authority Contract Closure";
+const ATLAS_SELECTOR_VERSION = "selector-v35.9g-newport-wharf-authority-contract-closure";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.9F' && ATLAS_SELECTOR_VERSION==='selector-v35.9f-newport-wharf-deck-authority-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.9G' && ATLAS_SELECTOR_VERSION==='selector-v35.9g-newport-wharf-authority-contract-closure';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4538,7 +4538,11 @@ function emitRouteCollisionConflictQA(){
   }
 }
 function classifyRouteTiles(){
-  const visualRouteTiles=new Set(world.roadTiles);
+  const visualRouteTiles=new Set([...world.roadTiles].filter((tileKey)=>{
+    const [x,y]=tileKey.split(",").map(Number);
+    const auth=getWharfAuthorityTileClass(x,y);
+    return !auth.decorativeWaterOnly;
+  }));
   const navigableRouteTiles=new Set();
   const intentionalBlockedRouteTiles=new Set();
   const invalidHiddenBlockers=new Set();
@@ -4564,11 +4568,14 @@ function classifyRouteTiles(){
     const diag=getMovementBlockDiagnostics(x,y);
     const causes=diag?.causeChain||[];
     const blocker=causes[0] || diag?.reason || "unknown";
+    const auth=getWharfAuthorityTileClass(x,y);
     const isWaterVisual=["water","shore"].includes(diag?.terrainType) || world.pondWater.has(tileKey) || world.pondShore.has(tileKey);
     if(isWaterVisual){
       waterRouteVisualTiles.add(tileKey);
-      intentionalBlockedRouteTiles.add(tileKey);
-      return;
+      if(!auth.playableWharf){
+        intentionalBlockedRouteTiles.add(tileKey);
+        return;
+      }
     }
     if(frontageRouteTiles.has(tileKey)) navigableRouteTiles.add(tileKey);
     else publicRouteTiles.add(tileKey), navigableRouteTiles.add(tileKey);
@@ -4605,8 +4612,12 @@ function emitBuildingOverlapQA(){
 }
 function emitWharfReadabilityQA(){
   const routeClassification=classifyRouteTiles();
-  const overWater=[...routeClassification.visualRouteTiles].filter((k)=>world.pondWater.has(k));
-  const invalidOverWater=overWater.filter((k)=>!isHarborPierWharfTile(...k.split(",").map(Number)));
+  const overWater=[...routeClassification.visualRouteTiles].filter((k)=>world.pondWater.has(k) && isHarborPierWharfTile(...k.split(",").map(Number)));
+  const invalidOverWater=[...routeClassification.visualRouteTiles].filter((k)=>{
+    if(!world.pondWater.has(k)) return false;
+    const [x,y]=k.split(",").map(Number);
+    return !isHarborPierWharfTile(x,y);
+  });
   const wharfTiles=[...world.roadTiles].filter((k)=>isHarborPierWharfTile(...k.split(",").map(Number)));
   const unreachableWharfTileKeys=wharfTiles.filter((k)=>!canMoveTo(...k.split(",").map(Number)));
   const unreachableWharfTiles=unreachableWharfTileKeys.length;
@@ -4621,6 +4632,21 @@ function emitWharfReadabilityQA(){
     return "("+x+","+y+"):"+(diag.causeChain?.join("|")||diag.reason||"unknown");
   }).join(" ");
   console.info("[Wharf Water Readability QA] walkableOverWater="+overWater.length+" invalidWalkableOverWater="+invalidOverWater.length+" unreachableWharfTiles="+unreachableWharfTiles+" boathouseAligned="+boathouseAligned+" status="+status+(unreachableSample?" unreachable="+unreachableSample:""));
+}
+function emitWharfAuthorityAudit(){
+  const visualWaterTiles=[...world.pondWater];
+  const decorativeWaterOnlyTiles=visualWaterTiles.filter((k)=>{ const [x,y]=k.split(",").map(Number); return getWharfAuthorityTileClass(x,y).decorativeWaterOnly; });
+  const playableWharfDeckTiles=[...world.roadTiles].filter((k)=>{ const [x,y]=k.split(",").map(Number); return isHarborPierWharfTile(x,y); });
+  const wharfTilesOverWater=playableWharfDeckTiles.filter((k)=>world.pondWater.has(k));
+  const invalidPlayableOverWater=Array.from(world.roadTiles).filter((k)=>world.pondWater.has(k) && !isHarborPierWharfTile(...k.split(",").map(Number)));
+  const reachablePlayableWharfTiles=playableWharfDeckTiles.filter((k)=>canMoveTo(...k.split(",").map(Number)));
+  const boathouse=world.buildings.find((b)=>b.id==="b_boathouse");
+  const frontage=boathouse?.interaction||null;
+  const frontageReachable=!!(frontage && canMoveTo(frontage.x,frontage.y));
+  const collision=boathouse?.collision||null;
+  const collisionTiles=[];
+  if(collision) for(let x=collision.x;x<collision.x+collision.w;x++) for(let y=collision.y;y<collision.y+collision.h;y++) collisionTiles.push("tile("+x+","+y+")="+getWharfAuthorityTileClass(x,y).className);
+  console.info("[Wharf Authority Audit] visualWaterTiles="+visualWaterTiles.length+" decorativeWaterOnlyTiles="+decorativeWaterOnlyTiles.length+" playableWharfDeckTiles="+playableWharfDeckTiles.length+" wharfTilesOverWater="+wharfTilesOverWater.length+" invalidPlayableOverWaterTiles="+invalidPlayableOverWater.length+" reachablePlayableWharfTiles="+reachablePlayableWharfTiles.length+" boathouseFrontage="+(frontage?("tile("+frontage.x+","+frontage.y+")"):"none")+" boathouseFrontageReachable="+frontageReachable+" boathouseCollision="+JSON.stringify(collision)+" boathouseCollisionTiles="+collisionTiles.join(",")+" invalidSamples="+invalidPlayableOverWater.slice(0,8).join("|"));
 }
 function emitPlayerStuckReadabilityQA(){
   const probes=[{x:20,y:16},{x:12,y:13},{x:19,y:12},{x:24,y:8},{x:29,y:17},{x:34,y:8}];
@@ -5572,7 +5598,7 @@ function placeLotBuilding(spec){
 }
 
 world.buildings.push(
-  placeLotBuilding({ id:"b_boathouse", role:"boathouse_ship_shed_shipwright", spriteId:"newport_dockside_storehouse", x:11,y:21,w:5,h:4,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_w",row:"waterfront", lotRect:{x:11,y:21,w:6,h:4},visualLotRect:{x:11,y:21,w:5,h:3},collision:{x:11,y:23,w:4,h:1},interaction:{x:15,y:21,w:1,h:1},frontageTile:{x:15,y:21},frontWalkBand:{x:11,y:21,w:5,h:1},label:{x:13,y:21,text:"Boathouse"},pathingBounds:{x:10,y:20,w:7,h:5} }),
+  placeLotBuilding({ id:"b_boathouse", role:"boathouse_ship_shed_shipwright", spriteId:"newport_dockside_storehouse", x:11,y:20,w:5,h:4,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_w",row:"waterfront", lotRect:{x:11,y:20,w:6,h:4},visualLotRect:{x:11,y:20,w:5,h:3},collision:{x:11,y:22,w:4,h:1},interaction:{x:15,y:20,w:1,h:1},frontageTile:{x:15,y:20},frontWalkBand:{x:11,y:20,w:5,h:1},label:{x:13,y:20,text:"Boathouse"},pathingBounds:{x:10,y:19,w:7,h:5} }),
   placeLotBuilding({ id:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse_long", x:18,y:21,w:6,h:4,anchorX:3,anchorY:2,district:"harbor_wharf",block:"wharf_c",row:"waterfront", lotRect:{x:18,y:21,w:6,h:4},visualLotRect:{x:18,y:21,w:6,h:3},collision:{x:18,y:23,w:6,h:1},interaction:{x:20,y:21,w:1,h:1},frontageTile:{x:20,y:21},frontWalkBand:{x:18,y:21,w:6,h:1},label:{x:20,y:21,text:"Dock Storehouse"},pathingBounds:{x:17,y:20,w:8,h:5} }),
   placeLotBuilding({ id:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", x:26,y:21,w:5,h:3,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_e",row:"waterfront", lotRect:{x:26,y:21,w:6,h:4},visualLotRect:{x:26,y:21,w:5,h:3},collision:{x:26,y:23,w:5,h:1},interaction:{x:28,y:21,w:1,h:1},frontageTile:{x:28,y:21},frontWalkBand:{x:26,y:21,w:5,h:1},label:{x:28,y:21,text:"Harbor Market Shed"},pathingBounds:{x:25,y:20,w:7,h:5} }),
   placeLotBuilding({ id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:10,y:14,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_corridor",block:"thames_w",row:"waterfront_frontage", lotRect:{x:10,y:14,w:7,h:6},visualLotRect:{x:10,y:14,w:6,h:5},collision:{x:10,y:17,w:6,h:1},interaction:{x:13,y:18,w:1,h:1},frontageTile:{x:13,y:18},frontWalkBand:{x:10,y:18,w:6,h:1},label:{x:13,y:15,text:"Inn & Tavern"},pathingBounds:{x:9,y:13,w:8,h:7} }),
@@ -5835,6 +5861,16 @@ function isHarborPierTerrainBypassedTile(x,y){
 }
 function isHarborPierWharfTile(x,y){
   return isAuthoritativeWharfDeckTile(x,y);
+}
+function getWharfAuthorityTileClass(x,y){
+  const tileKey=keyOf(x,y);
+  const water=world.pondWater.has(tileKey);
+  const playableWharf=isHarborPierWharfTile(x,y);
+  const route=world.roadTiles.has(tileKey);
+  const buildingSolid=world.blocked.has(tileKey);
+  if(playableWharf) return { tileKey, className:water?"deck_over_water":"deck_on_land", water, decorativeWaterOnly:false, playableWharf:true, route, buildingSolid };
+  if(water) return { tileKey, className:"decorative_water", water:true, decorativeWaterOnly:true, playableWharf:false, route, buildingSolid };
+  return { tileKey, className:route?"route_land":"land", water:false, decorativeWaterOnly:false, playableWharf:false, route, buildingSolid };
 }
 function tileInRect(tileX,tileY,rect){
   return !!rect && tileX>=rect.x && tileX<rect.x+rect.w && tileY>=rect.y && tileY<rect.y+rect.h;
@@ -6358,7 +6394,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.9F" && ATLAS_SELECTOR_VERSION==="selector-v35.9f-newport-wharf-deck-authority-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.9G" && ATLAS_SELECTOR_VERSION==="selector-v35.9g-newport-wharf-authority-contract-closure";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -11442,6 +11478,7 @@ function drawWorld(){
   safelyRunQa("route_collision_qa", ()=>emitRouteCollisionConflictQA());
   safelyRunQa("building_overlap_qa", ()=>emitBuildingOverlapQA());
   safelyRunQa("wharf_readability_qa", ()=>emitWharfReadabilityQA());
+  safelyRunQa("wharf_authority_audit", ()=>emitWharfAuthorityAudit());
   safelyRunQa("player_stuck_readability_qa", ()=>emitPlayerStuckReadabilityQA());
   safelyRunQa("quest_loop_qa", ()=>emitQuestLoopQA());
   safelyRunQa("phase_35_1n_acceptance", ()=>emitPhase351NAcceptance());
