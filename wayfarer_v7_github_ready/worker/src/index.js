@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.9J";
-const WAYFARER_BUILD_LABEL = "Phase 35.9J — Hearthvale Newport Boathouse Layer Authority Closure";
-const ATLAS_SELECTOR_VERSION = "selector-v35.9j-boathouse-layer-authority-closure";
+const WAYFARER_PHASE = "35.9K";
+const WAYFARER_BUILD_LABEL = "Phase 35.9K — Hearthvale Newport Building Depth + Overlap Authority";
+const ATLAS_SELECTOR_VERSION = "selector-v35.9k-newport-building-depth-overlap-authority";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.9J' && ATLAS_SELECTOR_VERSION==='selector-v35.9j-boathouse-layer-authority-closure';
+  const proofHudConsistent=WAYFARER_PHASE==='35.9K' && ATLAS_SELECTOR_VERSION==='selector-v35.9k-newport-building-depth-overlap-authority';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4607,9 +4607,34 @@ function classifyRouteTiles(){
   });
   return { visualRouteTiles, navigableRouteTiles, intentionalBlockedRouteTiles, invalidHiddenBlockers, coveredByBuildingTiles, waterRouteVisualTiles, frontageRouteTiles, publicRouteTiles, examples };
 }
+function getBuildingRenderDepthAuthority(building){
+  const visualRect=building?.visualBounds || building?.visual;
+  const collisionRect=building?.collision;
+  const lotRect=building?.visualLotRect || building?.lotContract?.visualLotRect || building?.lotRect || building?.lotContract?.lotRect;
+  const baseRect=visualRect || collisionRect || lotRect || null;
+  const baseY=baseRect ? (baseRect.y+baseRect.h) : (building?.y ?? 0);
+  const district=String(building?.lotContract?.district || building?.district || "");
+  const block=String(building?.lotContract?.block || building?.block || "");
+  const row=String(building?.lotContract?.row || building?.row || "");
+  const x=Number.isFinite(building?.x) ? building.x : 0;
+  const id=String(building?.id || "");
+  const sortKey=[baseY,district,block,row,x,id].join("|");
+  return { baseY, district, block, row, x, id, sortKey, sourceRect:baseRect };
+}
+function compareBuildingDepthAuthority(a,b){
+  return a.baseY-b.baseY
+    || a.district.localeCompare(b.district)
+    || a.block.localeCompare(b.block)
+    || a.row.localeCompare(b.row)
+    || a.x-b.x
+    || a.id.localeCompare(b.id);
+}
 function emitBuildingOverlapQA(){
   const rows=world.buildings||[];
-  const overlaps=[];
+  const visualOverlaps=[];
+  const collisionOverlaps=[];
+  const depthConflicts=[];
+  const tieConflicts=[];
   for(let i=0;i<rows.length;i++){
     for(let j=i+1;j<rows.length;j++){
       const a=rows[i], b=rows[j];
@@ -4618,12 +4643,32 @@ function emitBuildingOverlapQA(){
       const ox=Math.max(0, Math.min(ra.x+ra.w, rb.x+rb.w)-Math.max(ra.x, rb.x));
       const oy=Math.max(0, Math.min(ra.y+ra.h, rb.y+rb.h)-Math.max(ra.y, rb.y));
       const area=ox*oy;
-      if(area>1) overlaps.push({ a:a.id, b:b.id, area });
+      const da=getBuildingRenderDepthAuthority(a);
+      const db=getBuildingRenderDepthAuthority(b);
+      if(area>1){
+        const order=compareBuildingDepthAuthority(da, db);
+        const expectedFront=order>0 ? a.id : b.id;
+        visualOverlaps.push({ a:a.id, b:b.id, area, expectedFront, aBaseY:da.baseY, bBaseY:db.baseY });
+        if(da.baseY===db.baseY && da.district===db.district && da.block===db.block && da.row===db.row && da.x===db.x){
+          tieConflicts.push({ a:a.id, b:b.id, baseY:da.baseY, tieKeyA:da.sortKey, tieKeyB:db.sortKey, tieResolvedById:true });
+        }
+        if(order===0) depthConflicts.push({ a:a.id, b:b.id, sortKey:da.sortKey });
+      }
+      const ca=a.collision||{ x:a.x,y:a.y,w:a.w,h:a.h };
+      const cb=b.collision||{ x:b.x,y:b.y,w:b.w,h:b.h };
+      const cox=Math.max(0, Math.min(ca.x+ca.w, cb.x+cb.w)-Math.max(ca.x, cb.x));
+      const coy=Math.max(0, Math.min(ca.y+ca.h, cb.y+cb.h)-Math.max(ca.y, cb.y));
+      const cArea=cox*coy;
+      if(cArea>0) collisionOverlaps.push({ a:a.id, b:b.id, area:cArea });
     }
   }
-  const status=overlaps.length===0?"PASS":"FAIL";
-  buildingOverlapQaResult={ status, overlaps, scanned:rows.length };
-  console.info("[Building Overlap QA] scanned="+rows.length+" overlaps="+overlaps.length+" status="+status+(overlaps.length?" sample="+JSON.stringify(overlaps.slice(0,6)):""));
+  const sampledOrder=rows.map((b)=>({ id:b.id, ...getBuildingRenderDepthAuthority(b) }))
+    .sort(compareBuildingDepthAuthority)
+    .slice(0,12).map((r)=>r.id+":"+r.baseY+":"+r.district+"/"+r.block+"/"+r.row);
+  const frontWalkBlockedCount=rows.filter((b)=>b.frontWalkBand && !canMoveTo(b.frontWalkBand.x,b.frontWalkBand.y)).length;
+  const status=(depthConflicts.length===0 && collisionOverlaps.length===0)?"PASS":"FAIL";
+  buildingOverlapQaResult={ status, overlaps:visualOverlaps, collisionOverlaps, depthConflicts, tieConflicts, scanned:rows.length };
+  console.info("[Newport Building Depth Authority QA] phase="+WAYFARER_PHASE+" selector="+ATLAS_SELECTOR_VERSION+" totalProductionBuildings="+rows.length+" sortedRenderOrderSample="+JSON.stringify(sampledOrder)+" visualOverlapPairCount="+visualOverlaps.length+" collisionOverlapPairCount="+collisionOverlaps.length+" visualOverlapDepthConflicts="+depthConflicts.length+" sameDepthTieBreakConflicts="+tieConflicts.length+" frontWalkBlockedCount="+frontWalkBlockedCount+" status="+status);
 }
 function emitWharfReadabilityQA(){
   const routeClassification=classifyRouteTiles();
@@ -6430,7 +6475,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.9J" && ATLAS_SELECTOR_VERSION==="selector-v35.9j-boathouse-layer-authority-closure";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.9K" && ATLAS_SELECTOR_VERSION==="selector-v35.9k-newport-building-depth-overlap-authority";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -11248,7 +11293,8 @@ function drawWorld(){
     const worldAnchorY=(b.y*TILE)+anchorPxY;
     const drawX=tileToScreen(b.x,b.y).x + anchorPxX - (sprite?.anchorX ?? anchorPxX);
     const drawY=tileToScreen(b.x,b.y).y + anchorPxY - (sprite?.anchorY ?? anchorPxY);
-    return { type:"building", b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, worldAnchorY, drawX, drawY };
+    const depthAuthority=getBuildingRenderDepthAuthority(b);
+    return { type:"building", b, bIndex, spriteId, sprite, anchorPxX, anchorPxY, worldAnchorY, drawX, drawY, depthAuthority };
   });
   secondaryProofPreviewState.drawCount=0;
   const buildingSortDebugRows=[];
@@ -11285,7 +11331,12 @@ function drawWorld(){
   ];
 
   const renderQueue=[...buildingDrawEntries, ...entityDrawEntries]
-    .sort((a,b)=>a.worldAnchorY-b.worldAnchorY);
+    .sort((a,b)=>{
+      if(a.type==="building" && b.type==="building"){
+        return compareBuildingDepthAuthority(a.depthAuthority, b.depthAuthority);
+      }
+      return a.worldAnchorY-b.worldAnchorY;
+    });
   const propsAbove=(Array.isArray(world.props) ? world.props : []).filter((prop)=>prop?.layer==="above_entities");
 
   renderQueue.forEach((entry, drawOrderRank)=>{
