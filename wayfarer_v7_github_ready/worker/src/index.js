@@ -1656,8 +1656,8 @@ function applySemanticRegistryToManifest(){
   }
 }
 const WAYFARER_PHASE = "35.9K";
-const WAYFARER_BUILD_LABEL = "Phase 35.9K.2 — Hearthvale Newport Harbor Inland Connector Predicate Fix";
-const ATLAS_SELECTOR_VERSION = "selector-v35.9k2-harbor-inland-connector-predicate";
+const WAYFARER_BUILD_LABEL = "Phase 35.9K.3 — Hearthvale Newport Harbor Connector Reachability Contract";
+const ATLAS_SELECTOR_VERSION = "selector-v35.9k3-harbor-connector-reachability-contract";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.9K' && ATLAS_SELECTOR_VERSION==='selector-v35.9k2-harbor-inland-connector-predicate';
+  const proofHudConsistent=WAYFARER_PHASE==='35.9K' && ATLAS_SELECTOR_VERSION==='selector-v35.9k3-harbor-connector-reachability-contract';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4436,18 +4436,60 @@ function emitHarborCompositionQA(){
   }).join(" | ");
   const inlandConnectorRequiredCount=3;
   const inlandConnectorRoads=world.roads.filter((r)=>r.w===1&&r.h>=6&&r.y<=8);
+  const connectorLateralTolerance=2;
+  const resolveConnectorAnchor=(x,y,lateralTolerance)=>{
+    for(let dx=0;dx<=lateralTolerance;dx++){
+      const candidates=dx===0?[x]:[x-dx,x+dx];
+      for(const cx of candidates){
+        if(canMoveToIgnoringDynamicBlockers(cx,y)) return { x:cx, y, dx };
+      }
+    }
+    return null;
+  };
+  const collectConnectorBlockingTiles=(x,y,lateralTolerance)=>{
+    const tiles=[];
+    for(let cx=x-lateralTolerance;cx<=x+lateralTolerance;cx++){
+      const tileKey=keyOf(cx,y);
+      if(canMoveToIgnoringDynamicBlockers(cx,y)) continue;
+      const isBlocked=world.blocked.has(tileKey);
+      const isBuilding=world.buildingTiles?.has(tileKey)===true;
+      const isProp=world.propCollisions?.has(tileKey)===true;
+      const isFence=world.fenceTiles?.has(tileKey)===true;
+      const isWater=world.pondWater.has(tileKey);
+      tiles.push({ x:cx, y, blocked:isBlocked, building:isBuilding, prop:isProp, fence:isFence, water:isWater });
+    }
+    return tiles;
+  };
   const inlandConnectorSamples=inlandConnectorRoads.slice(0,8).map((r)=>{
-    const top={ x:r.x, y:r.y };
-    const bottom={ x:r.x, y:r.y+r.h-1 };
-    const topKey=keyOf(top.x,top.y);
-    const bottomKey=keyOf(bottom.x,bottom.y);
-    const topReachable=canMoveToIgnoringDynamicBlockers(top.x,top.y);
-    const bottomReachable=canMoveToIgnoringDynamicBlockers(bottom.x,bottom.y);
-    const spineLinked=waterfrontSpineTiles.some(({x,y})=>findPathLength({x,y},top)>0 || findPathLength({x,y},bottom)>0);
-    const roadGraphLinked=Array.from(world.mainRoads||[]).some((tileKey)=>findPathLength(parseTileKey(tileKey),top)>0 || findPathLength(parseTileKey(tileKey),bottom)>0);
-    const unexpectedHiddenBlocker=world.blocked.has(topKey) || world.blocked.has(bottomKey);
-    const reachable=topReachable && bottomReachable && (spineLinked || roadGraphLinked) && !unexpectedHiddenBlocker;
-    return { x:r.x, y:r.y, h:r.h, topReachable, bottomReachable, spineLinked, roadGraphLinked, unexpectedHiddenBlocker, reachable };
+    const topAnchor={ x:r.x, y:r.y };
+    const bottomAnchor={ x:r.x, y:r.y+r.h-1 };
+    const topAnchorResolved=resolveConnectorAnchor(topAnchor.x,topAnchor.y,connectorLateralTolerance);
+    const bottomAnchorResolved=resolveConnectorAnchor(bottomAnchor.x,bottomAnchor.y,connectorLateralTolerance);
+    const topReachable=!!topAnchorResolved;
+    const bottomReachable=!!bottomAnchorResolved;
+    const topNode=topAnchorResolved ? { x:topAnchorResolved.x, y:topAnchorResolved.y } : topAnchor;
+    const bottomNode=bottomAnchorResolved ? { x:bottomAnchorResolved.x, y:bottomAnchorResolved.y } : bottomAnchor;
+    const localPathLength=(topReachable && bottomReachable) ? findPathLength(topNode,bottomNode) : -1;
+    const localPathReachable=localPathLength>0;
+    const spineLinked=waterfrontSpineTiles.some(({x,y})=>findPathLength({x,y},bottomNode)>0 || findPathLength({x,y},topNode)>0);
+    const roadGraphLinked=Array.from(world.mainRoads||[]).some((tileKey)=>findPathLength(parseTileKey(tileKey),topNode)>0 || findPathLength(parseTileKey(tileKey),bottomNode)>0);
+    const localPathBlocks=localPathReachable ? [] : collectConnectorBlockingTiles(r.x,bottomAnchor.y,connectorLateralTolerance);
+    const lateralToleranceUsed=Math.max(topAnchorResolved?.dx??connectorLateralTolerance+1,bottomAnchorResolved?.dx??connectorLateralTolerance+1);
+    const unexpectedHiddenBlocker=(topReachable&&world.blocked.has(keyOf(topNode.x,topNode.y)))||(bottomReachable&&world.blocked.has(keyOf(bottomNode.x,bottomNode.y)));
+    let failureReason="none";
+    if(!topReachable) failureReason="top_anchor_unreachable";
+    else if(!bottomReachable) failureReason="bottom_anchor_unreachable";
+    else if(!localPathReachable) failureReason="local_connector_path_missing";
+    else if(!(spineLinked||roadGraphLinked)) failureReason="connector_not_linked_to_spine_or_road_graph";
+    else if(unexpectedHiddenBlocker) failureReason="anchor_hidden_blocked";
+    const reachable=topReachable && bottomReachable && localPathReachable && (spineLinked || roadGraphLinked) && !unexpectedHiddenBlocker;
+    return {
+      x:r.x, y:r.y, h:r.h, topAnchor, bottomAnchor,
+      topReachable, bottomReachable, localPathReachable,
+      lateralToleranceUsed, pathLength:localPathLength,
+      topAnchorResolved, bottomAnchorResolved, spineLinked, roadGraphLinked, unexpectedHiddenBlocker,
+      blockingTiles:reachable?[]:localPathBlocks, failureReason, reachable
+    };
   });
   const inlandConnectorCount=inlandConnectorSamples.filter((sample)=>sample.reachable).length;
   const boathouse=world.buildings.find((row)=>row.id==="b_boathouse");
@@ -4491,7 +4533,11 @@ function emitHarborCompositionQA(){
   if(blockedRoadMismatches!==0) inlandConnectorFailureReasons.push("route_topology_blocked_road_mismatch");
   if(spawnQaResult.status!=="PASS") inlandConnectorFailureReasons.push("spawn_qa_failed");
   if(traversalQaResult.status!=="PASS") inlandConnectorFailureReasons.push("traversal_qa_failed");
-  if(traversalTopologyQaResult.hiddenFenceBlockers>0 || traversalTopologyQaResult.hiddenTerrainBlockers>0 || traversalTopologyQaResult.hiddenWaterBlockers>0 || traversalTopologyQaResult.buildingRouteBlockers>0 || traversalTopologyQaResult.npcRouteBlockers>0 || traversalTopologyQaResult.propRouteBlockers>0) inlandConnectorFailureReasons.push("route_topology_hidden_blockers_detected");
+  const invalidHiddenBlockers=traversalTopologyQaResult.routeClassification?.invalidHiddenBlockers?.size ?? 0;
+  const classificationMismatches=traversalTopologyQaResult.classificationMismatchCount ?? 0;
+  const unexpectedBlockedEdges=traversalTopologyQaResult.unexpectedBlockedEdges ?? 0;
+  const routeTopologyFailed=traversalTopologyQaResult.status!=="PASS";
+  if(invalidHiddenBlockers>0 || classificationMismatches>0 || unexpectedBlockedEdges>0 || routeTopologyFailed) inlandConnectorFailureReasons.push("route_topology_hidden_blockers_detected");
   const inlandConnectorStatus=inlandConnectorFailureReasons.length===0?"PASS":"FAIL";
   if(inlandConnectorFailureReasons.length>0) harborCompositionFailureReasons.push(...inlandConnectorFailureReasons);
   if(invalidPlayableWharfDeckTiles.length>0) harborCompositionFailureReasons.push("invalid_playable_wharf_deck_tiles");
@@ -6536,7 +6582,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.9K" && ATLAS_SELECTOR_VERSION==="selector-v35.9k2-harbor-inland-connector-predicate";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.9K" && ATLAS_SELECTOR_VERSION==="selector-v35.9k3-harbor-connector-reachability-contract";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
