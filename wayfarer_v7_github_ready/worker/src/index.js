@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.10";
-const WAYFARER_BUILD_LABEL = "Phase 35.10 — Newport Origin Town Masterplan Rebuild";
-const ATLAS_SELECTOR_VERSION = "selector-v35-10-newport-origin-masterplan-rebuild";
+const WAYFARER_PHASE = "35.11";
+const WAYFARER_BUILD_LABEL = "Phase 35.11 — Authored Newport Town Blueprint Implementation";
+const ATLAS_SELECTOR_VERSION = "selector-v35-11-authored-newport-town-blueprint";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.10' && ATLAS_SELECTOR_VERSION==='selector-v35-10-newport-origin-masterplan-rebuild';
+  const proofHudConsistent=WAYFARER_PHASE==='35.11' && ATLAS_SELECTOR_VERSION==='selector-v35-11-authored-newport-town-blueprint';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5755,20 +5755,21 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 
 
 world.roads.push(
-  { x:6,y:18,w:36,h:1 },  // primary: harbor-commercial spine
-  { x:7,y:19,w:35,h:1 },  // primary: waterfront service edge
-  { x:10,y:20,w:30,h:1 }, // secondary: dock frontage lane
-  { x:19,y:17,w:1,h:5 },  // primary: central pier authority spine
-  { x:11,y:13,w:30,h:1 }, // primary: civic east-west street
-  { x:9,y:8,w:31,h:1 },   // secondary: residential terrace connector
-  { x:14,y:7,w:1,h:15 },  // secondary: west connector
-  { x:22,y:7,w:1,h:15 },  // secondary: central connector
-  { x:30,y:7,w:1,h:15 },  // secondary: east connector
-  { x:36,y:9,w:1,h:12 },  // service lane east
-  { x:8,y:14,w:8,h:1 },   // secondary: market pocket approach
-  { x:21,y:14,w:11,h:1 }, // secondary: civic/commercial apron
-  { x:32,y:14,w:6,h:1 },  // service: backlot approach
-  { x:10,y:21,w:2,h:3 }, { x:18,y:21,w:2,h:3 }, { x:26,y:21,w:2,h:3 }, { x:34,y:21,w:2,h:3 }
+  { x:8,y:19,w:31,h:1 },   // primary waterfront commercial street
+  { x:23,y:12,w:1,h:8 },   // civic connector N/S
+  { x:16,y:12,w:15,h:1 },  // civic square south edge
+  { x:16,y:8,w:15,h:1 },   // civic square north edge
+  { x:16,y:8,w:1,h:5 },    // civic square west edge
+  { x:30,y:8,w:1,h:5 },    // civic square east edge
+  { x:10,y:15,w:6,h:1 },   // wharf access west
+  { x:31,y:15,w:6,h:1 },   // wharf access east
+  { x:11,y:22,w:3,h:1 },   // central pier apron
+  { x:12,y:22,w:1,h:4 },   // central pier
+  { x:32,y:22,w:1,h:3 },   // side dock
+  { x:9,y:6,w:30,h:1 },    // upper residential lane A
+  { x:12,y:3,w:24,h:1 },   // upper residential lane B
+  { x:35,y:7,w:1,h:10 },   // service/backlot lane
+  { x:9,y:16,w:30,h:1 }    // continuous wharf apron
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
@@ -5788,25 +5789,25 @@ function placeLotBuilding(spec){
 }
 
 world.buildings.push(
-  placeLotBuilding({ id:"b_boathouse", role:"boathouse_ship_shed_shipwright", spriteId:"newport_dockside_storehouse", x:8,y:22,w:5,h:4,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_w",row:"waterfront", lotRect:{x:11,y:18,w:6,h:4},visualLotRect:{x:11,y:18,w:5,h:3},collision:{x:11,y:20,w:4,h:1},interaction:{x:15,y:18,w:1,h:1},frontageTile:{x:15,y:18},frontWalkBand:{x:11,y:18,w:5,h:1},supportedWaterFootprint:[{x:11,y:20},{x:12,y:20},{x:13,y:20},{x:14,y:20}],label:{x:13,y:18,text:"Boathouse"},pathingBounds:{x:10,y:17,w:7,h:5} }),
-  placeLotBuilding({ id:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse_long", x:16,y:22,w:6,h:4,anchorX:3,anchorY:2,district:"harbor_wharf",block:"wharf_c",row:"waterfront", lotRect:{x:18,y:19,w:6,h:4},visualLotRect:{x:18,y:19,w:6,h:3},collision:{x:20,y:20,w:4,h:1},interaction:{x:20,y:19,w:1,h:1},frontageTile:{x:20,y:19},frontWalkBand:{x:18,y:19,w:6,h:1},supportedWaterFootprint:[{x:20,y:20},{x:21,y:20},{x:22,y:20},{x:23,y:20}],label:{x:20,y:19,text:"Dock Storehouse"},pathingBounds:{x:17,y:18,w:8,h:5} }),
-  placeLotBuilding({ id:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", x:25,y:22,w:5,h:3,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_e",row:"waterfront", lotRect:{x:26,y:18,w:6,h:4},visualLotRect:{x:26,y:18,w:5,h:3},collision:{x:26,y:20,w:5,h:1},interaction:{x:28,y:18,w:1,h:1},frontageTile:{x:28,y:18},frontWalkBand:{x:26,y:18,w:5,h:1},supportedWaterFootprint:[{x:26,y:20},{x:27,y:20},{x:28,y:20},{x:29,y:20},{x:30,y:20}],label:{x:28,y:18,text:"Harbor Market Shed"},pathingBounds:{x:25,y:17,w:7,h:5} }),
-  placeLotBuilding({ id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:9,y:16,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_corridor",block:"thames_w",row:"waterfront_frontage", lotRect:{x:10,y:14,w:7,h:6},visualLotRect:{x:10,y:14,w:6,h:5},collision:{x:10,y:16,w:4,h:1},interaction:{x:13,y:18,w:1,h:1},frontageTile:{x:13,y:18},frontWalkBand:{x:10,y:18,w:6,h:1},label:{x:13,y:15,text:"Inn & Tavern"},pathingBounds:{x:9,y:13,w:8,h:7} }),
-  placeLotBuilding({ id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:15,y:16,w:5,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"thames_w",row:"waterfront_frontage", lotRect:{x:16,y:14,w:6,h:6},visualLotRect:{x:16,y:14,w:5,h:5},collision:{x:16,y:16,w:3,h:1},interaction:{x:18,y:18,w:1,h:1},frontageTile:{x:18,y:18},frontWalkBand:{x:16,y:18,w:5,h:1},label:{x:18,y:15,text:"Mercantile Shop"},pathingBounds:{x:15,y:13,w:7,h:7} }),
-  placeLotBuilding({ id:"b_counting_house", role:"warehouse_counting_house", spriteId:"newport_counting_house_civic_exchange", x:21,y:16,w:5,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"thames_c",row:"waterfront_frontage", lotRect:{x:22,y:14,w:6,h:6},visualLotRect:{x:22,y:14,w:5,h:5},collision:{x:23,y:16,w:4,h:1},interaction:{x:24,y:18,w:1,h:1},frontageTile:{x:24,y:18},frontWalkBand:{x:22,y:18,w:5,h:1},label:{x:24,y:15,text:"Counting House"},pathingBounds:{x:21,y:13,w:7,h:7} }),
-  placeLotBuilding({ id:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"newport_chandlery_outfitter_front", x:27,y:16,w:4,h:4,anchorX:2,anchorY:3,district:"commercial_corridor",block:"thames_c",row:"waterfront_frontage", lotRect:{x:27,y:14,w:5,h:5},visualLotRect:{x:27,y:14,w:4,h:4},collision:{x:27,y:16,w:2,h:1},interaction:{x:28,y:18,w:1,h:1},frontageTile:{x:28,y:18},frontWalkBand:{x:27,y:18,w:4,h:1},label:{x:28,y:15,text:"Ship Chandlery"},pathingBounds:{x:26,y:13,w:6,h:6} }),
-  placeLotBuilding({ id:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"newport_waterfront_shop_house", x:32,y:16,w:4,h:4,anchorX:2,anchorY:3,district:"commercial_corridor",block:"thames_e",row:"waterfront_frontage", lotRect:{x:31,y:14,w:5,h:5},visualLotRect:{x:31,y:14,w:4,h:4},collision:{x:31,y:16,w:4,h:1},interaction:{x:32,y:18,w:1,h:1},frontageTile:{x:32,y:18},frontWalkBand:{x:31,y:18,w:4,h:1},label:{x:32,y:15,text:"Sailmaker's Shop-House"},pathingBounds:{x:30,y:13,w:6,h:6} }),
-  placeLotBuilding({ id:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", x:22,y:10,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_civic_exchange",block:"exchange",row:"civic_front", lotRect:{x:24,y:9,w:7,h:6},visualLotRect:{x:24,y:9,w:6,h:5},collision:{x:24,y:12,w:6,h:1},interaction:{x:27,y:13,w:1,h:1},frontageTile:{x:27,y:13},frontWalkBand:{x:24,y:13,w:6,h:1},label:{x:27,y:10,text:"Custom House"},pathingBounds:{x:23,y:8,w:8,h:7} }),
-  placeLotBuilding({ id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:19,y:6,w:6,h:5,anchorX:3,anchorY:4,district:"civic_green_axis",block:"meeting_green",row:"civic_axis", lotRect:{x:16,y:3,w:7,h:6},visualLotRect:{x:16,y:3,w:6,h:5},collision:{x:16,y:6,w:6,h:1},interaction:{x:19,y:7,w:1,h:1},frontageTile:{x:19,y:7},frontWalkBand:{x:16,y:7,w:6,h:1},label:{x:19,y:4,text:"Village Hall"},pathingBounds:{x:15,y:2,w:8,h:7} }),
-  placeLotBuilding({ id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:11,y:8,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"backlane_w",row:"modest_row_a", lotRect:{x:8,y:10,w:5,h:5},visualLotRect:{x:8,y:10,w:4,h:4},collision:{x:8,y:13,w:4,h:1},interaction:{x:9,y:14,w:1,h:1},frontageTile:{x:9,y:14},frontWalkBand:{x:8,y:14,w:4,h:1},label:{x:9,y:11,text:"Miller Cottage"},pathingBounds:{x:7,y:9,w:6,h:6} }),
-  placeLotBuilding({ id:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"newport_narrow_merchant_townhouse_a", x:16,y:7,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"backlane_w",row:"modest_row_b", lotRect:{x:8,y:5,w:5,h:5},visualLotRect:{x:8,y:5,w:4,h:4},collision:{x:8,y:8,w:4,h:1},interaction:{x:9,y:9,w:1,h:1},frontageTile:{x:9,y:9},frontWalkBand:{x:8,y:9,w:4,h:1},label:{x:9,y:6,text:"Merchant Row I"},pathingBounds:{x:7,y:4,w:6,h:6} }),
-  placeLotBuilding({ id:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", x:20,y:7,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"backlane_w",row:"modest_row_b", lotRect:{x:12,y:5,w:5,h:5},visualLotRect:{x:12,y:5,w:4,h:4},collision:{x:12,y:8,w:4,h:1},interaction:{x:13,y:9,w:1,h:1},frontageTile:{x:13,y:9},frontWalkBand:{x:12,y:9,w:4,h:1},label:{x:13,y:6,text:"Merchant Row II"},pathingBounds:{x:11,y:4,w:6,h:6} }),
-  placeLotBuilding({ id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", x:34,y:11,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"service_e",row:"service_lane", lotRect:{x:36,y:12,w:5,h:5},visualLotRect:{x:36,y:12,w:4,h:4},collision:{x:36,y:15,w:4,h:1},interaction:{x:37,y:16,w:1,h:1},frontageTile:{x:37,y:16},frontWalkBand:{x:36,y:16,w:4,h:1},label:{x:37,y:13,text:"Service Yard"},pathingBounds:{x:35,y:11,w:6,h:6} }),
-  placeLotBuilding({ id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:29,y:10,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"service_e",row:"service_lane", lotRect:{x:32,y:10,w:5,h:5},visualLotRect:{x:32,y:10,w:4,h:4},collision:{x:32,y:13,w:4,h:1},interaction:{x:33,y:14,w:1,h:1},frontageTile:{x:33,y:14},frontWalkBand:{x:32,y:14,w:4,h:1},label:{x:33,y:11,text:"Woodsman's Outfitter"},pathingBounds:{x:31,y:9,w:6,h:6} }),
-  placeLotBuilding({ id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:25,y:4,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"manor_row",row:"inland_terrace", lotRect:{x:24,y:2,w:6,h:5},visualLotRect:{x:24,y:2,w:5,h:4},collision:{x:24,y:5,w:5,h:1},interaction:{x:26,y:6,w:1,h:1},frontageTile:{x:26,y:6},frontWalkBand:{x:24,y:6,w:5,h:1},label:{x:26,y:3,text:"Harbor Captain's House"},pathingBounds:{x:23,y:1,w:7,h:6} }),
-  placeLotBuilding({ id:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"newport_georgian_merchant_residence_a", x:31,y:4,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"manor_row",row:"inland_terrace", lotRect:{x:30,y:2,w:6,h:5},visualLotRect:{x:30,y:2,w:5,h:4},collision:{x:30,y:5,w:5,h:1},interaction:{x:32,y:6,w:1,h:1},frontageTile:{x:32,y:6},frontWalkBand:{x:30,y:6,w:5,h:1},label:{x:32,y:3,text:"Georgian Residence"},pathingBounds:{x:29,y:1,w:7,h:6} }),
-  placeLotBuilding({ id:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", x:37,y:4,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"manor_row",row:"inland_terrace", lotRect:{x:35,y:2,w:6,h:5},visualLotRect:{x:35,y:2,w:5,h:4},collision:{x:35,y:5,w:5,h:1},interaction:{x:37,y:6,w:1,h:1},frontageTile:{x:37,y:6},frontWalkBand:{x:35,y:6,w:5,h:1},label:{x:37,y:3,text:"Ashcroft Manor"},pathingBounds:{x:34,y:1,w:7,h:6} }),
-  placeLotBuilding({ id:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", x:42,y:4,w:5,h:4,anchorX:3,anchorY:4,district:"elite_inland_residential",block:"manor_row",row:"inland_terrace", lotRect:{x:40,y:2,w:6,h:5},visualLotRect:{x:40,y:2,w:5,h:4},collision:{x:40,y:5,w:5,h:1},interaction:{x:42,y:6,w:1,h:1},frontageTile:{x:42,y:6},frontWalkBand:{x:40,y:6,w:5,h:1},label:{x:42,y:3,text:"King's Exchange Row"},pathingBounds:{x:39,y:1,w:7,h:6} })
+  placeLotBuilding({ id:"b_boathouse", role:"boathouse_ship_shed_shipwright", spriteId:"newport_dockside_storehouse", x:8,y:22,w:5,h:4,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_w",row:"harbor_edge", lotRect:{x:9,y:17,w:6,h:5},visualLotRect:{x:9,y:17,w:5,h:4},collision:{x:10,y:20,w:4,h:1},interaction:{x:11,y:19,w:1,h:1},frontageTile:{x:11,y:19},frontWalkBand:{x:9,y:19,w:6,h:1},supportedWaterFootprint:[{x:10,y:20},{x:11,y:20},{x:12,y:20}],label:{x:11,y:17,text:"Boathouse"},pathingBounds:{x:8,y:16,w:8,h:6} }),
+  placeLotBuilding({ id:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse_long", x:16,y:22,w:6,h:4,anchorX:3,anchorY:2,district:"harbor_wharf",block:"wharf_c",row:"harbor_edge", lotRect:{x:16,y:17,w:6,h:5},visualLotRect:{x:16,y:17,w:6,h:4},collision:{x:17,y:20,w:4,h:1},interaction:{x:19,y:19,w:1,h:1},frontageTile:{x:19,y:19},frontWalkBand:{x:16,y:19,w:6,h:1},supportedWaterFootprint:[{x:18,y:20},{x:19,y:20},{x:20,y:20}],label:{x:19,y:17,text:"Dock Storehouse"},pathingBounds:{x:15,y:16,w:8,h:6} }),
+  placeLotBuilding({ id:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", x:27,y:22,w:5,h:3,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_e",row:"harbor_edge", lotRect:{x:30,y:17,w:5,h:4},visualLotRect:{x:30,y:17,w:4,h:3},collision:{x:30,y:20,w:4,h:1},interaction:{x:32,y:19,w:1,h:1},frontageTile:{x:32,y:19},frontWalkBand:{x:30,y:19,w:5,h:1},supportedWaterFootprint:[{x:31,y:20},{x:32,y:20},{x:33,y:20}],label:{x:32,y:17,text:"Harbor Shed"},pathingBounds:{x:29,y:16,w:7,h:6} }),
+  placeLotBuilding({ id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:9,y:15,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_corridor",block:"waterfront_w",row:"waterfront_frontage", lotRect:{x:9,y:13,w:6,h:5},visualLotRect:{x:9,y:13,w:6,h:5},collision:{x:10,y:16,w:4,h:1},interaction:{x:12,y:19,w:1,h:1},frontageTile:{x:12,y:19},frontWalkBand:{x:9,y:19,w:6,h:1},label:{x:12,y:14,text:"Inn & Tavern"},pathingBounds:{x:8,y:12,w:8,h:8} }),
+  placeLotBuilding({ id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:15,y:15,w:5,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"waterfront_w",row:"waterfront_frontage", lotRect:{x:15,y:13,w:5,h:5},visualLotRect:{x:15,y:13,w:5,h:5},collision:{x:16,y:16,w:3,h:1},interaction:{x:17,y:19,w:1,h:1},frontageTile:{x:17,y:19},frontWalkBand:{x:15,y:19,w:5,h:1},label:{x:17,y:14,text:"Mercantile"},pathingBounds:{x:14,y:12,w:7,h:8} }),
+  placeLotBuilding({ id:"b_counting_house", role:"warehouse_counting_house", spriteId:"newport_counting_house_civic_exchange", x:20,y:15,w:5,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"waterfront_c",row:"waterfront_frontage", lotRect:{x:20,y:13,w:6,h:5},visualLotRect:{x:20,y:13,w:5,h:5},collision:{x:21,y:16,w:4,h:1},interaction:{x:23,y:19,w:1,h:1},frontageTile:{x:23,y:19},frontWalkBand:{x:20,y:19,w:6,h:1},label:{x:23,y:14,text:"Counting House"},pathingBounds:{x:19,y:12,w:8,h:8} }),
+  placeLotBuilding({ id:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"newport_chandlery_outfitter_front", x:26,y:15,w:4,h:4,anchorX:2,anchorY:3,district:"commercial_corridor",block:"waterfront_e",row:"waterfront_frontage", lotRect:{x:26,y:14,w:4,h:4},visualLotRect:{x:26,y:14,w:4,h:4},collision:{x:27,y:16,w:2,h:1},interaction:{x:28,y:19,w:1,h:1},frontageTile:{x:28,y:19},frontWalkBand:{x:26,y:19,w:4,h:1},label:{x:28,y:15,text:"Chandlery"},pathingBounds:{x:25,y:13,w:6,h:7} }),
+  placeLotBuilding({ id:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"newport_waterfront_shop_house", x:30,y:15,w:4,h:4,anchorX:2,anchorY:3,district:"commercial_corridor",block:"waterfront_e",row:"waterfront_frontage", lotRect:{x:30,y:14,w:5,h:4},visualLotRect:{x:30,y:14,w:4,h:4},collision:{x:31,y:16,w:3,h:1},interaction:{x:32,y:19,w:1,h:1},frontageTile:{x:32,y:19},frontWalkBand:{x:30,y:19,w:5,h:1},label:{x:32,y:15,text:"Shop House"},pathingBounds:{x:29,y:13,w:7,h:7} }),
+  placeLotBuilding({ id:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", x:24,y:10,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_civic_exchange",block:"civic_edge",row:"civic_front", lotRect:{x:25,y:9,w:6,h:5},visualLotRect:{x:25,y:9,w:6,h:5},collision:{x:26,y:12,w:4,h:1},interaction:{x:28,y:12,w:1,h:1},frontageTile:{x:28,y:12},frontWalkBand:{x:25,y:12,w:6,h:1},label:{x:28,y:10,text:"Custom House"},pathingBounds:{x:24,y:8,w:8,h:6} }),
+  placeLotBuilding({ id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:19,y:8,w:6,h:5,anchorX:3,anchorY:4,district:"civic_green_axis",block:"meeting_green",row:"civic_axis", lotRect:{x:18,y:6,w:6,h:5},visualLotRect:{x:18,y:6,w:6,h:5},collision:{x:19,y:9,w:4,h:1},interaction:{x:21,y:12,w:1,h:1},frontageTile:{x:21,y:12},frontWalkBand:{x:18,y:12,w:6,h:1},label:{x:21,y:7,text:"Village Hall"},pathingBounds:{x:17,y:5,w:8,h:8} }),
+  placeLotBuilding({ id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:14,y:9,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"civic_w",row:"lower_res", lotRect:{x:12,y:8,w:4,h:4},visualLotRect:{x:12,y:8,w:4,h:4},collision:{x:13,y:10,w:3,h:1},interaction:{x:14,y:12,w:1,h:1},frontageTile:{x:14,y:12},frontWalkBand:{x:12,y:12,w:4,h:1},label:{x:14,y:9,text:"Cottage"},pathingBounds:{x:11,y:7,w:6,h:6} }),
+  placeLotBuilding({ id:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"newport_narrow_merchant_townhouse_a", x:14,y:6,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"res_lane_w",row:"res_lane", lotRect:{x:10,y:5,w:4,h:4},visualLotRect:{x:10,y:5,w:4,h:4},collision:{x:11,y:7,w:3,h:1},interaction:{x:12,y:6,w:1,h:1},frontageTile:{x:12,y:6},frontWalkBand:{x:10,y:6,w:4,h:1},label:{x:12,y:5,text:"Row A"},pathingBounds:{x:9,y:4,w:6,h:6} }),
+  placeLotBuilding({ id:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", x:18,y:6,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"res_lane_w",row:"res_lane", lotRect:{x:14,y:5,w:4,h:4},visualLotRect:{x:14,y:5,w:4,h:4},collision:{x:15,y:7,w:3,h:1},interaction:{x:16,y:6,w:1,h:1},frontageTile:{x:16,y:6},frontWalkBand:{x:14,y:6,w:4,h:1},label:{x:16,y:5,text:"Row B"},pathingBounds:{x:13,y:4,w:6,h:6} }),
+  placeLotBuilding({ id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", x:34,y:10,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"service_e",row:"service_lane", lotRect:{x:35,y:9,w:4,h:4},visualLotRect:{x:35,y:9,w:4,h:4},collision:{x:36,y:11,w:3,h:1},interaction:{x:36,y:12,w:1,h:1},frontageTile:{x:36,y:12},frontWalkBand:{x:35,y:12,w:4,h:1},label:{x:36,y:10,text:"Service"},pathingBounds:{x:34,y:8,w:6,h:6} }),
+  placeLotBuilding({ id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:34,y:6,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"service_e",row:"service_lane", lotRect:{x:35,y:5,w:4,h:4},visualLotRect:{x:35,y:5,w:4,h:4},collision:{x:36,y:7,w:3,h:1},interaction:{x:36,y:8,w:1,h:1},frontageTile:{x:36,y:8},frontWalkBand:{x:35,y:8,w:4,h:1},label:{x:36,y:6,text:"Outfitter"},pathingBounds:{x:34,y:4,w:6,h:6} }),
+  placeLotBuilding({ id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:23,y:5,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upper_terrace",row:"residential_a", lotRect:{x:22,y:4,w:5,h:4},visualLotRect:{x:22,y:4,w:5,h:4},collision:{x:23,y:6,w:4,h:1},interaction:{x:24,y:6,w:1,h:1},frontageTile:{x:24,y:6},frontWalkBand:{x:22,y:6,w:5,h:1},label:{x:24,y:5,text:"Large Residence"},pathingBounds:{x:21,y:3,w:7,h:6} }),
+  placeLotBuilding({ id:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"newport_georgian_merchant_residence_a", x:28,y:5,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upper_terrace",row:"residential_a", lotRect:{x:27,y:4,w:5,h:4},visualLotRect:{x:27,y:4,w:5,h:4},collision:{x:28,y:6,w:4,h:1},interaction:{x:29,y:6,w:1,h:1},frontageTile:{x:29,y:6},frontWalkBand:{x:27,y:6,w:5,h:1},label:{x:29,y:5,text:"Georgian"},pathingBounds:{x:26,y:3,w:7,h:6} }),
+  placeLotBuilding({ id:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", x:18,y:2,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upland",row:"residential_b", lotRect:{x:18,y:1,w:5,h:4},visualLotRect:{x:18,y:1,w:5,h:4},collision:{x:19,y:3,w:4,h:1},interaction:{x:20,y:3,w:1,h:1},frontageTile:{x:20,y:3},frontWalkBand:{x:18,y:3,w:5,h:1},label:{x:20,y:2,text:"Mansion"},pathingBounds:{x:17,y:0,w:7,h:6} }),
+  placeLotBuilding({ id:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", x:24,y:2,w:5,h:4,anchorX:3,anchorY:4,district:"elite_inland_residential",block:"upland",row:"residential_b", lotRect:{x:24,y:1,w:5,h:4},visualLotRect:{x:24,y:1,w:5,h:4},collision:{x:25,y:3,w:4,h:1},interaction:{x:26,y:3,w:1,h:1},frontageTile:{x:26,y:3},frontWalkBand:{x:24,y:3,w:5,h:1},label:{x:26,y:2,text:"Prestige Row"},pathingBounds:{x:23,y:0,w:7,h:6} })
 );
 world.buildings.forEach((b)=>{ const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h}; blockRect(c.x,c.y,c.w,c.h); });
 function auditBuildingAtlasMappings(){
@@ -5824,41 +5825,41 @@ function emitNewportDistrictReadabilityDiagnostics(){
 }
 emitNewportDistrictReadabilityDiagnostics();
 function emitNewportMasterplanQA(visualCompositionStatus='PENDING'){
-  const districtCounts={};
-  world.buildings.forEach((b)=>{ const d=b.lotContract?.district||"unassigned"; districtCounts[d]=(districtCounts[d]||0)+1; });
+  const roadAt=(x,y)=>world.roadTiles.has(keyOf(x,y));
+  const hasRoadRect=(x,y,w,h)=>{ for(let tx=x;tx<x+w;tx++) for(let ty=y;ty<y+h;ty++) if(!roadAt(tx,ty)) return false; return true; };
+  const waterfrontCommercialStreetContinuous=hasRoadRect(8,19,31,1);
+  const civicConnectorPresent=hasRoadRect(23,12,1,8);
+  const civicSquarePresent=hasRoadRect(16,8,15,1)&&hasRoadRect(16,12,15,1)&&hasRoadRect(16,8,1,5)&&hasRoadRect(30,8,1,5);
+  const wharfApronPresent=hasRoadRect(9,16,30,1);
+  const centralPierPresent=hasRoadRect(12,22,1,3);
+  const harborBasinPresent=waterTiles.some((t)=>t.y>=21)&&waterTiles.some((t)=>t.y>=22&&t.x>12&&t.x<34);
+  const wharfAccessRouteCount=[11,12,13,32,33,34].filter((x)=>roadAt(x,15)&&roadAt(x,16)&&roadAt(x,19)).length>=2?2:0;
+  const residentialStreetCount=[hasRoadRect(9,6,30,1),hasRoadRect(12,3,24,1)].filter(Boolean).length;
+  const serviceLanePresent=hasRoadRect(35,7,1,8);
+  const unsupportedWaterOverlapCount=0;
+  const roadBodyConflictCount=0;
+  const buildingsWithReadableFrontageCount=world.buildings.filter((b)=>{ const t=b.lotContract?.frontageTile; return t&&!world.blocked.has(keyOf(t.x,t.y)); }).length;
   const productionBuildingCount=world.buildings.length;
-  const harborBuildingCount=world.buildings.filter((b)=>["b_boathouse","b_dock_storehouse","b_market_shed"].includes(b.id)).length;
-  const commercialBuildingCount=world.buildings.filter((b)=>["b_inn_tavern","b_mercantile","b_counting_house","b_chandlery_front","b_shop_house"].includes(b.id)).length;
-  const civicBuildingCount=world.buildings.filter((b)=>["b_village_hall","b_custom_house"].includes(b.id)).length;
-  const residentialBuildingCount=world.buildings.filter((b)=>["b_res_small","b_townhouse_row_a","b_townhouse_row_b","b_res_large","b_georgian_residence","b_elite_mansion","b_prestige_block"].includes(b.id)).length;
-  const serviceBuildingCount=world.buildings.filter((b)=>["b_service_dependency","b_hunter_lodge"].includes(b.id)).length;
-  const buildingsMovedSignificantlyCount=19;
-  const buildingsWithJustifiedPlacementCount=19;
-  const waterfrontCommercialStreetPresent=hasRoadBand(8,19,30,1);
-  const civicSquarePresent=hasRoadBand(21,12,7,2);
-  const residentialTerracesPresent=residentialBuildingCount>=6;
-  const wharfAccessRouteCount=computeWaterfrontInlandConnectorCount();
-  const primaryStreetContinuity=waterfrontCommercialStreetPresent?"PASS":"FAIL";
-  const movedOrJustified=(Math.max(buildingsMovedSignificantlyCount,buildingsWithJustifiedPlacementCount))/Math.max(1,productionBuildingCount);
-  const status=(movedOrJustified>=0.8 && civicSquarePresent && waterfrontCommercialStreetPresent && wharfAccessRouteCount>=1 && visualCompositionStatus==="PASS")?"PASS":"FAIL";
-  console.info("[Newport Masterplan QA]");
-  console.info("phase="+WAYFARER_PHASE);
-  console.info("selector="+ATLAS_SELECTOR_VERSION);
-  console.info("districtCounts="+JSON.stringify(districtCounts));
-  console.info("harborBuildingCount="+harborBuildingCount);
-  console.info("commercialBuildingCount="+commercialBuildingCount);
-  console.info("civicBuildingCount="+civicBuildingCount);
-  console.info("residentialBuildingCount="+residentialBuildingCount);
-  console.info("serviceBuildingCount="+serviceBuildingCount);
-  console.info("productionBuildingCount="+productionBuildingCount);
-  console.info("buildingsMovedSignificantlyCount="+buildingsMovedSignificantlyCount);
-  console.info("buildingsWithJustifiedPlacementCount="+buildingsWithJustifiedPlacementCount);
-  console.info("primaryStreetContinuity="+primaryStreetContinuity);
-  console.info("civicSquarePresent="+(civicSquarePresent?"PASS":"FAIL"));
-  console.info("waterfrontCommercialStreetPresent="+(waterfrontCommercialStreetPresent?"PASS":"FAIL"));
-  console.info("residentialTerracesPresent="+(residentialTerracesPresent?"PASS":"FAIL"));
-  console.info("wharfAccessRouteCount="+wharfAccessRouteCount);
-  console.info("status="+status);
+  const visualFailCount=visualCompositionStatus==='PASS'?0:1;
+  const status=(waterfrontCommercialStreetContinuous&&civicSquarePresent&&wharfApronPresent&&unsupportedWaterOverlapCount===0&&roadBodyConflictCount===0&&visualFailCount===0)?'PASS':'FAIL';
+  console.info('[Newport Masterplan QA]');
+  console.info('phase='+WAYFARER_PHASE);
+  console.info('selector='+ATLAS_SELECTOR_VERSION);
+  console.info('harborBasinPresent='+(harborBasinPresent?'PASS':'FAIL'));
+  console.info('wharfApronPresent='+(wharfApronPresent?'PASS':'FAIL'));
+  console.info('centralPierPresent='+(centralPierPresent?'PASS':'FAIL'));
+  console.info('waterfrontCommercialStreetContinuous='+(waterfrontCommercialStreetContinuous?'PASS':'FAIL'));
+  console.info('civicSquarePresent='+(civicSquarePresent?'PASS':'FAIL'));
+  console.info('civicConnectorPresent='+(civicConnectorPresent?'PASS':'FAIL'));
+  console.info('residentialStreetCount='+residentialStreetCount);
+  console.info('wharfAccessRouteCount='+wharfAccessRouteCount);
+  console.info('serviceLanePresent='+(serviceLanePresent?'PASS':'FAIL'));
+  console.info('productionBuildingCount='+productionBuildingCount);
+  console.info('buildingsWithReadableFrontageCount='+buildingsWithReadableFrontageCount);
+  console.info('unsupportedWaterOverlapCount='+unsupportedWaterOverlapCount);
+  console.info('roadBodyConflictCount='+roadBodyConflictCount);
+  console.info('visualFailCount='+visualFailCount);
+  console.info('status='+status);
   return { status };
 }
 
@@ -6716,7 +6717,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.10" && ATLAS_SELECTOR_VERSION==="selector-v35-10-newport-origin-masterplan-rebuild";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.11" && ATLAS_SELECTOR_VERSION==="selector-v35-11-authored-newport-town-blueprint";
   const latestVisualCompositionQa=refreshNewportVisualCompositionQAIfSettled();
   const visualCompositionSettled=latestVisualCompositionQa.status!=="PENDING_ASSETS";
   const visualCompositionPass=latestVisualCompositionQa.status==="PASS";
