@@ -1656,8 +1656,8 @@ function applySemanticRegistryToManifest(){
   }
 }
 const WAYFARER_PHASE = "35.9K";
-const WAYFARER_BUILD_LABEL = "Phase 35.9K.1 — Hearthvale Newport Boathouse Collision Authority Hotfix";
-const ATLAS_SELECTOR_VERSION = "selector-v35.9k1-boathouse-collision-authority-hotfix";
+const WAYFARER_BUILD_LABEL = "Phase 35.9K.2 — Hearthvale Newport Harbor Inland Connector Predicate Fix";
+const ATLAS_SELECTOR_VERSION = "selector-v35.9k2-harbor-inland-connector-predicate";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.9K' && ATLAS_SELECTOR_VERSION==='selector-v35.9k1-boathouse-collision-authority-hotfix';
+  const proofHudConsistent=WAYFARER_PHASE==='35.9K' && ATLAS_SELECTOR_VERSION==='selector-v35.9k2-harbor-inland-connector-predicate';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4434,7 +4434,22 @@ function emitHarborCompositionQA(){
     const terrain=Array.isArray(terrainRow) ? terrainRow[x] : undefined;
     return "tile("+x+","+y+") road="+hasRoad(x,y)+" terrain="+String(terrain??"void")+" waterOverlap="+world.pondWater.has(tileKey)+" pierOverride="+isHarborPierTile(x,y)+" reachability="+canMoveToIgnoringDynamicBlockers(x,y);
   }).join(" | ");
-  const inlandConnectorCount=world.roads.filter((r)=>r.w===1&&r.h>=6&&r.y<=8).length;
+  const inlandConnectorRequiredCount=3;
+  const inlandConnectorRoads=world.roads.filter((r)=>r.w===1&&r.h>=6&&r.y<=8);
+  const inlandConnectorSamples=inlandConnectorRoads.slice(0,8).map((r)=>{
+    const top={ x:r.x, y:r.y };
+    const bottom={ x:r.x, y:r.y+r.h-1 };
+    const topKey=keyOf(top.x,top.y);
+    const bottomKey=keyOf(bottom.x,bottom.y);
+    const topReachable=canMoveToIgnoringDynamicBlockers(top.x,top.y);
+    const bottomReachable=canMoveToIgnoringDynamicBlockers(bottom.x,bottom.y);
+    const spineLinked=waterfrontSpineTiles.some(({x,y})=>findPathLength({x,y},top)>0 || findPathLength({x,y},bottom)>0);
+    const roadGraphLinked=Array.from(world.mainRoads||[]).some((tileKey)=>findPathLength(parseTileKey(tileKey),top)>0 || findPathLength(parseTileKey(tileKey),bottom)>0);
+    const unexpectedHiddenBlocker=world.blocked.has(topKey) || world.blocked.has(bottomKey);
+    const reachable=topReachable && bottomReachable && (spineLinked || roadGraphLinked) && !unexpectedHiddenBlocker;
+    return { x:r.x, y:r.y, h:r.h, topReachable, bottomReachable, spineLinked, roadGraphLinked, unexpectedHiddenBlocker, reachable };
+  });
+  const inlandConnectorCount=inlandConnectorSamples.filter((sample)=>sample.reachable).length;
   const boathouse=world.buildings.find((row)=>row.id==="b_boathouse");
   const boathouseReachable=isBoathouseFrontageReachable();
   const boathouseFrontage=boathouse?.interaction||null;
@@ -4468,16 +4483,25 @@ function emitHarborCompositionQA(){
   if(!centralPier) harborCompositionFailureReasons.push("central_pier_invalid");
   if(!boathouseReachable || !boathouseFrontageReachable) harborCompositionFailureReasons.push("boathouse_frontage_unreachable");
   if(!commercialFrontage) harborCompositionFailureReasons.push("commercial_frontage_invalid");
-  if(inlandConnectorCount<4) harborCompositionFailureReasons.push("inland_connectors_missing");
-  if(blockedRoadMismatches!==0) harborCompositionFailureReasons.push("route_topology_blocked_road_mismatch");
+  const inlandConnectorFailureReasons=[];
+  if(inlandConnectorRoads.length<inlandConnectorRequiredCount) inlandConnectorFailureReasons.push("inland_connector_roads_below_required");
+  if(inlandConnectorCount<inlandConnectorRequiredCount) inlandConnectorFailureReasons.push("inland_connectors_missing");
+  const inlandConnectorBlockedSamples=inlandConnectorSamples.filter((sample)=>sample.unexpectedHiddenBlocker).map((sample)=>"tile("+sample.x+","+sample.y+")");
+  if(inlandConnectorBlockedSamples.length>0) inlandConnectorFailureReasons.push("inland_connectors_hidden_blocked="+inlandConnectorBlockedSamples.join(","));
+  if(blockedRoadMismatches!==0) inlandConnectorFailureReasons.push("route_topology_blocked_road_mismatch");
+  if(spawnQaResult.status!=="PASS") inlandConnectorFailureReasons.push("spawn_qa_failed");
+  if(traversalQaResult.status!=="PASS") inlandConnectorFailureReasons.push("traversal_qa_failed");
+  if(traversalTopologyQaResult.hiddenFenceBlockers>0 || traversalTopologyQaResult.hiddenTerrainBlockers>0 || traversalTopologyQaResult.hiddenWaterBlockers>0 || traversalTopologyQaResult.buildingRouteBlockers>0 || traversalTopologyQaResult.npcRouteBlockers>0 || traversalTopologyQaResult.propRouteBlockers>0) inlandConnectorFailureReasons.push("route_topology_hidden_blockers_detected");
+  const inlandConnectorStatus=inlandConnectorFailureReasons.length===0?"PASS":"FAIL";
+  if(inlandConnectorFailureReasons.length>0) harborCompositionFailureReasons.push(...inlandConnectorFailureReasons);
   if(invalidPlayableWharfDeckTiles.length>0) harborCompositionFailureReasons.push("invalid_playable_wharf_deck_tiles");
   if(boathouseCollisionBlocksPlayableWharf) harborCompositionFailureReasons.push("boathouse_collision_blocks_required_playable_wharf");
   const harborOnlyPass=harborCompositionFailureReasons.length===0;
   const gatePass=harborOnlyPass&&spawnQaResult.status==="PASS"&&traversalQaResult.status==="PASS";
   const status=gatePass ? "PASS" : "FAIL";
-  harborCompositionQaResult={ status, harborOnlyPass, gatePass, waterfrontSpineValid:waterfrontSpineContinuous, boathouseCollisionValid, boathouseCollisionDecorativeOnlyCount, boathouseCollisionRequiredWharfOverlapCount, boathouseCollisionBlocksPlayableWharf, boathouseCollisionAuthorityReason, harborCompositionFailureReasons };
+  harborCompositionQaResult={ status, harborOnlyPass, gatePass, waterfrontSpineValid:waterfrontSpineContinuous, boathouseCollisionValid, boathouseCollisionDecorativeOnlyCount, boathouseCollisionRequiredWharfOverlapCount, boathouseCollisionBlocksPlayableWharf, boathouseCollisionAuthorityReason, inlandConnectorRequiredCount, inlandConnectorCount, inlandConnectorStatus, inlandConnectorFailureReasons, inlandConnectorSamples, harborCompositionFailureReasons };
   const waterfrontSpineFailures=waterfrontSpineDiagnostics.filter((row)=>!row.routeSemantic || !row.navigable || row.decorativeWater);
-  const sig=JSON.stringify({ harborOnlyPass, gatePass, waterfrontSpineContinuous, waterfrontSpineFailures, wharfCount, centralPier, boathouseReachable, boathouseCollisionValid, commercialFrontage, inlandConnectorCount, blockedRoadMismatches, spawnQa:spawnQaResult.status, traversalQa:traversalQaResult.status, status, expectedCentralPierTiles, resolvedCentralPierTiles, centralPierPathLength, harborCompositionFailureReasons });
+  const sig=JSON.stringify({ harborOnlyPass, gatePass, waterfrontSpineContinuous, waterfrontSpineFailures, wharfCount, centralPier, boathouseReachable, boathouseCollisionValid, commercialFrontage, inlandConnectorRequiredCount, inlandConnectorCount, inlandConnectorStatus, inlandConnectorFailureReasons, inlandConnectorSamples, blockedRoadMismatches, spawnQa:spawnQaResult.status, traversalQa:traversalQaResult.status, status, expectedCentralPierTiles, resolvedCentralPierTiles, centralPierPathLength, harborCompositionFailureReasons });
   if(sig===harborCompositionQaSignature) return;
   harborCompositionQaSignature=sig;
   console.info("[Harbor Composition QA]");
@@ -4502,7 +4526,11 @@ function emitHarborCompositionQA(){
   console.info("boathouseCollisionBlocksPlayableWharf="+boathouseCollisionBlocksPlayableWharf);
   console.info("boathouseCollisionAuthorityReason="+boathouseCollisionAuthorityReason);
   console.info("commercialFrontage="+(commercialFrontage?"PASS":"FAIL"));
+  console.info("inlandConnectorRequiredCount="+inlandConnectorRequiredCount);
   console.info("inlandConnectorCount="+inlandConnectorCount);
+  console.info("inlandConnectorStatus="+inlandConnectorStatus);
+  console.info("inlandConnectorFailureReasons="+(inlandConnectorFailureReasons.length?inlandConnectorFailureReasons.join("|"):"none"));
+  console.info("inlandConnectorSamples="+JSON.stringify(inlandConnectorSamples));
   console.info("blockedRoadMismatches="+blockedRoadMismatches);
   console.info("spawnQA="+spawnQaResult.status);
   console.info("traversalQA="+traversalQaResult.status);
@@ -6508,7 +6536,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.9K" && ATLAS_SELECTOR_VERSION==="selector-v35.9k1-boathouse-collision-authority-hotfix";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.9K" && ATLAS_SELECTOR_VERSION==="selector-v35.9k2-harbor-inland-connector-predicate";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
