@@ -1656,8 +1656,8 @@ function applySemanticRegistryToManifest(){
   }
 }
 const WAYFARER_PHASE = "35.9L";
-const WAYFARER_BUILD_LABEL = "Phase 35.9L — Hearthvale Newport Spatial Clarity + Structured Harbor-Town Rebuild";
-const ATLAS_SELECTOR_VERSION = "selector-v35.9l-newport-spatial-clarity-rebuild";
+const WAYFARER_BUILD_LABEL = "Phase 35.9L.1 — Newport Spatial Clarity Bootstrap Runtime Fix";
+const ATLAS_SELECTOR_VERSION = "selector-v35.9l1-spatial-clarity-bootstrap-fix";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.9L' && ATLAS_SELECTOR_VERSION==='selector-v35.9l-newport-spatial-clarity-rebuild';
+  const proofHudConsistent=WAYFARER_PHASE==='35.9L' && ATLAS_SELECTOR_VERSION==='selector-v35.9l1-spatial-clarity-bootstrap-fix';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5822,7 +5822,7 @@ function emitNewportDistrictReadabilityDiagnostics(){
 }
 emitNewportDistrictReadabilityDiagnostics();
 
-function emitNewportSpatialClarityQA(){
+function emitNewportSpatialClarityQA({ routeTopology, routeCollision, harborComposition, buildingDepthAuthority }={}){
   const districtBlockCounts={};
   world.buildings.forEach((b)=>{ const lc=b.lotContract||{}; const dk=(lc.district||"unassigned")+":"+(lc.block||"none"); districtBlockCounts[dk]=(districtBlockCounts[dk]||0)+1; });
   const primaryRoadTileCount=world.roads.filter((r)=>r.y===18||r.y===19||r.y===13||r.x===19).reduce((n,r)=>n+(r.w*r.h),0);
@@ -5835,10 +5835,17 @@ function emitNewportSpatialClarityQA(){
   const frontage=world.buildings.map((b)=>b.lotContract?.frontageTile).filter(Boolean);
   const reachableFrontageCount=frontage.filter((t)=>!world.blocked.has(keyOf(t.x,t.y))).length;
   const blockedFrontageCount=frontage.length-reachableFrontageCount;
-  const inlandConnectorRequiredCount=harborCompositionQaResult?.inlandConnectorRequiredCount||3;
-  const inlandConnectorCount=harborCompositionQaResult?.inlandConnectorCount||0;
-  const overall=(harborCompositionQaResult?.status==='PASS'&&buildingOverlapQaResult?.status==='PASS'&&routeCollisionQaResult?.status==='PASS'&&routeTopologyQaResult?.status==='PASS'&&blockedFrontageCount===0)?'PASS':'FAIL';
-  console.info('[Newport Spatial Clarity QA] phase='+WAYFARER_PHASE+' selector='+ATLAS_SELECTOR_VERSION+' primaryRoadTileCount='+primaryRoadTileCount+' secondaryRoadTileCount='+secondaryRoadTileCount+' serviceLaneTileCount='+serviceLaneTileCount+' civicOpenAreaTileCount='+civicOpenAreaTileCount+' marketOpenAreaTileCount='+marketOpenAreaTileCount+' harborOpenAreaTileCount='+harborOpenAreaTileCount+' districtBlockCounts='+JSON.stringify(districtBlockCounts)+' productionBuildingCount='+productionBuildingCount+' reachableFrontageCount='+reachableFrontageCount+' blockedFrontageCount='+blockedFrontageCount+' inlandConnectorRequiredCount='+inlandConnectorRequiredCount+' inlandConnectorCount='+inlandConnectorCount+' harborComposition='+(harborCompositionQaResult?.status||'PENDING')+' routeCollision='+(routeCollisionQaResult?.status||'PENDING')+' routeTopology='+(routeTopologyQaResult?.status||'PENDING')+' buildingDepthAuthority='+(buildingOverlapQaResult?.status||'PENDING')+' overall='+overall);
+  const harborStatus=harborComposition?.status||'PENDING';
+  const routeCollisionStatus=routeCollision?.status||'PENDING';
+  const routeTopologyStatus=routeTopology?.status||'PENDING';
+  const buildingDepthAuthorityStatus=buildingDepthAuthority?.status||'PENDING';
+  const inlandConnectorRequiredCount=harborComposition?.inlandConnectorRequiredCount??'UNKNOWN';
+  const inlandConnectorCount=harborComposition?.inlandConnectorCount??'UNKNOWN';
+  const qaStatuses=[harborStatus, routeCollisionStatus, routeTopologyStatus, buildingDepthAuthorityStatus];
+  const hasPendingDependency=qaStatuses.some((status)=>status==='PENDING' || status==='UNKNOWN');
+  const allDependencyPass=qaStatuses.every((status)=>status==='PASS');
+  const overall=hasPendingDependency ? 'PENDING' : ((allDependencyPass&&blockedFrontageCount===0)?'PASS':'FAIL');
+  console.info('[Newport Spatial Clarity QA] phase='+WAYFARER_PHASE+' selector='+ATLAS_SELECTOR_VERSION+' primaryRoadTileCount='+primaryRoadTileCount+' secondaryRoadTileCount='+secondaryRoadTileCount+' serviceLaneTileCount='+serviceLaneTileCount+' civicOpenAreaTileCount='+civicOpenAreaTileCount+' marketOpenAreaTileCount='+marketOpenAreaTileCount+' harborOpenAreaTileCount='+harborOpenAreaTileCount+' districtBlockCounts='+JSON.stringify(districtBlockCounts)+' productionBuildingCount='+productionBuildingCount+' reachableFrontageCount='+reachableFrontageCount+' blockedFrontageCount='+blockedFrontageCount+' inlandConnectorRequiredCount='+inlandConnectorRequiredCount+' inlandConnectorCount='+inlandConnectorCount+' harborComposition='+harborStatus+' routeCollision='+routeCollisionStatus+' routeTopology='+routeTopologyStatus+' buildingDepthAuthority='+buildingDepthAuthorityStatus+' overall='+overall);
 }
 
 function emitNewportSpriteRoleLotAudit(){
@@ -5879,7 +5886,7 @@ function emitNewportSpriteRoleLotAudit(){
   });
 }
 emitNewportSpriteRoleLotAudit();
-emitNewportSpatialClarityQA();
+emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
 
 const pond={x:-10,y:16,w:62,h:22,cx:23,cy:30};
@@ -6603,7 +6610,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.9L" && ATLAS_SELECTOR_VERSION==="selector-v35.9l-newport-spatial-clarity-rebuild";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.9L" && ATLAS_SELECTOR_VERSION==="selector-v35.9l1-spatial-clarity-bootstrap-fix";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
