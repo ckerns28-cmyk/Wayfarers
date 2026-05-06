@@ -1656,8 +1656,8 @@ function applySemanticRegistryToManifest(){
   }
 }
 const WAYFARER_PHASE = "35.9L";
-const WAYFARER_BUILD_LABEL = "Phase 35.9L.3 — Building Draw Contract + Waterfront Placement Repair";
-const ATLAS_SELECTOR_VERSION = "selector-v35.9l3-building-draw-contract-waterfront-repair";
+const WAYFARER_BUILD_LABEL = "Phase 35.9L.4 — Wharf Deck Terrain Authority + Visual QA Finalization";
+const ATLAS_SELECTOR_VERSION = "selector-v35.9l4-wharf-deck-terrain-authority";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.9L' && ATLAS_SELECTOR_VERSION==='selector-v35.9l3-building-draw-contract-waterfront-repair';
+  const proofHudConsistent=WAYFARER_PHASE==='35.9L' && ATLAS_SELECTOR_VERSION==='selector-v35.9l4-wharf-deck-terrain-authority';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5940,7 +5940,16 @@ function emitNewportVisualCompositionQA(){
   console.info('[Newport Visual Composition QA] status='+status+' productionBuildingCount='+buildingReports.length+' failCount='+failures.length+' warnCount='+warnings.length+' reports='+JSON.stringify(buildingReports));
   return { status, productionBuildingCount:buildingReports.length, failCount:failures.length, warnCount:warnings.length, buildingReports };
 }
-const newportVisualCompositionQaResult=emitNewportVisualCompositionQA();
+let newportVisualCompositionQaResult=emitNewportVisualCompositionQA();
+let finalNewportVisualCompositionQaResult=(newportVisualCompositionQaResult.status==="PENDING_ASSETS") ? null : newportVisualCompositionQaResult;
+function refreshNewportVisualCompositionQAIfSettled(){
+  const atlasReady=!!(atlasImages?.buildings?.complete && atlasImages.buildings.naturalWidth>0 && atlasImages.buildings.naturalHeight>0);
+  if(!atlasReady) return newportVisualCompositionQaResult;
+  if(finalNewportVisualCompositionQaResult) return finalNewportVisualCompositionQaResult;
+  newportVisualCompositionQaResult=emitNewportVisualCompositionQA();
+  if(newportVisualCompositionQaResult.status!=="PENDING_ASSETS") finalNewportVisualCompositionQaResult=newportVisualCompositionQaResult;
+  return newportVisualCompositionQaResult;
+}
 
 
 
@@ -6128,7 +6137,7 @@ function isBoathouseFrontageReachable(){
   return findPathLength(HEARTHVALE_LANDMARKS.townCenterSpawn,{ x:b.interaction.x,y:b.interaction.y })>=0;
 }
 function isHarborPierTerrainBypassedTile(x,y){
-  return isHarborPierTile(x,y);
+  return isHarborPierTile(x,y) || isAuthoritativeWharfDeckTile(x,y);
 }
 function isHarborPierWharfTile(x,y){
   return isAuthoritativeWharfDeckTile(x,y);
@@ -6665,7 +6674,10 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.9L" && ATLAS_SELECTOR_VERSION==="selector-v35.9l3-building-draw-contract-waterfront-repair";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.9L" && ATLAS_SELECTOR_VERSION==="selector-v35.9l4-wharf-deck-terrain-authority";
+  const latestVisualCompositionQa=refreshNewportVisualCompositionQAIfSettled();
+  const visualCompositionSettled=latestVisualCompositionQa.status!=="PENDING_ASSETS";
+  const visualCompositionPass=latestVisualCompositionQa.status==="PASS";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
   const freshSpawnMode=(new URLSearchParams(window.location.search).get("freshSpawn")==="1");
@@ -6717,7 +6729,7 @@ function buildWayfarerQaReport(){
   const consoleFatalErrors=fatalErrorCount===0?"none":String(fatalErrorCount);
   const qaEmitterFatalCount=qaEmitterErrors.length;
   const qaEmitterFatalNone=qaEmitterFatalCount===0;
-  const preliminaryStatus=(!renderAuditSettled || !sourceTruthSettled)?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&wharfReadabilityQaResult.status==="PASS"&&playerStuckQaResult.status==="PASS"&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL");
+  const preliminaryStatus=(!renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled)?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&wharfReadabilityQaResult.status==="PASS"&&playerStuckQaResult.status==="PASS"&&visualCompositionPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL");
   const failedDomains={};
   const addFailure=(k,pass,reason)=>{ if(pass) return; failedDomains[k]=reason; };
   const includeFailures=preliminaryStatus!=="PENDING_ASSETS";
