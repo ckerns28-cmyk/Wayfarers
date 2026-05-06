@@ -4621,14 +4621,6 @@ function getBuildingRenderDepthAuthority(building){
   const sortKey=[baseY,district,block,row,x,id].join("|");
   return { baseY, district, block, row, x, id, sortKey, sourceRect:baseRect };
 }
-function compareBuildingDepthAuthority(a,b){
-  return a.baseY-b.baseY
-    || a.district.localeCompare(b.district)
-    || a.block.localeCompare(b.block)
-    || a.row.localeCompare(b.row)
-    || a.x-b.x
-    || a.id.localeCompare(b.id);
-}
 function emitBuildingOverlapQA(){
   const rows=world.buildings||[];
   const visualOverlaps=[];
@@ -4646,13 +4638,13 @@ function emitBuildingOverlapQA(){
       const da=getBuildingRenderDepthAuthority(a);
       const db=getBuildingRenderDepthAuthority(b);
       if(area>1){
-        const order=compareBuildingDepthAuthority(da, db);
-        const expectedFront=order>0 ? a.id : b.id;
+        const expectedFront=da.baseY===db.baseY
+          ? ([da.district,da.block,da.row,da.x,da.id].join("|") >= [db.district,db.block,db.row,db.x,db.id].join("|") ? a.id : b.id)
+          : (da.baseY>db.baseY ? a.id : b.id);
         visualOverlaps.push({ a:a.id, b:b.id, area, expectedFront, aBaseY:da.baseY, bBaseY:db.baseY });
-        if(da.baseY===db.baseY && da.district===db.district && da.block===db.block && da.row===db.row && da.x===db.x){
-          tieConflicts.push({ a:a.id, b:b.id, baseY:da.baseY, tieKeyA:da.sortKey, tieKeyB:db.sortKey, tieResolvedById:true });
+        if(da.baseY===db.baseY){
+          tieConflicts.push({ a:a.id, b:b.id, baseY:da.baseY, tieKeyA:da.sortKey, tieKeyB:db.sortKey });
         }
-        if(order===0) depthConflicts.push({ a:a.id, b:b.id, sortKey:da.sortKey });
       }
       const ca=a.collision||{ x:a.x,y:a.y,w:a.w,h:a.h };
       const cb=b.collision||{ x:b.x,y:b.y,w:b.w,h:b.h };
@@ -4660,10 +4652,11 @@ function emitBuildingOverlapQA(){
       const coy=Math.max(0, Math.min(ca.y+ca.h, cb.y+cb.h)-Math.max(ca.y, cb.y));
       const cArea=cox*coy;
       if(cArea>0) collisionOverlaps.push({ a:a.id, b:b.id, area:cArea });
+      if(area>1 && da.sortKey===db.sortKey) depthConflicts.push({ a:a.id, b:b.id, sortKey:da.sortKey });
     }
   }
   const sampledOrder=rows.map((b)=>({ id:b.id, ...getBuildingRenderDepthAuthority(b) }))
-    .sort(compareBuildingDepthAuthority)
+    .sort((a,b)=>a.baseY-b.baseY||a.district.localeCompare(b.district)||a.block.localeCompare(b.block)||a.row.localeCompare(b.row)||a.x-b.x||a.id.localeCompare(b.id))
     .slice(0,12).map((r)=>r.id+":"+r.baseY+":"+r.district+"/"+r.block+"/"+r.row);
   const frontWalkBlockedCount=rows.filter((b)=>b.frontWalkBand && !canMoveTo(b.frontWalkBand.x,b.frontWalkBand.y)).length;
   const status=(depthConflicts.length===0 && collisionOverlaps.length===0)?"PASS":"FAIL";
@@ -11333,7 +11326,12 @@ function drawWorld(){
   const renderQueue=[...buildingDrawEntries, ...entityDrawEntries]
     .sort((a,b)=>{
       if(a.type==="building" && b.type==="building"){
-        return compareBuildingDepthAuthority(a.depthAuthority, b.depthAuthority);
+        return a.depthAuthority.baseY-b.depthAuthority.baseY
+          || a.depthAuthority.district.localeCompare(b.depthAuthority.district)
+          || a.depthAuthority.block.localeCompare(b.depthAuthority.block)
+          || a.depthAuthority.row.localeCompare(b.depthAuthority.row)
+          || a.depthAuthority.x-b.depthAuthority.x
+          || a.depthAuthority.id.localeCompare(b.depthAuthority.id);
       }
       return a.worldAnchorY-b.worldAnchorY;
     });
