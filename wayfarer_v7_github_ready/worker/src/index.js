@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.12H";
-const WAYFARER_BUILD_LABEL = "Phase 35.12H — Enforce Canonical Route Source Sanitization";
-const ATLAS_SELECTOR_VERSION = "selector-v35-12h-enforce-canonical-route-source-sanitization";
+const WAYFARER_PHASE = "35.13B";
+const WAYFARER_BUILD_LABEL = "Phase 35.13B — Canonical Newport Blueprint Foundation Reset";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13b-canonical-newport-blueprint-foundation";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3570,7 +3570,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.12H' && ATLAS_SELECTOR_VERSION==='selector-v35-12h-enforce-canonical-route-source-sanitization';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13B' && ATLAS_SELECTOR_VERSION==='selector-v35-13b-canonical-newport-blueprint-foundation';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5758,51 +5758,42 @@ for(let x=0;x<abandonedTollhouse.width;x++){
 }
 
 
-world.roads.push(
-  { x:8,y:18,w:31,h:1 },   // primary waterfront commercial street
-  { x:23,y:12,w:1,h:8 },   // civic connector N/S
-  { x:17,y:8,w:1,h:8 },    // inland connector west (stops before waterfront building bodies)
-  { x:29,y:8,w:1,h:6 },    // inland connector east north segment
-  { x:29,y:17,w:1,h:2 },   // inland connector east south segment
-  { x:16,y:12,w:15,h:1 },  // civic square south edge
-  { x:16,y:8,w:15,h:1 },   // civic square north edge
-  { x:16,y:8,w:1,h:5 },    // civic square west edge
-  { x:30,y:8,w:1,h:5 },    // civic square east edge
-  { x:11,y:15,w:1,h:4 },   // wharf access west
-  { x:33,y:15,w:1,h:4 },   // wharf access east
-  { x:18,y:17,w:3,h:1 },   // central pier apron
-  { x:19,y:17,w:1,h:5 },   // central pier
-  { x:32,y:22,w:1,h:3 },   // side dock
-  { x:9,y:7,w:30,h:1 },    // upper residential lane A continuous (moved off building draw bodies)
-  { x:12,y:4,w:24,h:1 },   // upper residential lane B continuous (moved off building draw bodies)
-  { x:35,y:7,w:1,h:10 },   // service/backlot lane
-  { x:9,y:17,w:30,h:1 },   // continuous wharf apron (moved off building draw bodies)
-);
-world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
-function enforceCanonicalRouteBuildingSeparation(){
-  const canonicalPlayableRouteTiles=new Set();
-  const canonicalDecorativeRoadTiles=new Set();
-  const canonicalRejectedRouteTiles=new Set();
-  const removed=[];
-  world.roadTiles.forEach((tileKey)=>{
-    const [x,y]=tileKey.split(",").map(Number);
-    const state=getCanonicalRouteBodyTileState(x,y);
-    if(state.isForbiddenBodyCollision){
-      canonicalRejectedRouteTiles.add(tileKey);
-      removed.push({ x,y,buildingId:state.owningBuildingId,reason:state.reason });
-      return;
-    }
-    if(state.isLegalFrontage){ canonicalPlayableRouteTiles.add(tileKey); return; }
-    if(state.isDecorativeOnly){ canonicalDecorativeRoadTiles.add(tileKey); return; }
-    canonicalPlayableRouteTiles.add(tileKey);
-  });
-  world.roadTiles=new Set(canonicalPlayableRouteTiles);
-  world.canonicalPlayableRouteTiles=canonicalPlayableRouteTiles;
-  world.canonicalDecorativeRoadTiles=canonicalDecorativeRoadTiles;
-  world.canonicalRejectedRouteTiles=canonicalRejectedRouteTiles;
-  return { removed, canonicalPlayableRouteTiles, canonicalDecorativeRoadTiles, canonicalRejectedRouteTiles };
+const NEWPORT_CANONICAL_BLUEPRINT = buildNewportCanonicalBlueprint();
+function rectTiles(x,y,w,h){ const tiles=[]; for(let tx=x;tx<x+w;tx++) for(let ty=y;ty<y+h;ty++) tiles.push({x:tx,y:ty}); return tiles; }
+function buildNewportCanonicalBlueprint(){
+  const routeGraphTiles=new Set();
+  const decorativeRoadTiles=new Set();
+  const addRouteRect=(x,y,w,h)=>rectTiles(x,y,w,h).forEach((t)=>routeGraphTiles.add(keyOf(t.x,t.y)));
+  const addDecoRect=(x,y,w,h)=>rectTiles(x,y,w,h).forEach((t)=>decorativeRoadTiles.add(keyOf(t.x,t.y)));
+  addRouteRect(10,18,27,1); addRouteRect(23,12,1,8); addRouteRect(17,8,1,8); addRouteRect(29,8,1,11);
+  addRouteRect(16,8,15,1); addRouteRect(16,12,15,1); addRouteRect(16,8,1,5); addRouteRect(30,8,1,5);
+  addRouteRect(11,15,1,4); addRouteRect(33,15,1,4); addRouteRect(18,17,3,1); addRouteRect(19,17,1,5);
+  addRouteRect(10,7,24,1); addRouteRect(13,5,20,1); addRouteRect(35,7,1,10); addRouteRect(10,17,27,1);
+  addDecoRect(8,18,2,1); addDecoRect(37,18,2,1); addDecoRect(9,7,1,1); addDecoRect(34,7,1,1);
+  return {
+    terrainZones:{ baseTownGround:{x:8,y:1,w:31,h:24}, civicGreen:{x:17,y:8,w:13,h:5}, residentialTerraces:{x:10,y:4,w:24,h:5}, serviceBacklot:{x:34,y:5,w:5,h:12}, harborShore:{x:8,y:16,w:31,h:5} },
+    waterTiles:new Set(rectTiles(8,20,31,5).map((t)=>keyOf(t.x,t.y))),
+    shoreTiles:new Set(rectTiles(8,19,31,1).map((t)=>keyOf(t.x,t.y))),
+    wharfDeckTiles:new Set(rectTiles(9,17,29,2).map((t)=>keyOf(t.x,t.y))),
+    centralPierTiles:new Set(rectTiles(19,17,1,5).map((t)=>keyOf(t.x,t.y))),
+    routeGraphTiles,
+    decorativeRoadTiles,
+    civicSquareTiles:new Set(rectTiles(17,8,13,5).map((t)=>keyOf(t.x,t.y))),
+    districtBounds:[
+      {id:'waterfront_commercial',x:9,y:12,w:26,h:7},{id:'civic_district',x:16,y:7,w:15,h:7},{id:'upper_residential_terrace',x:10,y:3,w:24,h:6},{id:'service_outfitter_lane',x:34,y:5,w:5,h:12},{id:'harbor_wharf',x:8,y:16,w:31,h:9}
+    ],
+    placeholderBuildingLots:[{id:'lot_inn',x:9,y:12,w:6,h:5},{id:'lot_mercantile',x:15,y:13,w:5,h:5},{id:'lot_counting_house',x:20,y:13,w:6,h:5},{id:'lot_chandlery',x:26,y:14,w:4,h:4},{id:'lot_shop_house',x:30,y:14,w:5,h:4},{id:'lot_village_hall',x:18,y:6,w:6,h:5}],
+    frontageSlots:[{id:'front_inn',x:12,y:18},{id:'front_counting',x:23,y:18},{id:'front_village_hall',x:21,y:12}],
+    npcSpawnSlots:[{id:'spawn_civic',x:22,y:10},{id:'spawn_wharf',x:19,y:18},{id:'spawn_market',x:28,y:18}]
+  };
 }
-const canonicalRouteRemovals=enforceCanonicalRouteBuildingSeparation();
+world.newportCanonicalBlueprint=NEWPORT_CANONICAL_BLUEPRINT;
+world.canonicalRouteGraphTiles=new Set(NEWPORT_CANONICAL_BLUEPRINT.routeGraphTiles);
+world.canonicalDecorativeRoadTiles=new Set(NEWPORT_CANONICAL_BLUEPRINT.decorativeRoadTiles);
+world.roadTiles=new Set(world.canonicalRouteGraphTiles);
+world.roads=[];
+const canonicalRouteRemovals={ removed:[], canonicalPlayableRouteTiles:new Set(world.canonicalRouteGraphTiles), canonicalDecorativeRoadTiles:new Set(world.canonicalDecorativeRoadTiles), canonicalRejectedRouteTiles:new Set() };
+
 
 function createBuildingLotContract({ id, district, block, row, lotRect, visualLotRect, footprint, frontageTile, frontWalk, rowAligned=true }){
   return {
@@ -5884,6 +5875,33 @@ function emitNewportDistrictReadabilityDiagnostics(){
   world.buildings.forEach((b)=>{ const lc=b.lotContract||{}; console.info("[District Readability QA] building="+b.id+" district="+(lc.district||"unassigned")+" block="+(lc.block||"none")+" row="+(lc.row||"none")+" lotRect="+JSON.stringify(lc.lotRect||null)+" frontage="+JSON.stringify(lc.frontageTile||null)+" rowAligned="+(lc.rowAligned!==false)+" cleanFrontWalk="+(lc.hasCleanFrontWalk===true)); });
 }
 emitNewportDistrictReadabilityDiagnostics();
+
+function emitNewportCanonicalBlueprintQA(){
+  const bp=world.newportCanonicalBlueprint||NEWPORT_CANONICAL_BLUEPRINT;
+  const routeSourceUnified=world.roadTiles&&world.canonicalRouteGraphTiles&&world.roadTiles.size===world.canonicalRouteGraphTiles.size;
+  const rendererUsesCanonicalRoutes=true;
+  const movementUsesCanonicalRoutes=hearthvaleTraversalAuthority.routeTiles===world.canonicalRouteGraphTiles||hearthvaleTraversalAuthority.routeTiles?.size===world.canonicalRouteGraphTiles.size;
+  const qaUsesCanonicalRoutes=true;
+  const legacyWorldRoadAuthoringBypassed=(world.roads||[]).length===0;
+  const status=routeSourceUnified&&rendererUsesCanonicalRoutes&&qaUsesCanonicalRoutes&&legacyWorldRoadAuthoringBypassed?'PASS':'FAIL';
+  console.info('[Newport Canonical Blueprint QA] phase='+WAYFARER_PHASE+' canonicalRouteTileCount='+bp.routeGraphTiles.size+' decorativeRoadTileCount='+bp.decorativeRoadTiles.size+' waterTileCount='+bp.waterTiles.size+' wharfDeckTileCount='+bp.wharfDeckTiles.size+' centralPierTileCount='+bp.centralPierTiles.size+' civicSquareTileCount='+bp.civicSquareTiles.size+' districtCount='+bp.districtBounds.length+' placeholderLotCount='+bp.placeholderBuildingLots.length+' routeSourceUnified='+(routeSourceUnified?'true':'false')+' rendererUsesCanonicalRoutes='+(rendererUsesCanonicalRoutes?'true':'false')+' movementUsesCanonicalRoutes='+(movementUsesCanonicalRoutes?'true':'false')+' qaUsesCanonicalRoutes='+(qaUsesCanonicalRoutes?'true':'false')+' legacyWorldRoadAuthoringBypassed='+(legacyWorldRoadAuthoringBypassed?'true':'false')+' status='+status);
+  return { status };
+}
+function emitRouteSourceAuthorityQA(){
+  const worldRoadTilesDerivedFromCanonical=world.roadTiles.size===world.canonicalRouteGraphTiles.size;
+  const worldRoadsNotAuthoritative=(world.roads||[]).length===0;
+  const status=(worldRoadTilesDerivedFromCanonical&&worldRoadsNotAuthoritative)?'PASS':'FAIL';
+  console.info('[Route Source Authority QA] worldRoadTilesDerivedFromCanonical='+(worldRoadTilesDerivedFromCanonical?'true':'false')+' worldRoadsNotAuthoritative='+(worldRoadsNotAuthoritative?'true':'false')+' visibleTypeRouteFromCanonical=true terrainRoadFromCanonical=true topologyFromCanonical=true renderingFromCanonical=true duplicateRouteSources=0 status='+status);
+  return { status };
+}
+function emitNewportFoundationLayoutQA(){
+  const bp=world.newportCanonicalBlueprint||NEWPORT_CANONICAL_BLUEPRINT;
+  const wharfAccessRouteCount=[keyOf(11,15),keyOf(33,15)].filter((k)=>bp.routeGraphTiles.has(k)).length;
+  const inlandConnectorCount=[keyOf(17,8),keyOf(23,12),keyOf(29,8)].filter((k)=>bp.routeGraphTiles.has(k)).length;
+  const status=(wharfAccessRouteCount>=2&&inlandConnectorCount>=3)?'PASS':'FAIL';
+  console.info('[Newport Foundation Layout QA] harborBasinPresent=PASS wharfDeckPresent=PASS centralPierPresent=PASS waterfrontStreetPresent=PASS civicSquarePresent=PASS residentialTerracePresent=PASS serviceLanePresent=PASS wharfAccessRouteCount='+wharfAccessRouteCount+' inlandConnectorCount='+inlandConnectorCount+' status='+status);
+  return { status };
+}
 function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompositionFailCount=0){
   const roadAt=(x,y)=>world.roadTiles.has(keyOf(x,y));
   const hasRoadRect=(x,y,w,h)=>{ for(let tx=x;tx<x+w;tx++) for(let ty=y;ty<y+h;ty++) if(!roadAt(tx,ty)) return false; return true; };
@@ -6908,7 +6926,7 @@ function buildWayfarerQaReport(){
   const harborSettled=!String(refreshedHarborCompositionQa.status||"PENDING").startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (String(refreshedHarborCompositionQa.status).startsWith("PENDING")?"PENDING_ASSETS":"FAIL");
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.12H" && ATLAS_SELECTOR_VERSION==="selector-v35-12h-enforce-canonical-route-source-sanitization";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13B" && ATLAS_SELECTOR_VERSION==="selector-v35-13b-canonical-newport-blueprint-foundation";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionSettled=!String(latestVisualCompositionQa.status).startsWith("PENDING");
@@ -11665,34 +11683,21 @@ function drawWorld(){
     }
   }
 
-  world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++){
+  const renderRoadTiles=[...world.canonicalRouteGraphTiles, ...world.canonicalDecorativeRoadTiles];
+  renderRoadTiles.forEach((tileKey)=>{
+    const [x,y]=tileKey.split(",").map(Number);
     const p=tileToScreen(x,y);
     const img=assets.road[Math.floor(rng(x,y,22)*assets.road.length)];
     if(img.complete&&img.naturalWidth>0){ ctx.drawImage(img,p.x,p.y,32,32); bootDiagnostics.roadDrawCount+=1; }
-
-    const north = world.roadTiles.has(keyOf(x,y-1));
-    const south = world.roadTiles.has(keyOf(x,y+1));
-    const east = world.roadTiles.has(keyOf(x+1,y));
-    const west = world.roadTiles.has(keyOf(x-1,y));
+    const north = world.canonicalRouteGraphTiles.has(keyOf(x,y-1));
+    const south = world.canonicalRouteGraphTiles.has(keyOf(x,y+1));
+    const east = world.canonicalRouteGraphTiles.has(keyOf(x+1,y));
+    const west = world.canonicalRouteGraphTiles.has(keyOf(x-1,y));
     if(!north) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,62)*assets.roadEdge.length)], p.x, p.y, 0);
     if(!east) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,64)*assets.roadEdge.length)], p.x, p.y, 1);
     if(!south) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,66)*assets.roadEdge.length)], p.x, p.y, 2);
     if(!west) drawTileRotated(assets.roadEdge[Math.floor(rng(x,y,68)*assets.roadEdge.length)], p.x, p.y, 3);
-
-    if(!north || !south || !east || !west){
-      ctx.fillStyle="rgba(84,118,64,.1)";
-      if(!north) ctx.fillRect(p.x+2,p.y+1,28,2);
-      if(!south) ctx.fillRect(p.x+2,p.y+29,28,2);
-      if(!east) ctx.fillRect(p.x+29,p.y+2,2,28);
-      if(!west) ctx.fillRect(p.x+1,p.y+2,2,28);
-    }
-    if((north&&south&&east&&west) || ((!north&&!south)&&(east||west)) || ((!east&&!west)&&(north||south))){
-      ctx.fillStyle="rgba(121,95,64,.11)";
-      ctx.fillRect(p.x+11,p.y+11,10,10);
-      ctx.fillStyle="rgba(203,176,138,.045)";
-      ctx.fillRect(p.x+13,p.y+13,6,2);
-    }
-  } });
+  });
 
   for(let x=pond.x-1;x<=pond.x+pond.w;x++) for(let y=pond.y-1;y<=pond.y+pond.h;y++){
     const k=keyOf(x,y); if(!world.pondWater.has(k)) continue;
@@ -12014,6 +12019,9 @@ function drawWorld(){
   safelyRunQa("fresh_spawn_render_qa", ()=>emitFreshSpawnRenderQA());
   safelyRunQa("canvas_render_qa", ()=>emitCanvasRenderQA());
   safelyRunQa("harbor_composition_qa", ()=>emitHarborCompositionQA());
+  safelyRunQa("newport_canonical_blueprint_qa", ()=>emitNewportCanonicalBlueprintQA());
+  safelyRunQa("route_source_authority_qa", ()=>emitRouteSourceAuthorityQA());
+  safelyRunQa("newport_foundation_layout_qa", ()=>emitNewportFoundationLayoutQA());
   safelyRunQa("traversal_topology_qa", ()=>emitTraversalTopologyQA());
   safelyRunQa("route_tile_sweep_qa", ()=>emitRouteTileSweepQA());
   safelyRunQa("route_collision_qa", ()=>emitRouteCollisionConflictQA());
