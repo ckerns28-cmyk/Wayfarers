@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.12D.2";
-const WAYFARER_BUILD_LABEL = "Phase 35.12D.2 — Newport Served QA Technical Repair";
-const ATLAS_SELECTOR_VERSION = "selector-v35-12d2-newport-served-qa-technical-repair";
+const WAYFARER_PHASE = "35.12D.3";
+const WAYFARER_BUILD_LABEL = "Phase 35.12D.3 — QA Emitter Crash Repair";
+const ATLAS_SELECTOR_VERSION = "selector-v35-12d3-qa-emitter-crash-repair";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3570,7 +3570,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.12D.2' && ATLAS_SELECTOR_VERSION==='selector-v35-12d2-newport-served-qa-technical-repair';
+  const proofHudConsistent=WAYFARER_PHASE==='35.12D.3' && ATLAS_SELECTOR_VERSION==='selector-v35-12d3-qa-emitter-crash-repair';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6843,16 +6843,20 @@ function normalizeQaStatus(value){
   return "DEGRADED";
 }
 function buildWayfarerQaReport(){
-  const refreshedHarborCompositionQa=emitHarborCompositionQA();
-  const harborSettled=!String(refreshedHarborCompositionQa?.status||"PENDING").startsWith("PENDING");
-  const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : "FAIL";
+  const ensureQaResult=(qaResult,pendingReason)=>{
+    if(qaResult&&typeof qaResult==="object"&&typeof qaResult.status==="string") return qaResult;
+    return { status:"PENDING_INIT", reason:pendingReason };
+  };
+  const refreshedHarborCompositionQa=ensureQaResult(emitHarborCompositionQA(),"harbor_composition_not_initialized");
+  const harborSettled=!String(refreshedHarborCompositionQa.status||"PENDING").startsWith("PENDING");
+  const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (String(refreshedHarborCompositionQa.status).startsWith("PENDING")?"PENDING_ASSETS":"FAIL");
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.12D.2" && ATLAS_SELECTOR_VERSION==="selector-v35-12d2-newport-served-qa-technical-repair";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.12D.3" && ATLAS_SELECTOR_VERSION==="selector-v35-12d3-qa-emitter-crash-repair";
   refreshBuildingPlacementContractQAIfSettled();
-  const latestVisualCompositionQa=refreshNewportVisualCompositionQAIfSettled();
-  const visualCompositionSettled=latestVisualCompositionQa.status!=="PENDING_ASSETS";
+  const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
+  const visualCompositionSettled=!String(latestVisualCompositionQa.status).startsWith("PENDING");
   const visualCompositionPass=latestVisualCompositionQa.status==="PASS";
-  const masterplanQaResult=emitNewportMasterplanQA(latestVisualCompositionQa.status, latestVisualCompositionQa.failCount||0);
+  const masterplanQaResult=ensureQaResult(emitNewportMasterplanQA(latestVisualCompositionQa.status, latestVisualCompositionQa.failCount||0),"newport_masterplan_not_initialized");
   const masterplanPass=masterplanQaResult.status==="PASS";
   const collisionSpamPass=collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
   collisionSpamQaResult={ status:collisionSpamPass?"PASS":"FAIL", suppressed:collisionDebugSummaryState.suppressed, uniqueSignatures:collisionDebugSummaryState.unique.size };
@@ -6908,7 +6912,7 @@ function buildWayfarerQaReport(){
   const consoleFatalErrors=fatalErrorCount===0?"none":String(fatalErrorCount);
   const qaEmitterFatalCount=qaEmitterErrors.length;
   const qaEmitterFatalNone=qaEmitterFatalCount===0;
-  const preliminaryStatus=(!renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled || !harborSettled)?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&wharfReadabilityQaResult.status==="PASS"&&playerStuckQaResult.status==="PASS"&&visualCompositionPass&&masterplanPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL");
+  const preliminaryStatus=(!renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled || !harborSettled || harborStatus==="PENDING_ASSETS")?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&wharfReadabilityQaResult.status==="PASS"&&playerStuckQaResult.status==="PASS"&&visualCompositionPass&&masterplanPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL");
   const failedDomains={};
   const addFailure=(k,pass,reason)=>{ if(pass) return; failedDomains[k]=reason; };
   const includeFailures=preliminaryStatus!=="PENDING_ASSETS";
