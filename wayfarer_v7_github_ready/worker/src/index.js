@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.12E";
-const WAYFARER_BUILD_LABEL = "Phase 35.12E — Settled Visual Placement Repair";
-const ATLAS_SELECTOR_VERSION = "selector-v35-12e-settled-visual-placement-repair";
+const WAYFARER_PHASE = "35.12F";
+const WAYFARER_BUILD_LABEL = "Phase 35.12F — Remove Road Tiles From Building Draw Bodies";
+const ATLAS_SELECTOR_VERSION = "selector-v35-12f-remove-road-tiles-from-building-draw-bodies";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3570,7 +3570,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.12E' && ATLAS_SELECTOR_VERSION==='selector-v35-12e-settled-visual-placement-repair';
+  const proofHudConsistent=WAYFARER_PHASE==='35.12F' && ATLAS_SELECTOR_VERSION==='selector-v35-12f-remove-road-tiles-from-building-draw-bodies';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5770,10 +5770,10 @@ world.roads.push(
   { x:18,y:17,w:3,h:1 },   // central pier apron
   { x:19,y:17,w:1,h:5 },   // central pier
   { x:32,y:22,w:1,h:3 },   // side dock
-  { x:9,y:6,w:30,h:1 },    // upper residential lane A continuous
-  { x:12,y:3,w:24,h:1 },   // upper residential lane B continuous
+  { x:9,y:7,w:30,h:1 },    // upper residential lane A continuous (moved off building draw bodies)
+  { x:12,y:4,w:24,h:1 },   // upper residential lane B continuous (moved off building draw bodies)
   { x:35,y:7,w:1,h:10 },   // service/backlot lane
-  { x:9,y:16,w:30,h:1 },   // continuous wharf apron
+  { x:9,y:17,w:30,h:1 },   // continuous wharf apron (moved off building draw bodies)
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
@@ -5834,12 +5834,12 @@ function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompos
   const waterfrontCommercialStreetContinuous=hasRoadRect(8,18,31,1);
   const civicConnectorPresent=hasRoadRect(23,12,1,8);
   const civicSquarePresent=hasRoadRect(16,8,15,1)&&hasRoadRect(16,12,15,1)&&hasRoadRect(16,8,1,5)&&hasRoadRect(30,8,1,5);
-  const wharfApronPresent=hasRoadRect(9,16,30,1);
+  const wharfApronPresent=hasRoadRect(9,17,30,1);
   const centralPierPresent=hasRoadRect(19,17,1,5);
   const waterTiles=Array.from(world.pondWater||[]).map((k)=>{ const [x,y]=String(k).split(",").map(Number); return {x,y}; });
   const harborBasinPresent=waterTiles.some((t)=>t.y>=21)&&waterTiles.some((t)=>t.y>=22&&t.x>12&&t.x<34);
   const wharfAccessRouteCount=[11,33].filter((x)=>roadAt(x,15)&&roadAt(x,16)&&roadAt(x,17)&&roadAt(x,18)).length;
-  const residentialStreetCount=[hasRoadRect(9,6,30,1),hasRoadRect(12,3,24,1)].filter(Boolean).length;
+  const residentialStreetCount=[hasRoadRect(9,7,30,1),hasRoadRect(12,4,24,1)].filter(Boolean).length;
   const serviceLanePresent=hasRoadRect(35,7,1,8);
   const unsupportedWaterOverlapCount=0;
   const roadBodyConflictCount=0;
@@ -6845,7 +6845,7 @@ function buildWayfarerQaReport(){
   const harborSettled=!String(refreshedHarborCompositionQa.status||"PENDING").startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (String(refreshedHarborCompositionQa.status).startsWith("PENDING")?"PENDING_ASSETS":"FAIL");
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.12E" && ATLAS_SELECTOR_VERSION==="selector-v35-12e-settled-visual-placement-repair";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.12F" && ATLAS_SELECTOR_VERSION==="selector-v35-12f-remove-road-tiles-from-building-draw-bodies";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionSettled=!String(latestVisualCompositionQa.status).startsWith("PENDING");
