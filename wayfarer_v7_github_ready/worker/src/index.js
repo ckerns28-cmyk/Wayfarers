@@ -2643,6 +2643,7 @@ function emitWayfarerBuildSentinel(){
   const params=new URLSearchParams(window.location.search);
   const cacheBust=params.get("cacheBust") || "none";
   console.info("[Wayfarer Build] phase="+WAYFARER_PHASE+" commit="+WAYFARER_BUILD_COMMIT+" selectorVersion="+ATLAS_SELECTOR_VERSION+" cacheBust="+cacheBust+" timestamp="+new Date().toISOString());
+  console.info("[Served Build Truth] phase="+WAYFARER_PHASE+" selector="+ATLAS_SELECTOR_VERSION+" buildLabel="+WAYFARER_BUILD_LABEL+" cacheBust="+cacheBust+" commit="+WAYFARER_BUILD_COMMIT+" source=current_main_or_runtime_injected");
 }
 
 function isAtlasProofOverrideRequested(building, sprite){

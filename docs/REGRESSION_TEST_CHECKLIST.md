@@ -217,3 +217,17 @@
 - [ ] Merchant Rowan, Hunter Garran, and Edrin Vale interactions remain functional.
 - [ ] Mirror Cave flow remains functional.
 - [ ] Tollhouse cleared state remains preserved if previously cleared.
+
+## Q. Newport Town-Phase Served Validation Merge Gate
+
+A Newport town-phase PR is **not complete** unless the PR body includes pasted served evidence from the live served URL.
+
+- [ ] Live served URL used for validation is included in PR body.
+- [ ] Final `[Wayfarer QA Report]` line is pasted from served browser console output.
+- [ ] Final `[Building Placement Contract QA]` line is pasted from served browser console output.
+- [ ] Final `[Newport Visual Composition QA]` line is pasted from served browser console output.
+- [ ] Final `[Harbor Composition QA]` line is pasted from served browser console output.
+- [ ] Final `[Newport Masterplan QA]` line is pasted from served browser console output.
+- [ ] Screenshot evidence is attached (atlasDebug, non-debug, freshSpawn).
+
+Do not claim served validation is complete unless the actual served browser console output is pasted into the PR body.
