@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.12G";
-const WAYFARER_BUILD_LABEL = "Phase 35.12G — Canonical Route/Building Separation Repair";
-const ATLAS_SELECTOR_VERSION = "selector-v35-12g-canonical-route-building-separation";
+const WAYFARER_PHASE = "35.12H";
+const WAYFARER_BUILD_LABEL = "Phase 35.12H — Enforce Canonical Route Source Sanitization";
+const ATLAS_SELECTOR_VERSION = "selector-v35-12h-enforce-canonical-route-source-sanitization";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3570,7 +3570,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.12G' && ATLAS_SELECTOR_VERSION==='selector-v35-12g-canonical-route-building-separation';
+  const proofHudConsistent=WAYFARER_PHASE==='35.12H' && ATLAS_SELECTOR_VERSION==='selector-v35-12h-enforce-canonical-route-source-sanitization';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4617,9 +4617,10 @@ function emitTraversalTopologyQA(){
   const sampleBlockedTiles=blockedTiles.slice(0,12);
   const pierBlockedTile=blockedTiles.find((tile)=>tile.x===19 && tile.y===21) || null;
   const classificationMismatchCount=Math.max(0, routeClassification.visualRouteTiles.size-routeClassification.navigableRouteTiles.size-routeClassification.intentionalBlockedRouteTiles.size);
-  const status=classificationMismatchCount===0?"PASS":"FAIL";
-  traversalTopologyQaResult={ status, blockedRoadMismatches:blockedTiles.length, classificationMismatchCount, ...counters, sampleBlockedTiles, routeClassification };
-  const line="[Route Topology QA] visualRouteTiles="+routeClassification.visualRouteTiles.size+" navigableRouteTiles="+routeClassification.navigableRouteTiles.size+" intentionalBlockedRouteTiles="+routeClassification.intentionalBlockedRouteTiles.size+" invalidHiddenBlockers="+routeClassification.invalidHiddenBlockers.size+" classificationMismatches="+classificationMismatchCount+" sampleBlockedTiles="+JSON.stringify(sampleBlockedTiles)+" status="+status;
+  const buildingBlockedRouteCount=counters.buildingRouteBlockers;
+  const status=(classificationMismatchCount===0 && buildingBlockedRouteCount===0 && routeClassification.invalidHiddenBlockers.size===0)?"PASS":"FAIL";
+  traversalTopologyQaResult={ status, blockedRoadMismatches:blockedTiles.length, classificationMismatchCount, buildingBlockedRouteCount, ...counters, sampleBlockedTiles, routeClassification };
+  const line="[Route Topology QA] visualRouteTiles="+routeClassification.visualRouteTiles.size+" navigableRouteTiles="+routeClassification.navigableRouteTiles.size+" intentionalBlockedRouteTiles="+routeClassification.intentionalBlockedRouteTiles.size+" invalidHiddenBlockers="+routeClassification.invalidHiddenBlockers.size+" buildingBlockedRouteCount="+buildingBlockedRouteCount+" classificationMismatches="+classificationMismatchCount+" sampleBlockedTiles="+JSON.stringify(sampleBlockedTiles)+" status="+status;
   if(line!==routeTopologyQaSignature){
     routeTopologyQaSignature=line;
     console.info(line);
@@ -4690,7 +4691,7 @@ function classifyRouteTiles(){
     const canonicalBodyState=getCanonicalRouteBodyTileState(x,y);
     if(canonicalBodyState.isForbiddenBodyCollision){
       coveredByBuildingTiles.add(tileKey);
-      intentionalBlockedRouteTiles.add(tileKey);
+      invalidHiddenBlockers.add(tileKey);
       if(examples.length<10) examples.push("tile=("+x+","+y+") blocker=building reason="+canonicalBodyState.reason+" building="+canonicalBodyState.owningBuildingId);
       return;
     }
@@ -5779,15 +5780,27 @@ world.roads.push(
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 function enforceCanonicalRouteBuildingSeparation(){
+  const canonicalPlayableRouteTiles=new Set();
+  const canonicalDecorativeRoadTiles=new Set();
+  const canonicalRejectedRouteTiles=new Set();
   const removed=[];
   world.roadTiles.forEach((tileKey)=>{
     const [x,y]=tileKey.split(",").map(Number);
     const state=getCanonicalRouteBodyTileState(x,y);
-    if(!state.isForbiddenBodyCollision) return;
-    world.roadTiles.delete(tileKey);
-    removed.push({ x,y,buildingId:state.owningBuildingId,reason:state.reason });
+    if(state.isForbiddenBodyCollision){
+      canonicalRejectedRouteTiles.add(tileKey);
+      removed.push({ x,y,buildingId:state.owningBuildingId,reason:state.reason });
+      return;
+    }
+    if(state.isLegalFrontage){ canonicalPlayableRouteTiles.add(tileKey); return; }
+    if(state.isDecorativeOnly){ canonicalDecorativeRoadTiles.add(tileKey); return; }
+    canonicalPlayableRouteTiles.add(tileKey);
   });
-  return removed;
+  world.roadTiles=new Set(canonicalPlayableRouteTiles);
+  world.canonicalPlayableRouteTiles=canonicalPlayableRouteTiles;
+  world.canonicalDecorativeRoadTiles=canonicalDecorativeRoadTiles;
+  world.canonicalRejectedRouteTiles=canonicalRejectedRouteTiles;
+  return { removed, canonicalPlayableRouteTiles, canonicalDecorativeRoadTiles, canonicalRejectedRouteTiles };
 }
 const canonicalRouteRemovals=enforceCanonicalRouteBuildingSeparation();
 
@@ -6895,7 +6908,7 @@ function buildWayfarerQaReport(){
   const harborSettled=!String(refreshedHarborCompositionQa.status||"PENDING").startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (String(refreshedHarborCompositionQa.status).startsWith("PENDING")?"PENDING_ASSETS":"FAIL");
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.12G" && ATLAS_SELECTOR_VERSION==="selector-v35-12g-canonical-route-building-separation";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.12H" && ATLAS_SELECTOR_VERSION==="selector-v35-12h-enforce-canonical-route-source-sanitization";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionSettled=!String(latestVisualCompositionQa.status).startsWith("PENDING");
