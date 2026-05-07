@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.12D.3";
-const WAYFARER_BUILD_LABEL = "Phase 35.12D.3 — QA Emitter Crash Repair";
-const ATLAS_SELECTOR_VERSION = "selector-v35-12d3-qa-emitter-crash-repair";
+const WAYFARER_PHASE = "35.12E";
+const WAYFARER_BUILD_LABEL = "Phase 35.12E — Settled Visual Placement Repair";
+const ATLAS_SELECTOR_VERSION = "selector-v35-12e-settled-visual-placement-repair";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3570,7 +3570,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.12D.3' && ATLAS_SELECTOR_VERSION==='selector-v35-12d3-qa-emitter-crash-repair';
+  const proofHudConsistent=WAYFARER_PHASE==='35.12E' && ATLAS_SELECTOR_VERSION==='selector-v35-12e-settled-visual-placement-repair';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5770,16 +5770,10 @@ world.roads.push(
   { x:18,y:17,w:3,h:1 },   // central pier apron
   { x:19,y:17,w:1,h:5 },   // central pier
   { x:32,y:22,w:1,h:3 },   // side dock
-  { x:9,y:6,w:14,h:1 },    // upper residential lane A west
-  { x:27,y:6,w:12,h:1 },   // upper residential lane A east
-  { x:12,y:3,w:7,h:1 },    // upper residential lane B west
-  { x:23,y:3,w:13,h:1 },   // upper residential lane B east
+  { x:9,y:6,w:30,h:1 },    // upper residential lane A continuous
+  { x:12,y:3,w:24,h:1 },   // upper residential lane B continuous
   { x:35,y:7,w:1,h:10 },   // service/backlot lane
-  { x:9,y:16,w:1,h:1 },    // wharf apron gap west marker
-  { x:14,y:16,w:2,h:1 },   // wharf apron west center
-  { x:19,y:16,w:2,h:1 },   // wharf apron center-west
-  { x:25,y:16,w:3,h:1 },   // wharf apron center-east
-  { x:30,y:16,w:1,h:1 },   // wharf apron east marker
+  { x:9,y:16,w:30,h:1 },   // continuous wharf apron
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
 
@@ -6851,7 +6845,7 @@ function buildWayfarerQaReport(){
   const harborSettled=!String(refreshedHarborCompositionQa.status||"PENDING").startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (String(refreshedHarborCompositionQa.status).startsWith("PENDING")?"PENDING_ASSETS":"FAIL");
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.12D.3" && ATLAS_SELECTOR_VERSION==="selector-v35-12d3-qa-emitter-crash-repair";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.12E" && ATLAS_SELECTOR_VERSION==="selector-v35-12e-settled-visual-placement-repair";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionSettled=!String(latestVisualCompositionQa.status).startsWith("PENDING");
