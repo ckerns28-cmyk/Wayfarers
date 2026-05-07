@@ -1656,8 +1656,8 @@ function applySemanticRegistryToManifest(){
   }
 }
 const WAYFARER_PHASE = "35.12A";
-const WAYFARER_BUILD_LABEL = "Phase 35.12A.1 — Bootstrap-Safe Visual Placement Contract Repair";
-const ATLAS_SELECTOR_VERSION = "selector-v35-12a1-bootstrap-safe-placement-contract";
+const WAYFARER_BUILD_LABEL = "Phase 35.12A.2 — Deferred Placement Contract QA Initialization";
+const ATLAS_SELECTOR_VERSION = "selector-v35-12a2-deferred-placement-contract-init";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.12A' && ATLAS_SELECTOR_VERSION==='selector-v35-12a1-bootstrap-safe-placement-contract';
+  const proofHudConsistent=WAYFARER_PHASE==='35.12A' && ATLAS_SELECTOR_VERSION==='selector-v35-12a2-deferred-placement-contract-init';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5972,11 +5972,27 @@ function evaluateVisualFirstPlacementContract(spec){
   const supportedWaterFootprint=(lc.supportedWaterFootprint||[]).map((t)=>keyOf(t.x,t.y));
   const unsupportedWaterOverlap=footprintTiles.some((t)=>world.pondWater.has(keyOf(t.x,t.y))&&!world.roadTiles.has(keyOf(t.x,t.y))&&!supportedWaterFootprint.includes(keyOf(t.x,t.y)));
   const roadBodyConflict=footprintTiles.some((t)=>world.roadTiles.has(keyOf(t.x,t.y)));
-  const pierConflict=footprintTiles.some((t)=>isHarborPierTile(t.x,t.y));
+  const safeIsPierTile=(x,y)=>{
+    try{
+      if(typeof isHarborPierTile!=="function") return { pending:true, reason:"harbor_pier_helper_unavailable" };
+      return { pending:false, value:!!isHarborPierTile(x,y) };
+    }catch(err){
+      return { pending:true, reason:"harbor_pier_helper_uninitialized" };
+    }
+  };
+  let pierPredicatePendingReason=null;
+  const pierConflict=footprintTiles.some((t)=>{
+    const pierState=safeIsPierTile(t.x,t.y);
+    if(pierState.pending){ pierPredicatePendingReason=pierState.reason||"harbor_pier_helper_pending"; return false; }
+    return pierState.value;
+  });
   const wharfConflict=footprintTiles.some((t)=>t.y===18&&t.x>=8&&t.x<=31);
   const mapEdgeViolation=finalDrawRect.x<=0||finalDrawRect.y<=0||(finalDrawRect.x+finalDrawRect.w)>=47||(finalDrawRect.y+finalDrawRect.h)>=31;
   const frontageReachable=!!(frontageTile&&canMoveToIgnoringDynamicBlockers(frontageTile.x,frontageTile.y));
-  const supportClassViolation=(desiredSupport==='supported_pier'&&!footprintTiles.some((t)=>isHarborPierTile(t.x,t.y)))||(desiredSupport==='wharf_apron'&&!footprintTiles.some((t)=>t.y===16||t.y===18));
+  const supportClassViolation=(desiredSupport==='supported_pier'&&!footprintTiles.some((t)=>{ const pierState=safeIsPierTile(t.x,t.y); if(pierState.pending){ pierPredicatePendingReason=pierState.reason||"harbor_pier_helper_pending"; return false; } return pierState.value; }))||(desiredSupport==='wharf_apron'&&!footprintTiles.some((t)=>t.y===16||t.y===18));
+  if(pierPredicatePendingReason){
+    return { status:"PENDING_INIT", reason:pierPredicatePendingReason, buildingId:b.id, spriteId:b.spriteId };
+  }
   return { buildingId:b.id,spriteId:b.spriteId,desiredFinalDrawRect,desiredVisualBaseTile,desiredFrontageTile,actualFinalDrawRect:finalDrawRect,finalDrawRectPx,finalDrawRectMatchesIntent,lotRect:lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h},drawAnchor,collisionFootprint,frontageTile,interactionRect,supportedWaterFootprint:lc.supportedWaterFootprint||[],roadClearanceTiles:[],pierClearanceTiles:[],wharfClearanceTiles:[],mapEdgeSafety:!mapEdgeViolation,frontageReachable,roadBodyConflict,unsupportedWaterOverlap,pierConflict,wharfConflict,mapEdgeViolation,supportClass:desiredSupport,supportClassViolation };
 }
 
@@ -5995,7 +6011,7 @@ function emitBuildingPlacementContractQA(){
     desiredFrontageTile:building.lotContract?.frontageTile||null,
     allowedSupport:building.lotContract?.district==='harbor_wharf'?'wharf_apron':'land_street'
   })).map((r)=>{
-    if(r.status==="PENDING_DATA"||r.status==="PENDING_ASSETS"){
+    if(r.status==="PENDING_DATA"||r.status==="PENDING_ASSETS"||r.status==="PENDING_INIT"){
       return { ...r, buildingId:r.buildingId||"unknown", spriteId:r.spriteId||null, status:r.status, failureReasons:[r.reason||"pending_data"] };
     }
     const failureReasons=[];
@@ -6070,7 +6086,21 @@ function emitNewportVisualCompositionQA(){
   console.info('[Newport Visual Composition QA] status='+status+' productionBuildingCount='+buildingReports.length+' failCount='+failures.length+' warnCount='+warnings.length+' reports='+JSON.stringify(buildingReports));
   return { status, productionBuildingCount:buildingReports.length, failCount:failures.length, warnCount:warnings.length, buildingReports };
 }
-let buildingPlacementContractQaResult=emitBuildingPlacementContractQA();
+let buildingPlacementContractQaResult={ status:"PENDING_INIT", reason:"deferred_until_final_qa_phase", productionBuildingCount:0, passCount:0, failCount:0, failedBuildings:[], reports:[] };
+let finalBuildingPlacementContractQaResult=null;
+function refreshBuildingPlacementContractQAIfSettled(){
+  const atlasReady=!!(atlasImages?.buildings?.complete && atlasImages.buildings.naturalWidth>0 && atlasImages.buildings.naturalHeight>0);
+  const worldReady=!!(world&&Array.isArray(world.buildings)&&world.buildings.length>0);
+  if(!atlasReady||!worldReady){
+    buildingPlacementContractQaResult={ status:"PENDING_INIT", reason:!worldReady?"world_buildings_unavailable":"building_atlas_not_ready", productionBuildingCount:0, passCount:0, failCount:0, failedBuildings:[], reports:[] };
+    console.info("[Building Placement Contract QA] status=PENDING_INIT reason="+buildingPlacementContractQaResult.reason);
+    return buildingPlacementContractQaResult;
+  }
+  if(finalBuildingPlacementContractQaResult) return finalBuildingPlacementContractQaResult;
+  buildingPlacementContractQaResult=emitBuildingPlacementContractQA();
+  if(buildingPlacementContractQaResult.status!=="PENDING_INIT"&&buildingPlacementContractQaResult.status!=="PENDING_DATA") finalBuildingPlacementContractQaResult=buildingPlacementContractQaResult;
+  return buildingPlacementContractQaResult;
+}
 let newportVisualCompositionQaResult=emitNewportVisualCompositionQA();
 let finalNewportVisualCompositionQaResult=(newportVisualCompositionQaResult.status==="PENDING_ASSETS") ? null : newportVisualCompositionQaResult;
 function refreshNewportVisualCompositionQAIfSettled(){
@@ -6805,7 +6835,8 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.12A" && ATLAS_SELECTOR_VERSION==="selector-v35-12a1-bootstrap-safe-placement-contract";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.12A" && ATLAS_SELECTOR_VERSION==="selector-v35-12a2-deferred-placement-contract-init";
+  refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=refreshNewportVisualCompositionQAIfSettled();
   const visualCompositionSettled=latestVisualCompositionQa.status!=="PENDING_ASSETS";
   const visualCompositionPass=latestVisualCompositionQa.status==="PASS";
