@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.11.2";
-const WAYFARER_BUILD_LABEL = "Phase 35.11.2 — Served QA Truth + Newport Layout Lock";
-const ATLAS_SELECTOR_VERSION = "selector-v35-11-2-served-qa-truth-newport-layout-lock";
+const WAYFARER_PHASE = "35.12A";
+const WAYFARER_BUILD_LABEL = "Phase 35.12A — Visual-First Building Placement Contract";
+const ATLAS_SELECTOR_VERSION = "selector-v35-12a-visual-first-building-placement-contract";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3569,7 +3569,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.11.2' && ATLAS_SELECTOR_VERSION==='selector-v35-11-2-served-qa-truth-newport-layout-lock';
+  const proofHudConsistent=WAYFARER_PHASE==='35.12A' && ATLAS_SELECTOR_VERSION==='selector-v35-12a-visual-first-building-placement-contract';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -5931,6 +5931,78 @@ function emitNewportSpriteRoleLotAudit(){
 emitNewportSpriteRoleLotAudit();
 emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
+const NEWPORT_TOWN_BLUEPRINT_V2=Object.freeze({
+  phase:"35.12B_planning_only",
+  targetFlow:["harbor_water","wharf_apron_or_pier","waterfront_commercial_street","civic_green_village_hall","residential_upper_town","service_backlot_lanes"],
+  targetZones:{
+    harborWater:{ intent:"southern water basin preserving wharf readability" },
+    wharfApronPier:{ intent:"continuous apron with intentional pier support points" },
+    waterfrontCommercialStreet:{ intent:"continuous frontage route for commercial entries" },
+    civicGreenVillageHall:{ intent:"clear civic axis with village hall focal placement" },
+    residentialUpperTown:{ intent:"quiet inland residential bands above commercial corridor" },
+    serviceBacklotLanes:{ intent:"support structures and access behind primary streets" }
+  }
+});
+
+function evaluateVisualFirstPlacementContract(spec){
+  const TILE_SIZE=TILE;
+  const b=spec.building;
+  const lc=b.lotContract||{};
+  const spriteMeta=ATLAS_BUILDING_METADATA?.[b.spriteId]||null;
+  const drawW=Number.isFinite(spriteMeta?.drawW)?spriteMeta.drawW:(b.w*TILE_SIZE);
+  const drawH=Number.isFinite(spriteMeta?.drawH)?spriteMeta.drawH:(b.h*TILE_SIZE);
+  const drawAnchor={ x:Number.isFinite(spriteMeta?.anchorX)?spriteMeta.anchorX:((b.anchorX??Math.floor(b.w/2))*TILE_SIZE), y:Number.isFinite(spriteMeta?.anchorY)?spriteMeta.anchorY:((b.anchorY??(b.h-1))*TILE_SIZE) };
+  const base=tileToScreen(b.x,b.y);
+  const anchorPx={ x:(b.anchorX??Math.floor(b.w/2))*TILE_SIZE, y:(b.anchorY??(b.h-1))*TILE_SIZE };
+  const finalDrawRectPx={ x:base.x+anchorPx.x-drawAnchor.x, y:base.y+anchorPx.y-drawAnchor.y, w:drawW, h:drawH };
+  const finalDrawRect={ x:finalDrawRectPx.x/TILE_SIZE, y:finalDrawRectPx.y/TILE_SIZE, w:drawW/TILE_SIZE, h:drawH/TILE_SIZE };
+  const collisionFootprint=b.collision||{x:b.x,y:b.y,w:b.w,h:b.h};
+  const frontageTile=lc.frontageTile||b.frontDoorTile||null;
+  const interactionRect=b.interactRect||b.interaction||null;
+  const desiredFinalDrawRect=spec.desiredFinalDrawRect||lc.desiredFinalDrawRect||null;
+  const desiredVisualBaseTile=spec.desiredVisualBaseTile||null;
+  const desiredFrontageTile=spec.desiredFrontageTile||lc.frontageTile||null;
+  const desiredSupport=spec.allowedSupport||"land_street";
+  const finalDrawRectMatchesIntent=!desiredFinalDrawRect || (finalDrawRect.x===desiredFinalDrawRect.x && finalDrawRect.y===desiredFinalDrawRect.y && finalDrawRect.w===desiredFinalDrawRect.w && finalDrawRect.h===desiredFinalDrawRect.h);
+  const footprintTiles=Array.from({length:collisionFootprint.w*collisionFootprint.h},(_,i)=>({x:collisionFootprint.x+(i%collisionFootprint.w),y:collisionFootprint.y+Math.floor(i/collisionFootprint.w)}));
+  const supportedWaterFootprint=(lc.supportedWaterFootprint||[]).map((t)=>keyOf(t.x,t.y));
+  const unsupportedWaterOverlap=footprintTiles.some((t)=>world.pondWater.has(keyOf(t.x,t.y))&&!world.roadTiles.has(keyOf(t.x,t.y))&&!supportedWaterFootprint.includes(keyOf(t.x,t.y)));
+  const roadBodyConflict=footprintTiles.some((t)=>world.roadTiles.has(keyOf(t.x,t.y)));
+  const pierConflict=footprintTiles.some((t)=>isHarborPierTile(t.x,t.y));
+  const wharfConflict=footprintTiles.some((t)=>t.y===18&&t.x>=8&&t.x<=31);
+  const mapEdgeViolation=finalDrawRect.x<=0||finalDrawRect.y<=0||(finalDrawRect.x+finalDrawRect.w)>=47||(finalDrawRect.y+finalDrawRect.h)>=31;
+  const frontageReachable=!!(frontageTile&&canMoveToIgnoringDynamicBlockers(frontageTile.x,frontageTile.y));
+  const supportClassViolation=(desiredSupport==='supported_pier'&&!footprintTiles.some((t)=>isHarborPierTile(t.x,t.y)))||(desiredSupport==='wharf_apron'&&!footprintTiles.some((t)=>t.y===16||t.y===18));
+  return { buildingId:b.id,spriteId:b.spriteId,desiredFinalDrawRect,desiredVisualBaseTile,desiredFrontageTile,actualFinalDrawRect:finalDrawRect,finalDrawRectPx,finalDrawRectMatchesIntent,lotRect:lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h},drawAnchor,collisionFootprint,frontageTile,interactionRect,supportedWaterFootprint:lc.supportedWaterFootprint||[],roadClearanceTiles:[],pierClearanceTiles:[],wharfClearanceTiles:[],mapEdgeSafety:!mapEdgeViolation,frontageReachable,roadBodyConflict,unsupportedWaterOverlap,pierConflict,wharfConflict,mapEdgeViolation,supportClass:desiredSupport,supportClassViolation };
+}
+
+function emitBuildingPlacementContractQA(){
+  const offenders=new Set(["b_boathouse","b_dock_storehouse","b_market_shed","b_inn_tavern","b_mercantile","b_counting_house","b_chandlery_front","b_shop_house","b_custom_house","b_res_large","b_georgian_residence","b_elite_mansion","b_prestige_block"]);
+  const reports=world.buildings.map((building)=>evaluateVisualFirstPlacementContract({
+    building,
+    desiredFinalDrawRect:building.lotContract?.desiredFinalDrawRect||null,
+    desiredVisualBaseTile:{x:building.x,y:building.y},
+    desiredFrontageTile:building.lotContract?.frontageTile||null,
+    allowedSupport:building.lotContract?.district==='harbor_wharf'?'wharf_apron':'land_street'
+  })).map((r)=>{
+    const failureReasons=[];
+    if(!r.finalDrawRectMatchesIntent) failureReasons.push('final_draw_rect_does_not_match_intent');
+    if(r.unsupportedWaterOverlap) failureReasons.push('final_draw_rect_overlaps_unsupported_water');
+    if(r.roadBodyConflict) failureReasons.push('final_draw_rect_conflicts_with_road_body');
+    if(r.pierConflict) failureReasons.push('final_draw_rect_conflicts_with_pier');
+    if(r.wharfConflict) failureReasons.push('final_draw_rect_conflicts_with_wharf');
+    if(!r.frontageReachable) failureReasons.push('frontage_unreachable');
+    if(r.mapEdgeViolation) failureReasons.push('map_edge_clipping');
+    if(r.supportClassViolation) failureReasons.push('support_class_violation');
+    if(offenders.has(r.buildingId)) failureReasons.push('requires_derived_placement_from_visual_draw_rect');
+    return { ...r,status:failureReasons.length===0?'PASS':'FAIL',failureReasons };
+  });
+  const failed=reports.filter((r)=>r.status==='FAIL');
+  console.info('[Building Placement Contract QA] productionBuildingCount='+reports.length+' passCount='+(reports.length-failed.length)+' failCount='+failed.length+' failedBuildings='+JSON.stringify(failed.map((r)=>r.buildingId))+' status='+(failed.length===0?'PASS':'FAIL'));
+  console.info('[Building Placement Contract QA] reports='+JSON.stringify(reports));
+  return { status:failed.length===0?'PASS':'FAIL', productionBuildingCount:reports.length, passCount:reports.length-failed.length, failCount:failed.length, failedBuildings:failed.map((r)=>r.buildingId), reports };
+}
+
 function emitNewportVisualCompositionQA(){
   const atlasReady=!!(atlasImages?.buildings?.complete && atlasImages.buildings.naturalWidth>0 && atlasImages.buildings.naturalHeight>0);
   if(!atlasReady){
@@ -5985,6 +6057,7 @@ function emitNewportVisualCompositionQA(){
   console.info('[Newport Visual Composition QA] status='+status+' productionBuildingCount='+buildingReports.length+' failCount='+failures.length+' warnCount='+warnings.length+' reports='+JSON.stringify(buildingReports));
   return { status, productionBuildingCount:buildingReports.length, failCount:failures.length, warnCount:warnings.length, buildingReports };
 }
+let buildingPlacementContractQaResult=emitBuildingPlacementContractQA();
 let newportVisualCompositionQaResult=emitNewportVisualCompositionQA();
 let finalNewportVisualCompositionQaResult=(newportVisualCompositionQaResult.status==="PENDING_ASSETS") ? null : newportVisualCompositionQaResult;
 function refreshNewportVisualCompositionQAIfSettled(){
@@ -6719,7 +6792,7 @@ function normalizeQaStatus(value){
 function buildWayfarerQaReport(){
   const harborStatus=harborCompositionQaResult.status==="PASS" ? "PASS" : "FAIL";
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.11.2" && ATLAS_SELECTOR_VERSION==="selector-v35-11-2-served-qa-truth-newport-layout-lock";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.12A" && ATLAS_SELECTOR_VERSION==="selector-v35-12a-visual-first-building-placement-contract";
   const latestVisualCompositionQa=refreshNewportVisualCompositionQAIfSettled();
   const visualCompositionSettled=latestVisualCompositionQa.status!=="PENDING_ASSETS";
   const visualCompositionPass=latestVisualCompositionQa.status==="PASS";
