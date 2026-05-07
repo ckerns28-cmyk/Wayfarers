@@ -1655,9 +1655,9 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.12F";
-const WAYFARER_BUILD_LABEL = "Phase 35.12F — Remove Road Tiles From Building Draw Bodies";
-const ATLAS_SELECTOR_VERSION = "selector-v35-12f-remove-road-tiles-from-building-draw-bodies";
+const WAYFARER_PHASE = "35.12G";
+const WAYFARER_BUILD_LABEL = "Phase 35.12G — Canonical Route/Building Separation Repair";
+const ATLAS_SELECTOR_VERSION = "selector-v35-12g-canonical-route-building-separation";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3570,7 +3570,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.12F' && ATLAS_SELECTOR_VERSION==='selector-v35-12f-remove-road-tiles-from-building-draw-bodies';
+  const proofHudConsistent=WAYFARER_PHASE==='35.12G' && ATLAS_SELECTOR_VERSION==='selector-v35-12g-canonical-route-building-separation';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4629,21 +4629,22 @@ function emitTraversalTopologyQA(){
 }
 function emitRouteTileSweepQA(){
   const routeClassification=classifyRouteTiles();
-  const routeTiles=routeClassification.navigableRouteTiles;
+  const routeTiles=routeClassification.visualRouteTiles;
   const examples=[];
   let unexpectedBlockedEdges=0;
   routeTiles.forEach((tileKey)=>{
     const [x,y]=tileKey.split(",").map(Number);
-    const northY=y-1;
-    const northKey=keyOf(x,northY);
-    if(!routeTiles.has(northKey)) return;
-    if(canMoveTo(x,northY)) return;
-    const northDiag=getMovementBlockDiagnostics(x,northY);
-    if(routeClassification.intentionalBlockedRouteTiles.has(northKey)) return;
-    unexpectedBlockedEdges++;
-    if(examples.length<8){
-      examples.push("("+x+","+y+"):north blockedBy="+(northDiag.reason||"unknown")+" expected=false visibleType=route");
+    const canonicalState=getCanonicalRouteBodyTileState(x,y);
+    if(canonicalState.isForbiddenBodyCollision){
+      unexpectedBlockedEdges++;
+      if(examples.length<8) examples.push("("+x+","+y+"):blockedBy=building:"+canonicalState.owningBuildingId+" reason="+canonicalState.reason+" visibleType=route");
+      return;
     }
+    const tileDiag=getMovementBlockDiagnostics(x,y);
+    if(!tileDiag.blocked) return;
+    if(routeClassification.intentionalBlockedRouteTiles.has(tileKey)) return;
+    unexpectedBlockedEdges++;
+    if(examples.length<8) examples.push("("+x+","+y+"):blockedBy="+(tileDiag.reason||"unknown")+" expected=false visibleType=route");
   });
   const status=unexpectedBlockedEdges===0?"PASS":"FAIL";
   routeTileSweepQaResult={ status, scanned:routeTiles.size, unexpectedBlockedEdges, examples };
@@ -4686,10 +4687,11 @@ function classifyRouteTiles(){
   });
   visualRouteTiles.forEach((tileKey)=>{
     const [x,y]=tileKey.split(",").map(Number);
-    const isCoveredByBuilding=isAtlasBuildingBlockedTile(x,y) || world.buildings.some((building)=>tileInRect(x,y,building.pathingBounds));
-    if(isCoveredByBuilding){
+    const canonicalBodyState=getCanonicalRouteBodyTileState(x,y);
+    if(canonicalBodyState.isForbiddenBodyCollision){
       coveredByBuildingTiles.add(tileKey);
       intentionalBlockedRouteTiles.add(tileKey);
+      if(examples.length<10) examples.push("tile=("+x+","+y+") blocker=building reason="+canonicalBodyState.reason+" building="+canonicalBodyState.owningBuildingId);
       return;
     }
     const diag=getMovementBlockDiagnostics(x,y);
@@ -5776,6 +5778,18 @@ world.roads.push(
   { x:9,y:17,w:30,h:1 },   // continuous wharf apron (moved off building draw bodies)
 );
 world.roads.forEach(r=>{ for(let x=r.x;x<r.x+r.w;x++) for(let y=r.y;y<r.y+r.h;y++) world.roadTiles.add(keyOf(x,y)); });
+function enforceCanonicalRouteBuildingSeparation(){
+  const removed=[];
+  world.roadTiles.forEach((tileKey)=>{
+    const [x,y]=tileKey.split(",").map(Number);
+    const state=getCanonicalRouteBodyTileState(x,y);
+    if(!state.isForbiddenBodyCollision) return;
+    world.roadTiles.delete(tileKey);
+    removed.push({ x,y,buildingId:state.owningBuildingId,reason:state.reason });
+  });
+  return removed;
+}
+const canonicalRouteRemovals=enforceCanonicalRouteBuildingSeparation();
 
 function createBuildingLotContract({ id, district, block, row, lotRect, visualLotRect, footprint, frontageTile, frontWalk, rowAligned=true }){
   return {
@@ -5813,6 +5827,35 @@ world.buildings.push(
   placeLotBuilding({ id:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", x:18,y:1,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upland",row:"residential_b", lotRect:{x:18,y:1,w:5,h:4},visualLotRect:{x:18,y:1,w:5,h:4},collision:{x:19,y:3,w:4,h:1},interaction:{x:20,y:3,w:1,h:1},frontageTile:{x:20,y:3},frontWalkBand:{x:18,y:3,w:5,h:1},label:{x:20,y:2,text:"Mansion"},pathingBounds:{x:17,y:0,w:7,h:6} }),
   placeLotBuilding({ id:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", x:24,y:1,w:5,h:4,anchorX:3,anchorY:4,district:"elite_inland_residential",block:"upland",row:"residential_b", lotRect:{x:24,y:1,w:5,h:4},visualLotRect:{x:24,y:1,w:5,h:4},collision:{x:25,y:3,w:4,h:1},interaction:{x:26,y:3,w:1,h:1},frontageTile:{x:26,y:3},frontWalkBand:{x:24,y:3,w:5,h:1},label:{x:26,y:2,text:"Prestige Row"},pathingBounds:{x:23,y:0,w:7,h:6} })
 );
+function getCanonicalRouteBodyTileState(x,y){
+  const tileKey=keyOf(x,y);
+  for(const building of world.buildings){
+    const lotRect=building.lotContract?.lotRect||null;
+    const finalDrawRect=building.finalDrawRect||building.visualBounds||building.visual||null;
+    const collision=building.collision||building.lotContract?.collisionFootprint||null;
+    const frontage=building.lotContract?.frontageTile||building.interaction||null;
+    const interactionRect=building.interactionRect||building.interactRect||building.interaction||null;
+    const allowedRoadOverlap=building.lotContract?.allowedRoadOverlap===true;
+    const inCollision=collision?tileInRect(x,y,collision):false;
+    const inFinalDrawRect=finalDrawRect?tileInRect(x,y,finalDrawRect):false;
+    const inLotRect=lotRect?tileInRect(x,y,lotRect):false;
+    const isFrontage=frontage?frontage.x===x&&frontage.y===y:false;
+    const isInteraction=interactionRect?tileInRect(x,y,interactionRect):false;
+    const isLegalFrontageWalkable=(isFrontage||isInteraction) && !inCollision;
+    const inForbiddenBody=(inCollision||inFinalDrawRect) && !isLegalFrontageWalkable && !allowedRoadOverlap;
+    if(inCollision||inFinalDrawRect||inLotRect||isFrontage||isInteraction){
+      return {
+        owningBuildingId:building.id,
+        reason:inForbiddenBody?"inside_forbidden_body_or_collision":(isLegalFrontageWalkable?"legal_frontage_or_interaction":"decorative_or_lot_only"),
+        isLegalFrontage:isLegalFrontageWalkable,
+        isForbiddenBodyCollision:inForbiddenBody,
+        isDecorativeOnly:inLotRect&&!inForbiddenBody&&!isLegalFrontageWalkable,
+        tileKey
+      };
+    }
+  }
+  return { owningBuildingId:null, reason:"no_building_coverage", isLegalFrontage:false, isForbiddenBodyCollision:false, isDecorativeOnly:false, tileKey };
+}
 world.buildings.forEach((b)=>{ const c=b.collision || b.visual || {x:b.x,y:b.y,w:b.w,h:b.h}; blockRect(c.x,c.y,c.w,c.h); });
 function auditBuildingAtlasMappings(){
   const atlasEntries=[]; const fallbackEntries=[];
@@ -5842,7 +5885,13 @@ function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompos
   const residentialStreetCount=[hasRoadRect(9,7,30,1),hasRoadRect(12,4,24,1)].filter(Boolean).length;
   const serviceLanePresent=hasRoadRect(35,7,1,8);
   const unsupportedWaterOverlapCount=0;
-  const roadBodyConflictCount=0;
+  const roadBodyConflicts=[];
+  world.roadTiles.forEach((tileKey)=>{
+    const [x,y]=tileKey.split(",").map(Number);
+    const state=getCanonicalRouteBodyTileState(x,y);
+    if(state.isForbiddenBodyCollision) roadBodyConflicts.push({ x,y,buildingId:state.owningBuildingId,reason:state.reason });
+  });
+  const roadBodyConflictCount=roadBodyConflicts.length;
   const buildingsWithReadableFrontageCount=world.buildings.filter((b)=>{ const t=b.lotContract?.frontageTile; return t&&!world.blocked.has(keyOf(t.x,t.y)); }).length;
   const productionBuildingCount=world.buildings.length;
   const visualFailCount=Number.isFinite(arguments[1])?arguments[1]:(visualCompositionStatus==='PASS'?0:1);
@@ -5864,6 +5913,7 @@ function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompos
   console.info('buildingsWithReadableFrontageCount='+buildingsWithReadableFrontageCount);
   console.info('unsupportedWaterOverlapCount='+unsupportedWaterOverlapCount);
   console.info('roadBodyConflictCount='+roadBodyConflictCount);
+  if(roadBodyConflicts.length) console.info('roadBodyConflictExamples='+roadBodyConflicts.slice(0,12).map((r)=>"tile("+r.x+","+r.y+"):"+r.buildingId+":"+r.reason).join(" | "));
   console.info('visualFailCount='+visualFailCount);
   console.info('status='+status);
   return { status };
@@ -6845,7 +6895,7 @@ function buildWayfarerQaReport(){
   const harborSettled=!String(refreshedHarborCompositionQa.status||"PENDING").startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (String(refreshedHarborCompositionQa.status).startsWith("PENDING")?"PENDING_ASSETS":"FAIL");
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.12F" && ATLAS_SELECTOR_VERSION==="selector-v35-12f-remove-road-tiles-from-building-draw-bodies";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.12G" && ATLAS_SELECTOR_VERSION==="selector-v35-12g-canonical-route-building-separation";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionSettled=!String(latestVisualCompositionQa.status).startsWith("PENDING");
