@@ -4919,6 +4919,19 @@ function emitWharfAuthorityAudit(){
   const boathouseCollisionValid=!boathouseCollisionBlocksPlayableWharf;
   console.info("[Wharf Authority Audit] visualWaterTiles="+visualWaterTiles.length+" decorativeWaterOnlyTiles="+decorativeWaterOnlyTiles.length+" playableWharfDeckTiles="+playableWharfDeckTiles.length+" wharfTilesOverWater="+wharfTilesOverWater.length+" invalidPlayableWharfDeckTiles="+invalidPlayableWharfDeckTiles.length+" ignoredDecorativeWaterTiles="+ignoredDecorativeWaterTiles.length+" reachablePlayableWharfTiles="+reachablePlayableWharfTiles.length+" boathouseFrontage="+(frontage?("tile("+frontage.x+","+frontage.y+")"):"none")+" boathouseFrontageReachable="+frontageReachable+" boathouseCollision="+JSON.stringify(collision)+" boathouseCollisionTiles="+collisionTiles.join(",")+" boathouseRequiredWharfOverlapTiles="+boathouseWharfOverlapTiles.join("|")+" boathouseRequiredWharfOverlapCount="+boathouseWharfOverlapTiles.length+" boathouseCollisionDecorativeOnlyCount="+boathouseCollisionDecorativeOnlyCount+" boathouseCollisionRequiredWharfOverlapCount="+boathouseCollisionRequiredWharfOverlapCount+" boathouseCollisionBlocksPlayableWharf="+boathouseCollisionBlocksPlayableWharf+" boathouseCollisionAuthorityReason="+boathouseCollisionAuthorityReason+" boathouseCollisionValid="+boathouseCollisionValid+" waterfrontSpineValid="+waterfrontSpineValid+" invalidSamples="+invalidPlayableWharfDeckTiles.slice(0,8).join("|"));
 }
+function emitPlayerStuckReadabilityBlockerTrace(start){
+  const tile={ x:20, y:16 };
+  const diag=getMovementBlockDiagnostics(tile.x,tile.y);
+  const pathLength=findPathLength(start,tile);
+  const terrainTrace=diag.terrainSourceTrace||{};
+  const status=(!diag.blocked && pathLength>=0) ? "PASS" : "FAIL";
+  const line="[Player Stuck Blocker Trace] tile=(20,16) pathLength="+pathLength+" terrain="+diag.terrainType+" worldBlocked="+world.blocked.has(keyOf(tile.x,tile.y))+" pondWater="+world.pondWater.has(keyOf(tile.x,tile.y))+" pondShore="+world.pondShore.has(keyOf(tile.x,tile.y))+" blockers="+JSON.stringify(diag.causeChain||[])+" blockingBuildingId="+(diag.blockingBuildingId||"none")+" blockerSource="+(terrainTrace.blockerSource||"none")+" status="+status;
+  if(line!==playerStuckBlockerTraceSignature){
+    playerStuckBlockerTraceSignature=line;
+    console.info(line);
+  }
+  return { status, pathLength, diag };
+}
 function emitPlayerStuckReadabilityQA(){
   const probes=[{x:20,y:16},{x:12,y:13},{x:19,y:12},{x:24,y:8},{x:29,y:17},{x:34,y:8}];
   const start={x:player.targetX,y:player.targetY};
@@ -4935,6 +4948,7 @@ function emitPlayerStuckReadabilityQA(){
     return "("+r.p.x+","+r.p.y+"):dist="+r.dist+" diag="+(diag.causeChain?.join("|")||diag.reason||"none");
   }).join(" ");
   console.info("[Player Stuck Readability QA] start=("+start.x+","+start.y+") tested="+probes.length+" reachable="+reachable+" blockedPockets="+blockedPockets+" status="+status+(blockedProbes?" blocked="+blockedProbes:""));
+  emitPlayerStuckReadabilityBlockerTrace(start);
 }
 function canMoveToKey(tileKey){
   const [x,y]=tileKey.split(",").map((v)=>Number(v));
@@ -6288,6 +6302,7 @@ function emitNewportVisualCompositionQA(){
   const failures=buildingReports.filter((r)=>r.visualStatus==='FAIL');
   const warnings=buildingReports.filter((r)=>r.visualStatus==='WARN');
   const status=failures.length===0?'PASS':'FAIL';
+  console.info('[Newport Visual Composition Offenders] failCount='+failures.length+' offenders='+(failures.length?JSON.stringify(failures.map((r)=>({ buildingId:r.buildingId, frontageTile:r.frontageTile, collisionFootprint:r.collisionFootprint, failureReasons:r.failureReasons }))):'none'));
   console.info('[Newport Visual Composition QA] status='+status+' productionBuildingCount='+buildingReports.length+' failCount='+failures.length+' warnCount='+warnings.length+' reports='+JSON.stringify(buildingReports));
   return { status, productionBuildingCount:buildingReports.length, failCount:failures.length, warnCount:warnings.length, buildingReports };
 }
