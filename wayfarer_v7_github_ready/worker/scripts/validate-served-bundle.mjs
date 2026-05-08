@@ -16,8 +16,16 @@ if (!response.ok) {
 }
 
 const html = await response.text();
-const scripts = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/gi)]
-  .map((match) => match[1])
+function isClassicScript(attrs) {
+  const typeMatch = attrs.match(/\btype\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/i);
+  const type = (typeMatch?.[1] || typeMatch?.[2] || typeMatch?.[3] || '').toLowerCase();
+  if (!type) return true;
+  return ['text/javascript', 'application/javascript', 'text/ecmascript', 'application/ecmascript'].includes(type);
+}
+
+const scripts = [...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)]
+  .filter((match) => isClassicScript(match[1] || ''))
+  .map((match) => match[2])
   .filter((body) => body && body.trim().length > 0);
 
 if (scripts.length === 0) {
