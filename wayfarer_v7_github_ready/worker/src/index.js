@@ -1655,10 +1655,10 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13B.1";
+const WAYFARER_PHASE = "35.13B.2.1";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13B.1 — Canonical Foundation Isolation + Movement Authority Lock";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13b1-foundation-isolation-movement-authority";
+const WAYFARER_BUILD_LABEL = "Phase 35.13B.2.1 — Foundation Closure Follow-Through";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13b21-foundation-closure-follow-through";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3571,7 +3571,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13B' && ATLAS_SELECTOR_VERSION==='selector-v35-13b-canonical-newport-blueprint-foundation';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13B.2.1' && ATLAS_SELECTOR_VERSION==='selector-v35-13b21-foundation-closure-follow-through';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6510,10 +6510,9 @@ function finalizeHearthvaleTraversalTopology(){
     if(routeTileSet.has(tileKey)){ hearthvaleTraversalAuthority.nonBlockingTerrainTiles.add(tileKey); world.blocked.delete(tileKey); }
   });
   [keyOf(31,7),keyOf(30,5)].forEach((tileKey)=>{
-    if(routeTileSet.has(tileKey)){
-      hearthvaleTraversalAuthority.nonBlockingTerrainTiles.add(tileKey);
-      world.blocked.delete(tileKey);
-    }
+    routeTileSet.add(tileKey);
+    hearthvaleTraversalAuthority.nonBlockingTerrainTiles.add(tileKey);
+    world.blocked.delete(tileKey);
   });
 }
 function isNpcOnTile(x,y,excludeId){
@@ -6955,7 +6954,7 @@ function buildWayfarerQaReport(){
   const harborSettled=!String(refreshedHarborCompositionQa.status||"PENDING").startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (String(refreshedHarborCompositionQa.status).startsWith("PENDING")?"PENDING_ASSETS":"FAIL");
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13B" && ATLAS_SELECTOR_VERSION==="selector-v35-13b-canonical-newport-blueprint-foundation";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13B.2.1" && ATLAS_SELECTOR_VERSION==="selector-v35-13b21-foundation-closure-follow-through";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionSettled=!String(latestVisualCompositionQa.status).startsWith("PENDING");
