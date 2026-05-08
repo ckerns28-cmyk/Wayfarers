@@ -1327,7 +1327,7 @@ const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
   b_hunter_lodge:{ buildingId:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"bottom_left_hunter_lodge", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_boathouse:{ buildingId:"b_boathouse", role:"boathouse_ship_shed_shipwright", spriteId:"newport_dockside_storehouse", atlasIdentity:"newport_dockside_storehouse", crop:{x:35,y:64,w:391,h:358}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_counting_house:{ buildingId:"b_counting_house", role:"warehouse_counting_house", spriteId:"newport_counting_house_civic_exchange", atlasIdentity:"newport_counting_house_civic_exchange", crop:{x:718,y:823,w:500,h:376}, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_dock_storehouse:{ buildingId:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_market_frontage_row", atlasIdentity:"newport_market_frontage_row", crop:{x:838,y:94,w:388,h:319}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_dock_storehouse:{ buildingId:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse_long", atlasIdentity:"newport_dockside_storehouse_long", crop:{x:368,y:482,w:429,h:292}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_chandlery_front:{ buildingId:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"newport_chandlery_outfitter_front", atlasIdentity:"newport_chandlery_outfitter_front", crop:{x:443,y:81,w:370,h:333}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_market_shed:{ buildingId:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", atlasIdentity:"newport_market_shed_stalls", crop:{x:42,y:878,w:275,h:264}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_shop_house:{ buildingId:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"newport_waterfront_shop_house", atlasIdentity:"newport_waterfront_shop_house", crop:{x:434,y:78,w:398,h:320}, productionAtlasLocked:false, productionAtlasEnabled:true },
@@ -1655,11 +1655,11 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13E";
+const WAYFARER_PHASE = "35.13F";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
 const NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13E — Newport Town Foundation Lock";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13e-newport-town-foundation-lock";
+const WAYFARER_BUILD_LABEL = "Phase 35.13F — Newport Reference Map Skeleton & Lot-Fit Rebuild";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13f-newport-reference-map-skeleton";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3595,7 +3595,7 @@ function logBuildingSourceOfTruthAudit(){
   const productionRenderStatus=sourceTruthProductionRenderDeferred ? "PENDING_35_13C" : "ACTIVE";
   const expectedRows=sourceTruthProductionRenderDeferred ? 0 : HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13E' && ATLAS_SELECTOR_VERSION==='selector-v35-13e-newport-town-foundation-lock';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13F' && ATLAS_SELECTOR_VERSION==='selector-v35-13f-newport-reference-map-skeleton';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=sourceTruthProductionRenderDeferred || (buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4461,7 +4461,7 @@ function emitHarborCompositionQA(){
     return "tile("+x+","+y+") road="+hasRoad(x,y)+" terrain="+String(terrain??"void")+" waterOverlap="+world.pondWater.has(tileKey)+" pierOverride="+isHarborPierTile(x,y)+" reachability="+canMoveToIgnoringDynamicBlockers(x,y);
   }).join(" | ");
   const foundationMode=NEWPORT_CANONICAL_FOUNDATION_MODE===true;
-  const foundationLayoutConnectorTiles=[{x:17,y:8},{x:23,y:12},{x:29,y:8}];
+  const foundationLayoutConnectorTiles=[{x:12,y:8},{x:20,y:12},{x:27,y:8}];
   const foundationLayoutConnectorSamples=foundationLayoutConnectorTiles.map((tile)=>{
     const pathLength=findPathLength(HEARTHVALE_LANDMARKS.townCenterSpawn,tile);
     const reachable=world.canonicalRouteGraphTiles.has(keyOf(tile.x,tile.y)) && canMoveToIgnoringDynamicBlockers(tile.x,tile.y) && pathLength>0;
@@ -4709,7 +4709,7 @@ function emitRouteCollisionConflictQA(){
 }
 function emitFoundationRouteBlockerTraceQA(){
   if(!NEWPORT_CANONICAL_FOUNDATION_MODE) return;
-  const focusTiles=[{x:31,y:7},{x:30,y:5}];
+  const focusTiles=[{x:30,y:7},{x:20,y:14}];
   const routeClassification=classifyRouteTiles();
   const topologyBlockedSet=new Set((traversalTopologyQaResult.sampleBlockedTiles||[]).map((tile)=>keyOf(tile.x,tile.y)));
   focusTiles.forEach(({x,y})=>{
@@ -4939,7 +4939,7 @@ function emitPlayerStuckReadabilityBlockerTrace(start){
   return { status, pathLength, diag };
 }
 function emitPlayerStuckReadabilityQA(){
-  const probes=[{x:20,y:16},{x:12,y:13},{x:19,y:12},{x:24,y:8},{x:29,y:17},{x:34,y:8}];
+  const probes=[{x:20,y:16},{x:12,y:14},{x:20,y:12},{x:24,y:8},{x:29,y:18},{x:30,y:12}];
   const start={x:player.targetX,y:player.targetY};
   // dist===0 means player is already at the probe (a canonical spawn pad coincides with a
   // probe tile in fresh-spawn mode) — that is reachable, not a blocked pocket.
@@ -5752,12 +5752,12 @@ function blockRect(x,y,w,h){ for(let ix=x;ix<x+w;ix++)for(let iy=y;iy<y+h;iy++) 
 const HEARTHVALE_LANDMARKS = Object.freeze({
   mirrorPond:{ x:27, y:14 },
   caveEntrance:{ x:34, y:11 },
-  mainCrossroads:{ x:16, y:11 },
-  townCenterSpawn:{ x:18, y:11 },
-  merchantRowanArea:{ x:20, y:10 },
-  edrinValeArea:{ x:16, y:12 },
-  hunterGarranArea:{ x:30, y:11 },
-  noticeSignNode:{ x:26, y:11 },
+  mainCrossroads:{ x:20, y:14 },
+  townCenterSpawn:{ x:20, y:14 },
+  merchantRowanArea:{ x:17, y:18 },
+  edrinValeArea:{ x:24, y:14 },
+  hunterGarranArea:{ x:5, y:14 },
+  noticeSignNode:{ x:28, y:18 },
   zoneExits:Object.freeze({
     mirrorCaveEntrance:{ x:34, y:11 },
     abandonedTollhouseEntrance:{ x:22, y:2 },
@@ -5885,54 +5885,104 @@ function rectTiles(x,y,w,h){ const tiles=[]; for(let tx=x;tx<x+w;tx++) for(let t
 function buildNewportCanonicalBlueprint(){
   const routeGraphTiles=new Set();
   const decorativeRoadTiles=new Set();
-  const addRouteRect=(x,y,w,h)=>rectTiles(x,y,w,h).forEach((t)=>routeGraphTiles.add(keyOf(t.x,t.y)));
+  const primaryRoadTiles=new Set();
+  const secondaryRoadTiles=new Set();
+  const serviceLaneTiles=new Set();
+  const pierTiles=new Set();
+  const waterfrontStreetTiles=new Set();
+  const addRouteRect=(x,y,w,h,kind="secondary")=>rectTiles(x,y,w,h).forEach((t)=>{
+    const tileKey=keyOf(t.x,t.y);
+    routeGraphTiles.add(tileKey);
+    if(kind==="primary") primaryRoadTiles.add(tileKey);
+    else if(kind==="service") serviceLaneTiles.add(tileKey);
+    else if(kind==="pier") pierTiles.add(tileKey);
+    else secondaryRoadTiles.add(tileKey);
+  });
   const addDecoRect=(x,y,w,h)=>rectTiles(x,y,w,h).forEach((t)=>decorativeRoadTiles.add(keyOf(t.x,t.y)));
-  addRouteRect(8,18,31,1); addRouteRect(23,12,1,8); addRouteRect(17,8,1,8); addRouteRect(29,8,1,11);
-  addRouteRect(16,8,15,1); addRouteRect(16,12,15,1); addRouteRect(16,8,1,5); addRouteRect(30,8,1,5);
-  addRouteRect(11,15,1,4); addRouteRect(33,15,1,4); addRouteRect(18,17,3,1); addRouteRect(19,17,1,5);
-  addRouteRect(10,7,24,1); addRouteRect(13,5,20,1); addRouteRect(9,17,30,1);
-  addRouteRect(8,6,11,1); addRouteRect(8,12,8,1); addRouteRect(24,6,1,1); addRouteRect(29,6,1,1); addRouteRect(33,9,1,10);
-  addDecoRect(8,18,2,1); addDecoRect(37,18,2,1); addDecoRect(9,7,1,1); addDecoRect(34,7,1,1);
-  addDecoRect(17,9,13,3); addDecoRect(9,16,30,2); addDecoRect(20,14,6,3); addDecoRect(12,12,4,1);
+  const waterfrontStreetRect={x:8,y:18,w:25,h:1};
+  rectTiles(waterfrontStreetRect.x,waterfrontStreetRect.y,waterfrontStreetRect.w,waterfrontStreetRect.h).forEach((t)=>waterfrontStreetTiles.add(keyOf(t.x,t.y)));
+  addRouteRect(8,18,25,1,"primary");
+  addRouteRect(20,7,1,12,"primary");
+  addRouteRect(12,7,21,1,"primary");
+  addRouteRect(8,14,25,1,"secondary");
+  addRouteRect(20,12,13,1,"secondary");
+  addRouteRect(12,7,1,12,"secondary");
+  addRouteRect(17,7,1,12,"secondary");
+  addRouteRect(27,7,1,12,"secondary");
+  addRouteRect(32,9,1,10,"secondary");
+  addRouteRect(5,10,1,9,"service");
+  addRouteRect(37,10,1,9,"service");
+  addRouteRect(42,10,1,9,"service");
+  const pierRects=[
+    {id:"west_fish_pier",x:10,y:18,w:1,h:6},
+    {id:"west_commercial_pier",x:16,y:18,w:1,h:5},
+    {id:"central_civic_pier",x:19,y:17,w:1,h:7},
+    {id:"counting_house_pier",x:23,y:18,w:1,h:5},
+    {id:"east_market_pier",x:29,y:18,w:1,h:5}
+  ];
+  pierRects.forEach((pier)=>addRouteRect(pier.x,pier.y,pier.w,pier.h,"pier"));
+  addDecoRect(19,10,8,4);
+  addDecoRect(8,17,25,1);
+  addDecoRect(8,15,25,2);
+  addDecoRect(13,8,4,2);
+  addDecoRect(18,6,15,1);
+  const wharfDeckTileList=[
+    ...rectTiles(8,18,25,1),
+    ...pierRects.flatMap((pier)=>rectTiles(pier.x,pier.y,pier.w,pier.h))
+  ];
   const wharfSupportTiles=new Set([
-    ...rectTiles(8,19,6,3), ...rectTiles(22,19,6,3), ...rectTiles(28,19,5,3),
-    ...rectTiles(30,17,5,1), ...rectTiles(19,19,1,3)
+    ...wharfDeckTileList,
+    ...rectTiles(9,20,5,4), ...rectTiles(17,20,6,4), ...rectTiles(24,20,5,4)
   ].map((t)=>keyOf(t.x,t.y)));
-  const seawallTiles=new Set(rectTiles(8,19,31,1).map((t)=>keyOf(t.x,t.y)));
+  const seawallTiles=new Set(rectTiles(8,19,25,1).map((t)=>keyOf(t.x,t.y)));
   const stoneApronTiles=new Set([
-    ...rectTiles(8,16,7,2), ...rectTiles(20,16,6,2), ...rectTiles(25,12,6,2),
-    ...rectTiles(17,9,13,3)
+    ...rectTiles(19,10,8,4), ...rectTiles(8,15,25,2), ...rectTiles(8,17,25,1),
+    ...rectTiles(13,8,4,2), ...rectTiles(18,6,15,1)
   ].map((t)=>keyOf(t.x,t.y)));
+  const roadHierarchy=Object.freeze({
+    primaryRoadTiles,
+    secondaryRoadTiles,
+    serviceLaneTiles,
+    pierTiles,
+    waterfrontStreetTiles,
+    waterfrontStreetRect,
+    centralCivicConnectorRect:{x:20,y:7,w:1,h:12},
+    upperResidentialRoadRect:{x:12,y:7,w:21,h:1},
+    lowerTownGridRects:[{x:8,y:14,w:25,h:1},{x:20,y:12,w:13,h:1},{x:12,y:7,w:1,h:12},{x:17,y:7,w:1,h:12},{x:27,y:7,w:1,h:12},{x:32,y:9,w:1,h:10}],
+    serviceLaneRects:[{x:5,y:10,w:1,h:9},{x:37,y:10,w:1,h:9},{x:42,y:10,w:1,h:9}],
+    pierRects
+  });
   return {
-    terrainZones:{ baseTownGround:{x:8,y:1,w:31,h:24}, civicGreen:{x:17,y:8,w:13,h:5}, residentialTerraces:{x:10,y:4,w:24,h:5}, serviceBacklot:{x:34,y:5,w:5,h:12}, harborShore:{x:8,y:16,w:31,h:5} },
+    terrainZones:{ baseTownGround:{x:4,y:1,w:41,h:24}, civicGreen:{x:19,y:7,w:14,h:7}, residentialTerraces:{x:8,y:1,w:25,h:12}, serviceBacklot:{x:4,y:8,w:41,h:12}, harborShore:{x:8,y:17,w:25,h:7} },
     waterTiles:new Set(rectTiles(8,20,31,5).map((t)=>keyOf(t.x,t.y))),
-    shoreTiles:new Set(rectTiles(8,19,31,1).map((t)=>keyOf(t.x,t.y))),
-    wharfDeckTiles:new Set(rectTiles(9,17,29,2).map((t)=>keyOf(t.x,t.y))),
+    shoreTiles:new Set(rectTiles(8,19,25,1).map((t)=>keyOf(t.x,t.y))),
+    wharfDeckTiles:new Set(wharfDeckTileList.map((t)=>keyOf(t.x,t.y))),
     wharfSupportTiles,
     seawallTiles,
     stoneApronTiles,
-    centralPierTiles:new Set(rectTiles(19,17,1,5).map((t)=>keyOf(t.x,t.y))),
+    centralPierTiles:new Set(rectTiles(19,17,1,7).map((t)=>keyOf(t.x,t.y))),
     routeGraphTiles,
     decorativeRoadTiles,
-    civicSquareTiles:new Set(rectTiles(17,8,13,5).map((t)=>keyOf(t.x,t.y))),
+    roadHierarchy,
+    civicSquareTiles:new Set(rectTiles(19,10,8,4).map((t)=>keyOf(t.x,t.y))),
     districtBounds:[
-      {id:'waterfront_commercial',x:8,y:12,w:27,h:7},{id:'civic_district',x:16,y:7,w:15,h:7},{id:'upper_residential_terrace',x:8,y:2,w:30,h:8},{id:'service_outfitter_lane',x:33,y:5,w:5,h:13},{id:'harbor_wharf',x:8,y:16,w:31,h:9}
+      {id:'harbor_wharf',x:8,y:17,w:25,h:7},{id:'waterfront_commercial',x:8,y:12,w:25,h:7},{id:'civic_district',x:19,y:7,w:14,h:7},{id:'upper_residential_terrace',x:8,y:1,w:25,h:12},{id:'service_outfitter_lane',x:4,y:8,w:41,h:12}
     ],
     placeholderBuildingLots:[
-      {id:'lot_boathouse',x:8,y:19,w:6,h:5},{id:'lot_dock_storehouse',x:22,y:18,w:6,h:5},{id:'lot_market_shed',x:28,y:19,w:5,h:4},
-      {id:'lot_inn',x:8,y:12,w:6,h:5},{id:'lot_mercantile',x:15,y:14,w:5,h:5},{id:'lot_counting_house',x:20,y:13,w:6,h:5},{id:'lot_chandlery',x:24,y:14,w:4,h:4},{id:'lot_shop_house',x:28,y:14,w:5,h:4},
-      {id:'lot_custom_house',x:25,y:9,w:6,h:5},{id:'lot_village_hall',x:18,y:6,w:6,h:5},{id:'lot_res_small',x:12,y:8,w:4,h:4},
-      {id:'lot_townhouse_row_a',x:8,y:8,w:4,h:4},{id:'lot_townhouse_row_b',x:8,y:3,w:4,h:4},{id:'lot_service_dependency',x:28,y:10,w:4,h:4},{id:'lot_hunter_lodge',x:13,y:2,w:4,h:4},
-      {id:'lot_res_large',x:14,y:7,w:5,h:4},{id:'lot_georgian_residence',x:28,y:7,w:5,h:4},{id:'lot_elite_mansion',x:18,y:2,w:5,h:4},{id:'lot_prestige_block',x:24,y:2,w:5,h:4}
+      {id:'lot_boathouse',x:9,y:17,w:6,h:5},{id:'lot_dock_storehouse',x:17,y:17,w:6,h:5},{id:'lot_market_shed',x:24,y:17,w:5,h:4},
+      {id:'lot_inn',x:8,y:12,w:6,h:5},{id:'lot_mercantile',x:15,y:12,w:5,h:5},{id:'lot_counting_house',x:20,y:12,w:6,h:5},{id:'lot_chandlery',x:26,y:12,w:5,h:5},{id:'lot_shop_house',x:38,y:12,w:5,h:5},
+      {id:'lot_custom_house',x:27,y:7,w:6,h:5},{id:'lot_village_hall',x:21,y:7,w:6,h:5},{id:'lot_res_small',x:6,y:6,w:4,h:4},
+      {id:'lot_townhouse_row_a',x:37,y:7,w:4,h:5},{id:'lot_townhouse_row_b',x:41,y:6,w:5,h:4},{id:'lot_service_dependency',x:41,y:12,w:4,h:3},{id:'lot_hunter_lodge',x:4,y:10,w:4,h:4},
+      {id:'lot_res_large',x:11,y:4,w:5,h:4},{id:'lot_georgian_residence',x:16,y:4,w:5,h:5},{id:'lot_elite_mansion',x:22,y:2,w:5,h:4},{id:'lot_prestige_block',x:28,y:2,w:5,h:4}
     ],
     frontageSlots:[
-      {id:'front_boathouse',x:11,y:18},{id:'front_dock_storehouse',x:25,y:18},{id:'front_market_shed',x:30,y:18},
-      {id:'front_inn',x:11,y:18},{id:'front_mercantile',x:17,y:18},{id:'front_counting',x:23,y:18},{id:'front_chandlery',x:26,y:18},{id:'front_shop_house',x:30,y:18},
-      {id:'front_custom_house',x:28,y:12},{id:'front_village_hall',x:21,y:12},{id:'front_res_small',x:14,y:12},
-      {id:'front_townhouse_row_a',x:10,y:12},{id:'front_townhouse_row_b',x:10,y:6},{id:'front_service_dependency',x:30,y:12},{id:'front_hunter_lodge',x:14,y:5},
-      {id:'front_res_large',x:16,y:12},{id:'front_georgian_residence',x:30,y:12},{id:'front_elite_mansion',x:20,y:5},{id:'front_prestige_block',x:26,y:5}
+      {id:'front_boathouse',x:11,y:18},{id:'front_dock_storehouse',x:20,y:18},{id:'front_market_shed',x:25,y:18},
+      {id:'front_inn',x:11,y:18},{id:'front_mercantile',x:17,y:18},{id:'front_counting',x:23,y:18},{id:'front_chandlery',x:28,y:18},{id:'front_shop_house',x:15,y:14},
+      {id:'front_custom_house',x:30,y:14},{id:'front_village_hall',x:24,y:14},{id:'front_res_small',x:5,y:10},
+      {id:'front_townhouse_row_a',x:18,y:14},{id:'front_townhouse_row_b',x:42,y:14},{id:'front_service_dependency',x:42,y:15},{id:'front_hunter_lodge',x:5,y:14},
+      {id:'front_res_large',x:13,y:8},{id:'front_georgian_residence',x:18,y:8},{id:'front_elite_mansion',x:24,y:7},{id:'front_prestige_block',x:30,y:7}
     ],
-    npcSpawnSlots:[{id:'spawn_civic',x:22,y:10},{id:'spawn_wharf',x:19,y:18},{id:'spawn_market',x:28,y:18}]
+    npcSpawnSlots:[{id:'spawn_civic',x:20,y:14},{id:'spawn_wharf',x:19,y:18},{id:'spawn_market',x:28,y:18}]
   };
 }
 world.newportCanonicalBlueprint=NEWPORT_CANONICAL_BLUEPRINT;
@@ -5979,6 +6029,10 @@ function createBuildingLotContract({ id, district, block, row, lotRect, visualLo
 function placeLotBuilding(spec){
   const { id, role, spriteId, x, y, w, h, anchorX, anchorY, district, block, row, lotRect, visualLotRect, collision, interaction, label, pathingBounds, frontageTile, frontWalkBand, supportedWaterFootprint } = spec;
   const districtTag=spec.districtTag||resolveNewportDistrictTag(district);
+  const lotType=spec.lotType || (district==="harbor_wharf"?"wharf_waterfront":(districtTag==="commercial"?"commercial_street":(districtTag==="civic"?"civic_square":(districtTag==="mansion"?"mansion_lot":(districtTag==="rural/outskirts"?"rural_edge":"service_edge")))));
+  const visualFitMargin=spec.visualFitMargin??0.15;
+  const finalDrawForLot=getBuildingFinalDrawRectFromBlueprint({ spriteId, x, y, w, h, anchorX, anchorY }, ATLAS_BUILDING_METADATA?.[spriteId]||NEWPORT_SPRITE_BY_ID?.[spriteId]||null).finalDrawRect;
+  const readabilityLotRect=spec.readabilityLotRect||{ x:finalDrawForLot.x-visualFitMargin, y:finalDrawForLot.y-visualFitMargin, w:finalDrawForLot.w+(visualFitMargin*2), h:finalDrawForLot.h+(visualFitMargin*2) };
   const baseFootprint=spec.baseFootprint||collision||visualLotRect||lotRect||{x,y,w,h};
   const baseY=Number.isFinite(spec.baseY)?spec.baseY:(baseFootprint.y+baseFootprint.h);
   const depthSortY=Number.isFinite(spec.depthSortY)?spec.depthSortY:baseY;
@@ -5999,6 +6053,8 @@ function placeLotBuilding(spec){
     depthSortY,
     baseY,
     districtTag,
+    lotType,
+    readabilityLotRect,
     waterfrontSupportRequired,
     allowedTerrainUnderFootprint,
     frontPathRequirement
@@ -6010,30 +6066,30 @@ function placeLotBuilding(spec){
     depthSortY,
     baseY,
     footprintRecord,
-    lotContract:{ ...createBuildingLotContract({ id, district, block, row, lotRect, visualLotRect, footprint:baseFootprint, frontageTile, frontWalk:frontWalkBand, rowAligned:true }).lotContract, supportedWaterFootprint:supportedWaterFootprint||[], desiredFinalDrawRect:null, interactionRect:interaction, collisionFootprint:{...collision}, baseFootprint:{...baseFootprint}, depthSortY, baseY, districtTag, waterfrontSupportRequired, allowedTerrainUnderFootprint, frontPathRequirement, supportClass:(district==="harbor_wharf"?"wharf_apron":"land_street"), allowedRoadOverlap:false, allowedWharfOverlap:(district==="harbor_wharf"), allowedPierOverlap:false }
+    lotContract:{ ...createBuildingLotContract({ id, district, block, row, lotRect, visualLotRect, footprint:baseFootprint, frontageTile, frontWalk:frontWalkBand, rowAligned:true }).lotContract, supportedWaterFootprint:supportedWaterFootprint||[], desiredFinalDrawRect:null, interactionRect:interaction, collisionFootprint:{...collision}, baseFootprint:{...baseFootprint}, depthSortY, baseY, districtTag, lotType, readabilityLotRect, waterfrontSupportRequired, allowedTerrainUnderFootprint, frontPathRequirement, visualFitMargin, validationFrameCritical:spec.validationFrameCritical!==false, allowVisualOverlap:spec.allowVisualOverlap===true, supportClass:(district==="harbor_wharf"?"wharf_apron":"land_street"), allowedRoadOverlap:false, allowedWharfOverlap:(district==="harbor_wharf"), allowedPierOverlap:false }
   };
 }
 
 world.buildings.push(
-  placeLotBuilding({ id:"b_boathouse", role:"boathouse_ship_shed_shipwright", spriteId:"newport_dockside_storehouse", x:8,y:19,w:5,h:4,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_w",row:"harbor_edge", lotRect:{x:8,y:19,w:6,h:5},visualLotRect:{x:8,y:19,w:5,h:4},baseFootprint:{x:9,y:20,w:4,h:1},collision:{x:9,y:20,w:4,h:1},interaction:{x:11,y:18,w:1,h:1},frontageTile:{x:11,y:18},frontWalkBand:{x:9,y:18,w:5,h:1},supportedWaterFootprint:[{x:9,y:20},{x:10,y:20},{x:11,y:20},{x:12,y:20}],label:{x:11,y:18,text:"Boathouse"},pathingBounds:{x:8,y:17,w:8,h:7} }),
-  placeLotBuilding({ id:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_market_frontage_row", x:22,y:18,w:5,h:4,anchorX:3,anchorY:2,district:"harbor_wharf",block:"wharf_c",row:"harbor_edge", lotRect:{x:22,y:18,w:5,h:5},visualLotRect:{x:22,y:18,w:5,h:4},baseFootprint:{x:23,y:20,w:3,h:1},collision:{x:23,y:20,w:3,h:1},interaction:{x:25,y:18,w:1,h:1},frontageTile:{x:25,y:18},frontWalkBand:{x:22,y:18,w:5,h:1},supportedWaterFootprint:[{x:23,y:20},{x:24,y:20},{x:25,y:20}],label:{x:25,y:18,text:"Dock Storehouse"},pathingBounds:{x:21,y:17,w:7,h:7} }),
-  placeLotBuilding({ id:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", x:28,y:19,w:5,h:3,anchorX:2,anchorY:2,district:"harbor_wharf",block:"wharf_e",row:"harbor_edge", lotRect:{x:28,y:19,w:5,h:4},visualLotRect:{x:28,y:19,w:4,h:3},baseFootprint:{x:29,y:20,w:3,h:1},collision:{x:29,y:20,w:3,h:1},interaction:{x:30,y:18,w:1,h:1},frontageTile:{x:30,y:18},frontWalkBand:{x:28,y:18,w:4,h:1},supportedWaterFootprint:[{x:29,y:20},{x:30,y:20},{x:31,y:20}],label:{x:30,y:19,text:"Harbor Shed"},pathingBounds:{x:27,y:18,w:7,h:6} }),
-  placeLotBuilding({ id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:8,y:12,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_corridor",block:"waterfront_w",row:"waterfront_frontage", lotRect:{x:8,y:12,w:6,h:5},visualLotRect:{x:8,y:12,w:6,h:5},collision:{x:12,y:15,w:2,h:1},interaction:{x:11,y:18,w:1,h:1},frontageTile:{x:11,y:18},frontWalkBand:{x:8,y:18,w:6,h:1},label:{x:11,y:13,text:"Inn & Tavern"},pathingBounds:{x:7,y:11,w:8,h:9} }),
-  placeLotBuilding({ id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:15,y:14,w:5,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"waterfront_w",row:"waterfront_frontage", lotRect:{x:15,y:14,w:5,h:5},visualLotRect:{x:15,y:14,w:5,h:5},collision:{x:16,y:16,w:3,h:1},interaction:{x:17,y:18,w:1,h:1},frontageTile:{x:17,y:18},frontWalkBand:{x:15,y:18,w:5,h:1},label:{x:17,y:15,text:"Mercantile"},pathingBounds:{x:14,y:13,w:7,h:7} }),
-  placeLotBuilding({ id:"b_counting_house", role:"warehouse_counting_house", spriteId:"newport_counting_house_civic_exchange", x:20,y:13,w:5,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"waterfront_c",row:"waterfront_frontage", lotRect:{x:20,y:13,w:6,h:5},visualLotRect:{x:20,y:13,w:5,h:5},collision:{x:21,y:16,w:2,h:1},interaction:{x:23,y:18,w:1,h:1},frontageTile:{x:23,y:18},frontWalkBand:{x:20,y:18,w:6,h:1},label:{x:23,y:14,text:"Counting House"},pathingBounds:{x:19,y:12,w:8,h:8} }),
-  placeLotBuilding({ id:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"newport_chandlery_outfitter_front", x:24,y:13,w:4,h:4,anchorX:2,anchorY:3,district:"commercial_corridor",block:"waterfront_e",row:"waterfront_frontage", lotRect:{x:24,y:14,w:4,h:4},visualLotRect:{x:24,y:14,w:4,h:4},collision:{x:25,y:16,w:2,h:1},interaction:{x:26,y:18,w:1,h:1},frontageTile:{x:26,y:18},frontWalkBand:{x:24,y:18,w:4,h:1},label:{x:26,y:15,text:"Chandlery"},pathingBounds:{x:23,y:13,w:6,h:7} }),
-  placeLotBuilding({ id:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"newport_waterfront_shop_house", x:28,y:13,w:4,h:4,anchorX:2,anchorY:3,district:"commercial_corridor",block:"waterfront_e",row:"waterfront_frontage", lotRect:{x:28,y:14,w:5,h:4},visualLotRect:{x:28,y:14,w:4,h:4},collision:{x:30,y:16,w:2,h:1},interaction:{x:30,y:18,w:1,h:1},frontageTile:{x:30,y:18},frontWalkBand:{x:28,y:18,w:5,h:1},label:{x:30,y:15,text:"Shop House"},pathingBounds:{x:27,y:13,w:7,h:7} }),
-  placeLotBuilding({ id:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", x:24,y:8,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_civic_exchange",block:"civic_edge",row:"civic_front", lotRect:{x:25,y:9,w:6,h:5},visualLotRect:{x:25,y:9,w:6,h:5},collision:{x:26,y:10,w:3,h:1},interaction:{x:28,y:12,w:1,h:1},frontageTile:{x:28,y:12},frontWalkBand:{x:25,y:12,w:6,h:1},label:{x:28,y:10,text:"Custom House"},pathingBounds:{x:24,y:8,w:8,h:6} }),
-  placeLotBuilding({ id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:19,y:8,w:6,h:5,anchorX:3,anchorY:4,district:"civic_green_axis",block:"meeting_green",row:"civic_axis", lotRect:{x:18,y:6,w:6,h:5},visualLotRect:{x:18,y:6,w:6,h:5},collision:{x:19,y:9,w:4,h:1},interaction:{x:21,y:12,w:1,h:1},frontageTile:{x:21,y:12},frontWalkBand:{x:18,y:12,w:6,h:1},label:{x:21,y:7,text:"Village Hall"},pathingBounds:{x:17,y:5,w:8,h:8} }),
-  placeLotBuilding({ id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:14,y:9,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"civic_w",row:"lower_res", lotRect:{x:12,y:8,w:4,h:4},visualLotRect:{x:12,y:8,w:4,h:4},collision:{x:12,y:11,w:2,h:1},interaction:{x:14,y:12,w:1,h:1},frontageTile:{x:14,y:12},frontWalkBand:{x:12,y:12,w:4,h:1},label:{x:14,y:9,text:"Cottage"},pathingBounds:{x:11,y:7,w:6,h:6} }),
-  placeLotBuilding({ id:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"newport_narrow_merchant_townhouse_a", x:8,y:8,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"west_service_edge",row:"res_lane", lotRect:{x:8,y:8,w:4,h:4},visualLotRect:{x:8,y:8,w:4,h:4},collision:{x:9,y:11,w:3,h:1},interaction:{x:10,y:12,w:1,h:1},frontageTile:{x:10,y:12},frontWalkBand:{x:8,y:12,w:4,h:1},label:{x:10,y:9,text:"Row A"},pathingBounds:{x:7,y:7,w:6,h:7} }),
-  placeLotBuilding({ id:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", x:8,y:3,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"west_service_edge",row:"res_lane", lotRect:{x:8,y:3,w:4,h:4},visualLotRect:{x:8,y:3,w:4,h:4},collision:{x:9,y:5,w:2,h:1},interaction:{x:10,y:6,w:1,h:1},frontageTile:{x:10,y:6},frontWalkBand:{x:8,y:6,w:4,h:1},label:{x:10,y:4,text:"Row B"},pathingBounds:{x:7,y:2,w:6,h:7} }),
-  placeLotBuilding({ id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", x:28,y:10,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"service_e",row:"service_lane", lotRect:{x:28,y:10,w:4,h:4},visualLotRect:{x:28,y:10,w:4,h:4},collision:{x:31,y:12,w:1,h:1},interaction:{x:30,y:12,w:1,h:1},frontageTile:{x:30,y:12},frontWalkBand:{x:30,y:12,w:1,h:1},label:{x:30,y:11,text:"Service"},pathingBounds:{x:27,y:9,w:6,h:6} }),
-  placeLotBuilding({ id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:13,y:2,w:4,h:4,anchorX:2,anchorY:3,district:"rural_outskirts",districtTag:"rural/outskirts",block:"west_rural_edge",row:"outskirts_lane", lotRect:{x:13,y:2,w:4,h:4},visualLotRect:{x:13,y:2,w:4,h:4},collision:{x:14,y:4,w:1,h:1},interaction:{x:14,y:5,w:1,h:1},frontageTile:{x:14,y:5},frontWalkBand:{x:13,y:5,w:3,h:1},label:{x:14,y:3,text:"Outfitter"},pathingBounds:{x:12,y:1,w:6,h:6} }),
-  placeLotBuilding({ id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:14,y:7,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upper_terrace",row:"residential_a", lotRect:{x:14,y:7,w:5,h:4},visualLotRect:{x:14,y:7,w:5,h:4},collision:{x:14,y:10,w:2,h:1},interaction:{x:16,y:12,w:1,h:1},frontageTile:{x:16,y:12},frontWalkBand:{x:14,y:12,w:5,h:1},label:{x:16,y:8,text:"Large Residence"},pathingBounds:{x:13,y:6,w:7,h:7} }),
-  placeLotBuilding({ id:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"newport_georgian_merchant_residence_a", x:28,y:7,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upper_terrace",row:"residential_a", lotRect:{x:28,y:7,w:5,h:4},visualLotRect:{x:28,y:7,w:5,h:4},collision:{x:31,y:10,w:1,h:1},interaction:{x:30,y:12,w:1,h:1},frontageTile:{x:30,y:12},frontWalkBand:{x:30,y:12,w:1,h:1},label:{x:30,y:8,text:"Georgian"},pathingBounds:{x:27,y:6,w:7,h:7} }),
-  placeLotBuilding({ id:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", x:18,y:2,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upland",row:"residential_b", lotRect:{x:18,y:2,w:5,h:4},visualLotRect:{x:18,y:2,w:5,h:4},collision:{x:20,y:4,w:2,h:1},interaction:{x:20,y:5,w:1,h:1},frontageTile:{x:20,y:5},frontWalkBand:{x:18,y:5,w:5,h:1},label:{x:20,y:3,text:"Mansion"},pathingBounds:{x:17,y:1,w:7,h:6} }),
-  placeLotBuilding({ id:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", x:24,y:2,w:5,h:4,anchorX:3,anchorY:4,district:"elite_inland_residential",block:"upland",row:"residential_b", lotRect:{x:24,y:2,w:5,h:4},visualLotRect:{x:24,y:2,w:5,h:4},collision:{x:26,y:4,w:2,h:1},interaction:{x:26,y:5,w:1,h:1},frontageTile:{x:26,y:5},frontWalkBand:{x:24,y:5,w:5,h:1},label:{x:26,y:3,text:"Prestige Row"},pathingBounds:{x:23,y:1,w:7,h:6} })
+  placeLotBuilding({ id:"b_boathouse", role:"boathouse_ship_shed_shipwright", spriteId:"newport_dockside_storehouse", x:9,y:17,w:5,h:4,anchorX:3,anchorY:4,district:"harbor_wharf",block:"wharf_w",row:"harbor_edge", lotRect:{x:9,y:17,w:6,h:5},visualLotRect:{x:9,y:17,w:5,h:4},baseFootprint:{x:12,y:20,w:2,h:1},collision:{x:12,y:20,w:2,h:1},interaction:{x:11,y:18,w:1,h:1},frontageTile:{x:11,y:18},frontWalkBand:{x:10,y:18,w:2,h:1},supportedWaterFootprint:[{x:12,y:20},{x:13,y:20}],label:{x:11,y:17,text:"Boathouse"},pathingBounds:{x:9,y:17,w:6,h:6} }),
+  placeLotBuilding({ id:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse_long", x:17,y:17,w:6,h:4,anchorX:3,anchorY:4,district:"harbor_wharf",block:"wharf_c",row:"harbor_edge", lotRect:{x:17,y:17,w:6,h:5},visualLotRect:{x:17,y:17,w:6,h:4},baseFootprint:{x:20,y:20,w:2,h:1},collision:{x:20,y:20,w:2,h:1},interaction:{x:20,y:18,w:1,h:1},frontageTile:{x:20,y:18},frontWalkBand:{x:19,y:18,w:2,h:1},supportedWaterFootprint:[{x:20,y:20},{x:21,y:20}],label:{x:20,y:17,text:"Dock Storehouse"},pathingBounds:{x:16,y:17,w:8,h:6} }),
+  placeLotBuilding({ id:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", x:24,y:17,w:4,h:3,anchorX:2,anchorY:4,district:"harbor_wharf",block:"wharf_e",row:"harbor_edge", lotRect:{x:24,y:17,w:5,h:4},visualLotRect:{x:24,y:17,w:4,h:3},baseFootprint:{x:26,y:20,w:1,h:1},collision:{x:26,y:20,w:1,h:1},interaction:{x:25,y:18,w:1,h:1},frontageTile:{x:25,y:18},frontWalkBand:{x:24,y:18,w:3,h:1},supportedWaterFootprint:[{x:26,y:20}],label:{x:25,y:17,text:"Harbor Shed"},pathingBounds:{x:24,y:17,w:6,h:6} }),
+  placeLotBuilding({ id:"b_inn_tavern", role:"inn_tavern", spriteId:"inn_tavern_v1", x:8,y:12,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_corridor",block:"waterfront_w",row:"waterfront_frontage", lotRect:{x:8,y:12,w:6,h:5},visualLotRect:{x:8,y:12,w:6,h:5},collision:{x:9,y:16,w:3,h:1},interaction:{x:11,y:18,w:1,h:1},frontageTile:{x:11,y:18},frontWalkBand:{x:8,y:18,w:6,h:1},label:{x:11,y:13,text:"Inn & Tavern"},pathingBounds:{x:7,y:11,w:8,h:8} }),
+  placeLotBuilding({ id:"b_mercantile", role:"mercantile_shop", spriteId:"mercantile_shop", x:15,y:12,w:5,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"waterfront_w",row:"waterfront_frontage", lotRect:{x:15,y:12,w:5,h:5},visualLotRect:{x:15,y:12,w:5,h:5},collision:{x:18,y:16,w:1,h:1},interaction:{x:17,y:18,w:1,h:1},frontageTile:{x:17,y:18},frontWalkBand:{x:15,y:18,w:5,h:1},label:{x:17,y:13,text:"Mercantile"},pathingBounds:{x:14,y:11,w:7,h:8} }),
+  placeLotBuilding({ id:"b_counting_house", role:"warehouse_counting_house", spriteId:"newport_counting_house_civic_exchange", x:20,y:12,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_corridor",block:"waterfront_c",row:"waterfront_frontage", lotRect:{x:20,y:12,w:6,h:5},visualLotRect:{x:20,y:12,w:6,h:5},collision:{x:21,y:16,w:3,h:1},interaction:{x:23,y:18,w:1,h:1},frontageTile:{x:23,y:18},frontWalkBand:{x:20,y:18,w:6,h:1},label:{x:23,y:13,text:"Counting House"},pathingBounds:{x:19,y:11,w:8,h:8} }),
+  placeLotBuilding({ id:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"newport_chandlery_outfitter_front", x:26,y:12,w:5,h:4,anchorX:3,anchorY:4,district:"commercial_corridor",block:"waterfront_e",row:"waterfront_frontage", lotRect:{x:26,y:12,w:5,h:5},visualLotRect:{x:26,y:12,w:5,h:4},collision:{x:28,y:16,w:2,h:1},interaction:{x:28,y:18,w:1,h:1},frontageTile:{x:28,y:18},frontWalkBand:{x:26,y:18,w:5,h:1},label:{x:28,y:13,text:"Chandlery"},pathingBounds:{x:25,y:11,w:7,h:8} }),
+  placeLotBuilding({ id:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"newport_waterfront_shop_house", x:38,y:12,w:5,h:4,anchorX:2,anchorY:4,district:"commercial_corridor",block:"east_commercial_extension",row:"service_frontage", lotRect:{x:38,y:12,w:5,h:5},visualLotRect:{x:38,y:12,w:5,h:4},collision:{x:39,y:16,w:2,h:1},interaction:{x:37,y:14,w:1,h:1},frontageTile:{x:37,y:14},frontWalkBand:{x:37,y:14,w:2,h:1},validationFrameCritical:false,label:{x:40,y:13,text:"Shop House"},pathingBounds:{x:36,y:11,w:8,h:8} }),
+  placeLotBuilding({ id:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", x:27,y:7,w:6,h:5,anchorX:3,anchorY:4,district:"commercial_civic_exchange",block:"civic_edge",row:"civic_front", lotRect:{x:27,y:7,w:6,h:5},visualLotRect:{x:27,y:7,w:6,h:5},collision:{x:28,y:11,w:3,h:1},interaction:{x:30,y:12,w:1,h:1},frontageTile:{x:30,y:12},frontWalkBand:{x:27,y:12,w:6,h:1},label:{x:30,y:8,text:"Custom House"},pathingBounds:{x:26,y:6,w:8,h:7} }),
+  placeLotBuilding({ id:"b_village_hall", role:"village_hall_meeting_house", spriteId:"village_hall_meeting_house", x:21,y:7,w:6,h:5,anchorX:3,anchorY:4,district:"civic_green_axis",block:"meeting_green",row:"civic_axis", lotRect:{x:21,y:7,w:6,h:5},visualLotRect:{x:21,y:7,w:6,h:5},collision:{x:22,y:11,w:4,h:1},interaction:{x:24,y:12,w:1,h:1},frontageTile:{x:24,y:12},frontWalkBand:{x:21,y:12,w:6,h:1},label:{x:24,y:8,text:"Village Hall"},pathingBounds:{x:20,y:6,w:8,h:7} }),
+  placeLotBuilding({ id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:6,y:6,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"west_service_edge",row:"lower_service", lotRect:{x:6,y:6,w:4,h:4},visualLotRect:{x:6,y:6,w:4,h:4},collision:{x:7,y:9,w:2,h:1},interaction:{x:5,y:10,w:1,h:1},frontageTile:{x:5,y:10},frontWalkBand:{x:5,y:10,w:2,h:1},label:{x:8,y:7,text:"Cottage"},pathingBounds:{x:5,y:5,w:6,h:7} }),
+  placeLotBuilding({ id:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"newport_narrow_merchant_townhouse_a", x:37,y:7,w:3,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"east_commercial_extension",row:"service_frontage", lotRect:{x:37,y:7,w:4,h:5},visualLotRect:{x:37,y:7,w:3,h:5},collision:{x:38,y:11,w:2,h:1},interaction:{x:37,y:14,w:1,h:1},frontageTile:{x:37,y:14},frontWalkBand:{x:37,y:14,w:2,h:1},validationFrameCritical:false,label:{x:38,y:8,text:"Row A"},pathingBounds:{x:36,y:6,w:6,h:9} }),
+  placeLotBuilding({ id:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", x:41,y:6,w:5,h:4,anchorX:2,anchorY:4,district:"modest_residential_service",block:"east_residential_lane",row:"upper_service", lotRect:{x:41,y:6,w:5,h:4},visualLotRect:{x:41,y:6,w:5,h:4},collision:{x:43,y:10,w:2,h:1},interaction:{x:42,y:14,w:1,h:1},frontageTile:{x:42,y:14},frontWalkBand:{x:42,y:14,w:1,h:1},validationFrameCritical:false,label:{x:42,y:7,text:"Row B"},pathingBounds:{x:40,y:5,w:7,h:10} }),
+  placeLotBuilding({ id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", x:41,y:12,w:4,h:3,anchorX:2,anchorY:3,district:"modest_residential_service",block:"east_service_edge",row:"service_lane", lotRect:{x:41,y:12,w:4,h:4},visualLotRect:{x:41,y:12,w:4,h:3},collision:{x:43,y:14,w:2,h:1},interaction:{x:42,y:15,w:1,h:1},frontageTile:{x:42,y:15},frontWalkBand:{x:42,y:15,w:1,h:1},validationFrameCritical:false,label:{x:42,y:13,text:"Service"},pathingBounds:{x:40,y:11,w:6,h:6} }),
+  placeLotBuilding({ id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:4,y:10,w:4,h:4,anchorX:2,anchorY:3,district:"rural_outskirts",districtTag:"rural/outskirts",block:"west_rural_edge",row:"outskirts_lane", lotRect:{x:4,y:10,w:4,h:4},visualLotRect:{x:4,y:10,w:4,h:4},collision:{x:4,y:12,w:1,h:1},interaction:{x:5,y:14,w:1,h:1},frontageTile:{x:5,y:14},frontWalkBand:{x:5,y:14,w:1,h:1},validationFrameCritical:false,label:{x:5,y:11,text:"Outfitter"},pathingBounds:{x:3,y:9,w:6,h:7} }),
+  placeLotBuilding({ id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:11,y:4,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upper_terrace",row:"mansion_w", lotRect:{x:11,y:4,w:5,h:4},visualLotRect:{x:11,y:4,w:5,h:4},collision:{x:12,y:6,w:2,h:1},interaction:{x:13,y:8,w:1,h:1},frontageTile:{x:13,y:8},frontWalkBand:{x:12,y:8,w:3,h:1},label:{x:13,y:5,text:"Large Residence"},pathingBounds:{x:10,y:3,w:7,h:6} }),
+  placeLotBuilding({ id:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"newport_georgian_merchant_residence_a", x:16,y:4,w:5,h:5,anchorX:2,anchorY:4,district:"elite_inland_residential",block:"upper_terrace",row:"mansion_c", lotRect:{x:16,y:4,w:5,h:5},visualLotRect:{x:16,y:4,w:5,h:5},collision:{x:18,y:6,w:2,h:1},interaction:{x:18,y:8,w:1,h:1},frontageTile:{x:18,y:8},frontWalkBand:{x:17,y:8,w:3,h:1},label:{x:18,y:5,text:"Georgian"},pathingBounds:{x:15,y:3,w:7,h:6} }),
+  placeLotBuilding({ id:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", x:22,y:2,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upland",row:"mansion_n", lotRect:{x:22,y:2,w:5,h:5},visualLotRect:{x:22,y:2,w:5,h:4},collision:{x:24,y:5,w:2,h:1},interaction:{x:24,y:7,w:1,h:1},frontageTile:{x:24,y:7},frontWalkBand:{x:22,y:7,w:5,h:1},label:{x:24,y:3,text:"Mansion"},pathingBounds:{x:21,y:1,w:7,h:7} }),
+  placeLotBuilding({ id:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", x:28,y:2,w:5,h:4,anchorX:2,anchorY:4,district:"elite_inland_residential",block:"upland",row:"mansion_n", lotRect:{x:28,y:2,w:5,h:5},visualLotRect:{x:28,y:2,w:5,h:4},collision:{x:29,y:5,w:2,h:1},interaction:{x:30,y:7,w:1,h:1},frontageTile:{x:30,y:7},frontWalkBand:{x:28,y:7,w:5,h:1},label:{x:30,y:3,text:"Prestige Row"},pathingBounds:{x:27,y:1,w:7,h:7} })
 );
 const NEWPORT_BUILDING_FOOTPRINT_REGISTRY=Object.freeze(Object.fromEntries(world.buildings.map((building)=>[
   building.id,
@@ -6127,31 +6183,67 @@ function emitRouteSourceAuthorityQA(){
   routeSourceAuthorityQaResult={ status, worldRoadTilesDerivedFromCanonical, worldRoadsNotAuthoritative, movementFromCanonical };
   return routeSourceAuthorityQaResult;
 }
+function hasNewportRoadRect(bp,x,y,w,h){
+  for(let tx=x;tx<x+w;tx++) for(let ty=y;ty<y+h;ty++) if(!bp.routeGraphTiles.has(keyOf(tx,ty))) return false;
+  return true;
+}
+function getNewportRoadHierarchyCounts(bp){
+  const hierarchy=bp.roadHierarchy||{};
+  return {
+    primaryRoadTileCount:hierarchy.primaryRoadTiles?.size||0,
+    secondaryRoadTileCount:hierarchy.secondaryRoadTiles?.size||0,
+    serviceLaneTileCount:hierarchy.serviceLaneTiles?.size||0,
+    pierTileCount:hierarchy.pierTiles?.size||0,
+    pierCount:Array.isArray(hierarchy.pierRects)?hierarchy.pierRects.length:0
+  };
+}
+function emitNewportRoadHierarchyQA(){
+  const bp=world.newportCanonicalBlueprint||NEWPORT_CANONICAL_BLUEPRINT;
+  const hierarchy=bp.roadHierarchy||{};
+  const counts=getNewportRoadHierarchyCounts(bp);
+  const waterfront=hierarchy.waterfrontStreetRect||{x:8,y:18,w:25,h:1};
+  const connector=hierarchy.centralCivicConnectorRect||{x:20,y:7,w:1,h:12};
+  const upper=hierarchy.upperResidentialRoadRect||{x:12,y:7,w:21,h:1};
+  const waterfrontStreetContinuous=hasNewportRoadRect(bp,waterfront.x,waterfront.y,waterfront.w,waterfront.h);
+  const centralCivicConnectorPresent=hasNewportRoadRect(bp,connector.x,connector.y,connector.w,connector.h);
+  const upperResidentialRoadPresent=hasNewportRoadRect(bp,upper.x,upper.y,upper.w,upper.h);
+  const lowerTownGridConnectorCount=(hierarchy.lowerTownGridRects||[]).filter((r)=>hasNewportRoadRect(bp,r.x,r.y,r.w,r.h)).length;
+  const multiplePerpendicularPiersExist=counts.pierCount>=3 && counts.pierTileCount>=12;
+  const status=(counts.primaryRoadTileCount>0&&counts.secondaryRoadTileCount>0&&counts.serviceLaneTileCount>0&&waterfrontStreetContinuous&&centralCivicConnectorPresent&&upperResidentialRoadPresent&&lowerTownGridConnectorCount>=3&&multiplePerpendicularPiersExist)?'PASS':'FAIL';
+  console.info('[Newport Road Hierarchy QA] phase='+WAYFARER_PHASE+' primaryRoadTileCount='+counts.primaryRoadTileCount+' secondaryRoadTileCount='+counts.secondaryRoadTileCount+' serviceLaneTileCount='+counts.serviceLaneTileCount+' pierTileCount='+counts.pierTileCount+' pierCount='+counts.pierCount+' waterfrontStreetContinuous='+(waterfrontStreetContinuous?'true':'false')+' centralCivicConnectorPresent='+(centralCivicConnectorPresent?'true':'false')+' upperResidentialRoadPresent='+(upperResidentialRoadPresent?'true':'false')+' lowerTownGridConnectorCount='+lowerTownGridConnectorCount+' multiplePerpendicularPiersExist='+(multiplePerpendicularPiersExist?'true':'false')+' status='+status);
+  return { status, ...counts, waterfrontStreetContinuous, centralCivicConnectorPresent, upperResidentialRoadPresent, lowerTownGridConnectorCount, multiplePerpendicularPiersExist };
+}
 function emitNewportFoundationLayoutQA(){
   const bp=world.newportCanonicalBlueprint||NEWPORT_CANONICAL_BLUEPRINT;
-  const wharfAccessRouteCount=[keyOf(11,15),keyOf(33,15)].filter((k)=>bp.routeGraphTiles.has(k)).length;
-  const inlandConnectorCount=[keyOf(17,8),keyOf(23,12),keyOf(29,8)].filter((k)=>bp.routeGraphTiles.has(k)).length;
-  const wharfApronPresent=bp.routeGraphTiles.has(keyOf(9,17))&&bp.routeGraphTiles.has(keyOf(38,17));
-  const residentialStreetCount=[{x:10,y:7,w:24,h:1},{x:13,y:5,w:20,h:1}].filter((r)=>{for(let tx=r.x;tx<r.x+r.w;tx++) for(let ty=r.y;ty<r.y+r.h;ty++) if(!bp.routeGraphTiles.has(keyOf(tx,ty))) return false; return true;}).length;
-  const status=(wharfAccessRouteCount>=2&&inlandConnectorCount>=3&&wharfApronPresent&&residentialStreetCount>=1)?'PASS':'FAIL';
-  console.info('[Newport Foundation Layout QA] harborBasinPresent=PASS wharfDeckPresent=PASS wharfApronPresent='+(wharfApronPresent?'PASS':'FAIL')+' centralPierPresent=PASS waterfrontStreetPresent=PASS residentialTerracePresent=PASS residentialStreetCount='+residentialStreetCount+' serviceLanePresent=PASS wharfAccessRouteCount='+wharfAccessRouteCount+' inlandConnectorCount='+inlandConnectorCount+' status='+status);
-  newportFoundationLayoutQaResult={ status, wharfAccessRouteCount, inlandConnectorCount, wharfApronPresent, residentialStreetCount };
+  const roadHierarchyQa=emitNewportRoadHierarchyQA();
+  const hierarchy=bp.roadHierarchy||{};
+  const wharfAccessRouteCount=roadHierarchyQa.pierCount;
+  const inlandConnectorCount=(hierarchy.lowerTownGridRects||[]).filter((r)=>r.h>=10||r.w>=10).length;
+  const wharfApronPresent=hasNewportRoadRect(bp,8,18,25,1);
+  const residentialStreetCount=[hierarchy.upperResidentialRoadRect].filter((r)=>r&&hasNewportRoadRect(bp,r.x,r.y,r.w,r.h)).length;
+  const status=(roadHierarchyQa.status==='PASS'&&wharfApronPresent&&residentialStreetCount>=1)?'PASS':'FAIL';
+  console.info('[Newport Foundation Layout QA] harborBasinPresent=PASS wharfDeckPresent=PASS wharfApronPresent='+(wharfApronPresent?'PASS':'FAIL')+' centralPierPresent=PASS waterfrontStreetPresent='+(roadHierarchyQa.waterfrontStreetContinuous?'PASS':'FAIL')+' residentialTerracePresent='+(roadHierarchyQa.upperResidentialRoadPresent?'PASS':'FAIL')+' residentialStreetCount='+residentialStreetCount+' serviceLanePresent='+(roadHierarchyQa.serviceLaneTileCount>0?'PASS':'FAIL')+' wharfAccessRouteCount='+wharfAccessRouteCount+' inlandConnectorCount='+inlandConnectorCount+' status='+status);
+  newportFoundationLayoutQaResult={ status, wharfAccessRouteCount, inlandConnectorCount, wharfApronPresent, residentialStreetCount, roadHierarchyQa };
   return newportFoundationLayoutQaResult;
 }
 function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompositionFailCount=0){
   const bp=world.newportCanonicalBlueprint||NEWPORT_CANONICAL_BLUEPRINT;
   const roadAt=(x,y)=>bp.routeGraphTiles.has(keyOf(x,y));
-  const hasRoadRect=(x,y,w,h)=>{ for(let tx=x;tx<x+w;tx++) for(let ty=y;ty<y+h;ty++) if(!roadAt(tx,ty)) return false; return true; };
-  const waterfrontCommercialStreetContinuous=hasRoadRect(8,18,31,1);
-  const civicConnectorPresent=hasRoadRect(23,12,1,8);
-  const civicSquarePresent=hasRoadRect(16,8,15,1)&&hasRoadRect(16,12,15,1)&&hasRoadRect(16,8,1,5)&&hasRoadRect(30,8,1,5);
-  const wharfApronPresent=hasRoadRect(9,17,30,1);
-  const centralPierPresent=hasRoadRect(19,17,1,5);
+  const hierarchy=bp.roadHierarchy||{};
+  const roadCounts=getNewportRoadHierarchyCounts(bp);
+  const waterfront=hierarchy.waterfrontStreetRect||{x:8,y:18,w:25,h:1};
+  const connector=hierarchy.centralCivicConnectorRect||{x:20,y:7,w:1,h:12};
+  const upper=hierarchy.upperResidentialRoadRect||{x:12,y:7,w:21,h:1};
+  const waterfrontCommercialStreetContinuous=hasNewportRoadRect(bp,waterfront.x,waterfront.y,waterfront.w,waterfront.h);
+  const civicConnectorPresent=hasNewportRoadRect(bp,connector.x,connector.y,connector.w,connector.h);
+  const civicSquarePresent=bp.civicSquareTiles?.size>=24 && roadAt(20,12) && roadAt(20,14);
+  const wharfApronPresent=hasNewportRoadRect(bp,8,18,25,1);
+  const centralPierPresent=hasNewportRoadRect(bp,19,17,1,7);
   const waterTiles=Array.from(world.pondWater||[]).map((k)=>{ const [x,y]=String(k).split(",").map(Number); return {x,y}; });
   const harborBasinPresent=waterTiles.some((t)=>t.y>=21)&&waterTiles.some((t)=>t.y>=22&&t.x>12&&t.x<34);
-  const wharfAccessRouteCount=[11,33].filter((x)=>roadAt(x,15)&&roadAt(x,16)&&roadAt(x,17)&&roadAt(x,18)).length;
-  const residentialStreetCount=[hasRoadRect(10,7,24,1),hasRoadRect(13,5,20,1)].filter(Boolean).length;
-  const serviceLanePresent=hasRoadRect(33,9,1,8);
+  const wharfAccessRouteCount=roadCounts.pierCount;
+  const residentialStreetCount=[upper].filter((r)=>r&&hasNewportRoadRect(bp,r.x,r.y,r.w,r.h)).length;
+  const serviceLanePresent=roadCounts.serviceLaneTileCount>0;
   const unsupportedWaterOverlapCount=0;
   const roadBodyConflicts=[];
   world.roadTiles.forEach((tileKey)=>{
@@ -6177,7 +6269,8 @@ function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompos
   const pendingVisual=visualCompositionStatus==='PENDING_ASSETS';
   const productionPending=productionBuildingCount===0 && NEWPORT_CANONICAL_FOUNDATION_MODE && productionBuildingPlacementStatus==='PENDING_35_13C';
   const productionPlacementPass=productionPending || (productionBuildingPlacementStatus==="PASS" && productionBuildingCount===HEARTHVALE_PRODUCTION_BUILDING_IDS.length);
-  const coreFoundationPass=waterfrontCommercialStreetContinuous&&civicSquarePresent&&wharfApronPresent&&unsupportedWaterOverlapCount===0&&roadBodyConflictCount===0&&visualFailCount===0&&residentialStreetCount>=1;
+  const roadSkeletonPass=roadCounts.primaryRoadTileCount>0&&roadCounts.secondaryRoadTileCount>0&&roadCounts.serviceLaneTileCount>0&&roadCounts.pierCount>=3;
+  const coreFoundationPass=roadSkeletonPass&&waterfrontCommercialStreetContinuous&&civicConnectorPresent&&civicSquarePresent&&wharfApronPresent&&centralPierPresent&&unsupportedWaterOverlapCount===0&&roadBodyConflictCount===0&&visualFailCount===0&&residentialStreetCount>=1;
   const status=pendingVisual?'PENDING_ASSETS':(coreFoundationPass&&productionPlacementPass?(productionPending?'PENDING_35_13C':'PASS'):'FAIL');
   console.info('[Newport Masterplan QA]');
   console.info('phase='+WAYFARER_PHASE);
@@ -6191,6 +6284,10 @@ function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompos
   console.info('residentialStreetCount='+residentialStreetCount);
   console.info('wharfAccessRouteCount='+wharfAccessRouteCount);
   console.info('serviceLanePresent='+(serviceLanePresent?'PASS':'FAIL'));
+  console.info('primaryRoadTileCount='+roadCounts.primaryRoadTileCount);
+  console.info('secondaryRoadTileCount='+roadCounts.secondaryRoadTileCount);
+  console.info('serviceLaneTileCount='+roadCounts.serviceLaneTileCount);
+  console.info('perpendicularPierCount='+roadCounts.pierCount);
   console.info('foundationMode='+(NEWPORT_CANONICAL_FOUNDATION_MODE?'true':'false'));
   console.info('productionBuildingPlacementStatus='+productionBuildingPlacementStatus);
   console.info('legacyProductionBuildingCount='+legacyProductionBuildingCount);
@@ -6209,12 +6306,14 @@ function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompos
 function emitNewportSpatialClarityQA({ routeTopology, routeCollision, harborComposition, buildingDepthAuthority }={}){
   const districtBlockCounts={};
   world.buildings.forEach((b)=>{ const lc=b.lotContract||{}; const dk=(lc.district||"unassigned")+":"+(lc.block||"none"); districtBlockCounts[dk]=(districtBlockCounts[dk]||0)+1; });
-  const primaryRoadTileCount=world.roads.filter((r)=>r.y===18||r.y===19||r.y===13||r.x===19).reduce((n,r)=>n+(r.w*r.h),0);
-  const secondaryRoadTileCount=world.roads.filter((r)=>r.y===8||r.x===14||r.x===22||r.x===30||r.y===14||r.y===20).reduce((n,r)=>n+(r.w*r.h),0);
-  const serviceLaneTileCount=world.roads.filter((r)=>r.x===36||r.y===21).reduce((n,r)=>n+(r.w*r.h),0);
-  const civicOpenAreaTileCount=7*5;
-  const marketOpenAreaTileCount=6*4;
-  const harborOpenAreaTileCount=10*3;
+  const bp=world.newportCanonicalBlueprint||NEWPORT_CANONICAL_BLUEPRINT;
+  const roadCounts=getNewportRoadHierarchyCounts(bp);
+  const primaryRoadTileCount=roadCounts.primaryRoadTileCount;
+  const secondaryRoadTileCount=roadCounts.secondaryRoadTileCount;
+  const serviceLaneTileCount=roadCounts.serviceLaneTileCount;
+  const civicOpenAreaTileCount=bp.civicSquareTiles?.size||0;
+  const marketOpenAreaTileCount=bp.stoneApronTiles?.size||0;
+  const harborOpenAreaTileCount=bp.wharfDeckTiles?.size||0;
   const legacyProductionBuildingCount=(world.legacyProductionBuildings||[]).length;
   const placeholderLotCount=(world.newportCanonicalBlueprint?.placeholderBuildingLots||[]).length;
   const productionBuildingCount=world.buildings.length;
@@ -6231,8 +6330,9 @@ function emitNewportSpatialClarityQA({ routeTopology, routeCollision, harborComp
   const qaStatuses=[harborStatus, routeCollisionStatus, routeTopologyStatus, buildingDepthAuthorityStatus];
   const hasPendingDependency=qaStatuses.some((status)=>status==='PENDING' || status==='UNKNOWN');
   const allDependencyPass=qaStatuses.every((status)=>status==='PASS');
-  const overall=hasPendingDependency ? 'PENDING' : ((allDependencyPass&&blockedFrontageCount===0)?'PASS':'FAIL');
-  console.info('[Newport Spatial Clarity QA] phase='+WAYFARER_PHASE+' selector='+ATLAS_SELECTOR_VERSION+' primaryRoadTileCount='+primaryRoadTileCount+' secondaryRoadTileCount='+secondaryRoadTileCount+' serviceLaneTileCount='+serviceLaneTileCount+' civicOpenAreaTileCount='+civicOpenAreaTileCount+' marketOpenAreaTileCount='+marketOpenAreaTileCount+' harborOpenAreaTileCount='+harborOpenAreaTileCount+' districtBlockCounts='+JSON.stringify(districtBlockCounts)+' productionBuildingCount='+productionBuildingCount+' reachableFrontageCount='+reachableFrontageCount+' blockedFrontageCount='+blockedFrontageCount+' inlandConnectorRequiredCount='+inlandConnectorRequiredCount+' inlandConnectorCount='+inlandConnectorCount+' harborComposition='+harborStatus+' routeCollision='+routeCollisionStatus+' routeTopology='+routeTopologyStatus+' buildingDepthAuthority='+buildingDepthAuthorityStatus+' overall='+overall);
+  const roadHierarchyPresent=primaryRoadTileCount>0&&secondaryRoadTileCount>0&&serviceLaneTileCount>0&&roadCounts.pierCount>=3;
+  const overall=hasPendingDependency ? 'PENDING' : ((allDependencyPass&&blockedFrontageCount===0&&roadHierarchyPresent)?'PASS':'FAIL');
+  console.info('[Newport Spatial Clarity QA] phase='+WAYFARER_PHASE+' selector='+ATLAS_SELECTOR_VERSION+' primaryRoadTileCount='+primaryRoadTileCount+' secondaryRoadTileCount='+secondaryRoadTileCount+' serviceLaneTileCount='+serviceLaneTileCount+' pierCount='+roadCounts.pierCount+' civicOpenAreaTileCount='+civicOpenAreaTileCount+' marketOpenAreaTileCount='+marketOpenAreaTileCount+' harborOpenAreaTileCount='+harborOpenAreaTileCount+' districtBlockCounts='+JSON.stringify(districtBlockCounts)+' productionBuildingCount='+productionBuildingCount+' reachableFrontageCount='+reachableFrontageCount+' blockedFrontageCount='+blockedFrontageCount+' inlandConnectorRequiredCount='+inlandConnectorRequiredCount+' inlandConnectorCount='+inlandConnectorCount+' harborComposition='+harborStatus+' routeCollision='+routeCollisionStatus+' routeTopology='+routeTopologyStatus+' buildingDepthAuthority='+buildingDepthAuthorityStatus+' overall='+overall);
 }
 
 function emitNewportSpriteRoleLotAudit(){
@@ -6276,16 +6376,16 @@ emitNewportSpriteRoleLotAudit();
 emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
 const NEWPORT_TOWN_BLUEPRINT_V2=Object.freeze({
-  phase:"35.12D_authoritative",
-  waterfrontSpineTiles:Array.from({length:31},(_,i)=>({x:8+i,y:18})),
-  commercialStreetTiles:Array.from({length:31},(_,i)=>({x:8+i,y:18})),
-  wharfApronTiles:Array.from({length:30},(_,i)=>({x:9+i,y:16})),
-  centralPierTiles:Array.from({length:5},(_,i)=>({x:19,y:17+i})),
-  wharfAccessRoutes:[[{x:11,y:15},{x:11,y:16},{x:11,y:17},{x:11,y:18}],[{x:33,y:15},{x:33,y:16},{x:33,y:17},{x:33,y:18}]],
-  inlandConnectors:[[{x:11,y:18},{x:11,y:15}],[{x:23,y:18},{x:23,y:12}],[{x:33,y:18},{x:33,y:15}]],
-  residentialLanes:[{x:9,y:6,w:30,h:1},{x:12,y:3,w:24,h:1}],
-  serviceLaneTiles:Array.from({length:10},(_,i)=>({x:35,y:7+i})),
-  civicSquareTiles:[{x:16,y:8,w:15,h:1},{x:16,y:12,w:15,h:1},{x:16,y:8,w:1,h:5},{x:30,y:8,w:1,h:5}],
+  phase:"35.13F_reference_map_skeleton",
+  waterfrontSpineTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
+  commercialStreetTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
+  wharfApronTiles:Array.from({length:25},(_,i)=>({x:8+i,y:17})),
+  centralPierTiles:Array.from({length:7},(_,i)=>({x:19,y:17+i})),
+  wharfAccessRoutes:[[10,16,19,23,29].map((x)=>Array.from({length:x===19?7:5},(_,i)=>({x,y:(x===19?17:18)+i}))).flat()],
+  inlandConnectors:[Array.from({length:12},(_,i)=>({x:20,y:7+i})),Array.from({length:12},(_,i)=>({x:12,y:7+i})),Array.from({length:12},(_,i)=>({x:27,y:7+i}))],
+  residentialLanes:[{x:12,y:7,w:21,h:1}],
+  serviceLaneTiles:[...Array.from({length:9},(_,i)=>({x:5,y:10+i})),...Array.from({length:9},(_,i)=>({x:37,y:10+i})),...Array.from({length:9},(_,i)=>({x:42,y:10+i}))],
+  civicSquareTiles:[{x:19,y:10,w:8,h:4}],
   buildingPlacements:world.buildings.map((b)=>({ buildingId:b.id, intendedDistrict:b.lotContract?.district||"unassigned", desiredFinalDrawRect:getBuildingFinalDrawRectFromBlueprint(b, ATLAS_BUILDING_METADATA?.[b.spriteId]||null).finalDrawRect, frontageTile:b.lotContract?.frontageTile||null, interactionRect:b.lotContract?.interactionRect||b.interaction||null, collisionFootprint:b.lotContract?.collisionFootprint||b.collision||null, supportClass:b.lotContract?.supportClass||"land_street", allowedRoadOverlap:b.lotContract?.allowedRoadOverlap===true, allowedWharfOverlap:b.lotContract?.allowedWharfOverlap===true, allowedPierOverlap:false }))
 });
 
@@ -6319,6 +6419,8 @@ function evaluateVisualFirstPlacementContract(spec){
   const desiredFrontageTile=spec.desiredFrontageTile||lc.frontageTile||null;
   const desiredSupport=spec.allowedSupport||"land_street";
   const finalDrawRectMatchesIntent=!desiredFinalDrawRect || (finalDrawRect.x===desiredFinalDrawRect.x && finalDrawRect.y===desiredFinalDrawRect.y && finalDrawRect.w===desiredFinalDrawRect.w && finalDrawRect.h===desiredFinalDrawRect.h);
+  const readabilityLotRect=lc.readabilityLotRect||lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h};
+  const finalDrawRectFitsAssignedLot=rectContainsRect(readabilityLotRect,finalDrawRect);
   const footprintTiles=Array.from({length:collisionFootprint.w*collisionFootprint.h},(_,i)=>({x:collisionFootprint.x+(i%collisionFootprint.w),y:collisionFootprint.y+Math.floor(i/collisionFootprint.w)}));
   const supportedWaterFootprint=(lc.supportedWaterFootprint||[]).map((t)=>keyOf(t.x,t.y));
   const unsupportedWaterOverlap=footprintTiles.some((t)=>world.pondWater.has(keyOf(t.x,t.y))&&!world.roadTiles.has(keyOf(t.x,t.y))&&!supportedWaterFootprint.includes(keyOf(t.x,t.y))&&!isNewportWharfSupportTile(t.x,t.y));
@@ -6345,7 +6447,7 @@ function evaluateVisualFirstPlacementContract(spec){
   if(pierPredicatePendingReason){
     return { status:"PENDING_INIT", reason:pierPredicatePendingReason, buildingId:b.id, spriteId:b.spriteId };
   }
-  return { buildingId:b.id,spriteId:b.spriteId,desiredFinalDrawRect,desiredVisualBaseTile,desiredFrontageTile,actualFinalDrawRect:finalDrawRect,finalDrawRectPx,finalDrawRectMatchesIntent,lotRect:lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h},drawAnchor,collisionFootprint,frontageTile,interactionRect,supportedWaterFootprint:lc.supportedWaterFootprint||[],roadClearanceTiles:[],pierClearanceTiles:[],wharfClearanceTiles:[],mapEdgeSafety:!mapEdgeViolation,frontageReachable,roadBodyConflict,unsupportedWaterOverlap,pierConflict,wharfConflict,mapEdgeViolation,supportClass:desiredSupport,supportClassViolation };
+  return { buildingId:b.id,spriteId:b.spriteId,desiredFinalDrawRect,desiredVisualBaseTile,desiredFrontageTile,actualFinalDrawRect:finalDrawRect,finalDrawRectPx,finalDrawRectMatchesIntent,finalDrawRectFitsAssignedLot,readabilityLotRect,lotRect:lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h},drawAnchor,collisionFootprint,frontageTile,interactionRect,supportedWaterFootprint:lc.supportedWaterFootprint||[],roadClearanceTiles:[],pierClearanceTiles:[],wharfClearanceTiles:[],mapEdgeSafety:!mapEdgeViolation,frontageReachable,roadBodyConflict,unsupportedWaterOverlap,pierConflict,wharfConflict,mapEdgeViolation,supportClass:desiredSupport,supportClassViolation };
 }
 
 function emitBuildingPlacementContractQA(){
@@ -6368,6 +6470,7 @@ function emitBuildingPlacementContractQA(){
     }
     const failureReasons=[];
     if(!r.finalDrawRectMatchesIntent) failureReasons.push('final_draw_rect_does_not_match_intent');
+    if(!r.finalDrawRectFitsAssignedLot) failureReasons.push('final_draw_rect_outside_assigned_lot');
     if(r.unsupportedWaterOverlap) failureReasons.push('final_draw_rect_overlaps_unsupported_water');
     if(r.roadBodyConflict) failureReasons.push('final_draw_rect_conflicts_with_road_body');
     if(r.pierConflict) failureReasons.push('final_draw_rect_conflicts_with_pier');
@@ -6505,6 +6608,20 @@ function emitNewportTownFoundationLockQA(){
   return newportTownFoundationLockQaResult;
 }
 
+function getNewportValidationFrameRect(){
+  return { x:3.5, y:0.75, w:30.0, h:22.95 };
+}
+function rectContainsRect(outer,inner,epsilon=0.001){
+  if(!outer||!inner) return false;
+  return inner.x>=outer.x-epsilon && inner.y>=outer.y-epsilon && (inner.x+inner.w)<=outer.x+outer.w+epsilon && (inner.y+inner.h)<=outer.y+outer.h+epsilon;
+}
+function rectIntersectionArea(a,b){
+  if(!a||!b) return 0;
+  const ox=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x));
+  const oy=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+  return ox*oy;
+}
+
 function emitNewportVisualCompositionQA(){
   if(NEWPORT_CANONICAL_FOUNDATION_MODE && world&&Array.isArray(world.buildings)&&world.buildings.length===0){
     console.info('[Newport Visual Composition QA] status=PENDING_35_13C reason=production_building_placement_deferred productionBuildingCount=0');
@@ -6516,6 +6633,7 @@ function emitNewportVisualCompositionQA(){
     return { status:"PENDING_ASSETS", reason:"building_atlas_not_ready", buildingReports:[] };
   }
   const mapBounds={ minX:0,minY:0,maxX:47,maxY:31 };
+  const validationFrame=getNewportValidationFrameRect();
   const TILE_SIZE=TILE;
   const waterfrontIds=new Set(["b_boathouse","b_dock_storehouse","b_market_shed"]);
   const spriteWarningsById=new Map((window.__buildingAtlasCropAudit?.rows||[]).map((r)=>[r.buildingId||r.id,r]));
@@ -6526,12 +6644,21 @@ function emitNewportVisualCompositionQA(){
     const { finalDrawRect:finalDrawRectTiles, finalDrawRectPx, drawAnchor }=getBuildingFinalDrawRectFromBlueprint(b, spriteMeta);
     const c=b.collision||{x:b.x,y:b.y,w:b.w,h:b.h};
     const frontage=lc.frontageTile||b.frontDoorTile||null;
+    const districtTag=lc.districtTag||resolveNewportDistrictTag(lc.district);
+    const allowedRoles=NEWPORT_DISTRICT_ALLOWED_ROLES[districtTag]||null;
+    const roleAllowed=allowedRoles ? allowedRoles.has(b.role) : true;
+    const lotType=lc.lotType||((lc.district==="harbor_wharf")?"wharf_waterfront":"land_street");
+    const roleMismatch=!roleAllowed || (lc.district==="harbor_wharf" && !["boathouse_ship_shed_shipwright","dockside_storehouse","market_shed_harbor_stalls","waterfront_mixed_use_shop_house"].includes(b.role)) || (lc.district!=="harbor_wharf" && b.role==="dockside_storehouse");
+    const validationFrameCritical=lc.validationFrameCritical!==false;
+    const readabilityLotRect=lc.readabilityLotRect||lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h};
     const footprintTiles=Array.from({length:c.w*c.h},(_,i)=>({x:c.x+(i%c.w),y:c.y+Math.floor(i/c.w)}));
     const supportedWaterFootprint=new Set((lc.supportedWaterFootprint||[]).map((t)=>keyOf(t.x,t.y)));
     const unsupportedWaterTiles=footprintTiles.filter((t)=>world.pondWater.has(keyOf(t.x,t.y)) && !world.roadTiles.has(keyOf(t.x,t.y)) && !supportedWaterFootprint.has(keyOf(t.x,t.y)) && !isNewportWharfSupportTile(t.x,t.y));
     const waterOverlap=unsupportedWaterTiles.length>0;
     const drawRectTouchesMapEdge=finalDrawRectTiles.x<=mapBounds.minX||finalDrawRectTiles.y<=mapBounds.minY||(finalDrawRectTiles.x+finalDrawRectTiles.w)>=mapBounds.maxX|| (finalDrawRectTiles.y+finalDrawRectTiles.h)>=mapBounds.maxY;
     const drawRectExceedsSafeMargin=finalDrawRectTiles.x<1||finalDrawRectTiles.y<1||(mapBounds.maxX-(finalDrawRectTiles.x+finalDrawRectTiles.w))<1;
+    const drawRectFitsAssignedLot=rectContainsRect(readabilityLotRect,finalDrawRectTiles);
+    const drawRectWithinValidationFrame=!validationFrameCritical || rectContainsRect(validationFrame,finalDrawRectTiles);
     const drawRectConflictsWithRoad=footprintTiles.some((t)=>world.roadTiles.has(keyOf(t.x,t.y)) && !waterfrontIds.has(b.id));
     const drawRectConflictsWithWharfSpine=footprintTiles.some((t)=>t.y===18 && t.x>=8 && t.x<=31);
     const drawRectConflictsWithPier=footprintTiles.some((t)=>isHarborPierTile(t.x,t.y));
@@ -6542,21 +6669,41 @@ function emitNewportVisualCompositionQA(){
     if(waterOverlap) failureReasons.push('water_shore_staging_problem');
     if(drawRectTouchesMapEdge) failureReasons.push('world_draw_rectangle_touches_map_edge');
     if(drawRectExceedsSafeMargin) failureReasons.push('world_draw_rectangle_exceeds_safe_margin');
+    if(!drawRectFitsAssignedLot) failureReasons.push('final_draw_rect_outside_assigned_lot');
+    if(!drawRectWithinValidationFrame) failureReasons.push('validation_frame_edge_crop');
     if(drawRectConflictsWithRoad) failureReasons.push('draw_rect_conflicts_with_road');
     if(drawRectConflictsWithWharfSpine) failureReasons.push('draw_rect_conflicts_with_wharf_spine');
     if(drawRectConflictsWithPier) failureReasons.push('draw_rect_conflicts_with_pier');
     if(!frontageReadable) failureReasons.push('frontage_unreadable');
     if(!rolePlacementValid) failureReasons.push('role_placement_invalid');
+    if(roleMismatch) failureReasons.push('roleMismatch=true');
     if(atlasCropWarning?.warnings?.includes?.('clipped_to_edge')) failureReasons.push('atlas_crop_touches_source_edge_nonblocking');
     const visualStatus=failureReasons.some((r)=>r!=='atlas_crop_touches_source_edge_nonblocking')?'FAIL':(failureReasons.length?'WARN':'PASS');
-    buildingReports.push({ buildingId:b.id,spriteId:b.spriteId,lotRect:lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h},frontageTile:frontage,collisionFootprint:c,drawAnchor,finalDrawRect:finalDrawRectTiles,finalDrawRectPx,drawRectOverlapsWater:waterOverlap,drawRectTouchesMapEdge,drawRectExceedsSafeMargin,drawRectConflictsWithRoad,drawRectConflictsWithWharfSpine,drawRectConflictsWithPier,frontageReadable,rolePlacementValid,visualStatus,failureReasons });
+    buildingReports.push({ buildingId:b.id,spriteId:b.spriteId,district:lc.district||"unassigned",districtTag,lotType,roleMismatch,lotRect:lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h},readabilityLotRect,frontageTile:frontage,collisionFootprint:c,drawAnchor,finalDrawRect:finalDrawRectTiles,finalDrawRectPx,drawRectFitsAssignedLot,drawRectWithinValidationFrame,validationFrameCritical,drawRectOverlapsWater:waterOverlap,drawRectTouchesMapEdge,drawRectExceedsSafeMargin,drawRectConflictsWithRoad,drawRectConflictsWithWharfSpine,drawRectConflictsWithPier,frontageReadable,rolePlacementValid,visualStatus,failureReasons });
+  }
+  const visualOverlapPairs=[];
+  for(let i=0;i<buildingReports.length;i++){
+    for(let j=i+1;j<buildingReports.length;j++){
+      const a=buildingReports[i], b=buildingReports[j];
+      if(!a.validationFrameCritical&&!b.validationFrameCritical) continue;
+      const area=rectIntersectionArea(a.finalDrawRect,b.finalDrawRect);
+      if(area>0.2) visualOverlapPairs.push({a:a.buildingId,b:b.buildingId,area:Number(area.toFixed(3))});
+    }
+  }
+  if(visualOverlapPairs.length){
+    const offenders=new Set(visualOverlapPairs.flatMap((pair)=>[pair.a,pair.b]));
+    buildingReports.forEach((report)=>{
+      if(!offenders.has(report.buildingId)) return;
+      report.failureReasons.push('visible_sprite_overlap_cropping');
+      report.visualStatus='FAIL';
+    });
   }
   const failures=buildingReports.filter((r)=>r.visualStatus==='FAIL');
   const warnings=buildingReports.filter((r)=>r.visualStatus==='WARN');
   const status=failures.length===0?'PASS':'FAIL';
   console.info('[Newport Visual Composition Offenders] failCount='+failures.length+' offenders='+(failures.length?JSON.stringify(failures.map((r)=>({ buildingId:r.buildingId, frontageTile:r.frontageTile, collisionFootprint:r.collisionFootprint, failureReasons:r.failureReasons }))):'none'));
-  console.info('[Newport Visual Composition QA] status='+status+' productionBuildingCount='+buildingReports.length+' failCount='+failures.length+' warnCount='+warnings.length+' reports='+JSON.stringify(buildingReports));
-  return { status, productionBuildingCount:buildingReports.length, failCount:failures.length, warnCount:warnings.length, buildingReports };
+  console.info('[Newport Visual Composition QA] status='+status+' productionBuildingCount='+buildingReports.length+' failCount='+failures.length+' warnCount='+warnings.length+' visualOverlapPairCount='+visualOverlapPairs.length+' validationFrame='+JSON.stringify(validationFrame)+' reports='+JSON.stringify(buildingReports));
+  return { status, productionBuildingCount:buildingReports.length, failCount:failures.length, warnCount:warnings.length, visualOverlapPairs, buildingReports };
 }
 let buildingPlacementContractQaResult={ status:"PENDING_INIT", reason:"deferred_until_final_qa_phase", productionBuildingCount:0, passCount:0, failCount:0, failedBuildings:[], reports:[] };
 let finalBuildingPlacementContractQaResult=null;
@@ -6613,9 +6760,7 @@ NEWPORT_PLAYER_READABILITY_OPEN_TILES.forEach((tile)=>{
   world.blocked.delete(tileKey);
 });
 
-for(let x=16;x<=20;x++){ world.fences.push({x,y:2}); } // garden plot north fence — stops at x=20 to clear village hall (x=21..26)
-for(let y=3;y<=6;y++){ world.fences.push({x:16,y}); }   // garden plot west fence
-for(let y=3;y<=6;y++){ world.fences.push({x:20,y}); }   // garden plot east fence — moved from x=23 so village hall isn't sitting on it
+// Phase 35.13F removes the legacy garden fence box that cut across the rebuilt mansion lots.
 for(let x=9;x<=14;x++){ world.fences.push({x,y:15}); }
 for(let x=25;x<=31;x++){ world.fences.push({x,y:15}); }
 for(let y=19;y<=20;y++){ world.fences.push({x:33,y}); }
@@ -6760,11 +6905,13 @@ function hasCentralPierOverride(x,y){
   return CENTRAL_PIER_TILE_KEYS.has(keyOf(x,y));
 }
 function isHarborPierTile(x,y){
-  return hasCentralPierOverride(x,y);
+  const tileKey=keyOf(x,y);
+  return hasCentralPierOverride(x,y) || world.newportCanonicalBlueprint?.roadHierarchy?.pierTiles?.has(tileKey) || world.newportCanonicalBlueprint?.centralPierTiles?.has(tileKey);
 }
 
 function getAuthoritativeWharfDeckTiles(){
   const tiles=new Set();
+  (world.newportCanonicalBlueprint?.wharfDeckTiles||[]).forEach((tileKey)=>tiles.add(tileKey));
   world.buildings.forEach((building)=>{
     if(building?.lotContract?.district!=="harbor_wharf") return;
     const walk=building.frontWalkBand||building.lotContract?.frontWalk;
@@ -6901,7 +7048,7 @@ function finalizeHearthvaleTraversalTopology(){
   world.blocked.forEach((tileKey)=>{
     if(routeTileSet.has(tileKey)){ hearthvaleTraversalAuthority.nonBlockingTerrainTiles.add(tileKey); world.blocked.delete(tileKey); }
   });
-  [keyOf(31,7),keyOf(30,5)].forEach((tileKey)=>{
+  [keyOf(30,7),keyOf(20,14)].forEach((tileKey)=>{
     routeTileSet.add(tileKey);
     hearthvaleTraversalAuthority.nonBlockingTerrainTiles.add(tileKey);
     world.blocked.delete(tileKey);
@@ -7396,7 +7543,7 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13E" && ATLAS_SELECTOR_VERSION==="selector-v35-13e-newport-town-foundation-lock";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13F" && ATLAS_SELECTOR_VERSION==="selector-v35-13f-newport-reference-map-skeleton";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionDeferred=foundationMode && latestVisualCompositionQa.status==="PENDING_35_13C";
@@ -12612,6 +12759,7 @@ function drawWorld(){
   safelyRunQa("harbor_composition_qa", ()=>emitHarborCompositionQA());
   safelyRunQa("newport_canonical_blueprint_qa", ()=>emitNewportCanonicalBlueprintQA());
   safelyRunQa("route_source_authority_qa", ()=>emitRouteSourceAuthorityQA());
+  safelyRunQa("newport_road_hierarchy_qa", ()=>emitNewportRoadHierarchyQA());
   safelyRunQa("newport_foundation_layout_qa", ()=>emitNewportFoundationLayoutQA());
   safelyRunQa("traversal_topology_qa", ()=>emitTraversalTopologyQA());
   safelyRunQa("route_tile_sweep_qa", ()=>emitRouteTileSweepQA());
