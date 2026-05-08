@@ -7140,7 +7140,7 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13C" && ATLAS_SELECTOR_VERSION==="selector-v35-13c-production-building-placement";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13C.1" && ATLAS_SELECTOR_VERSION==="selector-v35-13c1-served-qa-closure";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionDeferred=foundationMode && latestVisualCompositionQa.status==="PENDING_35_13C";
@@ -7160,6 +7160,7 @@ function buildWayfarerQaReport(){
   const activeSpawnPass=savedSpawnPass&&freshSpawnPass;
   const finalSettledSpawnQaPass=activeSpawnPass;
   const productionPlacementDeferred=foundationMode && world.buildings.length===0 && (world.legacyProductionBuildings||[]).length>0;
+  const productionPlacementActive=NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE && world.buildings.length===HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const renderAuditDeferred=productionPlacementDeferred && latestRenderAuditStatus.status==="PENDING_35_13C";
   const sourceTruthDeferred=productionPlacementDeferred && latestSourceTruthStatus==="PENDING_35_13C";
   const renderAuditPass=latestRenderAuditStatus.status==="PASS" || renderAuditDeferred;
