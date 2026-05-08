@@ -4616,6 +4616,7 @@ function emitHarborCompositionQA(){
   console.info("inlandConnectorStatus="+inlandConnectorStatus);
   console.info("inlandConnectorFailureReasons="+(inlandConnectorFailureReasons.length?inlandConnectorFailureReasons.join("|"):"none"));
   console.info("inlandConnectorSamples="+JSON.stringify(inlandConnectorSamples));
+  console.info("[Harbor Inland Connector Trace] required="+inlandConnectorRequiredCount+" reachable="+inlandConnectorCount+" failureReasons="+(inlandConnectorFailureReasons.length?inlandConnectorFailureReasons.join("|"):"none")+" samples="+JSON.stringify(inlandConnectorSamples));
   console.info("blockedRoadMismatches="+blockedRoadMismatches);
   console.info("spawnQA="+spawnQaResult.status);
   console.info("traversalQA="+traversalQaResult.status);
@@ -6040,7 +6041,15 @@ function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompos
     if(state.isForbiddenBodyCollision) roadBodyConflicts.push({ x,y,buildingId:state.owningBuildingId,reason:state.reason });
   });
   const roadBodyConflictCount=roadBodyConflicts.length;
-  const buildingsWithReadableFrontageCount=world.buildings.filter((b)=>{ const t=b.lotContract?.frontageTile; return t&&!world.blocked.has(keyOf(t.x,t.y)); }).length;
+  const frontageReadabilityReports=world.buildings.map((b)=>{
+    const t=b.lotContract?.frontageTile;
+    if(!t) return { buildingId:b.id, frontageTile:null, readable:false, worldBlocked:true, blockers:["missing_frontage"] };
+    const diag=getMovementBlockDiagnostics(t.x,t.y);
+    const worldBlocked=world.blocked.has(keyOf(t.x,t.y));
+    return { buildingId:b.id, frontageTile:t, readable:!worldBlocked && !diag.blocked, worldBlocked, blockers:diag.causeChain||[] };
+  });
+  const frontageReadabilityOffenders=frontageReadabilityReports.filter((row)=>!row.readable);
+  const buildingsWithReadableFrontageCount=frontageReadabilityReports.length-frontageReadabilityOffenders.length;
   const legacyProductionBuildingCount=(world.legacyProductionBuildings||[]).length;
   const placeholderLotCount=(world.newportCanonicalBlueprint?.placeholderBuildingLots||[]).length;
   const productionBuildingCount=world.buildings.length;
@@ -6069,6 +6078,7 @@ function emitNewportMasterplanQA(visualCompositionStatus='PENDING', visualCompos
   console.info('placeholderLotCount='+placeholderLotCount);
   console.info('productionBuildingCount='+productionBuildingCount);
   console.info('buildingsWithReadableFrontageCount='+buildingsWithReadableFrontageCount);
+  console.info('frontageReadabilityOffenders='+(frontageReadabilityOffenders.length?JSON.stringify(frontageReadabilityOffenders):'none'));
   console.info('unsupportedWaterOverlapCount='+unsupportedWaterOverlapCount);
   console.info('roadBodyConflictCount='+roadBodyConflictCount);
   if(roadBodyConflicts.length) console.info('roadBodyConflictExamples='+roadBodyConflicts.slice(0,12).map((r)=>"tile("+r.x+","+r.y+"):"+r.buildingId+":"+r.reason).join(" | "));
