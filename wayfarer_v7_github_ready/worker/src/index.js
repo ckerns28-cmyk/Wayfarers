@@ -3435,6 +3435,7 @@ let routeCollisionQaResult={ status:"PENDING", scanned:0, invalidHiddenBlockers:
 let buildingOverlapQaResult={ status:"PENDING", overlaps:[], scanned:0 };
 let wharfReadabilityQaResult={ status:"PENDING", walkableOverWater:0, invalidWalkableOverWater:0, unreachableWharfTiles:0, boathouseAligned:false };
 let playerStuckQaResult={ status:"PENDING", tested:0, reachable:0, blockedPockets:0 };
+let playerStuckBlockerTraceSignature="";
 let questLoopQaSignature="";
 let questLoopQaResult={ status:"FAIL", hasStillWater:false, stage:-1, stageValid:false, objectiveReady:false };
 let collisionSpamQaResult={ status:"PASS", suppressed:0, uniqueSignatures:0 };
