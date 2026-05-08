@@ -228,6 +228,8 @@ A Newport town-phase PR is **not complete** unless the PR body includes pasted s
 - [ ] Final `[Newport Visual Composition QA]` line is pasted from served browser console output.
 - [ ] Final `[Harbor Composition QA]` line is pasted from served browser console output.
 - [ ] Final `[Newport Masterplan QA]` line is pasted from served browser console output.
+- [ ] Final `[Building Visual Solidity QA]` line is pasted from served browser console output (status=PASS, walkableSolidOverlapCount=0 for every production building).
+- [ ] Final `[Active Player Solid Overlap Probe]` line is pasted from served browser console output (overlappingSolidBuildingId=none, status=PASS).
 - [ ] Screenshot evidence is attached (atlasDebug, non-debug, freshSpawn).
 
 Do not claim served validation is complete unless the actual served browser console output is pasted into the PR body.
