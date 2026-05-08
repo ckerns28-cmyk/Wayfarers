@@ -4530,7 +4530,7 @@ function emitHarborCompositionQA(){
   const boathouse=world.buildings.find((row)=>row.id==="b_boathouse");
   const boathouseReachable=isBoathouseFrontageReachable();
   const boathouseFrontage=boathouse?.interaction||null;
-  const boathouseFrontageReachable=!!(boathouseFrontage && canMoveTo(boathouseFrontage.x,boathouseFrontage.y));
+  const boathouseFrontageReachable=!!(boathouseFrontage && canMoveToWithoutDiagnostics(boathouseFrontage.x,boathouseFrontage.y,{ ignoreDynamicBlockers:true }));
   const boathouseCollision=boathouse?.collision||null;
   const requiredPlayableWharfTiles=[...getAuthoritativeWharfDeckTiles()];
   const boathouseCollisionTileKeys=[];
@@ -4856,7 +4856,7 @@ function emitBuildingOverlapQA(){
   const sampledOrder=rows.map((b)=>({ id:b.id, ...getBuildingRenderDepthAuthority(b) }))
     .sort((a,b)=>a.baseY-b.baseY||a.district.localeCompare(b.district)||a.block.localeCompare(b.block)||a.row.localeCompare(b.row)||a.x-b.x||a.id.localeCompare(b.id))
     .slice(0,12).map((r)=>r.id+":"+r.baseY+":"+r.district+"/"+r.block+"/"+r.row);
-  const frontWalkBlockedCount=rows.filter((b)=>b.frontWalkBand && !canMoveTo(b.frontWalkBand.x,b.frontWalkBand.y)).length;
+  const frontWalkBlockedCount=rows.filter((b)=>b.frontWalkBand && !canMoveToWithoutDiagnostics(b.frontWalkBand.x,b.frontWalkBand.y,{ ignoreDynamicBlockers:true })).length;
   const status=(depthConflicts.length===0 && collisionOverlaps.length===0)?"PASS":"FAIL";
   buildingOverlapQaResult={ status, overlaps:visualOverlaps, collisionOverlaps, depthConflicts, tieConflicts, scanned:rows.length };
   console.info("[Newport Building Depth Authority QA] phase="+WAYFARER_PHASE+" selector="+ATLAS_SELECTOR_VERSION+" totalProductionBuildings="+rows.length+" sortedRenderOrderSample="+JSON.stringify(sampledOrder)+" visualOverlapPairCount="+visualOverlaps.length+" collisionOverlapPairCount="+collisionOverlaps.length+" visualOverlapDepthConflicts="+depthConflicts.length+" sameDepthTieBreakConflicts="+tieConflicts.length+" frontWalkBlockedCount="+frontWalkBlockedCount+" status="+status);
@@ -4870,7 +4870,7 @@ function emitWharfReadabilityQA(){
     return !isHarborPierWharfTile(x,y);
   });
   const wharfTiles=[...world.roadTiles].filter((k)=>isHarborPierWharfTile(...k.split(",").map(Number)));
-  const unreachableWharfTileKeys=wharfTiles.filter((k)=>!canMoveTo(...k.split(",").map(Number)));
+  const unreachableWharfTileKeys=wharfTiles.filter((k)=>!canMoveToWithoutDiagnostics(...k.split(",").map(Number),{ ignoreDynamicBlockers:true }));
   const unreachableWharfTiles=unreachableWharfTileKeys.length;
   const boathouse=world.buildings.find((b)=>b.id==="b_boathouse");
   const foundationBoathouseSlot=(world.newportCanonicalBlueprint?.placeholderBuildingLots||[]).some((lot)=>lot.id==="lot_boathouse"||lot.id==="lot_chandlery"||lot.id==="lot_shop_house");
@@ -4901,10 +4901,10 @@ function emitWharfAuthorityAudit(){
     const auth=getWharfAuthorityTileClass(x,y);
     return auth.playableWharf===true && !isHarborPierWharfTile(x,y);
   });
-  const reachablePlayableWharfTiles=playableWharfDeckTiles.filter((k)=>canMoveTo(...k.split(",").map(Number)));
+  const reachablePlayableWharfTiles=playableWharfDeckTiles.filter((k)=>canMoveToWithoutDiagnostics(...k.split(",").map(Number),{ ignoreDynamicBlockers:true }));
   const boathouse=world.buildings.find((b)=>b.id==="b_boathouse");
   const frontage=boathouse?.interaction||null;
-  const frontageReachable=!!(frontage && canMoveTo(frontage.x,frontage.y));
+  const frontageReachable=!!(frontage && canMoveToWithoutDiagnostics(frontage.x,frontage.y,{ ignoreDynamicBlockers:true }));
   const collision=boathouse?.collision||null;
   const collisionTiles=[];
   const collisionTileKeys=[];
@@ -4958,7 +4958,7 @@ function emitPlayerStuckReadabilityQA(){
 }
 function canMoveToKey(tileKey){
   const [x,y]=tileKey.split(",").map((v)=>Number(v));
-  return canMoveTo(x,y);
+  return canMoveToWithoutDiagnostics(x,y);
 }
 function isBuildingAtlasPendingReason(reason){
   // Pending = atlas image is still loading. Once the atlas image is fully
@@ -6951,7 +6951,7 @@ function setNpcTile(npcEntity,x,y,alignImmediately=false){
 function findNearestValidPlayerSpawnTile(startX,startY,maxDepth=20){
   const classifyTile=(x,y)=>{
     if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) return { valid:false, score:-1 };
-    if(!canMoveTo(x,y)) return { valid:false, score:-1 };
+    if(!canMoveToWithoutDiagnostics(x,y)) return { valid:false, score:-1 };
     if(namedVillageNpcs.some((villageNpc)=>villageNpc.targetX===x && villageNpc.targetY===y)) return { valid:false, score:-1 };
     let score=1;
     if(world.roadTiles.has(keyOf(x,y))) score+=12;
@@ -6998,7 +6998,7 @@ function buildRoadConnectivityGraph(){
       const tileKey=keyOf(nx,ny);
       if(graph.has(tileKey)) continue;
       if(nx<0||ny<0||nx>=WORLD_W||ny>=WORLD_H) continue;
-      if(!canMoveTo(nx,ny)) continue;
+      if(!canMoveToWithoutDiagnostics(nx,ny)) continue;
       if(!world.roadTiles.has(tileKey)) continue;
       graph.add(tileKey);
       queue.push({ x:nx, y:ny });
@@ -7015,7 +7015,7 @@ function findNearestRoadSeed(originX,originY,maxRadius=24){
         if(x<0||y<0||x>=WORLD_W||y>=WORLD_H) continue;
         const tileKey=keyOf(x,y);
         if(!world.roadTiles.has(tileKey)) continue;
-        if(!canMoveTo(x,y)) continue;
+        if(!canMoveToWithoutDiagnostics(x,y)) continue;
         return { x,y };
       }
     }
@@ -7023,7 +7023,7 @@ function findNearestRoadSeed(originX,originY,maxRadius=24){
   return null;
 }
 function findNearestValidLandTile(startX,startY,maxDepth=12){
-  if(canMoveTo(startX,startY)) return { x:startX, y:startY };
+  if(canMoveToWithoutDiagnostics(startX,startY)) return { x:startX, y:startY };
   const visited=new Set([keyOf(startX,startY)]);
   const queue=[{ x:startX, y:startY, depth:0 }];
   for(let cursor=0;cursor<queue.length;cursor++){
@@ -7036,7 +7036,7 @@ function findNearestValidLandTile(startX,startY,maxDepth=12){
       const tileKey=keyOf(nx,ny);
       if(visited.has(tileKey)) continue;
       visited.add(tileKey);
-      if(canMoveTo(nx,ny)) return { x:nx, y:ny };
+      if(canMoveToWithoutDiagnostics(nx,ny)) return { x:nx, y:ny };
       queue.push({ x:nx, y:ny, depth:current.depth+1 });
     }
   }
@@ -7050,7 +7050,7 @@ function findPathLength(start,target){
     if(cur.x===target.x&&cur.y===target.y) return cur.dist;
     for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
       const nx=cur.x+dx, ny=cur.y+dy, k=keyOf(nx,ny);
-      if(visited.has(k) || !canMoveTo(nx,ny)) continue;
+      if(visited.has(k) || !canMoveToWithoutDiagnostics(nx,ny,{ ignoreDynamicBlockers:true })) continue;
       visited.add(k);
       queue.push({x:nx,y:ny,dist:cur.dist+1});
     }
@@ -7068,18 +7068,18 @@ function getProductionTraversalTargets(){
 function getTraversalTargets(startTile={ x:player?.targetX ?? HEARTHVALE_LANDMARKS.townCenterSpawn.x, y:player?.targetY ?? HEARTHVALE_LANDMARKS.townCenterSpawn.y }){
   const resolveTarget=(preferred,fallbackKey)=>{
     const fallbackBuilding=world.buildings.find((b)=>b.id===fallbackKey);
-    if(preferred && canMoveTo(preferred.x, preferred.y)) return preferred;
+    if(preferred && canMoveToWithoutDiagnostics(preferred.x, preferred.y,{ ignoreDynamicBlockers:true })) return preferred;
     const resolved=findNearestValidPlayerSpawnTile(preferred?.x ?? fallbackBuilding?.interaction?.x ?? HEARTHVALE_LANDMARKS.townCenterSpawn.x, preferred?.y ?? fallbackBuilding?.interaction?.y ?? HEARTHVALE_LANDMARKS.townCenterSpawn.y, 10);
     return resolved || (fallbackBuilding?.interaction || null);
   };
   const resolveFoundationRouteTarget=(candidates,fallback)=>{
     const reachable=candidates
-      .filter((candidate)=>candidate && canMoveTo(candidate.x,candidate.y))
+      .filter((candidate)=>candidate && canMoveToWithoutDiagnostics(candidate.x,candidate.y,{ ignoreDynamicBlockers:true }))
       .map((candidate)=>({ ...candidate, pathLength:findPathLength(startTile,candidate) }))
       .filter((candidate)=>candidate.pathLength>=0)
       .sort((a,b)=>a.pathLength-b.pathLength);
     if(reachable.length>0) return { x:reachable[0].x, y:reachable[0].y };
-    const walkable=candidates.find((candidate)=>candidate && canMoveTo(candidate.x,candidate.y));
+    const walkable=candidates.find((candidate)=>candidate && canMoveToWithoutDiagnostics(candidate.x,candidate.y,{ ignoreDynamicBlockers:true }));
     if(walkable) return { x:walkable.x, y:walkable.y };
     return resolveTarget(fallback, null);
   };
@@ -7088,7 +7088,7 @@ function getTraversalTargets(startTile={ x:player?.targetX ?? HEARTHVALE_LANDMAR
     const candidates=[];
     for(const x of candidateXs){
       const tileKey=keyOf(x,16);
-      if(world.roadTiles.has(tileKey)) candidates.push({ x, y:16, onRoad:true, walkable:canMoveTo(x,16) });
+      if(world.roadTiles.has(tileKey)) candidates.push({ x, y:16, onRoad:true, walkable:canMoveToWithoutDiagnostics(x,16,{ ignoreDynamicBlockers:true }) });
     }
     const reachableWalkable=candidates
       .filter((c)=>c.walkable)
@@ -7141,8 +7141,8 @@ function validateHearthvaleSpawnTile(tile){
   const movementDiagnostic=getMovementBlockDiagnostics(tile.x,tile.y);
   const routeTileBlockedByTerrain=routeTile && movementDiagnostic.reason==="terrain";
   const routeTileBlockedByFence=routeTile && movementDiagnostic.reason==="fence";
-  const walkable=canMoveTo(tile.x,tile.y) && !overlapsProp && !overlapsFence && !overlapsNpc;
-  const adjacentWalkableCount=[[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy])=>canMoveTo(tile.x+dx,tile.y+dy)).length;
+  const walkable=canMoveToWithoutDiagnostics(tile.x,tile.y) && !overlapsProp && !overlapsFence && !overlapsNpc;
+  const adjacentWalkableCount=[[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy])=>canMoveToWithoutDiagnostics(tile.x+dx,tile.y+dy,{ ignoreDynamicBlockers:true })).length;
   const connectedToRoadGraph=buildRoadConnectivityGraph().has(tileKey);
   const traversalChecks=getTraversalTargets(tile).map((target)=>({ key:target.key, pathLength:target.tile ? findPathLength(tile,target.tile) : -1 }));
   const traversalRequiredCount=traversalChecks.length;
@@ -7310,7 +7310,7 @@ function isTraversalReachable(start,target){
     for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
       const nx=cur.x+dx, ny=cur.y+dy, k=keyOf(nx,ny);
       if(visited.has(k)) continue;
-      if(!canMoveTo(nx,ny)) continue;
+      if(!canMoveToWithoutDiagnostics(nx,ny,{ ignoreDynamicBlockers:true })) continue;
       visited.add(k);
       queue.push({x:nx,y:ny});
     }
@@ -7338,10 +7338,10 @@ function emitTraversalQA(startTile={ x:player.targetX, y:player.targetY }){
   traversalQaSignature=line;
 }
 function emitActiveTileMovementQA(tile={ x:player.targetX, y:player.targetY }){
-  const north=canMoveTo(tile.x, tile.y-1);
-  const south=canMoveTo(tile.x, tile.y+1);
-  const east=canMoveTo(tile.x+1, tile.y);
-  const west=canMoveTo(tile.x-1, tile.y);
+  const north=canMoveToWithoutDiagnostics(tile.x, tile.y-1,{ ignoreDynamicBlockers:true });
+  const south=canMoveToWithoutDiagnostics(tile.x, tile.y+1,{ ignoreDynamicBlockers:true });
+  const east=canMoveToWithoutDiagnostics(tile.x+1, tile.y,{ ignoreDynamicBlockers:true });
+  const west=canMoveToWithoutDiagnostics(tile.x-1, tile.y,{ ignoreDynamicBlockers:true });
   const passableDirections=[north,south,east,west].filter(Boolean).length;
   const northRequired=(tile.x===HEARTHVALE_LANDMARKS.townCenterSpawn.x && tile.y===HEARTHVALE_LANDMARKS.townCenterSpawn.y) ? north : true;
   const status=(northRequired && passableDirections>=2) ? "PASS" : "FAIL";
@@ -11226,8 +11226,8 @@ function emitMovementBlockDiagnostics(diag){
     collisionDebugSummaryState.suppressed++;
     if(now-collisionDebugSummaryState.lastSummaryAt>=5000){
       collisionDebugSummaryState.lastSummaryAt=now;
-      const spamStatus=(collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures)?"PASS":"FAIL";
-      console.info("[CollisionDebug Summary] suppressed="+collisionDebugSummaryState.suppressed+" uniqueSignatures="+collisionDebugSummaryState.unique.size+" topCauses="+Array.from(collisionDebugSummaryState.unique.keys()).slice(0,3).join(",")+" status="+spamStatus);
+      const thresholdExceeded=collisionDebugSummaryState.suppressed>COLLISION_SPAM_QA_THRESHOLD.suppressed || collisionDebugSummaryState.unique.size>COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
+      console.info("[CollisionDebug Summary] suppressed="+collisionDebugSummaryState.suppressed+" uniqueSignatures="+collisionDebugSummaryState.unique.size+" topCauses="+Array.from(collisionDebugSummaryState.unique.keys()).slice(0,3).join(",")+" telemetry=movement_block_deduped thresholdExceeded="+thresholdExceeded);
     }
     return;
   }
@@ -11239,8 +11239,8 @@ function emitMovementBlockDiagnostics(diag){
     if(now-collisionDebugSummaryState.lastSummaryAt>=5000){
       collisionDebugSummaryState.lastSummaryAt=now;
       const topCauses=Array.from(collisionDebugSummaryState.unique.entries()).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([sig])=>sig).join(",");
-      const spamStatus=(collisionDebugSummaryState.suppressed<=COLLISION_SPAM_QA_THRESHOLD.suppressed && collisionDebugSummaryState.unique.size<=COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures)?"PASS":"FAIL";
-      console.info("[CollisionDebug Summary] suppressed="+collisionDebugSummaryState.suppressed+" uniqueSignatures="+collisionDebugSummaryState.unique.size+" topCauses="+topCauses+" status="+spamStatus);
+      const thresholdExceeded=collisionDebugSummaryState.suppressed>COLLISION_SPAM_QA_THRESHOLD.suppressed || collisionDebugSummaryState.unique.size>COLLISION_SPAM_QA_THRESHOLD.uniqueSignatures;
+      console.info("[CollisionDebug Summary] suppressed="+collisionDebugSummaryState.suppressed+" uniqueSignatures="+collisionDebugSummaryState.unique.size+" topCauses="+topCauses+" telemetry=movement_block_deduped thresholdExceeded="+thresholdExceeded);
     }
     return;
   }
@@ -11261,10 +11261,14 @@ function emitMovementBlockDiagnostics(diag){
   logThrottled("movement_block:" + signature, "Movement blocked at x=" + diag.attemptedTile.x + ", y=" + diag.attemptedTile.y + " — " + diag.reason + ".", 180);
 }
 
-function canMoveToIgnoringDynamicBlockers(x,y){
+function canMoveToWithoutDiagnostics(x,y,{ ignoreDynamicBlockers=false }={}){
   const diag=getMovementBlockDiagnostics(x,y);
   if(!diag.blocked) return true;
-  return diag.causeChain.every((cause)=>cause==="npc" || cause==="enemy");
+  return ignoreDynamicBlockers && diag.causeChain.every((cause)=>cause==="npc" || cause==="enemy");
+}
+
+function canMoveToIgnoringDynamicBlockers(x,y){
+  return canMoveToWithoutDiagnostics(x,y,{ ignoreDynamicBlockers:true });
 }
 
 function canMoveTo(x,y){
