@@ -1655,10 +1655,10 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13B.2.1";
+const WAYFARER_PHASE = "35.13B.2.3";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13B.2.1 — Foundation Closure Follow-Through";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13b21-foundation-closure-follow-through";
+const WAYFARER_BUILD_LABEL = "Phase 35.13B.2.3 — Real Terrain Blocker Source Trace + Version Identity Fix";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13b23-real-terrain-blocker-source-trace";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3571,7 +3571,7 @@ function logBuildingSourceOfTruthAudit(){
   if(authSig!==atlasRuntimeAuthorityAcceptanceSignature){ atlasRuntimeAuthorityAcceptanceSignature=authSig; console.info('[Atlas Runtime Authority Chain Acceptance]'); console.info('status='+authStatus); console.info('reason='+(acceptanceFailures.length?acceptanceFailures.join('|'):'none')); console.info('productionAuthorityConsistency='+(productionAuthorityFailures.length?productionAuthorityFailures.join('|'):'PASS')); }
   const expectedRows=HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13B.2.1' && ATLAS_SELECTOR_VERSION==='selector-v35-13b21-foundation-closure-follow-through';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13B.2.3' && ATLAS_SELECTOR_VERSION==='selector-v35-13b23-real-terrain-blocker-source-trace';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=(buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4683,6 +4683,11 @@ function emitFoundationRouteBlockerTraceQA(){
     const topologyBlocked=topologyBlockedSet.has(tileKey);
     const status=(canonicalRoute && diag.terrainType==="road" && !world.blocked.has(tileKey) && (diag.causeChain||[]).length===0 && !routeSweepBlocked && !collisionBlocked && !topologyBlocked) ? "PASS" : "FAIL";
     console.info("[Foundation Route Blocker Trace] tile=("+x+","+y+") canonicalRoute="+canonicalRoute+" terrain="+diag.terrainType+" worldBlocked="+world.blocked.has(tileKey)+" blockers="+JSON.stringify(diag.causeChain||[])+" routeSweepBlocked="+routeSweepBlocked+" collisionBlocked="+collisionBlocked+" topologyBlocked="+topologyBlocked+" status="+status);
+    const terrainTrace=diag.terrainSourceTrace||{};
+    const movementDiagnosticTerrainAdded=(diag.causeChain||[]).includes("terrain");
+    const blockerSource=movementDiagnosticTerrainAdded ? (terrainTrace.blockerSource||"unknown") : "none";
+    const sourceStatus=(canonicalRoute && diag.terrainType==="road" && !world.blocked.has(tileKey) && !movementDiagnosticTerrainAdded && !routeSweepBlocked && !collisionBlocked && !topologyBlocked) ? "PASS" : "FAIL";
+    console.info("[Foundation Terrain Blocker Source Trace] tile=("+x+","+y+") canonicalRoute="+canonicalRoute+" terrain="+diag.terrainType+" worldBlocked="+world.blocked.has(tileKey)+" rawTerrainBlocked="+(terrainTrace.rawTerrainBlocked===true)+" terrainBlockerSetHasKey="+(terrainTrace.terrainBlockerSetHasKey===true)+" collisionGridBlocked="+(terrainTrace.collisionGridBlocked===true)+" movementDiagnosticTerrainAdded="+movementDiagnosticTerrainAdded+" routeSweepSourceBlocked="+routeSweepBlocked+" collisionQaSourceBlocked="+collisionBlocked+" topologySourceBlocked="+topologyBlocked+" blockerSource="+blockerSource+" status="+sourceStatus);
   });
 }
 function classifyRouteTiles(){
@@ -6974,7 +6979,7 @@ function buildWayfarerQaReport(){
   const harborSettled=!String(refreshedHarborCompositionQa.status||"PENDING").startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (String(refreshedHarborCompositionQa.status).startsWith("PENDING")?"PENDING_ASSETS":"FAIL");
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13B.2.1" && ATLAS_SELECTOR_VERSION==="selector-v35-13b21-foundation-closure-follow-through";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13B.2.3" && ATLAS_SELECTOR_VERSION==="selector-v35-13b23-real-terrain-blocker-source-trace";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionSettled=!String(latestVisualCompositionQa.status).startsWith("PENDING");
@@ -10665,6 +10670,16 @@ function getMovementBlockDiagnostics(x,y){
     invisible_bounds:false
   };
   const isTraversalRouteTile=hearthvaleTraversalAuthority.routeTiles.has(tileKey);
+  const canonicalRouteAuthority=world.canonicalRouteGraphTiles.has(tileKey) || isTraversalRouteTile;
+  const overworldTerrainType=describeOverworldTerrainType(x,y);
+  const canonicalRoadRouteTile=canonicalRouteAuthority && overworldTerrainType==="road";
+  const terrainSourceTrace={
+    rawTerrainBlocked:false,
+    terrainBlockerSetHasKey:false,
+    collisionGridBlocked:false,
+    movementDiagnosticTerrainAdded:false,
+    blockerSource:"none"
+  };
   const causes=[];
   if(!isTileInCurrentZone(x,y)){ causes.push("invisible_bounds"); sourceFlags.invisible_bounds=true; }
   if(worldObjectBlocker){
@@ -10677,14 +10692,23 @@ function getMovementBlockDiagnostics(x,y){
   if(!isInMirrorCave && !isInAbandonedTollhouse){
     const pierTerrainBypass=isHarborPierTerrainBypassedTile(x,y);
     if(world.pondWater.has(tileKey) && !pierTerrainBypass && !isHarborPierWharfTile(x,y)){ causes.push("water"); sourceFlags.water=true; }
-    if(world.pondShore.has(tileKey) && !isTraversalRouteTile && !pierTerrainBypass){ causes.push("terrain"); sourceFlags.terrain=true; }
+    terrainSourceTrace.terrainBlockerSetHasKey=world.pondShore.has(tileKey);
+    if(world.pondShore.has(tileKey) && !isTraversalRouteTile && !pierTerrainBypass && !canonicalRoadRouteTile){
+      causes.push("terrain"); sourceFlags.terrain=true; terrainSourceTrace.blockerSource="world.pondShore";
+    }
     if(blockingFence && !hearthvaleTraversalAuthority.nonBlockingFenceTiles.has(tileKey)){ causes.push("fence"); sourceFlags.fence=true; }
-    if(blockingTree && !pierTerrainBypass){ causes.push("terrain"); sourceFlags.terrain=true; }
-    const canonicalRouteAuthority=world.canonicalRouteGraphTiles.has(tileKey) || hearthvaleTraversalAuthority.routeTiles.has(tileKey);
+    if(blockingTree && !pierTerrainBypass && !canonicalRoadRouteTile){
+      causes.push("terrain"); sourceFlags.terrain=true; terrainSourceTrace.blockerSource=terrainSourceTrace.blockerSource==="none"?"world.trees":terrainSourceTrace.blockerSource;
+    }
     const canonicalRoadRouteBypass=canonicalRouteAuthority && world.roadTiles.has(tileKey) && !blockingBuilding && !blockingFence && !blockingTree;
-    if(world.blocked.has(tileKey) && !hearthvaleTraversalAuthority.nonBlockingTerrainTiles.has(tileKey) && !pierTerrainBypass && !canonicalRoadRouteBypass){ causes.push("terrain"); sourceFlags.terrain=true; }
+    terrainSourceTrace.rawTerrainBlocked=world.blocked.has(tileKey);
+    if(world.blocked.has(tileKey) && !hearthvaleTraversalAuthority.nonBlockingTerrainTiles.has(tileKey) && !pierTerrainBypass && !canonicalRoadRouteBypass && !canonicalRoadRouteTile){
+      causes.push("terrain"); sourceFlags.terrain=true; terrainSourceTrace.blockerSource=terrainSourceTrace.blockerSource==="none"?"world.blocked":terrainSourceTrace.blockerSource;
+    }
     if(blockingBuilding){ causes.push("building"); sourceFlags.building=true; }
   }
+  terrainSourceTrace.movementDiagnosticTerrainAdded=sourceFlags.terrain;
+  terrainSourceTrace.collisionGridBlocked=sourceFlags.terrain;
   if(buildingParcel){ sourceFlags.parcel=true; }
   if(blockingNpc){ causes.push("npc"); sourceFlags.npc=true; }
   if(blockingHostile){ causes.push("enemy"); sourceFlags.enemy=true; }
@@ -10708,7 +10732,8 @@ function getMovementBlockDiagnostics(x,y){
     parcelId:buildingParcel?.id || null,
     parcelRect:buildingParcel ? (buildingParcel.pathingBounds || buildingParcel.visual || { x:buildingParcel.x, y:buildingParcel.y, w:buildingParcel.w, h:buildingParcel.h }) : null,
     blockingLandmarkId:atLandmark?.[0] || null,
-    sourceFlags
+    sourceFlags,
+    terrainSourceTrace
   };
 }
 let lastMovementBlockSignature="";
