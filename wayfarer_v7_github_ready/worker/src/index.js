@@ -1655,11 +1655,11 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13H";
+const WAYFARER_PHASE = "35.13I";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
 const NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13H — Newport Art Direction + Performance Polish Lock";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13h-newport-art-performance-polish";
+const WAYFARER_BUILD_LABEL = "Phase 35.13I — Newport Daylight Readability & Final Art Polish";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13i-newport-daylight-readability-polish";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3638,7 +3638,7 @@ function logBuildingSourceOfTruthAudit({ verbose=ATLAS_DEBUG_MODE }={}){
   const productionRenderStatus=sourceTruthProductionRenderDeferred ? "PENDING_35_13C" : "ACTIVE";
   const expectedRows=sourceTruthProductionRenderDeferred ? 0 : HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13H' && ATLAS_SELECTOR_VERSION==='selector-v35-13h-newport-art-performance-polish';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13I' && ATLAS_SELECTOR_VERSION==='selector-v35-13i-newport-daylight-readability-polish';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=sourceTruthProductionRenderDeferred || (buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6475,7 +6475,7 @@ emitNewportSpriteRoleLotAudit();
 emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
 const NEWPORT_TOWN_BLUEPRINT_V2=Object.freeze({
-  phase:"35.13H_art_performance_polish",
+  phase:"35.13I_newport_daylight_readability_polish",
   waterfrontSpineTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   commercialStreetTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   wharfApronTiles:Array.from({length:25},(_,i)=>({x:8+i,y:17})),
@@ -7854,7 +7854,7 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13H" && ATLAS_SELECTOR_VERSION==="selector-v35-13h-newport-art-performance-polish";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13I" && ATLAS_SELECTOR_VERSION==="selector-v35-13i-newport-daylight-readability-polish";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionDeferred=foundationMode && latestVisualCompositionQa.status==="PENDING_35_13C";
@@ -12545,21 +12545,21 @@ function drawNewportRoadPolishTo(targetCtx, x, y, routeSet){
   const tileKey=keyOf(x,y);
   const primary=world.newportCanonicalBlueprint?.roadHierarchy?.primaryRoadTiles?.has(tileKey);
   const service=world.newportCanonicalBlueprint?.roadHierarchy?.serviceLaneTiles?.has(tileKey);
-  targetCtx.fillStyle=primary ? "rgba(206,196,166,0.10)" : (service ? "rgba(90,74,55,0.12)" : "rgba(184,174,145,0.07)");
+  targetCtx.fillStyle=primary ? "rgba(228,216,182,0.18)" : (service ? "rgba(146,124,92,0.16)" : "rgba(212,200,168,0.13)");
   targetCtx.fillRect(p.x+2,p.y+2,28,28);
   if(rng(x,y,911)>0.48){
-    targetCtx.fillStyle="rgba(54,47,38,0.18)";
+    targetCtx.fillStyle="rgba(82,68,52,0.20)";
     targetCtx.fillRect(p.x+5+Math.floor(rng(x,y,912)*10),p.y+8+Math.floor(rng(x,y,913)*12),8,1);
   }
   if(rng(x,y,914)>0.62){
-    targetCtx.fillStyle="rgba(238,226,188,0.12)";
+    targetCtx.fillStyle="rgba(248,238,206,0.20)";
     targetCtx.fillRect(p.x+8,p.y+6+Math.floor(rng(x,y,915)*17),14,1);
   }
   const north=routeSet.has(keyOf(x,y-1));
   const south=routeSet.has(keyOf(x,y+1));
   const east=routeSet.has(keyOf(x+1,y));
   const west=routeSet.has(keyOf(x-1,y));
-  targetCtx.fillStyle="rgba(41,52,35,0.20)";
+  targetCtx.fillStyle="rgba(86,108,80,0.24)";
   if(!north) targetCtx.fillRect(p.x+2,p.y+1,28,2);
   if(!south) targetCtx.fillRect(p.x+2,p.y+29,28,2);
   if(!west) targetCtx.fillRect(p.x+1,p.y+2,2,28);
@@ -12568,16 +12568,16 @@ function drawNewportRoadPolishTo(targetCtx, x, y, routeSet){
 function drawNewportWharfPolishTo(targetCtx, tileKey){
   const [x,y]=tileKey.split(",").map(Number);
   const p={ x:x*TILE, y:y*TILE };
-  targetCtx.fillStyle="rgba(42,27,16,0.24)";
+  targetCtx.fillStyle="rgba(96,68,40,0.32)";
   targetCtx.fillRect(p.x+3,p.y+9,26,1);
   targetCtx.fillRect(p.x+4,p.y+19,24,1);
   if((x+y)%3===0){
-    targetCtx.fillStyle="rgba(31,22,15,0.55)";
+    targetCtx.fillStyle="rgba(72,52,34,0.48)";
     targetCtx.fillRect(p.x+7,p.y+7,3,4);
     targetCtx.fillRect(p.x+22,p.y+21,3,4);
   }
   if(y>=19 && rng(x,y,927)>0.7){
-    targetCtx.strokeStyle="rgba(235,211,164,0.22)";
+    targetCtx.strokeStyle="rgba(248,224,170,0.34)";
     targetCtx.lineWidth=1;
     targetCtx.beginPath();
     targetCtx.moveTo(p.x+8,p.y+6);
@@ -12588,69 +12588,277 @@ function drawNewportWharfPolishTo(targetCtx, tileKey){
 function drawNewportStaticArtPolishTo(targetCtx){
   const drawTile=(x,y,fn)=>fn(x*TILE,y*TILE,x,y);
   const lawn=(x,y,w,h,edge)=>{
-    targetCtx.fillStyle="rgba(77,124,78,0.18)";
+    targetCtx.fillStyle="rgba(150,196,128,0.34)";
     targetCtx.fillRect(x*TILE+3,y*TILE+3,w*TILE-6,h*TILE-6);
-    targetCtx.strokeStyle=edge || "rgba(45,83,50,0.36)";
+    targetCtx.strokeStyle=edge || "rgba(94,138,86,0.46)";
+    targetCtx.lineWidth=1;
     targetCtx.strokeRect(x*TILE+5.5,y*TILE+5.5,w*TILE-11,h*TILE-11);
   };
   const garden=(x,y,w,h)=>{
-    lawn(x,y,w,h,"rgba(64,92,49,0.48)");
+    lawn(x,y,w,h,"rgba(106,148,92,0.55)");
     for(let tx=x;tx<x+w;tx++){
       for(let ty=y;ty<y+h;ty++){
         if(rng(tx,ty,941)>0.46){
           const px=tx*TILE+8+Math.floor(rng(tx,ty,942)*12);
           const py=ty*TILE+9+Math.floor(rng(tx,ty,943)*10);
-          targetCtx.fillStyle=rng(tx,ty,944)>0.5?"rgba(221,190,114,0.38)":"rgba(174,207,132,0.34)";
+          targetCtx.fillStyle=rng(tx,ty,944)>0.5?"rgba(238,210,128,0.58)":"rgba(204,232,156,0.50)";
           targetCtx.fillRect(px,py,3,2);
         }
       }
     }
   };
+  const hedge=(x,y,w,h)=>{
+    targetCtx.fillStyle="rgba(70,108,68,0.46)";
+    targetCtx.fillRect(x*TILE+2,y*TILE+2,w*TILE-4,h*TILE-4);
+    targetCtx.fillStyle="rgba(124,164,108,0.36)";
+    for(let i=0;i<w*TILE-4;i+=4){
+      targetCtx.fillRect(x*TILE+3+i,y*TILE+3,2,2);
+      targetCtx.fillRect(x*TILE+3+i,y*TILE+h*TILE-5,2,2);
+    }
+  };
+  const fenceLine=(x1,y1,x2,y2,color)=>{
+    targetCtx.strokeStyle=color || "rgba(238,228,196,0.42)";
+    targetCtx.lineWidth=1;
+    targetCtx.beginPath();
+    targetCtx.moveTo(x1,y1);
+    targetCtx.lineTo(x2,y2);
+    targetCtx.stroke();
+    const dx=x2-x1, dy=y2-y1;
+    const len=Math.max(1,Math.sqrt(dx*dx+dy*dy));
+    const ux=dx/len, uy=dy/len;
+    targetCtx.fillStyle=color || "rgba(214,196,150,0.46)";
+    for(let s=2;s<len;s+=6){
+      targetCtx.fillRect(x1+ux*s-0.5,y1+uy*s-1,1,3);
+    }
+  };
+  const lampPost=(x,y)=>{
+    targetCtx.fillStyle="rgba(50,42,30,0.55)";
+    targetCtx.fillRect(x-0.5,y-6,1,8);
+    targetCtx.fillStyle="rgba(238,212,138,0.62)";
+    targetCtx.fillRect(x-1.5,y-8,3,3);
+  };
+  const bench=(x,y)=>{
+    targetCtx.fillStyle="rgba(112,84,56,0.55)";
+    targetCtx.fillRect(x-3,y,7,1);
+    targetCtx.fillStyle="rgba(78,58,40,0.55)";
+    targetCtx.fillRect(x-3,y+1,1,2);
+    targetCtx.fillRect(x+3,y+1,1,2);
+  };
+  const crate=(x,y)=>{
+    targetCtx.fillStyle="rgba(168,128,80,0.62)";
+    targetCtx.fillRect(x,y,5,4);
+    targetCtx.strokeStyle="rgba(82,58,38,0.60)";
+    targetCtx.lineWidth=1;
+    targetCtx.strokeRect(x+0.5,y+0.5,4,3);
+  };
+  const barrel=(x,y)=>{
+    targetCtx.fillStyle="rgba(132,90,52,0.62)";
+    targetCtx.beginPath();
+    targetCtx.ellipse(x,y,2.4,3,0,0,Math.PI*2);
+    targetCtx.fill();
+    targetCtx.fillStyle="rgba(74,52,32,0.55)";
+    targetCtx.fillRect(x-2.4,y-0.5,4.8,1);
+  };
+  const bollard=(x,y)=>{
+    targetCtx.fillStyle="rgba(54,42,30,0.70)";
+    targetCtx.fillRect(x-1,y-3,2,5);
+    targetCtx.fillStyle="rgba(90,72,52,0.52)";
+    targetCtx.fillRect(x-1,y-3,2,1);
+  };
+  const sign=(x,y,color)=>{
+    targetCtx.fillStyle=color || "rgba(82,60,40,0.62)";
+    targetCtx.fillRect(x-0.5,y,1,5);
+    targetCtx.fillStyle="rgba(232,210,158,0.62)";
+    targetCtx.fillRect(x-3,y,6,2);
+  };
+
+  // === MANSION DISTRICT (upper, y=0-7) ===
+  // Bright formal lawns and parterres along the top of the map
   garden(11,1,5,3);
   garden(22,1,5,2);
   garden(28,1,5,2);
-  lawn(16,1,5,3,"rgba(48,86,56,0.40)");
-  targetCtx.strokeStyle="rgba(226,214,173,0.24)";
+  lawn(16,1,5,3,"rgba(86,128,82,0.50)");
+  // Hedge bands edging the upper residential road, framing each estate
+  hedge(11,3,5,1);
+  hedge(16,3,5,1);
+  hedge(22,5,5,1);
+  hedge(28,5,5,1);
+  // Garden parterre splitter between elite_mansion and prestige_block
+  lawn(27,2,1,4,"rgba(106,144,96,0.46)");
+  // Formal garden walks from each mansion up to the parterres
+  targetCtx.strokeStyle="rgba(238,224,178,0.40)";
   targetCtx.lineWidth=2;
   targetCtx.beginPath();
-  targetCtx.moveTo(13*TILE+16,7*TILE+16);
-  targetCtx.lineTo(13*TILE+16,4*TILE+20);
-  targetCtx.moveTo(24*TILE+16,7*TILE+16);
-  targetCtx.lineTo(24*TILE+16,5*TILE+18);
-  targetCtx.moveTo(30*TILE+16,7*TILE+16);
-  targetCtx.lineTo(30*TILE+16,5*TILE+18);
+  targetCtx.moveTo(13*TILE+16,7*TILE+16); targetCtx.lineTo(13*TILE+16,4*TILE+20);
+  targetCtx.moveTo(18*TILE+16,8*TILE+8); targetCtx.lineTo(18*TILE+16,4*TILE+20);
+  targetCtx.moveTo(24*TILE+16,7*TILE+16); targetCtx.lineTo(24*TILE+16,5*TILE+18);
+  targetCtx.moveTo(30*TILE+16,7*TILE+16); targetCtx.lineTo(30*TILE+16,5*TILE+18);
   targetCtx.stroke();
-  for(let x=21;x<=32;x++){
+  // Estate fences along the upper residential road frontage edges
+  fenceLine(11*TILE+4,7*TILE+1,16*TILE-4,7*TILE+1);
+  fenceLine(16*TILE+4,7*TILE+1,21*TILE-4,7*TILE+1);
+  fenceLine(22*TILE+4,5*TILE+30,27*TILE-4,5*TILE+30);
+  fenceLine(28*TILE+4,5*TILE+30,33*TILE-4,5*TILE+30);
+  // Lamp posts at the formal walks
+  lampPost(13*TILE+16,7*TILE+4);
+  lampPost(24*TILE+16,5*TILE+30);
+  lampPost(30*TILE+16,5*TILE+30);
+
+  // === CIVIC SQUARE & CIVIC GREEN (y=7-13) ===
+  // Plaza pavers at the visible civic square edges (left of village_hall, right of custom_house)
+  for(let x=19;x<=19;x++){
+    for(let y=10;y<=13;y++){
+      targetCtx.fillStyle="rgba(214,206,180,0.22)";
+      targetCtx.fillRect(x*TILE+2,y*TILE+2,TILE-4,TILE-4);
+      targetCtx.strokeStyle="rgba(140,128,98,0.30)";
+      targetCtx.lineWidth=1;
+      targetCtx.strokeRect(x*TILE+3.5,y*TILE+3.5,TILE-7,TILE-7);
+    }
+  }
+  for(let x=33;x<=34;x++){
+    for(let y=7;y<=11;y++){
+      if((x+y)%2===0){
+        targetCtx.fillStyle="rgba(214,206,180,0.18)";
+        targetCtx.fillRect(x*TILE+3,y*TILE+3,TILE-6,TILE-6);
+      }
+    }
+  }
+  // Civic green panel north of village_hall
+  lawn(18,6,3,1,"rgba(96,140,90,0.46)");
+  lawn(21,6,6,1,"rgba(96,140,90,0.46)");
+  // Civic axis flagpole/obelisk marker (on the civic square open edge near village_hall front walk)
+  drawTile(19,9,(px,py)=>{
+    targetCtx.fillStyle="rgba(238,228,194,0.46)";
+    targetCtx.fillRect(px+14,py+6,4,18);
+    targetCtx.fillStyle="rgba(124,98,62,0.55)";
+    targetCtx.fillRect(px+11,py+22,10,4);
+    targetCtx.fillStyle="rgba(196,52,40,0.46)";
+    targetCtx.fillRect(px+18,py+8,5,3);
+  });
+  // Civic benches lining the village_hall front walk (y=12 frontWalk row, between counting_house and village_hall)
+  bench(19*TILE+10,11*TILE+24);
+  bench(19*TILE+22,11*TILE+24);
+  // Civic lamps at the civic green corners
+  lampPost(20*TILE+4,6*TILE+30);
+  lampPost(27*TILE+28,6*TILE+30);
+
+  // === COMMERCIAL CORRIDOR FRONTAGES (y=12-16) ===
+  // Sidewalk dash pattern across the corridor (kept brighter)
+  for(let x=8;x<=32;x++){
     for(let y=11;y<=14;y++){
-      if(rng(x,y,951)>0.38){
-        targetCtx.fillStyle="rgba(221,213,184,0.10)";
+      if(rng(x,y,951)>0.34){
+        targetCtx.fillStyle="rgba(232,222,190,0.18)";
         targetCtx.fillRect(x*TILE+4,y*TILE+5,24,1);
         targetCtx.fillRect(x*TILE+5,y*TILE+18,18,1);
       }
     }
   }
-  drawTile(24,10,(px,py)=>{
-    targetCtx.fillStyle="rgba(232,222,181,0.30)";
-    targetCtx.fillRect(px+12,py+5,8,20);
-    targetCtx.fillRect(px+7,py+15,18,5);
-    targetCtx.fillStyle="rgba(81,66,45,0.38)";
-    targetCtx.fillRect(px+14,py+8,4,5);
+  // Inn & Tavern (8,12,6,5): hanging signpost + barrels at door (front walk y=18, door 11,18)
+  sign(11*TILE+22,11*TILE+8,"rgba(132,52,38,0.62)");
+  barrel(8*TILE+10,17*TILE+24);
+  barrel(8*TILE+18,17*TILE+24);
+  crate(8*TILE+24,17*TILE+22);
+  // Mercantile (15,12,5,5): produce crates + sign
+  sign(17*TILE+22,11*TILE+8,"rgba(78,108,68,0.62)");
+  crate(15*TILE+8,17*TILE+22);
+  crate(15*TILE+18,17*TILE+22);
+  barrel(15*TILE+28,17*TILE+24);
+  // Counting House (20,12,6,5): proper civic-style stoop
+  sign(23*TILE+22,11*TILE+8,"rgba(58,72,114,0.60)");
+  // Chandlery (26,12,5,5): coiled rope + crates (it's a maritime outfitter)
+  sign(28*TILE+22,11*TILE+8,"rgba(136,108,56,0.62)");
+  crate(26*TILE+8,17*TILE+22);
+  barrel(26*TILE+18,17*TILE+24);
+  targetCtx.strokeStyle="rgba(196,170,108,0.55)";
+  targetCtx.lineWidth=1;
+  targetCtx.beginPath();
+  targetCtx.arc(26*TILE+30,17*TILE+26,3,0,Math.PI*2);
+  targetCtx.stroke();
+  // Shop House (38,12,5,4): small stoop and pot plants east extension
+  crate(38*TILE+8,16*TILE+22);
+  targetCtx.fillStyle="rgba(118,162,98,0.50)";
+  targetCtx.fillRect(38*TILE+22,16*TILE+24,3,4);
+  targetCtx.fillRect(38*TILE+30,16*TILE+24,3,4);
+  // Townhouse Row A (37,7,3,5): small front shrubs along east residential row
+  hedge(37,11,3,1);
+  // Townhouse Row B (41,6,5,4): garden edge
+  hedge(41,10,5,1);
+
+  // === WHARF / WATERFRONT POLISH (y=17-23) ===
+  // Bollards along the waterfront street (y=18 is the dockside road)
+  [11,15,18,22,25,28,31].forEach((x)=>{
+    bollard(x*TILE+16,18*TILE+30);
   });
-  [[11,17],[17,17],[23,17],[28,17],[37,13]].forEach(([x,y],idx)=>{
-    drawTile(x,y,(px,py)=>{
-      targetCtx.fillStyle=idx%2?"rgba(125,57,45,0.34)":"rgba(211,169,93,0.30)";
-      targetCtx.fillRect(px+5,py+4,22,5);
-      targetCtx.fillStyle="rgba(35,28,22,0.25)";
-      targetCtx.fillRect(px+4,py+22,24,3);
-    });
+  // Coiled mooring ropes at pier bases
+  [10,16,19,23,29].forEach((x)=>{
+    targetCtx.strokeStyle="rgba(218,196,142,0.55)";
+    targetCtx.lineWidth=1;
+    targetCtx.beginPath();
+    targetCtx.arc(x*TILE+16,18*TILE+24,3,0,Math.PI*2);
+    targetCtx.stroke();
   });
+  // Crates and barrels stacked at boathouse (9,17,6,5) and dock_storehouse (17,17,6,5) wharf edge
+  crate(13*TILE+8,17*TILE+22);
+  barrel(14*TILE+18,17*TILE+24);
+  crate(20*TILE+18,17*TILE+22);
+  barrel(21*TILE+8,17*TILE+24);
+  crate(24*TILE+10,17*TILE+22);
+  // Fish drying rack at market_shed (24,17,5,4)
+  targetCtx.strokeStyle="rgba(128,96,64,0.62)";
+  targetCtx.lineWidth=1;
+  targetCtx.beginPath();
+  targetCtx.moveTo(28*TILE+4,17*TILE+22); targetCtx.lineTo(28*TILE+22,17*TILE+22);
+  targetCtx.stroke();
+  for(let i=0;i<6;i++){
+    targetCtx.fillStyle="rgba(196,176,136,0.55)";
+    targetCtx.fillRect(28*TILE+4+i*3,17*TILE+22,1,4);
+  }
+  // Pier-end mooring posts at central pier (19,17-23) tip
+  bollard(19*TILE+10,23*TILE+22);
+  bollard(19*TILE+22,23*TILE+22);
+  // Tiny hint of a docked rowboat shadow at central pier south end
+  targetCtx.fillStyle="rgba(48,38,28,0.36)";
+  targetCtx.beginPath();
+  targetCtx.ellipse(19*TILE+30,23*TILE+18,6,2.5,0,0,Math.PI*2);
+  targetCtx.fill();
+
+  // === HUNTER OUTSKIRTS / SERVICE WEST EDGE (x=4-7) ===
   garden(5,15,4,3);
-  lawn(33,9,3,3,"rgba(50,88,54,0.36)");
-  lawn(39,15,6,3,"rgba(74,76,62,0.42)");
-  targetCtx.fillStyle="rgba(78,63,48,0.20)";
+  // Woodpile at hunter_lodge frontage (4,10,4,4) — south side
+  targetCtx.fillStyle="rgba(104,72,44,0.62)";
+  for(let i=0;i<4;i++){
+    targetCtx.fillRect(4*TILE+4+i*5,14*TILE+8,4,2);
+    targetCtx.fillRect(4*TILE+6+i*5,14*TILE+11,4,2);
+  }
+  // Modest garden patch beside hunter_lodge
+  targetCtx.fillStyle="rgba(118,156,92,0.40)";
+  targetCtx.fillRect(4*TILE+4,15*TILE+22,24,6);
+  for(let i=0;i<5;i++){
+    targetCtx.fillStyle=i%2?"rgba(196,162,86,0.55)":"rgba(168,196,118,0.55)";
+    targetCtx.fillRect(4*TILE+6+i*5,15*TILE+24,2,2);
+  }
+  // Rough fence edge along service lane (x=5)
+  fenceLine(5*TILE+30,10*TILE+8,5*TILE+30,15*TILE-4,"rgba(140,108,76,0.46)");
+
+  // === EAST SERVICE FILL (x=33-44) ===
+  // Lawn/service yard at east service area
+  lawn(33,9,3,3,"rgba(96,140,86,0.46)");
+  // Service yard at 39,15 (formal)
+  lawn(39,15,6,3,"rgba(124,128,98,0.50)");
+  targetCtx.fillStyle="rgba(168,148,108,0.34)";
   targetCtx.fillRect(40*TILE+5,15*TILE+5,4*TILE-10,2*TILE-10);
-  targetCtx.strokeStyle="rgba(61,49,37,0.25)";
+  targetCtx.strokeStyle="rgba(118,90,60,0.40)";
+  targetCtx.lineWidth=1;
   targetCtx.strokeRect(40*TILE+5.5,15*TILE+5.5,4*TILE-11,2*TILE-11);
+  // Small kitchen garden tile in east blank patch (34,10) and crate stack at service dependency frontage (41,12)
+  targetCtx.fillStyle="rgba(136,170,108,0.38)";
+  targetCtx.fillRect(34*TILE+4,10*TILE+8,TILE-8,TILE-12);
+  for(let i=0;i<3;i++){
+    targetCtx.fillStyle=i%2?"rgba(192,158,84,0.55)":"rgba(170,196,124,0.55)";
+    targetCtx.fillRect(34*TILE+6+i*7,10*TILE+12,2,2);
+  }
+  crate(41*TILE+22,12*TILE+22);
+  barrel(43*TILE+10,12*TILE+24);
 }
 function drawNewportFoundationTile(tileKey, tileSet, style){
   if(!tileSet?.has(tileKey)) return;
@@ -12721,9 +12929,9 @@ function drawOutdoorBackdrop(cam, now){
   const ex=sx+VIEW_TILES_X*TILE;
   const ey=sy+VIEW_TILES_Y*TILE;
   const bg=ctx.createLinearGradient(0,0,0,canvas.height);
-  bg.addColorStop(0,"#203525");
-  bg.addColorStop(0.55,"#274332");
-  bg.addColorStop(1,"#17291f");
+  bg.addColorStop(0,"#5e7a52");
+  bg.addColorStop(0.55,"#647b58");
+  bg.addColorStop(1,"#4a6543");
   ctx.fillStyle=bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -12737,16 +12945,16 @@ function drawOutdoorBackdrop(cam, now){
       const img=assets.forestGrass[v];
       if(img.complete&&img.naturalWidth>0) ctx.drawImage(img,p.x,p.y,TILE,TILE);
       if(rng(x,y,612)>0.92){
-        ctx.fillStyle="rgba(86,126,72,.18)";
+        ctx.fillStyle="rgba(170,200,142,.16)";
         ctx.fillRect(p.x+6,p.y+8,20,12);
       }
     }
   }
 
-  const mist=ctx.createRadialGradient(canvas.width*.5,canvas.height*.46,Math.min(canvas.width,canvas.height)*.2,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.85);
-  mist.addColorStop(0,"rgba(196,219,184,0)");
-  mist.addColorStop(.7,"rgba(74,105,84,.08)");
-  mist.addColorStop(1,"rgba(8,14,12,.54)");
+  const mist=ctx.createRadialGradient(canvas.width*.5,canvas.height*.46,Math.min(canvas.width,canvas.height)*.2,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.92);
+  mist.addColorStop(0,"rgba(232,240,212,0)");
+  mist.addColorStop(.78,"rgba(176,200,168,.04)");
+  mist.addColorStop(1,"rgba(94,118,98,.16)");
   ctx.fillStyle=mist;
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -12786,9 +12994,9 @@ function buildNewportStaticMapCache(){
   if(!p) return newportStaticMapCache;
   p.imageSmoothingEnabled=false;
   const bg=p.createLinearGradient(0,0,0,c.height);
-  bg.addColorStop(0,"#203525");
-  bg.addColorStop(0.55,"#274332");
-  bg.addColorStop(1,"#17291f");
+  bg.addColorStop(0,"#7a916b");
+  bg.addColorStop(0.55,"#728962");
+  bg.addColorStop(1,"#5d7a53");
   p.fillStyle=bg;
   p.fillRect(0,0,c.width,c.height);
   let terrainDrawCount=0;
@@ -13324,12 +13532,12 @@ function drawWorld(){
     ...zoneLabelEntries
   ]);
   const area=currentLocalAreaName();
-  const baseTint=area==="Hearthvale Square" ? 0.045 : area==="Mirror Pond" ? 0.065 : area==="Eastern Woods" ? 0.095 : area==="North Road" ? 0.09 : 0.08;
-  const tint=baseTint+Math.max(0,Math.sin(performance.now()/9000))*.04;
-  const tintColor=area==="Hearthvale Square" ? "rgba(35,24,14," : area==="Mirror Pond" ? "rgba(18,26,42," : "rgba(9,16,26,";
+  const baseTint=area==="Hearthvale Square" ? 0.014 : area==="Mirror Pond" ? 0.022 : area==="Eastern Woods" ? 0.034 : area==="North Road" ? 0.030 : 0.024;
+  const tint=baseTint+Math.max(0,Math.sin(performance.now()/9000))*.012;
+  const tintColor=area==="Hearthvale Square" ? "rgba(255,236,196," : area==="Mirror Pond" ? "rgba(168,196,232," : "rgba(214,224,232,";
   ctx.fillStyle=tintColor + tint.toFixed(3) + ")"; ctx.fillRect(0,0,canvas.width,canvas.height);
-  const edge=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,Math.min(canvas.width,canvas.height)*.35,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.68);
-  edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.78,"rgba(1,6,10,.1)"); edge.addColorStop(1,"rgba(1,6,10,.46)");
+  const edge=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,Math.min(canvas.width,canvas.height)*.42,canvas.width*.5,canvas.height*.5,Math.max(canvas.width,canvas.height)*.74);
+  edge.addColorStop(0,"rgba(0,0,0,0)"); edge.addColorStop(.85,"rgba(40,52,42,.04)"); edge.addColorStop(1,"rgba(36,48,40,.14)");
   ctx.fillStyle=edge; ctx.fillRect(0,0,canvas.width,canvas.height);
   if(showCollisionOverlay) drawCollisionOverlay();
   drawCollisionOverlayToast(now);
