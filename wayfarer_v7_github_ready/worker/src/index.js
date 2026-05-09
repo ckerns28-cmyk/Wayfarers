@@ -1092,6 +1092,16 @@ function detectInstructionOverlayValidationMode(){
   return true;
 }
 const INSTRUCTION_OVERLAY_HIDDEN = detectInstructionOverlayValidationMode();
+function detectSpriteProofSheetMode(){
+  if(typeof window==="undefined"||!window?.location) return false;
+  const params=new URLSearchParams(window.location.search);
+  const cacheBust=(params.get("cacheBust")||"").toLowerCase();
+  if(params.get("spriteProofSheet")==="1") return true;
+  if(params.get("buildingProofSheet")==="1") return true;
+  if(/(^|[-_])sprite-?proof-?sheet|building-?proof-?sheet/.test(cacheBust)) return true;
+  return false;
+}
+const SPRITE_PROOF_SHEET_MODE = detectSpriteProofSheetMode();
 let VIEW_TILES_X = ACTUAL_CAMERA_VIEWPORT_MODE ? WORLD_W : VIEW_TILES_X_GAMEPLAY;
 let VIEW_TILES_Y = ACTUAL_CAMERA_VIEWPORT_MODE ? WORLD_H : VIEW_TILES_Y_GAMEPLAY;
 const ITEM_REGISTRY = Object.freeze({
@@ -1678,11 +1688,11 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13N";
+const WAYFARER_PHASE = "35.13O";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
 const NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13N — Gameplay-Scale CSS Viewport + Sprite Crop Integrity Lock";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13n-gameplay-scale-sprite-crop-integrity-lock";
+const WAYFARER_BUILD_LABEL = "Phase 35.13O — Building Sprite Source Repair & Visual Proof Lock";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13o-building-sprite-source-repair";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3663,7 +3673,7 @@ function logBuildingSourceOfTruthAudit({ verbose=ATLAS_DEBUG_MODE }={}){
   const productionRenderStatus=sourceTruthProductionRenderDeferred ? "PENDING_35_13C" : "ACTIVE";
   const expectedRows=sourceTruthProductionRenderDeferred ? 0 : HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13N' && ATLAS_SELECTOR_VERSION==='selector-v35-13n-gameplay-scale-sprite-crop-integrity-lock';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13O' && ATLAS_SELECTOR_VERSION==='selector-v35-13o-building-sprite-source-repair';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=sourceTruthProductionRenderDeferred || (buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6579,7 +6589,7 @@ emitNewportSpriteRoleLotAudit();
 emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
 const NEWPORT_TOWN_BLUEPRINT_V2=Object.freeze({
-  phase:"35.13N_gameplay_scale_sprite_crop_integrity_lock",
+  phase:"35.13O_building_sprite_source_repair_and_visual_proof_lock",
   waterfrontSpineTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   commercialStreetTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   wharfApronTiles:Array.from({length:25},(_,i)=>({x:8+i,y:17})),
@@ -6975,6 +6985,8 @@ function emitActualCameraViewportQA(){
     const cropped=visiblyOnCanvas && !fullyInsideCanvas;
     const offscreenAtCanvas=onCanvasArea===0;
     const hudObscured=visiblyOnCanvas && instructionOverlayWorldRect ? (rectIntersectionArea(instructionOverlayWorldRect, finalDrawRect)/buildingArea > 0.05) : false;
+    const spriteIntegrityReport=buildingSpriteCropIntegrityQaResult?.reports?.find?.((r)=>r.buildingId===building.id);
+    const sourceSpriteIncomplete=spriteIntegrityReport?.sourceSpriteIncomplete===true;
     return {
       buildingId:building.id,
       spriteId:building.spriteId,
@@ -6985,8 +6997,11 @@ function emitActualCameraViewportQA(){
       visibleInActualViewport:visiblyOnCanvas,
       partiallyOnCanvasBelowThreshold:partiallyOnCanvas,
       offscreenAtCanvas,
+      sourceSpriteIncomplete,
+      viewportCropped:cropped,
       actualViewportCropped:cropped,
-      hudObscured
+      hudObscured,
+      overlapHidden:false
     };
   });
   const visibleReports=reports.filter((r)=>r.visibleInActualViewport);
@@ -7038,7 +7053,78 @@ function emitActualCameraViewportQA(){
 }
 
 let buildingSpriteCropIntegrityQaSignature="";
-let buildingSpriteCropIntegrityQaResult={ status:"PENDING_INIT", productionBuildingCount:0, visuallyCompleteCount:0, structuralFailureCount:0, structuralFailureBuildingIds:[], aspectMismatchBuildingIds:[], cropOverrideBuildingIds:[], fallbackRenderBuildingIds:[], outOfBoundsBuildingIds:[], reports:[] };
+let buildingSpriteCropIntegrityQaResult={ status:"PENDING_INIT", productionBuildingCount:0, visuallyCompleteCount:0, structuralFailureCount:0, structuralFailureBuildingIds:[], aspectMismatchBuildingIds:[], cropOverrideBuildingIds:[], fallbackRenderBuildingIds:[], outOfBoundsBuildingIds:[], pixelAuditFailureBuildingIds:[], pixelAuditUnavailableBuildingIds:[], reports:[] };
+const spritePixelAuditCache=new Map();
+function sampleSpriteAtlasPixelAudit(atlasImg, sx, sy, sw, sh, cacheKey){
+  if(cacheKey && spritePixelAuditCache.has(cacheKey)) return spritePixelAuditCache.get(cacheKey);
+  if(typeof document==="undefined" || !atlasImg || !atlasImg.complete || !atlasImg.naturalWidth) return null;
+  if(!Number.isFinite(sx)||!Number.isFinite(sy)||!Number.isFinite(sw)||!Number.isFinite(sh)) return null;
+  if(sw<=0 || sh<=0) return null;
+  const sampleCanvas=document.createElement("canvas");
+  sampleCanvas.width=sw; sampleCanvas.height=sh;
+  const sctx=sampleCanvas.getContext("2d", { willReadFrequently:true });
+  if(!sctx) return null;
+  sctx.imageSmoothingEnabled=false;
+  sctx.clearRect(0,0,sw,sh);
+  try{ sctx.drawImage(atlasImg, sx, sy, sw, sh, 0, 0, sw, sh); }
+  catch(drawErr){ return null; }
+  let imageData;
+  try{ imageData=sctx.getImageData(0, 0, sw, sh); }
+  catch(readErr){
+    const failure={ available:false, reason:"image_data_read_failed", error:String(readErr?.message||readErr) };
+    if(cacheKey) spritePixelAuditCache.set(cacheKey, failure);
+    return failure;
+  }
+  const data=imageData.data;
+  const ALPHA_THRESHOLD=24;
+  let opaqueCount=0;
+  let minX=sw, minY=sh, maxX=-1, maxY=-1;
+  for(let y=0;y<sh;y++){
+    const rowOffset=y*sw*4 + 3;
+    for(let x=0;x<sw;x++){
+      const a=data[rowOffset + x*4];
+      if(a>ALPHA_THRESHOLD){
+        opaqueCount+=1;
+        if(x<minX) minX=x;
+        if(y<minY) minY=y;
+        if(x>maxX) maxX=x;
+        if(y>maxY) maxY=y;
+      }
+    }
+  }
+  const totalPixels=sw*sh;
+  const opaqueCoverageRatio=opaqueCount/totalPixels;
+  const sampledOpaqueBounds=opaqueCount>0 ? { x:minX, y:minY, w:maxX-minX+1, h:maxY-minY+1 } : null;
+  const stripDepth=Math.max(2, Math.min(6, Math.round(Math.min(sw,sh)*0.04)));
+  function stripCoverage(x0,y0,w,h){
+    let n=0;
+    for(let y=y0;y<y0+h;y++){
+      const rowOffset=y*sw*4 + 3;
+      for(let x=x0;x<x0+w;x++){
+        if(data[rowOffset + x*4] > ALPHA_THRESHOLD) n+=1;
+      }
+    }
+    const total=Math.max(1, w*h);
+    return n/total;
+  }
+  const leftStripRatio=stripCoverage(0, 0, stripDepth, sh);
+  const rightStripRatio=stripCoverage(sw-stripDepth, 0, stripDepth, sh);
+  const topStripRatio=stripCoverage(0, 0, sw, stripDepth);
+  const bottomStripRatio=stripCoverage(0, sh-stripDepth, sw, stripDepth);
+  const EDGE_OCCUPIED_THRESHOLD=0.30;
+  const leftEdgeOccupied=leftStripRatio>EDGE_OCCUPIED_THRESHOLD;
+  const rightEdgeOccupied=rightStripRatio>EDGE_OCCUPIED_THRESHOLD;
+  const topEdgeOccupied=topStripRatio>EDGE_OCCUPIED_THRESHOLD;
+  const bottomEdgeOccupied=bottomStripRatio>EDGE_OCCUPIED_THRESHOLD;
+  const result={
+    available:true,
+    sampledOpaqueBounds, opaqueCount, totalPixels, opaqueCoverageRatio,
+    leftStripRatio, rightStripRatio, topStripRatio, bottomStripRatio, stripDepth,
+    leftEdgeOccupied, rightEdgeOccupied, topEdgeOccupied, bottomEdgeOccupied
+  };
+  if(cacheKey) spritePixelAuditCache.set(cacheKey, result);
+  return result;
+}
 function getBuildingSpriteRegistryAuthority(spriteId){
   if(!spriteId) return { source:"none", entry:null };
   const newport=NEWPORT_SPRITE_BY_ID?.[spriteId];
@@ -7089,6 +7175,7 @@ function emitBuildingSpriteCropIntegrityQA(){
     const anchorMatchesRegistry=Boolean(drawAnchor.x===registryLookup.anchorX && drawAnchor.y===registryLookup.anchorY);
     const cropOverrideApplied=Boolean(activeCrop && registryCrop && !cropMatchesRegistry);
     const cropOverrideReason=cropOverrideApplied ? "active_crop_diverges_from_registry" : null;
+    const cropAuthority=cropOverrideApplied ? "legacy_static_overridden" : (registryLookup.source||"unknown");
     const sourceRectWithinAtlasBounds=Boolean(activeCrop && atlasW>0 && atlasH>0 &&
       activeCrop.x>=0 && activeCrop.y>=0 &&
       (activeCrop.x+activeCrop.w)<=atlasW && (activeCrop.y+activeCrop.h)<=atlasH);
@@ -7101,9 +7188,27 @@ function emitBuildingSpriteCropIntegrityQA(){
     const drawDestinationRect={ w:drawW, h:drawH };
     const expectedOpaqueBounds=(registryDrawW&&registryDrawH)?{ w:registryDrawW, h:registryDrawH }:null;
     const visibleOpaqueBounds=(drawW&&drawH)?{ w:drawW, h:drawH }:null;
-    const sampledOpaqueBounds=null;
-    const opaqueCoverageRatio=null;
-    const transparentPaddingTrimmed=cropMatchesRegistry;
+    const isolatedProofDrawRect=(drawW&&drawH)?{ w:drawW, h:drawH }:null;
+    const pixelCacheKey=activeCrop?(sourceAtlasPath||"buildings")+"|"+activeCrop.x+","+activeCrop.y+","+activeCrop.w+","+activeCrop.h:null;
+    const pixelAudit=activeCrop ? sampleSpriteAtlasPixelAudit(atlasImages?.buildings, activeCrop.x, activeCrop.y, activeCrop.w, activeCrop.h, pixelCacheKey) : null;
+    const pixelAuditAvailable=!!(pixelAudit && pixelAudit.available);
+    const sampledOpaqueBounds=pixelAuditAvailable ? pixelAudit.sampledOpaqueBounds : null;
+    const opaqueCoverageRatio=pixelAuditAvailable ? pixelAudit.opaqueCoverageRatio : null;
+    const leftEdgeOccupied=pixelAuditAvailable ? pixelAudit.leftEdgeOccupied : null;
+    const rightEdgeOccupied=pixelAuditAvailable ? pixelAudit.rightEdgeOccupied : null;
+    const topEdgeOccupied=pixelAuditAvailable ? pixelAudit.topEdgeOccupied : null;
+    const bottomEdgeOccupied=pixelAuditAvailable ? pixelAudit.bottomEdgeOccupied : null;
+    const transparentPaddingTrimmed=pixelAuditAvailable ? (!leftEdgeOccupied && !rightEdgeOccupied && !topEdgeOccupied) : false;
+    let structuralCompletenessScore=null;
+    if(pixelAuditAvailable){
+      const COVERAGE_FLOOR=0.18;
+      const coverageScore=Math.max(0, Math.min(1, (opaqueCoverageRatio-COVERAGE_FLOOR)/(0.65-COVERAGE_FLOOR)));
+      const edgeScoreLeft=leftEdgeOccupied ? 0 : 1;
+      const edgeScoreRight=rightEdgeOccupied ? 0 : 1;
+      const edgeScoreTop=topEdgeOccupied ? 0 : 1;
+      const nonBottomEdgesClean=edgeScoreLeft+edgeScoreRight+edgeScoreTop;
+      structuralCompletenessScore=Math.max(0, Math.min(1, 0.4*coverageScore + 0.2*(nonBottomEdgesClean/3) + 0.2*(opaqueCoverageRatio>0.10?1:0) + 0.2*(sampledOpaqueBounds?1:0)));
+    }
     const failureReasons=[];
     if(usedFallback) failureReasons.push("fallback_rendering_used");
     if(!mappedSprite) failureReasons.push("manifest_sprite_missing");
@@ -7114,7 +7219,19 @@ function emitBuildingSpriteCropIntegrityQA(){
     if(activeCrop && atlasW>0 && atlasH>0 && !sourceRectWithinAtlasBounds) failureReasons.push("source_rect_outside_atlas_bounds");
     if(aspectRatioDelta!==null && aspectRatioDelta>0.005) failureReasons.push("aspect_ratio_mismatch");
     if(registryLookup.entry && !anchorMatchesRegistry && registryLookup.anchorX!=null && registryLookup.anchorY!=null) failureReasons.push("draw_anchor_mismatch_with_registry");
-    const visuallyComplete=failureReasons.length===0;
+    if(cropOverrideApplied) failureReasons.push("legacy_static_crop_override_active");
+    if(activeCrop && !pixelAuditAvailable) failureReasons.push("pixel_audit_unavailable");
+    if(pixelAuditAvailable){
+      if(opaqueCoverageRatio==null) failureReasons.push("opaque_coverage_ratio_not_computed");
+      else if(opaqueCoverageRatio<0.10) failureReasons.push("opaque_coverage_below_floor");
+      if(!sampledOpaqueBounds) failureReasons.push("sampled_opaque_bounds_null");
+      const nonBottomOccupied=(leftEdgeOccupied?1:0)+(rightEdgeOccupied?1:0)+(topEdgeOccupied?1:0);
+      if(nonBottomOccupied>=2 && opaqueCoverageRatio>0.45) failureReasons.push("source_rect_clips_sprite_at_multiple_edges");
+      else if(leftEdgeOccupied && rightEdgeOccupied && opaqueCoverageRatio>0.55) failureReasons.push("source_rect_clips_sprite_horizontally");
+      else if(topEdgeOccupied && opaqueCoverageRatio>0.55) failureReasons.push("source_rect_clips_sprite_top");
+    }
+    const sourceSpriteIncomplete=failureReasons.some((r)=>r==="source_rect_clips_sprite_at_multiple_edges"||r==="source_rect_clips_sprite_horizontally"||r==="source_rect_clips_sprite_top"||r==="opaque_coverage_below_floor"||r==="sampled_opaque_bounds_null"||r==="active_crop_mismatch_with_registry"||r==="legacy_static_crop_override_active"||r==="aspect_ratio_mismatch"||r==="source_rect_outside_atlas_bounds"||r==="manifest_sprite_missing"||r==="registry_entry_missing"||r==="fallback_rendering_used");
+    const visuallyComplete=failureReasons.length===0 && pixelAuditAvailable;
     return {
       buildingId:b.id,
       requestedSpriteId,
@@ -7124,6 +7241,7 @@ function emitBuildingSpriteCropIntegrityQA(){
       manifestCrop,
       registryCrop,
       registrySource:registryLookup.source,
+      cropAuthority,
       activeCrop,
       legacyStaticCrop:cropOverrideApplied?registryCrop:null,
       cropOverrideApplied,
@@ -7139,6 +7257,14 @@ function emitBuildingSpriteCropIntegrityQA(){
       visibleOpaqueBounds,
       expectedOpaqueBounds,
       opaqueCoverageRatio,
+      isolatedProofDrawRect,
+      leftEdgeOccupied,
+      rightEdgeOccupied,
+      topEdgeOccupied,
+      bottomEdgeOccupied,
+      structuralCompletenessScore,
+      pixelAuditAvailable,
+      sourceSpriteIncomplete,
       visuallyComplete,
       renderPath,
       usedFallback,
@@ -7152,6 +7278,8 @@ function emitBuildingSpriteCropIntegrityQA(){
   const cropOverride=reports.filter((r)=>r.cropOverrideApplied);
   const fallbackRender=reports.filter((r)=>r.usedFallback);
   const outOfBounds=reports.filter((r)=>r.failureReasons.includes("source_rect_outside_atlas_bounds"));
+  const pixelAuditFailures=reports.filter((r)=>r.failureReasons.some((f)=>f==="source_rect_clips_sprite_at_multiple_edges"||f==="source_rect_clips_sprite_horizontally"||f==="source_rect_clips_sprite_top"||f==="opaque_coverage_below_floor"));
+  const pixelAuditUnavailable=reports.filter((r)=>r.failureReasons.includes("pixel_audit_unavailable"));
   const status=failed.length===0?"PASS":"FAIL";
   buildingSpriteCropIntegrityQaResult={
     status,
@@ -7163,11 +7291,14 @@ function emitBuildingSpriteCropIntegrityQA(){
     cropOverrideBuildingIds:cropOverride.map((r)=>r.buildingId),
     fallbackRenderBuildingIds:fallbackRender.map((r)=>r.buildingId),
     outOfBoundsBuildingIds:outOfBounds.map((r)=>r.buildingId),
+    pixelAuditFailureBuildingIds:pixelAuditFailures.map((r)=>r.buildingId),
+    pixelAuditUnavailableBuildingIds:pixelAuditUnavailable.map((r)=>r.buildingId),
+    sourceSpriteIncompleteBuildingIds:reports.filter((r)=>r.sourceSpriteIncomplete).map((r)=>r.buildingId),
     atlasNaturalWidth:atlasW,
     atlasNaturalHeight:atlasH,
     reports
   };
-  const line='[Building Sprite Crop Integrity QA] phase='+WAYFARER_PHASE+' productionBuildingCount='+reports.length+' visuallyCompleteCount='+visuallyComplete.length+' structuralFailureCount='+failed.length+' structuralFailureBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.structuralFailureBuildingIds)+' aspectMismatchBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.aspectMismatchBuildingIds)+' cropOverrideBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.cropOverrideBuildingIds)+' fallbackRenderBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.fallbackRenderBuildingIds)+' outOfBoundsBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.outOfBoundsBuildingIds)+' atlasNaturalWidth='+atlasW+' atlasNaturalHeight='+atlasH+' status='+status;
+  const line='[Building Sprite Crop Integrity QA] phase='+WAYFARER_PHASE+' productionBuildingCount='+reports.length+' visuallyCompleteCount='+visuallyComplete.length+' structuralFailureCount='+failed.length+' structuralFailureBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.structuralFailureBuildingIds)+' aspectMismatchBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.aspectMismatchBuildingIds)+' cropOverrideBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.cropOverrideBuildingIds)+' fallbackRenderBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.fallbackRenderBuildingIds)+' outOfBoundsBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.outOfBoundsBuildingIds)+' pixelAuditFailureBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.pixelAuditFailureBuildingIds)+' pixelAuditUnavailableBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.pixelAuditUnavailableBuildingIds)+' sourceSpriteIncompleteBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.sourceSpriteIncompleteBuildingIds)+' atlasNaturalWidth='+atlasW+' atlasNaturalHeight='+atlasH+' status='+status;
   const detailSig=line+' reports='+JSON.stringify(reports);
   if(detailSig!==buildingSpriteCropIntegrityQaSignature){
     buildingSpriteCropIntegrityQaSignature=detailSig;
@@ -8312,7 +8443,7 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13N" && ATLAS_SELECTOR_VERSION==="selector-v35-13n-gameplay-scale-sprite-crop-integrity-lock";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13O" && ATLAS_SELECTOR_VERSION==="selector-v35-13o-building-sprite-source-repair";
   const harborWaterVisualQa=ensureQaResult(emitNewportHarborWaterVisualQA(),"newport_harbor_water_visual_not_initialized");
   const harborWaterVisualPass=harborWaterVisualQa.status==="PASS";
   refreshBuildingPlacementContractQAIfSettled();
@@ -8322,10 +8453,10 @@ function buildWayfarerQaReport(){
   const visualCompositionPass=latestVisualCompositionQa.status==="PASS" || visualCompositionDeferred;
   const validationFrameQa=ensureQaResult(emitNewportValidationFrameQA(),"newport_validation_frame_not_initialized");
   const validationFramePass=validationFrameQa.status==="PASS";
-  const actualCameraViewportQa=ensureQaResult(emitActualCameraViewportQA(),"actual_camera_viewport_not_initialized");
-  const actualCameraViewportPass=actualCameraViewportQa.status==="PASS";
   const spriteCropIntegrityQa=ensureQaResult(emitBuildingSpriteCropIntegrityQA(),"building_sprite_crop_integrity_not_initialized");
   const spriteCropIntegrityPass=spriteCropIntegrityQa.status==="PASS";
+  const actualCameraViewportQa=ensureQaResult(emitActualCameraViewportQA(),"actual_camera_viewport_not_initialized");
+  const actualCameraViewportPass=actualCameraViewportQa.status==="PASS";
   const masterplanQaResult=ensureQaResult(emitNewportMasterplanQA(latestVisualCompositionQa.status, latestVisualCompositionQa.failCount||0),"newport_masterplan_not_initialized");
   const masterplanDeferred=foundationMode && masterplanQaResult.status==="PENDING_35_13C";
   const masterplanPass=masterplanQaResult.status==="PASS" || masterplanDeferred;
@@ -8651,8 +8782,8 @@ function runRuntimeQaPass(reason="scheduled"){
     run("wharf_authority_audit", ()=>emitWharfAuthorityAudit());
     run("newport_harbor_water_visual_qa", ()=>emitNewportHarborWaterVisualQA());
     run("newport_validation_frame_qa", ()=>emitNewportValidationFrameQA());
-    run("actual_camera_viewport_qa", ()=>emitActualCameraViewportQA());
     run("building_sprite_crop_integrity_qa", ()=>emitBuildingSpriteCropIntegrityQA());
+    run("actual_camera_viewport_qa", ()=>emitActualCameraViewportQA());
     run("player_stuck_readability_qa", ()=>emitPlayerStuckReadabilityQA());
     run("newport_town_foundation_lock_qa", ()=>emitNewportTownFoundationLockQA());
     run("quest_loop_qa", ()=>emitQuestLoopQA());
@@ -13767,7 +13898,107 @@ function drawAbandonedTollhouseScene(now){
   drawTransitionFade(now);
 }
 
+function drawBuildingSpriteProofSheet(){
+  if(typeof document==="undefined") return;
+  const w=canvas.width||1280;
+  const h=canvas.height||800;
+  ctx.imageSmoothingEnabled=false;
+  ctx.fillStyle="#1a1f28";
+  ctx.fillRect(0,0,w,h);
+  ctx.fillStyle="#f4f8ff";
+  ctx.font="bold 16px ui-monospace, Menlo, monospace";
+  ctx.textBaseline="top";
+  ctx.fillText("Newport Building Sprite Proof Sheet — Phase "+WAYFARER_PHASE,12,10);
+  ctx.font="11px ui-monospace, Menlo, monospace";
+  ctx.fillStyle="#9eacbe";
+  ctx.fillText("Each cell renders the active atlas crop at intended draw size. Yellow box = sourceRect, green box = visible draw rect.",12,30);
+  const buildings=Array.isArray(world?.buildings)?world.buildings:[];
+  if(buildings.length===0){
+    ctx.fillStyle="#ffb888";
+    ctx.fillText("[no production buildings present]",12,60);
+    return;
+  }
+  const cols=5;
+  const cellPad=10;
+  const headerH=50;
+  const cellW=Math.floor((w-cellPad*(cols+1))/cols);
+  const rows=Math.ceil(buildings.length/cols);
+  const cellH=Math.floor((h-headerH-cellPad*(rows+1))/rows);
+  buildings.forEach((b,i)=>{
+    const col=i%cols;
+    const row=Math.floor(i/cols);
+    const cx=cellPad+col*(cellW+cellPad);
+    const cy=headerH+cellPad+row*(cellH+cellPad);
+    ctx.fillStyle="#0e1621";
+    ctx.fillRect(cx,cy,cellW,cellH);
+    ctx.strokeStyle="#3b4d66";
+    ctx.lineWidth=1;
+    ctx.strokeRect(cx+0.5,cy+0.5,cellW-1,cellH-1);
+    const spriteId=b.spriteId;
+    const sprite=spriteId?atlasManifests?.buildings?.sprites?.[spriteId]:null;
+    const headerY=cy+6;
+    ctx.fillStyle="#f4f8ff";
+    ctx.font="11px ui-monospace, Menlo, monospace";
+    ctx.fillText(b.id, cx+8, headerY);
+    ctx.fillStyle="#a8c4e8";
+    ctx.font="10px ui-monospace, Menlo, monospace";
+    ctx.fillText("sprite="+(spriteId||"none"), cx+8, headerY+14);
+    if(sprite){
+      const spriteH=cellH-60;
+      const spriteW=cellW-20;
+      const drawW=sprite.drawW||sprite.sw;
+      const drawH=sprite.drawH||sprite.sh;
+      const scale=Math.min(spriteW/drawW, spriteH/drawH, 1);
+      const finalW=Math.round(drawW*scale);
+      const finalH=Math.round(drawH*scale);
+      const dx=cx+Math.floor((cellW-finalW)/2);
+      const dy=cy+30+Math.floor((spriteH-finalH)/2);
+      const renderDiag=buildingRenderDiagnostics?.perBuilding?.get?.(b.id)||null;
+      const renderPath=renderDiag?.renderPath||"unknown";
+      ctx.fillStyle="#0a0e15";
+      ctx.fillRect(dx-2,dy-2,finalW+4,finalH+4);
+      const atlasImg=atlasImages?.buildings;
+      if(atlasImg && atlasImg.complete && atlasImg.naturalWidth>0 && Number.isFinite(sprite.sx) && Number.isFinite(sprite.sy) && Number.isFinite(sprite.sw) && Number.isFinite(sprite.sh)){
+        try{ ctx.drawImage(atlasImg, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, finalW, finalH); }
+        catch(drawErr){
+          ctx.fillStyle="#5a3030";
+          ctx.fillRect(dx,dy,finalW,finalH);
+        }
+      } else {
+        ctx.fillStyle="#3a3030";
+        ctx.fillRect(dx,dy,finalW,finalH);
+      }
+      ctx.strokeStyle="rgba(232,196,80,0.7)";
+      ctx.lineWidth=1;
+      ctx.strokeRect(dx-1.5,dy-1.5,finalW+3,finalH+3);
+      ctx.strokeStyle="rgba(120,232,140,0.5)";
+      ctx.strokeRect(dx+0.5,dy+0.5,finalW-1,finalH-1);
+      ctx.fillStyle=renderPath==="atlas"?"#9bdca8":"#f4a888";
+      ctx.font="9px ui-monospace, Menlo, monospace";
+      ctx.fillText("render="+renderPath, cx+8, cy+cellH-44);
+      ctx.fillStyle="#cdd8ea";
+      ctx.fillText("src=("+sprite.sx+","+sprite.sy+","+sprite.sw+"x"+sprite.sh+")", cx+8, cy+cellH-32);
+      ctx.fillText("draw="+drawW+"x"+drawH+" anchor=("+(sprite.anchorX||0)+","+(sprite.anchorY||0)+")", cx+8, cy+cellH-20);
+      const audit=spritePixelAuditCache.get((sprite.atlas||"buildings")+"|"+sprite.sx+","+sprite.sy+","+sprite.sw+","+sprite.sh);
+      if(audit && audit.available){
+        ctx.fillStyle=audit.opaqueCoverageRatio>=0.18?"#9bdca8":"#f4a888";
+        ctx.fillText("opaque="+(audit.opaqueCoverageRatio*100).toFixed(1)+"% edges("+(audit.leftEdgeOccupied?"L":"_")+(audit.rightEdgeOccupied?"R":"_")+(audit.topEdgeOccupied?"T":"_")+(audit.bottomEdgeOccupied?"B":"_")+")", cx+8, cy+cellH-8);
+      }
+    } else {
+      ctx.fillStyle="#5a3030";
+      ctx.fillRect(cx+8,cy+30,cellW-16,cellH-50);
+      ctx.fillStyle="#f4d8de";
+      ctx.font="11px ui-monospace, Menlo, monospace";
+      ctx.fillText("[manifest sprite missing]", cx+12, cy+34);
+    }
+  });
+}
 function drawWorld(){
+  if(SPRITE_PROOF_SHEET_MODE){
+    drawBuildingSpriteProofSheet();
+    firstFrameDrawn=true;
+    return;
+  }
   ctx.imageSmoothingEnabled=false;
 
   const now=performance.now();
