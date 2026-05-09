@@ -1655,11 +1655,11 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13I";
+const WAYFARER_PHASE = "35.13J";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
 const NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13I — Newport Daylight Readability & Final Art Polish";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13i-newport-daylight-readability-polish";
+const WAYFARER_BUILD_LABEL = "Phase 35.13J — Newport Harbor Water Readability Fix";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13j-newport-harbor-water-readability-fix";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3415,6 +3415,7 @@ let newportMasterplanQaSignature="";
 let buildingOverlapQaSignature="";
 let wharfReadabilityQaSignature="";
 let wharfAuthorityQaSignature="";
+let newportHarborWaterVisualQaSignature="";
 let playerStuckReadabilityQaSignature="";
 let phase342JAcceptanceSignature="";
 let bootModeQaSignature="";
@@ -3444,6 +3445,7 @@ let routeTileSweepQaResult={ status:"PENDING", scanned:0, unexpectedBlockedEdges
 let routeCollisionQaResult={ status:"PENDING", scanned:0, invalidHiddenBlockers:Infinity, intentionalBlocks:0, examples:[] };
 let buildingOverlapQaResult={ status:"PENDING", overlaps:[], scanned:0 };
 let wharfReadabilityQaResult={ status:"PENDING", walkableOverWater:0, invalidWalkableOverWater:0, unreachableWharfTiles:0, boathouseAligned:false };
+let newportHarborWaterVisualQaResult={ status:"PENDING", visibleOpenWaterTileCount:0, wharfDeckTileCount:0, wharfDeckToWaterRatio:1, visibleWaterGapCountBetweenPiers:0, continuousOpenWaterBandPresent:false, pierFingerCount:0, mergedWharfPlatformDetected:true };
 let playerStuckQaResult={ status:"PENDING", tested:0, reachable:0, blockedPockets:0 };
 let newportTownFoundationLockQaResult={ status:"PENDING", failedBuildings:[], reports:[] };
 let newportTownFoundationLockQaSignature="";
@@ -3638,7 +3640,7 @@ function logBuildingSourceOfTruthAudit({ verbose=ATLAS_DEBUG_MODE }={}){
   const productionRenderStatus=sourceTruthProductionRenderDeferred ? "PENDING_35_13C" : "ACTIVE";
   const expectedRows=sourceTruthProductionRenderDeferred ? 0 : HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13I' && ATLAS_SELECTOR_VERSION==='selector-v35-13i-newport-daylight-readability-polish';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13J' && ATLAS_SELECTOR_VERSION==='selector-v35-13j-newport-harbor-water-readability-fix';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=sourceTruthProductionRenderDeferred || (buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4972,6 +4974,85 @@ function emitWharfAuthorityAudit(){
   const boathouseCollisionValid=!boathouseCollisionBlocksPlayableWharf;
   const line="[Wharf Authority Audit] visualWaterTiles="+visualWaterTiles.length+" decorativeWaterOnlyTiles="+decorativeWaterOnlyTiles.length+" playableWharfDeckTiles="+playableWharfDeckTiles.length+" wharfTilesOverWater="+wharfTilesOverWater.length+" invalidPlayableWharfDeckTiles="+invalidPlayableWharfDeckTiles.length+" ignoredDecorativeWaterTiles="+ignoredDecorativeWaterTiles.length+" reachablePlayableWharfTiles="+reachablePlayableWharfTiles.length+" boathouseFrontage="+(frontage?("tile("+frontage.x+","+frontage.y+")"):"none")+" boathouseFrontageReachable="+frontageReachable+" boathouseCollision="+JSON.stringify(collision)+" boathouseCollisionTiles="+collisionTiles.join(",")+" boathouseRequiredWharfOverlapTiles="+boathouseWharfOverlapTiles.join("|")+" boathouseRequiredWharfOverlapCount="+boathouseWharfOverlapTiles.length+" boathouseCollisionDecorativeOnlyCount="+boathouseCollisionDecorativeOnlyCount+" boathouseCollisionRequiredWharfOverlapCount="+boathouseCollisionRequiredWharfOverlapCount+" boathouseCollisionBlocksPlayableWharf="+boathouseCollisionBlocksPlayableWharf+" boathouseCollisionAuthorityReason="+boathouseCollisionAuthorityReason+" boathouseCollisionValid="+boathouseCollisionValid+" waterfrontSpineValid="+waterfrontSpineValid+" invalidSamples="+invalidPlayableWharfDeckTiles.slice(0,8).join("|");
   if(line!==wharfAuthorityQaSignature){ wharfAuthorityQaSignature=line; console.info(line); }
+}
+function longestContiguousRun(values){
+  let best=0,current=0;
+  values.forEach((value)=>{
+    if(value){ current+=1; best=Math.max(best,current); }
+    else current=0;
+  });
+  return best;
+}
+function countConnectedTileComponentMax(tileSet){
+  const unvisited=new Set(tileSet);
+  let maxSize=0;
+  while(unvisited.size){
+    const start=unvisited.values().next().value;
+    const stack=[start];
+    unvisited.delete(start);
+    let size=0;
+    while(stack.length){
+      const tileKey=stack.pop();
+      size+=1;
+      const [x,y]=tileKey.split(",").map(Number);
+      [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{
+        const next=keyOf(x+dx,y+dy);
+        if(!unvisited.has(next)) return;
+        unvisited.delete(next);
+        stack.push(next);
+      });
+    }
+    maxSize=Math.max(maxSize,size);
+  }
+  return maxSize;
+}
+function emitNewportHarborWaterVisualQA(){
+  const band=NEWPORT_HARBOR_WATER_VISUAL_QA_BAND;
+  const { deckTiles }=getNewportWharfTileCache();
+  const pierRects=world.newportCanonicalBlueprint?.roadHierarchy?.pierRects || [];
+  const pierColumns=[...new Set(pierRects.map((pier)=>pier.x))].sort((a,b)=>a-b);
+  const visualWharfDeckTilesInBand=new Set();
+  let visibleOpenWaterTileCount=0;
+  const bottomRowOpenWater=[];
+  for(let y=band.y;y<band.y+band.h;y++){
+    for(let x=band.x;x<band.x+band.w;x++){
+      const tileKey=keyOf(x,y);
+      const visualDeck=deckTiles.has(tileKey);
+      if(visualDeck) visualWharfDeckTilesInBand.add(tileKey);
+      const visibleWater=world.pondWater.has(tileKey) && !visualDeck;
+      if(visibleWater) visibleOpenWaterTileCount+=1;
+      if(y===band.y+band.h-1) bottomRowOpenWater.push(visibleWater);
+    }
+  }
+  let visibleWaterGapCountBetweenPiers=0;
+  for(let i=0;i<pierColumns.length-1;i++){
+    const left=pierColumns[i];
+    const right=pierColumns[i+1];
+    let gapHasOpenWater=false;
+    for(let x=left+1;x<right;x++){
+      for(let y=band.y;y<band.y+band.h;y++){
+        const tileKey=keyOf(x,y);
+        if(world.pondWater.has(tileKey) && !deckTiles.has(tileKey)) gapHasOpenWater=true;
+      }
+    }
+    if(gapHasOpenWater) visibleWaterGapCountBetweenPiers+=1;
+  }
+  const wharfDeckTileCount=visualWharfDeckTilesInBand.size;
+  const wharfDeckToWaterRatio=wharfDeckTileCount/Math.max(1,visibleOpenWaterTileCount);
+  const longestOpenWaterRun=longestContiguousRun(bottomRowOpenWater);
+  const continuousOpenWaterBandPresent=longestOpenWaterRun>=Math.floor(band.w*0.76);
+  const pierFingerCount=pierColumns.length;
+  const maxMergedDeckComponent=countConnectedTileComponentMax(visualWharfDeckTilesInBand);
+  const mergedWharfPlatformDetected=wharfDeckToWaterRatio>0.34 || visibleWaterGapCountBetweenPiers<Math.max(4,pierFingerCount-1) || !continuousOpenWaterBandPresent || maxMergedDeckComponent>=18;
+  const harborWaterReadabilityStatus=(!mergedWharfPlatformDetected && visibleOpenWaterTileCount>=100 && wharfDeckToWaterRatio<=0.28 && pierFingerCount>=5)?"PASS":"FAIL";
+  const status=harborWaterReadabilityStatus;
+  newportHarborWaterVisualQaResult={ status, phase:WAYFARER_PHASE, visibleOpenWaterTileCount, wharfDeckTileCount, wharfDeckToWaterRatio, visibleWaterGapCountBetweenPiers, continuousOpenWaterBandPresent, pierFingerCount, mergedWharfPlatformDetected, maxMergedDeckComponent, longestOpenWaterRun };
+  const line="[Newport Harbor Water Visual QA] phase="+WAYFARER_PHASE+" visibleOpenWaterTileCount="+visibleOpenWaterTileCount+" wharfDeckTileCount="+wharfDeckTileCount+" wharfDeckToWaterRatio="+wharfDeckToWaterRatio.toFixed(3)+" visibleWaterGapCountBetweenPiers="+visibleWaterGapCountBetweenPiers+" continuousOpenWaterBandPresent="+continuousOpenWaterBandPresent+" pierFingerCount="+pierFingerCount+" mergedWharfPlatformDetected="+mergedWharfPlatformDetected+" harborWaterReadabilityStatus="+harborWaterReadabilityStatus+" status="+status;
+  if(line!==newportHarborWaterVisualQaSignature){
+    newportHarborWaterVisualQaSignature=line;
+    console.info(line);
+  }
+  return newportHarborWaterVisualQaResult;
 }
 function emitPlayerStuckReadabilityBlockerTrace(start){
   const tile={ x:20, y:16 };
@@ -6475,7 +6556,7 @@ emitNewportSpriteRoleLotAudit();
 emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
 const NEWPORT_TOWN_BLUEPRINT_V2=Object.freeze({
-  phase:"35.13I_newport_daylight_readability_polish",
+  phase:"35.13J_newport_harbor_water_readability_fix",
   waterfrontSpineTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   commercialStreetTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   wharfApronTiles:Array.from({length:25},(_,i)=>({x:8+i,y:17})),
@@ -7127,6 +7208,7 @@ function isOverworldTerrainBlocked(x,y){
 const CENTRAL_PIER_TILES=Object.freeze([[19,17],[19,18],[19,19],[19,20],[19,21]]);
 const CENTRAL_PIER_TILE_KEYS=new Set(CENTRAL_PIER_TILES.map(([x,y])=>keyOf(x,y)));
 const HARBOR_PIER_WHARF_COLUMNS=Object.freeze(new Set([9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41]));
+const NEWPORT_HARBOR_WATER_VISUAL_QA_BAND=Object.freeze({ x:8, y:20, w:31, h:8 });
 function hasCentralPierOverride(x,y){
   return CENTRAL_PIER_TILE_KEYS.has(keyOf(x,y));
 }
@@ -7159,12 +7241,13 @@ function getNewportWharfTileCache(){
     (building.lotContract.supportedWaterFootprint||[]).forEach((tile)=>supportTiles.add(keyOf(tile.x,tile.y)));
   });
   const stoneTiles=new Set(bp?.stoneApronTiles||[]);
+  const seawallTiles=new Set(bp?.seawallTiles||[]);
   const surfaceWharfTiles=new Set([
     ...deckTiles,
     ...supportTiles,
-    ...(bp?.seawallTiles||[])
+    ...seawallTiles
   ]);
-  newportWharfTileCache={ deckTiles, supportTiles, stoneTiles, surfaceWharfTiles };
+  newportWharfTileCache={ deckTiles, supportTiles, stoneTiles, seawallTiles, surfaceWharfTiles };
   return newportWharfTileCache;
 }
 function getAuthoritativeWharfDeckTiles(){
@@ -7854,7 +7937,9 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13I" && ATLAS_SELECTOR_VERSION==="selector-v35-13i-newport-daylight-readability-polish";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13J" && ATLAS_SELECTOR_VERSION==="selector-v35-13j-newport-harbor-water-readability-fix";
+  const harborWaterVisualQa=ensureQaResult(emitNewportHarborWaterVisualQA(),"newport_harbor_water_visual_not_initialized");
+  const harborWaterVisualPass=harborWaterVisualQa.status==="PASS";
   refreshBuildingPlacementContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionDeferred=foundationMode && latestVisualCompositionQa.status==="PENDING_35_13C";
@@ -7950,7 +8035,7 @@ function buildWayfarerQaReport(){
   const foundationClosureQa=ensureQaResult(emitNewportFoundationClosureQA(),"newport_foundation_closure_not_initialized");
   const foundationClosureOk=productionPlacementDeferred ? foundationClosureQa.status==="PENDING_35_13C" : foundationClosureQa.status==="PASS";
   const productionSystemsPass=productionPlacementDeferred || (productionPlacementActive&&renderAuditPass&&sourceTruthPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&visualCompositionPass&&masterplanPass&&playerStuckQaResult.status==="PASS");
-  const foundationSystemsPass=buildPhaseMatches&&canonicalBlueprintQa.status==="PASS"&&routeSourceQa.status==="PASS"&&foundationLayoutQa.status==="PASS"&&savedSpawnPass&&freshSpawnPass&&traversalQaResult.status==="PASS"&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&harborFoundationOk&&wharfReadabilityOk&&buildingPlacementOk&&foundationClosureOk&&foundationLockPass&&productionSystemsPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone;
+  const foundationSystemsPass=buildPhaseMatches&&canonicalBlueprintQa.status==="PASS"&&routeSourceQa.status==="PASS"&&foundationLayoutQa.status==="PASS"&&savedSpawnPass&&freshSpawnPass&&traversalQaResult.status==="PASS"&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&harborFoundationOk&&harborWaterVisualPass&&wharfReadabilityOk&&buildingPlacementOk&&foundationClosureOk&&foundationLockPass&&productionSystemsPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone;
   const preliminaryStatus=foundationMode
     ? ((!renderReady || !harborSettled || harborStatus==="PENDING_ASSETS" || !renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled) ? "PENDING_ASSETS" : (foundationSystemsPass ? (productionPlacementDeferred?"PENDING_35_13C":"PASS") : "FAIL"))
     : ((!renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled || !harborSettled || harborStatus==="PENDING_ASSETS")?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&wharfReadabilityQaResult.status==="PASS"&&playerStuckQaResult.status==="PASS"&&visualCompositionPass&&masterplanPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL"));
@@ -7976,6 +8061,7 @@ function buildWayfarerQaReport(){
   addFailure("routeCollision",routeCollisionPass,"invalid_route_hidden_blockers");
   addFailure("routeTopology",topologyPass&&routeTileSweepPass&&routeCollisionPass,"route_topology_layout_mismatch");
   addFailure("harborComposition",harborFoundationOk,"harbor_composition_failed");
+  addFailure("harborWaterVisual",harborWaterVisualPass,"newport_harbor_water_visual_failed");
   if(savedSpawnRecoveryPass==="FAIL") addFailure("spawnRecovery",false,"saved_spawn_recovery_failed");
   addFailure("buildingOverlap",buildingOverlapQaResult.status==="PASS","building_visual_overlap_detected");
   addFailure("wharfReadability",wharfReadabilityOk,"wharf_water_readability_failed");
@@ -8012,6 +8098,7 @@ function buildWayfarerQaReport(){
     routeCollision:normalizeQaStatus(routeCollisionPass?"PASS":"FAIL"),
     routeTopology:normalizeQaStatus((topologyPass&&routeTileSweepPass&&routeCollisionPass)?"PASS":"FAIL"),
     harborComposition:normalizeQaStatus(harborStatus),
+    harborWaterVisual:normalizeQaStatus(harborWaterVisualQa.status),
     buildingOverlap:normalizeQaStatus(buildingOverlapQaResult.status),
     wharfReadability:normalizeQaStatus(wharfReadabilityQaResult.status),
     playerStuckReadability:normalizeQaStatus(playerStuckQaResult.status),
@@ -8026,7 +8113,7 @@ function buildWayfarerQaReport(){
   };
   const allRequiredPass=foundationMode
     ? foundationSystemsPass
-    : domainStatuses.savedSpawnValidation==="PASS"&&domainStatuses.freshSpawnResolver==="PASS"&&domainStatuses.traversalQA==="PASS"&&domainStatuses.playerStateQA==="PASS"&&domainStatuses.uiStateQA==="PASS"&&domainStatuses.bootModeQA==="PASS"&&domainStatuses.buildingRenderAudit==="PASS"&&domainStatuses.atlasProof==="PASS"&&domainStatuses.sourceTruth==="PASS"&&domainStatuses.routeCollision==="PASS"&&domainStatuses.routeTopology==="PASS"&&domainStatuses.harborComposition==="PASS"&&domainStatuses.buildingOverlap==="PASS"&&domainStatuses.wharfReadability==="PASS"&&domainStatuses.playerStuckReadability==="PASS";
+    : domainStatuses.savedSpawnValidation==="PASS"&&domainStatuses.freshSpawnResolver==="PASS"&&domainStatuses.traversalQA==="PASS"&&domainStatuses.playerStateQA==="PASS"&&domainStatuses.uiStateQA==="PASS"&&domainStatuses.bootModeQA==="PASS"&&domainStatuses.buildingRenderAudit==="PASS"&&domainStatuses.atlasProof==="PASS"&&domainStatuses.sourceTruth==="PASS"&&domainStatuses.routeCollision==="PASS"&&domainStatuses.routeTopology==="PASS"&&domainStatuses.harborComposition==="PASS"&&domainStatuses.harborWaterVisual==="PASS"&&domainStatuses.buildingOverlap==="PASS"&&domainStatuses.wharfReadability==="PASS"&&domainStatuses.playerStuckReadability==="PASS";
   const hasFailures=Object.keys(failedDomains).length>0 || consoleFatalErrors!=="none";
   const finalStatus=(allRequiredPass && !hasFailures) ? (productionPlacementDeferred?"PENDING_35_13C":"PASS") : normalizeQaStatus(preliminaryStatus);
   return {
@@ -8055,6 +8142,7 @@ function buildWayfarerQaReport(){
       routeCollision:domainStatuses.routeCollision,
       routeTopology:domainStatuses.routeTopology,
       harborComposition:domainStatuses.harborComposition,
+      harborWaterVisual:domainStatuses.harborWaterVisual,
       newportTownFoundationLock:domainStatuses.newportTownFoundationLock,
       buildingOverlap:domainStatuses.buildingOverlap,
       wharfReadability:domainStatuses.wharfReadability,
@@ -8071,7 +8159,7 @@ function buildWayfarerQaReport(){
 async function copyWayfarerQA(){
   const payload=wayfarerQaReportState.report || buildWayfarerQaReport();
   const failedDomainKeys=Object.keys(payload.failedDomains||{});
-  const text="[Wayfarer QA Report] status="+payload.status+" phase="+payload.phase+" savedSpawn="+payload.domains.savedSpawnValidation+" freshSpawn="+payload.domains.freshSpawnResolver+" traversal="+payload.domains.traversalQA.status+" playerState="+payload.domains.playerStateQA+" uiState="+payload.domains.uiStateQA+" bootMode="+payload.domains.bootModeQA+" renderAudit="+payload.domains.buildingRenderAudit+" atlasProof="+payload.domains.atlasProof+" sourceTruth="+payload.domains.sourceTruth+" routeCollision="+payload.domains.routeCollision+" routeTopology="+payload.domains.routeTopology+" harborComposition="+payload.domains.harborComposition+" foundationLock="+payload.domains.newportTownFoundationLock+" fatalErrors="+((payload.fatalJsErrorsSinceBoot.length===0&&payload.qaEmitterErrors.length===0)?"none":String(payload.fatalJsErrorsSinceBoot.length+payload.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(payload.failedDomains):"");
+  const text="[Wayfarer QA Report] status="+payload.status+" phase="+payload.phase+" savedSpawn="+payload.domains.savedSpawnValidation+" freshSpawn="+payload.domains.freshSpawnResolver+" traversal="+payload.domains.traversalQA.status+" playerState="+payload.domains.playerStateQA+" uiState="+payload.domains.uiStateQA+" bootMode="+payload.domains.bootModeQA+" renderAudit="+payload.domains.buildingRenderAudit+" atlasProof="+payload.domains.atlasProof+" sourceTruth="+payload.domains.sourceTruth+" routeCollision="+payload.domains.routeCollision+" routeTopology="+payload.domains.routeTopology+" harborComposition="+payload.domains.harborComposition+" harborWaterVisual="+payload.domains.harborWaterVisual+" foundationLock="+payload.domains.newportTownFoundationLock+" fatalErrors="+((payload.fatalJsErrorsSinceBoot.length===0&&payload.qaEmitterErrors.length===0)?"none":String(payload.fatalJsErrorsSinceBoot.length+payload.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(payload.failedDomains):"");
   try{
     await navigator.clipboard.writeText(text);
     console.info("[Wayfarer QA Report] copied_to_clipboard=true size="+text.length);
@@ -8121,7 +8209,7 @@ function emitQuestLoopQA(){
 function emitPhase351NAcceptance(){
   const report=buildWayfarerQaReport();
   const failedDomainKeys=Object.keys(report.failedDomains||{});
-  const line="[Wayfarer QA Report] status="+report.status+" phase="+report.phase+" savedSpawn="+report.domains.savedSpawnValidation+" freshSpawn="+report.domains.freshSpawnResolver+" traversal="+report.domains.traversalQA.status+" playerState="+report.domains.playerStateQA+" uiState="+report.domains.uiStateQA+" bootMode="+report.domains.bootModeQA+" renderAudit="+report.domains.buildingRenderAudit+" atlasProof="+report.domains.atlasProof+" sourceTruth="+report.domains.sourceTruth+" routeCollision="+report.domains.routeCollision+" routeTopology="+report.domains.routeTopology+" harborComposition="+report.domains.harborComposition+" foundationLock="+report.domains.newportTownFoundationLock+" fatalErrors="+((report.fatalJsErrorsSinceBoot.length===0&&report.qaEmitterErrors.length===0)?"none":String(report.fatalJsErrorsSinceBoot.length+report.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(report.failedDomains):"");
+  const line="[Wayfarer QA Report] status="+report.status+" phase="+report.phase+" savedSpawn="+report.domains.savedSpawnValidation+" freshSpawn="+report.domains.freshSpawnResolver+" traversal="+report.domains.traversalQA.status+" playerState="+report.domains.playerStateQA+" uiState="+report.domains.uiStateQA+" bootMode="+report.domains.bootModeQA+" renderAudit="+report.domains.buildingRenderAudit+" atlasProof="+report.domains.atlasProof+" sourceTruth="+report.domains.sourceTruth+" routeCollision="+report.domains.routeCollision+" routeTopology="+report.domains.routeTopology+" harborComposition="+report.domains.harborComposition+" harborWaterVisual="+report.domains.harborWaterVisual+" foundationLock="+report.domains.newportTownFoundationLock+" fatalErrors="+((report.fatalJsErrorsSinceBoot.length===0&&report.qaEmitterErrors.length===0)?"none":String(report.fatalJsErrorsSinceBoot.length+report.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(report.failedDomains):"");
   if(line===wayfarerQaReportSignature) return;
   wayfarerQaReportSignature=line;
   wayfarerQaReportState={ status:report.status, generatedAt:Date.now(), report, text:line };
@@ -8171,6 +8259,7 @@ function runRuntimeQaPass(reason="scheduled"){
     run("active_player_solid_overlap_probe", ()=>{ activePlayerSolidOverlapProbeResult=emitActivePlayerSolidOverlapProbe(); return activePlayerSolidOverlapProbeResult; });
     run("wharf_readability_qa", ()=>emitWharfReadabilityQA());
     run("wharf_authority_audit", ()=>emitWharfAuthorityAudit());
+    run("newport_harbor_water_visual_qa", ()=>emitNewportHarborWaterVisualQA());
     run("player_stuck_readability_qa", ()=>emitPlayerStuckReadabilityQA());
     run("newport_town_foundation_lock_qa", ()=>emitNewportTownFoundationLockQA());
     run("quest_loop_qa", ()=>emitQuestLoopQA());
@@ -12540,6 +12629,45 @@ function drawNewportFoundationTileTo(targetCtx, tileKey, tileSet, style, screenX
     targetCtx.fillRect(p.x,p.y+29,TILE,3);
   }
 }
+function isNewportHarborWaterVisualBandTile(x,y){
+  const band=NEWPORT_HARBOR_WATER_VISUAL_QA_BAND;
+  return x>=band.x && x<band.x+band.w && y>=band.y && y<band.y+band.h;
+}
+function drawNewportHarborWaterPolishTo(targetCtx,x,y){
+  if(!isNewportHarborWaterVisualBandTile(x,y)) return;
+  const p={ x:x*TILE, y:y*TILE };
+  const tone=0.16 + rng(x,y,1003)*0.05;
+  targetCtx.fillStyle="rgba(62,150,204," + tone.toFixed(3) + ")";
+  targetCtx.fillRect(p.x,p.y,TILE,TILE);
+  targetCtx.fillStyle="rgba(207,240,255,0.26)";
+  if(rng(x,y,1004)>0.42) targetCtx.fillRect(p.x+5,p.y+9,TILE-11,1);
+  if(rng(x,y,1005)>0.68) targetCtx.fillRect(p.x+9,p.y+22,11,1);
+}
+function drawNewportHarborSupportTo(targetCtx,tileKey){
+  const [x,y]=tileKey.split(",").map(Number);
+  const p={ x:x*TILE, y:y*TILE };
+  targetCtx.fillStyle="rgba(38,26,18,0.28)";
+  targetCtx.fillRect(p.x+7,p.y+5,4,20);
+  targetCtx.fillRect(p.x+22,p.y+7,4,18);
+  targetCtx.fillStyle="rgba(84,58,34,0.32)";
+  targetCtx.fillRect(p.x+6,p.y+5,5,2);
+  targetCtx.fillRect(p.x+21,p.y+7,5,2);
+  if(y===20){
+    targetCtx.fillStyle="rgba(128,90,54,0.22)";
+    targetCtx.fillRect(p.x+3,p.y+2,TILE-6,3);
+  }
+}
+function drawNewportSeawallCapTo(targetCtx,tileKey){
+  const [x,y]=tileKey.split(",").map(Number);
+  const p={ x:x*TILE, y:y*TILE };
+  targetCtx.fillStyle="rgba(118,104,82,0.44)";
+  targetCtx.fillRect(p.x,p.y+20,TILE,5);
+  targetCtx.fillStyle="rgba(238,224,182,0.20)";
+  targetCtx.fillRect(p.x+3,p.y+21,TILE-6,1);
+  targetCtx.fillStyle="rgba(88,62,38,0.26)";
+  targetCtx.fillRect(p.x+5,p.y+25,4,5);
+  targetCtx.fillRect(p.x+23,p.y+24,4,6);
+}
 function drawNewportRoadPolishTo(targetCtx, x, y, routeSet){
   const p={ x:x*TILE, y:y*TILE };
   const tileKey=keyOf(x,y);
@@ -12868,9 +12996,11 @@ function drawNewportFoundationTile(tileKey, tileSet, style){
 }
 function drawNewportFoundationSurfaces(){
   if(!NEWPORT_CANONICAL_FOUNDATION_MODE) return;
-  const { stoneTiles, surfaceWharfTiles:wharfTiles }=getNewportWharfTileCache();
+  const { stoneTiles, deckTiles, supportTiles, seawallTiles }=getNewportWharfTileCache();
   stoneTiles.forEach((tileKey)=>drawNewportFoundationTile(tileKey, stoneTiles, "stone"));
-  wharfTiles.forEach((tileKey)=>drawNewportFoundationTile(tileKey, wharfTiles, "wharf"));
+  supportTiles.forEach((tileKey)=>{ if(!deckTiles.has(tileKey)) drawNewportHarborSupportTo(ctx,tileKey); });
+  seawallTiles.forEach((tileKey)=>drawNewportSeawallCapTo(ctx,tileKey));
+  deckTiles.forEach((tileKey)=>{ drawNewportFoundationTile(tileKey, deckTiles, "wharf"); drawNewportWharfPolishTo(ctx,tileKey); });
 }
 function drawMirrorPondInspectionMarker(now){
   const screenPos=tileToScreen(Math.floor(pond.cx), Math.floor(pond.cy)-1);
@@ -12981,7 +13111,9 @@ function getNewportStaticMapCacheKey(){
     world.canonicalDecorativeRoadTiles?.size||0,
     world.pondWater.size,
     world.pondShore.size,
-    getNewportWharfTileCache().surfaceWharfTiles.size
+    getNewportWharfTileCache().deckTiles.size,
+    getNewportWharfTileCache().supportTiles.size,
+    getNewportWharfTileCache().seawallTiles.size
   ].join("|");
 }
 function buildNewportStaticMapCache(){
@@ -13042,6 +13174,7 @@ function buildNewportStaticMapCache(){
     const k=keyOf(x,y); if(!world.pondWater.has(k)) continue;
     const px=x*TILE, py=y*TILE; const edge=world.pondNearEdge.has(k);
     const img=edge?assets.water.shallow:assets.water.deep; if(img?.complete&&img.naturalWidth>0) p.drawImage(img,px,py,32,32);
+    drawNewportHarborWaterPolishTo(p,x,y);
     const rip=(Math.sin(x*0.8+y*.6)+1)*.5;
     const mirrorAura=(x>=25&&x<=30&&y>=12&&y<=17) ? 0.065 : 0.016;
     p.fillStyle="rgba(188,228,255," + (.014+rip*.025+mirrorAura).toFixed(3) + ")"; p.fillRect(px+4,py+7,TILE-12,1);
@@ -13078,9 +13211,11 @@ function buildNewportStaticMapCache(){
     }
   }
   if(NEWPORT_CANONICAL_FOUNDATION_MODE){
-    const { stoneTiles, surfaceWharfTiles }=getNewportWharfTileCache();
+    const { stoneTiles, deckTiles, supportTiles, seawallTiles }=getNewportWharfTileCache();
     stoneTiles.forEach((tileKey)=>drawNewportFoundationTileTo(p,tileKey,stoneTiles,"stone"));
-    surfaceWharfTiles.forEach((tileKey)=>{ drawNewportFoundationTileTo(p,tileKey,surfaceWharfTiles,"wharf"); drawNewportWharfPolishTo(p,tileKey); });
+    supportTiles.forEach((tileKey)=>{ if(!deckTiles.has(tileKey)) drawNewportHarborSupportTo(p,tileKey); });
+    seawallTiles.forEach((tileKey)=>drawNewportSeawallCapTo(p,tileKey));
+    deckTiles.forEach((tileKey)=>{ drawNewportFoundationTileTo(p,tileKey,deckTiles,"wharf"); drawNewportWharfPolishTo(p,tileKey); });
     drawNewportStaticArtPolishTo(p);
   }
   newportStaticMapCache.canvas=c;
