@@ -1077,14 +1077,14 @@ let lastLoggedZoneEntryId = currentZoneId;
 const VIEW_TILES_X_GAMEPLAY = 22;
 const VIEW_TILES_Y_GAMEPLAY = 14;
 function detectActualCameraViewportMode(){
-  if(typeof window==="undefined"||!window?.location) return false;
+  if(typeof window==="undefined"||!window?.location) return true;
   const params=new URLSearchParams(window.location.search);
   const cacheBust=(params.get("cacheBust")||"").toLowerCase();
-  if(params.get("validationViewport")==="1") return true;
-  if(params.get("actualCameraViewport")==="1") return true;
-  if(/^35-13[l-z]-/.test(cacheBust)) return true;
-  if(/(^|[-_])(actual-?camera|camera-?viewport|viewport-?containment|validation-?viewport|actual-?viewport)/.test(cacheBust)) return true;
-  return false;
+  if(params.get("actualCameraViewport")==="0") return false;
+  if(params.get("validationViewport")==="0") return false;
+  if(params.get("legacyGameplayViewport")==="1") return false;
+  if(/(^|[-_])(legacy-?gameplay-?viewport|tight-?viewport|gameplay-?camera-?only)/.test(cacheBust)) return false;
+  return true;
 }
 const ACTUAL_CAMERA_VIEWPORT_MODE = detectActualCameraViewportMode();
 let VIEW_TILES_X = ACTUAL_CAMERA_VIEWPORT_MODE ? WORLD_W : VIEW_TILES_X_GAMEPLAY;
@@ -1693,11 +1693,11 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13L";
+const WAYFARER_PHASE = "35.13M";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
 const NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13L — Actual Camera Viewport Containment Lock";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13l-actual-camera-viewport-containment";
+const WAYFARER_BUILD_LABEL = "Phase 35.13M — Actual Camera Viewport Fix";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13m-actual-camera-viewport-fix";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3678,7 +3678,7 @@ function logBuildingSourceOfTruthAudit({ verbose=ATLAS_DEBUG_MODE }={}){
   const productionRenderStatus=sourceTruthProductionRenderDeferred ? "PENDING_35_13C" : "ACTIVE";
   const expectedRows=sourceTruthProductionRenderDeferred ? 0 : HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13L' && ATLAS_SELECTOR_VERSION==='selector-v35-13l-actual-camera-viewport-containment';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13M' && ATLAS_SELECTOR_VERSION==='selector-v35-13m-actual-camera-viewport-fix';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=sourceTruthProductionRenderDeferred || (buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6594,7 +6594,7 @@ emitNewportSpriteRoleLotAudit();
 emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
 const NEWPORT_TOWN_BLUEPRINT_V2=Object.freeze({
-  phase:"35.13L_actual_camera_viewport_containment",
+  phase:"35.13M_actual_camera_viewport_fix",
   waterfrontSpineTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   commercialStreetTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   wharfApronTiles:Array.from({length:25},(_,i)=>({x:8+i,y:17})),
@@ -8129,7 +8129,7 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13L" && ATLAS_SELECTOR_VERSION==="selector-v35-13l-actual-camera-viewport-containment";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13M" && ATLAS_SELECTOR_VERSION==="selector-v35-13m-actual-camera-viewport-fix";
   const harborWaterVisualQa=ensureQaResult(emitNewportHarborWaterVisualQA(),"newport_harbor_water_visual_not_initialized");
   const harborWaterVisualPass=harborWaterVisualQa.status==="PASS";
   refreshBuildingPlacementContractQAIfSettled();
@@ -8140,7 +8140,7 @@ function buildWayfarerQaReport(){
   const validationFrameQa=ensureQaResult(emitNewportValidationFrameQA(),"newport_validation_frame_not_initialized");
   const validationFramePass=validationFrameQa.status==="PASS";
   const actualCameraViewportQa=ensureQaResult(emitActualCameraViewportQA(),"actual_camera_viewport_not_initialized");
-  const actualCameraViewportPass=ACTUAL_CAMERA_VIEWPORT_MODE ? actualCameraViewportQa.status==="PASS" : true;
+  const actualCameraViewportPass=actualCameraViewportQa.status==="PASS";
   const masterplanQaResult=ensureQaResult(emitNewportMasterplanQA(latestVisualCompositionQa.status, latestVisualCompositionQa.failCount||0),"newport_masterplan_not_initialized");
   const masterplanDeferred=foundationMode && masterplanQaResult.status==="PENDING_35_13C";
   const masterplanPass=masterplanQaResult.status==="PASS" || masterplanDeferred;
