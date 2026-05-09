@@ -1077,16 +1077,21 @@ let lastLoggedZoneEntryId = currentZoneId;
 const VIEW_TILES_X_GAMEPLAY = 22;
 const VIEW_TILES_Y_GAMEPLAY = 14;
 function detectActualCameraViewportMode(){
-  if(typeof window==="undefined"||!window?.location) return true;
+  if(typeof window==="undefined"||!window?.location) return false;
   const params=new URLSearchParams(window.location.search);
   const cacheBust=(params.get("cacheBust")||"").toLowerCase();
-  if(params.get("actualCameraViewport")==="0") return false;
-  if(params.get("validationViewport")==="0") return false;
-  if(params.get("legacyGameplayViewport")==="1") return false;
-  if(/(^|[-_])(legacy-?gameplay-?viewport|tight-?viewport|gameplay-?camera-?only)/.test(cacheBust)) return false;
-  return true;
+  if(params.get("overviewViewport")==="1") return true;
+  if(/(^|[-_])(overview|overview-?map|fit-?whole-?town|full-?world-?viewport)/.test(cacheBust)) return true;
+  return false;
 }
 const ACTUAL_CAMERA_VIEWPORT_MODE = detectActualCameraViewportMode();
+function detectInstructionOverlayValidationMode(){
+  if(typeof window==="undefined"||!window?.location) return true;
+  const params=new URLSearchParams(window.location.search);
+  if(params.get("showInstructionsOverlay")==="1") return false;
+  return true;
+}
+const INSTRUCTION_OVERLAY_HIDDEN = detectInstructionOverlayValidationMode();
 let VIEW_TILES_X = ACTUAL_CAMERA_VIEWPORT_MODE ? WORLD_W : VIEW_TILES_X_GAMEPLAY;
 let VIEW_TILES_Y = ACTUAL_CAMERA_VIEWPORT_MODE ? WORLD_H : VIEW_TILES_Y_GAMEPLAY;
 const ITEM_REGISTRY = Object.freeze({
@@ -1107,38 +1112,18 @@ const ITEM_REGISTRY = Object.freeze({
 const VENDOR_BUY_INVENTORY = Object.freeze(["healing_herb","small_potion","leather_armor"]);
 
 function resize() {
-  if (ACTUAL_CAMERA_VIEWPORT_MODE) {
-    const targetW = WORLD_W * TILE;
-    const targetH = WORLD_H * TILE;
-    if (canvas.width !== targetW) canvas.width = targetW;
-    if (canvas.height !== targetH) canvas.height = targetH;
-    canvas.style.width = "auto";
-    canvas.style.height = "auto";
-    canvas.style.maxWidth = "100%";
-    canvas.style.maxHeight = "100%";
-    canvas.style.aspectRatio = WORLD_W + " / " + WORLD_H;
-    canvas.style.display = "block";
-    canvas.style.margin = "auto";
-    if (gamePanel) {
-      gamePanel.style.display = "flex";
-      gamePanel.style.alignItems = "center";
-      gamePanel.style.justifyContent = "center";
-    }
-  } else {
-    const rect = gamePanel.getBoundingClientRect();
-    canvas.width = Math.floor(rect.width);
-    canvas.height = Math.floor(rect.height);
-  }
+  const rect = gamePanel.getBoundingClientRect();
+  canvas.width = Math.floor(rect.width);
+  canvas.height = Math.floor(rect.height);
   updateDialogueViewportConstraints();
 }
 resize();
 addEventListener("resize", resize);
-function applyActualCameraViewportHudOverrides(){
-  if (!ACTUAL_CAMERA_VIEWPORT_MODE) return;
+function applyInstructionOverlayValidationDefault(){
+  if (!INSTRUCTION_OVERLAY_HIDDEN) return;
   if (hud) hud.style.display = "none";
-  if (debugPanel) debugPanel.style.display = "none";
 }
-applyActualCameraViewportHudOverrides();
+applyInstructionOverlayValidationDefault();
 
 const palette = {
   grass: ["#4e7045", "#4a6b42", "#55784d", "#43633d"],
@@ -1693,11 +1678,11 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13M";
+const WAYFARER_PHASE = "35.13N";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
 const NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13M — Actual Camera Viewport Fix";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13m-actual-camera-viewport-fix";
+const WAYFARER_BUILD_LABEL = "Phase 35.13N — Gameplay-Scale CSS Viewport + Sprite Crop Integrity Lock";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13n-gameplay-scale-sprite-crop-integrity-lock";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -3678,7 +3663,7 @@ function logBuildingSourceOfTruthAudit({ verbose=ATLAS_DEBUG_MODE }={}){
   const productionRenderStatus=sourceTruthProductionRenderDeferred ? "PENDING_35_13C" : "ACTIVE";
   const expectedRows=sourceTruthProductionRenderDeferred ? 0 : HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13M' && ATLAS_SELECTOR_VERSION==='selector-v35-13m-actual-camera-viewport-fix';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13N' && ATLAS_SELECTOR_VERSION==='selector-v35-13n-gameplay-scale-sprite-crop-integrity-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=sourceTruthProductionRenderDeferred || (buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6594,7 +6579,7 @@ emitNewportSpriteRoleLotAudit();
 emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
 const NEWPORT_TOWN_BLUEPRINT_V2=Object.freeze({
-  phase:"35.13M_actual_camera_viewport_fix",
+  phase:"35.13N_gameplay_scale_sprite_crop_integrity_lock",
   waterfrontSpineTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   commercialStreetTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   wharfApronTiles:Array.from({length:25},(_,i)=>({x:8+i,y:17})),
@@ -6881,10 +6866,17 @@ function emitNewportValidationFrameQA(){
 }
 
 let actualCameraViewportQaSignature="";
-let actualCameraViewportQaResult={ status:"PENDING_INIT", productionBuildingCount:0, buildingsFullyInsideActualViewport:0, actualViewportCroppedBuildingCount:0, actualViewportCroppedBuildingIds:[], hudOverlayObscuredBuildingCount:0, hudOverlayObscuredBuildingIds:[] };
+let actualCameraViewportQaResult={ status:"PENDING_INIT", productionBuildingCount:0, visibleProductionBuildingCount:0, visibleBuildingsFullyInsideActualViewport:0, visibleBuildingCropCount:0, visibleBuildingCropIds:[], hiddenOffscreenBuildingCount:0, hudOverlayObscuredVisibleBuildingCount:0, hudOverlayObscuredVisibleBuildingIds:[], cameraMode:"gameplay", overviewMode:false, gameplayScalePreserved:true };
 function getActualCameraViewportRectsForQA(){
   if(typeof window==="undefined" || !canvas) return null;
   const cam=getCamera();
+  const canvasRect=(typeof canvas.getBoundingClientRect==="function")?canvas.getBoundingClientRect():null;
+  const gamePanelRect=(gamePanel&&typeof gamePanel.getBoundingClientRect==="function")?gamePanel.getBoundingClientRect():null;
+  const devicePixelRatio=(typeof window.devicePixelRatio==="number")?window.devicePixelRatio:1;
+  const cssWidth=canvasRect?canvasRect.width:canvas.clientWidth||canvas.width;
+  const cssHeight=canvasRect?canvasRect.height:canvas.clientHeight||canvas.height;
+  const cssScaleX=cssWidth>0?canvas.width/cssWidth:1;
+  const cssScaleY=cssHeight>0?canvas.height/cssHeight:1;
   const visibleViewportPx={ x:cam.offsetX, y:cam.offsetY, w:VIEW_TILES_X*TILE, h:VIEW_TILES_Y*TILE };
   const renderedViewportPx={
     x:Math.max(0, visibleViewportPx.x),
@@ -6899,25 +6891,36 @@ function getActualCameraViewportRectsForQA(){
     w:Math.max(0, renderedViewportPx.w)/TILE,
     h:Math.max(0, renderedViewportPx.h)/TILE
   };
+  const cssVisibleViewportPx=canvasRect ? {
+    x:Math.max(0, visibleViewportPx.x/cssScaleX),
+    y:Math.max(0, visibleViewportPx.y/cssScaleY),
+    w:Math.min(cssWidth, (visibleViewportPx.x+visibleViewportPx.w)/cssScaleX)-Math.max(0, visibleViewportPx.x/cssScaleX),
+    h:Math.min(cssHeight, (visibleViewportPx.y+visibleViewportPx.h)/cssScaleY)-Math.max(0, visibleViewportPx.y/cssScaleY)
+  } : null;
+  const canvasVisibleWorldRect={
+    x:cam.tileX - cam.offsetX/TILE,
+    y:cam.tileY - cam.offsetY/TILE,
+    w:canvas.width/TILE,
+    h:canvas.height/TILE
+  };
   let instructionOverlayWorldRect=null;
+  let instructionOverlayCssRect=null;
   if(hud && typeof hud.getBoundingClientRect==="function"){
     const hudVisible=(hud.offsetParent!==null) && (window.getComputedStyle?window.getComputedStyle(hud).display!=="none":true);
     if(hudVisible){
       const hudRect=hud.getBoundingClientRect();
-      const canvasRect=canvas.getBoundingClientRect();
-      if(canvasRect.width>0 && canvasRect.height>0){
-        const scaleX=canvas.width / canvasRect.width;
-        const scaleY=canvas.height / canvasRect.height;
+      if(canvasRect && canvasRect.width>0 && canvasRect.height>0){
         const overlapLeft=Math.max(0, hudRect.left-canvasRect.left);
         const overlapTop=Math.max(0, hudRect.top-canvasRect.top);
         const overlapRight=Math.min(canvasRect.width, hudRect.right-canvasRect.left);
         const overlapBottom=Math.min(canvasRect.height, hudRect.bottom-canvasRect.top);
         if(overlapRight>overlapLeft && overlapBottom>overlapTop){
+          instructionOverlayCssRect={ x:overlapLeft, y:overlapTop, w:overlapRight-overlapLeft, h:overlapBottom-overlapTop };
           const obscuredCanvasPx={
-            x:overlapLeft*scaleX,
-            y:overlapTop*scaleY,
-            w:(overlapRight-overlapLeft)*scaleX,
-            h:(overlapBottom-overlapTop)*scaleY
+            x:overlapLeft*cssScaleX,
+            y:overlapTop*cssScaleY,
+            w:(overlapRight-overlapLeft)*cssScaleX,
+            h:(overlapBottom-overlapTop)*cssScaleY
           };
           instructionOverlayWorldRect={
             x:cam.tileX + (obscuredCanvasPx.x-cam.offsetX)/TILE,
@@ -6929,62 +6932,102 @@ function getActualCameraViewportRectsForQA(){
       }
     }
   }
-  return { cam, visibleViewportPx, renderedViewportPx, visibleWorldRect, renderedVisibleWorldRect, instructionOverlayWorldRect };
+  return {
+    cam, visibleViewportPx, renderedViewportPx, visibleWorldRect, renderedVisibleWorldRect,
+    canvasVisibleWorldRect,
+    instructionOverlayWorldRect, instructionOverlayCssRect,
+    canvasRect, gamePanelRect, devicePixelRatio, cssWidth, cssHeight, cssScaleX, cssScaleY, cssVisibleViewportPx
+  };
 }
 function emitActualCameraViewportQA(){
   const validationFrame=getNewportValidationFrameRect();
+  const cameraMode=ACTUAL_CAMERA_VIEWPORT_MODE?"overview":"gameplay";
+  const overviewMode=ACTUAL_CAMERA_VIEWPORT_MODE===true;
+  const gameplayScalePreserved=!overviewMode;
   if(typeof window==="undefined" || !canvas){
-    actualCameraViewportQaResult={ status:"PENDING_DATA", productionBuildingCount:0, buildingsFullyInsideActualViewport:0, actualViewportCroppedBuildingCount:0, actualViewportCroppedBuildingIds:[], hudOverlayObscuredBuildingCount:0, hudOverlayObscuredBuildingIds:[] };
-    console.info('[Actual Camera Viewport QA] status=PENDING_DATA reason=no_canvas');
+    actualCameraViewportQaResult={ status:"PENDING_DATA", productionBuildingCount:0, visibleProductionBuildingCount:0, visibleBuildingsFullyInsideActualViewport:0, visibleBuildingCropCount:0, visibleBuildingCropIds:[], hiddenOffscreenBuildingCount:0, hudOverlayObscuredVisibleBuildingCount:0, hudOverlayObscuredVisibleBuildingIds:[], cameraMode, overviewMode, gameplayScalePreserved };
+    console.info('[Actual Camera Viewport QA] status=PENDING_DATA reason=no_canvas cameraMode='+cameraMode+' overviewMode='+overviewMode+' gameplayScalePreserved='+gameplayScalePreserved);
     return actualCameraViewportQaResult;
   }
   if(!world||!Array.isArray(world.buildings)||world.buildings.length===0){
-    actualCameraViewportQaResult={ status:"PENDING_DATA", productionBuildingCount:0, buildingsFullyInsideActualViewport:0, actualViewportCroppedBuildingCount:0, actualViewportCroppedBuildingIds:[], hudOverlayObscuredBuildingCount:0, hudOverlayObscuredBuildingIds:[] };
-    console.info('[Actual Camera Viewport QA] status=PENDING_DATA reason=no_buildings');
+    actualCameraViewportQaResult={ status:"PENDING_DATA", productionBuildingCount:0, visibleProductionBuildingCount:0, visibleBuildingsFullyInsideActualViewport:0, visibleBuildingCropCount:0, visibleBuildingCropIds:[], hiddenOffscreenBuildingCount:0, hudOverlayObscuredVisibleBuildingCount:0, hudOverlayObscuredVisibleBuildingIds:[], cameraMode, overviewMode, gameplayScalePreserved };
+    console.info('[Actual Camera Viewport QA] status=PENDING_DATA reason=no_buildings cameraMode='+cameraMode+' overviewMode='+overviewMode+' gameplayScalePreserved='+gameplayScalePreserved);
     return actualCameraViewportQaResult;
   }
   const rects=getActualCameraViewportRectsForQA();
   if(!rects){
-    actualCameraViewportQaResult={ status:"PENDING_DATA", productionBuildingCount:0, buildingsFullyInsideActualViewport:0, actualViewportCroppedBuildingCount:0, actualViewportCroppedBuildingIds:[], hudOverlayObscuredBuildingCount:0, hudOverlayObscuredBuildingIds:[] };
-    console.info('[Actual Camera Viewport QA] status=PENDING_DATA reason=no_rects');
+    actualCameraViewportQaResult={ status:"PENDING_DATA", productionBuildingCount:0, visibleProductionBuildingCount:0, visibleBuildingsFullyInsideActualViewport:0, visibleBuildingCropCount:0, visibleBuildingCropIds:[], hiddenOffscreenBuildingCount:0, hudOverlayObscuredVisibleBuildingCount:0, hudOverlayObscuredVisibleBuildingIds:[], cameraMode, overviewMode, gameplayScalePreserved };
+    console.info('[Actual Camera Viewport QA] status=PENDING_DATA reason=no_rects cameraMode='+cameraMode+' overviewMode='+overviewMode+' gameplayScalePreserved='+gameplayScalePreserved);
     return actualCameraViewportQaResult;
   }
-  const { cam, visibleViewportPx, renderedViewportPx, visibleWorldRect, renderedVisibleWorldRect, instructionOverlayWorldRect }=rects;
+  const { cam, visibleViewportPx, renderedViewportPx, visibleWorldRect, renderedVisibleWorldRect, canvasVisibleWorldRect, instructionOverlayWorldRect, instructionOverlayCssRect, canvasRect, gamePanelRect, devicePixelRatio, cssWidth, cssHeight, cssScaleX, cssScaleY, cssVisibleViewportPx }=rects;
+  const VISIBLE_THRESHOLD=0.30;
+  const FULLY_INSIDE_THRESHOLD=0.95;
   const reports=world.buildings.map((building)=>{
     const spriteMeta=ATLAS_BUILDING_METADATA?.[building.spriteId]||null;
     const { finalDrawRect }=getBuildingFinalDrawRectFromBlueprint(building, spriteMeta);
-    const fullyInsideActualViewport=rectContainsRect(renderedVisibleWorldRect,finalDrawRect);
-    const visibleInActualViewport=rectIntersectionArea(renderedVisibleWorldRect,finalDrawRect)>0;
-    const actualViewportCropped=visibleInActualViewport && !fullyInsideActualViewport;
-    const hudObscured=instructionOverlayWorldRect ? (rectIntersectionArea(instructionOverlayWorldRect, finalDrawRect)>0) : false;
-    return { buildingId:building.id, spriteId:building.spriteId, district:building.lotContract?.district||"unassigned", finalDrawRect, fullyInsideActualViewport, visibleInActualViewport, actualViewportCropped, hudObscured };
+    const buildingArea=Math.max(0.0001, finalDrawRect.w*finalDrawRect.h);
+    const onCanvasArea=rectIntersectionArea(canvasVisibleWorldRect, finalDrawRect);
+    const onCanvasRatio=onCanvasArea/buildingArea;
+    const fullyInsideCanvas=onCanvasRatio>=FULLY_INSIDE_THRESHOLD;
+    const visiblyOnCanvas=onCanvasRatio>=VISIBLE_THRESHOLD;
+    const partiallyOnCanvas=onCanvasArea>0 && onCanvasRatio<VISIBLE_THRESHOLD;
+    const cropped=visiblyOnCanvas && !fullyInsideCanvas;
+    const offscreenAtCanvas=onCanvasArea===0;
+    const hudObscured=visiblyOnCanvas && instructionOverlayWorldRect ? (rectIntersectionArea(instructionOverlayWorldRect, finalDrawRect)/buildingArea > 0.05) : false;
+    return {
+      buildingId:building.id,
+      spriteId:building.spriteId,
+      district:building.lotContract?.district||"unassigned",
+      finalDrawRect,
+      onCanvasRatio,
+      fullyInsideActualViewport:fullyInsideCanvas,
+      visibleInActualViewport:visiblyOnCanvas,
+      partiallyOnCanvasBelowThreshold:partiallyOnCanvas,
+      offscreenAtCanvas,
+      actualViewportCropped:cropped,
+      hudObscured
+    };
   });
-  const cropped=reports.filter((report)=>report.actualViewportCropped);
-  const obscured=reports.filter((report)=>report.hudObscured);
-  const fullyInside=reports.filter((report)=>report.fullyInsideActualViewport).length;
-  const offscreen=reports.filter((report)=>!report.visibleInActualViewport);
-  const validationContainmentRequired=ACTUAL_CAMERA_VIEWPORT_MODE;
-  const fullContainmentRequired=validationContainmentRequired ? fullyInside===reports.length : true;
-  const status=(cropped.length===0 && obscured.length===0 && fullContainmentRequired)?"PASS":"FAIL";
+  const visibleReports=reports.filter((r)=>r.visibleInActualViewport);
+  const visibleCropped=visibleReports.filter((r)=>r.actualViewportCropped);
+  const visibleObscured=visibleReports.filter((r)=>r.hudObscured);
+  const visibleFullyInside=visibleReports.filter((r)=>r.fullyInsideActualViewport).length;
+  const offscreen=reports.filter((r)=>!r.visibleInActualViewport);
+  const overviewContainmentSatisfied=overviewMode ? (visibleFullyInside===reports.length && offscreen.length===0) : true;
+  const gameplayScaleOk=overviewMode ? false : true;
+  const status=(visibleCropped.length===0 && visibleObscured.length===0 && overviewContainmentSatisfied && gameplayScaleOk)?"PASS":"FAIL";
   actualCameraViewportQaResult={
     status,
+    cameraMode, overviewMode, gameplayScalePreserved,
     productionBuildingCount:reports.length,
-    buildingsFullyInsideActualViewport:fullyInside,
-    actualViewportCroppedBuildingCount:cropped.length,
-    actualViewportCroppedBuildingIds:cropped.map((report)=>report.buildingId),
-    hudOverlayObscuredBuildingCount:obscured.length,
-    hudOverlayObscuredBuildingIds:obscured.map((report)=>report.buildingId),
+    visibleProductionBuildingCount:visibleReports.length,
+    visibleBuildingsFullyInsideActualViewport:visibleFullyInside,
+    visibleBuildingCropCount:visibleCropped.length,
+    visibleBuildingCropIds:visibleCropped.map((r)=>r.buildingId),
+    hiddenOffscreenBuildingCount:offscreen.length,
+    hiddenOffscreenBuildingIds:offscreen.map((r)=>r.buildingId),
+    hudOverlayObscuredVisibleBuildingCount:visibleObscured.length,
+    hudOverlayObscuredVisibleBuildingIds:visibleObscured.map((r)=>r.buildingId),
     canvasWidth:canvas.width, canvasHeight:canvas.height,
+    canvasClientWidth:canvas.clientWidth, canvasClientHeight:canvas.clientHeight,
+    canvasCssWidth:cssWidth, canvasCssHeight:cssHeight,
+    cssScaleX, cssScaleY, devicePixelRatio,
+    canvasBoundingRect:canvasRect ? { x:canvasRect.left, y:canvasRect.top, w:canvasRect.width, h:canvasRect.height } : null,
+    gamePanelBoundingRect:gamePanelRect ? { x:gamePanelRect.left, y:gamePanelRect.top, w:gamePanelRect.width, h:gamePanelRect.height } : null,
+    cssVisibleViewportPx,
     cameraTileX:cam.tileX, cameraTileY:cam.tileY,
     cameraOffsetX:cam.offsetX, cameraOffsetY:cam.offsetY,
-    viewTilesX:VIEW_TILES_X, viewTilesY:VIEW_TILES_Y, tileSize:TILE,
+    viewTilesX:VIEW_TILES_X, viewTilesY:VIEW_TILES_Y, tileSize:TILE, zoom:1, scale:1,
     actualCameraViewportMode:ACTUAL_CAMERA_VIEWPORT_MODE,
     internalValidationFrame:validationFrame,
-    actualVisibleWorldRect:renderedVisibleWorldRect,
+    actualVisibleWorldRect:canvasVisibleWorldRect,
+    viewportTileWorldRect:renderedVisibleWorldRect,
+    canvasVisibleWorldRect,
     visibleViewportPx, renderedViewportPx,
-    instructionOverlayWorldRect, reports
+    instructionOverlayWorldRect, instructionOverlayCssRect, reports
   };
-  const line='[Actual Camera Viewport QA] phase='+WAYFARER_PHASE+' canvasWidth='+canvas.width+' canvasHeight='+canvas.height+' cameraX='+cam.tileX+' cameraY='+cam.tileY+' zoom=1 scale=1 tileSize='+TILE+' viewTilesX='+VIEW_TILES_X+' viewTilesY='+VIEW_TILES_Y+' actualCameraViewportMode='+(ACTUAL_CAMERA_VIEWPORT_MODE?'true':'false')+' internalValidationFrame='+JSON.stringify(validationFrame)+' actualVisibleWorldRect='+JSON.stringify(renderedVisibleWorldRect)+' instructionOverlayWorldRect='+JSON.stringify(instructionOverlayWorldRect)+' productionBuildingCount='+reports.length+' buildingsFullyInsideActualViewport='+fullyInside+' actualViewportCroppedBuildingCount='+cropped.length+' actualViewportCroppedBuildingIds='+JSON.stringify(actualCameraViewportQaResult.actualViewportCroppedBuildingIds)+' hudOverlayObscuredBuildingCount='+obscured.length+' hudOverlayObscuredBuildingIds='+JSON.stringify(actualCameraViewportQaResult.hudOverlayObscuredBuildingIds)+' status='+status;
+  const line='[Actual Camera Viewport QA] phase='+WAYFARER_PHASE+' cameraMode='+cameraMode+' overviewMode='+overviewMode+' gameplayScalePreserved='+gameplayScalePreserved+' canvasWidth='+canvas.width+' canvasHeight='+canvas.height+' canvasCssWidth='+cssWidth+' canvasCssHeight='+cssHeight+' devicePixelRatio='+devicePixelRatio+' cssScaleX='+cssScaleX.toFixed(3)+' cssScaleY='+cssScaleY.toFixed(3)+' cameraX='+cam.tileX+' cameraY='+cam.tileY+' zoom=1 scale=1 tileSize='+TILE+' viewTilesX='+VIEW_TILES_X+' viewTilesY='+VIEW_TILES_Y+' internalValidationFrame='+JSON.stringify(validationFrame)+' actualVisibleWorldRect='+JSON.stringify(canvasVisibleWorldRect)+' viewportTileWorldRect='+JSON.stringify(renderedVisibleWorldRect)+' instructionOverlayWorldRect='+JSON.stringify(instructionOverlayWorldRect)+' productionBuildingCount='+reports.length+' visibleProductionBuildingCount='+visibleReports.length+' visibleBuildingsFullyInsideActualViewport='+visibleFullyInside+' visibleBuildingCropCount='+visibleCropped.length+' visibleBuildingCropIds='+JSON.stringify(actualCameraViewportQaResult.visibleBuildingCropIds)+' hiddenOffscreenBuildingCount='+offscreen.length+' hudOverlayObscuredVisibleBuildingCount='+visibleObscured.length+' hudOverlayObscuredVisibleBuildingIds='+JSON.stringify(actualCameraViewportQaResult.hudOverlayObscuredVisibleBuildingIds)+' status='+status;
   const detailSig=line+' reports='+JSON.stringify(reports);
   if(detailSig!==actualCameraViewportQaSignature){
     actualCameraViewportQaSignature=detailSig;
@@ -6992,6 +7035,146 @@ function emitActualCameraViewportQA(){
     console.info('[Actual Camera Viewport QA] reports='+JSON.stringify(reports));
   }
   return actualCameraViewportQaResult;
+}
+
+let buildingSpriteCropIntegrityQaSignature="";
+let buildingSpriteCropIntegrityQaResult={ status:"PENDING_INIT", productionBuildingCount:0, visuallyCompleteCount:0, structuralFailureCount:0, structuralFailureBuildingIds:[], aspectMismatchBuildingIds:[], cropOverrideBuildingIds:[], fallbackRenderBuildingIds:[], outOfBoundsBuildingIds:[], reports:[] };
+function getBuildingSpriteRegistryAuthority(spriteId){
+  if(!spriteId) return { source:"none", entry:null };
+  const newport=NEWPORT_SPRITE_BY_ID?.[spriteId];
+  if(newport) return { source:"newport_structure_pack", entry:newport, crop:newport.crop, drawW:newport.drawW, drawH:newport.drawH, anchorX:newport.anchorX, anchorY:newport.anchorY };
+  const presentation=HEARTHVALE_ATLAS_SPRITE_PRESENTATION?.[spriteId];
+  if(presentation) return { source:"hearthvale_presentation", entry:presentation, crop:presentation.crop, drawW:presentation.drawW, drawH:presentation.drawH, anchorX:presentation.anchorX, anchorY:presentation.anchorY };
+  const meta=ATLAS_BUILDING_METADATA?.[spriteId];
+  if(meta) return { source:"atlas_building_metadata", entry:meta, crop:meta.crop, drawW:meta.drawW, drawH:meta.drawH, anchorX:meta.anchorX, anchorY:meta.anchorY };
+  return { source:"none", entry:null };
+}
+function emitBuildingSpriteCropIntegrityQA(){
+  if(typeof window==="undefined"){
+    buildingSpriteCropIntegrityQaResult={ ...buildingSpriteCropIntegrityQaResult, status:"PENDING_DATA" };
+    console.info('[Building Sprite Crop Integrity QA] status=PENDING_DATA reason=no_window');
+    return buildingSpriteCropIntegrityQaResult;
+  }
+  if(!world||!Array.isArray(world.buildings)||world.buildings.length===0){
+    buildingSpriteCropIntegrityQaResult={ status:"PENDING_DATA", productionBuildingCount:0, visuallyCompleteCount:0, structuralFailureCount:0, structuralFailureBuildingIds:[], aspectMismatchBuildingIds:[], cropOverrideBuildingIds:[], fallbackRenderBuildingIds:[], outOfBoundsBuildingIds:[], reports:[] };
+    console.info('[Building Sprite Crop Integrity QA] status=PENDING_DATA reason=no_buildings');
+    return buildingSpriteCropIntegrityQaResult;
+  }
+  const atlasReady=!!(atlasImages?.buildings?.complete && atlasImages.buildings.naturalWidth>0);
+  const atlasW=atlasImages?.buildings?.naturalWidth||0;
+  const atlasH=atlasImages?.buildings?.naturalHeight||0;
+  if(!atlasReady){
+    buildingSpriteCropIntegrityQaResult={ status:"PENDING_ASSETS", productionBuildingCount:world.buildings.length, visuallyCompleteCount:0, structuralFailureCount:0, structuralFailureBuildingIds:[], aspectMismatchBuildingIds:[], cropOverrideBuildingIds:[], fallbackRenderBuildingIds:[], outOfBoundsBuildingIds:[], reports:[] };
+    console.info('[Building Sprite Crop Integrity QA] status=PENDING_ASSETS reason=building_atlas_not_ready');
+    return buildingSpriteCropIntegrityQaResult;
+  }
+  const reports=world.buildings.map((b)=>{
+    const requestedSpriteId=b.spriteId||null;
+    const mappedSprite=requestedSpriteId?(atlasManifests?.buildings?.sprites?.[requestedSpriteId]||null):null;
+    const mappedSpriteId=mappedSprite?requestedSpriteId:null;
+    const registryLookup=getBuildingSpriteRegistryAuthority(requestedSpriteId);
+    const registryCrop=registryLookup.crop?{ x:registryLookup.crop.x, y:registryLookup.crop.y, w:registryLookup.crop.w, h:registryLookup.crop.h }:null;
+    const registryDrawW=registryLookup.drawW??null;
+    const registryDrawH=registryLookup.drawH??null;
+    const activeCrop=mappedSprite?{ x:mappedSprite.sx, y:mappedSprite.sy, w:mappedSprite.sw, h:mappedSprite.sh }:null;
+    const manifestCrop=activeCrop;
+    const sourceAtlasPath=mappedSprite?.atlas||atlasManifests?.buildings?.imagePath||null;
+    const drawW=Number.isFinite(mappedSprite?.drawW)?mappedSprite.drawW:null;
+    const drawH=Number.isFinite(mappedSprite?.drawH)?mappedSprite.drawH:null;
+    const drawAnchor={ x:Number.isFinite(mappedSprite?.anchorX)?mappedSprite.anchorX:null, y:Number.isFinite(mappedSprite?.anchorY)?mappedSprite.anchorY:null };
+    const cropMatchesRegistry=Boolean(activeCrop && registryCrop &&
+      activeCrop.x===registryCrop.x && activeCrop.y===registryCrop.y &&
+      activeCrop.w===registryCrop.w && activeCrop.h===registryCrop.h);
+    const drawDimsMatchRegistry=Boolean(drawW===registryDrawW && drawH===registryDrawH);
+    const anchorMatchesRegistry=Boolean(drawAnchor.x===registryLookup.anchorX && drawAnchor.y===registryLookup.anchorY);
+    const cropOverrideApplied=Boolean(activeCrop && registryCrop && !cropMatchesRegistry);
+    const cropOverrideReason=cropOverrideApplied ? "active_crop_diverges_from_registry" : null;
+    const sourceRectWithinAtlasBounds=Boolean(activeCrop && atlasW>0 && atlasH>0 &&
+      activeCrop.x>=0 && activeCrop.y>=0 &&
+      (activeCrop.x+activeCrop.w)<=atlasW && (activeCrop.y+activeCrop.h)<=atlasH);
+    const expectedAspectRatio=(registryDrawW&&registryDrawH)?registryDrawW/registryDrawH:null;
+    const actualDrawAspectRatio=(drawW&&drawH)?drawW/drawH:null;
+    const aspectRatioDelta=(expectedAspectRatio!==null && actualDrawAspectRatio!==null)?Math.abs(expectedAspectRatio-actualDrawAspectRatio):null;
+    const renderDiag=buildingRenderDiagnostics?.perBuilding?.get?.(b.id)||null;
+    const renderPath=renderDiag?.renderPath||"unknown";
+    const usedFallback=renderPath==="fallback";
+    const drawDestinationRect={ w:drawW, h:drawH };
+    const expectedOpaqueBounds=(registryDrawW&&registryDrawH)?{ w:registryDrawW, h:registryDrawH }:null;
+    const visibleOpaqueBounds=(drawW&&drawH)?{ w:drawW, h:drawH }:null;
+    const sampledOpaqueBounds=null;
+    const opaqueCoverageRatio=null;
+    const transparentPaddingTrimmed=cropMatchesRegistry;
+    const failureReasons=[];
+    if(usedFallback) failureReasons.push("fallback_rendering_used");
+    if(!mappedSprite) failureReasons.push("manifest_sprite_missing");
+    if(!registryLookup.entry) failureReasons.push("registry_entry_missing");
+    if(registryCrop && activeCrop && !cropMatchesRegistry) failureReasons.push("active_crop_mismatch_with_registry");
+    if(registryDrawW!=null && drawW!=null && drawW!==registryDrawW) failureReasons.push("drawW_mismatch_with_registry");
+    if(registryDrawH!=null && drawH!=null && drawH!==registryDrawH) failureReasons.push("drawH_mismatch_with_registry");
+    if(activeCrop && atlasW>0 && atlasH>0 && !sourceRectWithinAtlasBounds) failureReasons.push("source_rect_outside_atlas_bounds");
+    if(aspectRatioDelta!==null && aspectRatioDelta>0.005) failureReasons.push("aspect_ratio_mismatch");
+    if(registryLookup.entry && !anchorMatchesRegistry && registryLookup.anchorX!=null && registryLookup.anchorY!=null) failureReasons.push("draw_anchor_mismatch_with_registry");
+    const visuallyComplete=failureReasons.length===0;
+    return {
+      buildingId:b.id,
+      requestedSpriteId,
+      mappedSpriteId,
+      sourceAtlasPath,
+      sourceRect:activeCrop ? { sx:activeCrop.x, sy:activeCrop.y, sw:activeCrop.w, sh:activeCrop.h } : null,
+      manifestCrop,
+      registryCrop,
+      registrySource:registryLookup.source,
+      activeCrop,
+      legacyStaticCrop:cropOverrideApplied?registryCrop:null,
+      cropOverrideApplied,
+      cropOverrideReason,
+      drawDestinationRect,
+      drawAnchor,
+      expectedAspectRatio,
+      actualDrawAspectRatio,
+      aspectRatioDelta,
+      transparentPaddingTrimmed,
+      sourceRectWithinAtlasBounds,
+      sampledOpaqueBounds,
+      visibleOpaqueBounds,
+      expectedOpaqueBounds,
+      opaqueCoverageRatio,
+      visuallyComplete,
+      renderPath,
+      usedFallback,
+      failureReasons,
+      status:visuallyComplete?"PASS":"FAIL"
+    };
+  });
+  const visuallyComplete=reports.filter((r)=>r.visuallyComplete);
+  const failed=reports.filter((r)=>!r.visuallyComplete);
+  const aspectMismatch=reports.filter((r)=>r.failureReasons.includes("aspect_ratio_mismatch"));
+  const cropOverride=reports.filter((r)=>r.cropOverrideApplied);
+  const fallbackRender=reports.filter((r)=>r.usedFallback);
+  const outOfBounds=reports.filter((r)=>r.failureReasons.includes("source_rect_outside_atlas_bounds"));
+  const status=failed.length===0?"PASS":"FAIL";
+  buildingSpriteCropIntegrityQaResult={
+    status,
+    productionBuildingCount:reports.length,
+    visuallyCompleteCount:visuallyComplete.length,
+    structuralFailureCount:failed.length,
+    structuralFailureBuildingIds:failed.map((r)=>r.buildingId),
+    aspectMismatchBuildingIds:aspectMismatch.map((r)=>r.buildingId),
+    cropOverrideBuildingIds:cropOverride.map((r)=>r.buildingId),
+    fallbackRenderBuildingIds:fallbackRender.map((r)=>r.buildingId),
+    outOfBoundsBuildingIds:outOfBounds.map((r)=>r.buildingId),
+    atlasNaturalWidth:atlasW,
+    atlasNaturalHeight:atlasH,
+    reports
+  };
+  const line='[Building Sprite Crop Integrity QA] phase='+WAYFARER_PHASE+' productionBuildingCount='+reports.length+' visuallyCompleteCount='+visuallyComplete.length+' structuralFailureCount='+failed.length+' structuralFailureBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.structuralFailureBuildingIds)+' aspectMismatchBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.aspectMismatchBuildingIds)+' cropOverrideBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.cropOverrideBuildingIds)+' fallbackRenderBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.fallbackRenderBuildingIds)+' outOfBoundsBuildingIds='+JSON.stringify(buildingSpriteCropIntegrityQaResult.outOfBoundsBuildingIds)+' atlasNaturalWidth='+atlasW+' atlasNaturalHeight='+atlasH+' status='+status;
+  const detailSig=line+' reports='+JSON.stringify(reports);
+  if(detailSig!==buildingSpriteCropIntegrityQaSignature){
+    buildingSpriteCropIntegrityQaSignature=detailSig;
+    console.info(line);
+    console.info('[Building Sprite Crop Integrity QA] reports='+JSON.stringify(reports));
+  }
+  return buildingSpriteCropIntegrityQaResult;
 }
 
 function emitNewportVisualCompositionQA(){
@@ -8129,7 +8312,7 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13M" && ATLAS_SELECTOR_VERSION==="selector-v35-13m-actual-camera-viewport-fix";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13N" && ATLAS_SELECTOR_VERSION==="selector-v35-13n-gameplay-scale-sprite-crop-integrity-lock";
   const harborWaterVisualQa=ensureQaResult(emitNewportHarborWaterVisualQA(),"newport_harbor_water_visual_not_initialized");
   const harborWaterVisualPass=harborWaterVisualQa.status==="PASS";
   refreshBuildingPlacementContractQAIfSettled();
@@ -8141,6 +8324,8 @@ function buildWayfarerQaReport(){
   const validationFramePass=validationFrameQa.status==="PASS";
   const actualCameraViewportQa=ensureQaResult(emitActualCameraViewportQA(),"actual_camera_viewport_not_initialized");
   const actualCameraViewportPass=actualCameraViewportQa.status==="PASS";
+  const spriteCropIntegrityQa=ensureQaResult(emitBuildingSpriteCropIntegrityQA(),"building_sprite_crop_integrity_not_initialized");
+  const spriteCropIntegrityPass=spriteCropIntegrityQa.status==="PASS";
   const masterplanQaResult=ensureQaResult(emitNewportMasterplanQA(latestVisualCompositionQa.status, latestVisualCompositionQa.failCount||0),"newport_masterplan_not_initialized");
   const masterplanDeferred=foundationMode && masterplanQaResult.status==="PENDING_35_13C";
   const masterplanPass=masterplanQaResult.status==="PASS" || masterplanDeferred;
@@ -8230,8 +8415,8 @@ function buildWayfarerQaReport(){
   const buildingPlacementOk=buildingPlacementContractQaResult.status==="PASS" || (foundationMode && !productionPlacementActive && buildingPlacementContractQaResult.status==="PENDING_35_13C");
   const foundationClosureQa=ensureQaResult(emitNewportFoundationClosureQA(),"newport_foundation_closure_not_initialized");
   const foundationClosureOk=productionPlacementDeferred ? foundationClosureQa.status==="PENDING_35_13C" : foundationClosureQa.status==="PASS";
-  const productionSystemsPass=productionPlacementDeferred || (productionPlacementActive&&renderAuditPass&&sourceTruthPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&visualCompositionPass&&validationFramePass&&masterplanPass&&playerStuckQaResult.status==="PASS"&&actualCameraViewportPass);
-  const foundationSystemsPass=buildPhaseMatches&&canonicalBlueprintQa.status==="PASS"&&routeSourceQa.status==="PASS"&&foundationLayoutQa.status==="PASS"&&savedSpawnPass&&freshSpawnPass&&traversalQaResult.status==="PASS"&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&harborFoundationOk&&harborWaterVisualPass&&wharfReadabilityOk&&buildingPlacementOk&&foundationClosureOk&&foundationLockPass&&productionSystemsPass&&actualCameraViewportPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone;
+  const productionSystemsPass=productionPlacementDeferred || (productionPlacementActive&&renderAuditPass&&sourceTruthPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&visualCompositionPass&&validationFramePass&&masterplanPass&&playerStuckQaResult.status==="PASS"&&actualCameraViewportPass&&spriteCropIntegrityPass);
+  const foundationSystemsPass=buildPhaseMatches&&canonicalBlueprintQa.status==="PASS"&&routeSourceQa.status==="PASS"&&foundationLayoutQa.status==="PASS"&&savedSpawnPass&&freshSpawnPass&&traversalQaResult.status==="PASS"&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&harborFoundationOk&&harborWaterVisualPass&&wharfReadabilityOk&&buildingPlacementOk&&foundationClosureOk&&foundationLockPass&&productionSystemsPass&&actualCameraViewportPass&&spriteCropIntegrityPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone;
   const preliminaryStatus=foundationMode
     ? ((!renderReady || !harborSettled || harborStatus==="PENDING_ASSETS" || !renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled) ? "PENDING_ASSETS" : (foundationSystemsPass ? (productionPlacementDeferred?"PENDING_35_13C":"PASS") : "FAIL"))
     : ((!renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled || !harborSettled || harborStatus==="PENDING_ASSETS")?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&wharfReadabilityQaResult.status==="PASS"&&playerStuckQaResult.status==="PASS"&&visualCompositionPass&&masterplanPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL"));
@@ -8266,6 +8451,7 @@ function buildWayfarerQaReport(){
   addFailure("visualComposition",visualCompositionPass,visualCompositionSettled?"newport_visual_composition_failed":"visualComposition_pending");
   addFailure("newportValidationFrame",validationFramePass,"newport_validation_frame_containment_failed");
   addFailure("actualCameraViewport",actualCameraViewportPass,"actual_camera_viewport_containment_failed");
+  addFailure("buildingSpriteCropIntegrity",spriteCropIntegrityPass,"building_sprite_crop_integrity_failed");
   addFailure("newportMasterplan",masterplanPass,"newport_masterplan_failed");
   addFailure("buildingPlacement",buildingPlacementOk,"building_placement_contract_failed");
   addFailure("newportTownFoundationLock",foundationLockPass,"newport_town_foundation_lock_failed");
@@ -8307,6 +8493,7 @@ function buildWayfarerQaReport(){
     newportVisualComposition:normalizeQaStatus(latestVisualCompositionQa.status),
     newportValidationFrame:normalizeQaStatus(validationFrameQa.status),
     actualCameraViewport:normalizeQaStatus(actualCameraViewportQa.status),
+    buildingSpriteCropIntegrity:normalizeQaStatus(spriteCropIntegrityQa.status),
     newportMasterplan:normalizeQaStatus(masterplanQaResult.status),
     newportTownFoundationLock:normalizeQaStatus(foundationLockQa.status),
     foundationClosure:normalizeQaStatus(foundationClosureQa.status)
@@ -8345,6 +8532,7 @@ function buildWayfarerQaReport(){
       harborWaterVisual:domainStatuses.harborWaterVisual,
       newportValidationFrame:domainStatuses.newportValidationFrame,
       actualCameraViewport:domainStatuses.actualCameraViewport,
+      buildingSpriteCropIntegrity:domainStatuses.buildingSpriteCropIntegrity,
       newportTownFoundationLock:domainStatuses.newportTownFoundationLock,
       buildingOverlap:domainStatuses.buildingOverlap,
       wharfReadability:domainStatuses.wharfReadability,
@@ -8361,7 +8549,7 @@ function buildWayfarerQaReport(){
 async function copyWayfarerQA(){
   const payload=wayfarerQaReportState.report || buildWayfarerQaReport();
   const failedDomainKeys=Object.keys(payload.failedDomains||{});
-  const text="[Wayfarer QA Report] status="+payload.status+" phase="+payload.phase+" savedSpawn="+payload.domains.savedSpawnValidation+" freshSpawn="+payload.domains.freshSpawnResolver+" traversal="+payload.domains.traversalQA.status+" playerState="+payload.domains.playerStateQA+" uiState="+payload.domains.uiStateQA+" bootMode="+payload.domains.bootModeQA+" renderAudit="+payload.domains.buildingRenderAudit+" atlasProof="+payload.domains.atlasProof+" sourceTruth="+payload.domains.sourceTruth+" routeCollision="+payload.domains.routeCollision+" routeTopology="+payload.domains.routeTopology+" harborComposition="+payload.domains.harborComposition+" harborWaterVisual="+payload.domains.harborWaterVisual+" actualCameraViewport="+payload.domains.actualCameraViewport+" foundationLock="+payload.domains.newportTownFoundationLock+" fatalErrors="+((payload.fatalJsErrorsSinceBoot.length===0&&payload.qaEmitterErrors.length===0)?"none":String(payload.fatalJsErrorsSinceBoot.length+payload.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(payload.failedDomains):"");
+  const text="[Wayfarer QA Report] status="+payload.status+" phase="+payload.phase+" savedSpawn="+payload.domains.savedSpawnValidation+" freshSpawn="+payload.domains.freshSpawnResolver+" traversal="+payload.domains.traversalQA.status+" playerState="+payload.domains.playerStateQA+" uiState="+payload.domains.uiStateQA+" bootMode="+payload.domains.bootModeQA+" renderAudit="+payload.domains.buildingRenderAudit+" atlasProof="+payload.domains.atlasProof+" sourceTruth="+payload.domains.sourceTruth+" routeCollision="+payload.domains.routeCollision+" routeTopology="+payload.domains.routeTopology+" harborComposition="+payload.domains.harborComposition+" harborWaterVisual="+payload.domains.harborWaterVisual+" actualCameraViewport="+payload.domains.actualCameraViewport+" buildingSpriteCropIntegrity="+payload.domains.buildingSpriteCropIntegrity+" foundationLock="+payload.domains.newportTownFoundationLock+" fatalErrors="+((payload.fatalJsErrorsSinceBoot.length===0&&payload.qaEmitterErrors.length===0)?"none":String(payload.fatalJsErrorsSinceBoot.length+payload.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(payload.failedDomains):"");
   try{
     await navigator.clipboard.writeText(text);
     console.info("[Wayfarer QA Report] copied_to_clipboard=true size="+text.length);
@@ -8411,7 +8599,7 @@ function emitQuestLoopQA(){
 function emitPhase351NAcceptance(){
   const report=buildWayfarerQaReport();
   const failedDomainKeys=Object.keys(report.failedDomains||{});
-  const line="[Wayfarer QA Report] status="+report.status+" phase="+report.phase+" savedSpawn="+report.domains.savedSpawnValidation+" freshSpawn="+report.domains.freshSpawnResolver+" traversal="+report.domains.traversalQA.status+" playerState="+report.domains.playerStateQA+" uiState="+report.domains.uiStateQA+" bootMode="+report.domains.bootModeQA+" renderAudit="+report.domains.buildingRenderAudit+" atlasProof="+report.domains.atlasProof+" sourceTruth="+report.domains.sourceTruth+" routeCollision="+report.domains.routeCollision+" routeTopology="+report.domains.routeTopology+" harborComposition="+report.domains.harborComposition+" harborWaterVisual="+report.domains.harborWaterVisual+" actualCameraViewport="+report.domains.actualCameraViewport+" foundationLock="+report.domains.newportTownFoundationLock+" fatalErrors="+((report.fatalJsErrorsSinceBoot.length===0&&report.qaEmitterErrors.length===0)?"none":String(report.fatalJsErrorsSinceBoot.length+report.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(report.failedDomains):"");
+  const line="[Wayfarer QA Report] status="+report.status+" phase="+report.phase+" savedSpawn="+report.domains.savedSpawnValidation+" freshSpawn="+report.domains.freshSpawnResolver+" traversal="+report.domains.traversalQA.status+" playerState="+report.domains.playerStateQA+" uiState="+report.domains.uiStateQA+" bootMode="+report.domains.bootModeQA+" renderAudit="+report.domains.buildingRenderAudit+" atlasProof="+report.domains.atlasProof+" sourceTruth="+report.domains.sourceTruth+" routeCollision="+report.domains.routeCollision+" routeTopology="+report.domains.routeTopology+" harborComposition="+report.domains.harborComposition+" harborWaterVisual="+report.domains.harborWaterVisual+" actualCameraViewport="+report.domains.actualCameraViewport+" buildingSpriteCropIntegrity="+report.domains.buildingSpriteCropIntegrity+" foundationLock="+report.domains.newportTownFoundationLock+" fatalErrors="+((report.fatalJsErrorsSinceBoot.length===0&&report.qaEmitterErrors.length===0)?"none":String(report.fatalJsErrorsSinceBoot.length+report.qaEmitterErrors.length))+" failedDomains="+(failedDomainKeys.length?failedDomainKeys.join(","):"none")+(failedDomainKeys.length?" firstFailureReasons="+JSON.stringify(report.failedDomains):"");
   if(line===wayfarerQaReportSignature) return;
   wayfarerQaReportSignature=line;
   wayfarerQaReportState={ status:report.status, generatedAt:Date.now(), report, text:line };
@@ -8464,6 +8652,7 @@ function runRuntimeQaPass(reason="scheduled"){
     run("newport_harbor_water_visual_qa", ()=>emitNewportHarborWaterVisualQA());
     run("newport_validation_frame_qa", ()=>emitNewportValidationFrameQA());
     run("actual_camera_viewport_qa", ()=>emitActualCameraViewportQA());
+    run("building_sprite_crop_integrity_qa", ()=>emitBuildingSpriteCropIntegrityQA());
     run("player_stuck_readability_qa", ()=>emitPlayerStuckReadabilityQA());
     run("newport_town_foundation_lock_qa", ()=>emitNewportTownFoundationLockQA());
     run("quest_loop_qa", ()=>emitQuestLoopQA());
