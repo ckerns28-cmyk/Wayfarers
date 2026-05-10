@@ -20,6 +20,12 @@ PRESET="${PRESET:-Web}"
 OUTPUT_DIR="${OUTPUT_DIR:-$PROJECT_ROOT/web_build}"
 OUTPUT_HTML="$OUTPUT_DIR/index.html"
 
+if [ "$OUTPUT_DIR" != "$PROJECT_ROOT/web_build" ]; then
+    echo "Refusing to clean non-default OUTPUT_DIR: $OUTPUT_DIR" >&2
+    exit 1
+fi
+
+rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 cd "$PROJECT_ROOT"
