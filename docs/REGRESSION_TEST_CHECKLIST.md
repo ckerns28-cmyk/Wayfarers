@@ -236,9 +236,9 @@ Do not claim served validation is complete unless the actual served browser cons
 
 ## R. Godot Vertical Slice Delivery (parallel preview)
 
-The Godot vertical slice ships to a **separate** Cloudflare Pages project and
-must not replace the live JavaScript site. Until that pass is approved,
-`wrangler.toml` continues to point at `wayfarer_v7_github_ready/`.
+The Godot vertical slice is served as an additive `/godot/*` route on the
+existing Cloudflare Worker. The JavaScript site at `/` remains the
+production build (currently `Build Phase 35.13R`) and must not regress.
 
 ### A. Source-truth validation
 - [ ] `godot --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd` reports `status=PASS` and `failureCount=0`.
@@ -258,9 +258,10 @@ must not replace the live JavaScript site. Until that pass is approved,
 - [ ] Move the player south of any building and confirm collision blocks correctly.
 - [ ] Move the player north of large_residence and merchant_shop_house and confirm Y-sort draws the player behind the closer building.
 
-### D. Web export and Cloudflare delivery
-- [ ] `bash wayfarer_godot_vertical_slice/tools/export_web.sh` produces `web_build/index.html` plus `.wasm`/`.pck`/`.js` siblings and copies `_headers` from `web_build_template/`.
-- [ ] Upload `web_build/` to the `wayfarers-godot-slice` Cloudflare Pages project (see `WEB_DELIVERY.md`).
-- [ ] Visit the published `https://wayfarers-godot-slice.pages.dev` (or equivalent preview URL) and confirm: canvas renders, player walks, Edrin Vale prompt appears, F3 toggles the debug overlay.
-- [ ] Confirm the existing JavaScript site served by the `wayfarers` Worker is still unchanged (no visual or behavioral regression at the production URL).
+### D. /godot/ route deploy (Cloudflare Worker)
+- [ ] After the next Cloudflare deploy, visit `https://wayfarers.ckerns28.workers.dev/godot/` and confirm a page titled `Build label: Godot Vertical Slice` loads (placeholder OR real export, NOT `Build Phase 35.13R`).
+- [ ] Visit `https://wayfarers.ckerns28.workers.dev/` and confirm the JS site still shows `Build Phase 35.13R` with no console / Building Seating Contract regression.
+- [ ] DevTools → Network on `/godot/index.html`: response headers include `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`.
+- [ ] Run `bash wayfarer_godot_vertical_slice/tools/export_web.sh` locally and confirm output lands in BOTH `wayfarer_godot_vertical_slice/export/web/` AND `wayfarer_v7_github_ready/worker/assets/godot/`.
+- [ ] Commit both directories, push, and confirm `/godot/` switches from the placeholder to the real Godot canvas (five buildings render, Edrin Vale prompt appears, F3 toggles the debug overlay).
 

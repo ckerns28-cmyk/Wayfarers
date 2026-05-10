@@ -1,43 +1,61 @@
 #!/usr/bin/env bash
-# Exports the Wayfarer Godot Vertical Slice to a static web folder that can
-# be uploaded to a separate Cloudflare Pages project. Does NOT touch the
-# existing JavaScript wayfarer_v7_github_ready build.
+# Build the Godot Web export and stage it for the existing Cloudflare
+# Worker so the /godot/ route serves the slice.
+#
+# Two destinations get the same files:
+#   1. wayfarer_godot_vertical_slice/export/web/
+#        Canonical export output. Source-truth for both the /godot/ Worker
+#        route and any future separate Cloudflare Pages project.
+#   2. wayfarer_v7_github_ready/worker/assets/godot/
+#        What the existing Worker (wrangler.toml -> ./wayfarer_v7_github_ready
+#        /worker/assets) actually serves at /godot/* on Cloudflare. The JS
+#        site at / is unaffected; this is an additive subdirectory.
 #
 # Requirements (local machine):
-#   - Godot 4.6.2-stable (Standard, not Mono) installed and on $PATH as
-#     `godot` (or override with GODOT=/path/to/godot)
-#   - Godot Web export templates of the exact same version installed.
+#   - Godot 4.6.2-stable (Standard, not Mono) on $PATH as `godot`, or
+#     override with GODOT=/path/to/godot.
+#   - Godot Web export templates of the same version installed via
 #     Editor -> Project -> Export -> Manage Export Templates -> Download.
 #
-# Output: ./web_build/ inside the Godot project (sibling to project.godot).
-# That folder is what gets uploaded to Cloudflare Pages.
+# After running, commit the new files in BOTH directories and push. The
+# Cloudflare Worker auto-deploys on push and serves the slice at /godot/.
 
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="$(cd "$PROJECT_ROOT/.." && pwd)"
+
 GODOT_BIN="${GODOT:-godot}"
 PRESET="${PRESET:-Web}"
-OUTPUT_DIR="${OUTPUT_DIR:-$PROJECT_ROOT/web_build}"
-OUTPUT_HTML="$OUTPUT_DIR/index.html"
+EXPORT_DIR="${EXPORT_DIR:-$PROJECT_ROOT/export/web}"
+SERVE_DIR="${SERVE_DIR:-$REPO_ROOT/wayfarer_v7_github_ready/worker/assets/godot}"
+EXPORT_HTML="$EXPORT_DIR/index.html"
 
-mkdir -p "$OUTPUT_DIR"
+mkdir -p "$EXPORT_DIR" "$SERVE_DIR"
 
 cd "$PROJECT_ROOT"
 
 # Headless --import primes resources without opening the editor.
 "$GODOT_BIN" --headless --path "$PROJECT_ROOT" --import
 
-# Actual web export.
+# Actual web export against the "Web" preset in export_presets.cfg.
 "$GODOT_BIN" --headless --path "$PROJECT_ROOT" \
-    --export-release "$PRESET" "$OUTPUT_HTML"
+    --export-release "$PRESET" "$EXPORT_HTML"
 
-# Make sure Cloudflare Pages serves the cross-origin isolation headers that
-# Godot's web build needs for SharedArrayBuffer / threaded WASM.
-HEADERS_FILE="$OUTPUT_DIR/_headers"
-if [ ! -f "$HEADERS_FILE" ]; then
-    cp "$PROJECT_ROOT/web_build_template/_headers" "$HEADERS_FILE"
+# Mirror canonical export -> Worker serving directory. Use rsync if it
+# exists (faster + deletes stale files); otherwise fall back to cp.
+if command -v rsync >/dev/null 2>&1; then
+    rsync -a --delete --exclude '.gitkeep' "$EXPORT_DIR/" "$SERVE_DIR/"
+else
+    find "$SERVE_DIR" -mindepth 1 -not -name '.gitkeep' -delete
+    cp -r "$EXPORT_DIR"/. "$SERVE_DIR"/
 fi
 
 echo
-echo "Web export written to: $OUTPUT_DIR"
-ls -1 "$OUTPUT_DIR"
+echo "Godot web export written to:"
+echo "  canonical : $EXPORT_DIR"
+echo "  serving   : $SERVE_DIR"
+ls -1 "$EXPORT_DIR"
+echo
+echo "Next step: commit both directories and push. Cloudflare will then"
+echo "serve the slice at https://wayfarers.ckerns28.workers.dev/godot/."

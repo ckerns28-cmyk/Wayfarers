@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" />
+  <title>Wayfarer — Build label: Godot Vertical Slice (export pending)</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink:#0b111a;
+      --panel:#0f1722;
+      --edge:#3a4657;
+      --text:#e6ecf5;
+      --muted:#9eacbe;
+      --gold:#d6bc7f;
+      --warn:#f1c27a;
+    }
+    html, body { background: var(--ink); color: var(--text); margin: 0; padding: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    main { max-width: 720px; margin: 6vh auto; padding: 28px 32px; background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; }
+    h1 { margin: 0 0 4px; font-size: 22px; color: var(--gold); }
+    h2 { margin: 28px 0 8px; font-size: 16px; color: var(--warn); text-transform: uppercase; letter-spacing: 0.06em; }
+    p { margin: 0 0 12px; color: var(--text); }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+    pre { background: #08101a; border: 1px solid var(--edge); padding: 12px 14px; border-radius: 6px; overflow-x: auto; }
+    .build { color: var(--muted); font-size: 13px; margin-top: 0; }
+    a { color: var(--accent, #8fb6ff); }
+    .pill { display: inline-block; padding: 2px 8px; border: 1px solid var(--edge); border-radius: 999px; font-size: 12px; color: var(--muted); margin-right: 6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Wayfarer</h1>
+    <p class="build">
+      <span class="pill">Build label: Godot Vertical Slice</span>
+      <span class="pill">route: /godot/</span>
+      <span class="pill">status: export pending</span>
+    </p>
+
+    <p>
+      This route is reserved for the Godot 4.x vertical slice preview.
+      The route is wired into the existing Cloudflare Worker, but the
+      compiled web export has not been uploaded yet, so this placeholder
+      is being served instead of the real Godot canvas.
+    </p>
+    <p>
+      When the export is in place this page is replaced by the real
+      Godot HTML shell, which will load the <code>.wasm</code> /
+      <code>.pck</code> files from the same <code>/godot/</code> path.
+      The JavaScript site at <code>/</code> is unaffected by this
+      preview route.
+    </p>
+
+    <h2>To finish the deploy</h2>
+    <pre>cd wayfarer_godot_vertical_slice
+bash tools/export_web.sh
+git add wayfarer_v7_github_ready/worker/assets/godot wayfarer_godot_vertical_slice/export/web
+git commit -m "Deploy Godot vertical slice web export"
+git push</pre>
+
+    <p>
+      <code>tools/export_web.sh</code> runs <code>godot --export-release "Web"</code>
+      against <code>export_presets.cfg</code>, lands the build in
+      <code>wayfarer_godot_vertical_slice/export/web/</code>, and copies
+      the same files into
+      <code>wayfarer_v7_github_ready/worker/assets/godot/</code> so this
+      Worker can serve them at <code>/godot/</code> on the next deploy.
+    </p>
+
+    <h2>Confirming the JS site is untouched</h2>
+    <p>
+      Visit <a href="/">/</a> to confirm the existing JavaScript build
+      (current production tag <code>Build Phase 35.13R</code>) is
+      serving normally. The Godot route is additive only.
+    </p>
+
+    <h2>Documentation</h2>
+    <p>
+      <code>wayfarer_godot_vertical_slice/WEB_DELIVERY.md</code> is the
+      canonical guide for both this <code>/godot/</code> route and an
+      alternative separate Cloudflare Pages project.
+    </p>
+  </main>
+</body>
+</html>

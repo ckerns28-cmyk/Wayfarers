@@ -12,7 +12,27 @@ export class WorldRoom {
 function isLikelyStaticAssetRequest(pathname) {
   if (pathname.startsWith("/assets/")) return true;
   if (pathname.startsWith("/tiles/")) return true;
-  return /\.(?:png|jpe?g|webp|gif|svg|ico|css|js|mjs|json|txt|map|woff2?|ttf|otf)$/i.test(pathname);
+  if (pathname === "/godot" || pathname === "/godot/") return true;
+  if (pathname.startsWith("/godot/")) return true;
+  return /\.(?:png|jpe?g|webp|gif|svg|ico|css|js|mjs|json|txt|map|woff2?|ttf|otf|wasm|pck)$/i.test(pathname);
+}
+
+function isGodotPreviewPath(pathname) {
+  return pathname === "/godot" || pathname === "/godot/" || pathname.startsWith("/godot/");
+}
+
+function withGodotPreviewHeaders(response) {
+  // Godot's threaded WASM build needs cross-origin isolation. The JS site
+  // is unaffected because these headers are only injected on /godot/*.
+  const headers = new Headers(response.headers);
+  headers.set("Cross-Origin-Opener-Policy", "same-origin");
+  headers.set("Cross-Origin-Embedder-Policy", "require-corp");
+  headers.set("Cross-Origin-Resource-Policy", "same-origin");
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }
 
 export default {
@@ -26,6 +46,16 @@ export default {
     if(aliasedPath){
       const assetUrl = new URL(aliasedPath, url.origin);
       return Response.redirect(assetUrl.toString(), 302);
+    }
+    // Godot vertical slice preview lives at /godot/*. Rewrite bare /godot
+    // (and /godot/) to /godot/index.html so the Worker does not fall back
+    // to the JS shell. Files are served from the same Worker [assets]
+    // binding that powers the JS site, but in the godot/ subdirectory.
+    if (env?.ASSETS && (url.pathname === "/godot" || url.pathname === "/godot/")) {
+      const indexUrl = new URL(url.toString());
+      indexUrl.pathname = "/godot/index.html";
+      const godotResponse = await env.ASSETS.fetch(new Request(indexUrl.toString(), request));
+      return withGodotPreviewHeaders(godotResponse);
     }
     if (env?.ASSETS) {
       let assetResponse = null;
@@ -51,7 +81,12 @@ export default {
           },
         });
       }
-      if (shouldPreferAsset) return assetResponse;
+      if (shouldPreferAsset) {
+        if (isGodotPreviewPath(url.pathname)) {
+          return withGodotPreviewHeaders(assetResponse);
+        }
+        return assetResponse;
+      }
     }
     return new Response(html, {
       headers: {
