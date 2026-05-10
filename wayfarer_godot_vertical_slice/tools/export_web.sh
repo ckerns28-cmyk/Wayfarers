@@ -32,11 +32,10 @@ cd "$PROJECT_ROOT"
     --export-release "$PRESET" "$OUTPUT_HTML"
 
 # Make sure Cloudflare Pages serves the cross-origin isolation headers that
-# Godot's web build needs for SharedArrayBuffer / threaded WASM.
+# Godot's web build needs for SharedArrayBuffer / threaded WASM. Copy every
+# export so stale local headers cannot drift from the committed template.
 HEADERS_FILE="$OUTPUT_DIR/_headers"
-if [ ! -f "$HEADERS_FILE" ]; then
-    cp "$PROJECT_ROOT/web_build_template/_headers" "$HEADERS_FILE"
-fi
+cp "$PROJECT_ROOT/web_build_template/_headers" "$HEADERS_FILE"
 
 echo
 echo "Web export written to: $OUTPUT_DIR"

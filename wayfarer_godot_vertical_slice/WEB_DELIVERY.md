@@ -56,14 +56,28 @@ Worker. To keep that build untouched and still let reviewers play the Godot
 slice in a browser, host the Godot export as its **own** Cloudflare Pages
 project.
 
-### One-time setup
+### Direct upload
+
+From the repo root, after running the local export:
+
+```sh
+npx wrangler pages deploy wayfarer_godot_vertical_slice/web_build --project-name wayfarers-godot-slice
+```
+
+Cloudflare will publish to `https://wayfarers-godot-slice.pages.dev`.
+That URL is the Godot browser-review link.
+
+The existing Worker Visit button still opens the JavaScript Phase 35.13R
+Worker route. It is not the Godot preview.
+
+### Dashboard upload
 
 1. Cloudflare dashboard → *Workers & Pages* → *Create* → *Pages* → *Upload
    assets*. Name the project `wayfarers-godot-slice`.
 2. Drag-drop the contents of `wayfarer_godot_vertical_slice/web_build/`
    (the files, not the folder).
 3. Cloudflare will publish to `https://wayfarers-godot-slice.pages.dev`.
-   That URL is the review preview link.
+   That URL is the Godot browser-review link.
 
 ### Build / output config (if connecting via Git instead)
 
