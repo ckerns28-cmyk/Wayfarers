@@ -233,3 +233,34 @@ A Newport town-phase PR is **not complete** unless the PR body includes pasted s
 - [ ] Screenshot evidence is attached (atlasDebug, non-debug, freshSpawn).
 
 Do not claim served validation is complete unless the actual served browser console output is pasted into the PR body.
+
+## R. Godot Vertical Slice Delivery (parallel preview)
+
+The Godot vertical slice ships to a **separate** Cloudflare Pages project and
+must not replace the live JavaScript site. Until that pass is approved,
+`wrangler.toml` continues to point at `wayfarer_v7_github_ready/`.
+
+### A. Source-truth validation
+- [ ] `godot --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd` reports `status=PASS` and `failureCount=0`.
+- [ ] Validator includes the stricter checks (no missing AtlasTexture regions, foot anchor on visible base, collision overlaps lower visible/base, interaction adjacent to door, player can stand south/north of ≥2 buildings, all five buildings inside the initial camera).
+
+### B. Sprite region audit (Phase delivery pass)
+- [ ] `inn_tavern` region `(33, 45, 385, 373)` shows the blue 3-story inn with no sliver from the awning building or the small white house.
+- [ ] `dock_storehouse` region `(51, 836, 361, 377)` shows the gray storehouse with crane (NOT the chapel-with-porch the old region was bleeding into).
+- [ ] `custom_house` region `(68, 873, 350, 292)` shows the dockside cottage with no padding crops.
+- [ ] `merchant_shop_house` region `(418, 76, 410, 332)` shows the columned mansion with its full left edge.
+- [ ] `large_residence` region `(864, 86, 351, 315)` shows the brown row-house with no transparent gutter.
+
+### C. Anchor / collision / interaction proof
+- [ ] Press `F3` in-game and confirm the per-building debug overlay draws sprite outline (yellow), collision rect (red), interaction rect (blue), foot anchor (green cross), and door marker (yellow dot).
+- [ ] Confirm each collision rect sits on the building's visible base/foundation.
+- [ ] Confirm each interaction rect sits directly south of (in front of) the visible door.
+- [ ] Move the player south of any building and confirm collision blocks correctly.
+- [ ] Move the player north of large_residence and merchant_shop_house and confirm Y-sort draws the player behind the closer building.
+
+### D. Web export and Cloudflare delivery
+- [ ] `bash wayfarer_godot_vertical_slice/tools/export_web.sh` produces `web_build/index.html` plus `.wasm`/`.pck`/`.js` siblings and copies `_headers` from `web_build_template/`.
+- [ ] Upload `web_build/` to the `wayfarers-godot-slice` Cloudflare Pages project (see `WEB_DELIVERY.md`).
+- [ ] Visit the published `https://wayfarers-godot-slice.pages.dev` (or equivalent preview URL) and confirm: canvas renders, player walks, Edrin Vale prompt appears, F3 toggles the debug overlay.
+- [ ] Confirm the existing JavaScript site served by the `wayfarers` Worker is still unchanged (no visual or behavioral regression at the production URL).
+
