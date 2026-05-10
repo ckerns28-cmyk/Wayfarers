@@ -1690,11 +1690,11 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13Q";
+const WAYFARER_PHASE = "35.13R";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
 const NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13Q - Newport Historic Placement & Depth Order";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13q-newport-historic-placement-depth-order";
+const WAYFARER_BUILD_LABEL = "Phase 35.13R - Newport Building Placement Contract Authority";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13r-newport-building-placement-contract";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -1908,6 +1908,23 @@ function isSpawnDebugEnabledFromUrl(){
     return false;
   }
 }
+function isPlacementProofEnabledFromUrl(){
+  try{
+    const params=new URLSearchParams(window.location.search);
+    if(params.get("placementProof")==="1") return true;
+    if(params.get("placementContractProof")==="1") return true;
+    const cacheBust=(params.get("cacheBust")||"").toLowerCase();
+    if(/(^|[-_])placement-?(contract-?)?proof/.test(cacheBust)) return true;
+  }catch(_error){}
+  return false;
+}
+function isPlacementContractDebugEnabledFromUrl(){
+  try{
+    return new URLSearchParams(window.location.search).get("placementContractDebug")==="1";
+  }catch(_error){
+    return false;
+  }
+}
 const ATLAS_DEBUG_MODE = isAtlasDebugEnabledFromUrl();
 const ATLAS_READINESS_TIMEOUT_MS = 12000;
 const WAYFARER_BUILD_COMMIT = (typeof globalThis.__WAYFARER_COMMIT__==="string" && globalThis.__WAYFARER_COMMIT__.trim())
@@ -1941,6 +1958,8 @@ function isDecorDebugEnabled(){
 }
 const PROP_DEBUG_MODE = isPropDebugEnabledFromUrl();
 const ATLAS_PROOF_REQUEST = getAtlasProofRequestFromUrl();
+const PLACEMENT_PROOF_MODE = isPlacementProofEnabledFromUrl();
+const PLACEMENT_CONTRACT_DEBUG_MODE = PLACEMENT_PROOF_MODE || (ATLAS_DEBUG_MODE && isPlacementContractDebugEnabledFromUrl());
 const ATLAS_DEBUG_SOURCE_LABELS = (() => {
   if(!ATLAS_DEBUG_MODE || !DECOR_DEBUG_MODE) return false;
   try{
@@ -2483,6 +2502,233 @@ function drawAtlasProofMarker(drawX, drawY, drawW, drawH, building, renderPath, 
   ctx.fillText(line2, Math.floor(drawX)+6, Math.floor(drawY)-6);
   ctx.restore();
 }
+// Draws the full BuildingPlacementContract overlay for a single building:
+// assigned lot, draw rect, opaque body bounds, foot anchor + base line,
+// collision footprint, frontage tile, depthSortY line, id/sprite labels.
+// Caller must already have an active 2D context. Coordinates are converted
+// from world tile space to screen pixels via tileToScreen.
+function drawBuildingPlacementContractOverlay(building, contract, evalResult, drawOrderRank){
+  if(!building || !contract) return;
+  const TILE_SIZE=TILE;
+  const tile=tileToScreen(0,0); // camera origin in screen px
+  const toScreenX=(worldPx)=>worldPx + tile.x; // worldPx already in tile-pixels
+  const toScreenY=(worldPx)=>worldPx + tile.y;
+  const camOriginPx={ x: tile.x, y: tile.y };
+  const tileRectScreen=(rect, padPx=0)=>{
+    if(!rect) return null;
+    const top=tileToScreen(rect.x, rect.y);
+    return {
+      x: Math.round(top.x)-padPx,
+      y: Math.round(top.y)-padPx,
+      w: Math.max(1, Math.round(rect.w*TILE_SIZE))+padPx*2,
+      h: Math.max(1, Math.round(rect.h*TILE_SIZE))+padPx*2
+    };
+  };
+  const worldPxRectScreen=(rectPx)=>{
+    if(!rectPx) return null;
+    return {
+      x: Math.round(rectPx.x + camOriginPx.x),
+      y: Math.round(rectPx.y + camOriginPx.y),
+      w: Math.round(rectPx.w),
+      h: Math.round(rectPx.h)
+    };
+  };
+  const status=evalResult?.status || (contract.pixelAuditAvailable ? "PASS" : "PENDING_AUDIT");
+
+  ctx.save();
+
+  // Clearance / readability margin (faint amber)
+  const clearance=tileRectScreen(contract.clearanceRect, 0);
+  if(clearance){
+    ctx.fillStyle="rgba(220,180,80,0.05)";
+    ctx.fillRect(clearance.x, clearance.y, clearance.w, clearance.h);
+    ctx.strokeStyle="rgba(220,180,80,0.55)";
+    ctx.setLineDash([6,4]);
+    ctx.lineWidth=1;
+    ctx.strokeRect(clearance.x+0.5, clearance.y+0.5, Math.max(1,clearance.w-1), Math.max(1,clearance.h-1));
+    ctx.setLineDash([]);
+  }
+
+  // Assigned lot (blue, solid)
+  const lot=tileRectScreen(contract.assignedLotRect);
+  if(lot){
+    ctx.strokeStyle="rgba(120,180,255,0.95)";
+    ctx.lineWidth=2;
+    ctx.strokeRect(lot.x+0.5, lot.y+0.5, Math.max(1,lot.w-1), Math.max(1,lot.h-1));
+  }
+
+  // Final draw rect on canvas (cyan or red depending on seating result)
+  const drawRect=worldPxRectScreen(contract.drawRectWorldPx);
+  if(drawRect){
+    const ok=status==="PASS";
+    const pending=status==="PENDING_AUDIT" || status==="PENDING_DATA";
+    ctx.strokeStyle=ok ? "rgba(0,235,235,0.95)" : (pending ? "rgba(220,200,120,0.9)" : "rgba(255,90,90,0.95)");
+    ctx.lineWidth=2;
+    ctx.strokeRect(drawRect.x+0.5, drawRect.y+0.5, Math.max(1,drawRect.w-1), Math.max(1,drawRect.h-1));
+  }
+
+  // Opaque pixel bounds (when available) — solid magenta
+  const opaque=worldPxRectScreen(contract.opaqueBoundsWorldPx);
+  if(opaque){
+    ctx.strokeStyle="rgba(255,80,210,0.85)";
+    ctx.lineWidth=1;
+    ctx.strokeRect(opaque.x+0.5, opaque.y+0.5, Math.max(1,opaque.w-1), Math.max(1,opaque.h-1));
+  }
+
+  // Visual base line (where the sprite anchor lands) — bright yellow
+  if(Number.isFinite(contract.visualBaseLineWorldPxY) && drawRect){
+    const baseY=Math.round(contract.visualBaseLineWorldPxY+camOriginPx.y);
+    ctx.strokeStyle="rgba(255,224,80,0.95)";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(drawRect.x, baseY+0.5);
+    ctx.lineTo(drawRect.x+drawRect.w, baseY+0.5);
+    ctx.stroke();
+  }
+
+  // Foot anchor point (small filled circle)
+  if(contract.footAnchorWorldPx){
+    const fx=Math.round(contract.footAnchorWorldPx.x+camOriginPx.x);
+    const fy=Math.round(contract.footAnchorWorldPx.y+camOriginPx.y);
+    ctx.fillStyle="rgba(255,255,80,1)";
+    ctx.beginPath();
+    ctx.arc(fx, fy, 3, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle="rgba(0,0,0,0.85)";
+    ctx.lineWidth=1;
+    ctx.stroke();
+  }
+
+  // Collision footprint (red translucent fill)
+  const col=tileRectScreen(contract.solidFootprintRect);
+  if(col){
+    ctx.fillStyle="rgba(255,90,90,0.20)";
+    ctx.fillRect(col.x, col.y, col.w, col.h);
+    ctx.strokeStyle="rgba(255,90,90,0.95)";
+    ctx.lineWidth=1.5;
+    ctx.strokeRect(col.x+0.5, col.y+0.5, Math.max(1,col.w-1), Math.max(1,col.h-1));
+  }
+
+  // Frontage / interaction tile (green ring + filled corner)
+  if(contract.interactionTile){
+    const ft=tileToScreen(contract.interactionTile.x, contract.interactionTile.y);
+    ctx.fillStyle="rgba(120,240,140,0.30)";
+    ctx.fillRect(Math.round(ft.x), Math.round(ft.y), TILE_SIZE, TILE_SIZE);
+    ctx.strokeStyle="rgba(120,240,140,0.95)";
+    ctx.lineWidth=2;
+    ctx.strokeRect(Math.round(ft.x)+0.5, Math.round(ft.y)+0.5, TILE_SIZE-1, TILE_SIZE-1);
+  }
+  // Visual base tile marker (yellow ring on the tile whose bottom is the foot)
+  if(contract.visualBaseTile){
+    const vb=tileToScreen(contract.visualBaseTile.x, contract.visualBaseTile.y);
+    ctx.strokeStyle="rgba(255,224,80,0.6)";
+    ctx.setLineDash([3,3]);
+    ctx.lineWidth=1;
+    ctx.strokeRect(Math.round(vb.x)+0.5, Math.round(vb.y)+0.5, TILE_SIZE-1, TILE_SIZE-1);
+    ctx.setLineDash([]);
+  }
+  // Intended base tile (b.y+h-1) marker if it differs from the visual base
+  if(contract.intendedBaseTile && (contract.intendedBaseTile.y!==contract.visualBaseTile.y || contract.intendedBaseTile.x!==contract.visualBaseTile.x)){
+    const ib=tileToScreen(contract.intendedBaseTile.x, contract.intendedBaseTile.y);
+    ctx.strokeStyle="rgba(255,140,80,0.85)";
+    ctx.setLineDash([2,2]);
+    ctx.lineWidth=1.5;
+    ctx.strokeRect(Math.round(ib.x)+0.5, Math.round(ib.y)+0.5, TILE_SIZE-1, TILE_SIZE-1);
+    ctx.setLineDash([]);
+  }
+
+  // depthSortY horizontal line (cyan, thin)
+  if(Number.isFinite(contract.depthSortY) && drawRect){
+    const dsY=Math.round(tileToScreen(0, contract.depthSortY).y);
+    ctx.strokeStyle="rgba(160,255,255,0.7)";
+    ctx.setLineDash([2,3]);
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(drawRect.x-6, dsY+0.5);
+    ctx.lineTo(drawRect.x+drawRect.w+6, dsY+0.5);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Label panel (top of building)
+  const labelLines=[];
+  labelLines.push((building.id||"building")+(typeof drawOrderRank==="number" ? " #"+drawOrderRank : ""));
+  labelLines.push("sprite="+(contract.spriteId||"none")+" status="+status);
+  labelLines.push("vBaseTile=("+(contract.visualBaseTile?.x??"?")+","+(contract.visualBaseTile?.y??"?")+") iBaseTile=("+(contract.intendedBaseTile?.x??"?")+","+(contract.intendedBaseTile?.y??"?")+")");
+  labelLines.push("frontage="+(contract.interactionTile?("("+contract.interactionTile.x+","+contract.interactionTile.y+")"):"none")
+    +" col="+(contract.solidFootprintRect?(contract.solidFootprintRect.x+","+contract.solidFootprintRect.y+","+contract.solidFootprintRect.w+"x"+contract.solidFootprintRect.h):"none"));
+  if(evalResult?.failures?.length){
+    labelLines.push("FAIL: "+evalResult.failures.map((f)=>f.code).join(", "));
+  } else if(evalResult?.warnings?.length){
+    labelLines.push("warn: "+evalResult.warnings.map((w)=>w.code).join(", "));
+  }
+  ctx.font="10px ui-monospace, Menlo, monospace";
+  let labelW=0;
+  for(const line of labelLines) labelW=Math.max(labelW, Math.ceil(ctx.measureText(line).width));
+  const labelPad=4;
+  const labelH=labelLines.length*12+labelPad*2;
+  const labelOriginX=lot ? lot.x : (drawRect ? drawRect.x : 0);
+  const labelOriginY=lot ? lot.y : (drawRect ? drawRect.y : 0);
+  const lx=Math.round(labelOriginX);
+  const ly=Math.round(labelOriginY-labelH-2);
+  ctx.fillStyle="rgba(8,16,28,0.92)";
+  ctx.fillRect(lx, ly, labelW+labelPad*2, labelH);
+  ctx.strokeStyle=status==="PASS" ? "rgba(120,240,180,0.85)" : (status==="FAIL" ? "rgba(255,120,120,0.95)" : "rgba(220,200,120,0.85)");
+  ctx.lineWidth=1;
+  ctx.strokeRect(lx+0.5, ly+0.5, labelW+labelPad*2-1, labelH-1);
+  ctx.fillStyle="rgba(232,244,255,0.96)";
+  for(let i=0;i<labelLines.length;i++){
+    ctx.fillText(labelLines[i], lx+labelPad, ly+labelPad+(i+1)*12-2);
+  }
+
+  ctx.restore();
+}
+
+// Tracks the latest seating-QA evaluation per building so the in-world
+// proof mode can colour overlays consistently. Updated by the renderer
+// each frame the proof / contract debug mode is active.
+const buildingPlacementContractFrameDiagnostics={
+  perBuilding: new Map(),
+  lastFrameStamp: 0
+};
+
+function drawNewportInWorldPlacementProofOverlays(){
+  if(!PLACEMENT_PROOF_MODE && !PLACEMENT_CONTRACT_DEBUG_MODE) return;
+  if(!world || !Array.isArray(world.buildings)) return;
+  buildingPlacementContractFrameDiagnostics.lastFrameStamp=performance.now();
+  buildingPlacementContractFrameDiagnostics.perBuilding.clear();
+  let rank=0;
+  // Sort by depthSortY so the rank label matches the y-sort order.
+  const sorted=world.buildings.slice().sort((a,b)=>{
+    const ay=Number.isFinite(a.depthSortY) ? a.depthSortY : (a.y+a.h);
+    const by=Number.isFinite(b.depthSortY) ? b.depthSortY : (b.y+b.h);
+    return ay-by;
+  });
+  for(const b of sorted){
+    const contract=computeBuildingPlacementContract(b);
+    const evalResult=evaluateBuildingSeatingContract(contract, b);
+    buildingPlacementContractFrameDiagnostics.perBuilding.set(b.id, { contract, evalResult });
+    drawBuildingPlacementContractOverlay(b, contract, evalResult, rank++);
+  }
+  // Header banner
+  const total=sorted.length;
+  const failed=Array.from(buildingPlacementContractFrameDiagnostics.perBuilding.values())
+    .filter((entry)=>entry.evalResult?.status==="FAIL").length;
+  const pendingAudit=Array.from(buildingPlacementContractFrameDiagnostics.perBuilding.values())
+    .filter((entry)=>entry.evalResult?.pixelAuditPending).length;
+  const headerStatus=failed>0 ? "FAIL" : (pendingAudit>0 ? "PENDING_AUDIT" : "PASS");
+  const header="[Building Placement Contract Proof] phase="+WAYFARER_PHASE
+    +" buildings="+total+" failed="+failed+" pendingAudit="+pendingAudit+" status="+headerStatus;
+  ctx.save();
+  ctx.font="bold 12px ui-monospace, monospace";
+  const w=Math.ceil(ctx.measureText(header).width)+16;
+  ctx.fillStyle="rgba(0,0,0,0.86)";
+  ctx.fillRect(8, 32, w, 22);
+  ctx.fillStyle=headerStatus==="PASS" ? "rgba(120,240,180,0.95)" : (headerStatus==="FAIL" ? "rgba(255,120,120,0.95)" : "rgba(220,200,120,0.95)");
+  ctx.fillText(header, 16, 47);
+  ctx.restore();
+}
+
 function drawAtlasProofTopLeftLine(){
   if(!ATLAS_DEBUG_MODE) return;
   const pathLabel=atlasProofDiagnostics.usedAtlasRender ? "ATLAS" : "FALLBACK";
@@ -3700,7 +3946,7 @@ function logBuildingSourceOfTruthAudit({ verbose=ATLAS_DEBUG_MODE }={}){
   const productionRenderStatus=sourceTruthProductionRenderDeferred ? "PENDING_35_13C" : "ACTIVE";
   const expectedRows=sourceTruthProductionRenderDeferred ? 0 : HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13Q' && ATLAS_SELECTOR_VERSION==='selector-v35-13q-newport-historic-placement-depth-order';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13R' && ATLAS_SELECTOR_VERSION==='selector-v35-13r-newport-building-placement-contract';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=sourceTruthProductionRenderDeferred || (buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -6641,6 +6887,457 @@ function getBuildingFinalDrawRectFromBlueprint(building, spriteMeta){
   return { finalDrawRect, finalDrawRectPx, drawAnchor };
 }
 
+// =====================================================================
+// PHASE 35.13R: Building Placement Contract Authority
+// ---------------------------------------------------------------------
+// The historical pipeline conflated six distinct concepts under
+// "anchor / lot / footprint / draw rect", which let buildings pass
+// atlas-crop QA while visually floating above their wharf or detaching
+// from their road. The contract below separates them so each can be
+// audited independently:
+//
+//   sourceCrop          : px rect on the atlas image (sx,sy,sw,sh)
+//   drawScale           : drawW/sw, drawH/sh (per-axis, expected ~uniform)
+//   spriteAnchorPx      : pixel within the SCALED sprite that marks the
+//                         building's foundation/foot contact line
+//   footAnchorWorldPx   : world pixel that the spriteAnchorPx is glued to
+//   visualBaseLineWorldPxY : world Y where the foundation line lands
+//   visualBaseTile      : tile whose BOTTOM EDGE = the foundation line
+//   drawRectWorldPx     : the {x,y,w,h} ctx.drawImage will receive
+//   opaqueBoundsWorldPx : opaque pixels (via audit), in world coords
+//   solidFootprintTiles : tiles that block player movement (collision)
+//   frontageTiles       : tiles immediately in front of the visible door
+//   interactionTile     : the single tile the door dialog is anchored to
+//   assignedLotRect     : the canonical lot the building was assigned to
+//   clearanceRect       : lot + safety margin (visual exclusion zone)
+//   depthSortY          : Y value used in y-sort against entities
+//   districtRole        : { district, districtTag, block, row, role }
+//
+// THE CONTRACT IS VALID ONLY WHEN ALL OF THESE AGREE.
+// Atlas crop validity is necessary but NOT sufficient.
+// =====================================================================
+function tilesInRectList(rect){
+  if(!rect) return [];
+  const out=[];
+  for(let x=rect.x; x<rect.x+rect.w; x++){
+    for(let y=rect.y; y<rect.y+rect.h; y++) out.push({x,y});
+  }
+  return out;
+}
+function tileChebyshevDistance(ax,ay,bx,by){
+  return Math.max(Math.abs(ax-bx), Math.abs(ay-by));
+}
+function tileDistanceToRect(rect, tx, ty){
+  if(!rect) return Infinity;
+  const tiles=tilesInRectList(rect);
+  if(tiles.length===0) return Infinity;
+  let best=Infinity;
+  for(const t of tiles){
+    const d=tileChebyshevDistance(t.x,t.y,tx,ty);
+    if(d<best) best=d;
+  }
+  return best;
+}
+function rectsOverlapTiles(a,b){
+  if(!a||!b) return 0;
+  const ox=Math.max(0, Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x));
+  const oy=Math.max(0, Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+  return ox*oy;
+}
+function computeBuildingPlacementContract(building, spriteMetaOverride){
+  if(!building) return null;
+  const TILE_SIZE=TILE;
+  const spriteMeta=spriteMetaOverride
+    || ATLAS_BUILDING_METADATA?.[building.spriteId]
+    || NEWPORT_SPRITE_BY_ID?.[building.spriteId]
+    || atlasManifests?.buildings?.sprites?.[building.spriteId]
+    || null;
+
+  const sourceCrop=spriteMeta
+    ? {
+        x: Number.isFinite(spriteMeta.crop?.x) ? spriteMeta.crop.x : (spriteMeta.sx ?? null),
+        y: Number.isFinite(spriteMeta.crop?.y) ? spriteMeta.crop.y : (spriteMeta.sy ?? null),
+        w: Number.isFinite(spriteMeta.crop?.w) ? spriteMeta.crop.w : (spriteMeta.sw ?? null),
+        h: Number.isFinite(spriteMeta.crop?.h) ? spriteMeta.crop.h : (spriteMeta.sh ?? null)
+      }
+    : null;
+
+  const drawW=Number.isFinite(spriteMeta?.drawW) ? spriteMeta.drawW : (building.w*TILE_SIZE);
+  const drawH=Number.isFinite(spriteMeta?.drawH) ? spriteMeta.drawH : (building.h*TILE_SIZE);
+  const drawScale={
+    x: (sourceCrop && sourceCrop.w) ? drawW/sourceCrop.w : 1,
+    y: (sourceCrop && sourceCrop.h) ? drawH/sourceCrop.h : 1
+  };
+
+  // Sprite-space anchor (in scaled draw-rect pixels). Defaults to bottom-center.
+  const spriteAnchorPx={
+    x: Number.isFinite(spriteMeta?.anchorX) ? spriteMeta.anchorX : Math.round(drawW/2),
+    y: Number.isFinite(spriteMeta?.anchorY) ? spriteMeta.anchorY : drawH
+  };
+
+  const lotTopLeftPx={ x: building.x*TILE_SIZE, y: building.y*TILE_SIZE };
+  // The renderer pins the sprite's anchor pixel to a world pixel computed as:
+  //   footAnchorWorldPx = lotTopLeftPx + (b.anchorX*TILE, b.anchorY*TILE)
+  // That world pixel sits on the TOP edge of tile (b.x+b.anchorX, b.y+b.anchorY).
+  // We expose it here unchanged so callers can SEE where the foot lands.
+  const buildingAnchorTileOffset={
+    x: Number.isFinite(building.anchorX) ? building.anchorX : Math.floor(building.w/2),
+    y: Number.isFinite(building.anchorY) ? building.anchorY : (building.h-1)
+  };
+  const footAnchorWorldPx={
+    x: lotTopLeftPx.x + buildingAnchorTileOffset.x*TILE_SIZE,
+    y: lotTopLeftPx.y + buildingAnchorTileOffset.y*TILE_SIZE
+  };
+
+  const drawRectWorldPx={
+    x: footAnchorWorldPx.x - spriteAnchorPx.x,
+    y: footAnchorWorldPx.y - spriteAnchorPx.y,
+    w: drawW,
+    h: drawH
+  };
+  const drawRectWorldTiles={
+    x: drawRectWorldPx.x/TILE_SIZE,
+    y: drawRectWorldPx.y/TILE_SIZE,
+    w: drawRectWorldPx.w/TILE_SIZE,
+    h: drawRectWorldPx.h/TILE_SIZE
+  };
+
+  // The visual foundation line is the world Y where the sprite's anchor
+  // pixel lands. The visual base TILE is the tile whose BOTTOM EDGE equals
+  // that line — that's the tile the building visually rests on.
+  const visualBaseLineWorldPxY=footAnchorWorldPx.y;
+  const visualBaseTile={
+    x: building.x + buildingAnchorTileOffset.x,
+    y: Math.round(visualBaseLineWorldPxY/TILE_SIZE) - 1
+  };
+  const intendedBaseTile={
+    x: building.x + buildingAnchorTileOffset.x,
+    y: building.y + (building.h-1)
+  };
+
+  // Opaque pixel bounds (sampled by sprite pixel auditor), translated into
+  // both draw-rect coords AND world coords. Null until the audit cache
+  // fills in for this crop.
+  const pixelKey=sourceCrop
+    ? "buildings|"+sourceCrop.x+","+sourceCrop.y+","+sourceCrop.w+","+sourceCrop.h
+    : null;
+  const pixelAudit=pixelKey ? spritePixelAuditCache.get(pixelKey) : null;
+  let opaqueBoundsPxInDraw=null;
+  let opaqueBoundsWorldPx=null;
+  if(pixelAudit?.available && pixelAudit.sampledOpaqueBounds && sourceCrop?.w && sourceCrop?.h){
+    const ob=pixelAudit.sampledOpaqueBounds;
+    opaqueBoundsPxInDraw={
+      x: Math.round(ob.x*drawScale.x),
+      y: Math.round(ob.y*drawScale.y),
+      w: Math.max(1, Math.round(ob.w*drawScale.x)),
+      h: Math.max(1, Math.round(ob.h*drawScale.y))
+    };
+    opaqueBoundsWorldPx={
+      x: drawRectWorldPx.x + opaqueBoundsPxInDraw.x,
+      y: drawRectWorldPx.y + opaqueBoundsPxInDraw.y,
+      w: opaqueBoundsPxInDraw.w,
+      h: opaqueBoundsPxInDraw.h
+    };
+  }
+
+  const lc=building.lotContract||{};
+  const assignedLotRect=lc.lotRect || { x:building.x, y:building.y, w:building.w, h:building.h };
+  const visualLotRect=lc.visualLotRect || assignedLotRect;
+  const clearanceRect=lc.readabilityLotRect || assignedLotRect;
+  const solidFootprintRect=building.collision || lc.collisionFootprint || assignedLotRect;
+  const solidFootprintTiles=tilesInRectList(solidFootprintRect);
+  const interactionRect=building.interaction || lc.interactionRect || null;
+  const frontageTile=lc.frontageTile || building.frontDoorTile
+    || (interactionRect ? { x:interactionRect.x, y:interactionRect.y } : null);
+  const frontageTiles=interactionRect
+    ? tilesInRectList(interactionRect)
+    : (frontageTile ? [frontageTile] : []);
+  const interactionTile=frontageTile
+    || (interactionRect ? { x:interactionRect.x, y:interactionRect.y } : null);
+  const depthSortY=Number.isFinite(building.depthSortY)
+    ? building.depthSortY
+    : (Number.isFinite(lc.depthSortY) ? lc.depthSortY : (solidFootprintRect.y+solidFootprintRect.h));
+  const districtRole={
+    district: lc.district || "unassigned",
+    districtTag: lc.districtTag || resolveNewportDistrictTag(lc.district),
+    block: lc.block || "none",
+    row: lc.row || "none",
+    role: building.role || null
+  };
+
+  return {
+    id: building.id,
+    spriteId: building.spriteId,
+    sourceCrop,
+    drawScale,
+    spriteAnchorPx,
+    footAnchorPx: spriteAnchorPx,
+    footAnchorWorldPx,
+    visualBaseLineWorldPxY,
+    visualBaseTile,
+    intendedBaseTile,
+    drawW,
+    drawH,
+    drawRectWorldPx,
+    drawRectWorldTiles,
+    opaqueBoundsPxInDraw,
+    opaqueBoundsWorldPx,
+    solidFootprintRect,
+    solidFootprintTiles,
+    frontageTiles,
+    interactionTile,
+    assignedLotRect,
+    visualLotRect,
+    clearanceRect,
+    depthSortY,
+    districtRole,
+    pixelAuditAvailable: !!pixelAudit?.available,
+    sourceMeta: spriteMeta ? { drawW: spriteMeta.drawW, drawH: spriteMeta.drawH, anchorX: spriteMeta.anchorX, anchorY: spriteMeta.anchorY } : null
+  };
+}
+
+function evaluateBuildingSeatingContract(contract, building){
+  const failures=[];
+  const warnings=[];
+  if(!contract){
+    return { status:"PENDING_DATA", reason:"contract_unavailable", failures, warnings, pixelAuditPending:true };
+  }
+  const TILE_SIZE=TILE;
+  const baseTile=contract.visualBaseTile;
+  const groundLineWorldPxY=(baseTile.y+1)*TILE_SIZE;
+
+  // 1. Visual base line must sit on a tile boundary (whole-pixel grid).
+  const baseLinePxDelta=Math.abs(contract.visualBaseLineWorldPxY-groundLineWorldPxY);
+  if((contract.visualBaseLineWorldPxY % TILE_SIZE) !== 0 && baseLinePxDelta>2){
+    failures.push({ code:"visual_base_line_off_tile_grid",
+      detail:"visualBaseLineWorldPxY="+contract.visualBaseLineWorldPxY+" expectedNearTileEdge="+groundLineWorldPxY+" deltaPx="+baseLinePxDelta });
+  }
+
+  // 2. Visible base tile must equal the building's intended base tile
+  //    (b.y + h - 1). If the sprite anchor lands at a row above the
+  //    intended foot row the building reads as floating inside its own
+  //    lot — exactly the inn/mercantile/wharf failure mode.
+  if(contract.intendedBaseTile){
+    const dy=contract.intendedBaseTile.y - contract.visualBaseTile.y;
+    if(dy>0){
+      failures.push({ code:"visual_base_tile_above_intended_foot_row",
+        detail:"intendedBaseTile.y="+contract.intendedBaseTile.y+" visualBaseTile.y="+contract.visualBaseTile.y+" tileGap="+dy });
+    } else if(dy<0){
+      warnings.push({ code:"visual_base_tile_below_intended_foot_row",
+        detail:"intendedBaseTile.y="+contract.intendedBaseTile.y+" visualBaseTile.y="+contract.visualBaseTile.y });
+    }
+  }
+
+  // 3. If pixel audit is available, the opaque body must reach the ground
+  //    line — i.e. the bottom of the opaque pixels must be within ½ tile
+  //    of (or below) the foundation line.
+  let pixelAuditPending=false;
+  if(contract.opaqueBoundsWorldPx){
+    const opaqueBottomPx=contract.opaqueBoundsWorldPx.y+contract.opaqueBoundsWorldPx.h;
+    const groundGapPx=groundLineWorldPxY-opaqueBottomPx;
+    if(groundGapPx>TILE_SIZE/2){
+      failures.push({ code:"opaque_body_floats_above_ground_line",
+        detail:"opaqueBottomPx="+opaqueBottomPx+" groundLinePx="+groundLineWorldPxY+" gapPx="+groundGapPx });
+    }
+  } else {
+    pixelAuditPending=true;
+    warnings.push({ code:"opaque_pixel_audit_pending",
+      detail:"sprite pixel audit not yet available; deferred ground-line proof" });
+  }
+
+  // 4. Frontage / interaction tile must be adjacent to (within 1 tile of)
+  //    the visible body. A door 5 tiles south of the building reads as
+  //    "the door is on the wharf, not on the building".
+  if(contract.interactionTile){
+    const drawTilesRect={
+      x: Math.floor(contract.drawRectWorldTiles.x),
+      y: Math.floor(contract.drawRectWorldTiles.y),
+      w: Math.max(1, Math.ceil(contract.drawRectWorldTiles.w)),
+      h: Math.max(1, Math.ceil(contract.drawRectWorldTiles.h))
+    };
+    const distToDraw=tileDistanceToRect(drawTilesRect, contract.interactionTile.x, contract.interactionTile.y);
+    const distToCollision=tileDistanceToRect(contract.solidFootprintRect, contract.interactionTile.x, contract.interactionTile.y);
+    const minDist=Math.min(distToDraw, distToCollision);
+    if(minDist>1){
+      failures.push({ code:"frontage_not_adjacent_to_visible_body",
+        detail:"interactionTile="+JSON.stringify(contract.interactionTile)+" distToDrawRect="+distToDraw+" distToCollision="+distToCollision });
+    }
+  } else {
+    failures.push({ code:"frontage_tile_missing",
+      detail:"no interaction or frontage tile defined" });
+  }
+
+  // 5. Frontage must be reachable by the player (no hidden blockers).
+  if(contract.interactionTile && typeof canMoveToIgnoringDynamicBlockers==="function"){
+    let reachable=false;
+    try { reachable=!!canMoveToIgnoringDynamicBlockers(contract.interactionTile.x, contract.interactionTile.y); }
+    catch(_e) { reachable=false; }
+    if(!reachable){
+      failures.push({ code:"frontage_unreachable",
+        detail:"interactionTile="+JSON.stringify(contract.interactionTile) });
+    }
+  }
+
+  // 6. Collision footprint must overlap the visible draw rect; a 1×1
+  //    collision floating in the middle of a 5×5 lot is implausible.
+  if(contract.solidFootprintRect && contract.drawRectWorldTiles){
+    const overlap=rectsOverlapTiles(contract.solidFootprintRect, contract.drawRectWorldTiles);
+    if(overlap<=0.0001){
+      failures.push({ code:"collision_footprint_disjoint_from_visible_body",
+        detail:"collisionRect="+JSON.stringify(contract.solidFootprintRect)+" drawRectTiles="+JSON.stringify(contract.drawRectWorldTiles) });
+    }
+    const colArea=contract.solidFootprintRect.w*contract.solidFootprintRect.h;
+    if(colArea<1){
+      failures.push({ code:"collision_footprint_zero_area",
+        detail:"area="+colArea });
+    } else if(building && (building.w>=4 || building.h>=4) && colArea<2){
+      failures.push({ code:"collision_footprint_implausibly_small_for_lot",
+        detail:"area="+colArea+" lotW="+building.w+" lotH="+building.h });
+    }
+  }
+
+  // 7. Collision footprint must touch the visible base tile (the foot
+  //    row); else the building's collision is offset from where the
+  //    visible foundation reads.
+  if(contract.solidFootprintRect && contract.visualBaseTile){
+    const baseTileRect={ x:contract.visualBaseTile.x, y:contract.visualBaseTile.y, w:1, h:1 };
+    const baseRowRect={ x:building?.x ?? contract.assignedLotRect.x, y:contract.visualBaseTile.y,
+      w:building?.w ?? contract.assignedLotRect.w, h:1 };
+    if(rectsOverlapTiles(contract.solidFootprintRect, baseRowRect)<=0.0001){
+      failures.push({ code:"collision_footprint_disjoint_from_visual_base_row",
+        detail:"collisionRect="+JSON.stringify(contract.solidFootprintRect)+" visualBaseRow="+JSON.stringify(baseRowRect) });
+    }
+  }
+
+  // 8. Draw rect should fit assigned lot, allowing a small roof-overhang
+  //    above & to the sides. Use the AUTHORED lot, not the
+  //    auto-derived readabilityLotRect (which is tautological).
+  if(contract.assignedLotRect && contract.drawRectWorldTiles){
+    const ROOF_OVERHANG_TILES=0.5;
+    const lot=contract.assignedLotRect;
+    const dr=contract.drawRectWorldTiles;
+    const overflow={
+      left: Math.max(0, lot.x-dr.x),
+      right: Math.max(0, (dr.x+dr.w)-(lot.x+lot.w)),
+      top: Math.max(0, lot.y-dr.y),
+      bottom: Math.max(0, (dr.y+dr.h)-(lot.y+lot.h))
+    };
+    if(overflow.left>ROOF_OVERHANG_TILES || overflow.right>ROOF_OVERHANG_TILES || overflow.bottom>ROOF_OVERHANG_TILES){
+      failures.push({ code:"draw_rect_exceeds_assigned_lot",
+        detail:"overflow="+JSON.stringify(overflow)+" assignedLot="+JSON.stringify(lot)+" drawRect="+JSON.stringify(dr) });
+    }
+  }
+
+  // 9. depthSortY should equal the collision-bottom (so y-sort against
+  //    entities matches the visible foot line).
+  if(contract.solidFootprintRect){
+    const expectedSortY=contract.solidFootprintRect.y+contract.solidFootprintRect.h;
+    if(Math.abs(contract.depthSortY-expectedSortY)>0.001){
+      warnings.push({ code:"depth_sort_y_diverges_from_collision_bottom",
+        detail:"depthSortY="+contract.depthSortY+" expected="+expectedSortY });
+    }
+  }
+
+  return {
+    status: failures.length===0 ? "PASS" : "FAIL",
+    failures, warnings,
+    pixelAuditPending
+  };
+}
+
+let buildingSeatingContractQaResult={ status:"PENDING_INIT", reason:"deferred_until_atlas_settled",
+  productionBuildingCount:0, passCount:0, failCount:0, pendingAuditCount:0,
+  failedBuildings:[], reports:[] };
+let finalBuildingSeatingContractQaResult=null;
+
+function emitBuildingSeatingContractQA(){
+  if(!world || !Array.isArray(world.buildings) || world.buildings.length===0){
+    const reason=NEWPORT_CANONICAL_FOUNDATION_MODE ? "production_building_placement_deferred_35_13C" : "world_buildings_unavailable";
+    const status=reason==="production_building_placement_deferred_35_13C" ? "PENDING_35_13C" : "PENDING_DATA";
+    const result={ status, reason, productionBuildingCount:0, passCount:0, failCount:0, pendingAuditCount:0, failedBuildings:[], reports:[] };
+    console.info('[Building Seating Contract QA] status='+status+' reason='+reason+' productionBuildingCount=0 reports=[]');
+    return result;
+  }
+  const atlasReady=!!(atlasImages?.buildings?.complete && atlasImages.buildings.naturalWidth>0 && atlasImages.buildings.naturalHeight>0);
+  if(!atlasReady){
+    const result={ status:"PENDING_ASSETS", reason:"building_atlas_not_ready",
+      productionBuildingCount:world.buildings.length, passCount:0, failCount:0, pendingAuditCount:world.buildings.length,
+      failedBuildings:[], reports:[] };
+    console.info('[Building Seating Contract QA] status=PENDING_ASSETS reason=building_atlas_not_ready productionBuildingCount='+result.productionBuildingCount);
+    return result;
+  }
+  const reports=world.buildings.map((b)=>{
+    const contract=computeBuildingPlacementContract(b);
+    const evalResult=evaluateBuildingSeatingContract(contract, b);
+    return {
+      buildingId: b.id,
+      spriteId: b.spriteId,
+      role: b.role,
+      district: contract?.districtRole?.district,
+      visualBaseTile: contract?.visualBaseTile,
+      intendedBaseTile: contract?.intendedBaseTile,
+      visualBaseLineWorldPxY: contract?.visualBaseLineWorldPxY,
+      drawRectWorldTiles: contract?.drawRectWorldTiles,
+      opaqueBoundsWorldPx: contract?.opaqueBoundsWorldPx,
+      solidFootprintRect: contract?.solidFootprintRect,
+      interactionTile: contract?.interactionTile,
+      depthSortY: contract?.depthSortY,
+      pixelAuditAvailable: contract?.pixelAuditAvailable===true,
+      pixelAuditPending: evalResult.pixelAuditPending===true,
+      status: evalResult.status,
+      failures: evalResult.failures,
+      warnings: evalResult.warnings
+    };
+  });
+  const failed=reports.filter((r)=>r.status==="FAIL");
+  const pendingAuditCount=reports.filter((r)=>r.pixelAuditPending).length;
+  const status=failed.length===0
+    ? (pendingAuditCount>0 ? "PENDING_AUDIT" : "PASS")
+    : "FAIL";
+  const result={ status, productionBuildingCount:reports.length,
+    passCount:reports.length-failed.length, failCount:failed.length, pendingAuditCount,
+    failedBuildings: failed.map((r)=>r.buildingId), reports };
+  console.info('[Building Seating Contract QA] productionBuildingCount='+reports.length
+    +' passCount='+result.passCount+' failCount='+failed.length
+    +' pendingAuditCount='+pendingAuditCount
+    +' failedBuildings='+JSON.stringify(result.failedBuildings)
+    +' status='+status);
+  console.info('[Building Seating Contract QA] reports='+JSON.stringify(reports.map((r)=>({
+    buildingId:r.buildingId, spriteId:r.spriteId, status:r.status,
+    visualBaseTile:r.visualBaseTile, intendedBaseTile:r.intendedBaseTile,
+    visualBaseLineWorldPxY:r.visualBaseLineWorldPxY,
+    drawRectWorldTiles:r.drawRectWorldTiles,
+    interactionTile:r.interactionTile,
+    failures:r.failures.map((f)=>f.code),
+    warningCodes:r.warnings.map((w)=>w.code)
+  }))));
+  return result;
+}
+
+function refreshBuildingSeatingContractQAIfSettled(){
+  const atlasReady=!!(atlasImages?.buildings?.complete && atlasImages.buildings.naturalWidth>0 && atlasImages.buildings.naturalHeight>0);
+  const worldReady=!!(world && Array.isArray(world.buildings) && world.buildings.length>0);
+  if(NEWPORT_CANONICAL_FOUNDATION_MODE && world && Array.isArray(world.buildings) && world.buildings.length===0){
+    buildingSeatingContractQaResult={ status:"PENDING_35_13C", reason:"production_building_placement_deferred_35_13C",
+      productionBuildingCount:0, passCount:0, failCount:0, pendingAuditCount:0, failedBuildings:[], reports:[] };
+    return buildingSeatingContractQaResult;
+  }
+  if(!atlasReady || !worldReady){
+    buildingSeatingContractQaResult={ status:"PENDING_INIT",
+      reason: !worldReady ? "world_buildings_unavailable" : "building_atlas_not_ready",
+      productionBuildingCount:0, passCount:0, failCount:0, pendingAuditCount:0, failedBuildings:[], reports:[] };
+    return buildingSeatingContractQaResult;
+  }
+  if(finalBuildingSeatingContractQaResult && finalBuildingSeatingContractQaResult.pendingAuditCount===0){
+    return finalBuildingSeatingContractQaResult;
+  }
+  buildingSeatingContractQaResult=emitBuildingSeatingContractQA();
+  if(buildingSeatingContractQaResult.status==="PASS" || buildingSeatingContractQaResult.status==="FAIL"){
+    finalBuildingSeatingContractQaResult=buildingSeatingContractQaResult;
+  }
+  return buildingSeatingContractQaResult;
+}
+
 function evaluateVisualFirstPlacementContract(spec){
   const TILE_SIZE=TILE;
   const b=spec.building;
@@ -8483,10 +9180,11 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13Q" && ATLAS_SELECTOR_VERSION==="selector-v35-13q-newport-historic-placement-depth-order";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13R" && ATLAS_SELECTOR_VERSION==="selector-v35-13r-newport-building-placement-contract";
   const harborWaterVisualQa=ensureQaResult(emitNewportHarborWaterVisualQA(),"newport_harbor_water_visual_not_initialized");
   const harborWaterVisualPass=harborWaterVisualQa.status==="PASS";
   refreshBuildingPlacementContractQAIfSettled();
+  refreshBuildingSeatingContractQAIfSettled();
   const latestVisualCompositionQa=ensureQaResult(refreshNewportVisualCompositionQAIfSettled(),"newport_visual_composition_not_initialized");
   const visualCompositionDeferred=foundationMode && latestVisualCompositionQa.status==="PENDING_35_13C";
   const visualCompositionSettled=visualCompositionDeferred || !String(latestVisualCompositionQa.status).startsWith("PENDING");
@@ -8584,10 +9282,21 @@ function buildWayfarerQaReport(){
   const harborFoundationOk=harborStatus==="PASS" || (foundationMode && !productionPlacementActive && harborStatus==="PENDING_35_13C");
   const wharfReadabilityOk=wharfReadabilityQaResult.status==="PASS" || (foundationMode && !productionPlacementActive && wharfReadabilityQaResult.status==="PENDING_35_13C");
   const buildingPlacementOk=buildingPlacementContractQaResult.status==="PASS" || (foundationMode && !productionPlacementActive && buildingPlacementContractQaResult.status==="PENDING_35_13C");
+  // 35.13R: in-world seating/anchor/frontage gate.
+  // Atlas-crop integrity is necessary but not sufficient. This gate fails
+  // if the building's visible foot doesn't sit on its intended base tile,
+  // if the door tile isn't adjacent to the visible body, if the collision
+  // footprint is disjoint from or implausibly small for the visible body,
+  // or if the assigned-lot fit is violated by more than one roof-overhang.
+  const buildingSeatingOk=buildingSeatingContractQaResult.status==="PASS"
+    || (foundationMode && !productionPlacementActive && buildingSeatingContractQaResult.status==="PENDING_35_13C");
+  const buildingSeatingPendingAudit=buildingSeatingContractQaResult.status==="PENDING_AUDIT"
+    || buildingSeatingContractQaResult.status==="PENDING_ASSETS"
+    || buildingSeatingContractQaResult.status==="PENDING_INIT";
   const foundationClosureQa=ensureQaResult(emitNewportFoundationClosureQA(),"newport_foundation_closure_not_initialized");
   const foundationClosureOk=productionPlacementDeferred ? foundationClosureQa.status==="PENDING_35_13C" : foundationClosureQa.status==="PASS";
   const productionSystemsPass=productionPlacementDeferred || (productionPlacementActive&&renderAuditPass&&sourceTruthPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&visualCompositionPass&&validationFramePass&&masterplanPass&&playerStuckQaResult.status==="PASS"&&actualCameraViewportPass&&spriteCropIntegrityPass);
-  const foundationSystemsPass=buildPhaseMatches&&canonicalBlueprintQa.status==="PASS"&&routeSourceQa.status==="PASS"&&foundationLayoutQa.status==="PASS"&&savedSpawnPass&&freshSpawnPass&&traversalQaResult.status==="PASS"&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&harborFoundationOk&&harborWaterVisualPass&&wharfReadabilityOk&&buildingPlacementOk&&foundationClosureOk&&foundationLockPass&&productionSystemsPass&&actualCameraViewportPass&&spriteCropIntegrityPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone;
+  const foundationSystemsPass=buildPhaseMatches&&canonicalBlueprintQa.status==="PASS"&&routeSourceQa.status==="PASS"&&foundationLayoutQa.status==="PASS"&&savedSpawnPass&&freshSpawnPass&&traversalQaResult.status==="PASS"&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&harborFoundationOk&&harborWaterVisualPass&&wharfReadabilityOk&&buildingPlacementOk&&buildingSeatingOk&&!buildingSeatingPendingAudit&&foundationClosureOk&&foundationLockPass&&productionSystemsPass&&actualCameraViewportPass&&spriteCropIntegrityPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone;
   const preliminaryStatus=foundationMode
     ? ((!renderReady || !harborSettled || harborStatus==="PENDING_ASSETS" || !renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled) ? "PENDING_ASSETS" : (foundationSystemsPass ? (productionPlacementDeferred?"PENDING_35_13C":"PASS") : "FAIL"))
     : ((!renderAuditSettled || !sourceTruthSettled || !visualCompositionSettled || !harborSettled || harborStatus==="PENDING_ASSETS")?"PENDING_ASSETS":((settled&&buildPhaseMatches&&savedSpawnPass&&freshSpawnPass&&freshRenderPass&&uiStatePass&&activeTileMovementPass&&traversalQaResult.status==="PASS"&&harborStatus==="PASS"&&playerStatePass&&collisionSpamPass&&bootModePass&&canvasRenderPass&&topologyPass&&routeTileSweepPass&&routeCollisionPass&&questLoopPass&&atlasProofPass&&buildingOverlapQaResult.status==="PASS"&&wharfReadabilityQaResult.status==="PASS"&&playerStuckQaResult.status==="PASS"&&visualCompositionPass&&masterplanPass&&consoleFatalErrors==="none"&&qaEmitterFatalNone) ? "PASS" : "FAIL"));
@@ -8625,6 +9334,10 @@ function buildWayfarerQaReport(){
   addFailure("buildingSpriteCropIntegrity",spriteCropIntegrityPass,"building_sprite_crop_integrity_failed");
   addFailure("newportMasterplan",masterplanPass,"newport_masterplan_failed");
   addFailure("buildingPlacement",buildingPlacementOk,"building_placement_contract_failed");
+  addFailure("buildingSeatingContract",buildingSeatingOk && !buildingSeatingPendingAudit,
+    buildingSeatingPendingAudit
+      ? "building_seating_contract_pending_pixel_audit"
+      : ("building_seating_contract_failed:"+JSON.stringify(buildingSeatingContractQaResult.failedBuildings||[])));
   addFailure("newportTownFoundationLock",foundationLockPass,"newport_town_foundation_lock_failed");
   if(consoleFatalErrors!=="none") failedDomains.fatalErrors="fatal_js_errors_present";
   if(!qaEmitterFatalNone) failedDomains.qaEmitter="qa_emitter_exception";
@@ -8661,6 +9374,7 @@ function buildWayfarerQaReport(){
     routeSourceAuthority:normalizeQaStatus(routeSourceQa.status),
     newportFoundationLayout:normalizeQaStatus(foundationLayoutQa.status),
     buildingPlacementContract:normalizeQaStatus(buildingPlacementContractQaResult.status),
+    buildingSeatingContract:normalizeQaStatus(buildingSeatingContractQaResult.status),
     newportVisualComposition:normalizeQaStatus(latestVisualCompositionQa.status),
     newportValidationFrame:normalizeQaStatus(validationFrameQa.status),
     actualCameraViewport:normalizeQaStatus(actualCameraViewportQa.status),
@@ -14365,6 +15079,7 @@ function drawWorld(){
   drawAtlasDebugPreview();
   drawBuildingSpriteProof();
   drawAtlasProofTopLeftLine();
+  drawNewportInWorldPlacementProofOverlays();
   ctx.restore();
 }
 
