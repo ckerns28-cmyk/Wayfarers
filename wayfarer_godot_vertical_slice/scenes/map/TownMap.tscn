@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/MapLayer.gd" id="1_maplayer"]
+[ext_resource type="Script" path="res://scenes/map/CollisionNavigationLayer.gd" id="2_collision"]
+
+[node name="TownMap" type="Node2D"]
+
+[node name="GroundGrassLayer" type="Node2D" parent="."]
+script = ExtResource("1_maplayer")
+layer_id = "ground"
+
+[node name="WharfWaterLayer" type="Node2D" parent="."]
+script = ExtResource("1_maplayer")
+layer_id = "wharf_water"
+
+[node name="RoadsPlazaLayer" type="Node2D" parent="."]
+script = ExtResource("1_maplayer")
+layer_id = "roads"
+
+[node name="DecorativePropsLayer" type="Node2D" parent="."]
+script = ExtResource("1_maplayer")
+layer_id = "props"
+
+[node name="CollisionNavigationLayer" type="Node2D" parent="."]
+script = ExtResource("2_collision")
+
