@@ -1076,6 +1076,7 @@ let blockedDirectionalKeysUntilRelease = new Set();
 let lastLoggedZoneEntryId = currentZoneId;
 const VIEW_TILES_X_GAMEPLAY = 22;
 const VIEW_TILES_Y_GAMEPLAY = 14;
+const NEWPORT_GAMEPLAY_CAMERA_BIAS_TILES = Object.freeze({ x:1, y:-2 });
 function detectActualCameraViewportMode(){
   if(typeof window==="undefined"||!window?.location) return false;
   const params=new URLSearchParams(window.location.search);
@@ -1281,16 +1282,17 @@ const HEARTHVALE_ATLAS_MANIFEST_PATHS = Object.freeze({
 const HEARTHVALE_PROOF_BUILDING_IDS = Object.freeze(new Set(["b_inn_tavern","b_mercantile","b_village_hall","b_res_small","b_res_large","b_hunter_lodge","b_boathouse","b_counting_house","b_dock_storehouse","b_chandlery_front","b_market_shed","b_shop_house","b_townhouse_row_a","b_townhouse_row_b","b_georgian_residence","b_service_dependency","b_custom_house","b_elite_mansion","b_prestige_block"]));
 const HEARTHVALE_PROOF_PROP_TYPES = Object.freeze(new Set(["bench","barrel","crate","signPost"]));
 const ATLAS_BUILDING_METADATA = Object.freeze({
-  village_hall_meeting_house:{ id:"village_hall_meeting_house", role:"village_hall_meeting_house", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:758, y:493, w:459, h:355 }, drawW:188, drawH:145, anchorX:94, anchorY:132, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
+  village_hall_meeting_house:{ id:"village_hall_meeting_house", role:"village_hall_meeting_house", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:853, y:10, w:327, h:460 }, drawW:134, drawH:188, anchorX:67, anchorY:124, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
   mercantile_shop:{ id:"mercantile_shop", role:"mercantile_shop", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:473, y:67, w:329, h:403 }, drawW:131, drawH:160, anchorX:64, anchorY:126, footprint:{ w:5, h:5 }, collisionRect:{ x:0, y:4, w:5, h:1 }, interactionRect:{ x:2, y:4, w:1, h:1 }, doorTile:{ x:2, y:4 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
-  inn_tavern_v1:{ id:"inn_tavern_v1", role:"inn_tavern", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:33, y:120, w:420, h:340 }, drawW:192, drawH:156, anchorX:96, anchorY:143, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
+  inn_tavern_v1:{ id:"inn_tavern_v1", role:"inn_tavern", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:24, y:36, w:446, h:436 }, drawW:190, drawH:186, anchorX:95, anchorY:173, footprint:{ w:6, h:5 }, collisionRect:{ x:0, y:3, w:6, h:2 }, interactionRect:{ x:3, y:4, w:1, h:1 }, doorTile:{ x:3, y:4 }, labelAnchor:{ x:3, y:1 }, decorExclusionRect:{ x:0, y:0, w:6, h:3 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
   // 33.1.1C: secondary buildings are FALLBACK-GATED pending atlas catalog verification.
   // crop coords are UNVERIFIED REFERENCE CANDIDATES from prior scan passes, NOT confirmed production crops.
   // Do NOT set productionReady:true until crop passes [Atlas Catalog Scan] and human visual review.
   residence_small:{ id:"residence_small", role:"residence_small", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:439, y:526, w:254, h:309 }, drawW:116, drawH:116, anchorX:58, anchorY:102, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
   residence_large:{ id:"residence_large", role:"residence_large", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:44, y:835, w:367, h:344 }, drawW:144, drawH:120, anchorX:72, anchorY:104, footprint:{ w:5, h:4 }, collisionRect:{ x:0, y:2, w:5, h:2 }, interactionRect:{ x:2, y:3, w:1, h:1 }, doorTile:{ x:2, y:3 }, labelAnchor:{ x:2, y:1 }, decorExclusionRect:{ x:0, y:0, w:5, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
-  hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:61, y:939, w:309, h:308 }, drawW:120, drawH:120, anchorX:60, anchorY:104, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
-  pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:470, y:939, w:320, h:250 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null }
+  hunter_lodge_or_outfitter:{ id:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:30, y:870, w:400, h:380 }, drawW:142, drawH:135, anchorX:71, anchorY:119, footprint:{ w:4, h:4 }, collisionRect:{ x:0, y:2, w:4, h:2 }, interactionRect:{ x:1, y:3, w:1, h:1 }, doorTile:{ x:1, y:3 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:2 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
+  pond_boathouse_or_waterfront_shed:{ id:"pond_boathouse_or_waterfront_shed", role:"pond_boathouse_or_waterfront_shed", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:470, y:939, w:320, h:250 }, drawW:150, drawH:92, anchorX:75, anchorY:72, footprint:{ w:5, h:3 }, collisionRect:{ x:0, y:1, w:5, h:2 }, interactionRect:{ x:2, y:2, w:1, h:1 }, doorTile:{ x:2, y:2 }, labelAnchor:{ x:2, y:0 }, decorExclusionRect:{ x:0, y:0, w:5, h:1 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null },
+  service_dependency_shed:{ id:"service_dependency_shed", role:"service_outbuilding_dependency", atlas:"hearthvale_buildings_atlas_v1.png", crop:{ x:880, y:910, w:285, h:285 }, drawW:108, drawH:108, anchorX:54, anchorY:98, footprint:{ w:4, h:3 }, collisionRect:{ x:0, y:2, w:4, h:1 }, interactionRect:{ x:3, y:0, w:1, h:1 }, doorTile:{ x:3, y:0 }, labelAnchor:{ x:1, y:1 }, decorExclusionRect:{ x:0, y:0, w:4, h:1 }, productionReady:true, calibrationOnly:false, debugOnly:false, proofEnabled:true, fallbackReason:null }
 });
 
 // 33.1.4d: Sprite-keyed atlas presentation table — downstream helper providing
@@ -1300,8 +1302,8 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
   inn_tavern_v1:{
     spriteId:"inn_tavern_v1", role:"inn_tavern",
     atlasPosition:"top_left", presentationReason:"top_left_inn_tavern_confirmed",
-    crop:{x:33,y:120,w:420,h:340},
-    drawW:192, drawH:156, anchorX:96, anchorY:143,
+    crop:{x:24,y:36,w:446,h:436},
+    drawW:190, drawH:186, anchorX:95, anchorY:173,
     productionAtlasEnabled:true, registrySource:"human_reviewed"
   },
   mercantile_shop:{
@@ -1317,7 +1319,7 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
     spriteId:"village_hall_meeting_house", role:"village_hall_meeting_house",
     atlasPosition:"top_right", presentationReason:"top_right_meeting_house_civic_anchor",
     crop:{x:853,y:10,w:327,h:460},
-    drawW:134, drawH:188, anchorX:67, anchorY:171,
+    drawW:134, drawH:188, anchorX:67, anchorY:124,
     productionAtlasEnabled:true, registrySource:"human_reviewed"
   },
   residence_small:{
@@ -1338,8 +1340,8 @@ const HEARTHVALE_ATLAS_SPRITE_PRESENTATION = Object.freeze({
   hunter_lodge_or_outfitter:{
     spriteId:"hunter_lodge_or_outfitter", role:"hunter_lodge_or_outfitter",
     atlasPosition:"bottom_left", presentationReason:"bottom_left_hunter_lodge",
-    crop:{x:61,y:939,w:309,h:308},
-    drawW:120, drawH:120, anchorX:60, anchorY:104,
+    crop:{x:30,y:870,w:400,h:380},
+    drawW:142, drawH:135, anchorX:71, anchorY:119,
     productionAtlasEnabled:true, registrySource:"human_reviewed"
   },
   pond_boathouse_or_waterfront_shed:{
@@ -1360,17 +1362,17 @@ const HEARTHVALE_BUILDING_SEMANTIC_REGISTRY = Object.freeze({
   b_hunter_lodge:{ buildingId:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", atlasIdentity:"bottom_left_hunter_lodge", crop:HEARTHVALE_ATLAS_SPRITE_PRESENTATION.hunter_lodge_or_outfitter.crop, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_boathouse:{ buildingId:"b_boathouse", role:"boathouse_ship_shed_shipwright", spriteId:"newport_dockside_storehouse", atlasIdentity:"newport_dockside_storehouse", crop:{x:35,y:64,w:391,h:358}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_counting_house:{ buildingId:"b_counting_house", role:"warehouse_counting_house", spriteId:"newport_counting_house_civic_exchange", atlasIdentity:"newport_counting_house_civic_exchange", crop:{x:718,y:823,w:500,h:376}, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_dock_storehouse:{ buildingId:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse_long", atlasIdentity:"newport_dockside_storehouse_long", crop:{x:368,y:482,w:429,h:292}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_dock_storehouse:{ buildingId:"b_dock_storehouse", role:"dockside_storehouse", spriteId:"newport_dockside_storehouse_long", atlasIdentity:"newport_dockside_storehouse_long_complete_wharf", crop:{x:365,y:865,w:385,h:350}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_chandlery_front:{ buildingId:"b_chandlery_front", role:"chandlery_outfitter_frontage", spriteId:"newport_chandlery_outfitter_front", atlasIdentity:"newport_chandlery_outfitter_front", crop:{x:443,y:81,w:370,h:333}, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_market_shed:{ buildingId:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", atlasIdentity:"newport_market_shed_stalls", crop:{x:42,y:878,w:275,h:264}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_market_shed:{ buildingId:"b_market_shed", role:"market_shed_harbor_stalls", spriteId:"newport_market_shed_stalls", atlasIdentity:"newport_market_shed_stalls_complete", crop:{x:415,y:810,w:405,h:420}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_shop_house:{ buildingId:"b_shop_house", role:"waterfront_mixed_use_shop_house", spriteId:"newport_waterfront_shop_house", atlasIdentity:"newport_waterfront_shop_house", crop:{x:434,y:78,w:398,h:320}, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_townhouse_row_a:{ buildingId:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"newport_narrow_merchant_townhouse_a", atlasIdentity:"newport_narrow_merchant_townhouse_a", crop:{x:130,y:437,w:184,h:338}, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_townhouse_row_b:{ buildingId:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", atlasIdentity:"newport_modest_clapboard_residence_a", crop:{x:35,y:471,w:392,h:318}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_townhouse_row_a:{ buildingId:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"newport_narrow_merchant_townhouse_a", atlasIdentity:"newport_narrow_merchant_townhouse_a_complete", crop:{x:900,y:432,w:245,h:352}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_townhouse_row_b:{ buildingId:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", atlasIdentity:"newport_modest_clapboard_residence_a_complete", crop:{x:80,y:425,w:285,h:370}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_georgian_residence:{ buildingId:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"newport_georgian_merchant_residence_a", atlasIdentity:"newport_georgian_merchant_residence_a", crop:{x:33,y:31,w:385,h:370}, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_service_dependency:{ buildingId:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", atlasIdentity:"newport_service_dependency_backlot", crop:{x:354,y:910,w:338,h:234}, productionAtlasLocked:false, productionAtlasEnabled:true },
+  b_service_dependency:{ buildingId:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"service_dependency_shed", atlasIdentity:"hearthvale_service_dependency_shed", crop:{x:880,y:910,w:285,h:285}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_custom_house:{ buildingId:"b_custom_house", role:"custom_house_exchange_hall", spriteId:"newport_custom_house_civic_front", atlasIdentity:"newport_custom_house_civic_front", crop:{x:42,y:824,w:368,h:357}, productionAtlasLocked:false, productionAtlasEnabled:true },
   b_elite_mansion:{ buildingId:"b_elite_mansion", role:"elite_garden_front_mansion", spriteId:"newport_elite_garden_mansion_a", atlasIdentity:"newport_elite_garden_mansion_a", crop:{x:841,y:65,w:372,h:334}, productionAtlasLocked:false, productionAtlasEnabled:true },
-  b_prestige_block:{ buildingId:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", atlasIdentity:"newport_formal_townhouse_block_a", crop:{x:828,y:448,w:398,h:331}, productionAtlasLocked:false, productionAtlasEnabled:true }
+  b_prestige_block:{ buildingId:"b_prestige_block", role:"formal_townhouse_block", spriteId:"newport_formal_townhouse_block_a", atlasIdentity:"newport_formal_townhouse_block_a_complete", crop:{x:455,y:45,w:360,h:380}, productionAtlasLocked:false, productionAtlasEnabled:true }
 });
 const HEARTHVALE_PRODUCTION_BUILDING_IDS=Object.freeze(Object.keys(HEARTHVALE_BUILDING_SEMANTIC_REGISTRY));
 
@@ -1391,9 +1393,9 @@ const NEWPORT_STRUCTURE_PACK_REGISTRY=Object.freeze([
   { spriteId:"newport_georgian_merchant_residence_a", sourceCandidateId:"newport_v1a_c00", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:33,y:31,w:385,h:370}, drawW:156, drawH:150, anchorX:78, anchorY:136, footprint:{w:5,h:5}, role:"georgian_merchant_residence", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_elite_garden_mansion_a", sourceCandidateId:"newport_v1a_c01", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:841,y:65,w:372,h:334}, drawW:156, drawH:140, anchorX:78, anchorY:126, footprint:{w:5,h:4}, role:"elite_garden_front_residence", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_waterfront_shop_house", sourceCandidateId:"newport_v1a_c02", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:434,y:78,w:398,h:320}, drawW:168, drawH:134, anchorX:84, anchorY:122, footprint:{w:5,h:4}, role:"waterfront_mixed_use_shop_house", productionReady:true, acceptedForLiveTownUse:true },
-  { spriteId:"newport_narrow_merchant_townhouse_a", sourceCandidateId:"newport_v1a_c03", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:130,y:437,w:184,h:338}, drawW:90, drawH:166, anchorX:45, anchorY:148, footprint:{w:3,h:5}, role:"narrow_merchant_townhouse", productionReady:true, acceptedForLiveTownUse:true },
-  { spriteId:"newport_formal_townhouse_block_a", sourceCandidateId:"newport_v1a_c04", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:828,y:448,w:398,h:331}, drawW:168, drawH:140, anchorX:84, anchorY:126, footprint:{w:5,h:4}, role:"formal_townhouse_block", productionReady:true, acceptedForLiveTownUse:true },
-  { spriteId:"newport_dockside_storehouse_long", sourceCandidateId:"newport_v1a_c05", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:368,y:482,w:429,h:292}, drawW:176, drawH:120, anchorX:88, anchorY:108, footprint:{w:6,h:4}, role:"dockside_storehouse", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_narrow_merchant_townhouse_a", sourceCandidateId:"newport_v1a_c04_reframed_narrow_townhouse", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:900,y:432,w:245,h:352}, drawW:110, drawH:158, anchorX:55, anchorY:148, footprint:{w:3,h:5}, role:"narrow_merchant_townhouse", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_formal_townhouse_block_a", sourceCandidateId:"newport_v1b_reframed_formal_rowhouses", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:455,y:45,w:360,h:380}, drawW:170, drawH:180, anchorX:85, anchorY:160, footprint:{w:5,h:5}, role:"formal_townhouse_block", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_dockside_storehouse_long", sourceCandidateId:"newport_v1a_wharf_storehouse_reframed", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:365,y:865,w:385,h:350}, drawW:176, drawH:160, anchorX:88, anchorY:160, footprint:{w:6,h:5}, role:"dockside_storehouse", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_custom_house_civic_front", sourceCandidateId:"newport_v1a_c06", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:42,y:824,w:368,h:357}, drawW:154, drawH:150, anchorX:77, anchorY:136, footprint:{w:5,h:5}, role:"civic_custom_house_variant", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_elite_garden_mansion_b", sourceCandidateId:"newport_v1a_c07", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:828,y:824,w:394,h:345}, drawW:166, drawH:146, anchorX:83, anchorY:132, footprint:{w:5,h:4}, role:"elite_garden_front_residence", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_georgian_merchant_residence_b", sourceCandidateId:"newport_v1a_c08", sheetId:"hearthvale_newport_structure_pack_v1_a", crop:{x:427,y:828,w:378,h:338}, drawW:160, drawH:142, anchorX:80, anchorY:128, footprint:{w:5,h:4}, role:"georgian_merchant_residence", productionReady:true, acceptedForLiveTownUse:true },
@@ -1402,10 +1404,10 @@ const NEWPORT_STRUCTURE_PACK_REGISTRY=Object.freeze([
   { spriteId:"newport_chandlery_outfitter_front", sourceCandidateId:"newport_v1b_c01", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:443,y:81,w:370,h:333}, drawW:154, drawH:138, anchorX:77, anchorY:124, footprint:{w:5,h:4}, role:"chandlery_outfitter_frontage", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_market_frontage_row", sourceCandidateId:"newport_v1b_c02", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:838,y:94,w:388,h:319}, drawW:162, drawH:132, anchorX:81, anchorY:118, footprint:{w:5,h:4}, role:"waterfront_mixed_use_shop_house", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_narrow_merchant_townhouse_b", sourceCandidateId:"newport_v1b_c03", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:913,y:460,w:198,h:327}, drawW:98, drawH:162, anchorX:49, anchorY:146, footprint:{w:3,h:5}, role:"narrow_merchant_townhouse", productionReady:true, acceptedForLiveTownUse:true },
-  { spriteId:"newport_modest_clapboard_residence_a", sourceCandidateId:"newport_v1b_c04", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:35,y:471,w:392,h:318}, drawW:164, drawH:132, anchorX:82, anchorY:118, footprint:{w:5,h:4}, role:"modest_clapboard_residence", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_modest_clapboard_residence_a", sourceCandidateId:"newport_v1b_c04_reframed_modest_residence", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:80,y:425,w:285,h:370}, drawW:120, drawH:156, anchorX:60, anchorY:142, footprint:{w:4,h:5}, role:"modest_clapboard_residence", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_formal_townhouse_block_b", sourceCandidateId:"newport_v1b_c05", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:456,y:471,w:371,h:319}, drawW:156, drawH:132, anchorX:78, anchorY:118, footprint:{w:5,h:4}, role:"formal_townhouse_block", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_counting_house_civic_exchange", sourceCandidateId:"newport_v1b_c06", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:718,y:823,w:500,h:376}, drawW:188, drawH:154, anchorX:94, anchorY:140, footprint:{w:6,h:5}, role:"civic_custom_house_variant", productionReady:true, acceptedForLiveTownUse:true },
-  { spriteId:"newport_market_shed_stalls", sourceCandidateId:"newport_v1b_c07", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:42,y:878,w:275,h:264}, drawW:116, drawH:112, anchorX:58, anchorY:100, footprint:{w:4,h:3}, role:"market_shed_harbor_stall", productionReady:true, acceptedForLiveTownUse:true },
+  { spriteId:"newport_market_shed_stalls", sourceCandidateId:"newport_v1b_market_hall_reframed", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:415,y:810,w:405,h:420}, drawW:100, drawH:104, anchorX:64, anchorY:104, footprint:{w:4,h:4}, role:"market_shed_harbor_stall", productionReady:true, acceptedForLiveTownUse:true },
   { spriteId:"newport_service_dependency_backlot", sourceCandidateId:"newport_v1b_c08", sheetId:"hearthvale_newport_structure_pack_v1_b", crop:{x:354,y:910,w:338,h:234}, drawW:142, drawH:98, anchorX:71, anchorY:84, footprint:{w:4,h:3}, role:"service_dependency_outbuilding", productionReady:true, acceptedForLiveTownUse:true }
 ]);
 
@@ -1688,11 +1690,11 @@ function applySemanticRegistryToManifest(){
     });
   }
 }
-const WAYFARER_PHASE = "35.13O";
+const WAYFARER_PHASE = "35.13P";
 const NEWPORT_CANONICAL_FOUNDATION_MODE = true;
 const NEWPORT_PRODUCTION_BUILDING_PLACEMENT_ACTIVE = true;
-const WAYFARER_BUILD_LABEL = "Phase 35.13O — Building Sprite Source Repair & Visual Proof Lock";
-const ATLAS_SELECTOR_VERSION = "selector-v35-13o-building-sprite-source-repair";
+const WAYFARER_BUILD_LABEL = "Phase 35.13P — Replace Bad Sprite Sources & Viewport Crop Lock";
+const ATLAS_SELECTOR_VERSION = "selector-v35-13p-replace-bad-sprite-sources-viewport-lock";
 
 const newportStructurePackApplyState={ applied:false, pendingLogged:false };
 function applyNewportStructurePackToManifest(){
@@ -1757,6 +1759,28 @@ const atlasReadinessLogState={
   catalogScanReadyLogged:false,
   lastDebugToken:null
 };
+function getAtlasSpriteSheetImage(atlasId, sprite){
+  const atlasRef=(typeof sprite?.atlas==="string") ? sprite.atlas : "";
+  if(atlasRef && atlasSheetByUrl[atlasRef]) return atlasSheetByUrl[atlasRef];
+  return atlasImages[atlasId] || null;
+}
+function isImageElementReady(img){
+  return !!(img && img.complete===true && img.naturalWidth>0 && img.naturalHeight>0);
+}
+function getProductionBuildingSpriteSheetReadiness(){
+  const readiness=[];
+  HEARTHVALE_PRODUCTION_BUILDING_IDS.forEach((buildingId)=>{
+    const spriteId=HEARTHVALE_BUILDING_SEMANTIC_REGISTRY?.[buildingId]?.spriteId;
+    const sprite=spriteId ? atlasManifests?.buildings?.sprites?.[spriteId] : null;
+    const sheet=getAtlasSpriteSheetImage("buildings", sprite);
+    readiness.push({ buildingId, spriteId, atlas:sprite?.atlas||atlasManifests?.buildings?.imagePath||null, ready:isImageElementReady(sheet) });
+  });
+  return readiness;
+}
+function areProductionBuildingSpriteSheetsReady(){
+  const readiness=getProductionBuildingSpriteSheetReadiness();
+  return readiness.length>0 && readiness.every((row)=>row.ready===true);
+}
 const USE_PRODUCTION_BUILDING_ATLAS = false;
 const BUILDING_SPRITE_PRODUCTION_LIMITS = Object.freeze({
   maxDrawTilesWide: 6,
@@ -2926,7 +2950,7 @@ function getAtlasSpriteFailureReason(atlasId, spriteId){
   if(!manifest) return "missing_manifest";
   const sprite=manifest.sprites?.[spriteId];
   if(!sprite) return "missing_sprite_entry";
-  const sheet=atlasImages[atlasId];
+  const sheet=getAtlasSpriteSheetImage(atlasId, sprite);
   if(!sheet) return "sheet_not_initialized";
   if(!sheet.complete) return "sheet_not_complete";
   if(!(sheet.naturalWidth>0&&sheet.naturalHeight>0)) return "sheet_invalid_dimensions";
@@ -3099,8 +3123,8 @@ function getExternalProductionSpriteFailureReason(atlasId, spriteId, drawW, draw
 function updateSpriteBlankHeuristic(atlasId, spriteId){
   const token=atlasId+":"+spriteId;
   if(spriteBlankHeuristicCache.has(token)) return;
-  const sheet=atlasImages[atlasId];
   const sprite=atlasManifests[atlasId]?.sprites?.[spriteId];
+  const sheet=getAtlasSpriteSheetImage(atlasId, sprite);
   if(!sheet || !sprite || !sheet.complete || !(sheet.naturalWidth>0&&sheet.naturalHeight>0)) return;
   const probe=document.createElement("canvas");
   probe.width=sprite.sw;
@@ -3142,7 +3166,7 @@ function drawMissingSpritePlaceholder(dx,dy,dw,dh,label="MISSING"){
 function drawAtlasSprite(atlasId, spriteId, dx, dy, dw, dh){
   const manifest=atlasManifests[atlasId];
   const sprite=manifest?.sprites?.[spriteId];
-  const sheet=sprite?.atlas ? (atlasSheetByUrl[sprite.atlas]||atlasImages[atlasId]) : atlasImages[atlasId];
+  const sheet=getAtlasSpriteSheetImage(atlasId, sprite);
   updateSpriteBlankHeuristic(atlasId, spriteId);
   const reason=getAtlasSpriteFailureReason(atlasId, spriteId);
   if(reason){
@@ -3548,8 +3572,11 @@ function emitMobileQaSummary(){
   const mapH=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
   const centeredX=Math.floor(VIEW_TILES_X/2);
   const centeredY=Math.floor(VIEW_TILES_Y/2);
-  const expectedTileX=Math.max(0,Math.min(player.targetX-centeredX,Math.max(0,mapW-VIEW_TILES_X)));
-  const expectedTileY=Math.max(0,Math.min(player.targetY-centeredY,Math.max(0,mapH-VIEW_TILES_Y)));
+  const useNewportCameraBias=!ACTUAL_CAMERA_VIEWPORT_MODE && !isInMirrorCave && !isInAbandonedTollhouse && NEWPORT_CANONICAL_FOUNDATION_MODE===true;
+  const cameraBiasX=useNewportCameraBias ? NEWPORT_GAMEPLAY_CAMERA_BIAS_TILES.x : 0;
+  const cameraBiasY=useNewportCameraBias ? NEWPORT_GAMEPLAY_CAMERA_BIAS_TILES.y : 0;
+  const expectedTileX=Math.max(0,Math.min(player.targetX-centeredX+cameraBiasX,Math.max(0,mapW-VIEW_TILES_X)));
+  const expectedTileY=Math.max(0,Math.min(player.targetY-centeredY+cameraBiasY,Math.max(0,mapH-VIEW_TILES_Y)));
   console.info("[Mobile QA Summary]");
   console.info("enabled=true");
   console.info("touchControls="+(MOBILE_QA_CONTROLS_MODE?"true":"false"));
@@ -3646,7 +3673,7 @@ function logBuildingSourceOfTruthAudit({ verbose=ATLAS_DEBUG_MODE }={}){
   if(verbose && sourceSig!==sourceOfTruthAuditSignature){ sourceOfTruthAuditSignature=sourceSig; console.info('[Building Source of Truth Audit] '+JSON.stringify(rows)); }
   const hunter=chainRows.find(r=>r.buildingId==='b_hunter_lodge');
   const boat=chainRows.find(r=>r.buildingId==='b_boathouse');
-  const expH={x:61,y:939,w:309,h:308}, expB={x:35,y:64,w:391,h:358}, forbiddenB={x:470,y:939,w:320,h:250}, forbiddenH={x:61,y:519,w:309,h:308};
+  const expH={x:30,y:870,w:400,h:380}, expB={x:35,y:64,w:391,h:358}, forbiddenB={x:470,y:939,w:320,h:250}, forbiddenH={x:61,y:519,w:309,h:308};
   const acceptanceFailures=[];
   const productionAuthorityDeferredForFoundation=NEWPORT_CANONICAL_FOUNDATION_MODE===true && world.buildings.length===0 && (world.legacyProductionBuildings||[]).length>0;
   const mustEq=(row,name,exp)=>{ if(productionAuthorityDeferredForFoundation) return; ['registryCrop','activeManifestCrop','resolverCrop','mappingCrop','sourceTruthAuditCrop'].forEach((k)=>{ if(!sameCrop(row?.[k],exp)) acceptanceFailures.push(name+':'+k+'_mismatch'); });};
@@ -3673,7 +3700,7 @@ function logBuildingSourceOfTruthAudit({ verbose=ATLAS_DEBUG_MODE }={}){
   const productionRenderStatus=sourceTruthProductionRenderDeferred ? "PENDING_35_13C" : "ACTIVE";
   const expectedRows=sourceTruthProductionRenderDeferred ? 0 : HEARTHVALE_PRODUCTION_BUILDING_IDS.length;
   const requiredFieldsOk=rows.every((row)=>Boolean(row.worldRole&&row.requestedSpriteId&&row.activeCrop&&row.cropSource&&row.drawAnchorSource));
-  const proofHudConsistent=WAYFARER_PHASE==='35.13O' && ATLAS_SELECTOR_VERSION==='selector-v35-13o-building-sprite-source-repair';
+  const proofHudConsistent=WAYFARER_PHASE==='35.13P' && ATLAS_SELECTOR_VERSION==='selector-v35-13p-replace-bad-sprite-sources-viewport-lock';
   const previewModeActive=Boolean(SECONDARY_ATLAS_RUNTIME_PREVIEW_TARGET?.resolvedBuildingId);
   const renderAuditConsistent=sourceTruthProductionRenderDeferred || (buildingRenderDiagnostics.atlasBuildings.size===HEARTHVALE_PRODUCTION_BUILDING_IDS.length && buildingRenderDiagnostics.fallbackBuildings.size===0 && buildingRenderDiagnostics.pendingBuildings.size===0);
   const ready=!!atlasRuntimeInfo.buildings?.loaded;
@@ -4395,15 +4422,13 @@ function runAtlasCatalogScanOnce(){
         villageSprite.sy=villageHallTarget.boundingBox.y;
         villageSprite.sw=villageHallTarget.boundingBox.w;
         villageSprite.sh=villageHallTarget.boundingBox.h;
-        const targetFootprintHeight=Math.max(villageMeta.drawH, 172);
-        const aspect=villageHallTarget.boundingBox.w/Math.max(1,villageHallTarget.boundingBox.h);
-        villageSprite.drawH=Math.round(targetFootprintHeight);
-        villageSprite.drawW=Math.round(villageSprite.drawH*aspect);
-        villageSprite.anchorX=Math.round(villageSprite.drawW/2);
-        villageSprite.anchorY=Math.round(villageSprite.drawH*0.91);
+        villageSprite.drawW=Math.round(villageMeta.drawW);
+        villageSprite.drawH=Math.round(villageMeta.drawH);
+        villageSprite.anchorX=Math.round(villageMeta.anchorX);
+        villageSprite.anchorY=Math.round(villageMeta.anchorY);
         villageSprite.metadataSource="catalog_semantic_identity";
         console.info("[Atlas Semantic Remap] village_hall_meeting_house old="+JSON.stringify(oldVillageHallCrop)+" new="+JSON.stringify(villageHallTarget.boundingBox)+" sourceCandidate="+villageHallTarget.candidateId);
-        console.info("[Atlas Semantic Draw Profile] spriteId=village_hall_meeting_house sourceCrop="+villageHallTarget.boundingBox.w+"x"+villageHallTarget.boundingBox.h+" oldDraw="+oldDraw.w+"x"+oldDraw.h+" newDraw="+villageSprite.drawW+"x"+villageSprite.drawH+" oldAnchor="+oldAnchor.x+","+oldAnchor.y+" newAnchor="+villageSprite.anchorX+","+villageSprite.anchorY+" reason=preserve_aspect_for_top_right_meeting_house");
+        console.info("[Atlas Semantic Draw Profile] spriteId=village_hall_meeting_house sourceCrop="+villageHallTarget.boundingBox.w+"x"+villageHallTarget.boundingBox.h+" oldDraw="+oldDraw.w+"x"+oldDraw.h+" newDraw="+villageSprite.drawW+"x"+villageSprite.drawH+" oldAnchor="+oldAnchor.x+","+oldAnchor.y+" newAnchor="+villageSprite.anchorX+","+villageSprite.anchorY+" reason=viewport_safe_meeting_house_profile");
       }
       console.info("[Atlas Component Scan Diagnostic]");
       console.info("semanticAuthority=human_reviewed_registry componentIdentityIsAdvisory=true");
@@ -5131,6 +5156,7 @@ function isBuildingAtlasPendingReason(reason){
     return !isAtlasRuntimeReady("buildings");
   }
   if(reason!=="asset_not_loaded" && reason!=="sheet_not_complete" && reason!=="sheet_not_initialized") return false;
+  if(!areProductionBuildingSpriteSheetsReady()) return true;
   if(isAtlasRuntimeReady("buildings")) return false;
   const runtime=atlasRuntimeInfo.buildings;
   if(!runtime) return true;
@@ -6282,7 +6308,7 @@ world.buildings.push(
   placeLotBuilding({ id:"b_res_small", role:"residence_small", spriteId:"residence_small", x:6,y:8,w:4,h:4,anchorX:2,anchorY:3,district:"modest_residential_service",block:"west_service_edge",row:"lower_service", lotRect:{x:6,y:8,w:4,h:4},visualLotRect:{x:6,y:8,w:4,h:4},collision:{x:7,y:11,w:2,h:1},interaction:{x:5,y:10,w:1,h:1},frontageTile:{x:5,y:10},frontWalkBand:{x:5,y:10,w:2,h:1},label:{x:8,y:9,text:"Cottage"},pathingBounds:{x:5,y:7,w:6,h:7} }),
   placeLotBuilding({ id:"b_townhouse_row_a", role:"narrow_merchant_townhouse", spriteId:"newport_narrow_merchant_townhouse_a", x:33,y:8,w:3,h:5,anchorX:2,anchorY:4,district:"commercial_corridor",block:"east_commercial_extension",row:"service_frontage", lotRect:{x:33,y:8,w:4,h:5},visualLotRect:{x:33,y:8,w:3,h:5},collision:{x:34,y:12,w:2,h:1},groundSolidFootprint:{x:34,y:12,w:2,h:1},interaction:{x:37,y:14,w:1,h:1},frontageTile:{x:37,y:14},frontWalkBand:{x:37,y:14,w:2,h:1},label:{x:34,y:9,text:"Row A"},pathingBounds:{x:32,y:7,w:7,h:8} }),
   placeLotBuilding({ id:"b_townhouse_row_b", role:"modest_clapboard_residence", spriteId:"newport_modest_clapboard_residence_a", x:33,y:2,w:5,h:4,anchorX:2,anchorY:4,district:"modest_residential_service",block:"east_residential_lane",row:"upper_service", lotRect:{x:33,y:2,w:5,h:4},visualLotRect:{x:33,y:2,w:5,h:4},collision:{x:35,y:6,w:2,h:1},interaction:{x:37,y:10,w:1,h:1},frontageTile:{x:37,y:10},frontWalkBand:{x:37,y:10,w:1,h:1},label:{x:34,y:3,text:"Row B"},pathingBounds:{x:32,y:1,w:7,h:9} }),
-  placeLotBuilding({ id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"newport_service_dependency_backlot", x:32,y:17,w:4,h:3,anchorX:2,anchorY:3,district:"modest_residential_service",block:"east_service_edge",row:"service_lane", lotRect:{x:32,y:17,w:4,h:4},visualLotRect:{x:32,y:17,w:4,h:3},collision:{x:36,y:17,w:1,h:1},interaction:{x:37,y:15,w:1,h:1},frontageTile:{x:37,y:15},frontWalkBand:{x:37,y:15,w:1,h:1},label:{x:33,y:18,text:"Service"},pathingBounds:{x:31,y:16,w:6,h:6} }),
+  placeLotBuilding({ id:"b_service_dependency", role:"service_outbuilding_dependency", spriteId:"service_dependency_shed", x:32,y:17,w:4,h:3,anchorX:2,anchorY:3,district:"modest_residential_service",block:"east_service_edge",row:"service_lane", lotRect:{x:32,y:17,w:4,h:4},visualLotRect:{x:32,y:17,w:4,h:3},collision:{x:36,y:17,w:1,h:1},interaction:{x:37,y:15,w:1,h:1},frontageTile:{x:37,y:15},frontWalkBand:{x:37,y:15,w:1,h:1},label:{x:33,y:18,text:"Service"},pathingBounds:{x:31,y:16,w:6,h:6} }),
   placeLotBuilding({ id:"b_hunter_lodge", role:"hunter_lodge_or_outfitter", spriteId:"hunter_lodge_or_outfitter", x:4,y:14,w:4,h:4,anchorX:2,anchorY:3,district:"rural_outskirts",districtTag:"rural/outskirts",block:"west_rural_edge",row:"outskirts_lane", lotRect:{x:4,y:14,w:4,h:4},visualLotRect:{x:4,y:14,w:4,h:4},collision:{x:4,y:16,w:1,h:1},interaction:{x:5,y:14,w:1,h:1},frontageTile:{x:5,y:14},frontWalkBand:{x:5,y:14,w:1,h:1},label:{x:5,y:15,text:"Outfitter"},pathingBounds:{x:3,y:13,w:6,h:7} }),
   placeLotBuilding({ id:"b_res_large", role:"residence_large", spriteId:"residence_large", x:11,y:4,w:5,h:4,anchorX:2,anchorY:3,district:"elite_inland_residential",block:"upper_terrace",row:"mansion_w", lotRect:{x:11,y:4,w:5,h:4},visualLotRect:{x:11,y:4,w:5,h:4},collision:{x:12,y:6,w:2,h:1},interaction:{x:13,y:8,w:1,h:1},frontageTile:{x:13,y:8},frontWalkBand:{x:12,y:8,w:3,h:1},label:{x:13,y:5,text:"Large Residence"},pathingBounds:{x:10,y:3,w:7,h:6} }),
   placeLotBuilding({ id:"b_georgian_residence", role:"georgian_merchant_residence", spriteId:"newport_georgian_merchant_residence_a", x:16,y:4,w:5,h:5,anchorX:2,anchorY:4,district:"elite_inland_residential",block:"upper_terrace",row:"mansion_c", lotRect:{x:16,y:4,w:5,h:5},visualLotRect:{x:16,y:4,w:5,h:5},collision:{x:18,y:6,w:2,h:1},interaction:{x:18,y:8,w:1,h:1},frontageTile:{x:18,y:8},frontWalkBand:{x:17,y:8,w:3,h:1},label:{x:18,y:5,text:"Georgian"},pathingBounds:{x:15,y:3,w:7,h:6} }),
@@ -6589,7 +6615,7 @@ emitNewportSpriteRoleLotAudit();
 emitNewportSpatialClarityQA({ routeTopology:traversalTopologyQaResult, routeCollision:routeCollisionQaResult, harborComposition:harborCompositionQaResult, buildingDepthAuthority:buildingOverlapQaResult });
 
 const NEWPORT_TOWN_BLUEPRINT_V2=Object.freeze({
-  phase:"35.13O_building_sprite_source_repair_and_visual_proof_lock",
+  phase:"35.13P_replace_bad_sprite_sources_viewport_lock",
   waterfrontSpineTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   commercialStreetTiles:Array.from({length:25},(_,i)=>({x:8+i,y:18})),
   wharfApronTiles:Array.from({length:25},(_,i)=>({x:8+i,y:17})),
@@ -6974,7 +7000,7 @@ function emitActualCameraViewportQA(){
   const VISIBLE_THRESHOLD=0.30;
   const FULLY_INSIDE_THRESHOLD=0.95;
   const reports=world.buildings.map((building)=>{
-    const spriteMeta=ATLAS_BUILDING_METADATA?.[building.spriteId]||null;
+    const spriteMeta=atlasManifests?.buildings?.sprites?.[building.spriteId] || ATLAS_BUILDING_METADATA?.[building.spriteId] || NEWPORT_SPRITE_BY_ID?.[building.spriteId] || null;
     const { finalDrawRect }=getBuildingFinalDrawRectFromBlueprint(building, spriteMeta);
     const buildingArea=Math.max(0.0001, finalDrawRect.w*finalDrawRect.h);
     const onCanvasArea=rectIntersectionArea(canvasVisibleWorldRect, finalDrawRect);
@@ -7146,7 +7172,7 @@ function emitBuildingSpriteCropIntegrityQA(){
     console.info('[Building Sprite Crop Integrity QA] status=PENDING_DATA reason=no_buildings');
     return buildingSpriteCropIntegrityQaResult;
   }
-  const atlasReady=!!(atlasImages?.buildings?.complete && atlasImages.buildings.naturalWidth>0);
+  const atlasReady=!!(atlasImages?.buildings?.complete && atlasImages.buildings.naturalWidth>0 && areProductionBuildingSpriteSheetsReady());
   const atlasW=atlasImages?.buildings?.naturalWidth||0;
   const atlasH=atlasImages?.buildings?.naturalHeight||0;
   if(!atlasReady){
@@ -7165,6 +7191,10 @@ function emitBuildingSpriteCropIntegrityQA(){
     const activeCrop=mappedSprite?{ x:mappedSprite.sx, y:mappedSprite.sy, w:mappedSprite.sw, h:mappedSprite.sh }:null;
     const manifestCrop=activeCrop;
     const sourceAtlasPath=mappedSprite?.atlas||atlasManifests?.buildings?.imagePath||null;
+    const sourceAtlasImage=getAtlasSpriteSheetImage("buildings", mappedSprite);
+    const sourceAtlasReady=isImageElementReady(sourceAtlasImage);
+    const sourceAtlasW=sourceAtlasReady ? sourceAtlasImage.naturalWidth : 0;
+    const sourceAtlasH=sourceAtlasReady ? sourceAtlasImage.naturalHeight : 0;
     const drawW=Number.isFinite(mappedSprite?.drawW)?mappedSprite.drawW:null;
     const drawH=Number.isFinite(mappedSprite?.drawH)?mappedSprite.drawH:null;
     const drawAnchor={ x:Number.isFinite(mappedSprite?.anchorX)?mappedSprite.anchorX:null, y:Number.isFinite(mappedSprite?.anchorY)?mappedSprite.anchorY:null };
@@ -7176,9 +7206,9 @@ function emitBuildingSpriteCropIntegrityQA(){
     const cropOverrideApplied=Boolean(activeCrop && registryCrop && !cropMatchesRegistry);
     const cropOverrideReason=cropOverrideApplied ? "active_crop_diverges_from_registry" : null;
     const cropAuthority=cropOverrideApplied ? "legacy_static_overridden" : (registryLookup.source||"unknown");
-    const sourceRectWithinAtlasBounds=Boolean(activeCrop && atlasW>0 && atlasH>0 &&
+    const sourceRectWithinAtlasBounds=Boolean(activeCrop && sourceAtlasW>0 && sourceAtlasH>0 &&
       activeCrop.x>=0 && activeCrop.y>=0 &&
-      (activeCrop.x+activeCrop.w)<=atlasW && (activeCrop.y+activeCrop.h)<=atlasH);
+      (activeCrop.x+activeCrop.w)<=sourceAtlasW && (activeCrop.y+activeCrop.h)<=sourceAtlasH);
     const expectedAspectRatio=(registryDrawW&&registryDrawH)?registryDrawW/registryDrawH:null;
     const actualDrawAspectRatio=(drawW&&drawH)?drawW/drawH:null;
     const aspectRatioDelta=(expectedAspectRatio!==null && actualDrawAspectRatio!==null)?Math.abs(expectedAspectRatio-actualDrawAspectRatio):null;
@@ -7190,7 +7220,7 @@ function emitBuildingSpriteCropIntegrityQA(){
     const visibleOpaqueBounds=(drawW&&drawH)?{ w:drawW, h:drawH }:null;
     const isolatedProofDrawRect=(drawW&&drawH)?{ w:drawW, h:drawH }:null;
     const pixelCacheKey=activeCrop?(sourceAtlasPath||"buildings")+"|"+activeCrop.x+","+activeCrop.y+","+activeCrop.w+","+activeCrop.h:null;
-    const pixelAudit=activeCrop ? sampleSpriteAtlasPixelAudit(atlasImages?.buildings, activeCrop.x, activeCrop.y, activeCrop.w, activeCrop.h, pixelCacheKey) : null;
+    const pixelAudit=(activeCrop && sourceAtlasReady) ? sampleSpriteAtlasPixelAudit(sourceAtlasImage, activeCrop.x, activeCrop.y, activeCrop.w, activeCrop.h, pixelCacheKey) : null;
     const pixelAuditAvailable=!!(pixelAudit && pixelAudit.available);
     const sampledOpaqueBounds=pixelAuditAvailable ? pixelAudit.sampledOpaqueBounds : null;
     const opaqueCoverageRatio=pixelAuditAvailable ? pixelAudit.opaqueCoverageRatio : null;
@@ -7216,7 +7246,7 @@ function emitBuildingSpriteCropIntegrityQA(){
     if(registryCrop && activeCrop && !cropMatchesRegistry) failureReasons.push("active_crop_mismatch_with_registry");
     if(registryDrawW!=null && drawW!=null && drawW!==registryDrawW) failureReasons.push("drawW_mismatch_with_registry");
     if(registryDrawH!=null && drawH!=null && drawH!==registryDrawH) failureReasons.push("drawH_mismatch_with_registry");
-    if(activeCrop && atlasW>0 && atlasH>0 && !sourceRectWithinAtlasBounds) failureReasons.push("source_rect_outside_atlas_bounds");
+    if(activeCrop && sourceAtlasW>0 && sourceAtlasH>0 && !sourceRectWithinAtlasBounds) failureReasons.push("source_rect_outside_atlas_bounds");
     if(aspectRatioDelta!==null && aspectRatioDelta>0.005) failureReasons.push("aspect_ratio_mismatch");
     if(registryLookup.entry && !anchorMatchesRegistry && registryLookup.anchorX!=null && registryLookup.anchorY!=null) failureReasons.push("draw_anchor_mismatch_with_registry");
     if(cropOverrideApplied) failureReasons.push("legacy_static_crop_override_active");
@@ -7237,6 +7267,8 @@ function emitBuildingSpriteCropIntegrityQA(){
       requestedSpriteId,
       mappedSpriteId,
       sourceAtlasPath,
+      sourceAtlasNaturalWidth:sourceAtlasW,
+      sourceAtlasNaturalHeight:sourceAtlasH,
       sourceRect:activeCrop ? { sx:activeCrop.x, sy:activeCrop.y, sw:activeCrop.w, sh:activeCrop.h } : null,
       manifestCrop,
       registryCrop,
@@ -7368,19 +7400,27 @@ function emitNewportVisualCompositionQA(){
     buildingReports.push({ buildingId:b.id,spriteId:b.spriteId,district:lc.district||"unassigned",districtTag,lotType,roleMismatch,lotRect:lc.lotRect||{x:b.x,y:b.y,w:b.w,h:b.h},readabilityLotRect,frontageTile:frontage,collisionFootprint:c,drawAnchor,finalDrawRect:finalDrawRectTiles,finalDrawRectPx,drawRectFitsAssignedLot,drawRectWithinValidationFrame,validationFrameCritical,drawRectOverlapsWater:waterOverlap,drawRectTouchesMapEdge,drawRectExceedsSafeMargin,drawRectConflictsWithRoad,drawRectConflictsWithWharfSpine,drawRectConflictsWithPier,frontageReadable,rolePlacementValid,visualStatus,failureReasons });
   }
   const visualOverlapPairs=[];
+  const overlapHiddenPairs=[];
   for(let i=0;i<buildingReports.length;i++){
     for(let j=i+1;j<buildingReports.length;j++){
       const a=buildingReports[i], b=buildingReports[j];
       if(!a.validationFrameCritical&&!b.validationFrameCritical) continue;
       const area=rectIntersectionArea(a.finalDrawRect,b.finalDrawRect);
-      if(area>0.2) visualOverlapPairs.push({a:a.buildingId,b:b.buildingId,area:Number(area.toFixed(3))});
+      if(area>0.2){
+        const aArea=Math.max(0.0001,a.finalDrawRect.w*a.finalDrawRect.h);
+        const bArea=Math.max(0.0001,b.finalDrawRect.w*b.finalDrawRect.h);
+        const hiddenRatio=area/Math.min(aArea,bArea);
+        const pair={a:a.buildingId,b:b.buildingId,area:Number(area.toFixed(3)),hiddenRatio:Number(hiddenRatio.toFixed(3))};
+        visualOverlapPairs.push(pair);
+        if(hiddenRatio>0.25) overlapHiddenPairs.push(pair);
+      }
     }
   }
-  if(visualOverlapPairs.length){
-    const offenders=new Set(visualOverlapPairs.flatMap((pair)=>[pair.a,pair.b]));
+  if(overlapHiddenPairs.length){
+    const offenders=new Set(overlapHiddenPairs.flatMap((pair)=>[pair.a,pair.b]));
     buildingReports.forEach((report)=>{
       if(!offenders.has(report.buildingId)) return;
-      report.failureReasons.push('visible_sprite_overlap_cropping');
+      report.failureReasons.push('overlap_hidden');
       report.visualStatus='FAIL';
     });
   }
@@ -7389,7 +7429,7 @@ function emitNewportVisualCompositionQA(){
   const status=failures.length===0?'PASS':'FAIL';
   console.info('[Newport Visual Composition Offenders] failCount='+failures.length+' offenders='+(failures.length?JSON.stringify(failures.map((r)=>({ buildingId:r.buildingId, frontageTile:r.frontageTile, collisionFootprint:r.collisionFootprint, failureReasons:r.failureReasons }))):'none'));
   console.info('[Newport Visual Composition QA] status='+status+' productionBuildingCount='+buildingReports.length+' failCount='+failures.length+' warnCount='+warnings.length+' visualOverlapPairCount='+visualOverlapPairs.length+' validationFrame='+JSON.stringify(validationFrame)+' reports='+JSON.stringify(buildingReports));
-  return { status, productionBuildingCount:buildingReports.length, failCount:failures.length, warnCount:warnings.length, visualOverlapPairs, buildingReports };
+  return { status, productionBuildingCount:buildingReports.length, failCount:failures.length, warnCount:warnings.length, visualOverlapPairs, overlapHiddenPairs, buildingReports };
 }
 let buildingPlacementContractQaResult={ status:"PENDING_INIT", reason:"deferred_until_final_qa_phase", productionBuildingCount:0, passCount:0, failCount:0, failedBuildings:[], reports:[] };
 let finalBuildingPlacementContractQaResult=null;
@@ -8443,7 +8483,7 @@ function buildWayfarerQaReport(){
   const harborSettled=foundationMode ? harborRawStatus!=="PENDING" : !harborRawStatus.startsWith("PENDING");
   const harborStatus=refreshedHarborCompositionQa.status==="PASS" ? "PASS" : (harborRawStatus==="PENDING_35_13C"?"PENDING_35_13C":(harborRawStatus.startsWith("PENDING")?"PENDING_ASSETS":"FAIL"));
   const playerStatePass=playerStateQaSignature.includes("status=PASS");
-  const buildPhaseMatches=WAYFARER_PHASE==="35.13O" && ATLAS_SELECTOR_VERSION==="selector-v35-13o-building-sprite-source-repair";
+  const buildPhaseMatches=WAYFARER_PHASE==="35.13P" && ATLAS_SELECTOR_VERSION==="selector-v35-13p-replace-bad-sprite-sources-viewport-lock";
   const harborWaterVisualQa=ensureQaResult(emitNewportHarborWaterVisualQA(),"newport_harbor_water_visual_not_initialized");
   const harborWaterVisualPass=harborWaterVisualQa.status==="PASS";
   refreshBuildingPlacementContractQAIfSettled();
@@ -10859,8 +10899,20 @@ function loadGame(){
         emitUiStateQA();
       }
     }else{
-      const defaultQa=validateHearthvaleSpawnTile({ x:player.targetX, y:player.targetY });
-      spawnValidationResult={ mode:"saved", status:defaultQa.status, line:"[Spawn Validation] mode=saved activeTile=("+player.targetX+","+player.targetY+") status="+defaultQa.status };
+      const safeSpawn=resolveSafeHearthvaleSpawn("fresh");
+      const fallbackTile=safeSpawn?.tile || { x:player.targetX, y:player.targetY };
+      if(safeSpawn?.tile){
+        setPlayerTilePosition(safeSpawn.tile.x, safeSpawn.tile.y);
+        isInMirrorCave=false;
+        isInAbandonedTollhouse=false;
+        currentZoneId=getOutdoorRegionIdAt(safeSpawn.tile.x, safeSpawn.tile.y);
+        lastLoggedZoneEntryId=currentZoneId;
+        zoneTransitionLockedUntil=0;
+        blockedDirectionalKeysUntilRelease.clear();
+        questSystem.applyState([]);
+      }
+      const defaultQa=validateHearthvaleSpawnTile({ x:fallbackTile.x, y:fallbackTile.y });
+      spawnValidationResult={ mode:safeSpawn?.tile?"fresh":"saved", status:defaultQa.status, line:"[Spawn Validation] mode="+(safeSpawn?.tile?"fresh":"saved")+" activeTile=("+fallbackTile.x+","+fallbackTile.y+") status="+defaultQa.status+" reason=no_saved_game" };
       savedSpawnDomainStatus=defaultQa.status;
       emitSpawnValidationLine();
     }
@@ -12657,8 +12709,11 @@ equipmentList.addEventListener("click",(e)=>{
 function getCamera(){
   const mapW=isInMirrorCave ? mirrorCave.width : (isInAbandonedTollhouse ? abandonedTollhouse.width : WORLD_W);
   const mapH=isInMirrorCave ? mirrorCave.height : (isInAbandonedTollhouse ? abandonedTollhouse.height : WORLD_H);
-  const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2),Math.max(0,mapW-VIEW_TILES_X)));
-  const tileY=Math.max(0,Math.min(player.targetY-Math.floor(VIEW_TILES_Y/2),Math.max(0,mapH-VIEW_TILES_Y)));
+  const useNewportCameraBias=!ACTUAL_CAMERA_VIEWPORT_MODE && !isInMirrorCave && !isInAbandonedTollhouse && NEWPORT_CANONICAL_FOUNDATION_MODE===true;
+  const cameraBiasX=useNewportCameraBias ? NEWPORT_GAMEPLAY_CAMERA_BIAS_TILES.x : 0;
+  const cameraBiasY=useNewportCameraBias ? NEWPORT_GAMEPLAY_CAMERA_BIAS_TILES.y : 0;
+  const tileX=Math.max(0,Math.min(player.targetX-Math.floor(VIEW_TILES_X/2)+cameraBiasX,Math.max(0,mapW-VIEW_TILES_X)));
+  const tileY=Math.max(0,Math.min(player.targetY-Math.floor(VIEW_TILES_Y/2)+cameraBiasY,Math.max(0,mapH-VIEW_TILES_Y)));
   const viewPxW=VIEW_TILES_X*TILE, viewPxH=VIEW_TILES_Y*TILE;
   const offsetX=Math.floor((canvas.width-viewPxW)/2), offsetY=Math.floor((canvas.height-viewPxH)/2);
   return {tileX,tileY,offsetX,offsetY};
@@ -13957,7 +14012,7 @@ function drawBuildingSpriteProofSheet(){
       const renderPath=renderDiag?.renderPath||"unknown";
       ctx.fillStyle="#0a0e15";
       ctx.fillRect(dx-2,dy-2,finalW+4,finalH+4);
-      const atlasImg=atlasImages?.buildings;
+      const atlasImg=getAtlasSpriteSheetImage("buildings", sprite);
       if(atlasImg && atlasImg.complete && atlasImg.naturalWidth>0 && Number.isFinite(sprite.sx) && Number.isFinite(sprite.sy) && Number.isFinite(sprite.sw) && Number.isFinite(sprite.sh)){
         try{ ctx.drawImage(atlasImg, sprite.sx, sprite.sy, sprite.sw, sprite.sh, dx, dy, finalW, finalH); }
         catch(drawErr){
