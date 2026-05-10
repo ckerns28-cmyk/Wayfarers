@@ -4,8 +4,15 @@ This roadmap resets the Wayfarer plan around the Godot pivot. The current
 scope is G-0 and G-1 only.
 
 The existing Cloudflare Worker remains the JavaScript Phase 35.13R route. The
-Godot browser review path is separate and uses a Cloudflare Pages upload from
+Godot browser review path is separate. For G-2, the temporary browser-review
+host is the existing itch.io project at
+`https://wayfarersguild.itch.io/wayfarers-tale`, using a ZIP generated from
 `wayfarer_godot_vertical_slice/web_build/`.
+
+Cloudflare Pages remains the preferred separate static-hosting target, but it
+is deferred for the current stock Godot export because Pages Direct Upload
+rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
+single-file upload limit.
 
 ## Non-goals for G-0 and G-1
 
@@ -33,14 +40,29 @@ Acceptance:
 
 ## G-1: Separate Browser Review Delivery
 
-Status: current.
+Status: current, with G-1.6 itch.io delivery package ready for manual upload.
 
 - Keep the Godot Web export preset pointed at `web_build/index.html`.
 - Keep `tools/export_web.sh` exporting into
   `wayfarer_godot_vertical_slice/web_build/`.
 - Copy `web_build_template/_headers` into `web_build/_headers` on every
   export.
-- Deploy browser-review builds to a separate Cloudflare Pages project:
+- Use the single-threaded Godot Web export for the itch.io baseline.
+- Package the itch.io upload ZIP from inside `web_build/` so `index.html`
+  appears at the ZIP root:
+
+```sh
+cd wayfarer_godot_vertical_slice/web_build
+zip -r ../wayfarers-tale-godot-web.zip .
+cd ../..
+```
+
+- Upload `wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip` to the
+  existing `wayfarersguild / wayfarers-tale` itch.io project as an HTML5
+  browser game.
+- Prefer "Click to launch in fullscreen" for the first G-2 browser validation.
+- Keep Cloudflare Pages documented but deferred until the WASM size or asset
+  strategy changes:
 
 ```sh
 npx wrangler pages deploy wayfarer_godot_vertical_slice/web_build --project-name wayfarers-godot-slice
@@ -48,9 +70,13 @@ npx wrangler pages deploy wayfarer_godot_vertical_slice/web_build --project-name
 
 Acceptance:
 
-- Godot review URL comes from `wayfarers-godot-slice.pages.dev`.
+- The temporary G-2 review URL comes from
+  `https://wayfarersguild.itch.io/wayfarers-tale`.
+- The ZIP root contains `index.html`, not `web_build/index.html`.
 - The existing Worker Visit button still opens JavaScript Phase 35.13R.
 - No `/godot/` route is added to the existing Worker.
+- Cloudflare Pages is not treated as live until `wayfarers-godot-slice.pages.dev`
+  resolves from an actual successful deployment.
 
 ## G-2: Slice Baseline Validation
 

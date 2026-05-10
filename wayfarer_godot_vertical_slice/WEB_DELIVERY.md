@@ -1,9 +1,19 @@
 # Web Delivery: Godot Vertical Slice
 
-The Godot vertical slice is delivered as a static Web export hosted on a
-**separate** Cloudflare Pages project. The existing JavaScript Wayfarer site
-in `wayfarer_v7_github_ready/` (served by the Worker defined in
-`/wrangler.toml`) is not touched by this pipeline.
+The Godot vertical slice is delivered as a static Web export for browser
+review. For G-2, the temporary review host is the existing itch.io project:
+
+```text
+https://wayfarersguild.itch.io/wayfarers-tale
+```
+
+Cloudflare Pages remains the preferred separate static-hosting target, but
+Direct Upload is deferred for the current stock Godot export because
+`index.wasm` is larger than Cloudflare Pages' 25 MB single-file upload limit.
+
+The existing JavaScript Wayfarer site in `wayfarer_v7_github_ready/` (served
+by the Worker defined in `/wrangler.toml`) is not touched by this pipeline and
+remains the production-facing Phase 35.13R route.
 
 ## 1. Local export
 
@@ -42,19 +52,116 @@ Expected output in `web_build/`:
 - `index.wasm`
 - `index.audio.worklet.js`
 - `index.audio.position.worklet.js`
-- `index.worker.js` (Godot 4.x dispatch worker)
 - `index.icon.png`, `index.apple-touch-icon.png`
 - `_headers` (copied from `web_build_template/_headers`)
 
-`web_build/` is `.gitignore`d. The binary artifacts ship to Cloudflare, not
-to GitHub.
+`index.worker.js` may be absent for the single-threaded Godot Web export. Do
+not treat that as a blocker unless `index.html` references it or the browser
+fails because of it.
 
-## 2. Cloudflare delivery (preferred: separate Pages project)
+The current G-2 export is single-threaded:
+
+```text
+GODOT_THREADS_ENABLED = false
+godot.web.template_release.wasm32.nothreads.wasm
+```
+
+That is the desired itch.io baseline because it avoids requiring
+SharedArrayBuffer and server-side COOP/COEP headers. `_headers` remains useful
+for Cloudflare Pages documentation, but itch.io does not consume Cloudflare
+`_headers` files.
+
+`web_build/` is `.gitignore`d. The binary artifacts ship to the temporary
+browser-review host or a future static host, not to GitHub.
+
+## 2. Itch.io delivery (temporary G-2 browser review)
+
+Use itch.io while Cloudflare Pages Direct Upload is blocked by the current
+`index.wasm` size.
+
+Current export envelope after the G-1.6 re-export:
+
+| Item | Size |
+| ---- | ---- |
+| `index.html` | 5,460 bytes |
+| `index.js` | 315,759 bytes |
+| `index.pck` | 5,876,736 bytes |
+| `index.wasm` | 37,695,054 bytes |
+| `index.audio.worklet.js` | 7,298 bytes |
+| `index.audio.position.worklet.js` | 2,973 bytes |
+| `_headers` | 462 bytes |
+| Extracted total | 42 MB on disk, 43,942,839 bytes uncompressed in ZIP |
+| Extracted file count | 10 files |
+
+The itch.io HTML5 ZIP requirements are satisfied for the current export:
+
+- `index.html` is present.
+- `index.wasm` is below the 200 MB individual extracted-file limit.
+- The extracted content is below the 500 MB limit.
+- The extracted file count is below 1,000.
+
+Create the upload ZIP from inside `web_build/` so `index.html` is at the ZIP
+root:
+
+```sh
+cd wayfarer_godot_vertical_slice/web_build
+zip -r ../wayfarers-tale-godot-web.zip .
+cd ../..
+```
+
+Validate the ZIP root:
+
+```sh
+zipinfo -1 wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip
+```
+
+The listing must include `index.html` with no `web_build/` prefix.
+
+Manual itch.io upload steps:
+
+1. Open the itch.io project edit page for `wayfarersguild / wayfarers-tale`.
+2. Set the project kind/type to HTML / HTML5 browser game if it is not already set.
+3. Upload `wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip`.
+4. Configure the uploaded ZIP to run in browser / embedded HTML.
+5. Prefer "Click to launch in fullscreen" for the first G-2 browser validation.
+6. Save the page.
+7. Open the public itch page.
+8. Launch the game.
+9. Capture browser console errors and a screenshot.
+
+Manual browser smoke checklist after upload:
+
+- itch page loads.
+- Game launch button appears.
+- Godot loader appears.
+- No missing `index.html`, `index.js`, `index.pck`, or `index.wasm`.
+- No SharedArrayBuffer / cross-origin isolation fatal error.
+- No permanent black screen.
+- Canvas appears.
+- Keyboard input works after click/focus.
+- Fullscreen launch works.
+- Movement does not cause page scrolling or browser focus theft.
+
+If SharedArrayBuffer or cross-origin isolation errors appear, classify the
+result as `THREADING_EXPORT_INCOMPATIBLE_WITH_ITCH`, switch to a
+single-thread Web export, re-export, re-zip, and re-upload.
+
+## 3. Cloudflare delivery (deferred: separate Pages project)
 
 The JavaScript site is currently served by the `wayfarers` Cloudflare
 Worker. To keep that build untouched and still let reviewers play the Godot
 slice in a browser, host the Godot export as its **own** Cloudflare Pages
 project.
+
+Current state for this export:
+
+- Pages project name accepted: `wayfarers-godot-slice`.
+- Direct Upload is blocked because `index.wasm` is 37,695,054 bytes, over the
+  25 MB single-file upload limit.
+- Cloudflare Pages remains deferred unless `index.wasm` is reduced or another
+  asset strategy is chosen.
+- The existing Worker route remains the production-facing JavaScript Phase
+  35.13R route.
 
 ### Direct upload
 
@@ -64,8 +171,9 @@ From the repo root, after running the local export:
 npx wrangler pages deploy wayfarer_godot_vertical_slice/web_build --project-name wayfarers-godot-slice
 ```
 
-Cloudflare will publish to `https://wayfarers-godot-slice.pages.dev`.
-That URL is the Godot browser-review link.
+Cloudflare should publish to `https://wayfarers-godot-slice.pages.dev` once
+the single-file size blocker is resolved. That URL is not the active G-2
+browser-review link while Direct Upload is blocked.
 
 The existing Worker Visit button still opens the JavaScript Phase 35.13R
 Worker route. It is not the Godot preview.
@@ -102,28 +210,23 @@ Cross-Origin-Opener-Policy: same-origin
 Cross-Origin-Embedder-Policy: require-corp
 ```
 
-Without those headers Godot's Web build loads but the WASM module never
-initializes (the canvas stays black). Cloudflare Pages reads `_headers`
-automatically; do not move or rename that file.
+Threaded Godot Web exports require those headers for SharedArrayBuffer.
+Cloudflare Pages reads `_headers` automatically; do not move or rename that
+file for Cloudflare delivery. The current itch.io review export is
+single-threaded and does not rely on these headers.
 
-## 3. Alternative delivery options
+## 4. Alternative delivery options
 
-Listed in case the separate Pages project is not viable for a particular
-reviewer.
+Listed for future planning only. G-1.6 does not add a new Worker route, does
+not add production cutover logic, and does not change the existing Worker
+Visit button.
 
-- **B. Route on the existing site, e.g. `/godot/`.** Add a `[[routes]]`
-  rule to a *new* Worker (do NOT modify `wrangler.toml`) that serves
-  `web_build/` from `/godot/`. The cross-origin isolation headers must be
-  set per response; a Pages site does this for free, a Worker needs
-  explicit header writes.
-- **C. Preview-only static folder.** Drop `web_build/` on any static host
+- **Preview-only static folder.** Drop `web_build/` on any static host
   (Netlify, GitHub Pages with `_headers` adapted to that host's syntax,
-  `python -m http.server` for local-only review). For local-only use, the
-  cross-origin headers can be skipped at the cost of the threaded WASM
-  optimizations; see Godot's documentation on
-  `--rendering-driver opengl3_compatibility`.
+  `python -m http.server` for local-only review). The current single-threaded
+  export does not require COOP/COEP headers; a future threaded export would.
 
-## 4. What still runs the JavaScript game
+## 5. What still runs the JavaScript game
 
 `wrangler.toml` continues to point at
 `wayfarer_v7_github_ready/worker/src/index.js` and
