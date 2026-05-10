@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/HUD.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Panel" type="PanelContainer" parent="."]
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 376.0
+offset_bottom = 218.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+theme_override_font_sizes/font_size = 26
+text = "Wayfarer"
+
+[node name="BuildLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
+text = "Build label: Godot Vertical Slice"
+
+[node name="Objective" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+text = "Objective: The Still Water Objective: Speak with Edrin Vale"
+autowrap_mode = 3
+
+[node name="Zone" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+text = "Current zone: Newport Harbor Test"
+
+[node name="Stats" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+theme_override_colors/font_color = Color(0.86, 0.92, 1, 1)
+text = "Level 1    HP 52/52"
+
+[node name="DialoguePanel" type="PanelContainer" parent="."]
+offset_left = 400.0
+offset_top = 580.0
+offset_right = 1180.0
+offset_bottom = 690.0
+
+[node name="MarginContainer" type="MarginContainer" parent="DialoguePanel"]
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="DialogueLabel" type="Label" parent="DialoguePanel/MarginContainer"]
+theme_override_font_sizes/font_size = 20
+text = ""
+autowrap_mode = 3
+
