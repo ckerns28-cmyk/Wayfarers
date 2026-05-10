@@ -1,0 +1,7 @@
+# Godot generated editor/import caches.
+.godot/
+**/.godot/
+
+# Godot browser export output. Built locally, then uploaded to Cloudflare Pages.
+wayfarer_godot_vertical_slice/web_build/
+**/web_build/
