@@ -1,6 +1,9 @@
 # Wayfarer Godot Vertical Slice
 
-This is a separate Godot 4.x prototype for testing whether Wayfarer should move away from the custom JavaScript canvas engine. The existing JavaScript build remains untouched in `wayfarer_v7_github_ready` and should be treated as the reference prototype.
+This is a separate Godot 4.x prototype for testing whether Wayfarer should move
+away from the custom JavaScript canvas engine. The existing JavaScript build
+remains untouched in `wayfarer_v7_github_ready/` and should be treated as the
+reference prototype.
 
 ## Scope
 
@@ -15,12 +18,13 @@ This is a separate Godot 4.x prototype for testing whether Wayfarer should move 
   - large residence
 - Each building is a Godot object with sprite, foot anchor, collision shape, and interaction/frontage area.
 - One interactable NPC: Edrin Vale.
-- Minimal HUD and one objective: “The Still Water Objective: Speak with Edrin Vale”.
+- Minimal HUD and one objective: "The Still Water Objective: Speak with Edrin Vale".
 
 ## Controls
 
 - Move: WASD or arrow keys
 - Interact: E
+- Toggle debug overlay (sprite outline / collision / interaction / foot anchor): F3
 
 ## Run
 
@@ -31,7 +35,7 @@ Open this folder in Godot 4.x and run `res://scenes/Main.tscn`.
 Run the scene-contract check from this folder:
 
 ```sh
-Godot --headless --path . --script res://tools/validate_vertical_slice.gd
+godot --headless --path . --script res://tools/validate_vertical_slice.gd
 ```
 
 Current review captures are stored in `artifacts/screenshots/`:
@@ -39,6 +43,15 @@ Current review captures are stored in `artifacts/screenshots/`:
 - `vertical_slice_gameplay.png`
 - `vertical_slice_collision_debug.png`
 
+## Web Delivery
+
+See `WEB_DELIVERY.md`. The Godot slice exports to `web_build/` (gitignored)
+via `tools/export_web.sh` and ships to a *separate* Cloudflare Pages project
+named `wayfarers-godot-slice`. The existing JavaScript Worker
+(`wrangler.toml` → `wayfarer_v7_github_ready/`) is not touched.
+
 ## Slice Intent
 
-This project is not a migration. It is a placement/depth/collision test bed to answer whether Godot solves the seating problems that the JavaScript/canvas implementation kept fighting.
+This project is not a migration. It is a placement/depth/collision test bed
+to answer whether Godot solves the seating problems that the
+JavaScript/canvas implementation kept fighting.

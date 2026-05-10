@@ -6,6 +6,7 @@ class_name WayfarerBuilding
 @onready var interaction_collision: CollisionShape2D = $InteractionArea/CollisionShape2D
 @onready var door_marker: Marker2D = $DoorMarker
 @onready var foot_anchor: Marker2D = $FootAnchor
+@onready var debug_overlay: Node2D = $DebugOverlay
 
 var building_id := ""
 var display_name := ""
@@ -39,6 +40,10 @@ func configure(config: Dictionary) -> void:
 	interaction_collision.position = config.get("interaction_offset", Vector2(0.0, 16.0))
 	door_marker.position = config.get("door_offset", Vector2.ZERO)
 	foot_anchor.position = Vector2.ZERO
+	debug_overlay.refresh()
 
 func get_foot_anchor() -> Vector2:
 	return global_position
+
+func set_debug_overlay(enabled: bool) -> void:
+	debug_overlay.visible = enabled
