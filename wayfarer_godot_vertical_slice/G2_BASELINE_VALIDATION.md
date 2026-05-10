@@ -1,10 +1,11 @@
 # G-2 Godot Baseline Validation
 
-Status: local baseline pass, Cloudflare Pages deployment blocked by missing
-`CLOUDFLARE_API_TOKEN`.
+Status: local baseline pass, itch.io upload package ready for manual G-2
+browser review. Cloudflare Pages Direct Upload is blocked/deferred for the
+current stock Godot export because `index.wasm` is larger than 25 MB.
 
 Date: 2026-05-10
-Branch: `codex/g-2-godot-baseline-validation`
+Branch: `codex/g-1-6-itch-godot-browser-review`
 
 ## Scope Guard
 
@@ -54,6 +55,21 @@ identify the build as:
 ```text
 Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
 ```
+
+The exported HTML also reports:
+
+```text
+GODOT_THREADS_ENABLED = false
+```
+
+The generated JS references:
+
+```text
+godot.web.template_release.wasm32.nothreads.wasm
+```
+
+This is the desired itch.io baseline because it does not require
+SharedArrayBuffer or server-side COOP/COEP headers to initialize.
 
 Non-fatal export warning observed from the downloaded macOS app in headless
 mode:
@@ -185,6 +201,83 @@ must load them as Godot resources, not raw PNG files.
 The export generated `BuildingDebugOverlay.gd.uid`, matching the repository
 pattern of tracking `.gd.uid` files beside source scripts.
 
+## Itch.io G-2 Browser Review Delivery
+
+Temporary browser-review host:
+
+```text
+https://wayfarersguild.itch.io/wayfarers-tale
+```
+
+The current upload ZIP is:
+
+```text
+wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip
+```
+
+The ZIP was created from inside `wayfarer_godot_vertical_slice/web_build/`, so
+`index.html` is at the ZIP root.
+
+ZIP root proof:
+
+```text
+index.apple-touch-icon.png
+index.wasm
+index.icon.png
+index.html
+index.png
+index.audio.worklet.js
+index.js
+_headers
+index.audio.position.worklet.js
+index.pck
+```
+
+Current export size envelope:
+
+| Item | Size |
+| ---- | ---- |
+| `index.html` | 5,460 bytes |
+| `index.js` | 315,759 bytes |
+| `index.pck` | 5,876,736 bytes |
+| `index.wasm` | 37,695,054 bytes |
+| `index.audio.worklet.js` | 7,298 bytes |
+| `index.audio.position.worklet.js` | 2,973 bytes |
+| `_headers` | 462 bytes |
+| Extracted total | 42 MB on disk, 43,942,839 bytes uncompressed in ZIP |
+| Extracted file count | 10 files |
+
+This is within itch.io's HTML5 ZIP envelope for the G-2 upload:
+
+- `index.wasm` is below the 200 MB individual extracted-file limit.
+- Extracted content is below the 500 MB total limit.
+- Extracted file count is below 1,000.
+
+Manual upload steps:
+
+1. Open the itch.io project edit page for `wayfarersguild / wayfarers-tale`.
+2. Set the project kind/type to HTML / HTML5 browser game if needed.
+3. Upload `wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip`.
+4. Configure the uploaded ZIP to run in browser / embedded HTML.
+5. Prefer "Click to launch in fullscreen" for the first G-2 browser validation.
+6. Save the page.
+7. Open the public itch page.
+8. Launch the game.
+9. Capture browser console errors and a screenshot.
+
+Post-upload smoke checklist:
+
+- itch page loads.
+- Game launch button appears.
+- Godot loader appears.
+- No missing `index.html`, `index.js`, `index.pck`, or `index.wasm`.
+- No SharedArrayBuffer / cross-origin isolation fatal error.
+- No permanent black screen.
+- Canvas appears.
+- Keyboard input works after click/focus.
+- Fullscreen launch works.
+- No browser scroll/focus stealing during movement.
+
 ## Cloudflare Pages Delivery
 
 Deploy command attempted:
@@ -193,7 +286,7 @@ Deploy command attempted:
 npx wrangler pages deploy wayfarer_godot_vertical_slice/web_build --project-name wayfarers-godot-slice
 ```
 
-Result: blocked before upload.
+Prior result: blocked before upload because `CLOUDFLARE_API_TOKEN` was not set.
 
 Wrangler reached the deploy flow but failed in this non-interactive
 environment because `CLOUDFLARE_API_TOKEN` is not set.
@@ -218,6 +311,16 @@ curl: (6) Could not resolve host: wayfarers-godot-slice.pages.dev
 This suggests the Pages project or published hostname is not currently
 available from this environment until a token-backed deploy is completed.
 
+G-1.6 update:
+
+- Pages project name was accepted: `wayfarers-godot-slice`.
+- Direct Upload rejected the current export because `index.wasm` is
+  37,695,054 bytes, over Cloudflare Pages' 25 MB single-file upload limit.
+- Cloudflare Pages remains deferred unless `index.wasm` is reduced or another
+  asset strategy is chosen.
+- The existing JavaScript Worker remains the production-facing Phase 35.13R
+  route.
+
 ## JavaScript Worker Isolation
 
 Verified no diffs in:
@@ -228,13 +331,12 @@ Verified no diffs in:
 
 No `/godot/` route was added to the existing Worker.
 
-## G-3 Blockers
+## G-2 / G-3 Follow-ups
 
-- Complete a token-backed Cloudflare Pages deployment.
-- Re-test `https://wayfarers-godot-slice.pages.dev` headers and browser boot
-  after upload.
-- Decide whether the absence of `index.worker.js` is acceptable for the
-  single-threaded Godot 4.6.2 Web export, or whether G-3 should explicitly
-  target a threaded export profile.
+- Manually upload `wayfarers-tale-godot-web.zip` to itch.io.
+- Run the itch browser smoke checklist and capture console output plus a
+  screenshot.
+- Keep Cloudflare Pages deferred until the WASM size or delivery strategy is
+  changed.
 - Review camera smoothing and viewport containment against the desired browser
   feel.
