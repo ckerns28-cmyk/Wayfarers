@@ -39,12 +39,11 @@ func _atlas_image(path: String) -> Texture2D:
 	if _atlas_cache.has(path):
 		return _atlas_cache[path]
 
-	var image := Image.load_from_file(path)
-	if image == null or image.is_empty():
-		push_error("Failed to load atlas image: " + path)
+	var atlas_texture := ResourceLoader.load(path, "Texture2D") as Texture2D
+	if atlas_texture == null:
+		push_error("Failed to load atlas texture: " + path)
 		return null
 
-	var atlas_texture := ImageTexture.create_from_image(image)
 	_atlas_cache[path] = atlas_texture
 	return atlas_texture
 
