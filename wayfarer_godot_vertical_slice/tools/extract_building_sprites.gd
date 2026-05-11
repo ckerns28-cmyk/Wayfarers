@@ -1,7 +1,7 @@
 extends SceneTree
 
 const OUTPUT_DIR := "res://assets/sprites/buildings/isolated"
-const PADDING := 18
+const PADDING := 24
 
 const CROPS := [
 	{
@@ -19,13 +19,13 @@ const CROPS := [
 	{
 		"id": "newport_chandlery_outfitter_front",
 		"source": "res://assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
-		"rect": Rect2i(836, 444, 366, 352),
+		"rect": Rect2i(836, 418, 418, 418),
 		"output": "newport_chandlery_outfitter_front_isolated.png",
 	},
 	{
 		"id": "newport_shopfront_awning",
 		"source": "res://assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
-		"rect": Rect2i(452, 470, 360, 360),
+		"rect": Rect2i(418, 418, 418, 418),
 		"output": "newport_shopfront_awning_isolated.png",
 	},
 ]

@@ -455,6 +455,12 @@ Acceptance is intentionally narrow: no proof-street building may show pieces
 of a neighboring atlas building. If any contamination remains after upload,
 classify the pass as `SPRITE_CROP_CONTAMINATION_REMAINS`.
 
+The proof street also now treats each building as an occupied lot rather than a
+flat facade. Each active building has a `lot_rect`/`collision_rect` extending
+behind the street frontage so the player cannot walk directly behind the
+building body. This is the foundation for future enterable buildings: doors
+face the street, while the building volume owns real ground behind the facade.
+
 ## Deferred
 
 - Final art parity with JavaScript Phase 35.13R.
