@@ -10,3 +10,7 @@ wayfarer_godot_vertical_slice/web_build/
 wayfarer_godot_vertical_slice/artifacts/
 wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip
 wayfarer_godot_vertical_slice/web_build.zip
+
+# macOS AppleDouble sidecars appear when the workspace lives on some external
+# drive formats. They are metadata noise, not project source.
+**/._*

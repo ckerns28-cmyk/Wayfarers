@@ -4,6 +4,12 @@ This is the atlas contract for the **Godot vertical slice only**. The
 JavaScript build has its own contract in `docs/SPRITE_ATLAS_CONTRACT.md`
 and is not affected by this document.
 
+For broader source art, import metadata, generated artifact, and anchor
+discipline, see:
+
+- `docs/ASSET_WORKFLOW.md`
+- `docs/SPRITE_ANCHORS.md`
+
 ## Source files
 
 ```

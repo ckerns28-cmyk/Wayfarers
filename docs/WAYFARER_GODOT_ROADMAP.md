@@ -25,6 +25,19 @@ viewport-aware HUD placement, pixel snapping, sprite/building grounding, and
 terrain/road/water readability without expanding the slice or touching the
 JavaScript Worker.
 
+Current G-3.1 result: the Godot HUD includes visible review identity for the
+manual itch upload loop. A screenshot should show `Godot G-3.1 Review Clarity`,
+`itch`, `manual ZIP`, and `codex/g-3-1-godot-review-clarity` when the newest
+ZIP is live.
+
+Current G-4 result: the Godot asset workflow is locked for the existing slice.
+Current building atlas PNGs stay in `assets/buildings/`; stable `.import`
+metadata is tracked; `.godot/`, `web_build/`, `artifacts/`, generated ZIPs, and
+external-drive `._*` sidecars remain ignored. The Web export preset also
+excludes generated review folders so local screenshots and ZIPs do not leak
+into `index.pck`. Future source art, sprite sheets, atlases, references, and
+anchor rules are documented under `wayfarer_godot_vertical_slice/docs/`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -135,6 +148,17 @@ G-3.0 notes:
 - Local validation passed through the Godot QA script and a local browser smoke
   test. Itch still requires a fresh manual ZIP upload for visual review.
 
+G-3.1 notes:
+
+- The HUD now displays the review phase, build label, host, channel, and source
+  branch so manual itch uploads are visually verifiable.
+- The review label is static Godot-side metadata for this pass; CI and Butler
+  injection remain deferred.
+- No gameplay, map, route, asset-workflow, or JavaScript Worker changes are
+  included.
+- Manual review requires uploading the generated ZIP, hard-refreshing itch,
+  and confirming the on-screen label changed before evaluating visuals.
+
 Prerequisite review loop:
 
 - Manual mode: run `tools/package_itch_web.sh`, upload the artifact ZIP to
@@ -151,14 +175,44 @@ successfully in GitHub Actions.
 
 ## G-4: Asset Source and Import Discipline
 
+Status: current.
+
 Lock the source-of-truth asset workflow for Godot imports, atlases, import
 settings, screenshots, and future art updates. Keep generated caches out of
 Git.
 
+G-4 decisions:
+
+- Existing Godot atlas sheets remain in `assets/buildings/` for this slice.
+- Future original art should use `assets/source/<domain>/`.
+- Future individual sprites should use `assets/sprites/<domain>/`.
+- Future new atlas families should use `assets/atlases/<domain>/`.
+- Future committed reference screenshots should use
+  `assets/references/<phase>/`.
+- Local browser/export evidence stays in ignored `artifacts/`.
+- `artifacts/**`, `web_build/**`, and `*.zip` are excluded from the Web export
+  package.
+- Stable Godot `.import` files for tracked assets should be committed.
+- Godot `.godot/` cache/editor output should never be committed.
+- Sprite grounding and y-sort rules are documented in
+  `wayfarer_godot_vertical_slice/docs/SPRITE_ANCHORS.md`.
+- Asset hygiene is checked with
+  `bash wayfarer_godot_vertical_slice/tools/validate_asset_hygiene.sh`.
+
+Acceptance:
+
+- No `.godot/`, `web_build/`, `artifacts/`, or generated ZIP files are tracked.
+- Current tracked atlas PNGs have tracked `.import` metadata.
+- Future art updates have documented source, import, atlas, anchor, and review
+  expectations.
+- Existing JavaScript Worker remains the Phase 35.13R production/reference
+  route.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
-Godot. This is a planning phase, not a porting phase.
+Godot. This is a planning phase, not a porting phase. It may begin after G-4
+asset hygiene passes and the G-4 ZIP is manually reviewed on itch.
 
 ## G-6: Production Cutover Planning
 
