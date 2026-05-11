@@ -24,6 +24,11 @@ frontage buildings sit on a shared street plane with explicit visual-base
 anchors, frontage points, collision rectangles, y-sort markers, grounding
 shadows, and a `B` debug overlay.
 
+G-4.6 responds to screenshot review that showed G-4.5 still failed at player
+scale. It does not defend the five-building layout. It shrinks the acceptance
+target to three waterfront buildings, one authored street/stoop plane, one
+player, and one camera frame.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -93,7 +98,7 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 through G-4.5 provide practical collision/navigation support only:
+G-4.1 through G-4.6 provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
@@ -108,6 +113,9 @@ G-4.1 through G-4.5 provide practical collision/navigation support only:
   walk.
 - G-4.5 calibrates the waterfront proof street so building collision follows
   physical base/body rectangles instead of the full painterly sprite image.
+- G-4.6 limits the active proof scene to three proof-street buildings so scale,
+  stoops, sidewalk, street, wharf edge, collision, and camera can be judged
+  without the rest of the town confusing the result.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
@@ -243,6 +251,37 @@ Build label: Godot G-4.5 Building Seating Proof
 Phase: G-4.5 | Review host: itch
 Channel: manual ZIP
 Branch: codex/g-4-5-building-seating-calibration-one-street-proof
+```
+
+## G-4.6 Three-Building Street Proof
+
+G-4.6 is an honesty pass after the failed G-4.5 screenshot. The active review
+build intentionally shows only three waterfront commercial buildings:
+
+1. `b_mercantile`
+2. `b_counting_house`
+3. `b_chandlery_front`
+
+The proof frame changes:
+
+- Building count is reduced from 19/5 visible proof buildings to 3 active
+  proof buildings.
+- Edrin is removed from the proof frame so the player is the only character.
+- Building draw widths are overridden for this proof so they sit closer to
+  player street scale.
+- The old broad tan slab is replaced by a narrow sidewalk, stoop pads, curb,
+  darker cobbled street, wharf strip, and harbor hint.
+- Camera zoom/offset are tuned for one street frame instead of town overview.
+- `B` still toggles the seating overlay, now scoped to the three proof
+  buildings.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.6 Three-Building Street Proof
+Phase: G-4.6 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-6-three-building-street-plane-proof
 ```
 
 ## Deferred

@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 signal dialogue_triggered(text: String)
 
+const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
 const WORLD_LIMIT_LEFT := 0
 const WORLD_LIMIT_TOP := 0
 const WORLD_LIMIT_RIGHT := 1600
@@ -49,11 +50,11 @@ func configure_world_limits(world_rect: Rect2) -> void:
 
 func _configure_camera() -> void:
 	camera.enabled = true
-	camera.zoom = Vector2(1.48, 1.48)
+	camera.zoom = Vector2(1.82, 1.82) if NEWPORT_TOWN.G46_PROOF_FRAME else Vector2(1.48, 1.48)
 	camera.position = Vector2.ZERO
-	camera.offset = Vector2(72, -26)
+	camera.offset = Vector2(0, -86) if NEWPORT_TOWN.G46_PROOF_FRAME else Vector2(72, -26)
 	camera.position_smoothing_enabled = true
-	camera.position_smoothing_speed = 8.5
+	camera.position_smoothing_speed = 9.5 if NEWPORT_TOWN.G46_PROOF_FRAME else 8.5
 	_apply_camera_limits()
 	camera.limit_smoothed = true
 	camera.make_current()
@@ -94,10 +95,11 @@ func _update_interaction_target() -> void:
 		prompt_label.text = _current_target.get_interaction_label()
 
 func _draw() -> void:
-	draw_set_transform(Vector2(0, 8), 0.0, Vector2(1.45, 0.42))
+	var visual_scale := 1.12 if NEWPORT_TOWN.G46_PROOF_FRAME else 1.0
+	draw_set_transform(Vector2(0, 8 * visual_scale), 0.0, Vector2(1.45 * visual_scale, 0.42 * visual_scale))
 	draw_circle(Vector2.ZERO, 10.0, Color(0, 0, 0, 0.24))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	draw_circle(Vector2(0, -31), 12.0, Color("#f3d6a0"))
-	draw_rect(Rect2(Vector2(-9, -20), Vector2(18, 26)), Color("#4a6fa3"), true)
-	draw_rect(Rect2(Vector2(-11, 4), Vector2(22, 8)), Color("#2f4769"), true)
-	draw_line(Vector2(-15, -10), Vector2(15, -10), Color("#d2b978"), 3.0)
+	draw_circle(Vector2(0, -31 * visual_scale), 12.0 * visual_scale, Color("#f3d6a0"))
+	draw_rect(Rect2(Vector2(-9, -20) * visual_scale, Vector2(18, 26) * visual_scale), Color("#4a6fa3"), true)
+	draw_rect(Rect2(Vector2(-11, 4) * visual_scale, Vector2(22, 8) * visual_scale), Color("#2f4769"), true)
+	draw_line(Vector2(-15, -10) * visual_scale, Vector2(15, -10) * visual_scale, Color("#d2b978"), 3.0)
