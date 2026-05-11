@@ -34,6 +34,10 @@ shape = SubResource("RectangleShape2D_interaction")
 
 [node name="FootAnchor" type="Marker2D" parent="."]
 
+[node name="FrontageMarker" type="Marker2D" parent="."]
+
+[node name="YSortAnchor" type="Marker2D" parent="."]
+
 [node name="DebugOverlay" type="Node2D" parent="."]
 script = ExtResource("2_overlay")
 visible = false

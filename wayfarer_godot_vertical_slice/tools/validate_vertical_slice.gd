@@ -35,15 +35,33 @@ func _validate_scene(main: Node) -> void:
 		_expect(root.get_camera_2d() == player.get_node("Camera2D"), "player_camera_is_current")
 		_expect(player.get_node_or_null("CollisionShape2D") != null, "player_collision_exists")
 		_expect(player.global_position.distance_to(NEWPORT_TOWN.PLAYER_SPAWN) < 1.0, "player_spawn_matches_blueprint")
+		var camera := player.get_node_or_null("Camera2D") as Camera2D
+		if camera:
+			_expect(camera.zoom.x >= 1.1 and camera.zoom.y >= 1.1, "spawn_camera_not_overview_zoom")
+			_expect(camera.offset.length() > 20.0, "spawn_camera_intentional_offset")
 
 	if map:
 		for layer_name in ["GroundGrassLayer", "WharfWaterLayer", "RoadsPlazaLayer", "DecorativePropsLayer", "CollisionNavigationLayer"]:
 			_expect(map.get_node_or_null(layer_name) != null, "map_layer_" + layer_name)
 		var collision_layer := map.get_node_or_null("CollisionNavigationLayer")
 		_expect(collision_layer != null and collision_layer.get_child_count() > 40, "collision_navigation_bodies")
+		if collision_layer:
+			_validate_detail_blockers(collision_layer)
 
 	_validate_buildings()
+	_validate_proof_street(main)
+	_validate_lived_in_details()
 	_validate_reachability()
+
+func _validate_detail_blockers(collision_layer: Node) -> void:
+	var detail_count := 0
+	for child in collision_layer.get_children():
+		if child.name.begins_with("DetailBlocker_"):
+			detail_count += 1
+	_expect(detail_count == NEWPORT_TOWN.detail_blockers().size(), "detail_blocker_count")
+
+func _validate_lived_in_details() -> void:
+	_expect(NEWPORT_TOWN.lived_in_detail_count() >= 40, "lived_in_detail_density")
 
 func _validate_buildings() -> void:
 	var buildings := get_nodes_in_group("buildings")
@@ -87,7 +105,11 @@ func _validate_building_node(building: Node2D) -> void:
 	if sprite and sprite.texture:
 		var region_size := _texture_region_size(sprite.texture)
 		var sprite_bottom_y := sprite.position.y + region_size.y * sprite.scale.y
-		_expect(absf(sprite_bottom_y) <= 2.5, building.name + "_foot_anchor_at_visual_base")
+		var proof_street: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
+		if proof_street:
+			_expect(sprite_bottom_y > 3.0 and sprite_bottom_y < 18.0, building.name + "_painterly_base_padding_allowed")
+		else:
+			_expect(absf(sprite_bottom_y) <= 2.5, building.name + "_foot_anchor_at_visual_base")
 
 	if body_shape and body_shape.shape is RectangleShape2D:
 		var body_size := (body_shape.shape as RectangleShape2D).size
@@ -95,6 +117,50 @@ func _validate_building_node(building: Node2D) -> void:
 
 	if interaction_shape and interaction_shape.shape is RectangleShape2D:
 		_expect(interaction_shape.position.y > 0.0, building.name + "_frontage_interaction_south")
+
+func _validate_proof_street(main: Node) -> void:
+	var proof_ids: Array = NEWPORT_TOWN.proof_street_ids()
+	_expect(proof_ids.size() >= 5 and proof_ids.size() <= 7, "proof_street_building_count_5_to_7")
+
+	var configs_by_id := {}
+	for config in NEWPORT_TOWN.building_specs():
+		configs_by_id[config["id"]] = config
+
+	for id in proof_ids:
+		_expect(configs_by_id.has(id), "proof_street_config_present_" + id)
+		if configs_by_id.has(id):
+			var config: Dictionary = configs_by_id[id]
+			_expect(config.get("proof_street", false), id + "_proof_street_flag")
+			for key in ["visual_base_anchor", "frontage_offset", "collision_rect", "y_sort_offset", "shadow_size"]:
+				_expect(config.has(key), id + "_seating_metadata_" + key)
+
+	var proof_buildings := get_nodes_in_group("proof_street_buildings")
+	_expect(proof_buildings.size() == proof_ids.size(), "proof_street_node_count")
+	for raw_building in proof_buildings:
+		var building := raw_building as Node2D
+		if building == null:
+			failures.append("proof_street_node_not_node2d")
+			continue
+		var overlay := building.get_node_or_null("DebugOverlay") as Node2D
+		_expect(overlay != null and not overlay.visible, building.name + "_seating_debug_off_by_default")
+		_expect(building.has_method("has_seating_metadata") and building.has_seating_metadata(), building.name + "_runtime_seating_metadata")
+		_expect(building.get_node_or_null("FrontageMarker") != null, building.name + "_frontage_marker")
+		_expect(building.get_node_or_null("YSortAnchor") != null, building.name + "_ysort_marker")
+
+	if main.has_method("set_building_seating_overlay"):
+		main.set_building_seating_overlay(true)
+		for raw_building in get_nodes_in_group("buildings"):
+			var building := raw_building as Node2D
+			if building == null:
+				continue
+			var overlay := building.get_node_or_null("DebugOverlay") as Node2D
+			if overlay == null:
+				continue
+			var is_proof: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
+			_expect(overlay.visible == is_proof, building.name + "_seating_debug_toggle_scope")
+		main.set_building_seating_overlay(false)
+	else:
+		failures.append("main_set_building_seating_overlay_method")
 
 func _validate_reachability() -> void:
 	var route_tiles: Array = NEWPORT_TOWN.route_tiles()
@@ -109,6 +175,10 @@ func _validate_reachability() -> void:
 	for target_name in NEWPORT_TOWN.reachability_targets().keys():
 		var tile: Vector2i = NEWPORT_TOWN.reachability_targets()[target_name]
 		_expect(reached.has(_key(tile)), "route_reachable_" + target_name)
+
+	for target_name in NEWPORT_TOWN.proof_street_walk_targets().keys():
+		var tile: Vector2i = NEWPORT_TOWN.proof_street_walk_targets()[target_name]
+		_expect(reached.has(_key(tile)), "proof_street_walk_reachable_" + target_name)
 
 func _flood_route_tiles(start: Vector2i, route_set: Dictionary) -> Dictionary:
 	var reached := {}

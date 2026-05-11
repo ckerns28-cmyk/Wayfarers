@@ -6,6 +6,7 @@ const TILE := NEWPORT_TOWN.TILE
 func _ready() -> void:
 	_add_world_edge_collision()
 	_add_water_collision()
+	_add_detail_blockers()
 
 func _add_body(rect: Rect2, label: String) -> void:
 	var body := StaticBody2D.new()
@@ -31,3 +32,8 @@ func _add_world_edge_collision() -> void:
 func _add_water_collision() -> void:
 	for tile in NEWPORT_TOWN.water_collision_tiles():
 		_add_body(Rect2(tile.x * TILE, tile.y * TILE, TILE, TILE), "HarborWater_%d_%d" % [tile.x, tile.y])
+
+func _add_detail_blockers() -> void:
+	for blocker_config in NEWPORT_TOWN.detail_blockers():
+		var blocker: Dictionary = blocker_config
+		_add_body(blocker["rect"], "DetailBlocker_" + String(blocker["id"]))

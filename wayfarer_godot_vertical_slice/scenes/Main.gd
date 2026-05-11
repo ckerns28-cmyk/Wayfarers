@@ -13,6 +13,7 @@ const GAMEPLAY_KEYCODES := [
 	KEY_LEFT,
 	KEY_RIGHT,
 	KEY_E,
+	KEY_B,
 ]
 
 @onready var world: Node2D = $World
@@ -21,6 +22,7 @@ const GAMEPLAY_KEYCODES := [
 
 var _atlas_cache: Dictionary = {}
 var _debug_overlay_enabled := false
+var _seating_debug_enabled := false
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -42,6 +44,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	var key_event := event as InputEventKey
+	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_B:
+		_set_building_seating_overlay(not _seating_debug_enabled)
+		get_viewport().set_input_as_handled()
+		return
+
+	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F2:
+		if hud.has_method("toggle_review_metadata"):
+			hud.toggle_review_metadata()
+		get_viewport().set_input_as_handled()
+		return
+
 	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F3:
 		_set_debug_overlay(not _debug_overlay_enabled)
 		get_viewport().set_input_as_handled()
@@ -53,12 +66,23 @@ func _unhandled_input(event: InputEvent) -> void:
 func set_debug_overlay(enabled: bool) -> void:
 	_set_debug_overlay(enabled)
 
+func set_building_seating_overlay(enabled: bool) -> void:
+	_set_building_seating_overlay(enabled)
+
 func _set_debug_overlay(enabled: bool) -> void:
 	_debug_overlay_enabled = enabled
 	for raw_building in get_tree().get_nodes_in_group("buildings"):
 		var building := raw_building as Node2D
 		if building and building.has_method("set_debug_overlay"):
 			building.set_debug_overlay(enabled)
+
+func _set_building_seating_overlay(enabled: bool) -> void:
+	_seating_debug_enabled = enabled
+	for raw_building in get_tree().get_nodes_in_group("buildings"):
+		var building := raw_building as Node2D
+		if building and building.has_method("set_debug_overlay"):
+			var show_overlay: bool = enabled and building.has_method("is_proof_street_building") and building.is_proof_street_building()
+			building.set_debug_overlay(show_overlay)
 
 func _atlas(path: String, region: Rect2) -> AtlasTexture:
 	var texture := AtlasTexture.new()

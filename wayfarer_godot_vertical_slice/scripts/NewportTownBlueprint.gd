@@ -4,8 +4,8 @@ class_name NewportTownBlueprint
 const TILE := 32
 const MAP_TILES := Vector2i(50, 32)
 const WORLD_SIZE := Vector2(MAP_TILES.x * TILE, MAP_TILES.y * TILE)
-const PLAYER_SPAWN := Vector2(690, 590)
-const EDRIN_SPAWN := Vector2(730, 560)
+const PLAYER_SPAWN := Vector2(736, 620)
+const EDRIN_SPAWN := Vector2(792, 570)
 
 const BUILDING_IDS := [
 	"b_boathouse",
@@ -29,6 +29,14 @@ const BUILDING_IDS := [
 	"b_prestige_block",
 ]
 
+const PROOF_STREET_IDS := [
+	"b_inn_tavern",
+	"b_mercantile",
+	"b_counting_house",
+	"b_chandlery_front",
+	"b_shop_house",
+]
+
 static func base_ground_rect() -> Rect2i:
 	return Rect2i(0, 0, MAP_TILES.x, MAP_TILES.y)
 
@@ -43,7 +51,8 @@ static func district_rects() -> Array:
 
 static func primary_roads() -> Array:
 	return [
-		Rect2i(8, 18, 25, 1),
+		Rect2i(8, 18, 28, 1),
+		Rect2i(8, 19, 28, 1),
 		Rect2i(20, 7, 1, 12),
 		Rect2i(12, 7, 21, 1),
 	]
@@ -114,7 +123,7 @@ static func route_tiles() -> Array:
 	return _tiles_from_rects(route_rects())
 
 static func wharf_walkable_tiles() -> Array:
-	var rects: Array = [Rect2i(8, 18, 25, 1)]
+	var rects: Array = [Rect2i(8, 18, 25, 2)]
 	for pier in pier_rects():
 		rects.append(pier["rect"])
 	return _tiles_from_rects(rects)
@@ -129,37 +138,72 @@ static func water_collision_tiles() -> Array:
 
 static func reachability_targets() -> Dictionary:
 	return {
-		"waterfront_street": Vector2i(20, 18),
+		"harbor_wharf_start": Vector2i(23, 19),
+		"dockside_working_area": Vector2i(29, 19),
+		"commercial_frontage": Vector2i(22, 18),
 		"central_pier_frontage": Vector2i(19, 25),
-		"civic_square": Vector2i(20, 12),
-		"upper_residential": Vector2i(18, 7),
+		"civic_landmark": Vector2i(20, 12),
+		"residential_edge": Vector2i(18, 7),
 		"service_lane": Vector2i(37, 14),
 	}
+
+static func proof_street_ids() -> Array:
+	return PROOF_STREET_IDS.duplicate()
+
+static func proof_street_walk_targets() -> Dictionary:
+	return {
+		"west_frontage": Vector2i(11, 18),
+		"center_frontage": Vector2i(22, 18),
+		"east_frontage": Vector2i(34, 18),
+	}
+
+static func lived_in_detail_count() -> int:
+	return 52
+
+static func detail_blockers() -> Array:
+	return [
+		_blocker("inn_barrels", Rect2(330, 534, 34, 18)),
+		_blocker("mercantile_crates", Rect2(488, 536, 38, 20)),
+		_blocker("counting_house_crates", Rect2(690, 536, 40, 20)),
+		_blocker("chandlery_rope_stack", Rect2(900, 536, 34, 20)),
+		_blocker("market_table_west", Rect2(622, 650, 62, 20)),
+		_blocker("market_table_east", Rect2(756, 650, 62, 20)),
+		_blocker("dock_storehouse_barrels", Rect2(984, 626, 34, 22)),
+		_blocker("boathouse_crates", Rect2(304, 626, 42, 22)),
+		_blocker("central_pier_posts", Rect2(616, 790, 34, 18)),
+		_blocker("civic_bench_west", Rect2(600, 366, 38, 16)),
+		_blocker("civic_bench_east", Rect2(792, 366, 38, 16)),
+		_blocker("residential_planter", Rect2(414, 230, 40, 18)),
+		_blocker("service_yard_barrels", Rect2(1208, 532, 34, 22)),
+		_blocker("harbor_cottage_woodpile", Rect2(166, 486, 38, 18)),
+		_blocker("wharf_north_post_stack", Rect2(560, 648, 26, 18)),
+		_blocker("pier_cargo_stack", Rect2(840, 730, 34, 20)),
+	]
 
 static func player_spawn_tile() -> Vector2i:
 	return Vector2i(floori(PLAYER_SPAWN.x / TILE), floori(PLAYER_SPAWN.y / TILE))
 
 static func building_specs() -> Array:
 	return [
-		_building("b_boathouse", "Boathouse", "newport_wharf_boathouse_large", "harbor_wharf", "harbor", Vector2(12, 21), 4.0, 1.0),
-		_building("b_dock_storehouse", "Dock Storehouse", "newport_dockside_storehouse_long", "harbor_wharf", "harbor", Vector2(32, 21), 4.0, 1.0),
-		_building("b_market_shed", "Market Shed", "newport_market_shed_stalls", "harbor_wharf", "harbor", Vector2(26, 21), 3.0, 1.0),
-		_building("b_inn_tavern", "Inn & Tavern", "inn_tavern_v1", "waterfront_commercial", "commercial", Vector2(11, 16), 5.0, 1.4),
-		_building("b_mercantile", "Mercantile", "mercantile_shop", "waterfront_commercial", "commercial", Vector2(17, 16), 3.5, 1.0),
-		_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", "waterfront_commercial", "commercial", Vector2(24, 16), 4.0, 1.0),
-		_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", "waterfront_commercial", "commercial", Vector2(30, 16), 3.7, 1.0),
-		_building("b_shop_house", "Shop House", "newport_shopfront_awning", "waterfront_commercial", "commercial", Vector2(37, 17), 3.5, 1.0),
-		_building("b_custom_house", "Custom House", "newport_custom_house_civic_front", "civic_district", "civic", Vector2(30, 11), 3.8, 1.0),
-		_building("b_village_hall", "Village Hall", "village_hall_meeting_house", "civic_district", "civic", Vector2(24, 11), 4.0, 1.0),
-		_building("b_res_small", "Harbor Cottage", "residence_small", "service_outfitter_lane", "service", Vector2(6, 11), 2.3, 1.0),
-		_building("b_townhouse_row_a", "Townhouse Row A", "newport_narrow_merchant_townhouse_a", "waterfront_commercial", "commercial", Vector2(39, 13), 2.1, 1.0),
-		_building("b_townhouse_row_b", "Townhouse Row B", "newport_modest_clapboard_residence_a", "service_outfitter_lane", "service", Vector2(42, 10), 2.4, 1.0),
-		_building("b_service_dependency", "Service Dependency", "service_dependency_shed", "service_outfitter_lane", "service", Vector2(42, 17), 2.1, 1.0),
-		_building("b_hunter_lodge", "Hunter Lodge", "hunter_lodge_or_outfitter", "service_outfitter_lane", "rural", Vector2(5, 17), 2.4, 1.0),
-		_building("b_res_large", "Large Residence", "residence_large", "upper_residential_terrace", "residential", Vector2(13, 5), 3.3, 1.0),
-		_building("b_georgian_residence", "Georgian Residence", "newport_georgian_merchant_residence_a", "upper_residential_terrace", "residential", Vector2(18, 6), 3.4, 1.0),
-		_building("b_elite_mansion", "Elite Mansion", "newport_elite_mansion_white", "upper_residential_terrace", "residential", Vector2(25, 5), 3.7, 1.0),
-		_building("b_prestige_block", "Prestige Block", "newport_formal_townhouse_block_a", "upper_residential_terrace", "residential", Vector2(32, 6), 3.6, 1.0),
+		_building("b_boathouse", "Boathouse", "newport_wharf_boathouse_large", "harbor_wharf", "harbor", Vector2(10.7, 21.2), 4.0, 1.0),
+		_building("b_dock_storehouse", "Dock Storehouse", "newport_dockside_storehouse_long", "harbor_wharf", "harbor", Vector2(30.3, 21.1), 4.0, 1.0),
+		_building("b_market_shed", "Market Shed", "newport_market_shed_stalls", "harbor_wharf", "harbor", Vector2(21.4, 21.0), 3.0, 1.0),
+		_proof_street_building("b_inn_tavern", "Inn & Tavern", "inn_tavern_v1", Vector2(11.0, 17.05), Vector2(192.5, 350.0), Vector2(154.0, 42.0), Vector2(0.0, 34.0), 184.0, Vector2(184.0, 28.0)),
+		_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(16.3, 17.05), Vector2(192.0, 333.0), Vector2(110.0, 34.0), Vector2(0.0, 32.0), 136.0, Vector2(132.0, 23.0)),
+		_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(22.1, 17.05), Vector2(209.0, 305.0), Vector2(132.0, 36.0), Vector2(0.0, 34.0), 162.0, Vector2(156.0, 24.0)),
+		_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(28.1, 17.05), Vector2(183.0, 333.0), Vector2(124.0, 36.0), Vector2(0.0, 34.0), 148.0, Vector2(148.0, 24.0)),
+		_proof_street_building("b_shop_house", "Shop House", "newport_shopfront_awning", Vector2(33.7, 17.05), Vector2(209.0, 296.0), Vector2(116.0, 34.0), Vector2(0.0, 32.0), 136.0, Vector2(140.0, 22.0)),
+		_building("b_custom_house", "Custom House", "newport_custom_house_civic_front", "civic_district", "civic", Vector2(25.2, 11.7), 3.8, 1.0),
+		_building("b_village_hall", "Village Hall", "village_hall_meeting_house", "civic_district", "civic", Vector2(20.0, 11.6), 4.0, 1.0),
+		_building("b_res_small", "Harbor Cottage", "residence_small", "service_outfitter_lane", "service", Vector2(6.2, 15.6), 2.3, 1.0),
+		_building("b_townhouse_row_a", "Townhouse Row A", "newport_narrow_merchant_townhouse_a", "waterfront_commercial", "commercial", Vector2(34.8, 12.4), 2.1, 1.0),
+		_building("b_townhouse_row_b", "Townhouse Row B", "newport_modest_clapboard_residence_a", "service_outfitter_lane", "service", Vector2(37.8, 10.1), 2.4, 1.0),
+		_building("b_service_dependency", "Service Dependency", "service_dependency_shed", "service_outfitter_lane", "service", Vector2(38.4, 17.1), 2.1, 1.0),
+		_building("b_hunter_lodge", "Hunter Lodge", "hunter_lodge_or_outfitter", "service_outfitter_lane", "rural", Vector2(5.8, 18.5), 2.4, 1.0),
+		_building("b_res_large", "Large Residence", "residence_large", "upper_residential_terrace", "residential", Vector2(13.2, 7.0), 3.3, 1.0),
+		_building("b_georgian_residence", "Georgian Residence", "newport_georgian_merchant_residence_a", "upper_residential_terrace", "residential", Vector2(18.0, 7.3), 3.4, 1.0),
+		_building("b_elite_mansion", "Elite Mansion", "newport_elite_mansion_white", "upper_residential_terrace", "residential", Vector2(24.7, 7.0), 3.7, 1.0),
+		_building("b_prestige_block", "Prestige Block", "newport_formal_townhouse_block_a", "upper_residential_terrace", "residential", Vector2(31.2, 7.3), 3.6, 1.0),
 	]
 
 static func substitution_notes() -> Dictionary:
@@ -168,6 +212,24 @@ static func substitution_notes() -> Dictionary:
 		"b_service_dependency": "Uses the compact service shed from the base Hearthvale atlas.",
 		"b_prestige_block": "Uses the formal townhouse block from Newport pack B.",
 	}
+
+static func _proof_street_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2) -> Dictionary:
+	var config := _building(id, display_name, sprite_id, "waterfront_commercial", "commercial", foot_tile, collision_size.x / TILE, collision_size.y / TILE)
+	config["proof_street"] = true
+	config["visual_base_anchor"] = visual_base_anchor
+	config["sprite_offset"] = Vector2.ZERO
+	config["visual_base_width"] = base_width
+	config["collision_rect"] = Rect2(Vector2(-collision_size.x * 0.5, -collision_size.y), collision_size)
+	config["frontage_offset"] = frontage_offset
+	config["interaction_size"] = Vector2(maxf(84.0, collision_size.x * 0.76), 42.0)
+	config["interaction_offset"] = frontage_offset
+	config["door_offset"] = frontage_offset
+	config["y_sort_offset"] = Vector2.ZERO
+	config["shadow_offset"] = Vector2(0.0, -6.0)
+	config["shadow_size"] = shadow_size
+	config["lot_rect"] = Rect2(Vector2(-base_width * 0.5 - 8.0, -18.0), Vector2(base_width + 16.0, 58.0))
+	config["street_edge"] = Vector2(foot_tile.x * TILE, foot_tile.y * TILE + frontage_offset.y)
+	return config
 
 static func _building(id: String, display_name: String, sprite_id: String, district: String, district_tag: String, foot_tile: Vector2, collision_tiles_w: float, collision_tiles_h: float) -> Dictionary:
 	var collision_h: float = maxf(30.0, collision_tiles_h * TILE)
@@ -185,6 +247,9 @@ static func _building(id: String, display_name: String, sprite_id: String, distr
 		"interaction_offset": Vector2(0.0, 20.0),
 		"door_offset": Vector2.ZERO,
 	}
+
+static func _blocker(id: String, rect: Rect2) -> Dictionary:
+	return {"id": id, "rect": rect}
 
 static func _tiles_from_rects(rects: Array) -> Array:
 	var tiles: Array = []

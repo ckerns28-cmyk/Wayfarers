@@ -45,6 +45,39 @@ waterfront commercial, civic, upper residential, and service/outfitter
 districts. The HUD review identity should show `Godot G-4.1 Newport Starting
 Town` after the new ZIP is uploaded to itch.
 
+Current G-4.2 result: the Godot town keeps the 19-building Newport foundation
+but shifts the review target from building count to lived-in harbor feel. The
+spawn view is closer and more intentional, streets/plazas render as narrower
+walkable surfaces instead of full test-grid bands, the waterfront has crates,
+barrels, posts, rope, market tables, netting, shoreline detail, and small
+physical blockers, and district clusters are nudged to feel less evenly spaced.
+The HUD review identity should show `Godot G-4.2 Lived-In Harbor Pass`.
+
+Current G-4.3 result: the latest screenshot review showed that G-4.2 still
+read as building sprites pasted onto a visible grid. G-4.3 keeps the same
+19-building Newport set but recomposes the first-screen experience around a
+street-level waterfront arrival: continuous ground washes replace tile-board
+backgrounds, shaped roads/plazas/wharf edges replace full-grid bands, harbor
+detail is clustered around useful frontages, the camera is tighter, and the
+HUD is smaller so the player sees the town instead of a label panel. The HUD
+review identity should show `Godot G-4.3 Harbor Town Recompose`.
+
+Current G-4.4 result: the Newport town keeps the same building count and now
+targets the first 60-90 seconds of player movement. The authored route starts
+on the wharf apron, leads through dockside work clutter, crosses commercial
+frontage, reaches the civic/church square, and connects to the inland
+residential/service edge. The HUD defaults to compact review mode with
+build/phase still visible, camera framing is tuned for walking, and props are
+clustered to shape readable harbor, commercial, civic, and residential beats.
+The HUD review identity should show `Godot G-4.4 Harbor Walk Acceptance`.
+
+Current G-4.5 result: the Godot town now has a one-street building seating
+proof for the waterfront commercial frontage. The proof street keeps the same
+buildings but gives each one explicit visual-base anchors, frontage points,
+collision rects, y-sort markers, shadow rectangles, and debug review markers.
+Press `B` to toggle the proof-street seating overlay during review. The HUD
+review identity should show `Godot G-4.5 Building Seating Proof`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -250,11 +283,151 @@ Deferred:
 - New quests, combat, inventory, save migration, and production cutover.
 - Exact replacement art for every temporary substitute.
 
+## G-4.2: Lived-In Harbor Composition
+
+Status: current.
+
+Make the existing Newport town foundation feel inhabited and walkable without
+adding gameplay systems or expanding the map.
+
+G-4.2 notes:
+
+- The building set remains the same 19 Newport IDs; this is not a placement
+  count phase.
+- The initial camera is closer to the player and offset toward the waterfront
+  composition so the spawn reads as a street-level arrival rather than a map
+  overview.
+- Road, alley, wharf, and plaza surfaces are drawn narrower than their
+  underlying route tiles, with softer edges and reduced grid outlines.
+- Harbor details include crates, barrels, rope coils, bollards, market tables,
+  fish racks, net bundles, a rowboat, shoreline rocks, signs, fences, a
+  clothesline, and woodpile details.
+- Small static detail blockers shape movement around clutter while leaving the
+  core route graph reachable.
+- QA keeps the 19-building check, district checks, route reachability, camera
+  zoom/offset, and detail-blocker count.
+
+Deferred:
+
+- New prop atlas art.
+- Quests, combat, inventory, save migration, and production cutover.
+- Full JS visual parity.
+
+## G-4.3: Newport Harbor Town Recomposition
+
+Status: ready for manual itch upload.
+
+Make the town feel authored as a playable harbor place, not an overview map
+with clip-art buildings. This phase is a composition/readability pass; it does
+not add quests, combat, inventory, save migration, production cutover, or
+JavaScript Worker changes.
+
+G-4.3 notes:
+
+- The 19-building Newport foundation remains intact. This is not a building
+  count pass.
+- Spawn and camera now frame the waterfront street more tightly so the player
+  begins inside the town fabric instead of reading the whole scene as a map.
+- `MapLayer.gd` now draws continuous grass/district washes, shaped streets,
+  civic plaza, wharf apron, shoreline, water, plank docks, and frontage
+  details instead of exposing tile outlines across the whole scene.
+- Existing harbor props are clustered around shopfronts, wharf edges, piers,
+  market frontage, and service yards to make the walkable space feel used.
+- The HUD is narrower, less opaque, and uses the G-4.3 build label for visual
+  upload verification.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.3 Harbor Town Recompose`.
+- The first screen should no longer read primarily as a grid/test map.
+- A 60-90 second walk should feel more like moving through a structured harbor
+  town with waterfront, commercial, civic, service, and residential areas.
+- Manual itch upload remains required for browser review.
+
+## G-4.4: Newport Harbor Walk Acceptance
+
+Status: ready for manual itch upload.
+
+Finalize the current town enough that the first 60-90 seconds of movement read
+as a playable harbor settlement rather than a placed-building map. This phase
+keeps the 19-building set and focuses on route feel, camera, HUD, clutter,
+collision, and review vistas.
+
+G-4.4 notes:
+
+- The player now starts on the wharf apron route, not in a broad overview
+  position.
+- The route beats are explicit in `NewportTownBlueprint.gd`: harbor/wharf
+  start, dockside working area, commercial frontage, central pier frontage,
+  civic landmark, residential edge, and service lane.
+- The wharf apron and waterfront street have tighter walk surfaces, more dock
+  posts, market tables placed off the main path, rope/net/fish/boat details,
+  and blocker positions that shape space without trapping the player.
+- The HUD defaults to compact review mode with build label and phase visible;
+  extended metadata can be toggled with `F2` for review screenshots.
+- Camera zoom and offset are tuned for walking through town rather than seeing
+  the whole layout at once.
+
+Review vistas:
+
+- Wharf view: from the spawn near `(736, 620)`, the player should see the
+  wharf apron, market tables, dock posts, waterline, piers, and harbor clutter
+  without the HUD dominating the scene.
+- Commercial street view: around `(704, 572)`, the player should see
+  shopfront/commercial buildings grounded against a narrower waterfront street
+  with crates, barrels, signs, and rope clusters defining storefront pressure.
+- Civic/inland view: around `(650, 384)`, the player should see the civic
+  square/church/custom-house landmark composition and the inland road leading
+  toward residential/service edges.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.4 Harbor Walk Acceptance`.
+- The first 60-90 seconds of walking should naturally pass through wharf,
+  dockside, commercial, civic, and inland/residential beats.
+- Props and collision should shape movement without blocking the core route.
+- Manual itch upload remains required for browser review.
+
+## G-4.5: Building Seating Calibration And One-Street Proof
+
+Status: ready for manual itch upload.
+
+Fix the foundational visual problem where painterly buildings looked pasted
+onto the street plane. This phase does not add buildings or gameplay. It
+creates one correct waterfront commercial proof street, then documents the
+model for scaling across Newport.
+
+G-4.5 notes:
+
+- Proof street IDs: `b_inn_tavern`, `b_mercantile`, `b_counting_house`,
+  `b_chandlery_front`, and `b_shop_house`.
+- Building `Node2D.position` now explicitly means the visual base/y-sort
+  plane for proof-street buildings.
+- Proof-street configs include `visual_base_anchor`, `frontage_offset`,
+  `collision_rect`, `shadow_size`, `shadow_offset`, `y_sort_offset`, and
+  `proof_street`.
+- The proof sidewalk/apron under those buildings is drawn as one continuous
+  seating surface, with door steps and curb lines aligned to the calibrated
+  frontages.
+- Press `B` to toggle the seating debug overlay for proof-street buildings.
+  It is off by default and shows base/footline, frontage, collision, y-sort
+  anchor, sprite outline, and building label.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.5 Building Seating Proof`.
+- With debug off, the proof street should read as buildings seated on a shared
+  waterfront sidewalk/street plane.
+- With `B` debug on, the anchors/frontages/collision/y-sort markers should
+  explain why the street works.
+- Manual itch upload remains required for browser review.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.1 Newport town foundation is reviewed on itch.
+G-4.5 seating proof is visually reviewed on itch and accepted as the model for
+scaling across the Newport town.
 
 ## G-6: Production Cutover Planning
 

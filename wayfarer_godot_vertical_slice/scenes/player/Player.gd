@@ -49,10 +49,11 @@ func configure_world_limits(world_rect: Rect2) -> void:
 
 func _configure_camera() -> void:
 	camera.enabled = true
-	camera.zoom = Vector2.ONE
+	camera.zoom = Vector2(1.48, 1.48)
 	camera.position = Vector2.ZERO
+	camera.offset = Vector2(72, -26)
 	camera.position_smoothing_enabled = true
-	camera.position_smoothing_speed = 10.0
+	camera.position_smoothing_speed = 8.5
 	_apply_camera_limits()
 	camera.limit_smoothed = true
 	camera.make_current()
