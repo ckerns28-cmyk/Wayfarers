@@ -78,6 +78,12 @@ collision rects, y-sort markers, shadow rectangles, and debug review markers.
 Press `B` to toggle the proof-street seating overlay during review. The HUD
 review identity should show `Godot G-4.5 Building Seating Proof`.
 
+Current G-4.6 result: screenshot review showed G-4.5 was not acceptable. The
+active proof has been reduced to three waterfront buildings, one street/stoop
+plane, one player, and one camera frame. The HUD review identity should show
+`Godot G-4.6 Three-Building Street Proof`. Do not treat this as accepted until
+the manually uploaded itch screenshot clearly reads better than G-4.5.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -390,7 +396,7 @@ Acceptance:
 
 ## G-4.5: Building Seating Calibration And One-Street Proof
 
-Status: ready for manual itch upload.
+Status: failed visual review; superseded by G-4.6.
 
 Fix the foundational visual problem where painterly buildings looked pasted
 onto the street plane. This phase does not add buildings or gameplay. It
@@ -413,20 +419,45 @@ G-4.5 notes:
   It is off by default and shows base/footline, frontage, collision, y-sort
   anchor, sprite outline, and building label.
 
+Visual review result:
+
+- The latest G-4.5 screenshot still read as oversized pasted sprites on a
+  broad tan slab.
+- The debug overlay explained the failure instead of proving a believable
+  street.
+- G-4.5 is not accepted as the model for scaling across Newport.
+
+## G-4.6: Three-Building Street Plane Proof
+
+Status: ready for manual itch upload; not accepted until screenshot review.
+
+G-4.6 starts smaller:
+
+- Active proof buildings: `b_mercantile`, `b_counting_house`, and
+  `b_chandlery_front`.
+- The rest of the town is not instantiated in the proof frame.
+- Edrin is removed so the frame contains one player only.
+- The street plane is authored as sidewalk, stoop pads, curb, cobbled lane,
+  wharf strip, and harbor hint instead of the broad tan road slab.
+- Building draw widths are overridden for the proof so the player reads closer
+  to street scale.
+- Camera zoom/offset frame one street instead of a town overview.
+- Press `B` to inspect seating markers for the three proof buildings.
+
 Acceptance:
 
-- Latest itch upload should show `Godot G-4.5 Building Seating Proof`.
-- With debug off, the proof street should read as buildings seated on a shared
-  waterfront sidewalk/street plane.
-- With `B` debug on, the anchors/frontages/collision/y-sort markers should
-  explain why the street works.
-- Manual itch upload remains required for browser review.
+- Latest itch upload should show `Godot G-4.6 Three-Building Street Proof`.
+- The manual itch screenshot must clearly read better than the G-4.5 failure
+  before this can be called successful.
+- If it still fails, classify honestly as
+  `PROOF_STREET_STILL_NOT_SEATED`, `BUILDING_SCALE_MODEL_FAILED`, or
+  `ART_ASSET_REAUTHORING_REQUIRED`.
 
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.5 seating proof is visually reviewed on itch and accepted as the model for
+G-4.6 seating proof is visually reviewed on itch and accepted as the model for
 scaling across the Newport town.
 
 ## G-6: Production Cutover Planning

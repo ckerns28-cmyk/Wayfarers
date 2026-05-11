@@ -1,9 +1,9 @@
 # Building Seating And Anchors
 
-G-4.5 introduces a practical seating model for painterly building sprites. The
-goal is one proof street where buildings sit on a shared ground plane, face a
-walkable frontage, sort correctly against the player, and expose collision that
-matches the physical building base instead of the entire painted image.
+G-4.5 introduced a practical seating model for painterly building sprites, but
+the five-building screenshot still read as oversized sprites pasted over a tan
+slab. G-4.6 deliberately starts smaller: three buildings, one street plane, one
+player, and one camera frame.
 
 This model is intentionally smaller than the old JavaScript seating-contract
 audit. The Godot contract is source metadata plus visual inspection through the
@@ -11,16 +11,14 @@ audit. The Godot contract is source metadata plus visual inspection through the
 
 ## Proof Street Scope
 
-The first calibrated street is the waterfront commercial frontage in
+The calibrated proof frame is the waterfront commercial frontage in
 `scripts/NewportTownBlueprint.gd`.
 
 Proof-street building IDs:
 
-1. `b_inn_tavern`
-2. `b_mercantile`
-3. `b_counting_house`
-4. `b_chandlery_front`
-5. `b_shop_house`
+1. `b_mercantile`
+2. `b_counting_house`
+3. `b_chandlery_front`
 
 These buildings are marked with `proof_street = true` and join the
 `proof_street_buildings` group at runtime.
@@ -92,7 +90,7 @@ The overlay shows:
 - y-sort/depth anchor
 - building ID label
 
-`F3` still toggles the broader building debug overlay. Use `B` for G-4.5
+`F3` still toggles the broader building debug overlay. Use `B` for G-4.6
 seating review because it only targets the proof street.
 
 ## Adding Future Buildings

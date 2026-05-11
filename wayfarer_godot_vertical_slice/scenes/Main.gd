@@ -30,7 +30,9 @@ func _ready() -> void:
 	if player.has_method("configure_world_limits"):
 		player.configure_world_limits(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE))
 	var edrin := world.get_node_or_null("EdrinVale") as Node2D
-	if edrin:
+	if edrin and NEWPORT_TOWN.G46_PROOF_FRAME:
+		edrin.queue_free()
+	elif edrin:
 		edrin.global_position = NEWPORT_TOWN.EDRIN_SPAWN
 	_place_buildings()
 	player.dialogue_triggered.connect(hud.show_dialogue)
@@ -108,6 +110,8 @@ func _place_buildings() -> void:
 		var sprite_config := BUILDING_CATALOG.sprite_config(config["sprite_id"])
 		for key in sprite_config:
 			config[key] = sprite_config[key]
+		if config.has("draw_width_override"):
+			config["draw_width"] = config["draw_width_override"]
 		var atlas_path: String = config["atlas_path"]
 		var region: Rect2 = config["region"]
 		config["texture"] = _atlas(atlas_path, region)

@@ -4,10 +4,11 @@ class_name NewportTownBlueprint
 const TILE := 32
 const MAP_TILES := Vector2i(50, 32)
 const WORLD_SIZE := Vector2(MAP_TILES.x * TILE, MAP_TILES.y * TILE)
-const PLAYER_SPAWN := Vector2(736, 620)
-const EDRIN_SPAWN := Vector2(792, 570)
+const G46_PROOF_FRAME := true
+const PLAYER_SPAWN := Vector2(735, 592)
+const EDRIN_SPAWN := Vector2(-800, -800)
 
-const BUILDING_IDS := [
+const FULL_TOWN_BUILDING_IDS := [
 	"b_boathouse",
 	"b_dock_storehouse",
 	"b_market_shed",
@@ -30,12 +31,12 @@ const BUILDING_IDS := [
 ]
 
 const PROOF_STREET_IDS := [
-	"b_inn_tavern",
 	"b_mercantile",
 	"b_counting_house",
 	"b_chandlery_front",
-	"b_shop_house",
 ]
+
+const BUILDING_IDS := PROOF_STREET_IDS
 
 static func base_ground_rect() -> Rect2i:
 	return Rect2i(0, 0, MAP_TILES.x, MAP_TILES.y)
@@ -50,6 +51,13 @@ static func district_rects() -> Array:
 	]
 
 static func primary_roads() -> Array:
+	if G46_PROOF_FRAME:
+		return [
+			Rect2i(10, 16, 28, 1),
+			Rect2i(10, 17, 28, 1),
+			Rect2i(10, 18, 28, 1),
+			Rect2i(10, 19, 28, 1),
+		]
 	return [
 		Rect2i(8, 18, 28, 1),
 		Rect2i(8, 19, 28, 1),
@@ -58,6 +66,8 @@ static func primary_roads() -> Array:
 	]
 
 static func secondary_roads() -> Array:
+	if G46_PROOF_FRAME:
+		return []
 	return [
 		Rect2i(8, 14, 25, 1),
 		Rect2i(20, 12, 13, 1),
@@ -69,6 +79,8 @@ static func secondary_roads() -> Array:
 	]
 
 static func service_lanes() -> Array:
+	if G46_PROOF_FRAME:
+		return []
 	return [
 		Rect2i(5, 10, 1, 9),
 		Rect2i(37, 10, 1, 9),
@@ -90,6 +102,10 @@ static func waterfront_apron_rects() -> Array:
 	]
 
 static func pier_rects() -> Array:
+	if G46_PROOF_FRAME:
+		return [
+			{"id": "proof_wharf_hint", "rect": Rect2i(23, 20, 3, 5)},
+		]
 	return [
 		{"id": "west_fish_pier", "rect": Rect2i(10, 18, 1, 8)},
 		{"id": "west_commercial_pier", "rect": Rect2i(16, 18, 1, 7)},
@@ -99,6 +115,10 @@ static func pier_rects() -> Array:
 	]
 
 static func water_rects() -> Array:
+	if G46_PROOF_FRAME:
+		return [
+			Rect2i(0, 22, MAP_TILES.x, 10),
+		]
 	return [
 		Rect2i(0, 20, MAP_TILES.x, 12),
 	]
@@ -137,6 +157,13 @@ static func water_collision_tiles() -> Array:
 	return blocked
 
 static func reachability_targets() -> Dictionary:
+	if G46_PROOF_FRAME:
+		return {
+			"left_storefront": Vector2i(17, 18),
+			"center_storefront": Vector2i(23, 18),
+			"right_storefront": Vector2i(29, 18),
+			"wharf_edge": Vector2i(23, 20),
+		}
 	return {
 		"harbor_wharf_start": Vector2i(23, 19),
 		"dockside_working_area": Vector2i(29, 19),
@@ -151,6 +178,12 @@ static func proof_street_ids() -> Array:
 	return PROOF_STREET_IDS.duplicate()
 
 static func proof_street_walk_targets() -> Dictionary:
+	if G46_PROOF_FRAME:
+		return {
+			"mercantile_frontage": Vector2i(17, 17),
+			"counting_house_frontage": Vector2i(23, 17),
+			"chandlery_frontage": Vector2i(29, 17),
+		}
 	return {
 		"west_frontage": Vector2i(11, 18),
 		"center_frontage": Vector2i(22, 18),
@@ -158,9 +191,13 @@ static func proof_street_walk_targets() -> Dictionary:
 	}
 
 static func lived_in_detail_count() -> int:
+	if G46_PROOF_FRAME:
+		return 12
 	return 52
 
 static func detail_blockers() -> Array:
+	if G46_PROOF_FRAME:
+		return []
 	return [
 		_blocker("inn_barrels", Rect2(330, 534, 34, 18)),
 		_blocker("mercantile_crates", Rect2(488, 536, 38, 20)),
@@ -184,6 +221,12 @@ static func player_spawn_tile() -> Vector2i:
 	return Vector2i(floori(PLAYER_SPAWN.x / TILE), floori(PLAYER_SPAWN.y / TILE))
 
 static func building_specs() -> Array:
+	if G46_PROOF_FRAME:
+		return [
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(17.2, 15.95), Vector2(192.0, 333.0), Vector2(92.0, 32.0), Vector2(0.0, 26.0), 112.0, Vector2(116.0, 19.0), 138.0),
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(23.0, 15.95), Vector2(209.0, 305.0), Vector2(104.0, 34.0), Vector2(0.0, 28.0), 126.0, Vector2(128.0, 20.0), 166.0),
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(29.1, 15.95), Vector2(183.0, 333.0), Vector2(98.0, 34.0), Vector2(0.0, 27.0), 118.0, Vector2(120.0, 20.0), 152.0),
+		]
 	return [
 		_building("b_boathouse", "Boathouse", "newport_wharf_boathouse_large", "harbor_wharf", "harbor", Vector2(10.7, 21.2), 4.0, 1.0),
 		_building("b_dock_storehouse", "Dock Storehouse", "newport_dockside_storehouse_long", "harbor_wharf", "harbor", Vector2(30.3, 21.1), 4.0, 1.0),
@@ -213,9 +256,11 @@ static func substitution_notes() -> Dictionary:
 		"b_prestige_block": "Uses the formal townhouse block from Newport pack B.",
 	}
 
-static func _proof_street_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2) -> Dictionary:
+static func _proof_street_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2, draw_width_override := 0.0) -> Dictionary:
 	var config := _building(id, display_name, sprite_id, "waterfront_commercial", "commercial", foot_tile, collision_size.x / TILE, collision_size.y / TILE)
 	config["proof_street"] = true
+	if draw_width_override > 0.0:
+		config["draw_width_override"] = draw_width_override
 	config["visual_base_anchor"] = visual_base_anchor
 	config["sprite_offset"] = Vector2.ZERO
 	config["visual_base_width"] = base_width

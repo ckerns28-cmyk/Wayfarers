@@ -1,8 +1,8 @@
 extends Node2D
 class_name BuildingDebugOverlay
 
-const SPRITE_OUTLINE := Color(0.95, 0.95, 0.30, 0.85)
-const COLLISION_FILL := Color(1.0, 0.35, 0.35, 0.30)
+const SPRITE_OUTLINE := Color(0.95, 0.95, 0.30, 0.42)
+const COLLISION_FILL := Color(1.0, 0.35, 0.35, 0.22)
 const COLLISION_OUTLINE := Color(1.0, 0.20, 0.20, 0.95)
 const INTERACTION_FILL := Color(0.35, 0.85, 1.0, 0.25)
 const INTERACTION_OUTLINE := Color(0.25, 0.70, 1.0, 0.95)
@@ -33,7 +33,7 @@ func _draw() -> void:
 			region_size = sprite.texture.get_size()
 		var top_left: Vector2 = sprite.position
 		var size: Vector2 = region_size * sprite.scale
-		_draw_rect_outline(Rect2(top_left, size), SPRITE_OUTLINE, 2.0)
+		_draw_rect_outline(Rect2(top_left, size), SPRITE_OUTLINE, 1.0)
 
 	var body_collision := building.get_node_or_null("Body/CollisionShape2D") as CollisionShape2D
 	if body_collision and body_collision.shape is RectangleShape2D:
