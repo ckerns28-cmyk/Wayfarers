@@ -2,6 +2,11 @@ extends CharacterBody2D
 
 signal dialogue_triggered(text: String)
 
+const WORLD_LIMIT_LEFT := 0
+const WORLD_LIMIT_TOP := 0
+const WORLD_LIMIT_RIGHT := 1600
+const WORLD_LIMIT_BOTTOM := 1024
+
 @export var speed := 185.0
 @export var interaction_radius := 86.0
 
@@ -13,10 +18,43 @@ var _interact_was_down := false
 
 func _ready() -> void:
 	add_to_group("player")
-	camera.make_current()
+	_configure_camera()
+	prompt_label.z_as_relative = false
+	prompt_label.z_index = 100
+	prompt_label.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	queue_redraw()
 
 func _physics_process(_delta: float) -> void:
+	var input := _movement_axis()
+	velocity = input.normalized() * speed
+	move_and_slide()
+	_update_interaction_target()
+
+	var interact_down := Input.is_key_pressed(KEY_E)
+	if interact_down and not _interact_was_down and _current_target and _current_target.has_method("interact"):
+		dialogue_triggered.emit(_current_target.interact())
+	_interact_was_down = interact_down
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		velocity = Vector2.ZERO
+		_interact_was_down = false
+
+func _configure_camera() -> void:
+	camera.enabled = true
+	camera.zoom = Vector2.ONE
+	camera.position = Vector2.ZERO
+	camera.position_smoothing_enabled = true
+	camera.position_smoothing_speed = 10.0
+	camera.limit_left = WORLD_LIMIT_LEFT
+	camera.limit_top = WORLD_LIMIT_TOP
+	camera.limit_right = WORLD_LIMIT_RIGHT
+	camera.limit_bottom = WORLD_LIMIT_BOTTOM
+	camera.limit_smoothed = true
+	camera.make_current()
+	camera.reset_smoothing()
+
+func _movement_axis() -> Vector2:
 	var input := Vector2.ZERO
 	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
 		input.x -= 1.0
@@ -26,15 +64,7 @@ func _physics_process(_delta: float) -> void:
 		input.y -= 1.0
 	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
 		input.y += 1.0
-
-	velocity = input.normalized() * speed
-	move_and_slide()
-	_update_interaction_target()
-
-	var interact_down := Input.is_key_pressed(KEY_E)
-	if interact_down and not _interact_was_down and _current_target and _current_target.has_method("interact"):
-		dialogue_triggered.emit(_current_target.interact())
-	_interact_was_down = interact_down
+	return input
 
 func _update_interaction_target() -> void:
 	var nearest: Node = null
@@ -53,6 +83,9 @@ func _update_interaction_target() -> void:
 		prompt_label.text = _current_target.get_interaction_label()
 
 func _draw() -> void:
+	draw_set_transform(Vector2(0, 8), 0.0, Vector2(1.45, 0.42))
+	draw_circle(Vector2.ZERO, 10.0, Color(0, 0, 0, 0.24))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	draw_circle(Vector2(0, -31), 12.0, Color("#f3d6a0"))
 	draw_rect(Rect2(Vector2(-9, -20), Vector2(18, 26)), Color("#4a6fa3"), true)
 	draw_rect(Rect2(Vector2(-11, 4), Vector2(22, 8)), Color("#2f4769"), true)

@@ -19,6 +19,12 @@ Current G-2 result: the itch.io page launches the single-threaded Godot Web
 export in Chrome and unblocks G-3 rendering/input parity work. This is a
 browser-review route only; it is not a production cutover.
 
+Current G-3 result: the first scoped Godot rendering/input pass is ready for
+manual itch ZIP review. It improves camera setup, browser input handling,
+viewport-aware HUD placement, pixel snapping, sprite/building grounding, and
+terrain/road/water readability without expanding the slice or touching the
+JavaScript Worker.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -107,10 +113,27 @@ Acceptance:
 
 ## G-3: Rendering and Input Parity
 
-Status: unblocked by G-2.
+Status: first scoped implementation pass ready for manual itch upload.
 
 Review browser rendering, canvas sizing, input focus, and basic movement
 behavior against the local Godot baseline. Fix presentation regressions only.
+
+G-3.0 notes:
+
+- Camera configuration is centralized in the player controller with explicit
+  world limits, current-camera reset, and slightly tighter smoothing.
+- Gameplay key events are marked handled by the main scene, and focus-out
+  clears the interaction latch to reduce stuck-input risk.
+- The HUD now recalculates panel placement from the active viewport so resize
+  and fullscreen review keep the status/dialogue panels readable.
+- Pixel snap is enabled for 2D transforms/vertices, while nearest texture
+  filtering remains the baseline.
+- Buildings, the player, and Edrin Vale have subtle ground shadows to clarify
+  sprite footing and y-sort readability.
+- Roads, plaza, shoreline, and water waves received contrast-only readability
+  changes. No map expansion or content additions were made.
+- Local validation passed through the Godot QA script and a local browser smoke
+  test. Itch still requires a fresh manual ZIP upload for visual review.
 
 Prerequisite review loop:
 

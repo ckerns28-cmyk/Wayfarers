@@ -492,6 +492,61 @@ Optional itch deploy:
 - Skips without failing ordinary artifact builds when `BUTLER_API_KEY` is not
   configured.
 
+## G-3 Rendering/Input Parity Pass
+
+Status: first visible Godot-forward pass prepared for manual itch ZIP review.
+
+Branch:
+
+```text
+codex/g-3-godot-rendering-input-parity
+```
+
+Scope:
+
+- No JavaScript Worker files, routes, gameplay systems, or production cutover
+  logic were changed.
+- The Godot slice remains the same reduced Newport Harbor Test scene.
+- G-3 does not attempt final visual parity with JavaScript Phase 35.13R.
+
+Implemented baseline improvements:
+
+- Player camera setup now applies explicit world limits, reset-on-start, and
+  slightly tighter smoothing from the controller script.
+- Gameplay key events are handled by the main scene to reduce browser scroll
+  and focus leakage while playing.
+- Focus-out clears the interaction latch to reduce stuck-input risk after
+  switching away from the browser frame.
+- HUD panels recalculate from the active viewport so browser resize and
+  fullscreen review keep the status and dialogue surfaces readable.
+- 2D pixel snap is enabled for transforms and vertices; nearest texture
+  filtering remains active.
+- Buildings, the player, and Edrin Vale now draw small ground shadows for
+  clearer footing and y-sort review.
+- Road/plaza outlines, shoreline definition, and water wave detail were
+  adjusted for readability only. No map expansion or content additions were
+  made.
+
+Validation:
+
+- Godot QA script result: pass, `failureCount=0`.
+- Local browser smoke URL: `http://127.0.0.1:8790/`.
+- Browser runtime: Godot `v4.6.2.stable.official.71f334935`.
+- WebGL mode: WebGL 2.0 / OpenGL ES 3.0 compatibility.
+- Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+- Local browser logs after boot and movement input: no warnings or errors.
+
+Review delivery:
+
+- Itch.io remains the G-3 browser-review host:
+  `https://wayfarersguild.itch.io/wayfarers-tale`.
+- Itch does not update automatically from GitHub.
+- A fresh `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip`
+  must be uploaded manually before public visual review.
+- Butler automation remains deferred for this manual ZIP review pass.
+- Cloudflare Pages remains deferred for the current stock export because
+  `index.wasm` exceeds the 25 MB Direct Upload single-file limit.
+
 ## Cloudflare Pages Delivery
 
 Deploy command attempted:

@@ -1,6 +1,17 @@
 extends Node2D
 
 const BUILDING_SCENE := preload("res://scenes/buildings/Building.tscn")
+const GAMEPLAY_KEYCODES := [
+	KEY_W,
+	KEY_A,
+	KEY_S,
+	KEY_D,
+	KEY_UP,
+	KEY_DOWN,
+	KEY_LEFT,
+	KEY_RIGHT,
+	KEY_E,
+]
 
 @onready var world: Node2D = $World
 @onready var player: CharacterBody2D = $World/Player
@@ -14,10 +25,22 @@ func _ready() -> void:
 	_place_buildings()
 	player.dialogue_triggered.connect(hud.show_dialogue)
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed:
+		get_viewport().set_input_as_handled()
+
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_F3:
-			_set_debug_overlay(not _debug_overlay_enabled)
+	if not event is InputEventKey:
+		return
+
+	var key_event := event as InputEventKey
+	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F3:
+		_set_debug_overlay(not _debug_overlay_enabled)
+		get_viewport().set_input_as_handled()
+		return
+
+	if GAMEPLAY_KEYCODES.has(key_event.keycode):
+		get_viewport().set_input_as_handled()
 
 func set_debug_overlay(enabled: bool) -> void:
 	_set_debug_overlay(enabled)

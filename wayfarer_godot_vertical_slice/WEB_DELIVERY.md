@@ -19,6 +19,13 @@ Current G-2 state: the itch.io page launches the single-threaded Godot Web
 export in Chrome and is the active browser-review route. This is not a
 production cutover.
 
+Current G-3 review rule: itch.io does not update from GitHub. Every Godot
+visual/input change must be exported and packaged with
+`tools/package_itch_web.sh`, then
+`wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` must be
+uploaded manually to itch for browser review. Butler automation remains
+deferred for the G-3 manual ZIP review pass.
+
 Review pipeline roles:
 
 - Source of truth: GitHub plus the Godot project files under
@@ -227,6 +234,18 @@ Manual browser smoke checklist after upload:
 If SharedArrayBuffer or cross-origin isolation errors appear, classify the
 result as `THREADING_EXPORT_INCOMPATIBLE_WITH_ITCH`, switch to a
 single-thread Web export, re-export, re-zip, and re-upload.
+
+### G-3 local smoke status
+
+The first G-3 rendering/input pass was smoke-tested locally from
+`wayfarer_godot_vertical_slice/web_build/` before creating the manual itch
+package.
+
+- Godot runtime: `v4.6.2.stable.official.71f334935`
+- WebGL mode: WebGL 2.0 / OpenGL ES 3.0 compatibility
+- Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support
+- Local browser logs after boot and movement input: no warnings or errors
+- Manual itch upload is still required before public visual review
 
 ## 3. Cloudflare delivery (deferred: separate Pages project)
 
