@@ -214,7 +214,7 @@ https://wayfarersguild.itch.io/wayfarers-tale
 The current upload ZIP is:
 
 ```text
-wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip
+wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip
 ```
 
 The ZIP was created from inside `wayfarer_godot_vertical_slice/web_build/`, so
@@ -259,7 +259,7 @@ Manual upload steps:
 
 1. Open the itch.io project edit page for `wayfarersguild / wayfarers-tale`.
 2. Set the project kind/type to HTML / HTML5 browser game if needed.
-3. Upload `wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip`.
+3. Upload `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip`.
 4. Configure the uploaded ZIP to run in browser / embedded HTML.
 5. Prefer "Click to launch in fullscreen" for the first G-2 browser validation.
 6. Save the page.
@@ -401,6 +401,151 @@ G-2 conclusion:
 Godot appears to reduce renderer/camera/sprite-origin complexity through local
 scene nodes, explicit anchors, camera containment, and y-sort behavior. The itch
 browser baseline is stable enough to unblock G-3 rendering/input parity work.
+
+## G-2.5 Visual Review Loop
+
+Status: artifact-assisted review loop restored locally; GitHub Actions workflow
+is scaffolded and remains unproven until it runs successfully in CI.
+
+Source of truth:
+
+- GitHub repository.
+- `wayfarer_godot_vertical_slice/project.godot`
+- `wayfarer_godot_vertical_slice/export_presets.cfg`
+- Godot source/assets/scenes under `wayfarer_godot_vertical_slice/`.
+
+Generated local build:
+
+```text
+wayfarer_godot_vertical_slice/web_build/
+```
+
+Review package:
+
+```text
+wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip
+```
+
+Packaging command:
+
+```sh
+bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh
+```
+
+The packaging script:
+
+- Runs `tools/export_web.sh`.
+- Removes the previous ZIP.
+- Creates the ZIP from inside `web_build/`.
+- Validates `index.html` at the ZIP root.
+- Fails if `web_build/index.html` is present.
+- Prints ZIP path, file count, total size, and the first 40 entries.
+
+Local package proof from G-2.5:
+
+```text
+PASS: index.html is at ZIP root.
+PASS: ZIP does not contain web_build/index.html.
+ZIP path: wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip
+File count: 10
+Total size: 15M
+```
+
+ZIP root:
+
+```text
+_headers
+index.apple-touch-icon.png
+index.audio.position.worklet.js
+index.audio.worklet.js
+index.html
+index.icon.png
+index.js
+index.pck
+index.png
+index.wasm
+```
+
+GitHub Actions artifact workflow:
+
+```text
+.github/workflows/godot-web-review-build.yml
+```
+
+Expected artifact name:
+
+```text
+wayfarers-tale-godot-web
+```
+
+The workflow downloads Godot 4.6.2 Standard and the matching export templates
+from the official Godot download archive, runs the package script, and uploads
+the ZIP artifact. The workflow is not claimed proven until a GitHub Actions run
+completes successfully.
+
+Optional itch deploy:
+
+- Uses butler.
+- Pushes `wayfarer_godot_vertical_slice/web_build` to
+  `wayfarersguild/wayfarers-tale:web`.
+- Runs only on `main` or a manual workflow dispatch with `deploy_to_itch=true`.
+- Skips without failing ordinary artifact builds when `BUTLER_API_KEY` is not
+  configured.
+
+## G-3 Rendering/Input Parity Pass
+
+Status: first visible Godot-forward pass prepared for manual itch ZIP review.
+
+Branch:
+
+```text
+codex/g-3-godot-rendering-input-parity
+```
+
+Scope:
+
+- No JavaScript Worker files, routes, gameplay systems, or production cutover
+  logic were changed.
+- The Godot slice remains the same reduced Newport Harbor Test scene.
+- G-3 does not attempt final visual parity with JavaScript Phase 35.13R.
+
+Implemented baseline improvements:
+
+- Player camera setup now applies explicit world limits, reset-on-start, and
+  slightly tighter smoothing from the controller script.
+- Gameplay key events are handled by the main scene to reduce browser scroll
+  and focus leakage while playing.
+- Focus-out clears the interaction latch to reduce stuck-input risk after
+  switching away from the browser frame.
+- HUD panels recalculate from the active viewport so browser resize and
+  fullscreen review keep the status and dialogue surfaces readable.
+- 2D pixel snap is enabled for transforms and vertices; nearest texture
+  filtering remains active.
+- Buildings, the player, and Edrin Vale now draw small ground shadows for
+  clearer footing and y-sort review.
+- Road/plaza outlines, shoreline definition, and water wave detail were
+  adjusted for readability only. No map expansion or content additions were
+  made.
+
+Validation:
+
+- Godot QA script result: pass, `failureCount=0`.
+- Local browser smoke URL: `http://127.0.0.1:8790/`.
+- Browser runtime: Godot `v4.6.2.stable.official.71f334935`.
+- WebGL mode: WebGL 2.0 / OpenGL ES 3.0 compatibility.
+- Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+- Local browser logs after boot and movement input: no warnings or errors.
+
+Review delivery:
+
+- Itch.io remains the G-3 browser-review host:
+  `https://wayfarersguild.itch.io/wayfarers-tale`.
+- Itch does not update automatically from GitHub.
+- A fresh `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip`
+  must be uploaded manually before public visual review.
+- Butler automation remains deferred for this manual ZIP review pass.
+- Cloudflare Pages remains deferred for the current stock export because
+  `index.wasm` exceeds the 25 MB Direct Upload single-file limit.
 
 ## Cloudflare Pages Delivery
 
