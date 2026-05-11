@@ -1,9 +1,10 @@
 extends CanvasLayer
 
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
-const HUD_MARGIN := 14.0
-const STATUS_MIN_WIDTH := 260.0
-const STATUS_MAX_WIDTH := 340.0
+const HUD_MARGIN := 12.0
+const STATUS_MIN_WIDTH := 238.0
+const STATUS_MAX_WIDTH := 304.0
+const STATUS_EXPANDED_MAX_WIDTH := 348.0
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
 
@@ -12,12 +13,18 @@ const DIALOGUE_MIN_WIDTH := 340.0
 @onready var phase_host_label: Label = $Panel/MarginContainer/VBoxContainer/PhaseHost
 @onready var channel_label: Label = $Panel/MarginContainer/VBoxContainer/Channel
 @onready var branch_label: Label = $Panel/MarginContainer/VBoxContainer/Branch
+@onready var objective_label: Label = $Panel/MarginContainer/VBoxContainer/Objective
+@onready var zone_label: Label = $Panel/MarginContainer/VBoxContainer/Zone
+@onready var stats_label: Label = $Panel/MarginContainer/VBoxContainer/Stats
 @onready var dialogue_panel: PanelContainer = $DialoguePanel
 @onready var dialogue_label: Label = $DialoguePanel/MarginContainer/DialogueLabel
+
+var _metadata_expanded := false
 
 func _ready() -> void:
 	_apply_panel_styles()
 	_apply_build_identity()
+	_apply_metadata_visibility()
 	dialogue_panel.visible = false
 	_apply_layout()
 	get_viewport().size_changed.connect(_apply_layout)
@@ -36,10 +43,22 @@ func _apply_build_identity() -> void:
 	if branch.length() > 34:
 		branch = branch.substr(0, 31) + "..."
 	branch_label.text = "Branch: " + branch
+	zone_label.text = "Newport Harbor Walk"
+	stats_label.text = "Level 1  HP 52/52"
+
+func toggle_review_metadata() -> void:
+	_metadata_expanded = not _metadata_expanded
+	_apply_metadata_visibility()
+	_apply_layout()
+
+func _apply_metadata_visibility() -> void:
+	channel_label.visible = _metadata_expanded
+	branch_label.visible = _metadata_expanded
+	objective_label.visible = _metadata_expanded
 
 func _apply_panel_styles() -> void:
 	var status_style := StyleBoxFlat.new()
-	status_style.bg_color = Color(0.055, 0.075, 0.06, 0.60)
+	status_style.bg_color = Color(0.055, 0.075, 0.06, 0.46)
 	status_style.border_color = Color(0.58, 0.66, 0.58, 0.22)
 	status_style.set_border_width_all(1)
 	status_style.corner_radius_top_left = 4
@@ -63,11 +82,13 @@ func _apply_layout() -> void:
 	if viewport_size.x <= 0 or viewport_size.y <= 0:
 		return
 
-	var status_width: float = clamp(viewport_size.x * 0.22, STATUS_MIN_WIDTH, STATUS_MAX_WIDTH)
+	var max_width := STATUS_EXPANDED_MAX_WIDTH if _metadata_expanded else STATUS_MAX_WIDTH
+	var status_width: float = clamp(viewport_size.x * 0.17, STATUS_MIN_WIDTH, max_width)
 	status_panel.offset_left = HUD_MARGIN
 	status_panel.offset_top = HUD_MARGIN
 	status_panel.offset_right = HUD_MARGIN + status_width
-	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + 204.0)
+	var status_height := 188.0 if _metadata_expanded else 116.0
+	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + status_height)
 
 	var dialogue_width: float = min(DIALOGUE_MAX_WIDTH, max(DIALOGUE_MIN_WIDTH, viewport_size.x - HUD_MARGIN * 2.0))
 	var dialogue_left: float = clamp((viewport_size.x - dialogue_width) * 0.5, HUD_MARGIN, viewport_size.x - HUD_MARGIN - dialogue_width)

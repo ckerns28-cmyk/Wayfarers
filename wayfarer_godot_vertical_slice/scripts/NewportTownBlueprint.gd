@@ -4,8 +4,8 @@ class_name NewportTownBlueprint
 const TILE := 32
 const MAP_TILES := Vector2i(50, 32)
 const WORLD_SIZE := Vector2(MAP_TILES.x * TILE, MAP_TILES.y * TILE)
-const PLAYER_SPAWN := Vector2(710, 588)
-const EDRIN_SPAWN := Vector2(770, 548)
+const PLAYER_SPAWN := Vector2(736, 620)
+const EDRIN_SPAWN := Vector2(792, 570)
 
 const BUILDING_IDS := [
 	"b_boathouse",
@@ -44,6 +44,7 @@ static func district_rects() -> Array:
 static func primary_roads() -> Array:
 	return [
 		Rect2i(8, 18, 25, 1),
+		Rect2i(8, 19, 25, 1),
 		Rect2i(20, 7, 1, 12),
 		Rect2i(12, 7, 21, 1),
 	]
@@ -114,7 +115,7 @@ static func route_tiles() -> Array:
 	return _tiles_from_rects(route_rects())
 
 static func wharf_walkable_tiles() -> Array:
-	var rects: Array = [Rect2i(8, 18, 25, 1)]
+	var rects: Array = [Rect2i(8, 18, 25, 2)]
 	for pier in pier_rects():
 		rects.append(pier["rect"])
 	return _tiles_from_rects(rects)
@@ -129,10 +130,12 @@ static func water_collision_tiles() -> Array:
 
 static func reachability_targets() -> Dictionary:
 	return {
-		"waterfront_street": Vector2i(20, 18),
+		"harbor_wharf_start": Vector2i(23, 19),
+		"dockside_working_area": Vector2i(29, 19),
+		"commercial_frontage": Vector2i(22, 18),
 		"central_pier_frontage": Vector2i(19, 25),
-		"civic_square": Vector2i(20, 12),
-		"upper_residential": Vector2i(18, 7),
+		"civic_landmark": Vector2i(20, 12),
+		"residential_edge": Vector2i(18, 7),
 		"service_lane": Vector2i(37, 14),
 	}
 
@@ -141,19 +144,22 @@ static func lived_in_detail_count() -> int:
 
 static func detail_blockers() -> Array:
 	return [
-		_blocker("inn_barrels", Rect2(332, 534, 34, 18)),
-		_blocker("mercantile_crates", Rect2(494, 536, 38, 20)),
-		_blocker("counting_house_crates", Rect2(696, 536, 40, 20)),
-		_blocker("chandlery_rope_stack", Rect2(898, 536, 34, 20)),
-		_blocker("market_table", Rect2(666, 622, 62, 22)),
+		_blocker("inn_barrels", Rect2(330, 534, 34, 18)),
+		_blocker("mercantile_crates", Rect2(488, 536, 38, 20)),
+		_blocker("counting_house_crates", Rect2(690, 536, 40, 20)),
+		_blocker("chandlery_rope_stack", Rect2(900, 536, 34, 20)),
+		_blocker("market_table_west", Rect2(622, 650, 62, 20)),
+		_blocker("market_table_east", Rect2(756, 650, 62, 20)),
 		_blocker("dock_storehouse_barrels", Rect2(984, 626, 34, 22)),
-		_blocker("boathouse_crates", Rect2(300, 626, 42, 22)),
+		_blocker("boathouse_crates", Rect2(304, 626, 42, 22)),
 		_blocker("central_pier_posts", Rect2(616, 790, 34, 18)),
 		_blocker("civic_bench_west", Rect2(600, 366, 38, 16)),
 		_blocker("civic_bench_east", Rect2(792, 366, 38, 16)),
 		_blocker("residential_planter", Rect2(414, 230, 40, 18)),
 		_blocker("service_yard_barrels", Rect2(1208, 532, 34, 22)),
 		_blocker("harbor_cottage_woodpile", Rect2(166, 486, 38, 18)),
+		_blocker("wharf_north_post_stack", Rect2(560, 648, 26, 18)),
+		_blocker("pier_cargo_stack", Rect2(840, 730, 34, 20)),
 	]
 
 static func player_spawn_tile() -> Vector2i:

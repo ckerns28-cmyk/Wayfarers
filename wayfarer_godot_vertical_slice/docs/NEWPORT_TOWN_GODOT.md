@@ -14,6 +14,10 @@ sprites placed on a grid canvas. It keeps the building set but recomposes the
 visible world around continuous streets, shaped wharf edges, clustered
 frontage clutter, and a tighter first-screen waterfront arrival.
 
+G-4.4 keeps the same building count and treats the first 60-90 seconds of
+movement as the acceptance target: wharf start, dockside work area,
+commercial frontage, civic/church square, and inland residential/service edge.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -83,15 +87,19 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 and G-4.2 provide practical collision/navigation support only:
+G-4.1 through G-4.4 provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
   street and pier tiles walkable.
-- The player spawns on the waterfront route and can reach the civic square,
-  wharf/pier frontage, upper residential road, and service lane.
+- The player spawns on the wharf apron route and can reach dockside work
+  clutter, commercial frontage, the civic square, pier frontage, upper
+  residential road, and service lane.
 - G-4.2 adds small detail blockers for crates, tables, benches, and dockside
   clutter so streets feel shaped without trapping the player.
+- G-4.4 moves market/table blockers off the center of the route and adds a few
+  dockside blockers to give the wharf edge weight without blocking the first
+  walk.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
@@ -143,6 +151,46 @@ Build label: Godot G-4.3 Harbor Town Recompose
 Phase: G-4.3 | Review host: itch
 Channel: manual ZIP
 Branch: codex/g-4-3-newport-harbor-town-recomposition
+```
+
+## G-4.4 Harbor Walk Acceptance
+
+G-4.4 is a player-scale walk pass. It does not add buildings or gameplay
+systems. It makes the existing town easier to read while walking:
+
+- Route: player spawn moves to the wharf apron at `(736, 620)`, with route QA
+  targets for harbor start, dockside working area, commercial frontage,
+  central pier frontage, civic landmark, residential edge, and service lane.
+- HUD: compact review mode is the default so screenshots show more town. The
+  build label and phase stay visible; `F2` toggles extended metadata.
+- Camera: a slightly tighter walking zoom and softer offset keep the player
+  readable while letting landmarks enter the frame instead of presenting the
+  whole map at once.
+- Waterfront: wharf apron, pier heads, posts, market tables, fish racks, rope,
+  nets, rowboats, barrels, and crates are repositioned around the actual walk
+  path.
+- District read: commercial frontage gets signs/crates/barrels, civic gets
+  smaller green/plaza edges, and inland/service areas retain fences,
+  clothesline, woodpile, and yard clutter.
+
+Review vistas for the manual itch upload:
+
+1. Wharf view: start near `(736, 620)`. The view should show the wharf apron,
+   dock posts, waterline, market tables, rope/net/fish details, and piers.
+2. Commercial street view: walk north/east around `(704, 572)`. The view
+   should show grounded shopfronts, signs, barrels, crates, and a narrower
+   waterfront street.
+3. Civic/inland view: walk north to around `(650, 384)`. The view should show
+   the civic/church/custom-house square with the inland route toward
+   residential and service edges.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.4 Harbor Walk Acceptance
+Phase: G-4.4 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-4-newport-harbor-walk-acceptance
 ```
 
 ## Deferred

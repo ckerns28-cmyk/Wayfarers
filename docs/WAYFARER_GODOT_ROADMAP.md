@@ -62,6 +62,15 @@ detail is clustered around useful frontages, the camera is tighter, and the
 HUD is smaller so the player sees the town instead of a label panel. The HUD
 review identity should show `Godot G-4.3 Harbor Town Recompose`.
 
+Current G-4.4 result: the Newport town keeps the same building count and now
+targets the first 60-90 seconds of player movement. The authored route starts
+on the wharf apron, leads through dockside work clutter, crosses commercial
+frontage, reaches the civic/church square, and connects to the inland
+residential/service edge. The HUD defaults to compact review mode with
+build/phase still visible, camera framing is tuned for walking, and props are
+clustered to shape readable harbor, commercial, civic, and residential beats.
+The HUD review identity should show `Godot G-4.4 Harbor Walk Acceptance`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -297,12 +306,6 @@ Deferred:
 - Quests, combat, inventory, save migration, and production cutover.
 - Full JS visual parity.
 
-## G-5: Migration Architecture
-
-Design how future gameplay systems will move from the JavaScript codebase to
-Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.2 lived-in harbor pass is reviewed on itch.
-
 ## G-4.3: Newport Harbor Town Recomposition
 
 Status: ready for manual itch upload.
@@ -333,6 +336,56 @@ Acceptance:
 - A 60-90 second walk should feel more like moving through a structured harbor
   town with waterfront, commercial, civic, service, and residential areas.
 - Manual itch upload remains required for browser review.
+
+## G-4.4: Newport Harbor Walk Acceptance
+
+Status: ready for manual itch upload.
+
+Finalize the current town enough that the first 60-90 seconds of movement read
+as a playable harbor settlement rather than a placed-building map. This phase
+keeps the 19-building set and focuses on route feel, camera, HUD, clutter,
+collision, and review vistas.
+
+G-4.4 notes:
+
+- The player now starts on the wharf apron route, not in a broad overview
+  position.
+- The route beats are explicit in `NewportTownBlueprint.gd`: harbor/wharf
+  start, dockside working area, commercial frontage, central pier frontage,
+  civic landmark, residential edge, and service lane.
+- The wharf apron and waterfront street have tighter walk surfaces, more dock
+  posts, market tables placed off the main path, rope/net/fish/boat details,
+  and blocker positions that shape space without trapping the player.
+- The HUD defaults to compact review mode with build label and phase visible;
+  extended metadata can be toggled with `F2` for review screenshots.
+- Camera zoom and offset are tuned for walking through town rather than seeing
+  the whole layout at once.
+
+Review vistas:
+
+- Wharf view: from the spawn near `(736, 620)`, the player should see the
+  wharf apron, market tables, dock posts, waterline, piers, and harbor clutter
+  without the HUD dominating the scene.
+- Commercial street view: around `(704, 572)`, the player should see
+  shopfront/commercial buildings grounded against a narrower waterfront street
+  with crates, barrels, signs, and rope clusters defining storefront pressure.
+- Civic/inland view: around `(650, 384)`, the player should see the civic
+  square/church/custom-house landmark composition and the inland road leading
+  toward residential/service edges.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.4 Harbor Walk Acceptance`.
+- The first 60-90 seconds of walking should naturally pass through wharf,
+  dockside, commercial, civic, and inland/residential beats.
+- Props and collision should shape movement without blocking the core route.
+- Manual itch upload remains required for browser review.
+
+## G-5: Migration Architecture
+
+Design how future gameplay systems will move from the JavaScript codebase to
+Godot. This is a planning phase, not a porting phase. It may begin after the
+G-4.4 harbor walk acceptance build is visually reviewed on itch.
 
 ## G-6: Production Cutover Planning
 

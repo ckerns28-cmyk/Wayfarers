@@ -42,6 +42,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	var key_event := event as InputEventKey
+	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F2:
+		if hud.has_method("toggle_review_metadata"):
+			hud.toggle_review_metadata()
+		get_viewport().set_input_as_handled()
+		return
+
 	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F3:
 		_set_debug_overlay(not _debug_overlay_enabled)
 		get_viewport().set_input_as_handled()

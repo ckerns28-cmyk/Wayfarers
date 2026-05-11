@@ -48,22 +48,27 @@ func _draw_ground() -> void:
 	_draw_planting_bed(Rect2(760, 78, 188, 68))
 	_draw_planting_bed(Rect2(992, 88, 154, 58))
 	_draw_planting_bed(Rect2(560, 286, 300, 70), Color("#718d64"), Color("#5b7b54"))
+	_draw_planting_bed(Rect2(438, 360, 70, 52), Color("#617d52"), Color("#4f6f49"))
+	_draw_planting_bed(Rect2(914, 360, 76, 52), Color("#617d52"), Color("#4f6f49"))
 	_draw_planting_bed(Rect2(116, 452, 160, 88), Color("#668051"), Color("#4f6c46"))
 	_draw_planting_bed(Rect2(1180, 430, 180, 100), Color("#697755"), Color("#566749"))
 
 func _draw_roads() -> void:
 	_draw_cobbled_world_rect(Rect2(545, 318, 345, 130), Color("#918a73"), Color("#6d715f"), 42)
-	_draw_cobbled_world_rect(Rect2(230, 588, 910, 94), Color("#85775b"), Color("#635a45"), 78)
-	_draw_path_line(Vector2(250, 580), Vector2(1130, 580), 48.0, Color("#a58a61"), Color("#726049"))
+	_draw_cobbled_world_rect(Rect2(255, 596, 855, 70), Color("#85775b"), Color("#635a45"), 74)
+	_draw_cobbled_world_rect(Rect2(594, 636, 260, 42), Color("#8d7958"), Color("#66573f"), 30)
+	_draw_path_line(Vector2(250, 572), Vector2(1130, 572), 42.0, Color("#a58a61"), Color("#726049"))
+	_draw_path_line(Vector2(280, 625), Vector2(1100, 625), 34.0, Color("#8f7959"), Color("#655841"))
 	_draw_path_line(Vector2(645, 350), Vector2(650, 660), 34.0, Color("#9b815d"), Color("#6f5d45"))
 	_draw_path_line(Vector2(402, 330), Vector2(1080, 330), 36.0, Color("#9d865f"), Color("#726049"))
+	_draw_path_line(Vector2(440, 430), Vector2(986, 430), 24.0, Color("#8d7656"), Color("#65533d"), false)
 	_draw_path_line(Vector2(350, 530), Vector2(365, 645), 28.0, Color("#8d7353"), Color("#655541"), false)
 	_draw_path_line(Vector2(1210, 350), Vector2(1210, 625), 28.0, Color("#836c4e"), Color("#5d513e"), false)
 	_draw_path_line(Vector2(1340, 325), Vector2(1330, 590), 24.0, Color("#80694c"), Color("#5c4e3c"), false)
 	_draw_path_line(Vector2(1088, 500), Vector2(1350, 500), 30.0, Color("#907755"), Color("#67563f"))
 	_draw_path_line(Vector2(160, 515), Vector2(355, 520), 30.0, Color("#8f7655"), Color("#66553f"))
 	_draw_cobbled_world_rect(Rect2(260, 680, 850, 46), Color("#766f57"), Color("#5a5542"), 54)
-	for p in [Vector2(316, 552), Vector2(466, 548), Vector2(612, 548), Vector2(792, 548), Vector2(966, 548), Vector2(678, 376), Vector2(1230, 500)]:
+	for p in [Vector2(316, 544), Vector2(466, 540), Vector2(612, 540), Vector2(792, 540), Vector2(966, 540), Vector2(678, 376), Vector2(1230, 500), Vector2(735, 628)]:
 		_draw_door_step(p)
 
 func _draw_wharf_water() -> void:
@@ -79,15 +84,21 @@ func _draw_wharf_water() -> void:
 		Vector2(1245, 700), Vector2(1600, 690)
 	]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
 	_draw_plank_world_rect(Rect2(248, 676, 895, 58), Color("#84765a"), Color("#625841"))
+	_draw_plank_world_rect(Rect2(600, 672, 270, 34), Color("#8b7a5a"), Color("#665b43"))
 	_draw_plank_world_rect(Rect2(270, 720, 150, 140), Color("#7d6547"), Color("#5b4733"))
 	_draw_plank_world_rect(Rect2(525, 708, 95, 170), Color("#856948"), Color("#5f4932"))
 	_draw_plank_world_rect(Rect2(760, 704, 95, 200), Color("#8c6b47"), Color("#654b34"))
 	_draw_plank_world_rect(Rect2(955, 715, 140, 150), Color("#7b6347"), Color("#5a4733"))
 	_draw_post_line(Vector2(255, 680), Vector2(1125, 680), 58.0)
+	_draw_post_line(Vector2(604, 704), Vector2(866, 704), 44.0)
 	_draw_post_line(Vector2(278, 728), Vector2(278, 846), 46.0)
 	_draw_post_line(Vector2(410, 728), Vector2(410, 846), 46.0)
+	_draw_post_line(Vector2(532, 718), Vector2(532, 866), 46.0)
+	_draw_post_line(Vector2(612, 718), Vector2(612, 866), 46.0)
 	_draw_post_line(Vector2(766, 714), Vector2(766, 894), 46.0)
 	_draw_post_line(Vector2(846, 714), Vector2(846, 894), 46.0)
+	_draw_post_line(Vector2(962, 728), Vector2(962, 850), 46.0)
+	_draw_post_line(Vector2(1086, 728), Vector2(1086, 850), 46.0)
 	for i in range(28):
 		var x := 18.0 + float((i * 57) % 1510)
 		var y := 760.0 + float((i * 43) % 235)
@@ -96,31 +107,35 @@ func _draw_wharf_water() -> void:
 		_draw_shore_rocks(p)
 
 func _draw_props() -> void:
-	for pos in [Vector2(292, 612), Vector2(340, 628), Vector2(486, 544), Vector2(526, 556), Vector2(706, 544), Vector2(900, 542), Vector2(1038, 612), Vector2(1210, 534), Vector2(1318, 516)]:
+	for pos in [Vector2(292, 612), Vector2(340, 628), Vector2(486, 536), Vector2(526, 552), Vector2(690, 536), Vector2(900, 536), Vector2(1038, 612), Vector2(1210, 534), Vector2(1318, 516), Vector2(558, 650), Vector2(840, 730)]:
 		_draw_crate_stack(pos)
-	for pos in [Vector2(322, 552), Vector2(552, 548), Vector2(760, 548), Vector2(935, 548), Vector2(1008, 634), Vector2(1240, 542)]:
+	for pos in [Vector2(322, 552), Vector2(552, 548), Vector2(760, 548), Vector2(935, 548), Vector2(1008, 634), Vector2(1240, 542), Vector2(814, 666)]:
 		_draw_barrels(pos, 3)
-	for pos in [Vector2(385, 636), Vector2(602, 626), Vector2(842, 625), Vector2(996, 646), Vector2(1082, 650), Vector2(762, 746)]:
+	for pos in [Vector2(385, 636), Vector2(590, 640), Vector2(870, 640), Vector2(996, 646), Vector2(1082, 650), Vector2(762, 746), Vector2(672, 690), Vector2(804, 690)]:
 		_draw_rope_coil(pos)
-	_draw_market_table(Vector2(664, 620))
-	_draw_market_table(Vector2(730, 622))
-	_draw_fish_rack(Vector2(884, 590))
+	_draw_market_table(Vector2(622, 648))
+	_draw_market_table(Vector2(756, 648))
+	_draw_fish_rack(Vector2(838, 628))
+	_draw_fish_rack(Vector2(310, 652))
 	_draw_net_bundle(Vector2(316, 672))
 	_draw_net_bundle(Vector2(1004, 672))
+	_draw_net_bundle(Vector2(710, 700))
 	_draw_rowboat(Vector2(805, 900))
 	_draw_rowboat(Vector2(370, 842))
-	_draw_sign_post(Vector2(348, 548), Color("#9d4e38"))
-	_draw_sign_post(Vector2(506, 535), Color("#4f6d48"))
-	_draw_sign_post(Vector2(922, 535), Color("#90703d"))
+	_draw_rowboat(Vector2(1030, 850))
+	_draw_sign_post(Vector2(348, 540), Color("#9d4e38"))
+	_draw_sign_post(Vector2(506, 532), Color("#4f6d48"))
+	_draw_sign_post(Vector2(922, 532), Color("#90703d"))
+	_draw_sign_post(Vector2(720, 626), Color("#7e6240"))
 	_draw_clothesline(Vector2(1182, 390), Vector2(1306, 368))
 	_draw_fence_line(Vector2(372, 222), Vector2(516, 222), Color("#d9c89c"))
 	_draw_fence_line(Vector2(720, 224), Vector2(892, 224), Color("#d9c89c"))
 	_draw_fence_line(Vector2(1030, 232), Vector2(1185, 232), Color("#d9c89c"))
 	_draw_woodpile(Vector2(154, 488))
-	for pos in [Vector2(112, 438), Vector2(1360, 372), Vector2(1168, 300), Vector2(1320, 650), Vector2(252, 474), Vector2(1380, 530)]:
+	for pos in [Vector2(112, 438), Vector2(1360, 372), Vector2(1168, 300), Vector2(1320, 650), Vector2(252, 474), Vector2(1380, 530), Vector2(430, 356), Vector2(1004, 356)]:
 		draw_circle(pos, 13, Color("#2f5d35"))
 		draw_circle(pos + Vector2(-8, -8), 8, Color("#3d7042"))
-	for pos in [Vector2(620, 360), Vector2(805, 360), Vector2(486, 584), Vector2(1142, 584), Vector2(312, 698), Vector2(1118, 698)]:
+	for pos in [Vector2(620, 360), Vector2(805, 360), Vector2(486, 584), Vector2(1142, 584), Vector2(312, 698), Vector2(1118, 698), Vector2(610, 640), Vector2(856, 640)]:
 		draw_circle(pos, 4, Color("#2f251b"))
 		draw_circle(pos + Vector2(0, -6), 3, Color("#d8b56f"))
 
