@@ -9,6 +9,12 @@ host is the existing itch.io project at
 `https://wayfarersguild.itch.io/wayfarers-tale`, using a ZIP generated from
 `wayfarer_godot_vertical_slice/web_build/`.
 
+G-2.5 restores the repeatable visual review loop: source changes produce an
+ignored local Web build, an ignored itch-ready ZIP under
+`wayfarer_godot_vertical_slice/artifacts/`, and a GitHub Actions artifact for
+manual itch upload. Optional butler deploy is available only when
+`BUTLER_API_KEY` is configured.
+
 Current G-2 result: the itch.io page launches the single-threaded Godot Web
 export in Chrome and unblocks G-3 rendering/input parity work. This is a
 browser-review route only; it is not a production cutover.
@@ -52,17 +58,15 @@ Status: current, with G-1.6 itch.io delivery package ready for manual upload.
 - Copy `web_build_template/_headers` into `web_build/_headers` on every
   export.
 - Use the single-threaded Godot Web export for the itch.io baseline.
-- Package the itch.io upload ZIP from inside `web_build/` so `index.html`
-  appears at the ZIP root:
+- Package the itch.io upload ZIP with the deterministic script:
 
 ```sh
-cd wayfarer_godot_vertical_slice/web_build
-zip -r ../wayfarers-tale-godot-web.zip .
-cd ../..
+bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh
 ```
 
-- Upload `wayfarer_godot_vertical_slice/wayfarers-tale-godot-web.zip` to the
-  existing `wayfarersguild / wayfarers-tale` itch.io project as an HTML5
+- Upload
+  `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` to
+  the existing `wayfarersguild / wayfarers-tale` itch.io project as an HTML5
   browser game.
 - Prefer "Click to launch in fullscreen" for the first G-2 browser validation.
 - Keep Cloudflare Pages documented but deferred until the WASM size or asset
@@ -107,6 +111,20 @@ Status: unblocked by G-2.
 
 Review browser rendering, canvas sizing, input focus, and basic movement
 behavior against the local Godot baseline. Fix presentation regressions only.
+
+Prerequisite review loop:
+
+- Manual mode: run `tools/package_itch_web.sh`, upload the artifact ZIP to
+  itch, then review the page.
+- Artifact-assisted mode: download the `wayfarers-tale-godot-web` artifact from
+  `.github/workflows/godot-web-review-build.yml`, upload it to itch, then
+  review the page.
+- Automated itch mode: configure `BUTLER_API_KEY`, run the workflow manually
+  with `deploy_to_itch=true` or merge to the configured branch, then review the
+  refreshed itch page.
+
+The GitHub Actions workflow exists but remains unproven until it completes
+successfully in GitHub Actions.
 
 ## G-4: Asset Source and Import Discipline
 
