@@ -26,14 +26,14 @@ Godot visual/input/review-label change must be exported and packaged with
 uploaded manually to itch for browser review. Butler automation remains
 deferred for the manual ZIP review pass.
 
-The G-3.1 HUD shows visible review identity so a screenshot can prove which
-ZIP is live:
+The HUD shows visible review identity so a screenshot can prove which ZIP is
+live. For G-4.1 the expected label is:
 
 ```text
-Build label: Godot G-3.1 Review Clarity
-Phase: G-3.1 | Review host: itch
+Build label: Godot G-4.1 Newport Starting Town
+Phase: G-4.1 | Review host: itch
 Channel: manual ZIP
-Branch: codex/g-3-1-godot-review-clarity
+Branch: codex/g-4-1-godot-newport-starting-town
 ```
 
 Review pipeline roles:
@@ -191,13 +191,13 @@ The listing must include `index.html` with no `web_build/` prefix.
 10. Confirm the on-screen build label changed to the expected phase/branch.
 11. Capture browser console errors and a screenshot.
 
-G-3.1 review checklist:
+Current review checklist:
 
 1. Codex changes Godot source.
 2. Codex runs `bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh`.
 3. User uploads `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` to itch.
 4. User hard-refreshes the itch page.
-5. User confirms the HUD shows `Godot G-3.1 Review Clarity`.
+5. User confirms the HUD shows the expected phase/build label for the branch.
 
 ### Artifact-assisted mode
 

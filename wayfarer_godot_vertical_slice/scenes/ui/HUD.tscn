@@ -26,13 +26,13 @@ text = "Wayfarer"
 
 [node name="BuildLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
-text = "Build label: Godot G-3.1 Review Clarity"
+text = "Build label: Godot G-4.1 Newport Starting Town"
 autowrap_mode = 3
 
 [node name="PhaseHost" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 15
-text = "Phase: G-3.1 | Review host: itch"
+text = "Phase: G-4.1 | Review host: itch"
 autowrap_mode = 3
 
 [node name="Channel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
@@ -44,7 +44,7 @@ autowrap_mode = 3
 [node name="Branch" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 14
-text = "Branch: codex/g-3-1-godot-review-clarity"
+text = "Branch: codex/g-4-1-godot-newport-starting-town"
 autowrap_mode = 3
 
 [node name="Objective" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
@@ -52,7 +52,7 @@ text = "Objective: The Still Water Objective: Speak with Edrin Vale"
 autowrap_mode = 3
 
 [node name="Zone" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
-text = "Current zone: Newport Harbor Test"
+text = "Current zone: Newport Starting Town"
 
 [node name="Stats" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.86, 0.92, 1, 1)

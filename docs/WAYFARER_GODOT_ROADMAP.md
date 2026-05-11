@@ -38,6 +38,13 @@ excludes generated review folders so local screenshots and ZIPs do not leak
 into `index.pck`. Future source art, sprite sheets, atlases, references, and
 anchor rules are documented under `wayfarer_godot_vertical_slice/docs/`.
 
+Current G-4.1 result: the Godot slice now constructs a Newport-inspired
+starting port town instead of the five-building harbor test scene. The town
+blueprint implements all 19 Newport reference building IDs across harbor wharf,
+waterfront commercial, civic, upper residential, and service/outfitter
+districts. The HUD review identity should show `Godot G-4.1 Newport Starting
+Town` after the new ZIP is uploaded to itch.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -208,11 +215,46 @@ Acceptance:
 - Existing JavaScript Worker remains the Phase 35.13R production/reference
   route.
 
+## G-4.1: Newport Starting Town Construction
+
+Status: current.
+
+Build the player-facing Newport-inspired starting town foundation in Godot.
+This is the first Godot pass where the visible world should read as a starting
+port settlement rather than a small renderer/input test slice.
+
+G-4.1 implementation notes:
+
+- `scripts/NewportTownBlueprint.gd` defines the map size, water, wharf deck,
+  pier fingers, road hierarchy, districts, building placements, player spawn,
+  and route QA targets.
+- `scripts/BuildingCatalog.gd` defines the current atlas regions and draw
+  profiles used by those placements.
+- The town places all 19 reference IDs:
+  `b_boathouse`, `b_dock_storehouse`, `b_market_shed`, `b_inn_tavern`,
+  `b_mercantile`, `b_counting_house`, `b_chandlery_front`, `b_shop_house`,
+  `b_custom_house`, `b_village_hall`, `b_res_small`,
+  `b_townhouse_row_a`, `b_townhouse_row_b`, `b_service_dependency`,
+  `b_hunter_lodge`, `b_res_large`, `b_georgian_residence`,
+  `b_elite_mansion`, and `b_prestige_block`.
+- The implemented districts are harbor wharf, waterfront commercial, civic
+  district, upper residential terrace, and service/outfitter lane.
+- Movement validation confirms the player spawns on the waterfront route and
+  can reach the wharf/pier frontage, civic square, upper residential road, and
+  service lane.
+- Manual itch upload remains required for browser review.
+
+Deferred:
+
+- Final visual parity with the JavaScript Newport composition.
+- New quests, combat, inventory, save migration, and production cutover.
+- Exact replacement art for every temporary substitute.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
-Godot. This is a planning phase, not a porting phase. It may begin after G-4
-asset hygiene passes and the G-4 ZIP is manually reviewed on itch.
+Godot. This is a planning phase, not a porting phase. It may begin after the
+G-4.1 Newport town foundation is reviewed on itch.
 
 ## G-6: Production Cutover Planning
 
