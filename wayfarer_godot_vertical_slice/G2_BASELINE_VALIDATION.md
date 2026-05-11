@@ -547,6 +547,41 @@ Review delivery:
 - Cloudflare Pages remains deferred for the current stock export because
   `index.wasm` exceeds the 25 MB Direct Upload single-file limit.
 
+## G-3.1 Review Clarity Pass
+
+Status: build identity prepared for manual itch ZIP review.
+
+Branch:
+
+```text
+codex/g-3-1-godot-review-clarity
+```
+
+Visible HUD identity:
+
+```text
+Build label: Godot G-3.1 Review Clarity
+Phase: G-3.1 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-3-1-godot-review-clarity
+```
+
+Purpose:
+
+- Make manual itch uploads visually verifiable from a screenshot.
+- Preserve the G-3 rendering/input baseline without adding gameplay, content,
+  routes, or production cutover logic.
+- Keep the JavaScript Phase 35.13R Worker untouched as the production/reference
+  route.
+
+Manual review loop:
+
+1. Codex changes Godot source.
+2. Codex runs `bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh`.
+3. User uploads `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` to itch.
+4. User hard-refreshes the itch page.
+5. User confirms the on-screen build label changed to G-3.1 before reviewing.
+
 ## Cloudflare Pages Delivery
 
 Deploy command attempted:

@@ -19,12 +19,22 @@ Current G-2 state: the itch.io page launches the single-threaded Godot Web
 export in Chrome and is the active browser-review route. This is not a
 production cutover.
 
-Current G-3 review rule: itch.io does not update from GitHub. Every Godot
-visual/input change must be exported and packaged with
+Current G-3/G-3.1 review rule: itch.io does not update from GitHub. Every
+Godot visual/input/review-label change must be exported and packaged with
 `tools/package_itch_web.sh`, then
 `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` must be
 uploaded manually to itch for browser review. Butler automation remains
-deferred for the G-3 manual ZIP review pass.
+deferred for the manual ZIP review pass.
+
+The G-3.1 HUD shows visible review identity so a screenshot can prove which
+ZIP is live:
+
+```text
+Build label: Godot G-3.1 Review Clarity
+Phase: G-3.1 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-3-1-godot-review-clarity
+```
 
 Review pipeline roles:
 
@@ -165,7 +175,17 @@ The listing must include `index.html` with no `web_build/` prefix.
 6. Save the page.
 7. Open `https://wayfarersguild.itch.io/wayfarers-tale`.
 8. Launch the game and visually review.
-9. Capture browser console errors and a screenshot.
+9. Hard-refresh the itch page if an older build is still visible.
+10. Confirm the on-screen build label changed to the expected phase/branch.
+11. Capture browser console errors and a screenshot.
+
+G-3.1 review checklist:
+
+1. Codex changes Godot source.
+2. Codex runs `bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh`.
+3. User uploads `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` to itch.
+4. User hard-refreshes the itch page.
+5. User confirms the HUD shows `Godot G-3.1 Review Clarity`.
 
 ### Artifact-assisted mode
 

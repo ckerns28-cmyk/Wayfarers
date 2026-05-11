@@ -25,6 +25,11 @@ viewport-aware HUD placement, pixel snapping, sprite/building grounding, and
 terrain/road/water readability without expanding the slice or touching the
 JavaScript Worker.
 
+Current G-3.1 result: the Godot HUD includes visible review identity for the
+manual itch upload loop. A screenshot should show `Godot G-3.1 Review Clarity`,
+`itch`, `manual ZIP`, and `codex/g-3-1-godot-review-clarity` when the newest
+ZIP is live.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -134,6 +139,17 @@ G-3.0 notes:
   changes. No map expansion or content additions were made.
 - Local validation passed through the Godot QA script and a local browser smoke
   test. Itch still requires a fresh manual ZIP upload for visual review.
+
+G-3.1 notes:
+
+- The HUD now displays the review phase, build label, host, channel, and source
+  branch so manual itch uploads are visually verifiable.
+- The review label is static Godot-side metadata for this pass; CI and Butler
+  injection remain deferred.
+- No gameplay, map, route, asset-workflow, or JavaScript Worker changes are
+  included.
+- Manual review requires uploading the generated ZIP, hard-refreshing itch,
+  and confirming the on-screen label changed before evaluating visuals.
 
 Prerequisite review loop:
 

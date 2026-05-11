@@ -40,6 +40,7 @@ trap 'rm -f "$tmp_file_list"' EXIT
 (
     cd "$WEB_BUILD_DIR"
     find . -type f ! -name ".DS_Store" \
+        ! -name "._*" \
         | sed 's#^\./##' \
         | LC_ALL=C sort > "$tmp_file_list"
     zip -X -q "$ZIP_PATH" -@ < "$tmp_file_list"
