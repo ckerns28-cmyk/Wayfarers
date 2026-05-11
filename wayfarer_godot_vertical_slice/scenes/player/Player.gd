@@ -50,11 +50,21 @@ func configure_world_limits(world_rect: Rect2) -> void:
 
 func _configure_camera() -> void:
 	camera.enabled = true
-	camera.zoom = Vector2(1.82, 1.82) if NEWPORT_TOWN.G46_PROOF_FRAME else Vector2(1.48, 1.48)
+	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
+		camera.zoom = Vector2(0.88, 0.88)
+	elif NEWPORT_TOWN.G46_PROOF_FRAME:
+		camera.zoom = Vector2(1.82, 1.82)
+	else:
+		camera.zoom = Vector2(1.48, 1.48)
 	camera.position = Vector2.ZERO
-	camera.offset = Vector2(0, -86) if NEWPORT_TOWN.G46_PROOF_FRAME else Vector2(72, -26)
+	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
+		camera.offset = Vector2(-130, -110)
+	elif NEWPORT_TOWN.G46_PROOF_FRAME:
+		camera.offset = Vector2(0, -86)
+	else:
+		camera.offset = Vector2(72, -26)
 	camera.position_smoothing_enabled = true
-	camera.position_smoothing_speed = 9.5 if NEWPORT_TOWN.G46_PROOF_FRAME else 8.5
+	camera.position_smoothing_speed = 9.5 if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G47_CALIBRATION_MODE) else 8.5
 	_apply_camera_limits()
 	camera.limit_smoothed = true
 	camera.make_current()
@@ -95,7 +105,7 @@ func _update_interaction_target() -> void:
 		prompt_label.text = _current_target.get_interaction_label()
 
 func _draw() -> void:
-	var visual_scale := 1.12 if NEWPORT_TOWN.G46_PROOF_FRAME else 1.0
+	var visual_scale := 0.78 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (1.12 if NEWPORT_TOWN.G46_PROOF_FRAME else 1.0)
 	draw_set_transform(Vector2(0, 8 * visual_scale), 0.0, Vector2(1.45 * visual_scale, 0.42 * visual_scale))
 	draw_circle(Vector2.ZERO, 10.0, Color(0, 0, 0, 0.24))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

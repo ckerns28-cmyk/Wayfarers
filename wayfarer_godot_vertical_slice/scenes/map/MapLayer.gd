@@ -36,6 +36,10 @@ func _draw_tile_rect_outline(rect: Rect2i, color: Color, width := 2.0) -> void:
 	draw_rect(_tile_rect(rect.position.x, rect.position.y, rect.size.x, rect.size.y), color, false, width)
 
 func _draw_ground() -> void:
+	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
+		_draw_g47_ground()
+		return
+
 	if NEWPORT_TOWN.G46_PROOF_FRAME:
 		_draw_g46_ground()
 		return
@@ -58,6 +62,10 @@ func _draw_ground() -> void:
 	_draw_planting_bed(Rect2(1180, 430, 180, 100), Color("#697755"), Color("#566749"))
 
 func _draw_roads() -> void:
+	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
+		_draw_g47_street_planes()
+		return
+
 	if NEWPORT_TOWN.G46_PROOF_FRAME:
 		_draw_g46_street_plane()
 		return
@@ -83,6 +91,10 @@ func _draw_roads() -> void:
 		_draw_door_step(p)
 
 func _draw_wharf_water() -> void:
+	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
+		_draw_g47_water_hints()
+		return
+
 	if NEWPORT_TOWN.G46_PROOF_FRAME:
 		_draw_g46_wharf_hint()
 		return
@@ -122,6 +134,10 @@ func _draw_wharf_water() -> void:
 		_draw_shore_rocks(p)
 
 func _draw_props() -> void:
+	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
+		_draw_g47_props()
+		return
+
 	if NEWPORT_TOWN.G46_PROOF_FRAME:
 		_draw_g46_props()
 		return
@@ -157,6 +173,108 @@ func _draw_props() -> void:
 	for pos in [Vector2(620, 360), Vector2(805, 360), Vector2(486, 584), Vector2(1142, 584), Vector2(312, 698), Vector2(1118, 698), Vector2(610, 640), Vector2(856, 640)]:
 		draw_circle(pos, 4, Color("#2f251b"))
 		draw_circle(pos + Vector2(0, -6), 3, Color("#d8b56f"))
+
+func _draw_g47_ground() -> void:
+	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f46"), Color("#334d39"), 1.0, 28)
+	for variant in NEWPORT_TOWN.calibration_variants():
+		var panel: Rect2 = variant["rect"]
+		var is_candidate := String(variant["id"]) == "D"
+		var panel_base := Color("#536b50") if not is_candidate else Color("#5b7357")
+		var panel_alt := Color("#41573f") if not is_candidate else Color("#475f45")
+		_draw_soft_rect(panel, panel_base, panel_alt, 0.96, 12)
+		draw_rect(panel, Color(0.03, 0.04, 0.03, 0.34), false, 2.0)
+		if is_candidate:
+			draw_rect(panel.grow(-4.0), Color("#d0ba7a"), false, 2.0)
+		_draw_label(String(variant["label"]), panel.position + Vector2(14, 22), 15, Color("#f0e8ce"))
+		_draw_label("player scale " + str(variant["player_scale"]), panel.position + Vector2(14, 43), 11, Color("#c7d4c4"))
+
+func _draw_g47_street_planes() -> void:
+	_draw_g47_variant_a()
+	_draw_g47_variant_b()
+	_draw_g47_variant_c()
+	_draw_g47_variant_d()
+
+func _draw_g47_variant_a() -> void:
+	# A deliberately preserves the failed broad-slab grammar for comparison.
+	_draw_cobbled_world_rect(Rect2(98, 298, 555, 100), Color("#a99265"), Color("#746349"), 42)
+	draw_line(Vector2(100, 310), Vector2(650, 310), Color(0.04, 0.04, 0.03, 0.22), 2.0)
+	draw_line(Vector2(100, 376), Vector2(650, 376), Color("#c1ad7e"), 1.0)
+
+func _draw_g47_variant_b() -> void:
+	_draw_cobbled_world_rect(Rect2(894, 300, 540, 34), Color("#978c73"), Color("#6f6654"), 24)
+	draw_rect(Rect2(894, 334, 540, 6), Color("#4c4538"), true)
+	_draw_cobbled_world_rect(Rect2(882, 342, 566, 62), Color("#766e5c"), Color("#5a5448"), 42)
+	for p in [Vector2(1056, 315), Vector2(1256, 315)]:
+		_draw_g46_stoop(p)
+
+func _draw_g47_variant_c() -> void:
+	_draw_cobbled_world_rect(Rect2(94, 742, 555, 30), Color("#90876f"), Color("#6d6654"), 22)
+	draw_rect(Rect2(94, 770, 555, 6), Color("#413b31"), true)
+	_draw_cobbled_world_rect(Rect2(70, 778, 605, 72), Color("#6a6252"), Color("#4f4a40"), 48)
+	draw_rect(Rect2(70, 832, 605, 62), Color(0.13, 0.11, 0.08, 0.22), true)
+	for p in [Vector2(257, 755), Vector2(454, 755)]:
+		_draw_g47_threshold(p, 52)
+
+func _draw_g47_variant_d() -> void:
+	_draw_cobbled_world_rect(Rect2(890, 736, 560, 26), Color("#9a9076"), Color("#726a57"), 24)
+	for p in [Vector2(1062, 748), Vector2(1261, 748)]:
+		_draw_g47_threshold(p, 64)
+	draw_rect(Rect2(890, 762, 560, 8), Color("#3e382e"), true)
+	draw_line(Vector2(894, 764), Vector2(1446, 764), Color("#d7c48f"), 1.2)
+	_draw_cobbled_world_rect(Rect2(878, 774, 585, 58), Color("#655f52"), Color("#4c493f"), 50)
+	_draw_plank_world_rect(Rect2(878, 838, 585, 34), Color("#766950"), Color("#5b503d"))
+	for x in [910, 964, 1030, 1154, 1350, 1424]:
+		_draw_post(Vector2(x, 838))
+
+func _draw_g47_threshold(pos: Vector2, width: float) -> void:
+	draw_rect(Rect2(pos + Vector2(-width * 0.5, -8), Vector2(width, 24)), Color("#88775b"), true)
+	draw_rect(Rect2(pos + Vector2(-width * 0.5, -8), Vector2(width, 24)), Color(0, 0, 0, 0.25), false, 1.0)
+	draw_line(pos + Vector2(-width * 0.42, 2), pos + Vector2(width * 0.42, 2), Color("#c6b686"), 1.2)
+
+func _draw_g47_water_hints() -> void:
+	for raw_rect in [Rect2(72, 390, 620, 42), Rect2(872, 390, 620, 42), Rect2(72, 842, 620, 52), Rect2(872, 842, 620, 52)]:
+		var rect: Rect2 = raw_rect
+		_draw_soft_rect(rect, Color("#2f7184"), Color("#1f5369"), 0.82, 7)
+		draw_line(rect.position + Vector2(0, 2), rect.position + Vector2(rect.size.x, 2), Color(0.05, 0.10, 0.12, 0.34), 3.0)
+		for i in range(6):
+			var p: Vector2 = rect.position + Vector2(38 + i * 96, 24 + float((i * 11) % 12))
+			draw_line(p, p + Vector2(28, -1), Color(0.78, 0.95, 1.0, 0.14), 2.0)
+
+func _draw_g47_props() -> void:
+	_draw_label("A repeats the failing G-4.6 grammar", Vector2(98, 410), 11, Color("#e4b89a"))
+	_draw_label("B tests a smaller human figure", Vector2(898, 410), 11, Color("#d9dec1"))
+	_draw_label("C tests a lower, tighter street vignette", Vector2(98, 860), 11, Color("#d9dec1"))
+	_draw_label("D candidate: stoop + curb + narrower lane", Vector2(898, 878), 11, Color("#f0dc9e"))
+
+	_draw_player_reference(Vector2(360, 352), 1.12, "current player")
+	_draw_player_reference(Vector2(1160, 358), 0.76, "smaller player")
+	_draw_player_reference(Vector2(360, 812), 0.90, "lower-frame player")
+	_draw_label("actual player uses 0.78 scale", Vector2(1160, 884), 10, Color("#c7d4c4"))
+
+	for pos in [Vector2(1038, 742), Vector2(1304, 742), Vector2(1440, 812)]:
+		_draw_crate_stack(pos)
+	for pos in [Vector2(936, 744), Vector2(1398, 746)]:
+		_draw_barrels(pos, 2)
+	for pos in [Vector2(990, 826), Vector2(1372, 826)]:
+		_draw_rope_coil(pos)
+	_draw_sign_post(Vector2(1120, 740), Color("#7a7047"))
+	_draw_sign_post(Vector2(1328, 740), Color("#8c6a3f"))
+
+func _draw_player_reference(pos: Vector2, scale: float, label: String) -> void:
+	draw_set_transform(pos + Vector2(0, 8 * scale), 0.0, Vector2(1.45 * scale, 0.42 * scale))
+	draw_circle(Vector2.ZERO, 10.0, Color(0, 0, 0, 0.22))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	draw_circle(pos + Vector2(0, -31 * scale), 12.0 * scale, Color("#f3d6a0"))
+	draw_rect(Rect2(pos + Vector2(-9, -20) * scale, Vector2(18, 26) * scale), Color("#4a6fa3"), true)
+	draw_rect(Rect2(pos + Vector2(-11, 4) * scale, Vector2(22, 8) * scale), Color("#2f4769"), true)
+	draw_line(pos + Vector2(-15, -10) * scale, pos + Vector2(15, -10) * scale, Color("#d2b978"), maxf(1.0, 3.0 * scale))
+	_draw_label(label, pos + Vector2(-38, 30), 9, Color("#d8e0ce"))
+
+func _draw_label(text: String, pos: Vector2, size: int, color: Color) -> void:
+	var font := ThemeDB.fallback_font
+	if font:
+		draw_string(font, pos + Vector2(1, 1), text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, Color(0, 0, 0, 0.55))
+		draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
 
 func _draw_g46_ground() -> void:
 	var world_rect := Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE)

@@ -37,14 +37,17 @@ func _validate_scene(main: Node) -> void:
 		_expect(player.global_position.distance_to(NEWPORT_TOWN.PLAYER_SPAWN) < 1.0, "player_spawn_matches_blueprint")
 		var camera := player.get_node_or_null("Camera2D") as Camera2D
 		if camera:
-			_expect(camera.zoom.x >= 1.1 and camera.zoom.y >= 1.1, "spawn_camera_not_overview_zoom")
-			_expect(camera.offset.length() > 20.0, "spawn_camera_intentional_offset")
+			if NEWPORT_TOWN.G47_CALIBRATION_MODE:
+				_expect(camera.zoom.x <= 1.0 and camera.zoom.y <= 1.0, "calibration_camera_shows_variants")
+			else:
+				_expect(camera.zoom.x >= 1.1 and camera.zoom.y >= 1.1, "spawn_camera_not_overview_zoom")
+				_expect(camera.offset.length() > 20.0, "spawn_camera_intentional_offset")
 
 	if map:
 		for layer_name in ["GroundGrassLayer", "WharfWaterLayer", "RoadsPlazaLayer", "DecorativePropsLayer", "CollisionNavigationLayer"]:
 			_expect(map.get_node_or_null(layer_name) != null, "map_layer_" + layer_name)
 		var collision_layer := map.get_node_or_null("CollisionNavigationLayer")
-		var minimum_collision_bodies := 20 if NEWPORT_TOWN.G46_PROOF_FRAME else 40
+		var minimum_collision_bodies := 3 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (20 if NEWPORT_TOWN.G46_PROOF_FRAME else 40)
 		_expect(collision_layer != null and collision_layer.get_child_count() > minimum_collision_bodies, "collision_navigation_bodies")
 		if collision_layer:
 			_validate_detail_blockers(collision_layer)
@@ -62,7 +65,7 @@ func _validate_detail_blockers(collision_layer: Node) -> void:
 	_expect(detail_count == NEWPORT_TOWN.detail_blockers().size(), "detail_blocker_count")
 
 func _validate_lived_in_details() -> void:
-	var minimum_detail_count := 8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40
+	var minimum_detail_count := 20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40)
 	_expect(NEWPORT_TOWN.lived_in_detail_count() >= minimum_detail_count, "lived_in_detail_density")
 
 func _validate_buildings() -> void:
@@ -87,7 +90,7 @@ func _validate_buildings() -> void:
 		district_counts[district] = district_counts.get(district, 0) + 1
 		_expect(seen.has(id), "building_present_" + id)
 
-	var expected_districts := ["waterfront_commercial"] if NEWPORT_TOWN.G46_PROOF_FRAME else ["harbor_wharf", "waterfront_commercial", "civic_district", "upper_residential_terrace", "service_outfitter_lane"]
+	var expected_districts := ["visual_calibration"] if NEWPORT_TOWN.G47_CALIBRATION_MODE else (["waterfront_commercial"] if NEWPORT_TOWN.G46_PROOF_FRAME else ["harbor_wharf", "waterfront_commercial", "civic_district", "upper_residential_terrace", "service_outfitter_lane"])
 	for district_id in expected_districts:
 		_expect(district_counts.get(district_id, 0) > 0, "district_has_building_" + district_id)
 
@@ -123,7 +126,10 @@ func _validate_building_node(building: Node2D) -> void:
 
 func _validate_proof_street(main: Node) -> void:
 	var proof_ids: Array = NEWPORT_TOWN.proof_street_ids()
-	if NEWPORT_TOWN.G46_PROOF_FRAME:
+	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
+		_expect(proof_ids.size() == 8, "calibration_building_count_8")
+		_expect(NEWPORT_TOWN.calibration_variants().size() == 4, "calibration_variant_count_4")
+	elif NEWPORT_TOWN.G46_PROOF_FRAME:
 		_expect(proof_ids.size() == 3, "proof_street_building_count_3")
 	else:
 		_expect(proof_ids.size() >= 5 and proof_ids.size() <= 7, "proof_street_building_count_5_to_7")
@@ -182,9 +188,10 @@ func _validate_reachability() -> void:
 		var tile: Vector2i = NEWPORT_TOWN.reachability_targets()[target_name]
 		_expect(reached.has(_key(tile)), "route_reachable_" + target_name)
 
-	for target_name in NEWPORT_TOWN.proof_street_walk_targets().keys():
-		var tile: Vector2i = NEWPORT_TOWN.proof_street_walk_targets()[target_name]
-		_expect(reached.has(_key(tile)), "proof_street_walk_reachable_" + target_name)
+	if not NEWPORT_TOWN.G47_CALIBRATION_MODE:
+		for target_name in NEWPORT_TOWN.proof_street_walk_targets().keys():
+			var tile: Vector2i = NEWPORT_TOWN.proof_street_walk_targets()[target_name]
+			_expect(reached.has(_key(tile)), "proof_street_walk_reachable_" + target_name)
 
 func _flood_route_tiles(start: Vector2i, route_set: Dictionary) -> Dictionary:
 	var reached := {}

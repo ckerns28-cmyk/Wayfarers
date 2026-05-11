@@ -29,6 +29,10 @@ scale. It does not defend the five-building layout. It shrinks the acceptance
 target to three waterfront buildings, one authored street/stoop plane, one
 player, and one camera frame.
 
+G-4.7 responds to screenshot review that showed G-4.6 also failed. It stops
+town work and switches to a four-variant visual calibration board for scale,
+camera, sidewalk, stoop, curb, street, and building anchor grammar.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -98,7 +102,7 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 through G-4.6 provide practical collision/navigation support only:
+G-4.1 through G-4.7 provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
@@ -116,6 +120,8 @@ G-4.1 through G-4.6 provide practical collision/navigation support only:
 - G-4.6 limits the active proof scene to three proof-street buildings so scale,
   stoops, sidewalk, street, wharf edge, collision, and camera can be judged
   without the rest of the town confusing the result.
+- G-4.7 is a calibration mode, not a town mode: it shows four side-by-side
+  visual treatments and keeps debug off by default.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
@@ -282,6 +288,43 @@ Build label: Godot G-4.6 Three-Building Street Proof
 Phase: G-4.6 | Review host: itch
 Channel: manual ZIP
 Branch: codex/g-4-6-three-building-street-plane-proof
+```
+
+## G-4.7 Visual Scale And Street Grammar Calibration
+
+G-4.7 does not expand Newport. It preserves G-4.6 as a failed baseline and
+shows four comparison treatments:
+
+1. Variant A: current scale reference, deliberately labeled likely failing.
+2. Variant B: smaller player / more human scale.
+3. Variant C: lower camera / tighter street vignette.
+4. Variant D: integrated sidewalk, stoop, curb, narrower lane, wharf strip, and
+   base props.
+
+The active calibration IDs are:
+
+1. `g47_a_mercantile`
+2. `g47_a_counting_house`
+3. `g47_b_mercantile`
+4. `g47_b_counting_house`
+5. `g47_c_mercantile`
+6. `g47_c_counting_house`
+7. `g47_d_mercantile`
+8. `g47_d_counting_house`
+
+Art-direction recommendation: Variant D is the candidate town standard if the
+manual itch screenshot clearly reads better than G-4.6. The smaller player
+scale around `0.76` to `0.78` is the preferred human-scale direction. The
+building sprites remain viable only with hand-authored anchors, frontages,
+collision rectangles, shadows, and occasional draw-width overrides.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.7 Scale Grammar Calibration
+Phase: G-4.7 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-7-visual-scale-street-grammar-calibration
 ```
 
 ## Deferred
