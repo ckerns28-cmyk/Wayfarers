@@ -1,6 +1,7 @@
 extends Node2D
 
-const TILE := 32
+const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
+const TILE := NEWPORT_TOWN.TILE
 
 func _ready() -> void:
 	_add_world_edge_collision()
@@ -21,16 +22,12 @@ func _add_body(rect: Rect2, label: String) -> void:
 	body.add_child(shape)
 
 func _add_world_edge_collision() -> void:
-	_add_body(Rect2(-32, -32, 32, 1120), "WestBoundary")
-	_add_body(Rect2(1600, -32, 32, 1120), "EastBoundary")
-	_add_body(Rect2(-32, -32, 1664, 32), "NorthBoundary")
-	_add_body(Rect2(-32, 1024, 1664, 32), "SouthBoundary")
+	var world_size := NEWPORT_TOWN.WORLD_SIZE
+	_add_body(Rect2(-TILE, -TILE, TILE, world_size.y + TILE * 2), "WestBoundary")
+	_add_body(Rect2(world_size.x, -TILE, TILE, world_size.y + TILE * 2), "EastBoundary")
+	_add_body(Rect2(-TILE, -TILE, world_size.x + TILE * 2, TILE), "NorthBoundary")
+	_add_body(Rect2(-TILE, world_size.y, world_size.x + TILE * 2, TILE), "SouthBoundary")
 
 func _add_water_collision() -> void:
-	var y := 26 * TILE
-	var h := 6 * TILE
-	_add_body(Rect2(0, y, 9 * TILE, h), "HarborWaterWest")
-	_add_body(Rect2(12 * TILE, y, 8 * TILE, h), "HarborWaterBetweenWest")
-	_add_body(Rect2(23 * TILE, y, 8 * TILE, h), "HarborWaterBetweenCenter")
-	_add_body(Rect2(34 * TILE, y, 16 * TILE, h), "HarborWaterEast")
-
+	for tile in NEWPORT_TOWN.water_collision_tiles():
+		_add_body(Rect2(tile.x * TILE, tile.y * TILE, TILE, TILE), "HarborWater_%d_%d" % [tile.x, tile.y])

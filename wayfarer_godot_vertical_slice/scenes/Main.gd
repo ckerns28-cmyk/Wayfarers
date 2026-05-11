@@ -1,6 +1,8 @@
 extends Node2D
 
 const BUILDING_SCENE := preload("res://scenes/buildings/Building.tscn")
+const BUILDING_CATALOG := preload("res://scripts/BuildingCatalog.gd")
+const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
 const GAMEPLAY_KEYCODES := [
 	KEY_W,
 	KEY_A,
@@ -22,6 +24,12 @@ var _debug_overlay_enabled := false
 
 func _ready() -> void:
 	world.y_sort_enabled = true
+	player.global_position = NEWPORT_TOWN.PLAYER_SPAWN
+	if player.has_method("configure_world_limits"):
+		player.configure_world_limits(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE))
+	var edrin := world.get_node_or_null("EdrinVale") as Node2D
+	if edrin:
+		edrin.global_position = NEWPORT_TOWN.EDRIN_SPAWN
 	_place_buildings()
 	player.dialogue_triggered.connect(hud.show_dialogue)
 
@@ -71,89 +79,11 @@ func _atlas_image(path: String) -> Texture2D:
 	return atlas_texture
 
 func _place_buildings() -> void:
-	# Atlas regions below are TIGHT bounding boxes for a single building cell.
-	# Each atlas PNG is a 3x3 grid of 418px cells with zero gutter between
-	# adjacent sprites, so any rect that crosses a cell boundary will pull in
-	# a sliver of a neighbor. See SPRITE_ATLAS_GODOT.md.
-	var buildings := [
-		{
-			"id": "inn_tavern",
-			"display_name": "Inn & Tavern",
-			"atlas_path": "res://assets/buildings/hearthvale_buildings_atlas_v1.png",
-			"region": Rect2(33, 45, 385, 373),
-			"source_size": Vector2(385, 373),
-			"draw_width": 240.0,
-			"anchor": Vector2(192.5, 373),
-			"position": Vector2(417, 676),
-			"collision_size": Vector2(216, 46),
-			"collision_offset": Vector2(0, -23),
-			"interaction_size": Vector2(92, 48),
-			"interaction_offset": Vector2(4, 20),
-			"door_offset": Vector2(4, 0)
-		},
-		{
-			"id": "dock_storehouse",
-			"display_name": "Dock Storehouse",
-			"atlas_path": "res://assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
-			"region": Rect2(51, 836, 361, 377),
-			"source_size": Vector2(361, 377),
-			"draw_width": 242.0,
-			"anchor": Vector2(180.5, 377),
-			"position": Vector2(1060, 704),
-			"collision_size": Vector2(186, 54),
-			"collision_offset": Vector2(0, -27),
-			"interaction_size": Vector2(120, 52),
-			"interaction_offset": Vector2(0, 20),
-			"door_offset": Vector2(0, 0)
-		},
-		{
-			"id": "custom_house",
-			"display_name": "Custom House",
-			"atlas_path": "res://assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
-			"region": Rect2(68, 873, 350, 292),
-			"source_size": Vector2(350, 292),
-			"draw_width": 226.0,
-			"anchor": Vector2(175, 292),
-			"position": Vector2(941, 467),
-			"collision_size": Vector2(160, 46),
-			"collision_offset": Vector2(0, -23),
-			"interaction_size": Vector2(86, 48),
-			"interaction_offset": Vector2(0, 18),
-			"door_offset": Vector2(0, 0)
-		},
-		{
-			"id": "merchant_shop_house",
-			"display_name": "Merchant Shop House",
-			"atlas_path": "res://assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
-			"region": Rect2(418, 76, 410, 332),
-			"source_size": Vector2(410, 332),
-			"draw_width": 243.0,
-			"anchor": Vector2(205, 332),
-			"position": Vector2(740, 633),
-			"collision_size": Vector2(174, 42),
-			"collision_offset": Vector2(0, -21),
-			"interaction_size": Vector2(82, 48),
-			"interaction_offset": Vector2(-16, 18),
-			"door_offset": Vector2(-16, 0)
-		},
-		{
-			"id": "large_residence",
-			"display_name": "Large Residence",
-			"atlas_path": "res://assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
-			"region": Rect2(864, 86, 351, 315),
-			"source_size": Vector2(351, 315),
-			"draw_width": 227.0,
-			"anchor": Vector2(175.5, 315),
-			"position": Vector2(698, 443),
-			"collision_size": Vector2(168, 42),
-			"collision_offset": Vector2(0, -21),
-			"interaction_size": Vector2(88, 48),
-			"interaction_offset": Vector2(0, 18),
-			"door_offset": Vector2(0, 0)
-		}
-	]
-
-	for config in buildings:
+	for blueprint_config in NEWPORT_TOWN.building_specs():
+		var config := (blueprint_config as Dictionary).duplicate(true)
+		var sprite_config := BUILDING_CATALOG.sprite_config(config["sprite_id"])
+		for key in sprite_config:
+			config[key] = sprite_config[key]
 		var atlas_path: String = config["atlas_path"]
 		var region: Rect2 = config["region"]
 		config["texture"] = _atlas(atlas_path, region)

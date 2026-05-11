@@ -56,26 +56,44 @@ v1                  pack_a              pack_b
 (878, 836, 271, 348)(836, 836, 370, 352)(836, 842, 373, 355)
 ```
 
-`tools/render_slice_approx.py` and `tools/validate_vertical_slice.gd` both
+`scripts/BuildingCatalog.gd` and `tools/validate_vertical_slice.gd` both
 assume regions live inside these bounding boxes.
 
-## Currently used cells (slice)
+## Currently used cells
 
-| Slice id              | Atlas    | Cell (row, col) | Region                |
-| --------------------- | -------- | --------------- | --------------------- |
-| `inn_tavern`          | v1       | (0, 0)          | `(33, 45, 385, 373)`  |
-| `dock_storehouse`     | pack_b   | (2, 0)          | `(51, 836, 361, 377)` |
-| `custom_house`        | pack_a   | (2, 0)          | `(68, 873, 350, 292)` |
-| `merchant_shop_house` | pack_a   | (0, 1)          | `(418, 76, 410, 332)` |
-| `large_residence`     | pack_a   | (0, 2)          | `(864, 86, 351, 315)` |
+G-4.1 centralizes atlas usage in `scripts/BuildingCatalog.gd`. The table below
+shows the building ids currently present in the Newport starting town and the
+sprite ids they use.
+
+| Building id              | Sprite id                               |
+| ------------------------ | --------------------------------------- |
+| `b_boathouse`            | `newport_wharf_boathouse_large`         |
+| `b_dock_storehouse`      | `newport_dockside_storehouse_long`      |
+| `b_market_shed`          | `newport_market_shed_stalls`            |
+| `b_inn_tavern`           | `inn_tavern_v1`                         |
+| `b_mercantile`           | `mercantile_shop`                       |
+| `b_counting_house`       | `newport_counting_house_civic_exchange` |
+| `b_chandlery_front`      | `newport_chandlery_outfitter_front`     |
+| `b_shop_house`           | `newport_shopfront_awning`              |
+| `b_custom_house`         | `newport_custom_house_civic_front`      |
+| `b_village_hall`         | `village_hall_meeting_house`            |
+| `b_res_small`            | `residence_small`                       |
+| `b_townhouse_row_a`      | `newport_narrow_merchant_townhouse_a`   |
+| `b_townhouse_row_b`      | `newport_modest_clapboard_residence_a`  |
+| `b_service_dependency`   | `service_dependency_shed`               |
+| `b_hunter_lodge`         | `hunter_lodge_or_outfitter`             |
+| `b_res_large`            | `residence_large`                       |
+| `b_georgian_residence`   | `newport_georgian_merchant_residence_a` |
+| `b_elite_mansion`        | `newport_elite_mansion_white`           |
+| `b_prestige_block`       | `newport_formal_townhouse_block_a`      |
 
 ## Anchors
 
 - Anchor is in **region-local pixel coordinates** (top-left of the region
   is `(0, 0)`).
-- For this slice all five buildings use `anchor = (region.w / 2, region.h)`
-  so the foot anchor lands at the bottom-center of the sprite (the
-  visible base of the building).
+- Current Newport town buildings use `anchor = (region.w / 2, region.h)` so
+  the foot anchor lands at the bottom-center of the sprite (the visible base of
+  the building).
 - `Building.gd` sets `sprite.position = -anchor * scale` so the foot
   anchor maps to the building Node2D's origin.
 

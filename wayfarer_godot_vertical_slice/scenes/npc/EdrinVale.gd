@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var npc_name := "Edrin Vale"
-@export_multiline var dialogue := "Edrin Vale: The harbor is readable now. The town finally has feet on the ground."
+@export_multiline var dialogue := "Edrin Vale: Newport has a waterfront, a civic spine, and streets worth walking now."
 
 func _ready() -> void:
 	add_to_group("interactable")

@@ -15,6 +15,7 @@ const WORLD_LIMIT_BOTTOM := 1024
 
 var _current_target: Node = null
 var _interact_was_down := false
+var _world_limits := Rect2(Vector2(WORLD_LIMIT_LEFT, WORLD_LIMIT_TOP), Vector2(WORLD_LIMIT_RIGHT, WORLD_LIMIT_BOTTOM))
 
 func _ready() -> void:
 	add_to_group("player")
@@ -40,19 +41,28 @@ func _notification(what: int) -> void:
 		velocity = Vector2.ZERO
 		_interact_was_down = false
 
+func configure_world_limits(world_rect: Rect2) -> void:
+	_world_limits = world_rect
+	if is_node_ready():
+		_apply_camera_limits()
+		camera.reset_smoothing()
+
 func _configure_camera() -> void:
 	camera.enabled = true
 	camera.zoom = Vector2.ONE
 	camera.position = Vector2.ZERO
 	camera.position_smoothing_enabled = true
 	camera.position_smoothing_speed = 10.0
-	camera.limit_left = WORLD_LIMIT_LEFT
-	camera.limit_top = WORLD_LIMIT_TOP
-	camera.limit_right = WORLD_LIMIT_RIGHT
-	camera.limit_bottom = WORLD_LIMIT_BOTTOM
+	_apply_camera_limits()
 	camera.limit_smoothed = true
 	camera.make_current()
 	camera.reset_smoothing()
+
+func _apply_camera_limits() -> void:
+	camera.limit_left = int(_world_limits.position.x)
+	camera.limit_top = int(_world_limits.position.y)
+	camera.limit_right = int(_world_limits.position.x + _world_limits.size.x)
+	camera.limit_bottom = int(_world_limits.position.y + _world_limits.size.y)
 
 func _movement_axis() -> Vector2:
 	var input := Vector2.ZERO

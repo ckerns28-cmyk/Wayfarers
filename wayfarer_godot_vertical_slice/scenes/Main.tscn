@@ -15,9 +15,9 @@ y_sort_enabled = true
 [node name="TownMap" parent="World" instance=ExtResource("2_map")]
 
 [node name="Player" parent="World" instance=ExtResource("3_player")]
-position = Vector2(860, 548)
+position = Vector2(690, 590)
 
 [node name="EdrinVale" parent="World" instance=ExtResource("4_edrin")]
-position = Vector2(892, 516)
+position = Vector2(730, 560)
 
 [node name="HUD" parent="." instance=ExtResource("5_hud")]
