@@ -106,6 +106,18 @@ for Cloudflare Pages documentation, but itch.io does not consume Cloudflare
 ignored. The binary artifacts ship to the temporary browser-review host or a
 GitHub Actions artifact, not to Git.
 
+Asset/build hygiene:
+
+- Stable Godot asset `.import` metadata belongs in Git with the tracked asset.
+- `.godot/`, `web_build/`, `artifacts/`, and generated ZIP files do not belong
+  in Git.
+- The Web export preset excludes `artifacts/**`, `web_build/**`, and `*.zip`
+  so local screenshots and review packages do not get packed into `index.pck`.
+- `tools/package_itch_web.sh` excludes macOS `._*` AppleDouble sidecars so
+  external-drive metadata does not leak into itch upload ZIPs.
+- Run `bash wayfarer_godot_vertical_slice/tools/validate_asset_hygiene.sh`
+  before packaging art/import changes.
+
 ## 2. Itch.io delivery (temporary G-2 browser review)
 
 Use itch.io while Cloudflare Pages Direct Upload is blocked by the current
