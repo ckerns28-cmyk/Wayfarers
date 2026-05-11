@@ -27,23 +27,23 @@ uploaded manually to itch for browser review. Butler automation remains
 deferred for the manual ZIP review pass.
 
 The HUD shows visible review identity so a screenshot can prove which ZIP is
-live. For G-4.8 the expected label is:
+live. For G-4.9 the expected label is:
 
 ```text
-Build label: Godot G-4.8 Variant D Proof Street
-Phase: G-4.8 | Review host: itch
+Build label: Godot G-4.9 Street Vignette
+Phase: G-4.9 | Review host: itch
 Channel: manual ZIP
-Branch: codex/g-4-8-variant-d-proof-street
+Branch: codex/g-4-9-newport-street-vignette-art-direction
 ```
 
-For G-4.8 the default HUD is compact so the proof street is easier to review in a
+For G-4.9 the default HUD is compact so the street vignette is easier to review in a
 screenshot. Press `F2` during local or itch review to toggle the extended
 branch/channel/objective metadata.
 
 Press `B` during local or itch review to toggle the building seating debug
-overlay for the G-4.8 proof-street buildings. The overlay is off by default and shows
+overlay for the G-4.9 vignette buildings. The overlay is off by default and shows
 base anchors, frontage markers, collision rectangles, y-sort anchors, and
-building IDs only for the active proof street.
+building IDs only for the active vignette.
 
 Review pipeline roles:
 
@@ -198,7 +198,7 @@ The listing must include `index.html` with no `web_build/` prefix.
 8. Launch the game and visually review.
 9. Hard-refresh the itch page if an older build is still visible.
 10. Confirm the on-screen build label changed to the expected phase/branch.
-11. For G-4.8, optionally press `B` to inspect the proof-street seating
+11. For G-4.9, optionally press `B` to inspect the proof-street seating
     overlay, then press `B` again before taking normal review screenshots.
 12. Capture browser console errors and a screenshot.
 

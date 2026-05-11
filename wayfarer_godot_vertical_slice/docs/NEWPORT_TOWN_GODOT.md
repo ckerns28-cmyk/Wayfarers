@@ -38,6 +38,11 @@ the four-panel board, keeps the smaller player scale, and uses the Variant D
 sidewalk/stoop/curb/narrow-lane grammar on four hand-seated waterfront
 buildings.
 
+G-4.9 responds to review that G-4.8 was still too much like an engineering
+alignment strip. It reduces the vignette to three buildings, moves the player
+closer to the storefronts, tightens the camera, narrows the road, and clusters
+base detail so the first screen reads as a cozy playable harbor street.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -107,7 +112,7 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 through G-4.8 provide practical collision/navigation support only:
+G-4.1 through G-4.9 provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
@@ -131,6 +136,10 @@ G-4.1 through G-4.8 provide practical collision/navigation support only:
   `b_counting_house`, `b_chandlery_front`, and `b_shop_house` on the chosen
   Variant D street grammar. Debug still toggles with `B` and remains off by
   default.
+- G-4.9 is an art-direction vignette mode: it keeps only `b_mercantile`,
+  `b_counting_house`, and `b_chandlery_front`, moves the spawn onto the
+  storefront lane, and treats harbor/water as foreground context rather than
+  a separating map band.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
@@ -376,6 +385,43 @@ Branch: codex/g-4-8-variant-d-proof-street
 Manual itch review must decide whether this looks materially better than the
 G-4.6 failure and the G-4.7 board. If it still looks like pasted sprites on a
 slab, do not scale this grammar to Newport.
+
+## G-4.9 Newport Street Vignette
+
+G-4.9 keeps the Variant D direction but stops presenting it as a technical
+strip. It is one composed, playable street vignette for manual itch review.
+
+Active vignette buildings:
+
+1. `b_mercantile`
+2. `b_counting_house`
+3. `b_chandlery_front`
+
+Art-direction changes:
+
+- player visual scale remains `0.78`
+- player spawn moves closer to storefronts at `(675, 612)`
+- camera zoom tightens so the first screenshot frames the street, not a board
+- building spacing is clustered with small uneven setbacks
+- sidewalk/apron, stoops, curb, and narrow cobbled lane replace the broad
+  proof-strip feeling
+- foreground wharf planks and water give harbor context without separating the
+  player from the buildings
+- crates, barrels, signs, lamps, rope, weeds, nets, table goods, and dock
+  posts are clustered at building bases and street edges
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.9 Street Vignette
+Phase: G-4.9 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-9-newport-street-vignette-art-direction
+```
+
+Manual itch review must decide whether this finally feels like a cozy harbor
+street. If it still reads as a calibration strip, do not scale it back to the
+full Newport town.
 
 ## Deferred
 
