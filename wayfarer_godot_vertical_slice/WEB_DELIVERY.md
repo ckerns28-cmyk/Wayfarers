@@ -15,6 +15,10 @@ The existing JavaScript Wayfarer site in `wayfarer_v7_github_ready/` (served
 by the Worker defined in `/wrangler.toml`) is not touched by this pipeline and
 remains the production-facing Phase 35.13R route.
 
+Current G-2 state: the itch.io page launches the single-threaded Godot Web
+export in Chrome and is the active browser-review route. This is not a
+production cutover.
+
 ## 1. Local export
 
 Requirements:
@@ -78,6 +82,16 @@ browser-review host or a future static host, not to GitHub.
 
 Use itch.io while Cloudflare Pages Direct Upload is blocked by the current
 `index.wasm` size.
+
+G-2 browser status:
+
+- Review URL: `https://wayfarersguild.itch.io/wayfarers-tale`
+- Browser runtime: Godot `v4.6.2.stable.official.71f334935`
+- WebGL mode: WebGL 2.0 / OpenGL ES 3.0 compatibility
+- Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support
+- Blocking runtime errors: none observed
+- Non-blocking itch/browser iframe warnings: `monetization`, `xr`, and
+  `allowfullscreen` feature-policy messages
 
 Current export envelope after the G-1.6 re-export:
 

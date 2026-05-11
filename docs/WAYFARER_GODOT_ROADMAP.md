@@ -9,6 +9,10 @@ host is the existing itch.io project at
 `https://wayfarersguild.itch.io/wayfarers-tale`, using a ZIP generated from
 `wayfarer_godot_vertical_slice/web_build/`.
 
+Current G-2 result: the itch.io page launches the single-threaded Godot Web
+export in Chrome and unblocks G-3 rendering/input parity work. This is a
+browser-review route only; it is not a production cutover.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -80,11 +84,26 @@ Acceptance:
 
 ## G-2: Slice Baseline Validation
 
+Status: pass on itch.io browser-review route.
+
 Validate the existing Godot vertical slice as a stable baseline before any
 content work. This phase may improve diagnostics and documentation, but it
 does not add systems or expand the playable space.
 
+Acceptance:
+
+- itch.io page launches Godot in browser.
+- Canvas appears with no permanent black screen.
+- WebGL initializes.
+- Single-threaded export avoids SharedArrayBuffer / cross-origin isolation
+  blockers.
+- Input/focus and viewport behavior are stable enough for G-3.
+- Existing JavaScript Worker remains the Phase 35.13R production/reference
+  route.
+
 ## G-3: Rendering and Input Parity
+
+Status: unblocked by G-2.
 
 Review browser rendering, canvas sizing, input focus, and basic movement
 behavior against the local Godot baseline. Fix presentation regressions only.

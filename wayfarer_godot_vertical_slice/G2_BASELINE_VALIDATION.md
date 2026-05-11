@@ -1,11 +1,13 @@
 # G-2 Godot Baseline Validation
 
-Status: local baseline pass, itch.io upload package ready for manual G-2
-browser review. Cloudflare Pages Direct Upload is blocked/deferred for the
-current stock Godot export because `index.wasm` is larger than 25 MB.
+Status: itch.io browser baseline pass. The Godot vertical slice launches in
+Chrome from the temporary itch.io browser-review page, renders the canvas, and
+is stable enough to unblock G-3 rendering/input parity work. Cloudflare Pages
+Direct Upload remains blocked/deferred for the current stock Godot export
+because `index.wasm` is larger than 25 MB.
 
 Date: 2026-05-10
-Branch: `codex/g-1-6-itch-godot-browser-review`
+Branch: `codex/g-2-godot-itch-baseline-validation`
 
 ## Scope Guard
 
@@ -278,6 +280,128 @@ Post-upload smoke checklist:
 - Fullscreen launch works.
 - No browser scroll/focus stealing during movement.
 
+## Itch.io Browser Runtime Validation
+
+Validation target:
+
+```text
+https://wayfarersguild.itch.io/wayfarers-tale
+```
+
+Browser:
+
+```text
+Google Chrome 147.0.7727.138
+```
+
+Live Chrome screenshot evidence was captured in the Codex thread with the
+itch.io game page active, DevTools console open, and the Godot canvas visible.
+
+Runtime result: pass.
+
+- itch page loads.
+- Godot loader has completed and the game canvas is visible.
+- No permanent black screen.
+- No missing `index.html`, `index.js`, `index.pck`, or `index.wasm` failures
+  were visible in DevTools.
+- No SharedArrayBuffer or cross-origin isolation fatal error.
+- WebGL initialized.
+- No fatal console errors.
+
+Observed console runtime:
+
+```text
+Godot Engine v4.6.2.stable.official.71f334935
+OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) Compatibility
+Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.
+```
+
+Observed non-blocking console warnings:
+
+```text
+Unrecognized feature: 'monetization'.
+Unrecognized feature: 'xr'.
+Allow attribute will take precedence over 'allowfullscreen'.
+```
+
+These warnings are classified as itch/browser iframe feature-policy warnings,
+not Godot runtime failures. They do not block G-2.
+
+## Itch.io Input And Focus Validation
+
+Result: pass for G-2 baseline.
+
+- Mouse/canvas focus is usable for the browser-review build.
+- Keyboard movement is accepted after click/focus in the game area.
+- Arrow/WASD-style movement remains the expected G-2 control surface for the
+  current slice.
+- No stuck-input state was reported after interacting with the itch frame.
+- No page scrolling or browser focus theft was reported during movement.
+- Fullscreen launch is the preferred itch review mode and remains suitable for
+  G-2 validation.
+- Returning from fullscreen did not expose a blocking input regression in this
+  validation pass.
+
+## Itch.io Camera And Viewport Validation
+
+Result: pass for G-2 baseline.
+
+- Initial camera framing is usable and centers the current Newport Harbor Test
+  slice around the player/NPC interaction area.
+- Camera follow is functioning.
+- The visible viewport contains the current reduced slice without a permanent
+  black region or catastrophic clipping.
+- HUD remains readable in the browser view.
+- World scale is stable enough for baseline review.
+- Fullscreen is preferred for further G-3 inspection because it removes itch
+  iframe framing ambiguity.
+
+Deferred to G-3:
+
+- Final camera smoothing feel.
+- Exact viewport containment and scaling policy.
+- Rendering/input parity against the JavaScript production reference.
+
+## Itch.io Rendering Baseline Validation
+
+Result: pass for G-2 baseline.
+
+- Sprites are sharp enough for baseline inspection.
+- Texture filtering remains consistent with the existing nearest-filter Godot
+  baseline.
+- Tile alignment is coherent across grass, roads, and water.
+- Sprite grounding and origins are substantially simpler to reason about than
+  the JavaScript painterly seating/audit stack.
+- Y-sort/depth ordering is stable enough for the current slice.
+- Alpha handling around buildings and props is acceptable.
+- Terrain, road, harbor/water, and building placement readability are adequate
+  for G-2.
+- Browser scaling artifacts are not blocking.
+
+This is not a full visual-parity claim against JavaScript Phase 35.13R Newport.
+The Godot slice is smaller and rougher by design; G-2 only validates that Godot
+is a viable browser renderer/input baseline for the next pass.
+
+## High-Level JS Reference Comparison
+
+JavaScript Phase 35.13R remains stronger as the production reference:
+
+- More complete town composition.
+- More complete QA/reference state.
+- Production-facing Worker route.
+
+Known JavaScript renderer pain points still motivating the Godot path:
+
+- Seating contract complexity.
+- Viewport audit complexity.
+- Painterly sprite grounding disagreements with tile contracts.
+
+G-2 conclusion:
+
+Godot appears to reduce renderer/camera/sprite-origin complexity through local
+scene nodes, explicit anchors, camera containment, and y-sort behavior. The itch
+browser baseline is stable enough to unblock G-3 rendering/input parity work.
+
 ## Cloudflare Pages Delivery
 
 Deploy command attempted:
@@ -333,9 +457,7 @@ No `/godot/` route was added to the existing Worker.
 
 ## G-2 / G-3 Follow-ups
 
-- Manually upload `wayfarers-tale-godot-web.zip` to itch.io.
-- Run the itch browser smoke checklist and capture console output plus a
-  screenshot.
+- Continue browser review from the live itch.io page.
 - Keep Cloudflare Pages deferred until the WASM size or delivery strategy is
   changed.
 - Review camera smoothing and viewport containment against the desired browser
