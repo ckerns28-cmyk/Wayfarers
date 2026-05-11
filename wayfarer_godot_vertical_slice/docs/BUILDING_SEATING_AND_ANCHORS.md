@@ -6,7 +6,8 @@ slab. G-4.6 deliberately started smaller, but its three-building screenshot
 still read like building cutouts behind a flat road. G-4.7 switched to a
 calibration board; G-4.8 applied the recommended Variant D grammar to one
 playable proof street, and G-4.9 tightens that proof into a smaller art-
-directed street vignette.
+directed street vignette. G-4.9.1 pauses street composition because crop
+contamination in the proof-street sprites made seating impossible to judge.
 
 This model is intentionally smaller than the old JavaScript seating-contract
 audit. The Godot contract is source metadata plus visual inspection through the
@@ -25,6 +26,11 @@ G-4.9 vignette building IDs:
 
 These buildings are marked with `proof_street = true` and join the
 `proof_street_buildings` group at runtime.
+
+G-4.9.1 source-image rule: the proof-street storefronts must use isolated
+standalone PNGs from `assets/sprites/buildings/isolated/`, not unsafe live
+atlas subregions. Seating is only meaningful once the rendered sprite contains
+one building and no neighboring atlas fragments.
 
 ## Runtime Meaning
 

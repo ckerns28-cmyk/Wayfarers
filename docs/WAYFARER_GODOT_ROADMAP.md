@@ -107,6 +107,13 @@ camera framing, a narrower street lane, sidewalk/stoops/curb, foreground
 wharf context, and base clutter around doors. The HUD review identity should
 show `Godot G-4.9 Street Vignette`.
 
+Current G-4.9.1 result: G-4.9 visual review exposed a harder blocker than
+street composition: proof-street building crops were still contaminated by
+neighboring atlas cells. G-4.9.1 does not tune the street. It isolates
+`b_mercantile`, `b_counting_house`, `b_chandlery_front`, and `b_shop_house`
+into standalone transparent PNGs, switches the Godot catalog to those files,
+and updates the review identity to `Godot G-4.9.1 Sprite Crop Isolation`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -552,7 +559,7 @@ Visual review result:
 
 ## G-4.9: Newport Street Vignette Art Direction
 
-Status: ready for manual itch upload; not accepted until screenshot review.
+Status: visually blocked by sprite crop contamination; superseded by G-4.9.1.
 
 G-4.9 turns the chosen Variant D grammar into one smaller street vignette:
 
@@ -578,12 +585,37 @@ Acceptance:
   `STILL_LOOKS_LIKE_CALIBRATION_STRIP`, `STREET_PLANE_STILL_FAILED`, or
   `BUILDING_SEATING_STILL_FAILED`.
 
+## G-4.9.1: Building Sprite Crop Isolation Hotfix
+
+Status: ready for manual itch upload; not accepted until screenshot review
+confirms no neighboring building fragments are visible.
+
+G-4.9.1 fixes the sprite-source blocker before any further street art
+direction:
+
+- `b_mercantile` uses `assets/sprites/buildings/isolated/mercantile_shop_isolated.png`.
+- `b_counting_house` uses `assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png`.
+- `b_chandlery_front` uses `assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png`.
+- `b_shop_house` uses `assets/sprites/buildings/isolated/newport_shopfront_awning_isolated.png`.
+- The source atlases remain tracked as source material, but these four
+  proof-street sprites no longer render from unsafe atlas subregions.
+- The HUD review identity should show
+  `Godot G-4.9.1 Sprite Crop Isolation`.
+
+Acceptance:
+
+- Latest itch upload shows the G-4.9.1 build label.
+- No active proof-street building shows pieces of neighboring atlas buildings
+  on its left or right edge.
+- If contamination remains, classify as `SPRITE_CROP_CONTAMINATION_REMAINS`
+  and do not resume street-vignette composition.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
-Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.9 street vignette is visually reviewed on itch and accepted as the model for
-scaling across the Newport town.
+Godot. This is a planning phase, not a porting phase. It may begin only after
+the isolated G-4.9.1 sprites and the resumed street vignette are visually
+reviewed on itch and accepted as the model for scaling across the Newport town.
 
 ## G-6: Production Cutover Planning
 
