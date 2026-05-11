@@ -85,3 +85,20 @@ G-4.8 uses Variant D as the active proof-street standard:
 If the manual itch screenshot still reads like pasted sprites on a slab, do
 not scale the grammar back up. Classify the result as
 `PROOF_STREET_STILL_NOT_BELIEVABLE` or `BUILDING_STREET_GRAMMAR_FAILED`.
+
+## G-4.9 Vignette Direction
+
+G-4.8 proved that alignment alone is not enough. G-4.9 keeps the Variant D
+grammar but reframes it as art direction:
+
+- reduce from four buildings to three
+- cluster building spacing instead of even strip placement
+- move the player closer to storefronts
+- narrow the road lane further
+- make sidewalk, stoops, curb, wharf edge, and harbor water read as one
+  composed scene
+- concentrate props at bases and edges so buildings feel inhabited
+
+The G-4.9 result should be judged with debug off. If it still looks like an
+alignment strip, the correct classification is
+`STILL_LOOKS_LIKE_CALIBRATION_STRIP` or `STREET_PLANE_STILL_FAILED`.

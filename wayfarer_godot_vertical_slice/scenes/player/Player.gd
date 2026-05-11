@@ -50,7 +50,9 @@ func configure_world_limits(world_rect: Rect2) -> void:
 
 func _configure_camera() -> void:
 	camera.enabled = true
-	if NEWPORT_TOWN.G48_PROOF_STREET:
+	if NEWPORT_TOWN.G49_STREET_VIGNETTE:
+		camera.zoom = Vector2(1.58, 1.58)
+	elif NEWPORT_TOWN.G48_PROOF_STREET:
 		camera.zoom = Vector2(1.34, 1.34)
 	elif NEWPORT_TOWN.G47_CALIBRATION_MODE:
 		camera.zoom = Vector2(0.88, 0.88)
@@ -59,7 +61,9 @@ func _configure_camera() -> void:
 	else:
 		camera.zoom = Vector2(1.48, 1.48)
 	camera.position = Vector2.ZERO
-	if NEWPORT_TOWN.G48_PROOF_STREET:
+	if NEWPORT_TOWN.G49_STREET_VIGNETTE:
+		camera.offset = Vector2(0, -70)
+	elif NEWPORT_TOWN.G48_PROOF_STREET:
 		camera.offset = Vector2(0, -76)
 	elif NEWPORT_TOWN.G47_CALIBRATION_MODE:
 		camera.offset = Vector2(-130, -110)
@@ -68,7 +72,7 @@ func _configure_camera() -> void:
 	else:
 		camera.offset = Vector2(72, -26)
 	camera.position_smoothing_enabled = true
-	camera.position_smoothing_speed = 9.5 if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET) else 8.5
+	camera.position_smoothing_speed = 9.5 if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else 8.5
 	_apply_camera_limits()
 	camera.limit_smoothed = true
 	camera.make_current()
@@ -109,7 +113,7 @@ func _update_interaction_target() -> void:
 		prompt_label.text = _current_target.get_interaction_label()
 
 func _draw() -> void:
-	var visual_scale := 0.78 if (NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET) else (1.12 if NEWPORT_TOWN.G46_PROOF_FRAME else 1.0)
+	var visual_scale := 0.78 if (NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else (1.12 if NEWPORT_TOWN.G46_PROOF_FRAME else 1.0)
 	draw_set_transform(Vector2(0, 8 * visual_scale), 0.0, Vector2(1.45 * visual_scale, 0.42 * visual_scale))
 	draw_circle(Vector2.ZERO, 10.0, Color(0, 0, 0, 0.24))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

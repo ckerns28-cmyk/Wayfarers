@@ -43,7 +43,7 @@ func _apply_build_identity() -> void:
 	if branch.length() > 34:
 		branch = branch.substr(0, 31) + "..."
 	branch_label.text = "Branch: " + branch
-	zone_label.text = "Variant D Proof Street"
+	zone_label.text = "Newport Street Vignette"
 	stats_label.text = "Level 1  HP 52/52"
 
 func toggle_review_metadata() -> void:
@@ -87,7 +87,7 @@ func _apply_layout() -> void:
 	status_panel.offset_left = HUD_MARGIN
 	status_panel.offset_top = HUD_MARGIN
 	status_panel.offset_right = HUD_MARGIN + status_width
-	var status_height := 188.0 if _metadata_expanded else 116.0
+	var status_height := 180.0 if _metadata_expanded else 108.0
 	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + status_height)
 
 	var dialogue_width: float = min(DIALOGUE_MAX_WIDTH, max(DIALOGUE_MIN_WIDTH, viewport_size.x - HUD_MARGIN * 2.0))

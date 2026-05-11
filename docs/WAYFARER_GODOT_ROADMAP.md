@@ -97,7 +97,15 @@ Variant D proof street. The active scene uses four hand-seated waterfront
 buildings, a `0.78` player scale, integrated sidewalk/stoops/curb, a narrower
 cobbled lane, wharf edge, harbor water, and proof-street debug markers toggled
 with `B`. The HUD review identity should show
-`Godot G-4.8 Variant D Proof Street`.
+`Godot G-4.8 Variant D Proof Street`. Screenshot review still found that it
+read like an engineering alignment strip, so it is superseded by G-4.9.
+
+Current G-4.9 result: the active Godot scene is a smaller Newport street
+vignette, not a calibration strip. It uses three waterfront buildings,
+closer storefront spacing, uneven setbacks, a `0.78` player scale, tighter
+camera framing, a narrower street lane, sidewalk/stoops/curb, foreground
+wharf context, and base clutter around doors. The HUD review identity should
+show `Godot G-4.9 Street Vignette`.
 
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
@@ -508,7 +516,7 @@ Acceptance:
 
 ## G-4.8: Variant D Proof Street
 
-Status: ready for manual itch upload; not accepted until screenshot review.
+Status: failed visual review; superseded by G-4.9.
 
 G-4.8 stops showing the calibration board and applies the recommended Variant
 D grammar to one real playable proof street:
@@ -535,11 +543,46 @@ Acceptance:
   `PROOF_STREET_STILL_NOT_BELIEVABLE`, `BUILDING_STREET_GRAMMAR_FAILED`, or
   `VARIANT_D_NOT_VIABLE`.
 
+Visual review result:
+
+- G-4.8 improved technical alignment but still felt like four storefronts
+  behind a broad flat strip.
+- The player was too far from the storefronts.
+- The scene still read as a proof layout instead of a cozy playable street.
+
+## G-4.9: Newport Street Vignette Art Direction
+
+Status: ready for manual itch upload; not accepted until screenshot review.
+
+G-4.9 turns the chosen Variant D grammar into one smaller street vignette:
+
+- Active vignette buildings: `b_mercantile`, `b_counting_house`, and
+  `b_chandlery_front`.
+- Player visual scale remains `0.78`, but spawn moves closer to the storefront
+  lane so the player can stand in front of doors.
+- The road is no longer a long alignment slab: it is a narrower cobbled lane
+  with a distinct sidewalk/apron, stoop thresholds, curb/gutter, foreground
+  wharf planks, and harbor water as context.
+- Base props and small blockers are clustered around doors and street edges:
+  crates, barrels, rope, signs, lamps, weeds, table goods, dock posts, nets,
+  and a rowboat.
+- Camera zoom is tighter for a composed first screenshot.
+- Debug seating markers still toggle with `B` and remain off by default.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.9 Street Vignette`.
+- The first screenshot should look like a cozy harbor street, not a debug
+  calibration strip.
+- If it still reads as pasted buildings on a slab, classify as
+  `STILL_LOOKS_LIKE_CALIBRATION_STRIP`, `STREET_PLANE_STILL_FAILED`, or
+  `BUILDING_SEATING_STILL_FAILED`.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.8 proof street is visually reviewed on itch and accepted as the model for
+G-4.9 street vignette is visually reviewed on itch and accepted as the model for
 scaling across the Newport town.
 
 ## G-6: Production Cutover Planning
