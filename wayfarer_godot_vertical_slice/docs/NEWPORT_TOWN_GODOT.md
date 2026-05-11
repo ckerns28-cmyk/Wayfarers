@@ -43,14 +43,19 @@ alignment strip. It reduces the vignette to three buildings, moves the player
 closer to the storefronts, tightens the camera, narrows the road, and clusters
 base detail so the first screen reads as a cozy playable harbor street.
 
+G-4.9.1 responds to review that G-4.9 could not be judged because several
+building sprites still showed neighboring atlas content at their edges. It
+does not continue street tuning. It isolates the proof-street building sprites
+into standalone PNGs and switches the catalog to those files first.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
 
 - `scripts/NewportTownBlueprint.gd`: map dimensions, road hierarchy, water,
   wharf/pier layout, districts, building placements, spawn, and QA targets.
-- `scripts/BuildingCatalog.gd`: atlas source, tight regions, anchors, and draw
-  widths for the current building sprites.
+- `scripts/BuildingCatalog.gd`: atlas or isolated sprite source, region,
+  anchor, and draw width metadata for the current building sprites.
 
 `Main.gd`, `MapLayer.gd`, `CollisionNavigationLayer.gd`, and
 `tools/validate_vertical_slice.gd` consume the blueprint instead of each keeping
@@ -422,6 +427,33 @@ Branch: codex/g-4-9-newport-street-vignette-art-direction
 Manual itch review must decide whether this finally feels like a cozy harbor
 street. If it still reads as a calibration strip, do not scale it back to the
 full Newport town.
+
+## G-4.9.1 Sprite Crop Isolation
+
+G-4.9.1 fixes the source-image blocker before further street composition. The
+proof-street buildings had been using atlas rectangles that included or exposed
+neighboring sprite fragments. The browser scene now uses isolated PNGs with
+transparent padding:
+
+| Building id | Sprite id | Isolated output |
+| --- | --- | --- |
+| `b_mercantile` | `mercantile_shop` | `assets/sprites/buildings/isolated/mercantile_shop_isolated.png` |
+| `b_counting_house` | `newport_counting_house_civic_exchange` | `assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png` |
+| `b_chandlery_front` | `newport_chandlery_outfitter_front` | `assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png` |
+| `b_shop_house` | `newport_shopfront_awning` | `assets/sprites/buildings/isolated/newport_shopfront_awning_isolated.png` |
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.9.1 Sprite Crop Isolation
+Phase: G-4.9.1 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-9-1-building-sprite-crop-isolation
+```
+
+Acceptance is intentionally narrow: no proof-street building may show pieces
+of a neighboring atlas building. If any contamination remains after upload,
+classify the pass as `SPRITE_CROP_CONTAMINATION_REMAINS`.
 
 ## Deferred
 

@@ -90,6 +90,7 @@ func _atlas(path: String, region: Rect2) -> AtlasTexture:
 	var texture := AtlasTexture.new()
 	texture.atlas = _atlas_image(path)
 	texture.region = region
+	texture.filter_clip = true
 	return texture
 
 func _atlas_image(path: String) -> Texture2D:

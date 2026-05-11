@@ -4,13 +4,14 @@ class_name BuildingCatalog
 const ATLAS_V1 := "res://assets/buildings/hearthvale_buildings_atlas_v1.png"
 const PACK_A := "res://assets/buildings/hearthvale_newport_structure_pack_v1_a.png"
 const PACK_B := "res://assets/buildings/hearthvale_newport_structure_pack_v1_b.png"
+const ISOLATED_BUILDINGS := "res://assets/sprites/buildings/isolated"
 
 static func sprite_config(sprite_id: String) -> Dictionary:
 	match sprite_id:
 		"inn_tavern_v1":
 			return _sprite(ATLAS_V1, Rect2(33, 45, 385, 373), 218.0)
 		"mercantile_shop":
-			return _sprite(ATLAS_V1, Rect2(418, 67, 384, 351), 172.0)
+			return _sprite(ISOLATED_BUILDINGS + "/mercantile_shop_isolated.png", Rect2(0, 0, 396, 446), 172.0)
 		"village_hall_meeting_house":
 			return _sprite(ATLAS_V1, Rect2(855, 10, 323, 408), 174.0)
 		"residence_small":
@@ -30,7 +31,7 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 		"newport_large_front_residence":
 			return _sprite(PACK_A, Rect2(61, 418, 357, 372), 178.0)
 		"newport_shopfront_awning":
-			return _sprite(PACK_A, Rect2(418, 470, 418, 313), 178.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_shopfront_awning_isolated.png", Rect2(0, 0, 396, 396), 178.0)
 		"newport_narrow_merchant_townhouse_a":
 			return _sprite(PACK_A, Rect2(836, 451, 273, 385), 118.0)
 		"newport_chandlery_cottage":
@@ -48,9 +49,9 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 		"newport_modest_clapboard_residence_a":
 			return _sprite(PACK_B, Rect2(105, 433, 313, 403), 126.0)
 		"newport_counting_house_civic_exchange":
-			return _sprite(PACK_B, Rect2(418, 475, 418, 322), 202.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_counting_house_civic_exchange_isolated.png", Rect2(0, 0, 434, 386), 202.0)
 		"newport_chandlery_outfitter_front":
-			return _sprite(PACK_B, Rect2(836, 444, 366, 352), 184.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_chandlery_outfitter_front_isolated.png", Rect2(0, 0, 402, 388), 184.0)
 		"newport_dockside_storehouse":
 			return _sprite(PACK_B, Rect2(51, 836, 361, 377), 196.0)
 		"newport_market_shed_stalls":

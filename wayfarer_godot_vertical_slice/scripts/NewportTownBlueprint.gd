@@ -347,16 +347,16 @@ static func player_spawn_tile() -> Vector2i:
 static func building_specs() -> Array:
 	if G49_STREET_VIGNETTE:
 		return [
-			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.6, 17.55), Vector2(192.0, 333.0), Vector2(88.0, 30.0), Vector2(0.0, 19.0), 122.0, Vector2(136.0, 17.0), 150.0),
-			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.55, 17.35), Vector2(209.0, 305.0), Vector2(104.0, 32.0), Vector2(0.0, 21.0), 150.0, Vector2(164.0, 18.0), 184.0),
-			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(26.55, 17.65), Vector2(183.0, 333.0), Vector2(98.0, 31.0), Vector2(0.0, 20.0), 132.0, Vector2(150.0, 18.0), 156.0),
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.6, 17.55), Vector2(198.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 19.0), 122.0, Vector2(136.0, 17.0), 150.0),
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.55, 17.35), Vector2(217.0, 368.0), Vector2(104.0, 32.0), Vector2(0.0, 21.0), 150.0, Vector2(164.0, 18.0), 184.0),
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(26.55, 17.65), Vector2(201.0, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 20.0), 132.0, Vector2(150.0, 18.0), 156.0),
 		]
 	if G48_PROOF_STREET:
 		return [
-			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(13.1, 17.75), Vector2(192.0, 333.0), Vector2(88.0, 30.0), Vector2(0.0, 20.0), 118.0, Vector2(132.0, 17.0), 146.0),
-			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.2, 17.75), Vector2(209.0, 305.0), Vector2(104.0, 32.0), Vector2(0.0, 21.0), 142.0, Vector2(156.0, 18.0), 174.0),
-			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(27.3, 17.75), Vector2(183.0, 333.0), Vector2(98.0, 31.0), Vector2(0.0, 21.0), 126.0, Vector2(148.0, 18.0), 152.0),
-			_proof_street_building("b_shop_house", "Shop House", "newport_shopfront_awning", Vector2(34.3, 17.75), Vector2(209.0, 296.0), Vector2(92.0, 30.0), Vector2(0.0, 20.0), 118.0, Vector2(136.0, 17.0), 150.0),
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(13.1, 17.75), Vector2(198.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 20.0), 118.0, Vector2(132.0, 17.0), 146.0),
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.2, 17.75), Vector2(217.0, 368.0), Vector2(104.0, 32.0), Vector2(0.0, 21.0), 142.0, Vector2(156.0, 18.0), 174.0),
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(27.3, 17.75), Vector2(201.0, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 21.0), 126.0, Vector2(148.0, 18.0), 152.0),
+			_proof_street_building("b_shop_house", "Shop House", "newport_shopfront_awning", Vector2(34.3, 17.75), Vector2(198.0, 378.0), Vector2(92.0, 30.0), Vector2(0.0, 20.0), 118.0, Vector2(136.0, 17.0), 150.0),
 		]
 	if G47_CALIBRATION_MODE:
 		return [
@@ -371,19 +371,19 @@ static func building_specs() -> Array:
 		]
 	if G46_PROOF_FRAME:
 		return [
-			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(17.2, 15.95), Vector2(192.0, 333.0), Vector2(92.0, 32.0), Vector2(0.0, 26.0), 112.0, Vector2(116.0, 19.0), 138.0),
-			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(23.0, 15.95), Vector2(209.0, 305.0), Vector2(104.0, 34.0), Vector2(0.0, 28.0), 126.0, Vector2(128.0, 20.0), 166.0),
-			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(29.1, 15.95), Vector2(183.0, 333.0), Vector2(98.0, 34.0), Vector2(0.0, 27.0), 118.0, Vector2(120.0, 20.0), 152.0),
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(17.2, 15.95), Vector2(198.0, 421.0), Vector2(92.0, 32.0), Vector2(0.0, 26.0), 112.0, Vector2(116.0, 19.0), 138.0),
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(23.0, 15.95), Vector2(217.0, 368.0), Vector2(104.0, 34.0), Vector2(0.0, 28.0), 126.0, Vector2(128.0, 20.0), 166.0),
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(29.1, 15.95), Vector2(201.0, 370.0), Vector2(98.0, 34.0), Vector2(0.0, 27.0), 118.0, Vector2(120.0, 20.0), 152.0),
 		]
 	return [
 		_building("b_boathouse", "Boathouse", "newport_wharf_boathouse_large", "harbor_wharf", "harbor", Vector2(10.7, 21.2), 4.0, 1.0),
 		_building("b_dock_storehouse", "Dock Storehouse", "newport_dockside_storehouse_long", "harbor_wharf", "harbor", Vector2(30.3, 21.1), 4.0, 1.0),
 		_building("b_market_shed", "Market Shed", "newport_market_shed_stalls", "harbor_wharf", "harbor", Vector2(21.4, 21.0), 3.0, 1.0),
 		_proof_street_building("b_inn_tavern", "Inn & Tavern", "inn_tavern_v1", Vector2(11.0, 17.05), Vector2(192.5, 350.0), Vector2(154.0, 42.0), Vector2(0.0, 34.0), 184.0, Vector2(184.0, 28.0)),
-		_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(16.3, 17.05), Vector2(192.0, 333.0), Vector2(110.0, 34.0), Vector2(0.0, 32.0), 136.0, Vector2(132.0, 23.0)),
-		_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(22.1, 17.05), Vector2(209.0, 305.0), Vector2(132.0, 36.0), Vector2(0.0, 34.0), 162.0, Vector2(156.0, 24.0)),
-		_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(28.1, 17.05), Vector2(183.0, 333.0), Vector2(124.0, 36.0), Vector2(0.0, 34.0), 148.0, Vector2(148.0, 24.0)),
-		_proof_street_building("b_shop_house", "Shop House", "newport_shopfront_awning", Vector2(33.7, 17.05), Vector2(209.0, 296.0), Vector2(116.0, 34.0), Vector2(0.0, 32.0), 136.0, Vector2(140.0, 22.0)),
+		_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(16.3, 17.05), Vector2(198.0, 421.0), Vector2(110.0, 34.0), Vector2(0.0, 32.0), 136.0, Vector2(132.0, 23.0)),
+		_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(22.1, 17.05), Vector2(217.0, 368.0), Vector2(132.0, 36.0), Vector2(0.0, 34.0), 162.0, Vector2(156.0, 24.0)),
+		_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(28.1, 17.05), Vector2(201.0, 370.0), Vector2(124.0, 36.0), Vector2(0.0, 34.0), 148.0, Vector2(148.0, 24.0)),
+		_proof_street_building("b_shop_house", "Shop House", "newport_shopfront_awning", Vector2(33.7, 17.05), Vector2(198.0, 378.0), Vector2(116.0, 34.0), Vector2(0.0, 32.0), 136.0, Vector2(140.0, 22.0)),
 		_building("b_custom_house", "Custom House", "newport_custom_house_civic_front", "civic_district", "civic", Vector2(25.2, 11.7), 3.8, 1.0),
 		_building("b_village_hall", "Village Hall", "village_hall_meeting_house", "civic_district", "civic", Vector2(20.0, 11.6), 4.0, 1.0),
 		_building("b_res_small", "Harbor Cottage", "residence_small", "service_outfitter_lane", "service", Vector2(6.2, 15.6), 2.3, 1.0),

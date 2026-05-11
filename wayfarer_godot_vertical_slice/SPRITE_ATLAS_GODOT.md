@@ -17,7 +17,19 @@ wayfarer_godot_vertical_slice/assets/buildings/
   hearthvale_buildings_atlas_v1.png            (1254 x 1254)
   hearthvale_newport_structure_pack_v1_a.png   (1254 x 1254)
   hearthvale_newport_structure_pack_v1_b.png   (1254 x 1254)
+
+wayfarer_godot_vertical_slice/assets/sprites/buildings/isolated/
+  mercantile_shop_isolated.png
+  newport_counting_house_civic_exchange_isolated.png
+  newport_chandlery_outfitter_front_isolated.png
+  newport_shopfront_awning_isolated.png
 ```
+
+G-4.9.1 isolates the active proof-street storefronts from the atlases because
+manual review showed neighboring cell fragments at their edges. The atlas PNGs
+remain source material; the four listed isolated files are the runtime review
+sprites for `b_mercantile`, `b_counting_house`, `b_chandlery_front`, and
+`b_shop_house`.
 
 ## Grid layout
 
@@ -58,6 +70,9 @@ v1                  pack_a              pack_b
 
 `scripts/BuildingCatalog.gd` and `tools/validate_vertical_slice.gd` both
 assume regions live inside these bounding boxes.
+
+For isolated G-4.9.1 storefronts, `BuildingCatalog.gd` uses a full-image
+region on the standalone PNG instead of the original atlas cell.
 
 ## Currently used cells
 
