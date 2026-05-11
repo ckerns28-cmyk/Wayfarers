@@ -10,6 +10,8 @@ class_name WayfarerBuilding
 
 var building_id := ""
 var display_name := ""
+var _ground_shadow_width := 96.0
+var _ground_shadow_depth := 22.0
 
 func configure(config: Dictionary) -> void:
 	building_id = config.get("id", name)
@@ -25,6 +27,7 @@ func configure(config: Dictionary) -> void:
 	var scale_factor: float = draw_width / max(1.0, source_size.x)
 
 	sprite.texture = texture
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	sprite.centered = false
 	sprite.scale = Vector2(scale_factor, scale_factor)
 	sprite.position = -anchor * scale_factor
@@ -33,6 +36,8 @@ func configure(config: Dictionary) -> void:
 	collision_shape.size = config.get("collision_size", Vector2(96.0, 32.0))
 	body_collision.shape = collision_shape
 	body_collision.position = config.get("collision_offset", Vector2.ZERO)
+	_ground_shadow_width = max(collision_shape.size.x * 1.12, draw_width * 0.42)
+	_ground_shadow_depth = max(18.0, collision_shape.size.y * 0.58)
 
 	var interaction_shape := RectangleShape2D.new()
 	interaction_shape.size = config.get("interaction_size", Vector2(72.0, 40.0))
@@ -41,9 +46,15 @@ func configure(config: Dictionary) -> void:
 	door_marker.position = config.get("door_offset", Vector2.ZERO)
 	foot_anchor.position = Vector2.ZERO
 	debug_overlay.refresh()
+	queue_redraw()
 
 func get_foot_anchor() -> Vector2:
 	return global_position
 
 func set_debug_overlay(enabled: bool) -> void:
 	debug_overlay.visible = enabled
+
+func _draw() -> void:
+	draw_set_transform(Vector2(0, -6), 0.0, Vector2(_ground_shadow_width / 32.0, _ground_shadow_depth / 32.0))
+	draw_circle(Vector2.ZERO, 16.0, Color(0, 0, 0, 0.20))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

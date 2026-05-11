@@ -1,0 +1,95 @@
+name: Godot Web Review Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_to_itch:
+        description: "Push this build to itch.io with butler when BUTLER_API_KEY is configured."
+        required: false
+        default: false
+        type: boolean
+  pull_request:
+    paths:
+      - "wayfarer_godot_vertical_slice/**"
+      - "docs/WAYFARER_GODOT_ROADMAP.md"
+      - ".github/workflows/godot-web-review-build.yml"
+  push:
+    branches:
+      - main
+      - "codex/g-*"
+    paths:
+      - "wayfarer_godot_vertical_slice/**"
+      - "docs/WAYFARER_GODOT_ROADMAP.md"
+      - ".github/workflows/godot-web-review-build.yml"
+
+permissions:
+  contents: read
+
+env:
+  GODOT_RELEASE: 4.6.2-stable
+  GODOT_TEMPLATE_VERSION: 4.6.2.stable
+  GODOT_DOWNLOAD_ROOT: https://github.com/godotengine/godot-builds/releases/download
+  ITCH_TARGET: wayfarersguild/wayfarers-tale:web
+
+jobs:
+  build-web-review:
+    name: Build Godot Web review artifact
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot 4.6.2 and Web export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          godot_zip="Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          templates_zip="Godot_v${GODOT_RELEASE}_export_templates.tpz"
+          release_url="${GODOT_DOWNLOAD_ROOT}/${GODOT_RELEASE}"
+
+          mkdir -p "$HOME/.local/bin"
+          curl -L --fail --retry 3 -o "/tmp/${godot_zip}" "${release_url}/${godot_zip}"
+          unzip -q "/tmp/${godot_zip}" -d /tmp/godot
+          install -m 0755 "/tmp/godot/Godot_v${GODOT_RELEASE}_linux.x86_64" "$HOME/.local/bin/godot"
+
+          curl -L --fail --retry 3 -o "/tmp/${templates_zip}" "${release_url}/${templates_zip}"
+          mkdir -p /tmp/godot-export-templates
+          unzip -q "/tmp/${templates_zip}" -d /tmp/godot-export-templates
+          mkdir -p "$HOME/.local/share/godot/export_templates/${GODOT_TEMPLATE_VERSION}"
+          cp -R /tmp/godot-export-templates/templates/. "$HOME/.local/share/godot/export_templates/${GODOT_TEMPLATE_VERSION}/"
+
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/godot" --headless --version
+
+      - name: Build itch-ready Web ZIP
+        shell: bash
+        run: bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh
+
+      - name: Upload review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wayfarers-tale-godot-web
+          path: wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip
+          if-no-files-found: error
+
+      - name: Optional itch.io deploy
+        if: ${{ github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && inputs.deploy_to_itch) }}
+        shell: bash
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${BUTLER_API_KEY}" ]; then
+            echo "Skipping itch deploy because BUTLER_API_KEY is not configured."
+            exit 0
+          fi
+
+          curl -L --fail --retry 3 -o /tmp/butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip -q /tmp/butler.zip -d /tmp/butler
+          chmod +x /tmp/butler/butler
+
+          userversion="${GITHUB_SHA:0:12}-${GITHUB_RUN_NUMBER}"
+          /tmp/butler/butler push wayfarer_godot_vertical_slice/web_build "${ITCH_TARGET}" --userversion "$userversion"
