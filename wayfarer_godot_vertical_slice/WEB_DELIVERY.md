@@ -27,18 +27,23 @@ uploaded manually to itch for browser review. Butler automation remains
 deferred for the manual ZIP review pass.
 
 The HUD shows visible review identity so a screenshot can prove which ZIP is
-live. For G-4.4 the expected label is:
+live. For G-4.5 the expected label is:
 
 ```text
-Build label: Godot G-4.4 Harbor Walk Acceptance
-Phase: G-4.4 | Review host: itch
+Build label: Godot G-4.5 Building Seating Proof
+Phase: G-4.5 | Review host: itch
 Channel: manual ZIP
-Branch: codex/g-4-4-newport-harbor-walk-acceptance
+Branch: codex/g-4-5-building-seating-calibration-one-street-proof
 ```
 
-For G-4.4 the default HUD is compact so the town is easier to review in a
+For G-4.5 the default HUD is compact so the town is easier to review in a
 screenshot. Press `F2` during local or itch review to toggle the extended
 branch/channel/objective metadata.
+
+Press `B` during local or itch review to toggle the building seating debug
+overlay for the G-4.5 proof street. The overlay is off by default and shows
+base anchors, frontage markers, collision rectangles, y-sort anchors, and
+building IDs only for the proof-street buildings.
 
 Review pipeline roles:
 
@@ -193,7 +198,9 @@ The listing must include `index.html` with no `web_build/` prefix.
 8. Launch the game and visually review.
 9. Hard-refresh the itch page if an older build is still visible.
 10. Confirm the on-screen build label changed to the expected phase/branch.
-11. Capture browser console errors and a screenshot.
+11. For G-4.5, optionally press `B` to inspect the proof-street seating
+    overlay, then press `B` again before taking normal review screenshots.
+12. Capture browser console errors and a screenshot.
 
 Current review checklist:
 

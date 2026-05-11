@@ -34,5 +34,6 @@ func _add_water_collision() -> void:
 		_add_body(Rect2(tile.x * TILE, tile.y * TILE, TILE, TILE), "HarborWater_%d_%d" % [tile.x, tile.y])
 
 func _add_detail_blockers() -> void:
-	for blocker in NEWPORT_TOWN.detail_blockers():
-		_add_body(blocker["rect"], "DetailBlocker_" + blocker["id"])
+	for blocker_config in NEWPORT_TOWN.detail_blockers():
+		var blocker: Dictionary = blocker_config
+		_add_body(blocker["rect"], "DetailBlocker_" + String(blocker["id"]))

@@ -8,6 +8,8 @@ const INTERACTION_FILL := Color(0.35, 0.85, 1.0, 0.25)
 const INTERACTION_OUTLINE := Color(0.25, 0.70, 1.0, 0.95)
 const ANCHOR_COLOR := Color(0.10, 1.0, 0.45, 1.0)
 const DOOR_COLOR := Color(1.0, 0.85, 0.30, 1.0)
+const FRONTAGE_COLOR := Color(0.15, 0.85, 1.0, 1.0)
+const YSORT_COLOR := Color(1.0, 0.35, 1.0, 1.0)
 const LABEL_COLOR := Color(1, 1, 1, 0.95)
 
 func _ready() -> void:
@@ -49,12 +51,26 @@ func _draw() -> void:
 
 	var foot_anchor := building.get_node_or_null("FootAnchor") as Marker2D
 	if foot_anchor:
+		var visual_base_width := 96.0
+		if building.has_method("get_visual_base_width"):
+			visual_base_width = building.get_visual_base_width()
+		draw_line(Vector2(-visual_base_width * 0.5, 0.0), Vector2(visual_base_width * 0.5, 0.0), ANCHOR_COLOR, 2.0)
 		_draw_cross(foot_anchor.position, 8.0, ANCHOR_COLOR, 2.0)
 		draw_circle(foot_anchor.position, 3.0, ANCHOR_COLOR)
 
 	var door_marker := building.get_node_or_null("DoorMarker") as Marker2D
 	if door_marker:
 		draw_circle(door_marker.position, 4.0, DOOR_COLOR)
+
+	var frontage_marker := building.get_node_or_null("FrontageMarker") as Marker2D
+	if frontage_marker:
+		_draw_diamond(frontage_marker.position, 6.0, FRONTAGE_COLOR)
+		draw_line(Vector2(frontage_marker.position.x - 18.0, frontage_marker.position.y), Vector2(frontage_marker.position.x + 18.0, frontage_marker.position.y), FRONTAGE_COLOR, 1.5)
+
+	var y_sort_anchor := building.get_node_or_null("YSortAnchor") as Marker2D
+	if y_sort_anchor:
+		_draw_diamond(y_sort_anchor.position, 5.0, YSORT_COLOR)
+		_draw_cross(y_sort_anchor.position, 10.0, YSORT_COLOR, 1.5)
 
 	var label := ""
 	if building is Node:
@@ -78,3 +94,11 @@ func _draw_rect_outline(rect: Rect2, color: Color, width: float) -> void:
 func _draw_cross(at: Vector2, half: float, color: Color, width: float) -> void:
 	draw_line(at + Vector2(-half, 0), at + Vector2(half, 0), color, width)
 	draw_line(at + Vector2(0, -half), at + Vector2(0, half), color, width)
+
+func _draw_diamond(at: Vector2, radius: float, color: Color) -> void:
+	draw_colored_polygon(PackedVector2Array([
+		at + Vector2(0, -radius),
+		at + Vector2(radius, 0),
+		at + Vector2(0, radius),
+		at + Vector2(-radius, 0),
+	]), color)

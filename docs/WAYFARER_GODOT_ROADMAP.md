@@ -71,6 +71,13 @@ build/phase still visible, camera framing is tuned for walking, and props are
 clustered to shape readable harbor, commercial, civic, and residential beats.
 The HUD review identity should show `Godot G-4.4 Harbor Walk Acceptance`.
 
+Current G-4.5 result: the Godot town now has a one-street building seating
+proof for the waterfront commercial frontage. The proof street keeps the same
+buildings but gives each one explicit visual-base anchors, frontage points,
+collision rects, y-sort markers, shadow rectangles, and debug review markers.
+Press `B` to toggle the proof-street seating overlay during review. The HUD
+review identity should show `Godot G-4.5 Building Seating Proof`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -381,11 +388,46 @@ Acceptance:
 - Props and collision should shape movement without blocking the core route.
 - Manual itch upload remains required for browser review.
 
+## G-4.5: Building Seating Calibration And One-Street Proof
+
+Status: ready for manual itch upload.
+
+Fix the foundational visual problem where painterly buildings looked pasted
+onto the street plane. This phase does not add buildings or gameplay. It
+creates one correct waterfront commercial proof street, then documents the
+model for scaling across Newport.
+
+G-4.5 notes:
+
+- Proof street IDs: `b_inn_tavern`, `b_mercantile`, `b_counting_house`,
+  `b_chandlery_front`, and `b_shop_house`.
+- Building `Node2D.position` now explicitly means the visual base/y-sort
+  plane for proof-street buildings.
+- Proof-street configs include `visual_base_anchor`, `frontage_offset`,
+  `collision_rect`, `shadow_size`, `shadow_offset`, `y_sort_offset`, and
+  `proof_street`.
+- The proof sidewalk/apron under those buildings is drawn as one continuous
+  seating surface, with door steps and curb lines aligned to the calibrated
+  frontages.
+- Press `B` to toggle the seating debug overlay for proof-street buildings.
+  It is off by default and shows base/footline, frontage, collision, y-sort
+  anchor, sprite outline, and building label.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.5 Building Seating Proof`.
+- With debug off, the proof street should read as buildings seated on a shared
+  waterfront sidewalk/street plane.
+- With `B` debug on, the anchors/frontages/collision/y-sort markers should
+  explain why the street works.
+- Manual itch upload remains required for browser review.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.4 harbor walk acceptance build is visually reviewed on itch.
+G-4.5 seating proof is visually reviewed on itch and accepted as the model for
+scaling across the Newport town.
 
 ## G-6: Production Cutover Planning
 

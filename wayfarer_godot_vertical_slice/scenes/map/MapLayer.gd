@@ -55,6 +55,9 @@ func _draw_ground() -> void:
 
 func _draw_roads() -> void:
 	_draw_cobbled_world_rect(Rect2(545, 318, 345, 130), Color("#918a73"), Color("#6d715f"), 42)
+	_draw_cobbled_world_rect(Rect2(286, 526, 850, 56), Color("#8d826a"), Color("#6e6653"), 74)
+	draw_line(Vector2(286, 546), Vector2(1136, 546), Color(0.05, 0.06, 0.04, 0.24), 2.0)
+	draw_line(Vector2(286, 582), Vector2(1136, 582), Color("#c0ad82"), 1.2)
 	_draw_cobbled_world_rect(Rect2(255, 596, 855, 70), Color("#85775b"), Color("#635a45"), 74)
 	_draw_cobbled_world_rect(Rect2(594, 636, 260, 42), Color("#8d7958"), Color("#66573f"), 30)
 	_draw_path_line(Vector2(250, 572), Vector2(1130, 572), 42.0, Color("#a58a61"), Color("#726049"))
@@ -68,7 +71,7 @@ func _draw_roads() -> void:
 	_draw_path_line(Vector2(1088, 500), Vector2(1350, 500), 30.0, Color("#907755"), Color("#67563f"))
 	_draw_path_line(Vector2(160, 515), Vector2(355, 520), 30.0, Color("#8f7655"), Color("#66553f"))
 	_draw_cobbled_world_rect(Rect2(260, 680, 850, 46), Color("#766f57"), Color("#5a5542"), 54)
-	for p in [Vector2(316, 544), Vector2(466, 540), Vector2(612, 540), Vector2(792, 540), Vector2(966, 540), Vector2(678, 376), Vector2(1230, 500), Vector2(735, 628)]:
+	for p in [Vector2(352, 573), Vector2(522, 572), Vector2(707, 573), Vector2(899, 573), Vector2(1078, 572), Vector2(678, 376), Vector2(1230, 500), Vector2(735, 628)]:
 		_draw_door_step(p)
 
 func _draw_wharf_water() -> void:

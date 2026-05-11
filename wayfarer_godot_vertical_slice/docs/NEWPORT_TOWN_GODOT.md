@@ -18,6 +18,12 @@ G-4.4 keeps the same building count and treats the first 60-90 seconds of
 movement as the acceptance target: wharf start, dockside work area,
 commercial frontage, civic/church square, and inland residential/service edge.
 
+G-4.5 is a one-street seating proof for the waterfront commercial frontage.
+It keeps the town footprint and building count stable, then makes five
+frontage buildings sit on a shared street plane with explicit visual-base
+anchors, frontage points, collision rectangles, y-sort markers, grounding
+shadows, and a `B` debug overlay.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -87,7 +93,7 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 through G-4.4 provide practical collision/navigation support only:
+G-4.1 through G-4.5 provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
@@ -100,6 +106,8 @@ G-4.1 through G-4.4 provide practical collision/navigation support only:
 - G-4.4 moves market/table blockers off the center of the route and adds a few
   dockside blockers to give the wharf edge weight without blocking the first
   walk.
+- G-4.5 calibrates the waterfront proof street so building collision follows
+  physical base/body rectangles instead of the full painterly sprite image.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
@@ -191,6 +199,50 @@ Build label: Godot G-4.4 Harbor Walk Acceptance
 Phase: G-4.4 | Review host: itch
 Channel: manual ZIP
 Branch: codex/g-4-4-newport-harbor-walk-acceptance
+```
+
+## G-4.5 Building Seating Proof
+
+G-4.5 focuses on one believable street instead of more buildings. The proof
+street is the waterfront commercial frontage:
+
+1. `b_inn_tavern`
+2. `b_mercantile`
+3. `b_counting_house`
+4. `b_chandlery_front`
+5. `b_shop_house`
+
+For these buildings, the Node2D position now represents the calibrated
+visual-base and y-sort plane for the street frontage. The sprite is offset from
+that plane with a source-pixel `visual_base_anchor`, while collision,
+frontage, door, shadow, and y-sort markers are separate metadata. This lets
+painterly rooflines and side overhangs extend visually without turning the
+entire painted image into collision or making the building float above the
+street.
+
+The proof street also gets a shared cobbled/apron surface, door-step alignment,
+and subtler base shadows so doors face walkable street space instead of broad
+grid rectangles.
+
+Press `B` during review to toggle the seating overlay for proof-street
+buildings. The overlay is off by default and shows:
+
+- base/footline marker
+- frontage marker
+- collision rectangle
+- y-sort/depth anchor
+- building ID label
+
+Implementation details are documented in
+`wayfarer_godot_vertical_slice/docs/BUILDING_SEATING_AND_ANCHORS.md`.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.5 Building Seating Proof
+Phase: G-4.5 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-5-building-seating-calibration-one-street-proof
 ```
 
 ## Deferred
