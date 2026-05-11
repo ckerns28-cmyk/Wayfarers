@@ -210,9 +210,26 @@ func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)
 	_draw_soft_rect(Rect2(280, 268, 830, 330), Color("#516d49"), Color("#405a3f"), 0.80, 18)
 	_draw_soft_rect(Rect2(330, 392, 690, 118), Color("#5e7353"), Color("#4e6648"), 0.72, 10)
+	_draw_g49_building_lots()
 	_draw_planting_bed(Rect2(300, 430, 72, 58), Color("#637a55"), Color("#4f6848"))
 	_draw_planting_bed(Rect2(940, 404, 96, 72), Color("#637a55"), Color("#4f6848"))
 	_draw_planting_bed(Rect2(550, 338, 96, 42), Color("#617650"), Color("#4e6648"))
+
+func _draw_g49_building_lots() -> void:
+	for raw_config in NEWPORT_TOWN.building_specs():
+		var config: Dictionary = raw_config
+		if not config.get("proof_street", false) or not config.has("lot_rect"):
+			continue
+		var origin: Vector2 = config["position"]
+		var local_lot: Rect2 = config["lot_rect"]
+		var lot := Rect2(origin + local_lot.position, local_lot.size)
+		draw_rect(lot.grow(8.0), Color(0.05, 0.07, 0.04, 0.14), true)
+		draw_rect(lot, Color("#586c50").lerp(Color("#384c39"), 0.38), true)
+		draw_rect(lot, Color(0.04, 0.05, 0.03, 0.24), false, 1.0)
+		var frontage_y := lot.position.y + lot.size.y
+		draw_line(Vector2(lot.position.x + 8.0, frontage_y), Vector2(lot.position.x + lot.size.x - 8.0, frontage_y), Color("#c2b17b"), 1.4)
+		for x in range(int(lot.position.x + 12.0), int(lot.position.x + lot.size.x - 12.0), 34):
+			draw_line(Vector2(x, frontage_y - 10.0), Vector2(x + 18.0, frontage_y - 10.0), Color(0.86, 0.80, 0.58, 0.10), 1.0)
 
 func _draw_g49_street_plane() -> void:
 	_draw_cobbled_world_rect(Rect2(326, 538, 705, 36), Color("#9b9278"), Color("#746d5a"), 46)

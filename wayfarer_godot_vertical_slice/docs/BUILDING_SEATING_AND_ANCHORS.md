@@ -32,6 +32,12 @@ standalone PNGs from `assets/sprites/buildings/isolated/`, not unsafe live
 atlas subregions. Seating is only meaningful once the rendered sprite contains
 one building and no neighboring atlas fragments.
 
+G-4.9.1 also changes the proof-street collision expectation: a building is not
+just a facade strip. Its `collision_rect`/`lot_rect` represents the occupied
+building lot behind the street frontage so the player cannot walk through or
+behind the building body. The frontage interaction area remains south of the
+footline, but the solid lot extends north from the street edge.
+
 ## Runtime Meaning
 
 For proof-street buildings, the building `Node2D.position` means the calibrated
@@ -72,9 +78,16 @@ building needs a special case.
 
 `collision_rect`
 
-The local world-space physical body/base rectangle. It should cover the solid
-building body near the ground plane, not roof overhangs, painted shadows,
-chimneys, signboards, or the full source image.
+The local world-space physical building footprint. In the current proof
+street, this covers the occupied lot behind the facade, not only the visible
+front trim. It should block the playable body of the building while still
+ignoring roof overhangs, painted shadows, chimneys, signboards, and transparent
+image padding.
+
+`lot_rect`
+
+The same occupied lot expressed for visual/debug review. It is the answer to
+"which ground squares does this building actually take up?"
 
 `y_sort_offset`
 
@@ -109,7 +122,8 @@ seating review because it only targets the active vignette buildings.
 3. Measure or estimate `visual_base_anchor` from the source region.
 4. Keep `sprite_offset` small and review the door/base against the street.
 5. Set `frontage_offset` toward real walkable street space.
-6. Set `collision_rect` to the solid ground-level body, not the whole image.
+6. Set `collision_rect`/`lot_rect` to the occupied building lot behind the
+   facade, not to a shallow label strip and not to the whole transparent image.
 7. Set `shadow_size` and `shadow_offset` under the visual base.
 8. Review with `B` enabled and debug off.
 9. Run `tools/validate_vertical_slice.gd`.
