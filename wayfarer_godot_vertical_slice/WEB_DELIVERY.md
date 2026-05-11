@@ -19,21 +19,21 @@ Current G-2 state: the itch.io page launches the single-threaded Godot Web
 export in Chrome and is the active browser-review route. This is not a
 production cutover.
 
-Current G-3/G-3.1 review rule: itch.io does not update from GitHub. Every
-Godot visual/input/review-label change must be exported and packaged with
+Current review rule: itch.io does not update from GitHub. Every Godot
+visual/input/review-label change must be exported and packaged with
 `tools/package_itch_web.sh`, then
 `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` must be
 uploaded manually to itch for browser review. Butler automation remains
 deferred for the manual ZIP review pass.
 
 The HUD shows visible review identity so a screenshot can prove which ZIP is
-live. For G-4.1 the expected label is:
+live. For G-4.2 the expected label is:
 
 ```text
-Build label: Godot G-4.1 Newport Starting Town
-Phase: G-4.1 | Review host: itch
+Build label: Godot G-4.2 Lived-In Harbor Pass
+Phase: G-4.2 | Review host: itch
 Channel: manual ZIP
-Branch: codex/g-4-1-godot-newport-starting-town
+Branch: codex/g-4-2-godot-newport-lived-in-harbor
 ```
 
 Review pipeline roles:

@@ -4,6 +4,11 @@ G-4.1 replaces the reduced Newport Harbor Test scene with a player-facing
 Newport-inspired starting port town in Godot. The JavaScript Worker remains the
 separate Phase 35.13R production/reference route.
 
+G-4.2 keeps the same building foundation and focuses on lived-in composition:
+street-level spawn framing, reduced test-grid readability, narrower walk
+surfaces, harbor clutter, shoreline detail, and small physical blockers that
+shape movement without changing quests or systems.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -73,17 +78,38 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 provides practical collision/navigation support only:
+G-4.1 and G-4.2 provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
   street and pier tiles walkable.
 - The player spawns on the waterfront route and can reach the civic square,
   wharf/pier frontage, upper residential road, and service lane.
+- G-4.2 adds small detail blockers for crates, tables, benches, and dockside
+  clutter so streets feel shaped without trapping the player.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
 validator instead.
+
+## G-4.2 Lived-In Pass
+
+G-4.2 does not add more buildings. It keeps all 19 G-4.1 building IDs and
+improves the inhabited-town read:
+
+- Camera: closer zoom with a slight waterfront offset so the first screen feels
+  like arrival inside the town, not a full map overview.
+- Streets: road, alley, plaza, and wharf surfaces draw narrower than their
+  route tiles, with softer outlines and less exposed grid.
+- Waterfront: crates, barrels, posts, rope coils, market table, fish rack, net
+  bundles, rowboat, and shoreline rocks.
+- Districts: commercial/civic/residential placements are nudged into less
+  even spacing while preserving the existing Newport building set.
+- HUD: reduced width and translucent panel styling so it does not dominate the
+  spawn view.
+
+The validator checks camera zoom/offset, lived-in detail density, detail
+blocker count, 19-building presence, districts, and core route reachability.
 
 ## Deferred
 

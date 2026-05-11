@@ -45,6 +45,14 @@ waterfront commercial, civic, upper residential, and service/outfitter
 districts. The HUD review identity should show `Godot G-4.1 Newport Starting
 Town` after the new ZIP is uploaded to itch.
 
+Current G-4.2 result: the Godot town keeps the 19-building Newport foundation
+but shifts the review target from building count to lived-in harbor feel. The
+spawn view is closer and more intentional, streets/plazas render as narrower
+walkable surfaces instead of full test-grid bands, the waterfront has crates,
+barrels, posts, rope, market tables, netting, shoreline detail, and small
+physical blockers, and district clusters are nudged to feel less evenly spaced.
+The HUD review identity should show `Godot G-4.2 Lived-In Harbor Pass`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -250,11 +258,41 @@ Deferred:
 - New quests, combat, inventory, save migration, and production cutover.
 - Exact replacement art for every temporary substitute.
 
+## G-4.2: Lived-In Harbor Composition
+
+Status: current.
+
+Make the existing Newport town foundation feel inhabited and walkable without
+adding gameplay systems or expanding the map.
+
+G-4.2 notes:
+
+- The building set remains the same 19 Newport IDs; this is not a placement
+  count phase.
+- The initial camera is closer to the player and offset toward the waterfront
+  composition so the spawn reads as a street-level arrival rather than a map
+  overview.
+- Road, alley, wharf, and plaza surfaces are drawn narrower than their
+  underlying route tiles, with softer edges and reduced grid outlines.
+- Harbor details include crates, barrels, rope coils, bollards, market tables,
+  fish racks, net bundles, a rowboat, shoreline rocks, signs, fences, a
+  clothesline, and woodpile details.
+- Small static detail blockers shape movement around clutter while leaving the
+  core route graph reachable.
+- QA keeps the 19-building check, district checks, route reachability, camera
+  zoom/offset, and detail-blocker count.
+
+Deferred:
+
+- New prop atlas art.
+- Quests, combat, inventory, save migration, and production cutover.
+- Full JS visual parity.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.1 Newport town foundation is reviewed on itch.
+G-4.2 lived-in harbor pass is reviewed on itch.
 
 ## G-6: Production Cutover Planning
 

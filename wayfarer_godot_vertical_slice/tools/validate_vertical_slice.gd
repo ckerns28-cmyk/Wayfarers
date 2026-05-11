@@ -35,15 +35,32 @@ func _validate_scene(main: Node) -> void:
 		_expect(root.get_camera_2d() == player.get_node("Camera2D"), "player_camera_is_current")
 		_expect(player.get_node_or_null("CollisionShape2D") != null, "player_collision_exists")
 		_expect(player.global_position.distance_to(NEWPORT_TOWN.PLAYER_SPAWN) < 1.0, "player_spawn_matches_blueprint")
+		var camera := player.get_node_or_null("Camera2D") as Camera2D
+		if camera:
+			_expect(camera.zoom.x >= 1.1 and camera.zoom.y >= 1.1, "spawn_camera_not_overview_zoom")
+			_expect(camera.offset.length() > 20.0, "spawn_camera_intentional_offset")
 
 	if map:
 		for layer_name in ["GroundGrassLayer", "WharfWaterLayer", "RoadsPlazaLayer", "DecorativePropsLayer", "CollisionNavigationLayer"]:
 			_expect(map.get_node_or_null(layer_name) != null, "map_layer_" + layer_name)
 		var collision_layer := map.get_node_or_null("CollisionNavigationLayer")
 		_expect(collision_layer != null and collision_layer.get_child_count() > 40, "collision_navigation_bodies")
+		if collision_layer:
+			_validate_detail_blockers(collision_layer)
 
 	_validate_buildings()
+	_validate_lived_in_details()
 	_validate_reachability()
+
+func _validate_detail_blockers(collision_layer: Node) -> void:
+	var detail_count := 0
+	for child in collision_layer.get_children():
+		if child.name.begins_with("DetailBlocker_"):
+			detail_count += 1
+	_expect(detail_count == NEWPORT_TOWN.detail_blockers().size(), "detail_blocker_count")
+
+func _validate_lived_in_details() -> void:
+	_expect(NEWPORT_TOWN.lived_in_detail_count() >= 40, "lived_in_detail_density")
 
 func _validate_buildings() -> void:
 	var buildings := get_nodes_in_group("buildings")
