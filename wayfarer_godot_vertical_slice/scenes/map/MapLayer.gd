@@ -210,9 +210,33 @@ func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)
 	_draw_soft_rect(Rect2(280, 268, 830, 330), Color("#516d49"), Color("#405a3f"), 0.80, 18)
 	_draw_soft_rect(Rect2(330, 392, 690, 118), Color("#5e7353"), Color("#4e6648"), 0.72, 10)
+	_draw_g49_building_lots()
 	_draw_planting_bed(Rect2(300, 430, 72, 58), Color("#637a55"), Color("#4f6848"))
 	_draw_planting_bed(Rect2(940, 404, 96, 72), Color("#637a55"), Color("#4f6848"))
 	_draw_planting_bed(Rect2(550, 338, 96, 42), Color("#617650"), Color("#4e6648"))
+
+func _draw_g49_building_lots() -> void:
+	for raw_config in NEWPORT_TOWN.building_specs():
+		var config: Dictionary = raw_config
+		if not config.get("proof_street", false) or not config.has("lot_rect"):
+			continue
+		var origin: Vector2 = config["position"]
+		var local_lot: Rect2 = config["lot_rect"]
+		var lot := Rect2(origin + local_lot.position, local_lot.size)
+		var frontage_y := lot.position.y + lot.size.y
+
+		draw_rect(lot.grow(9.0), Color(0.03, 0.04, 0.025, 0.20), true)
+		draw_rect(lot, Color("#495a43").lerp(Color("#2f3d31"), 0.35), true)
+		draw_rect(Rect2(lot.position.x, lot.position.y, lot.size.x, maxf(0.0, lot.size.y - 34.0)), Color(0.16, 0.20, 0.15, 0.28), true)
+		draw_rect(Rect2(lot.position.x + 6.0, lot.position.y + 8.0, maxf(0.0, lot.size.x - 12.0), maxf(0.0, lot.size.y - 48.0)), Color(0.38, 0.47, 0.35, 0.18), true)
+		draw_rect(Rect2(lot.position.x + 2.0, frontage_y - 34.0, maxf(0.0, lot.size.x - 4.0), 34.0), Color("#766f5b").lerp(Color("#555143"), 0.26), true)
+		draw_line(Vector2(lot.position.x + 2.0, frontage_y - 34.0), Vector2(lot.position.x + lot.size.x - 2.0, frontage_y - 34.0), Color(0.04, 0.04, 0.03, 0.34), 2.0)
+		draw_line(Vector2(lot.position.x, lot.position.y), Vector2(lot.position.x, frontage_y), Color(0.03, 0.04, 0.025, 0.26), 2.0)
+		draw_line(Vector2(lot.position.x + lot.size.x, lot.position.y), Vector2(lot.position.x + lot.size.x, frontage_y), Color(0.03, 0.04, 0.025, 0.26), 2.0)
+		draw_line(Vector2(lot.position.x + 5.0, lot.position.y + 5.0), Vector2(lot.position.x + lot.size.x - 5.0, lot.position.y + 5.0), Color(0.80, 0.77, 0.58, 0.10), 1.0)
+		draw_line(Vector2(lot.position.x + 8.0, frontage_y), Vector2(lot.position.x + lot.size.x - 8.0, frontage_y), Color("#d2bd7f"), 1.8)
+		for x in range(int(lot.position.x + 12.0), int(lot.position.x + lot.size.x - 12.0), 34):
+			draw_line(Vector2(x, frontage_y - 12.0), Vector2(x + 18.0, frontage_y - 12.0), Color(0.86, 0.80, 0.58, 0.14), 1.0)
 
 func _draw_g49_street_plane() -> void:
 	_draw_cobbled_world_rect(Rect2(326, 538, 705, 36), Color("#9b9278"), Color("#746d5a"), 46)

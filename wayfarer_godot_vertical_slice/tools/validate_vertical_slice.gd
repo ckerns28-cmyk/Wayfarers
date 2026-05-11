@@ -120,6 +120,9 @@ func _validate_building_node(building: Node2D) -> void:
 	if body_shape and body_shape.shape is RectangleShape2D:
 		var body_size := (body_shape.shape as RectangleShape2D).size
 		_expect(body_size.x >= 60.0 and body_size.y >= 28.0, building.name + "_playable_collision_footprint")
+		var proof_street: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
+		if proof_street:
+			_expect(body_size.y >= 150.0, building.name + "_occupied_building_volume_depth")
 
 	if interaction_shape and interaction_shape.shape is RectangleShape2D:
 		_expect(interaction_shape.position.y > 0.0, building.name + "_frontage_interaction_south")
@@ -145,7 +148,7 @@ func _validate_proof_street(main: Node) -> void:
 		if configs_by_id.has(id):
 			var config: Dictionary = configs_by_id[id]
 			_expect(config.get("proof_street", false), id + "_proof_street_flag")
-			for key in ["visual_base_anchor", "frontage_offset", "collision_rect", "y_sort_offset", "shadow_size"]:
+			for key in ["visual_base_anchor", "frontage_offset", "collision_rect", "lot_rect", "building_volume_rect", "y_sort_offset", "shadow_size"]:
 				_expect(config.has(key), id + "_seating_metadata_" + key)
 
 	var proof_buildings := get_nodes_in_group("proof_street_buildings")

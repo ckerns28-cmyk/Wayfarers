@@ -347,9 +347,15 @@ static func player_spawn_tile() -> Vector2i:
 static func building_specs() -> Array:
 	if G49_STREET_VIGNETTE:
 		return [
-			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.6, 17.55), Vector2(198.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 19.0), 122.0, Vector2(136.0, 17.0), 150.0),
-			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.55, 17.35), Vector2(217.0, 368.0), Vector2(104.0, 32.0), Vector2(0.0, 21.0), 150.0, Vector2(164.0, 18.0), 184.0),
-			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(26.55, 17.65), Vector2(201.0, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 20.0), 132.0, Vector2(150.0, 18.0), 156.0),
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.6, 17.55), Vector2(198.0, 427.0), Vector2(88.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
+				"occupied_rect": Rect2(Vector2(-82.0, -160.0), Vector2(164.0, 172.0)),
+			}),
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.55, 17.55), Vector2(217.0, 368.0), Vector2(104.0, 32.0), Vector2(0.0, 25.0), 150.0, Vector2(166.0, 18.0), 190.0, {
+				"occupied_rect": Rect2(Vector2(-104.0, -166.0), Vector2(208.0, 178.0)),
+			}),
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(26.55, 17.55), Vector2(201.0, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 24.0), 132.0, Vector2(154.0, 18.0), 181.0, {
+				"occupied_rect": Rect2(Vector2(-92.0, -168.0), Vector2(184.0, 180.0)),
+			}),
 		]
 	if G48_PROOF_STREET:
 		return [
@@ -419,15 +425,18 @@ static func _calibration_building(id: String, display_name: String, sprite_id: S
 	config["calibration_variant"] = variant_id
 	return config
 
-static func _proof_street_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2, draw_width_override := 0.0) -> Dictionary:
+static func _proof_street_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2, draw_width_override := 0.0, seating_overrides := {}) -> Dictionary:
 	var config := _building(id, display_name, sprite_id, "waterfront_commercial", "commercial", foot_tile, collision_size.x / TILE, collision_size.y / TILE)
+	var occupied_rect := Rect2(Vector2(-collision_size.x * 0.5, -collision_size.y), collision_size)
+	if seating_overrides.has("occupied_rect"):
+		occupied_rect = seating_overrides["occupied_rect"]
 	config["proof_street"] = true
 	if draw_width_override > 0.0:
 		config["draw_width_override"] = draw_width_override
 	config["visual_base_anchor"] = visual_base_anchor
 	config["sprite_offset"] = Vector2.ZERO
 	config["visual_base_width"] = base_width
-	config["collision_rect"] = Rect2(Vector2(-collision_size.x * 0.5, -collision_size.y), collision_size)
+	config["collision_rect"] = occupied_rect
 	config["frontage_offset"] = frontage_offset
 	config["interaction_size"] = Vector2(maxf(84.0, collision_size.x * 0.76), 42.0)
 	config["interaction_offset"] = frontage_offset
@@ -435,7 +444,9 @@ static func _proof_street_building(id: String, display_name: String, sprite_id: 
 	config["y_sort_offset"] = Vector2.ZERO
 	config["shadow_offset"] = Vector2(0.0, -6.0)
 	config["shadow_size"] = shadow_size
-	config["lot_rect"] = Rect2(Vector2(-base_width * 0.5 - 8.0, -18.0), Vector2(base_width + 16.0, 58.0))
+	config["lot_rect"] = occupied_rect
+	config["building_volume_rect"] = occupied_rect
+	config["frontage_body_rect"] = Rect2(Vector2(-base_width * 0.5, -maxf(34.0, collision_size.y)), Vector2(base_width, maxf(34.0, collision_size.y)))
 	config["street_edge"] = Vector2(foot_tile.x * TILE, foot_tile.y * TILE + frontage_offset.y)
 	return config
 
