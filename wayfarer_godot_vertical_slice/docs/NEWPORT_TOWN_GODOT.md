@@ -33,6 +33,11 @@ G-4.7 responds to screenshot review that showed G-4.6 also failed. It stops
 town work and switches to a four-variant visual calibration board for scale,
 camera, sidewalk, stoop, curb, street, and building anchor grammar.
 
+G-4.8 applies the G-4.7 recommendation as one actual proof street. It removes
+the four-panel board, keeps the smaller player scale, and uses the Variant D
+sidewalk/stoop/curb/narrow-lane grammar on four hand-seated waterfront
+buildings.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -102,7 +107,7 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 through G-4.7 provide practical collision/navigation support only:
+G-4.1 through G-4.8 provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
@@ -122,6 +127,10 @@ G-4.1 through G-4.7 provide practical collision/navigation support only:
   without the rest of the town confusing the result.
 - G-4.7 is a calibration mode, not a town mode: it shows four side-by-side
   visual treatments and keeps debug off by default.
+- G-4.8 is a one-street proof mode: it shows only `b_mercantile`,
+  `b_counting_house`, `b_chandlery_front`, and `b_shop_house` on the chosen
+  Variant D street grammar. Debug still toggles with `B` and remains off by
+  default.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
@@ -326,6 +335,47 @@ Phase: G-4.7 | Review host: itch
 Channel: manual ZIP
 Branch: codex/g-4-7-visual-scale-street-grammar-calibration
 ```
+
+## G-4.8 Variant D Proof Street
+
+G-4.8 converts the G-4.7 recommendation into a playable street vignette. It is
+not a town expansion and does not revive the calibration board.
+
+Active proof buildings:
+
+1. `b_mercantile`
+2. `b_counting_house`
+3. `b_chandlery_front`
+4. `b_shop_house`
+
+Street grammar:
+
+- player visual scale is `0.78`
+- sidewalk/apron sits directly under building bases
+- stoop pads align with each authored door/frontage
+- a dark curb/gutter separates sidewalk from the narrower cobbled street lane
+- the wharf plank edge and harbor water sit below the street instead of
+  reading as a detached map band
+- small crates, barrels, rope, lamps, signs, and dock posts establish base
+  rhythm without adding more buildings
+
+Each proof building keeps hand-authored seating metadata: visual base anchor,
+frontage offset, collision rectangle, y-sort anchor, shadow/base area, and
+draw width. This remains necessary; one generic seating value is still not
+trusted for painterly building sprites.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.8 Variant D Proof Street
+Phase: G-4.8 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-8-variant-d-proof-street
+```
+
+Manual itch review must decide whether this looks materially better than the
+G-4.6 failure and the G-4.7 board. If it still looks like pasted sprites on a
+slab, do not scale this grammar to Newport.
 
 ## Deferred
 

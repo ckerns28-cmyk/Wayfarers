@@ -92,6 +92,13 @@ art-direction recommendation, but it is not accepted until manual itch review
 confirms it clearly improves on G-4.6. The HUD review identity should show
 `Godot G-4.7 Scale Grammar Calibration`.
 
+Current G-4.8 result: the G-4.7 board has been replaced by one playable
+Variant D proof street. The active scene uses four hand-seated waterfront
+buildings, a `0.78` player scale, integrated sidewalk/stoops/curb, a narrower
+cobbled lane, wharf edge, harbor water, and proof-street debug markers toggled
+with `B`. The HUD review identity should show
+`Godot G-4.8 Variant D Proof Street`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -470,7 +477,7 @@ Visual review result:
 
 ## G-4.7: Visual Scale And Street Grammar Calibration
 
-Status: ready for manual itch upload; not accepted until screenshot review.
+Status: superseded by G-4.8.
 
 G-4.7 stops town work and creates a visual calibration board:
 
@@ -499,11 +506,40 @@ Acceptance:
 - If no treatment works, classify as `NO_VARIANT_LOOKS_ACCEPTABLE`,
   `BUILDING_STREET_GRAMMAR_FAILED`, or `SPRITE_APPROACH_NEEDS_RETHINK`.
 
+## G-4.8: Variant D Proof Street
+
+Status: ready for manual itch upload; not accepted until screenshot review.
+
+G-4.8 stops showing the calibration board and applies the recommended Variant
+D grammar to one real playable proof street:
+
+- Active proof buildings: `b_mercantile`, `b_counting_house`,
+  `b_chandlery_front`, and `b_shop_house`.
+- Player visual scale: `0.78`, matching the preferred B/D calibration scale.
+- Street treatment: integrated sidewalk/apron, stoop pads, dark curb/gutter,
+  narrow cobbled lane, wharf plank edge, harbor water, base props, and dock
+  posts.
+- Seating model: each proof building keeps hand-authored visual base,
+  frontage, collision, y-sort, shadow, and draw-width metadata.
+- Debug: press `B` to toggle proof-street seating markers; debug is off by
+  default and must not be needed for the visual to read.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.8 Variant D Proof Street`.
+- The build should open to one street scene, not a four-variant comparison
+  board.
+- The street must look materially better than the G-4.6 failed proof and the
+  G-4.7 board before the grammar is scaled back to the Newport town.
+- If it still reads as pasted sprites on a slab, classify as
+  `PROOF_STREET_STILL_NOT_BELIEVABLE`, `BUILDING_STREET_GRAMMAR_FAILED`, or
+  `VARIANT_D_NOT_VIABLE`.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.7 visual grammar is visually reviewed on itch and accepted as the model for
+G-4.8 proof street is visually reviewed on itch and accepted as the model for
 scaling across the Newport town.
 
 ## G-6: Production Cutover Planning

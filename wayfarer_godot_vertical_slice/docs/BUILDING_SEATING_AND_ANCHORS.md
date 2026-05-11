@@ -3,8 +3,9 @@
 G-4.5 introduced a practical seating model for painterly building sprites, but
 the five-building screenshot still read as oversized sprites pasted over a tan
 slab. G-4.6 deliberately started smaller, but its three-building screenshot
-still read like building cutouts behind a flat road. G-4.7 switches to a
-calibration board before any town rebuilding continues.
+still read like building cutouts behind a flat road. G-4.7 switched to a
+calibration board; G-4.8 applies the recommended Variant D grammar to one
+playable proof street.
 
 This model is intentionally smaller than the old JavaScript seating-contract
 audit. The Godot contract is source metadata plus visual inspection through the
@@ -15,16 +16,12 @@ audit. The Godot contract is source metadata plus visual inspection through the
 The calibrated proof frame is authored in
 `scripts/NewportTownBlueprint.gd`.
 
-G-4.7 calibration building IDs:
+G-4.8 proof-street building IDs:
 
-1. `g47_a_mercantile`
-2. `g47_a_counting_house`
-3. `g47_b_mercantile`
-4. `g47_b_counting_house`
-5. `g47_c_mercantile`
-6. `g47_c_counting_house`
-7. `g47_d_mercantile`
-8. `g47_d_counting_house`
+1. `b_mercantile`
+2. `b_counting_house`
+3. `b_chandlery_front`
+4. `b_shop_house`
 
 These buildings are marked with `proof_street = true` and join the
 `proof_street_buildings` group at runtime.
@@ -96,8 +93,8 @@ The overlay shows:
 - y-sort/depth anchor
 - building ID label
 
-`F3` still toggles the broader building debug overlay. Use `B` for G-4.7
-seating review because it only targets the calibration buildings.
+`F3` still toggles the broader building debug overlay. Use `B` for G-4.8
+seating review because it only targets the active proof-street buildings.
 
 ## Adding Future Buildings
 

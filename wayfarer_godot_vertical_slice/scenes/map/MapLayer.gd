@@ -36,6 +36,10 @@ func _draw_tile_rect_outline(rect: Rect2i, color: Color, width := 2.0) -> void:
 	draw_rect(_tile_rect(rect.position.x, rect.position.y, rect.size.x, rect.size.y), color, false, width)
 
 func _draw_ground() -> void:
+	if NEWPORT_TOWN.G48_PROOF_STREET:
+		_draw_g48_ground()
+		return
+
 	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
 		_draw_g47_ground()
 		return
@@ -62,6 +66,10 @@ func _draw_ground() -> void:
 	_draw_planting_bed(Rect2(1180, 430, 180, 100), Color("#697755"), Color("#566749"))
 
 func _draw_roads() -> void:
+	if NEWPORT_TOWN.G48_PROOF_STREET:
+		_draw_g48_street_plane()
+		return
+
 	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
 		_draw_g47_street_planes()
 		return
@@ -91,6 +99,10 @@ func _draw_roads() -> void:
 		_draw_door_step(p)
 
 func _draw_wharf_water() -> void:
+	if NEWPORT_TOWN.G48_PROOF_STREET:
+		_draw_g48_wharf_water()
+		return
+
 	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
 		_draw_g47_water_hints()
 		return
@@ -134,6 +146,10 @@ func _draw_wharf_water() -> void:
 		_draw_shore_rocks(p)
 
 func _draw_props() -> void:
+	if NEWPORT_TOWN.G48_PROOF_STREET:
+		_draw_g48_props()
+		return
+
 	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
 		_draw_g47_props()
 		return
@@ -171,6 +187,63 @@ func _draw_props() -> void:
 		draw_circle(pos, 13, Color("#2f5d35"))
 		draw_circle(pos + Vector2(-8, -8), 8, Color("#3d7042"))
 	for pos in [Vector2(620, 360), Vector2(805, 360), Vector2(486, 584), Vector2(1142, 584), Vector2(312, 698), Vector2(1118, 698), Vector2(610, 640), Vector2(856, 640)]:
+		draw_circle(pos, 4, Color("#2f251b"))
+		draw_circle(pos + Vector2(0, -6), 3, Color("#d8b56f"))
+
+func _draw_g48_ground() -> void:
+	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#496743"), Color("#3b5538"), 1.0, 36)
+	_draw_soft_rect(Rect2(230, 244, 1135, 340), Color("#536e4b"), Color("#465f41"), 0.72, 18)
+	_draw_soft_rect(Rect2(260, 330, 1020, 165), Color("#5c7250"), Color("#4b6446"), 0.64, 12)
+	for rect in [Rect2(272, 348, 118, 82), Rect2(742, 332, 150, 74), Rect2(1178, 346, 124, 78)]:
+		_draw_planting_bed(rect, Color("#617a54"), Color("#4e6a49"))
+
+func _draw_g48_street_plane() -> void:
+	_draw_cobbled_world_rect(Rect2(248, 544, 1092, 42), Color("#9a9076"), Color("#746d5a"), 54)
+	draw_line(Vector2(252, 548), Vector2(1336, 548), Color(1.0, 0.92, 0.66, 0.13), 1.0)
+	draw_rect(Rect2(248, 586, 1092, 8), Color("#3d372d"), true)
+	draw_line(Vector2(252, 588), Vector2(1336, 588), Color("#d6c48e"), 1.2)
+	_draw_cobbled_world_rect(Rect2(236, 598, 1118, 70), Color("#655f52"), Color("#4b473e"), 86)
+	draw_line(Vector2(242, 618), Vector2(1348, 618), Color(0.96, 0.86, 0.62, 0.10), 1.0)
+	draw_line(Vector2(242, 650), Vector2(1348, 650), Color(0.04, 0.04, 0.03, 0.18), 1.0)
+	_draw_plank_world_rect(Rect2(236, 678, 1118, 38), Color("#766950"), Color("#5b503d"))
+	draw_line(Vector2(242, 676), Vector2(1348, 676), Color(0.04, 0.04, 0.03, 0.30), 2.0)
+	for p in [Vector2(420, 574), Vector2(646, 575), Vector2(874, 575), Vector2(1098, 574)]:
+		_draw_g47_threshold(p, 64)
+	for p in [Vector2(296, 678), Vector2(372, 678), Vector2(548, 678), Vector2(725, 678), Vector2(910, 678), Vector2(1088, 678), Vector2(1280, 678)]:
+		_draw_post(p)
+
+func _draw_g48_wharf_water() -> void:
+	_draw_soft_rect(Rect2(0, 720, NEWPORT_TOWN.WORLD_SIZE.x, 304), Color("#2f7184"), Color("#1f5369"), 1.0, 28)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(0, 694), Vector2(238, 690), Vector2(360, 704), Vector2(532, 696),
+		Vector2(735, 704), Vector2(930, 696), Vector2(1140, 704), Vector2(1352, 692),
+		Vector2(1600, 700), Vector2(1600, 738), Vector2(0, 738)
+	]), Color(0.28, 0.38, 0.32, 0.42))
+	_draw_plank_world_rect(Rect2(768, 704, 96, 190), Color("#846849"), Color("#604a35"))
+	_draw_post_line(Vector2(240, 712), Vector2(1352, 712), 74.0)
+	_draw_post_line(Vector2(776, 718), Vector2(776, 884), 52.0)
+	_draw_post_line(Vector2(856, 718), Vector2(856, 884), 52.0)
+	for p in [Vector2(248, 698), Vector2(410, 704), Vector2(640, 696), Vector2(900, 702), Vector2(1130, 698), Vector2(1345, 696)]:
+		_draw_shore_rocks(p)
+	for i in range(20):
+		var x := 34.0 + float((i * 73) % 1500)
+		var y := 748.0 + float((i * 41) % 240)
+		draw_line(Vector2(x, y), Vector2(x + 24.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.14), 2.0)
+
+func _draw_g48_props() -> void:
+	for pos in [Vector2(332, 548), Vector2(650, 548), Vector2(1128, 548), Vector2(1244, 628)]:
+		_draw_crate_stack(pos)
+	for pos in [Vector2(384, 552), Vector2(712, 550), Vector2(1166, 548)]:
+		_draw_barrels(pos, 2)
+	for pos in [Vector2(882, 552), Vector2(1030, 676), Vector2(492, 676)]:
+		_draw_rope_coil(pos)
+	_draw_sign_post(Vector2(524, 540), Color("#4f6d48"))
+	_draw_sign_post(Vector2(944, 540), Color("#90703d"))
+	_draw_market_table(Vector2(1208, 618))
+	_draw_net_bundle(Vector2(310, 690))
+	_draw_net_bundle(Vector2(1320, 692))
+	_draw_rowboat(Vector2(820, 906))
+	for pos in [Vector2(468, 586), Vector2(632, 586), Vector2(838, 586), Vector2(1048, 586), Vector2(1232, 586)]:
 		draw_circle(pos, 4, Color("#2f251b"))
 		draw_circle(pos + Vector2(0, -6), 3, Color("#d8b56f"))
 
