@@ -27,13 +27,13 @@ text = "Wayfarer"
 [node name="BuildLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 11
-text = "Build label: Godot G-4.7 Scale Grammar Calibration"
+text = "Build label: Godot G-4.8 Variant D Proof Street"
 autowrap_mode = 3
 
 [node name="PhaseHost" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 11
-text = "Phase: G-4.7 | Review host: itch"
+text = "Phase: G-4.8 | Review host: itch"
 autowrap_mode = 3
 
 [node name="Channel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
@@ -45,17 +45,17 @@ autowrap_mode = 3
 [node name="Branch" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 10
-text = "Branch: g-4-7-visual-scale-street..."
+text = "Branch: g-4-8-variant-d-proof-street"
 autowrap_mode = 3
 
 [node name="Objective" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 11
-text = "Objective: Compare street grammar variants"
+text = "Objective: Prove one seated harbor street"
 autowrap_mode = 3
 
 [node name="Zone" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 12
-text = "Scale Grammar Board"
+text = "Variant D Proof Street"
 
 [node name="Stats" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.86, 0.92, 1, 1)

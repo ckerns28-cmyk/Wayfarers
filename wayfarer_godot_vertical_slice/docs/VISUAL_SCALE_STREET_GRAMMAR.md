@@ -7,6 +7,8 @@ was still a flat slab, and debug markers measured the failure rather than
 making the frontage believable.
 
 Do not rebuild the Newport town from G-4.6. Use this calibration board first.
+G-4.8 applies the recommended Variant D grammar to one real playable proof
+street and no longer displays the four-panel board.
 
 ## Variants
 
@@ -66,3 +68,20 @@ If Variant D still reads like cutouts on a stage, the correct classification is
 
 Press `B` to toggle the calibration building overlay. It is off by default.
 The final visual must read correctly with debug off.
+
+## G-4.8 Application
+
+G-4.8 uses Variant D as the active proof-street standard:
+
+- one playable street vignette, not a comparison board
+- `0.78` player visual scale
+- four hand-seated buildings: `b_mercantile`, `b_counting_house`,
+  `b_chandlery_front`, and `b_shop_house`
+- integrated sidewalk/apron strip, stoop pads, curb/gutter, narrow cobbled
+  lane, wharf plank edge, and water beyond
+- per-building anchors, frontages, collision rectangles, y-sort anchors, and
+  shadow/base footprints
+
+If the manual itch screenshot still reads like pasted sprites on a slab, do
+not scale the grammar back up. Classify the result as
+`PROOF_STREET_STILL_NOT_BELIEVABLE` or `BUILDING_STREET_GRAMMAR_FAILED`.

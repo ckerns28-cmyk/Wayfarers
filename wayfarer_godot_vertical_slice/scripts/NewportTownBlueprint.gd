@@ -4,9 +4,10 @@ class_name NewportTownBlueprint
 const TILE := 32
 const MAP_TILES := Vector2i(50, 32)
 const WORLD_SIZE := Vector2(MAP_TILES.x * TILE, MAP_TILES.y * TILE)
+const G48_PROOF_STREET := true
 const G46_PROOF_FRAME := false
-const G47_CALIBRATION_MODE := true
-const PLAYER_SPAWN := Vector2(1180, 830)
+const G47_CALIBRATION_MODE := false
+const PLAYER_SPAWN := Vector2(770, 648)
 const EDRIN_SPAWN := Vector2(-800, -800)
 
 const FULL_TOWN_BUILDING_IDS := [
@@ -32,14 +33,10 @@ const FULL_TOWN_BUILDING_IDS := [
 ]
 
 const PROOF_STREET_IDS := [
-	"g47_a_mercantile",
-	"g47_a_counting_house",
-	"g47_b_mercantile",
-	"g47_b_counting_house",
-	"g47_c_mercantile",
-	"g47_c_counting_house",
-	"g47_d_mercantile",
-	"g47_d_counting_house",
+	"b_mercantile",
+	"b_counting_house",
+	"b_chandlery_front",
+	"b_shop_house",
 ]
 
 const BUILDING_IDS := PROOF_STREET_IDS
@@ -57,6 +54,10 @@ static func district_rects() -> Array:
 	]
 
 static func primary_roads() -> Array:
+	if G48_PROOF_STREET:
+		return [
+			Rect2i(8, 18, 34, 4),
+		]
 	if G47_CALIBRATION_MODE:
 		return [
 			Rect2i(3, 11, 18, 3),
@@ -79,6 +80,10 @@ static func primary_roads() -> Array:
 	]
 
 static func secondary_roads() -> Array:
+	if G48_PROOF_STREET:
+		return [
+			Rect2i(11, 17, 28, 1),
+		]
 	if G47_CALIBRATION_MODE:
 		return []
 	if G46_PROOF_FRAME:
@@ -94,6 +99,8 @@ static func secondary_roads() -> Array:
 	]
 
 static func service_lanes() -> Array:
+	if G48_PROOF_STREET:
+		return []
 	if G47_CALIBRATION_MODE:
 		return []
 	if G46_PROOF_FRAME:
@@ -119,6 +126,10 @@ static func waterfront_apron_rects() -> Array:
 	]
 
 static func pier_rects() -> Array:
+	if G48_PROOF_STREET:
+		return [
+			{"id": "variant_d_center_pier", "rect": Rect2i(24, 22, 3, 6)},
+		]
 	if G47_CALIBRATION_MODE:
 		return []
 	if G46_PROOF_FRAME:
@@ -134,6 +145,10 @@ static func pier_rects() -> Array:
 	]
 
 static func water_rects() -> Array:
+	if G48_PROOF_STREET:
+		return [
+			Rect2i(0, 23, MAP_TILES.x, 9),
+		]
 	if G47_CALIBRATION_MODE:
 		return []
 	if G46_PROOF_FRAME:
@@ -178,6 +193,14 @@ static func water_collision_tiles() -> Array:
 	return blocked
 
 static func reachability_targets() -> Dictionary:
+	if G48_PROOF_STREET:
+		return {
+			"left_storefront": Vector2i(12, 18),
+			"center_storefront": Vector2i(24, 18),
+			"right_storefront": Vector2i(36, 18),
+			"narrow_street_lane": Vector2i(24, 20),
+			"wharf_frontage": Vector2i(25, 22),
+		}
 	if G47_CALIBRATION_MODE:
 		return {
 			"variant_d_left_frontage": Vector2i(33, 26),
@@ -205,6 +228,14 @@ static func proof_street_ids() -> Array:
 	return PROOF_STREET_IDS.duplicate()
 
 static func proof_street_walk_targets() -> Dictionary:
+	if G48_PROOF_STREET:
+		return {
+			"mercantile_frontage": Vector2i(13, 18),
+			"counting_house_frontage": Vector2i(20, 18),
+			"chandlery_frontage": Vector2i(27, 18),
+			"shop_house_frontage": Vector2i(34, 18),
+			"street_lane": Vector2i(24, 20),
+		}
 	if G47_CALIBRATION_MODE:
 		return {
 			"variant_a_reference": Vector2i(12, 12),
@@ -225,6 +256,8 @@ static func proof_street_walk_targets() -> Dictionary:
 	}
 
 static func lived_in_detail_count() -> int:
+	if G48_PROOF_STREET:
+		return 24
 	if G47_CALIBRATION_MODE:
 		return 26
 	if G46_PROOF_FRAME:
@@ -232,6 +265,14 @@ static func lived_in_detail_count() -> int:
 	return 52
 
 static func detail_blockers() -> Array:
+	if G48_PROOF_STREET:
+		return [
+			_blocker("street_barrels_left", Rect2(332, 548, 28, 18)),
+			_blocker("counting_house_crates", Rect2(650, 548, 34, 18)),
+			_blocker("chandlery_rope_stack", Rect2(882, 550, 30, 18)),
+			_blocker("shop_house_barrels", Rect2(1128, 548, 30, 18)),
+			_blocker("wharf_post_stack", Rect2(456, 704, 28, 18)),
+		]
 	if G47_CALIBRATION_MODE:
 		return []
 	if G46_PROOF_FRAME:
@@ -259,6 +300,13 @@ static func player_spawn_tile() -> Vector2i:
 	return Vector2i(floori(PLAYER_SPAWN.x / TILE), floori(PLAYER_SPAWN.y / TILE))
 
 static func building_specs() -> Array:
+	if G48_PROOF_STREET:
+		return [
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(13.1, 17.75), Vector2(192.0, 333.0), Vector2(88.0, 30.0), Vector2(0.0, 20.0), 118.0, Vector2(132.0, 17.0), 146.0),
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.2, 17.75), Vector2(209.0, 305.0), Vector2(104.0, 32.0), Vector2(0.0, 21.0), 142.0, Vector2(156.0, 18.0), 174.0),
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(27.3, 17.75), Vector2(183.0, 333.0), Vector2(98.0, 31.0), Vector2(0.0, 21.0), 126.0, Vector2(148.0, 18.0), 152.0),
+			_proof_street_building("b_shop_house", "Shop House", "newport_shopfront_awning", Vector2(34.3, 17.75), Vector2(209.0, 296.0), Vector2(92.0, 30.0), Vector2(0.0, 20.0), 118.0, Vector2(136.0, 17.0), 150.0),
+		]
 	if G47_CALIBRATION_MODE:
 		return [
 			_calibration_building("g47_a_mercantile", "A Mercantile", "mercantile_shop", Vector2(8.0, 9.7), Vector2(192.0, 333.0), 138.0, Vector2(96.0, 34.0), Vector2(0.0, 29.0), 116.0, Vector2(120.0, 20.0), "A"),
