@@ -9,6 +9,11 @@ street-level spawn framing, reduced test-grid readability, narrower walk
 surfaces, harbor clutter, shoreline detail, and small physical blockers that
 shape movement without changing quests or systems.
 
+G-4.3 responds to screenshot review showing that the town still felt like
+sprites placed on a grid canvas. It keeps the building set but recomposes the
+visible world around continuous streets, shaped wharf edges, clustered
+frontage clutter, and a tighter first-screen waterfront arrival.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -110,6 +115,35 @@ improves the inhabited-town read:
 
 The validator checks camera zoom/offset, lived-in detail density, detail
 blocker count, 19-building presence, districts, and core route reachability.
+
+## G-4.3 Harbor Town Recompose
+
+G-4.3 is not a building-count phase. It keeps all 19 building IDs from G-4.1
+and addresses the map-as-grid problem directly:
+
+- Ground: large continuous district washes replace visible tile-by-tile grass
+  across the first screen.
+- Streets: waterfront street, civic connector, upper residential road, service
+  lanes, civic plaza, and wharf apron are drawn as shaped walk surfaces rather
+  than exposed square test bands.
+- Waterfront: water, shoreline, wharf apron, pier planks, posts, rocks, boats,
+  rope, nets, barrels, crates, and market tables are composed around the
+  harbor edge and useful building fronts.
+- Clustering: commercial/civic/waterfront details are placed around doors,
+  market frontages, dock storehouse edges, and service yards so buildings feel
+  tied to their district instead of floating evenly on open grass.
+- Review framing: the player spawns on the waterfront street, the camera is
+  tighter, and the HUD is smaller/less opaque so the first screen reads as an
+  in-town arrival.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.3 Harbor Town Recompose
+Phase: G-4.3 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-3-newport-harbor-town-recomposition
+```
 
 ## Deferred
 

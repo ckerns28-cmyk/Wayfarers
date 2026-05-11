@@ -27,13 +27,13 @@ uploaded manually to itch for browser review. Butler automation remains
 deferred for the manual ZIP review pass.
 
 The HUD shows visible review identity so a screenshot can prove which ZIP is
-live. For G-4.2 the expected label is:
+live. For G-4.3 the expected label is:
 
 ```text
-Build label: Godot G-4.2 Lived-In Harbor Pass
-Phase: G-4.2 | Review host: itch
+Build label: Godot G-4.3 Harbor Town Recompose
+Phase: G-4.3 | Review host: itch
 Channel: manual ZIP
-Branch: codex/g-4-2-godot-newport-lived-in-harbor
+Branch: codex/g-4-3-newport-harbor-town-recomposition
 ```
 
 Review pipeline roles:

@@ -1,9 +1,9 @@
 extends CanvasLayer
 
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
-const HUD_MARGIN := 18.0
-const STATUS_MIN_WIDTH := 330.0
-const STATUS_MAX_WIDTH := 450.0
+const HUD_MARGIN := 14.0
+const STATUS_MIN_WIDTH := 260.0
+const STATUS_MAX_WIDTH := 340.0
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
 
@@ -32,11 +32,14 @@ func _apply_build_identity() -> void:
 	build_label.text = "Build label: " + BUILD_INFO.BUILD_LABEL
 	phase_host_label.text = "Phase: %s | Review host: %s" % [BUILD_INFO.BUILD_PHASE, BUILD_INFO.REVIEW_HOST]
 	channel_label.text = "Channel: " + BUILD_INFO.REVIEW_CHANNEL
-	branch_label.text = "Branch: " + BUILD_INFO.SOURCE_BRANCH
+	var branch := BUILD_INFO.SOURCE_BRANCH.replace("codex/", "")
+	if branch.length() > 34:
+		branch = branch.substr(0, 31) + "..."
+	branch_label.text = "Branch: " + branch
 
 func _apply_panel_styles() -> void:
 	var status_style := StyleBoxFlat.new()
-	status_style.bg_color = Color(0.055, 0.075, 0.06, 0.72)
+	status_style.bg_color = Color(0.055, 0.075, 0.06, 0.60)
 	status_style.border_color = Color(0.58, 0.66, 0.58, 0.22)
 	status_style.set_border_width_all(1)
 	status_style.corner_radius_top_left = 4
@@ -60,11 +63,11 @@ func _apply_layout() -> void:
 	if viewport_size.x <= 0 or viewport_size.y <= 0:
 		return
 
-	var status_width: float = clamp(viewport_size.x * 0.30, STATUS_MIN_WIDTH, STATUS_MAX_WIDTH)
+	var status_width: float = clamp(viewport_size.x * 0.22, STATUS_MIN_WIDTH, STATUS_MAX_WIDTH)
 	status_panel.offset_left = HUD_MARGIN
 	status_panel.offset_top = HUD_MARGIN
 	status_panel.offset_right = HUD_MARGIN + status_width
-	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + 256.0)
+	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + 204.0)
 
 	var dialogue_width: float = min(DIALOGUE_MAX_WIDTH, max(DIALOGUE_MIN_WIDTH, viewport_size.x - HUD_MARGIN * 2.0))
 	var dialogue_left: float = clamp((viewport_size.x - dialogue_width) * 0.5, HUD_MARGIN, viewport_size.x - HUD_MARGIN - dialogue_width)

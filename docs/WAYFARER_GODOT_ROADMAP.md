@@ -53,6 +53,15 @@ barrels, posts, rope, market tables, netting, shoreline detail, and small
 physical blockers, and district clusters are nudged to feel less evenly spaced.
 The HUD review identity should show `Godot G-4.2 Lived-In Harbor Pass`.
 
+Current G-4.3 result: the latest screenshot review showed that G-4.2 still
+read as building sprites pasted onto a visible grid. G-4.3 keeps the same
+19-building Newport set but recomposes the first-screen experience around a
+street-level waterfront arrival: continuous ground washes replace tile-board
+backgrounds, shaped roads/plazas/wharf edges replace full-grid bands, harbor
+detail is clustered around useful frontages, the camera is tighter, and the
+HUD is smaller so the player sees the town instead of a label panel. The HUD
+review identity should show `Godot G-4.3 Harbor Town Recompose`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -293,6 +302,37 @@ Deferred:
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin after the
 G-4.2 lived-in harbor pass is reviewed on itch.
+
+## G-4.3: Newport Harbor Town Recomposition
+
+Status: ready for manual itch upload.
+
+Make the town feel authored as a playable harbor place, not an overview map
+with clip-art buildings. This phase is a composition/readability pass; it does
+not add quests, combat, inventory, save migration, production cutover, or
+JavaScript Worker changes.
+
+G-4.3 notes:
+
+- The 19-building Newport foundation remains intact. This is not a building
+  count pass.
+- Spawn and camera now frame the waterfront street more tightly so the player
+  begins inside the town fabric instead of reading the whole scene as a map.
+- `MapLayer.gd` now draws continuous grass/district washes, shaped streets,
+  civic plaza, wharf apron, shoreline, water, plank docks, and frontage
+  details instead of exposing tile outlines across the whole scene.
+- Existing harbor props are clustered around shopfronts, wharf edges, piers,
+  market frontage, and service yards to make the walkable space feel used.
+- The HUD is narrower, less opaque, and uses the G-4.3 build label for visual
+  upload verification.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.3 Harbor Town Recompose`.
+- The first screen should no longer read primarily as a grid/test map.
+- A 60-90 second walk should feel more like moving through a structured harbor
+  town with waterfront, commercial, civic, service, and residential areas.
+- Manual itch upload remains required for browser review.
 
 ## G-6: Production Cutover Planning
 
