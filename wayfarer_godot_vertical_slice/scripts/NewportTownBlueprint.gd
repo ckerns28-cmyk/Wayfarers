@@ -347,13 +347,13 @@ static func player_spawn_tile() -> Vector2i:
 static func building_specs() -> Array:
 	if G49_STREET_VIGNETTE:
 		return [
-			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.6, 17.55), Vector2(198.0, 427.0), Vector2(88.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.45, 17.55), Vector2(193.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
 				"occupied_rect": Rect2(Vector2(-82.0, -160.0), Vector2(164.0, 172.0)),
 			}),
-			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.55, 17.55), Vector2(217.0, 368.0), Vector2(104.0, 32.0), Vector2(0.0, 25.0), 150.0, Vector2(166.0, 18.0), 190.0, {
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.9, 17.55), Vector2(223.0, 340.0), Vector2(104.0, 32.0), Vector2(0.0, 25.0), 150.0, Vector2(166.0, 18.0), 190.0, {
 				"occupied_rect": Rect2(Vector2(-104.0, -166.0), Vector2(208.0, 178.0)),
 			}),
-			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(26.55, 17.55), Vector2(201.0, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 24.0), 132.0, Vector2(154.0, 18.0), 181.0, {
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(26.92, 17.55), Vector2(211.5, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 24.0), 132.0, Vector2(154.0, 18.0), 181.0, {
 				"occupied_rect": Rect2(Vector2(-92.0, -168.0), Vector2(184.0, 180.0)),
 			}),
 		]
@@ -434,7 +434,7 @@ static func _proof_street_building(id: String, display_name: String, sprite_id: 
 	if draw_width_override > 0.0:
 		config["draw_width_override"] = draw_width_override
 	config["visual_base_anchor"] = visual_base_anchor
-	config["sprite_offset"] = Vector2.ZERO
+	config["sprite_offset"] = seating_overrides.get("sprite_offset", Vector2.ZERO)
 	config["visual_base_width"] = base_width
 	config["collision_rect"] = occupied_rect
 	config["frontage_offset"] = frontage_offset

@@ -11,7 +11,7 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 		"inn_tavern_v1":
 			return _sprite(ATLAS_V1, Rect2(33, 45, 385, 373), 218.0)
 		"mercantile_shop":
-			return _sprite(ISOLATED_BUILDINGS + "/mercantile_shop_isolated.png", Rect2(0, 0, 396, 446), 172.0)
+			return _sprite(ISOLATED_BUILDINGS + "/mercantile_shop_isolated.png", Rect2(0, 0, 386, 439), 172.0)
 		"village_hall_meeting_house":
 			return _sprite(ATLAS_V1, Rect2(855, 10, 323, 408), 174.0)
 		"residence_small":
@@ -49,9 +49,9 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 		"newport_modest_clapboard_residence_a":
 			return _sprite(PACK_B, Rect2(105, 433, 313, 403), 126.0)
 		"newport_counting_house_civic_exchange":
-			return _sprite(ISOLATED_BUILDINGS + "/newport_counting_house_civic_exchange_isolated.png", Rect2(0, 0, 434, 386), 202.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_counting_house_civic_exchange_isolated.png", Rect2(0, 0, 446, 358), 202.0)
 		"newport_chandlery_outfitter_front":
-			return _sprite(ISOLATED_BUILDINGS + "/newport_chandlery_outfitter_front_isolated.png", Rect2(0, 0, 402, 388), 184.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_chandlery_outfitter_front_isolated.png", Rect2(0, 0, 423, 388), 184.0)
 		"newport_dockside_storehouse":
 			return _sprite(PACK_B, Rect2(51, 836, 361, 377), 196.0)
 		"newport_market_shed_stalls":
