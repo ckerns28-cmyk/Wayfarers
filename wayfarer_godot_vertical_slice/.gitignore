@@ -14,5 +14,10 @@ artifacts/
 wayfarers-tale-godot-web.zip
 web_build.zip
 
+# macOS AppleDouble sidecars appear when this project is edited on some
+# external drive formats. They should never be committed.
+._*
+**/._*
+
 *.tmp
 *.translation
