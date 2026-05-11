@@ -84,6 +84,14 @@ plane, one player, and one camera frame. The HUD review identity should show
 `Godot G-4.6 Three-Building Street Proof`. Do not treat this as accepted until
 the manually uploaded itch screenshot clearly reads better than G-4.5.
 
+Current G-4.7 result: screenshot review showed G-4.6 also failed. The Godot
+build now shows a four-variant visual calibration board instead of a town:
+A current failing reference, B smaller player scale, C lower street vignette,
+and D integrated sidewalk/stoop/curb street grammar. Variant D is the
+art-direction recommendation, but it is not accepted until manual itch review
+confirms it clearly improves on G-4.6. The HUD review identity should show
+`Godot G-4.7 Scale Grammar Calibration`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -429,7 +437,7 @@ Visual review result:
 
 ## G-4.6: Three-Building Street Plane Proof
 
-Status: ready for manual itch upload; not accepted until screenshot review.
+Status: failed visual review; superseded by G-4.7.
 
 G-4.6 starts smaller:
 
@@ -453,11 +461,49 @@ Acceptance:
   `PROOF_STREET_STILL_NOT_SEATED`, `BUILDING_SCALE_MODEL_FAILED`, or
   `ART_ASSET_REAUTHORING_REQUIRED`.
 
+Visual review result:
+
+- G-4.6 still looked like oversized building cutouts behind a flat road slab.
+- The player still did not feel human-scaled into the street.
+- The street plane still did not connect convincingly to building bases.
+- G-4.6 is not accepted as the town grammar.
+
+## G-4.7: Visual Scale And Street Grammar Calibration
+
+Status: ready for manual itch upload; not accepted until screenshot review.
+
+G-4.7 stops town work and creates a visual calibration board:
+
+- Variant A: current scale reference, labeled likely failing.
+- Variant B: smaller player / more human scale.
+- Variant C: lower camera / closer street vignette.
+- Variant D: integrated sidewalk, stoops, curb, narrower cobbled lane, wharf
+  strip, grounding, and base props.
+
+G-4.7 notes:
+
+- Active building count is 8: two comparable storefront/civic-commercial
+  sprites per variant.
+- Debug overlay toggles with `B` and remains off by default.
+- The actual controllable player uses the smaller D-scale treatment.
+- Recommended direction is Variant D if visual review confirms it.
+- Current player sprite should be rescaled smaller for town work.
+- Building anchors must remain hand-authored per building; a generic seating
+  model is not sufficient.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.7 Scale Grammar Calibration`.
+- At least one treatment must clearly look better than G-4.6 before G-4 can be
+  called unblocked.
+- If no treatment works, classify as `NO_VARIANT_LOOKS_ACCEPTABLE`,
+  `BUILDING_STREET_GRAMMAR_FAILED`, or `SPRITE_APPROACH_NEEDS_RETHINK`.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin after the
-G-4.6 seating proof is visually reviewed on itch and accepted as the model for
+G-4.7 visual grammar is visually reviewed on itch and accepted as the model for
 scaling across the Newport town.
 
 ## G-6: Production Cutover Planning

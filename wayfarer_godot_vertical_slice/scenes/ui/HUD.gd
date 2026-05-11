@@ -43,7 +43,7 @@ func _apply_build_identity() -> void:
 	if branch.length() > 34:
 		branch = branch.substr(0, 31) + "..."
 	branch_label.text = "Branch: " + branch
-	zone_label.text = "Newport Street Proof"
+	zone_label.text = "Scale Grammar Board"
 	stats_label.text = "Level 1  HP 52/52"
 
 func toggle_review_metadata() -> void:

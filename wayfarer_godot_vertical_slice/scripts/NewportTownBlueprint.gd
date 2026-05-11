@@ -4,8 +4,9 @@ class_name NewportTownBlueprint
 const TILE := 32
 const MAP_TILES := Vector2i(50, 32)
 const WORLD_SIZE := Vector2(MAP_TILES.x * TILE, MAP_TILES.y * TILE)
-const G46_PROOF_FRAME := true
-const PLAYER_SPAWN := Vector2(735, 592)
+const G46_PROOF_FRAME := false
+const G47_CALIBRATION_MODE := true
+const PLAYER_SPAWN := Vector2(1180, 830)
 const EDRIN_SPAWN := Vector2(-800, -800)
 
 const FULL_TOWN_BUILDING_IDS := [
@@ -31,9 +32,14 @@ const FULL_TOWN_BUILDING_IDS := [
 ]
 
 const PROOF_STREET_IDS := [
-	"b_mercantile",
-	"b_counting_house",
-	"b_chandlery_front",
+	"g47_a_mercantile",
+	"g47_a_counting_house",
+	"g47_b_mercantile",
+	"g47_b_counting_house",
+	"g47_c_mercantile",
+	"g47_c_counting_house",
+	"g47_d_mercantile",
+	"g47_d_counting_house",
 ]
 
 const BUILDING_IDS := PROOF_STREET_IDS
@@ -51,6 +57,13 @@ static func district_rects() -> Array:
 	]
 
 static func primary_roads() -> Array:
+	if G47_CALIBRATION_MODE:
+		return [
+			Rect2i(3, 11, 18, 3),
+			Rect2i(28, 11, 18, 3),
+			Rect2i(3, 25, 18, 3),
+			Rect2i(28, 25, 18, 3),
+		]
 	if G46_PROOF_FRAME:
 		return [
 			Rect2i(10, 16, 28, 1),
@@ -66,6 +79,8 @@ static func primary_roads() -> Array:
 	]
 
 static func secondary_roads() -> Array:
+	if G47_CALIBRATION_MODE:
+		return []
 	if G46_PROOF_FRAME:
 		return []
 	return [
@@ -79,6 +94,8 @@ static func secondary_roads() -> Array:
 	]
 
 static func service_lanes() -> Array:
+	if G47_CALIBRATION_MODE:
+		return []
 	if G46_PROOF_FRAME:
 		return []
 	return [
@@ -102,6 +119,8 @@ static func waterfront_apron_rects() -> Array:
 	]
 
 static func pier_rects() -> Array:
+	if G47_CALIBRATION_MODE:
+		return []
 	if G46_PROOF_FRAME:
 		return [
 			{"id": "proof_wharf_hint", "rect": Rect2i(23, 20, 3, 5)},
@@ -115,6 +134,8 @@ static func pier_rects() -> Array:
 	]
 
 static func water_rects() -> Array:
+	if G47_CALIBRATION_MODE:
+		return []
 	if G46_PROOF_FRAME:
 		return [
 			Rect2i(0, 22, MAP_TILES.x, 10),
@@ -157,6 +178,12 @@ static func water_collision_tiles() -> Array:
 	return blocked
 
 static func reachability_targets() -> Dictionary:
+	if G47_CALIBRATION_MODE:
+		return {
+			"variant_d_left_frontage": Vector2i(33, 26),
+			"variant_d_center_walk": Vector2i(37, 26),
+			"variant_d_right_frontage": Vector2i(41, 26),
+		}
 	if G46_PROOF_FRAME:
 		return {
 			"left_storefront": Vector2i(17, 18),
@@ -178,6 +205,13 @@ static func proof_street_ids() -> Array:
 	return PROOF_STREET_IDS.duplicate()
 
 static func proof_street_walk_targets() -> Dictionary:
+	if G47_CALIBRATION_MODE:
+		return {
+			"variant_a_reference": Vector2i(12, 12),
+			"variant_b_smaller_player": Vector2i(37, 12),
+			"variant_c_camera_vignette": Vector2i(12, 26),
+			"variant_d_integrated_stoop": Vector2i(37, 26),
+		}
 	if G46_PROOF_FRAME:
 		return {
 			"mercantile_frontage": Vector2i(17, 17),
@@ -191,11 +225,15 @@ static func proof_street_walk_targets() -> Dictionary:
 	}
 
 static func lived_in_detail_count() -> int:
+	if G47_CALIBRATION_MODE:
+		return 26
 	if G46_PROOF_FRAME:
 		return 12
 	return 52
 
 static func detail_blockers() -> Array:
+	if G47_CALIBRATION_MODE:
+		return []
 	if G46_PROOF_FRAME:
 		return []
 	return [
@@ -221,6 +259,17 @@ static func player_spawn_tile() -> Vector2i:
 	return Vector2i(floori(PLAYER_SPAWN.x / TILE), floori(PLAYER_SPAWN.y / TILE))
 
 static func building_specs() -> Array:
+	if G47_CALIBRATION_MODE:
+		return [
+			_calibration_building("g47_a_mercantile", "A Mercantile", "mercantile_shop", Vector2(8.0, 9.7), Vector2(192.0, 333.0), 138.0, Vector2(96.0, 34.0), Vector2(0.0, 29.0), 116.0, Vector2(120.0, 20.0), "A"),
+			_calibration_building("g47_a_counting_house", "A Counting House", "newport_counting_house_civic_exchange", Vector2(14.2, 9.7), Vector2(209.0, 305.0), 166.0, Vector2(112.0, 36.0), Vector2(0.0, 30.0), 138.0, Vector2(140.0, 22.0), "A"),
+			_calibration_building("g47_b_mercantile", "B Mercantile", "mercantile_shop", Vector2(33.0, 9.7), Vector2(192.0, 333.0), 150.0, Vector2(96.0, 34.0), Vector2(0.0, 26.0), 118.0, Vector2(122.0, 20.0), "B"),
+			_calibration_building("g47_b_counting_house", "B Counting House", "newport_counting_house_civic_exchange", Vector2(39.2, 9.7), Vector2(209.0, 305.0), 178.0, Vector2(112.0, 36.0), Vector2(0.0, 28.0), 142.0, Vector2(146.0, 22.0), "B"),
+			_calibration_building("g47_c_mercantile", "C Mercantile", "mercantile_shop", Vector2(8.0, 23.9), Vector2(192.0, 333.0), 148.0, Vector2(92.0, 32.0), Vector2(0.0, 24.0), 116.0, Vector2(124.0, 18.0), "C"),
+			_calibration_building("g47_c_counting_house", "C Counting House", "newport_counting_house_civic_exchange", Vector2(14.2, 23.9), Vector2(209.0, 305.0), 176.0, Vector2(108.0, 34.0), Vector2(0.0, 25.0), 140.0, Vector2(148.0, 20.0), "C"),
+			_calibration_building("g47_d_mercantile", "D Mercantile", "mercantile_shop", Vector2(33.2, 23.75), Vector2(192.0, 333.0), 146.0, Vector2(88.0, 30.0), Vector2(0.0, 20.0), 118.0, Vector2(132.0, 17.0), "D"),
+			_calibration_building("g47_d_counting_house", "D Counting House", "newport_counting_house_civic_exchange", Vector2(39.4, 23.75), Vector2(209.0, 305.0), 174.0, Vector2(104.0, 32.0), Vector2(0.0, 21.0), 142.0, Vector2(156.0, 18.0), "D"),
+		]
 	if G46_PROOF_FRAME:
 		return [
 			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(17.2, 15.95), Vector2(192.0, 333.0), Vector2(92.0, 32.0), Vector2(0.0, 26.0), 112.0, Vector2(116.0, 19.0), 138.0),
@@ -255,6 +304,21 @@ static func substitution_notes() -> Dictionary:
 		"b_service_dependency": "Uses the compact service shed from the base Hearthvale atlas.",
 		"b_prestige_block": "Uses the formal townhouse block from Newport pack B.",
 	}
+
+static func calibration_variants() -> Array:
+	return [
+		{"id": "A", "label": "A Current scale reference - likely failing", "rect": Rect2(58, 72, 650, 345), "player_scale": 1.12, "recommendation": "baseline"},
+		{"id": "B", "label": "B Smaller player / human scale", "rect": Rect2(858, 72, 650, 345), "player_scale": 0.76, "recommendation": "scale test"},
+		{"id": "C", "label": "C Lower camera street vignette", "rect": Rect2(58, 522, 650, 345), "player_scale": 0.90, "recommendation": "framing test"},
+		{"id": "D", "label": "D Integrated sidewalk + stoops - recommended", "rect": Rect2(858, 522, 650, 345), "player_scale": 0.78, "recommendation": "candidate"},
+	]
+
+static func _calibration_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, draw_width: float, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2, variant_id: String) -> Dictionary:
+	var config := _proof_street_building(id, display_name, sprite_id, foot_tile, visual_base_anchor, collision_size, frontage_offset, base_width, shadow_size, draw_width)
+	config["district"] = "visual_calibration"
+	config["district_tag"] = "calibration_" + variant_id.to_lower()
+	config["calibration_variant"] = variant_id
+	return config
 
 static func _proof_street_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2, draw_width_override := 0.0) -> Dictionary:
 	var config := _building(id, display_name, sprite_id, "waterfront_commercial", "commercial", foot_tile, collision_size.x / TILE, collision_size.y / TILE)
