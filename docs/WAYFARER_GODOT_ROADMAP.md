@@ -138,6 +138,15 @@ street to dock access to inland lanes and back. Temporary future lots are
 muted planned foundations, not debug rectangles. The HUD review identity
 should show `Godot G-4.10 Starter Harbor Town Buildout Reset`.
 
+Current G-4.10A result: G-4.10 exposed the same crop/anchor issue that blocked
+the original hero buildings. G-4.10A pauses town expansion and normalizes the
+active building pipeline: every visible starter-town building now renders from
+an isolated padded sprite, every placed building references a reusable
+`BuildingCatalog.building_definition()`, and the three water-bottom harbor
+buildings are reserved for wharf/water lots instead of being treated like dry
+streetfront buildings. The HUD review identity should show
+`Godot G-4.10A Building Anchor/Crop Gate`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -767,9 +776,55 @@ Before NPCs/quests begin:
 - Keep interiors, economy, combat, inventory, save systems, and quest/NPC
   placement out of scope until the town asset kit is expanded.
 
+## G-4.10A: Building Asset Anchor + Crop Normalization
+
+Status: ready for manual itch upload.
+
+G-4.10A is a corrective gate before any more town expansion. The G-4.10 layout
+direction is preserved, but all currently visible buildings now go through a
+normalized reusable definition path instead of one-off sprite placement.
+
+Implemented:
+
+- HUD identity: `Godot G-4.10A Building Anchor/Crop Gate`.
+- Branch: `codex/g-4-10a-building-anchor-crop-normalization`.
+- Active buildings: 11, across harborfront commercial, working wharf, and
+  inland residential/civic layers.
+- Every active building uses `BuildingCatalog.building_definition()` with
+  texture path, full isolated sprite region, visual scale, foot anchor,
+  collision, interaction zone, shadow, and district role metadata.
+- The active G-4.10 building sprites render from isolated padded PNGs so
+  atlas-neighbor bleed does not appear in review.
+- `b_dock_storehouse`, `b_wharf_boathouse`, and `b_dock_warehouse` are
+  reserved for water/wharf placement and validated as harbor-integrated
+  buildings instead of dry streetfront buildings.
+- Debug overlays remain hidden by default for review. Press `B` to toggle the
+  G-4.10A building anchor/collision/interaction overlay, or `F3` for the full
+  building-debug overlay.
+- Validation now fails if a starter-town building lacks a reusable definition,
+  isolated sprite source, or normalized anchor metadata.
+
+Root cause:
+
+- G-4.10 expanded from the accepted hero buildings into more atlas-sourced
+  buildings. Some of those crops still used live atlas regions or regions with
+  neighboring sprite pixels, and the placement path relied on per-instance
+  anchors that were not a stable building asset contract. The fix is isolated
+  source images plus reusable definitions that own the foot-anchor and
+  collision/interaction geometry.
+
+Before G-4.11:
+
+- Manually review the itch build with debug off and confirm no visible roofs,
+  sides, storefronts, bases, or harbor buildings are cropped.
+- Keep G-4.11 focused on asset-kit expansion and replacement art after this
+  crop/anchor gate is accepted.
+- Do not add NPCs, quests, economy, combat, inventory, save systems, or
+  interiors until the starter district art kit and traversal read are stable.
+
 ## G-4.11: Town Asset Kit Expansion / Missing Building Set
 
-Status: next.
+Status: next, only after G-4.10A is accepted.
 
 Add or integrate the matching building and prop assets needed to replace the
 temporary planned lots and make the starter village feel complete. This phase
@@ -780,7 +835,8 @@ civic/residence variants, market stall/carts, and dedicated harbor clutter.
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin only after
-G-4.10 establishes an accepted 60-90 second Newport harbor walk on itch.
+G-4.10A passes the crop/anchor gate and the starter harbor walk is accepted on
+itch.
 
 ## G-6: Production Cutover Planning
 

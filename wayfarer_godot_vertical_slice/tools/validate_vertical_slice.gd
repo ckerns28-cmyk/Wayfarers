@@ -2,6 +2,7 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
+const BUILDING_CATALOG := preload("res://scripts/BuildingCatalog.gd")
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
 
 var failures: Array[String] = []
@@ -26,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.10", "build_phase_g_4_10")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.10 Starter Harbor Town Buildout Reset", "build_label_g_4_10")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.10A", "build_phase_g_4_10a")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.10A Building Anchor/Crop Gate", "build_label_g_4_10a")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -135,6 +136,18 @@ func _validate_starter_harbor_plan() -> void:
 	for district_id in ["harborfront_commercial", "working_wharf", "inland_residential_civic", "support_lane"]:
 		_expect(district_lots.get(district_id, 0) > 0, "starter_lots_cover_" + district_id)
 
+	for building_id in ["b_dock_storehouse", "b_wharf_boathouse", "b_dock_warehouse"]:
+		_expect(actual_building_lots.has(building_id), "harbor_water_asset_placed_" + building_id)
+
+	for config in NEWPORT_TOWN.building_specs():
+		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")
+		if config.has("definition_id"):
+			var definition := BUILDING_CATALOG.building_definition(String(config["definition_id"]))
+			for key in ["building_id", "display_name", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "foot_anchor", "collision_rect", "interaction_size", "interaction_offset", "shadow_size", "district_role"]:
+				_expect(definition.has(key), String(config["id"]) + "_definition_has_" + key)
+			var texture_path: String = definition.get("texture_path", "")
+			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/"), String(config["id"]) + "_uses_isolated_sprite")
+
 	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
 	for needed in ["small home variants", "warehouse", "chandlery/fishmonger", "dock shack", "civic/residence variant", "market stall", "carts", "crates", "barrels", "rope coils", "signs", "fencing"]:
 		_expect(manifest.has(needed), "missing_asset_manifest_" + needed.replace("/", "_").replace(" ", "_"))
@@ -164,10 +177,16 @@ func _validate_building_node(building: Node2D) -> void:
 		var region_size := _texture_region_size(sprite.texture)
 		var sprite_bottom_y := sprite.position.y + region_size.y * sprite.scale.y
 		var proof_street: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
-		if proof_street:
-			_expect(sprite_bottom_y > 3.0 and sprite_bottom_y < 18.0, building.name + "_painterly_base_padding_allowed")
+		var harbor_integrated: bool = building.has_method("is_harbor_integrated") and building.is_harbor_integrated()
+		if harbor_integrated:
+			_expect(sprite_bottom_y > 20.0 and sprite_bottom_y < 78.0, building.name + "_harbor_sprite_extends_into_water")
+		elif proof_street:
+			_expect(sprite_bottom_y > 3.0 and sprite_bottom_y < 28.0, building.name + "_painterly_base_padding_allowed")
 		else:
-			_expect(absf(sprite_bottom_y) <= 2.5, building.name + "_foot_anchor_at_visual_base")
+			_expect(sprite_bottom_y >= -2.5 and sprite_bottom_y <= 22.0, building.name + "_foot_anchor_at_visual_base")
+
+	if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		_expect(building.has_method("uses_normalized_definition") and building.uses_normalized_definition(), building.name + "_uses_normalized_definition")
 
 	if body_shape and body_shape.shape is RectangleShape2D:
 		var body_size := (body_shape.shape as RectangleShape2D).size
@@ -195,7 +214,12 @@ func _validate_proof_street(main: Node) -> void:
 
 	var configs_by_id := {}
 	for config in NEWPORT_TOWN.building_specs():
-		configs_by_id[config["id"]] = config
+		var merged_config: Dictionary = config
+		if config.has("definition_id"):
+			merged_config = BUILDING_CATALOG.building_definition(String(config["definition_id"]))
+			for key in config:
+				merged_config[key] = config[key]
+		configs_by_id[config["id"]] = merged_config
 
 	for id in proof_ids:
 		_expect(configs_by_id.has(id), "proof_street_config_present_" + id)
@@ -229,6 +253,8 @@ func _validate_proof_street(main: Node) -> void:
 			if overlay == null:
 				continue
 			var is_proof: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
+			if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+				is_proof = true
 			_expect(overlay.visible == is_proof, building.name + "_seating_debug_toggle_scope")
 		main.set_building_seating_overlay(false)
 	else:

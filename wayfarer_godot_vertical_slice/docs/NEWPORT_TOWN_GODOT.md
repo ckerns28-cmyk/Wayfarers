@@ -54,6 +54,12 @@ style anchors, but the active scene now has a 16-lot district plan with
 harborfront commercial, working wharf, inland civic/residential, and support
 lane layers.
 
+G-4.10A pauses town expansion for a building asset gate. The G-4.10 layout is
+kept, but every currently visible building is now backed by an isolated padded
+sprite and a reusable `BuildingCatalog.building_definition()` entry with
+texture path, source region, draw scale, foot anchor, collision, interaction,
+shadow, and district-role metadata.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -123,7 +129,7 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 through G-4.9 provide practical collision/navigation support only:
+G-4.1 through G-4.10A provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
@@ -155,6 +161,10 @@ G-4.1 through G-4.9 provide practical collision/navigation support only:
   adds compatible existing anchor buildings, draws planned future lots as
   muted foundations/silhouettes, and validates the main street -> dock ->
   inland lane -> main street loop before any NPCs or quests are added.
+- G-4.10A keeps that district mode but requires every active building to use a
+  normalized reusable definition. Debug overlays are hidden by default for
+  review; press `B` to show building footprints, collision, interaction zones,
+  and anchors for the starter-town buildings.
 
 ## G-4.10 Starter Harbor District
 
@@ -167,15 +177,15 @@ Implemented structure:
 
 - Harborfront/commercial row: `b_inn_tavern`, `b_mercantile`,
   `b_counting_house`, `b_chandlery_front`, and `b_shop_house`.
-- Dock/wharf layer: `b_market_shed`, `b_dock_storehouse`, wharf apron, three
-  pier fingers, dock clutter, rope, cargo, barrels, crates, nets, fish racks,
-  rowboats, and post lines.
+- Dock/wharf layer: `b_market_shed`, `b_dock_storehouse`,
+  `b_wharf_boathouse`, `b_dock_warehouse`, wharf apron, three pier fingers,
+  dock clutter, rope, cargo, barrels, crates, nets, fish racks, rowboats, and
+  post lines.
 - Inland/background layer: `b_village_hall`, `b_res_small`, planned homes,
   civic-residence slot, support lane, fencing, clothesline, planting beds, and
   muted town-block massing.
 - Planned future lots: `lot_west_fishmonger_future`,
-  `lot_wharf_chandler_yard_future`, `lot_east_warehouse_future`,
-  `lot_dock_shack_future`, `lot_civic_residence_future`,
+  `lot_east_warehouse_future`, `lot_civic_residence_future`,
   `lot_lane_home_a_future`, and `lot_lane_home_b_future`.
 - Movement loop: harborfront main street, storefront doors, wharf edge,
   west/central/east piers, dock access, inland cross lane, support lanes, and
@@ -208,6 +218,44 @@ Before NPCs or quests begin, G-4.11 should replace the temporary planned lots
 with matching Newport building and prop art, then confirm the street, dock,
 water, sidewalk, wharf, inland lane, and future anchor locations read clearly
 in manual itch review.
+
+## G-4.10A Building Asset Gate
+
+Root cause: G-4.10 correctly expanded the starter district, but several new
+buildings were still rendered from loose atlas regions or crops that included
+neighboring sprite pixels. They also used per-instance placement metadata
+instead of a single reusable building definition that owned the foot anchor and
+ground contact.
+
+Implemented correction:
+
+- Isolated padded PNGs now drive all active G-4.10A buildings.
+- `BuildingCatalog.sprite_config()` records the texture path and full isolated
+  sprite region for each active sprite.
+- `BuildingCatalog.building_definition()` records the reusable building asset
+  contract: building ID, display name, sprite source, visual scale, foot anchor,
+  collision rectangle, interaction zone, shadow/contact ellipse, district role,
+  and harbor-integration flag where needed.
+- `NewportTownBlueprint.building_specs()` places buildings by `definition_id`
+  and layout position. The blueprint no longer has to hardcode each crop,
+  anchor, collision, and interaction rectangle.
+- The three water-bottom assets are dedicated wharf/water buildings:
+  `b_dock_storehouse`, `b_wharf_boathouse`, and `b_dock_warehouse`.
+- Planned lots now remain limited to future fishmonger/service, east
+  warehouse/chandlery, civic residence, and support-lane homes.
+- The validator fails if an active starter-town building lacks a definition,
+  isolated sprite, normalized anchor, or valid crop/grounding behavior.
+
+To add the next building safely:
+
+1. Add or adjust its isolated crop in `tools/extract_building_sprites.gd`.
+2. Run the extractor and Godot import so the PNG and `.import` metadata exist.
+3. Add the sprite source to `BuildingCatalog.sprite_config()`.
+4. Add the reusable prefab-style entry to
+   `BuildingCatalog.building_definition()`.
+5. Place it in `NewportTownBlueprint.building_specs()` with `_catalog_building`
+   and a matching `starter_lot_specs()` actual lot.
+6. Run `tools/validate_vertical_slice.gd` before packaging.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability

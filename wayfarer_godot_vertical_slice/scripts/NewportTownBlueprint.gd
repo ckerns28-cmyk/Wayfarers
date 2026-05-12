@@ -28,6 +28,8 @@ const STARTER_HARBOR_BUILDING_IDS := [
 	"b_chandlery_front",
 	"b_shop_house",
 	"b_dock_storehouse",
+	"b_wharf_boathouse",
+	"b_dock_warehouse",
 	"b_market_shed",
 	"b_village_hall",
 	"b_res_small",
@@ -35,9 +37,7 @@ const STARTER_HARBOR_BUILDING_IDS := [
 
 const STARTER_HARBOR_PLANNED_LOT_IDS := [
 	"lot_west_fishmonger_future",
-	"lot_wharf_chandler_yard_future",
 	"lot_east_warehouse_future",
-	"lot_dock_shack_future",
 	"lot_civic_residence_future",
 	"lot_lane_home_a_future",
 	"lot_lane_home_b_future",
@@ -491,25 +491,17 @@ static func player_spawn_tile() -> Vector2i:
 static func building_specs() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_proof_street_building("b_inn_tavern", "Inn & Tavern", "inn_tavern_v1", Vector2(9.8, 17.45), Vector2(192.5, 350.0), Vector2(124.0, 34.0), Vector2(0.0, 26.0), 132.0, Vector2(142.0, 20.0), 142.0, {
-				"occupied_rect": Rect2(Vector2(-72.0, -150.0), Vector2(144.0, 162.0)),
-			}),
-			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.7, 17.55), Vector2(193.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
-				"occupied_rect": Rect2(Vector2(-82.0, -160.0), Vector2(164.0, 172.0)),
-			}),
-			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.55, 17.55), Vector2(223.0, 340.0), Vector2(104.0, 32.0), Vector2(0.0, 25.0), 150.0, Vector2(166.0, 18.0), 190.0, {
-				"occupied_rect": Rect2(Vector2(-104.0, -166.0), Vector2(208.0, 178.0)),
-			}),
-			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(25.95, 17.55), Vector2(211.5, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 24.0), 132.0, Vector2(154.0, 18.0), 181.0, {
-				"occupied_rect": Rect2(Vector2(-92.0, -168.0), Vector2(184.0, 180.0)),
-			}),
-			_proof_street_building("b_shop_house", "Shop House", "newport_shopfront_awning", Vector2(32.8, 17.45), Vector2(198.0, 370.0), Vector2(92.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
-				"occupied_rect": Rect2(Vector2(-82.0, -158.0), Vector2(164.0, 170.0)),
-			}),
-			_building("b_dock_storehouse", "Dock Storehouse", "newport_dockside_storehouse_long", "working_wharf", "dock_services", Vector2(37.1, 21.05), 4.0, 1.0),
-			_building("b_market_shed", "Market Shed", "newport_market_shed_stalls", "working_wharf", "dock_services", Vector2(23.6, 21.25), 3.0, 1.0),
-			_building("b_village_hall", "Village Hall", "village_hall_meeting_house", "inland_residential_civic", "civic", Vector2(21.6, 11.4), 3.8, 1.0),
-			_building("b_res_small", "Harbor Cottage", "residence_small", "inland_residential_civic", "residential", Vector2(13.4, 12.6), 2.4, 1.0),
+			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(9.2, 17.45), true),
+			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(15.4, 17.55), true),
+			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(21.5, 17.55), true),
+			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.7, 17.55), true),
+			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(33.8, 17.45), true),
+			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(39.3, 17.45)),
+			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(37.0, 24.0)),
+			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(22.0, 24.05)),
+			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(11.4, 24.0)),
+			_catalog_building("b_village_hall", "inland_residential_civic", "civic", Vector2(25.5, 12.0)),
+			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(14.0, 11.65)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -598,19 +590,19 @@ static func starter_district_plan() -> Dictionary:
 
 static func starter_lot_specs() -> Array:
 	return [
-		_lot("lot_tavern_anchor", "actual", "harborfront_commercial", "tavern", Rect2i(7, 13, 6, 5), "b_inn_tavern"),
+		_lot("lot_tavern_anchor", "actual", "harborfront_commercial", "tavern", Rect2i(6, 13, 6, 5), "b_inn_tavern"),
 		_lot("lot_mercantile_anchor", "actual", "harborfront_commercial", "mercantile", Rect2i(13, 13, 5, 5), "b_mercantile"),
-		_lot("lot_counting_house_anchor", "actual", "harborfront_commercial", "civic_exchange", Rect2i(18, 12, 6, 6), "b_counting_house"),
-		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(24, 13, 5, 5), "b_chandlery_front"),
-		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(31, 13, 5, 5), "b_shop_house"),
-		_lot("lot_market_shed_anchor", "actual", "working_wharf", "market_stall", Rect2i(21, 20, 5, 3), "b_market_shed"),
-		_lot("lot_storehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(35, 19, 6, 4), "b_dock_storehouse"),
-		_lot("lot_village_hall_anchor", "actual", "inland_residential_civic", "civic", Rect2i(18, 7, 8, 5), "b_village_hall"),
-		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(11, 8, 5, 5), "b_res_small"),
+		_lot("lot_counting_house_anchor", "actual", "harborfront_commercial", "civic_exchange", Rect2i(19, 12, 6, 6), "b_counting_house"),
+		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(25, 13, 5, 5), "b_chandlery_front"),
+		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(32, 13, 5, 5), "b_shop_house"),
+		_lot("lot_market_shed_anchor", "actual", "harborfront_commercial", "market_stall", Rect2i(37, 13, 6, 5), "b_market_shed"),
+		_lot("lot_storehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(35, 21, 6, 4), "b_dock_storehouse"),
+		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "dock_service", Rect2i(19, 21, 7, 4), "b_wharf_boathouse"),
+		_lot("lot_dock_warehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(9, 21, 6, 4), "b_dock_warehouse"),
+		_lot("lot_village_hall_anchor", "actual", "inland_residential_civic", "civic", Rect2i(23, 8, 8, 5), "b_village_hall"),
+		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(12, 8, 5, 4), "b_res_small"),
 		_lot("lot_west_fishmonger_future", "planned", "harborfront_commercial", "fishmonger_or_service_shop", Rect2i(3, 14, 4, 4)),
-		_lot("lot_wharf_chandler_yard_future", "planned", "working_wharf", "chandler_yard", Rect2i(14, 21, 4, 3)),
 		_lot("lot_east_warehouse_future", "planned", "harborfront_commercial", "warehouse_or_chandlery", Rect2i(41, 14, 5, 4)),
-		_lot("lot_dock_shack_future", "planned", "working_wharf", "dock_services", Rect2i(30, 21, 4, 3)),
 		_lot("lot_civic_residence_future", "planned", "inland_residential_civic", "civic_residence", Rect2i(27, 7, 7, 5)),
 		_lot("lot_lane_home_a_future", "planned", "support_lane", "small_home", Rect2i(35, 8, 5, 4)),
 		_lot("lot_lane_home_b_future", "planned", "support_lane", "small_home", Rect2i(6, 8, 4, 4)),
@@ -695,6 +687,18 @@ static func _building(id: String, display_name: String, sprite_id: String, distr
 		"interaction_size": Vector2(max(72.0, collision_tiles_w * TILE * 0.72), 44.0),
 		"interaction_offset": Vector2(0.0, 20.0),
 		"door_offset": Vector2.ZERO,
+	}
+
+static func _catalog_building(id: String, district: String, district_tag: String, foot_tile: Vector2, proof_street := false) -> Dictionary:
+	return {
+		"id": id,
+		"definition_id": id,
+		"district": district,
+		"district_tag": district_tag,
+		"position": foot_tile * TILE,
+		"foot_tile": Vector2i(roundi(foot_tile.x), roundi(foot_tile.y)),
+		"proof_street": proof_street,
+		"street_edge": foot_tile * TILE,
 	}
 
 static func _lot(id: String, status: String, district: String, role: String, rect: Rect2i, building_id := "") -> Dictionary:

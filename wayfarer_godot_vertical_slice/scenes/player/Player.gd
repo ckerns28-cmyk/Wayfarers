@@ -51,7 +51,7 @@ func configure_world_limits(world_rect: Rect2) -> void:
 func _configure_camera() -> void:
 	camera.enabled = true
 	if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
-		camera.zoom = Vector2(1.30, 1.30)
+		camera.zoom = Vector2(1.22, 1.22)
 	elif NEWPORT_TOWN.G49_STREET_VIGNETTE:
 		camera.zoom = Vector2(1.58, 1.58)
 	elif NEWPORT_TOWN.G48_PROOF_STREET:
@@ -64,7 +64,7 @@ func _configure_camera() -> void:
 		camera.zoom = Vector2(1.48, 1.48)
 	camera.position = Vector2.ZERO
 	if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
-		camera.offset = Vector2(10, -78)
+		camera.offset = Vector2(10, -92)
 	elif NEWPORT_TOWN.G49_STREET_VIGNETTE:
 		camera.offset = Vector2(0, -70)
 	elif NEWPORT_TOWN.G48_PROOF_STREET:

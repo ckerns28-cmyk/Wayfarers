@@ -88,7 +88,7 @@ func _set_building_seating_overlay(enabled: bool) -> void:
 	for raw_building in get_tree().get_nodes_in_group("buildings"):
 		var building := raw_building as Node2D
 		if building and building.has_method("set_debug_overlay"):
-			var show_overlay: bool = enabled and building.has_method("is_proof_street_building") and building.is_proof_street_building()
+			var show_overlay: bool = enabled and (NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN or (building.has_method("is_proof_street_building") and building.is_proof_street_building()))
 			building.set_debug_overlay(show_overlay)
 
 func _atlas(path: String, region: Rect2) -> AtlasTexture:
@@ -112,7 +112,13 @@ func _atlas_image(path: String) -> Texture2D:
 
 func _place_buildings() -> void:
 	for blueprint_config in NEWPORT_TOWN.building_specs():
-		var config := (blueprint_config as Dictionary).duplicate(true)
+		var config := {}
+		var blueprint := (blueprint_config as Dictionary).duplicate(true)
+		if blueprint.has("definition_id"):
+			var definition := BUILDING_CATALOG.building_definition(String(blueprint["definition_id"]))
+			config = definition.duplicate(true)
+		for key in blueprint:
+			config[key] = blueprint[key]
 		var sprite_config := BUILDING_CATALOG.sprite_config(config["sprite_id"])
 		for key in sprite_config:
 			config[key] = sprite_config[key]
