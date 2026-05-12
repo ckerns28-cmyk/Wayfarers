@@ -461,6 +461,52 @@ behind the street frontage so the player cannot walk directly behind the
 building body. This is the foundation for future enterable buildings: doors
 face the street, while the building volume owns real ground behind the facade.
 
+## G-4.9.5 and G-4.9.6 Street Review Stack
+
+G-4.9.5 preserves the accepted crop/seating work and changes only the street
+frontage spacing: horizontal building positions, intentional alleys/setbacks,
+and nearby prop stitching. It does not change building extraction, vertical
+grounding, camera logic, gameplay systems, interiors, or map scope.
+
+G-4.9.6 is the clean review gate for that vignette. The expected visible
+review identity is:
+
+```text
+Build label: Godot G-4.9.6 Street Vignette Acceptance Gate
+Phase: G-4.9.6 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-9-6-street-vignette-acceptance-gate
+```
+
+Normal review mode must show a player-facing scene: no red/yellow/blue
+debug rectangles, no anchor markers, and no building IDs. The seating overlay
+remains available with `B` for inspection, but must be off before screenshots
+used for acceptance.
+
+After G-4.9.6 is accepted on itch, the next Godot phase is G-4.10 Newport
+Harbor Walk Acceptance: a 60-90 second player-facing harbor walk using the
+accepted street/dock scene.
+
+## G-4.9.7 Street Vignette Polish Gate
+
+G-4.9.7 keeps the accepted G-4.9.4/G-4.9.6 building crops, anchors,
+vertical seating, camera, and debug-default behavior. It only polishes the
+current street vignette:
+
+```text
+Build label: Godot G-4.9.7 Street Vignette Polish Gate
+Phase: G-4.9.7 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-9-7-street-vignette-polish-gate
+```
+
+The pass tightens the three-building horizontal rhythm, dresses the remaining
+gaps as loading/setback space with existing props, strengthens sidewalk/curb/
+road/harbor-walk/water separation, adds subtle contact shadows to street and
+dock details, and restyles the rear lot blocks as muted background silhouettes.
+It does not add new buildings, interiors, quests, combat, inventory, save
+systems, production cutover, or a larger map.
+
 ## Deferred
 
 - Final art parity with JavaScript Phase 35.13R.

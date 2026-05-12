@@ -3,6 +3,7 @@ extends Node2D
 const BUILDING_SCENE := preload("res://scenes/buildings/Building.tscn")
 const BUILDING_CATALOG := preload("res://scripts/BuildingCatalog.gd")
 const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
+const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
 const GAMEPLAY_KEYCODES := [
 	KEY_W,
 	KEY_A,
@@ -21,8 +22,8 @@ const GAMEPLAY_KEYCODES := [
 @onready var hud: CanvasLayer = $HUD
 
 var _atlas_cache: Dictionary = {}
-var _debug_overlay_enabled := false
-var _seating_debug_enabled := false
+var _debug_overlay_enabled := BUILD_INFO.DEBUG_OVERLAYS_DEFAULT
+var _seating_debug_enabled := BUILD_INFO.DEBUG_OVERLAYS_DEFAULT
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -35,6 +36,8 @@ func _ready() -> void:
 	elif edrin:
 		edrin.global_position = NEWPORT_TOWN.EDRIN_SPAWN
 	_place_buildings()
+	_set_debug_overlay(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT)
+	_set_building_seating_overlay(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT)
 	player.dialogue_triggered.connect(hud.show_dialogue)
 
 func _input(event: InputEvent) -> void:
@@ -47,7 +50,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	var key_event := event as InputEventKey
 	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_B:
-		_set_building_seating_overlay(not _seating_debug_enabled)
+		if BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED:
+			_set_building_seating_overlay(not _seating_debug_enabled)
 		get_viewport().set_input_as_handled()
 		return
 
@@ -58,7 +62,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F3:
-		_set_debug_overlay(not _debug_overlay_enabled)
+		if BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED:
+			_set_debug_overlay(not _debug_overlay_enabled)
 		get_viewport().set_input_as_handled()
 		return
 

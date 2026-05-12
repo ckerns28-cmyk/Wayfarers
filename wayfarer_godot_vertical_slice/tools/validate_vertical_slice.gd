@@ -2,6 +2,7 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
+const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
 
 var failures: Array[String] = []
 
@@ -25,6 +26,10 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.9.7", "build_phase_g_4_9_7")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.9.7 Street Vignette Polish Gate", "build_label_g_4_9_7")
+	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
+	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
 	_expect(player != null, "player_exists")
 	_expect(hud != null, "hud_exists")
@@ -160,6 +165,7 @@ func _validate_proof_street(main: Node) -> void:
 			continue
 		var overlay := building.get_node_or_null("DebugOverlay") as Node2D
 		_expect(overlay != null and not overlay.visible, building.name + "_seating_debug_off_by_default")
+		_expect(overlay == null or overlay.visible == false, building.name + "_debug_labels_hidden_in_review_mode")
 		_expect(building.has_method("has_seating_metadata") and building.has_seating_metadata(), building.name + "_runtime_seating_metadata")
 		_expect(building.get_node_or_null("FrontageMarker") != null, building.name + "_frontage_marker")
 		_expect(building.get_node_or_null("YSortAnchor") != null, building.name + "_ysort_marker")

@@ -116,6 +116,19 @@ updates the review identity to `Godot G-4.9.1 Sprite Crop Isolation`, and
 expands proof-street collision from shallow facade strips into occupied
 building lots.
 
+Current G-4.9.5 result: G-4.9.5 resumes street composition only after the
+G-4.9.4 crop/seating gate is preserved. It keeps the accepted vertical
+seating, extraction, grounding, camera, and player scale, then adjusts only
+horizontal spacing, lot gaps, alleys/setbacks, and nearby props so the three
+waterfront buildings read more like one Newport street frontage.
+
+Current G-4.9.7 target: G-4.9.7 is a Street Vignette Polish Gate on top of
+the accepted G-4.9.6 placement fix. It keeps crop seating, vertical grounding,
+camera, and debug-default behavior intact while tightening horizontal spacing,
+dressing remaining gaps with existing props, strengthening sidewalk/curb/road/
+harbor-walk/water readability, and muting rear lot blocks so the first
+player-facing review looks less like staged geometry.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -614,12 +627,98 @@ Acceptance:
 - If contamination remains, classify as `SPRITE_CROP_CONTAMINATION_REMAINS`
   and do not resume street-vignette composition.
 
+## G-4.9.5: Newport Streetscape Spacing and Believability
+
+Status: active stacked follow-up after the accepted crop/seating gate.
+
+G-4.9.5 keeps the G-4.9.4 crop, seating, grounded baselines, camera, and
+vertical placement logic intact. It only adjusts the street frontage
+composition:
+
+- Tighten excessive horizontal gaps between the three accepted buildings.
+- Preserve the center/civic building as visually important without isolating
+  it from the frontage.
+- Make any remaining gap read intentionally as an alley, loading area, or
+  civic setback.
+- Use existing props to bridge empty sidewalk space.
+- Keep Worker files, `wrangler.toml`, interiors, economy, combat, inventory,
+  save systems, and map expansion out of scope.
+
+Acceptance:
+
+- Latest itch upload should show `Godot G-4.9.5 Streetscape Spacing`.
+- The three accepted buildings keep their crop/seating behavior.
+- The street reads less like isolated test sprites and more like one
+  believable Newport frontage.
+
+## G-4.9.6: Street Vignette Acceptance Gate
+
+Status: clean review-mode gate after G-4.9.5.
+
+G-4.9.6 is not an art expansion pass. It freezes the accepted G-4.9.4/G-4.9.5
+building seating and spacing, then prepares a clean player-facing itch review
+build:
+
+- HUD identity: `Godot G-4.9.6 Street Vignette Acceptance Gate`.
+- Red/yellow/blue debug overlays are off by default.
+- Building IDs and debug names are not visible in normal review mode.
+- Seating debug remains available only through the debug toggle/mode.
+- Validation confirms the player can walk the sidewalk/street area, reach
+  the three storefronts, and avoid crop/seating regressions.
+- No Worker files, `wrangler.toml`, interiors, economy, inventory, combat,
+  save systems, or larger map work are included.
+
+Acceptance:
+
+- Latest itch upload shows the G-4.9.6 build label.
+- First screenshot is a clean game view, not a debug proof.
+- If debug overlays or building labels appear by default, classify as
+  `DEBUG_REVIEW_BLOCKER`.
+
+## G-4.9.7: Street Vignette Polish Gate
+
+Status: acceptance polish after the G-4.9.6 placement fix.
+
+G-4.9.7 preserves the accepted building extraction, crop seating, vertical
+grounding, camera, and debug-label behavior. It is scoped to player-facing
+streetscape polish:
+
+- HUD identity: `Godot G-4.9.7 Street Vignette Polish Gate`.
+- Horizontal spacing is adjusted only enough to make the three accepted
+  buildings feel like a natural Newport frontage rather than evenly staged
+  test sprites.
+- Remaining gaps are dressed as loading/setback space with existing props.
+- Sidewalk, curb, road, harbor walk, dock edge, and water receive stronger
+  tonal separation.
+- Rear lot silhouettes are muted so they read as background massing instead
+  of temporary debug rectangles.
+- Contact shadows under props, stoops, lamps, dock details, and building
+  bases are used to reduce floating.
+- No Worker files, `wrangler.toml`, interiors, economy, inventory, combat,
+  save systems, or map expansion are included.
+
+Acceptance:
+
+- Latest itch upload shows the G-4.9.7 build label.
+- The three accepted buildings remain seated with no crop/seating regression.
+- Player walkable space in front of each building and toward the pier-facing
+  edge remains obvious.
+- Background lots no longer read as debug geometry.
+
+## G-4.10: Newport Harbor Walk Acceptance
+
+Status: next phase after G-4.9.7 is visually accepted.
+
+G-4.10 turns the accepted street/dock vignette into a 60-90 second
+player-facing Newport harbor walk. It should use the existing street/dock
+scene and accepted building grammar rather than jumping to interiors,
+economy, inventory, combat, save systems, or full map expansion.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin only after
-the isolated G-4.9.1 sprites and the resumed street vignette are visually
-reviewed on itch and accepted as the model for scaling across the Newport town.
+G-4.10 establishes an accepted 60-90 second Newport harbor walk on itch.
 
 ## G-6: Production Cutover Planning
 
