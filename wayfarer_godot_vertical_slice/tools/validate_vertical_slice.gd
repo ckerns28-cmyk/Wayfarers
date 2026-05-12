@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.10A", "build_phase_g_4_10a")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.10A Building Anchor/Crop Gate", "build_label_g_4_10a")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.11", "build_phase_g_4_11")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.11 Town Asset Kit Expansion", "build_label_g_4_11")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -36,7 +36,7 @@ func _validate_scene(main: Node) -> void:
 	_expect(hud != null, "hud_exists")
 	_expect(map != null, "map_exists")
 	if not NEWPORT_TOWN.NPCS_ENABLED:
-		_expect(main.get_node_or_null("World/EdrinVale") == null, "npcs_disabled_for_g_4_10")
+		_expect(main.get_node_or_null("World/EdrinVale") == null, "npcs_disabled_for_g_4_11")
 
 	if player:
 		_expect(player.get_node_or_null("Camera2D") != null, "player_camera_exists")
@@ -74,7 +74,7 @@ func _validate_detail_blockers(collision_layer: Node) -> void:
 	_expect(detail_count == NEWPORT_TOWN.detail_blockers().size(), "detail_blocker_count")
 
 func _validate_lived_in_details() -> void:
-	var minimum_detail_count := 56 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
+	var minimum_detail_count := 70 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
 	_expect(NEWPORT_TOWN.lived_in_detail_count() >= minimum_detail_count, "lived_in_detail_density")
 
 func _validate_buildings() -> void:
@@ -99,7 +99,7 @@ func _validate_buildings() -> void:
 		district_counts[district] = district_counts.get(district, 0) + 1
 		_expect(seen.has(id), "building_present_" + id)
 
-	var expected_districts := ["harborfront_commercial", "working_wharf", "inland_residential_civic"] if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (["visual_calibration"] if NEWPORT_TOWN.G47_CALIBRATION_MODE else (["waterfront_commercial"] if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else ["harbor_wharf", "waterfront_commercial", "civic_district", "upper_residential_terrace", "service_outfitter_lane"]))
+	var expected_districts := ["harborfront_commercial", "working_wharf", "inland_residential_civic", "support_lane"] if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (["visual_calibration"] if NEWPORT_TOWN.G47_CALIBRATION_MODE else (["waterfront_commercial"] if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else ["harbor_wharf", "waterfront_commercial", "civic_district", "upper_residential_terrace", "service_outfitter_lane"]))
 	for district_id in expected_districts:
 		_expect(district_counts.get(district_id, 0) > 0, "district_has_building_" + district_id)
 
@@ -131,6 +131,8 @@ func _validate_starter_harbor_plan() -> void:
 
 	for building_id in NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS:
 		_expect(actual_building_lots.has(building_id), "actual_lot_for_" + building_id)
+	_expect(not actual_building_lots.has("b_village_hall"), "chapel_coded_hall_not_active")
+	_expect(actual_building_lots.has("b_custom_house"), "custom_house_replaces_civic_hall")
 	for planned_id in NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS:
 		_expect(lot_ids.has(planned_id), "planned_lot_present_" + planned_id)
 	for district_id in ["harborfront_commercial", "working_wharf", "inland_residential_civic", "support_lane"]:
@@ -138,18 +140,24 @@ func _validate_starter_harbor_plan() -> void:
 
 	for building_id in ["b_dock_storehouse", "b_wharf_boathouse", "b_dock_warehouse"]:
 		_expect(actual_building_lots.has(building_id), "harbor_water_asset_placed_" + building_id)
+		for config in NEWPORT_TOWN.building_specs():
+			if String(config.get("id", "")) == building_id:
+				var water_position: Vector2 = config.get("position", Vector2.ZERO)
+				_expect(water_position.y >= 29.5, "harbor_water_asset_in_blue_water_band_" + building_id)
 
 	for config in NEWPORT_TOWN.building_specs():
 		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")
 		if config.has("definition_id"):
 			var definition := BUILDING_CATALOG.building_definition(String(config["definition_id"]))
-			for key in ["building_id", "display_name", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "foot_anchor", "collision_rect", "interaction_size", "interaction_offset", "shadow_size", "district_role"]:
+			for key in ["building_id", "display_name", "role", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "foot_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "shadow_size", "district_role", "district_placement_tags", "notes"]:
 				_expect(definition.has(key), String(config["id"]) + "_definition_has_" + key)
 			var texture_path: String = definition.get("texture_path", "")
-			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/"), String(config["id"]) + "_uses_isolated_sprite")
+			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
+			var tags: Array = definition.get("district_placement_tags", [])
+			_expect(not tags.is_empty(), String(config["id"]) + "_has_district_placement_tags")
 
 	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
-	for needed in ["small home variants", "warehouse", "chandlery/fishmonger", "dock shack", "civic/residence variant", "market stall", "carts", "crates", "barrels", "rope coils", "signs", "fencing"]:
+	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "dedicated crate/barrel/rope prop sprites", "sign variants", "fencing variants", "lantern variants", "chapel/church decision and final art if needed"]:
 		_expect(manifest.has(needed), "missing_asset_manifest_" + needed.replace("/", "_").replace(" ", "_"))
 
 	var plan: Dictionary = NEWPORT_TOWN.starter_district_plan()
@@ -158,6 +166,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("target_total_lots", "") == "10-16", "starter_plan_target_lot_range")
 	_expect(plan_districts.size() >= 4, "starter_plan_district_structure")
 	_expect(plan_loop.size() >= 4, "starter_plan_movement_loop")
+	_expect(BUILDING_CATALOG.available_building_assets().size() >= 20, "asset_audit_catalog_populated")
 
 func _validate_building_node(building: Node2D) -> void:
 	var sprite := building.get_node_or_null("Sprite2D") as Sprite2D

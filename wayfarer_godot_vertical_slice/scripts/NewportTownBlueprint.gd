@@ -31,16 +31,16 @@ const STARTER_HARBOR_BUILDING_IDS := [
 	"b_wharf_boathouse",
 	"b_dock_warehouse",
 	"b_market_shed",
-	"b_village_hall",
+	"b_custom_house",
 	"b_res_small",
+	"b_large_residence",
+	"b_boarding_house",
+	"b_cooperage_shed",
 ]
 
 const STARTER_HARBOR_PLANNED_LOT_IDS := [
 	"lot_west_fishmonger_future",
 	"lot_east_warehouse_future",
-	"lot_civic_residence_future",
-	"lot_lane_home_a_future",
-	"lot_lane_home_b_future",
 ]
 
 const FULL_TOWN_BUILDING_IDS := [
@@ -414,7 +414,7 @@ static func proof_street_walk_targets() -> Dictionary:
 
 static func lived_in_detail_count() -> int:
 	if G410_STARTER_HARBOR_TOWN:
-		return 66
+		return 78
 	if G49_STREET_VIGNETTE:
 		return 38
 	if G48_PROOF_STREET:
@@ -497,11 +497,14 @@ static func building_specs() -> Array:
 			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.7, 17.55), true),
 			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(33.8, 17.45), true),
 			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(39.3, 17.45)),
-			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(37.0, 25.05)),
-			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(22.0, 25.05)),
-			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(11.4, 25.05)),
-			_catalog_building("b_village_hall", "inland_residential_civic", "civic", Vector2(25.5, 12.0)),
+			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(37.2, 30.1)),
+			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(22.2, 30.25)),
+			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(11.35, 30.1)),
+			_catalog_building("b_custom_house", "inland_residential_civic", "customs_house", Vector2(25.5, 12.0)),
 			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(14.0, 11.65)),
+			_catalog_building("b_large_residence", "inland_residential_civic", "civic_residence", Vector2(31.6, 11.7)),
+			_catalog_building("b_boarding_house", "support_lane", "boarding_house", Vector2(38.0, 11.85)),
+			_catalog_building("b_cooperage_shed", "support_lane", "cooperage", Vector2(8.5, 11.65)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -596,16 +599,16 @@ static func starter_lot_specs() -> Array:
 		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(25, 13, 5, 5), "b_chandlery_front"),
 		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(32, 13, 5, 5), "b_shop_house"),
 		_lot("lot_market_shed_anchor", "actual", "harborfront_commercial", "market_stall", Rect2i(37, 13, 6, 5), "b_market_shed"),
-		_lot("lot_storehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(35, 22, 6, 5), "b_dock_storehouse"),
-		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "dock_service", Rect2i(19, 22, 8, 5), "b_wharf_boathouse"),
-		_lot("lot_dock_warehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(9, 22, 7, 5), "b_dock_warehouse"),
-		_lot("lot_village_hall_anchor", "actual", "inland_residential_civic", "civic", Rect2i(23, 8, 8, 5), "b_village_hall"),
+		_lot("lot_storehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(35, 27, 6, 5), "b_dock_storehouse"),
+		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "waterline_dock_service", Rect2i(19, 27, 8, 5), "b_wharf_boathouse"),
+		_lot("lot_dock_warehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(9, 27, 7, 5), "b_dock_warehouse"),
+		_lot("lot_customs_house_anchor", "actual", "inland_residential_civic", "customs_house", Rect2i(23, 8, 8, 5), "b_custom_house"),
 		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(12, 8, 5, 4), "b_res_small"),
+		_lot("lot_civic_residence_anchor", "actual", "inland_residential_civic", "civic_residence", Rect2i(29, 7, 7, 5), "b_large_residence"),
+		_lot("lot_lane_boarding_house_anchor", "actual", "support_lane", "boarding_house", Rect2i(35, 8, 5, 4), "b_boarding_house"),
+		_lot("lot_lane_cooperage_anchor", "actual", "support_lane", "cooperage_or_barrel_shop", Rect2i(6, 8, 4, 4), "b_cooperage_shed"),
 		_lot("lot_west_fishmonger_future", "planned", "harborfront_commercial", "fishmonger_or_service_shop", Rect2i(3, 14, 4, 4)),
 		_lot("lot_east_warehouse_future", "planned", "harborfront_commercial", "warehouse_or_chandlery", Rect2i(41, 14, 5, 4)),
-		_lot("lot_civic_residence_future", "planned", "inland_residential_civic", "civic_residence", Rect2i(27, 7, 7, 5)),
-		_lot("lot_lane_home_a_future", "planned", "support_lane", "small_home", Rect2i(35, 8, 5, 4)),
-		_lot("lot_lane_home_b_future", "planned", "support_lane", "small_home", Rect2i(6, 8, 4, 4)),
 	]
 
 static func planned_lot_specs() -> Array:
@@ -617,18 +620,17 @@ static func planned_lot_specs() -> Array:
 
 static func missing_asset_manifest() -> Array:
 	return [
+		"fishmonger storefront",
+		"cooperage / barrel shop final art",
+		"blacksmith / smithy",
 		"small home variants",
-		"warehouse",
-		"chandlery/fishmonger",
 		"dock shack",
-		"civic/residence variant",
-		"market stall",
 		"carts",
-		"crates",
-		"barrels",
-		"rope coils",
-		"signs",
-		"fencing",
+		"dedicated crate/barrel/rope prop sprites",
+		"sign variants",
+		"fencing variants",
+		"lantern variants",
+		"chapel/church decision and final art if needed",
 	]
 
 static func calibration_variants() -> Array:

@@ -256,6 +256,9 @@ func _draw_g410_active_lot(rect: Rect2, district: String) -> void:
 	elif district == "inland_residential_civic":
 		base = Color("#69835d")
 		alt = Color("#54724f")
+	elif district == "support_lane":
+		base = Color("#5d724f")
+		alt = Color("#486442")
 	_draw_soft_rect(rect, base, alt, 0.38, 5)
 	draw_rect(rect, Color(0.03, 0.04, 0.03, 0.16), false, 1.0)
 
@@ -320,19 +323,19 @@ func _draw_g410_wharf_water() -> void:
 		Vector2(1324, 724), Vector2(1600, 714)
 	]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
 	_draw_plank_world_rect(Rect2(260, 704, 1110, 54), Color("#84765a"), Color("#625841"))
-	_draw_plank_world_rect(Rect2(318, 724, 160, 188), Color("#806548"), Color("#5d4934"))
-	_draw_plank_world_rect(Rect2(608, 718, 280, 196), Color("#886a48"), Color("#624a34"))
-	_draw_plank_world_rect(Rect2(1088, 724, 180, 188), Color("#806548"), Color("#5d4934"))
+	_draw_plank_world_rect(Rect2(342, 724, 46, 206), Color("#806548"), Color("#5d4934"))
+	_draw_plank_world_rect(Rect2(686, 718, 54, 216), Color("#886a48"), Color("#624a34"))
+	_draw_plank_world_rect(Rect2(1168, 724, 46, 206), Color("#806548"), Color("#5d4934"))
 	_draw_post_line(Vector2(270, 708), Vector2(1360, 708), 68.0)
-	_draw_post_line(Vector2(326, 738), Vector2(470, 738), 48.0)
-	_draw_post_line(Vector2(620, 730), Vector2(876, 730), 50.0)
-	_draw_post_line(Vector2(1100, 738), Vector2(1258, 738), 48.0)
-	_draw_post_line(Vector2(326, 742), Vector2(326, 892), 48.0)
-	_draw_post_line(Vector2(470, 742), Vector2(470, 892), 48.0)
-	_draw_post_line(Vector2(620, 728), Vector2(620, 896), 50.0)
-	_draw_post_line(Vector2(876, 728), Vector2(876, 896), 50.0)
-	_draw_post_line(Vector2(1100, 742), Vector2(1100, 892), 48.0)
-	_draw_post_line(Vector2(1258, 742), Vector2(1258, 892), 48.0)
+	_draw_post_line(Vector2(348, 738), Vector2(382, 738), 34.0)
+	_draw_post_line(Vector2(694, 730), Vector2(734, 730), 36.0)
+	_draw_post_line(Vector2(1174, 738), Vector2(1208, 738), 34.0)
+	_draw_post_line(Vector2(346, 742), Vector2(346, 918), 44.0)
+	_draw_post_line(Vector2(386, 742), Vector2(386, 918), 44.0)
+	_draw_post_line(Vector2(690, 728), Vector2(690, 922), 46.0)
+	_draw_post_line(Vector2(738, 728), Vector2(738, 922), 46.0)
+	_draw_post_line(Vector2(1172, 742), Vector2(1172, 918), 44.0)
+	_draw_post_line(Vector2(1212, 742), Vector2(1212, 918), 44.0)
 	for p in [Vector2(266, 714), Vector2(358, 724), Vector2(526, 708), Vector2(716, 718), Vector2(934, 712), Vector2(1140, 716), Vector2(1322, 724)]:
 		_draw_shore_rocks(p)
 	for i in range(26):
@@ -341,13 +344,13 @@ func _draw_g410_wharf_water() -> void:
 		draw_line(Vector2(x, y), Vector2(x + 24.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.14), 2.0)
 
 func _draw_g410_props() -> void:
-	for pos in [Vector2(334, 548), Vector2(460, 548), Vector2(596, 544), Vector2(1030, 550), Vector2(370, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748)]:
+	for pos in [Vector2(276, 386), Vector2(334, 548), Vector2(460, 548), Vector2(596, 544), Vector2(824, 388), Vector2(998, 386), Vector2(1030, 550), Vector2(1236, 388), Vector2(370, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748)]:
 		_draw_contact_shadow(pos + Vector2(14, 11), Vector2(20, 7), 0.15)
 		_draw_crate_stack(pos)
-	for pos in [Vector2(360, 550), Vector2(730, 546), Vector2(936, 548), Vector2(1058, 668), Vector2(418, 728), Vector2(1160, 728)]:
+	for pos in [Vector2(304, 392), Vector2(360, 550), Vector2(730, 546), Vector2(858, 390), Vector2(936, 548), Vector2(1182, 392), Vector2(1058, 668), Vector2(418, 728), Vector2(1160, 728)]:
 		_draw_contact_shadow(pos + Vector2(8, 6), Vector2(17, 6), 0.16)
 		_draw_barrels(pos, 3)
-	for pos in [Vector2(526, 550), Vector2(790, 548), Vector2(552, 688), Vector2(872, 684), Vector2(1070, 746), Vector2(664, 694)]:
+	for pos in [Vector2(298, 408), Vector2(526, 550), Vector2(790, 548), Vector2(552, 688), Vector2(872, 684), Vector2(1256, 408), Vector2(1070, 746), Vector2(664, 694)]:
 		_draw_contact_shadow(pos + Vector2(3, 5), Vector2(15, 5), 0.13)
 		_draw_rope_coil(pos)
 	_draw_market_table(Vector2(706, 656))
@@ -363,12 +366,17 @@ func _draw_g410_props() -> void:
 	_draw_sign_post(Vector2(318, 536), Color("#9d4e38"))
 	_draw_sign_post(Vector2(506, 536), Color("#4f6d48"))
 	_draw_sign_post(Vector2(770, 536), Color("#7a7047"))
+	_draw_sign_post(Vector2(836, 390), Color("#4f6275"))
 	_draw_sign_post(Vector2(920, 536), Color("#90703d"))
 	_draw_sign_post(Vector2(1092, 536), Color("#7e6240"))
+	_draw_sign_post(Vector2(1218, 392), Color("#6c5c43"))
 	_draw_clothesline(Vector2(1118, 350), Vector2(1238, 330))
+	_draw_clothesline(Vector2(236, 354), Vector2(324, 336))
+	_draw_fence_line(Vector2(220, 410), Vector2(330, 410), Color("#d9c89c"))
 	_draw_fence_line(Vector2(206, 380), Vector2(318, 380), Color("#d9c89c"))
 	_draw_fence_line(Vector2(884, 376), Vector2(1010, 376), Color("#d9c89c"))
 	_draw_fence_line(Vector2(1136, 382), Vector2(1262, 382), Color("#d9c89c"))
+	_draw_fence_line(Vector2(1006, 410), Vector2(1088, 410), Color("#d9c89c"))
 	_draw_woodpile(Vector2(404, 418))
 	for pos in [Vector2(134, 438), Vector2(1452, 430), Vector2(1320, 332), Vector2(150, 612), Vector2(1368, 642), Vector2(598, 356), Vector2(1018, 356)]:
 		draw_circle(pos, 13, Color("#2f5d35"))

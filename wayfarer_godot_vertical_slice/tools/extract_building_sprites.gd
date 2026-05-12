@@ -79,6 +79,30 @@ const CROPS := [
 		"rect": Rect2i(430, 826, 386, 390),
 		"output": "newport_market_shed_stalls_isolated.png",
 	},
+	{
+		"id": "newport_custom_house_civic_front",
+		"source": "res://assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+		"rect": Rect2i(38, 19, 389, 385),
+		"output": "newport_custom_house_civic_front_isolated.png",
+	},
+	{
+		"id": "newport_large_front_residence",
+		"source": "res://assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+		"rect": Rect2i(61, 469, 387, 321),
+		"output": "newport_large_front_residence_isolated.png",
+	},
+	{
+		"id": "newport_modest_clapboard_residence_a",
+		"source": "res://assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+		"rect": Rect2i(104, 433, 199, 370),
+		"output": "newport_modest_clapboard_residence_a_isolated.png",
+	},
+	{
+		"id": "service_dependency_shed",
+		"source": "res://assets/buildings/hearthvale_buildings_atlas_v1.png",
+		"rect": Rect2i(899, 939, 250, 245),
+		"output": "service_dependency_shed_isolated.png",
+	},
 ]
 
 func _init() -> void:
