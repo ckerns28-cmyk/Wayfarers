@@ -240,8 +240,11 @@ func _draw_g49_building_lots() -> void:
 
 func _draw_g49_street_plane() -> void:
 	_draw_cobbled_world_rect(Rect2(326, 538, 705, 36), Color("#9b9278"), Color("#746d5a"), 46)
-	for p in [Vector2(468, 566), Vector2(658, 562), Vector2(850, 568)]:
+	for p in [Vector2(480, 566), Vector2(664, 562), Vector2(846, 568)]:
 		_draw_g47_threshold(p, 58)
+	for p in [Vector2(562, 566), Vector2(765, 566)]:
+		draw_rect(Rect2(p + Vector2(-16, -10), Vector2(32, 24)), Color("#6b624f"), true)
+		draw_rect(Rect2(p + Vector2(-16, -10), Vector2(32, 24)), Color(0, 0, 0, 0.20), false, 1.0)
 	draw_rect(Rect2(326, 574, 705, 7), Color("#3d372d"), true)
 	draw_line(Vector2(332, 576), Vector2(1025, 576), Color("#d6c48e"), 1.2)
 	_draw_cobbled_world_rect(Rect2(306, 586, 746, 48), Color("#655f52"), Color("#4b473e"), 72)
@@ -274,13 +277,14 @@ func _draw_g49_wharf_water() -> void:
 		draw_line(Vector2(x, y), Vector2(x + 22.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.13), 2.0)
 
 func _draw_g49_props() -> void:
-	for pos in [Vector2(404, 544), Vector2(512, 548), Vector2(598, 542), Vector2(930, 550)]:
+	for pos in [Vector2(430, 544), Vector2(526, 548), Vector2(602, 542), Vector2(900, 550)]:
 		_draw_crate_stack(pos)
-	for pos in [Vector2(438, 548), Vector2(714, 546), Vector2(966, 548)]:
+	for pos in [Vector2(458, 548), Vector2(728, 546), Vector2(936, 548)]:
 		_draw_barrels(pos, 2)
-	for pos in [Vector2(804, 548), Vector2(462, 636), Vector2(918, 636)]:
+	for pos in [Vector2(786, 548), Vector2(462, 636), Vector2(918, 636)]:
 		_draw_rope_coil(pos)
-	_draw_sign_post(Vector2(540, 536), Color("#4f6d48"))
+	_draw_sign_post(Vector2(558, 536), Color("#4f6d48"))
+	_draw_sign_post(Vector2(770, 536), Color("#7a7047"))
 	_draw_sign_post(Vector2(908, 536), Color("#90703d"))
 	_draw_market_table(Vector2(742, 636))
 	_draw_net_bundle(Vector2(336, 674))

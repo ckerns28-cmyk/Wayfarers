@@ -1,31 +1,31 @@
 extends SceneTree
 
 const OUTPUT_DIR := "res://assets/sprites/buildings/isolated"
-const PADDING := 24
+const PADDING := 18
 
 const CROPS := [
 	{
 		"id": "mercantile_shop",
 		"source": "res://assets/buildings/hearthvale_buildings_atlas_v1.png",
-		"rect": Rect2i(452, 67, 360, 410),
+		"rect": Rect2i(452, 67, 350, 403),
 		"output": "mercantile_shop_isolated.png",
 	},
 	{
 		"id": "newport_counting_house_civic_exchange",
 		"source": "res://assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
-		"rect": Rect2i(418, 475, 398, 350),
+		"rect": Rect2i(378, 475, 410, 322),
 		"output": "newport_counting_house_civic_exchange_isolated.png",
 	},
 	{
 		"id": "newport_chandlery_outfitter_front",
 		"source": "res://assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
-		"rect": Rect2i(836, 418, 418, 418),
+		"rect": Rect2i(815, 444, 387, 352),
 		"output": "newport_chandlery_outfitter_front_isolated.png",
 	},
 	{
 		"id": "newport_shopfront_awning",
 		"source": "res://assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
-		"rect": Rect2i(418, 418, 418, 418),
+		"rect": Rect2i(452, 470, 360, 360),
 		"output": "newport_shopfront_awning_isolated.png",
 	},
 ]
