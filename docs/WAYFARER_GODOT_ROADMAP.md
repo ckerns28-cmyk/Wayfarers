@@ -129,6 +129,15 @@ dressing remaining gaps with existing props, strengthening sidewalk/curb/road/
 harbor-walk/water readability, and muting rear lot blocks so the first
 player-facing review looks less like staged geometry.
 
+Current G-4.10 result: the active Godot scene has reset from vignette polish
+to starter harbor town buildout. The three accepted hero buildings remain as
+style anchors, but the scene now defines a scalable 16-lot starter district
+plan with a harborfront commercial street, working wharf and pier layer,
+inland residential/civic/support lots, and a readable movement loop from main
+street to dock access to inland lanes and back. Temporary future lots are
+muted planned foundations, not debug rectangles. The HUD review identity
+should show `Godot G-4.10 Starter Harbor Town Buildout Reset`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -705,14 +714,67 @@ Acceptance:
   edge remains obvious.
 - Background lots no longer read as debug geometry.
 
-## G-4.10: Newport Harbor Walk Acceptance
+## G-4.10: Starter Harbor Town Buildout Reset
 
-Status: next phase after G-4.9.7 is visually accepted.
+Status: ready for manual itch upload.
 
-G-4.10 turns the accepted street/dock vignette into a 60-90 second
-player-facing Newport harbor walk. It should use the existing street/dock
-scene and accepted building grammar rather than jumping to interiors,
-economy, inventory, combat, save systems, or full map expansion.
+G-4.10 deliberately stops treating the current scene as a finished three-
+building vignette. The three accepted waterfront buildings are preserved as
+style anchors, then placed inside the first real Newport-inspired starter
+harbor district plan.
+
+Implemented:
+
+- HUD identity: `Godot G-4.10 Starter Harbor Town Buildout Reset`.
+- Branch: `codex/g-4-10-starter-harbor-town-buildout-reset`.
+- Active buildings: 9, across harborfront commercial, working wharf, and
+  inland residential/civic layers.
+- Total district lots: 16, including 7 muted planned future lots.
+- Harborfront/commercial row: inn/tavern, mercantile, counting house,
+  chandlery, shop-house frontage, plus future fishmonger/warehouse slots.
+- Dock/wharf layer: wharf apron, three pier fingers, market/storehouse
+  anchors, cargo, barrels, crates, ropes, fish racks, nets, boats, posts, and
+  dock-service planned lots.
+- Inland layer: village hall/civic anchor, harbor cottage, planned residences,
+  civic-residence slot, support lane, fences, clothesline, and yard dressing.
+- Navigation loop: main street frontage -> wharf/dock access -> pier/service
+  work layer -> inland cross lane/support lane -> main street return.
+- Validation checks active building count, 10-16 lot range, planned-lot
+  manifest, missing-asset manifest, no NPCs, seating metadata, and route
+  reachability.
+
+Missing asset manifest for G-4.11:
+
+- small home variants
+- warehouse
+- chandlery/fishmonger
+- dock shack
+- civic/residence variant
+- market stall
+- carts
+- crates
+- barrels
+- rope coils
+- signs
+- fencing
+
+Before NPCs/quests begin:
+
+- Replace planned-lot silhouettes with matching Newport building/prop assets.
+- Confirm manual itch review reads as a working harbor district, not a staged
+  strip.
+- Keep player movement through street, dock, pier, and inland loop clean.
+- Keep interiors, economy, combat, inventory, save systems, and quest/NPC
+  placement out of scope until the town asset kit is expanded.
+
+## G-4.11: Town Asset Kit Expansion / Missing Building Set
+
+Status: next.
+
+Add or integrate the matching building and prop assets needed to replace the
+temporary planned lots and make the starter village feel complete. This phase
+should prioritize small homes, warehouse/chandlery/fishmonger, dock shack,
+civic/residence variants, market stall/carts, and dedicated harbor clutter.
 
 ## G-5: Migration Architecture
 

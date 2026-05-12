@@ -31,7 +31,7 @@ func _ready() -> void:
 	if player.has_method("configure_world_limits"):
 		player.configure_world_limits(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE))
 	var edrin := world.get_node_or_null("EdrinVale") as Node2D
-	if edrin and (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE):
+	if edrin and (not NEWPORT_TOWN.NPCS_ENABLED or NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE):
 		edrin.queue_free()
 	elif edrin:
 		edrin.global_position = NEWPORT_TOWN.EDRIN_SPAWN

@@ -48,6 +48,12 @@ building sprites still showed neighboring atlas content at their edges. It
 does not continue street tuning. It isolates the proof-street building sprites
 into standalone PNGs and switches the catalog to those files first.
 
+G-4.10 resets the work from three-building vignette polish into the first
+starter harbor district buildout. The three accepted hero buildings remain as
+style anchors, but the active scene now has a 16-lot district plan with
+harborfront commercial, working wharf, inland civic/residential, and support
+lane layers.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -145,6 +151,63 @@ G-4.1 through G-4.9 provide practical collision/navigation support only:
   `b_counting_house`, and `b_chandlery_front`, moves the spawn onto the
   storefront lane, and treats harbor/water as foreground context rather than
   a separating map band.
+- G-4.10 is a starter district mode: it keeps the accepted hero buildings,
+  adds compatible existing anchor buildings, draws planned future lots as
+  muted foundations/silhouettes, and validates the main street -> dock ->
+  inland lane -> main street loop before any NPCs or quests are added.
+
+## G-4.10 Starter Harbor District
+
+G-4.10 is the first pass after the vignette gate. It should not be reviewed as
+another tiny polish task. The product target is the beginning of a believable
+functional Newport-inspired starting village that can later support NPCs,
+shops, quests, docks, and town traversal.
+
+Implemented structure:
+
+- Harborfront/commercial row: `b_inn_tavern`, `b_mercantile`,
+  `b_counting_house`, `b_chandlery_front`, and `b_shop_house`.
+- Dock/wharf layer: `b_market_shed`, `b_dock_storehouse`, wharf apron, three
+  pier fingers, dock clutter, rope, cargo, barrels, crates, nets, fish racks,
+  rowboats, and post lines.
+- Inland/background layer: `b_village_hall`, `b_res_small`, planned homes,
+  civic-residence slot, support lane, fencing, clothesline, planting beds, and
+  muted town-block massing.
+- Planned future lots: `lot_west_fishmonger_future`,
+  `lot_wharf_chandler_yard_future`, `lot_east_warehouse_future`,
+  `lot_dock_shack_future`, `lot_civic_residence_future`,
+  `lot_lane_home_a_future`, and `lot_lane_home_b_future`.
+- Movement loop: harborfront main street, storefront doors, wharf edge,
+  west/central/east piers, dock access, inland cross lane, support lanes, and
+  return to the main street.
+
+The active layout data lives in `NewportTownBlueprint.gd`:
+
+- `STARTER_HARBOR_BUILDING_IDS` lists the currently instantiated buildings.
+- `STARTER_HARBOR_PLANNED_LOT_IDS` lists intentional future-lot markers.
+- `starter_lot_specs()` maps actual/planned lots to districts and roles.
+- `starter_district_plan()` records the district structure and loop intent.
+- `missing_asset_manifest()` is the asset TODO list for G-4.11.
+
+Missing asset manifest:
+
+- small home variants
+- warehouse
+- chandlery/fishmonger
+- dock shack
+- civic/residence variant
+- market stall
+- carts
+- crates
+- barrels
+- rope coils
+- signs
+- fencing
+
+Before NPCs or quests begin, G-4.11 should replace the temporary planned lots
+with matching Newport building and prop art, then confirm the street, dock,
+water, sidewalk, wharf, inland lane, and future anchor locations read clearly
+in manual itch review.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
@@ -483,9 +546,9 @@ debug rectangles, no anchor markers, and no building IDs. The seating overlay
 remains available with `B` for inspection, but must be off before screenshots
 used for acceptance.
 
-After G-4.9.6 is accepted on itch, the next Godot phase is G-4.10 Newport
-Harbor Walk Acceptance: a 60-90 second player-facing harbor walk using the
-accepted street/dock scene.
+After G-4.9.6, G-4.9.7 provided the final street-vignette polish gate. G-4.10
+then resets the work from vignette polish into the starter harbor town
+buildout described above.
 
 ## G-4.9.7 Street Vignette Polish Gate
 

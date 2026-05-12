@@ -4,12 +4,44 @@ class_name NewportTownBlueprint
 const TILE := 32
 const MAP_TILES := Vector2i(50, 32)
 const WORLD_SIZE := Vector2(MAP_TILES.x * TILE, MAP_TILES.y * TILE)
-const G49_STREET_VIGNETTE := true
+const G410_STARTER_HARBOR_TOWN := true
+const G49_STREET_VIGNETTE := false
 const G48_PROOF_STREET := false
 const G46_PROOF_FRAME := false
 const G47_CALIBRATION_MODE := false
+const NPCS_ENABLED := false
 const PLAYER_SPAWN := Vector2(675, 612)
 const EDRIN_SPAWN := Vector2(-800, -800)
+
+const HARBORFRONT_BUILDING_IDS := [
+	"b_inn_tavern",
+	"b_mercantile",
+	"b_counting_house",
+	"b_chandlery_front",
+	"b_shop_house",
+]
+
+const STARTER_HARBOR_BUILDING_IDS := [
+	"b_inn_tavern",
+	"b_mercantile",
+	"b_counting_house",
+	"b_chandlery_front",
+	"b_shop_house",
+	"b_dock_storehouse",
+	"b_market_shed",
+	"b_village_hall",
+	"b_res_small",
+]
+
+const STARTER_HARBOR_PLANNED_LOT_IDS := [
+	"lot_west_fishmonger_future",
+	"lot_wharf_chandler_yard_future",
+	"lot_east_warehouse_future",
+	"lot_dock_shack_future",
+	"lot_civic_residence_future",
+	"lot_lane_home_a_future",
+	"lot_lane_home_b_future",
+]
 
 const FULL_TOWN_BUILDING_IDS := [
 	"b_boathouse",
@@ -39,12 +71,20 @@ const PROOF_STREET_IDS := [
 	"b_chandlery_front",
 ]
 
-const BUILDING_IDS := PROOF_STREET_IDS
+const BUILDING_IDS := STARTER_HARBOR_BUILDING_IDS
 
 static func base_ground_rect() -> Rect2i:
 	return Rect2i(0, 0, MAP_TILES.x, MAP_TILES.y)
 
 static func district_rects() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			{"id": "inland_residential_civic", "rect": Rect2i(6, 5, 38, 8), "base": Color("#617a55"), "alt": Color("#4d6848")},
+			{"id": "support_lane", "rect": Rect2i(7, 11, 36, 5), "base": Color("#5a744f"), "alt": Color("#486743")},
+			{"id": "harborfront_commercial", "rect": Rect2i(6, 15, 38, 6), "base": Color("#596f50"), "alt": Color("#465f43")},
+			{"id": "working_wharf", "rect": Rect2i(6, 20, 38, 5), "base": Color("#5f6750"), "alt": Color("#4d5944")},
+			{"id": "harbor_water", "rect": Rect2i(0, 24, MAP_TILES.x, 8), "base": Color("#2f7184"), "alt": Color("#1f5369")},
+		]
 	return [
 		{"id": "upper_residential_terrace", "rect": Rect2i(7, 0, 30, 8), "base": Color("#6e8d5d"), "alt": Color("#527449")},
 		{"id": "civic_district", "rect": Rect2i(18, 6, 16, 8), "base": Color("#708b63"), "alt": Color("#58754f")},
@@ -54,6 +94,12 @@ static func district_rects() -> Array:
 	]
 
 static func primary_roads() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			Rect2i(7, 18, 36, 3),
+			Rect2i(10, 13, 30, 2),
+			Rect2i(20, 11, 3, 10),
+		]
 	if G49_STREET_VIGNETTE:
 		return [
 			Rect2i(10, 18, 27, 3),
@@ -84,6 +130,13 @@ static func primary_roads() -> Array:
 	]
 
 static func secondary_roads() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			Rect2i(8, 16, 34, 2),
+			Rect2i(8, 21, 34, 3),
+			Rect2i(12, 13, 2, 11),
+			Rect2i(34, 13, 2, 11),
+		]
 	if G49_STREET_VIGNETTE:
 		return [
 			Rect2i(13, 17, 21, 1),
@@ -107,6 +160,15 @@ static func secondary_roads() -> Array:
 	]
 
 static func service_lanes() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			Rect2i(8, 12, 9, 1),
+			Rect2i(26, 12, 16, 1),
+			Rect2i(9, 15, 7, 1),
+			Rect2i(36, 15, 7, 1),
+			Rect2i(21, 21, 3, 5),
+			Rect2i(32, 22, 2, 4),
+		]
 	if G49_STREET_VIGNETTE:
 		return []
 	if G48_PROOF_STREET:
@@ -122,6 +184,12 @@ static func service_lanes() -> Array:
 	]
 
 static func civic_square_rects() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			Rect2i(18, 10, 8, 4),
+			Rect2i(12, 11, 4, 2),
+			Rect2i(31, 11, 5, 2),
+		]
 	return [
 		Rect2i(19, 10, 8, 4),
 		Rect2i(18, 6, 15, 1),
@@ -129,6 +197,12 @@ static func civic_square_rects() -> Array:
 	]
 
 static func waterfront_apron_rects() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			Rect2i(7, 16, 36, 2),
+			Rect2i(7, 20, 36, 1),
+			Rect2i(8, 21, 34, 3),
+		]
 	return [
 		Rect2i(8, 15, 25, 2),
 		Rect2i(8, 17, 25, 1),
@@ -136,6 +210,12 @@ static func waterfront_apron_rects() -> Array:
 	]
 
 static func pier_rects() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			{"id": "west_service_pier", "rect": Rect2i(11, 22, 3, 5)},
+			{"id": "central_market_pier", "rect": Rect2i(22, 21, 4, 6)},
+			{"id": "east_storehouse_pier", "rect": Rect2i(33, 22, 3, 5)},
+		]
 	if G49_STREET_VIGNETTE:
 		return [
 			{"id": "street_vignette_short_pier", "rect": Rect2i(20, 21, 3, 5)},
@@ -159,6 +239,10 @@ static func pier_rects() -> Array:
 	]
 
 static func water_rects() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			Rect2i(0, 24, MAP_TILES.x, 8),
+		]
 	if G49_STREET_VIGNETTE:
 		return [
 			Rect2i(0, 24, MAP_TILES.x, 8),
@@ -178,6 +262,12 @@ static func water_rects() -> Array:
 	]
 
 static func wharf_support_rects() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			Rect2i(8, 21, 8, 3),
+			Rect2i(20, 21, 9, 3),
+			Rect2i(32, 21, 8, 3),
+		]
 	return [
 		Rect2i(9, 20, 5, 4),
 		Rect2i(17, 20, 6, 4),
@@ -197,6 +287,11 @@ static func route_tiles() -> Array:
 	return _tiles_from_rects(route_rects())
 
 static func wharf_walkable_tiles() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		var starter_rects: Array = [Rect2i(8, 21, 34, 3)]
+		for pier in pier_rects():
+			starter_rects.append(pier["rect"])
+		return _tiles_from_rects(starter_rects)
 	var rects: Array = [Rect2i(8, 18, 25, 2)]
 	for pier in pier_rects():
 		rects.append(pier["rect"])
@@ -211,6 +306,22 @@ static func water_collision_tiles() -> Array:
 	return blocked
 
 static func reachability_targets() -> Dictionary:
+	if G410_STARTER_HARBOR_TOWN:
+		return {
+			"harborfront_main_street": Vector2i(21, 19),
+			"west_tavern_frontage": Vector2i(10, 18),
+			"mercantile_frontage": Vector2i(15, 18),
+			"counting_house_frontage": Vector2i(21, 18),
+			"chandlery_frontage": Vector2i(26, 18),
+			"east_storefront_frontage": Vector2i(33, 18),
+			"working_wharf_edge": Vector2i(22, 22),
+			"west_service_pier": Vector2i(12, 25),
+			"central_market_pier": Vector2i(23, 25),
+			"east_storehouse_pier": Vector2i(34, 25),
+			"inland_cross_lane": Vector2i(21, 13),
+			"west_support_lane": Vector2i(13, 13),
+			"east_support_lane": Vector2i(35, 13),
+		}
 	if G49_STREET_VIGNETTE:
 		return {
 			"mercantile_frontage": Vector2i(16, 18),
@@ -251,9 +362,22 @@ static func reachability_targets() -> Dictionary:
 	}
 
 static func proof_street_ids() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return HARBORFRONT_BUILDING_IDS.duplicate()
 	return PROOF_STREET_IDS.duplicate()
 
 static func proof_street_walk_targets() -> Dictionary:
+	if G410_STARTER_HARBOR_TOWN:
+		return {
+			"tavern_door": Vector2i(10, 18),
+			"mercantile_door": Vector2i(15, 18),
+			"counting_house_door": Vector2i(21, 18),
+			"chandlery_door": Vector2i(26, 18),
+			"shop_house_door": Vector2i(33, 18),
+			"harborfront_walk": Vector2i(22, 19),
+			"dock_access": Vector2i(23, 22),
+			"inland_return_lane": Vector2i(21, 13),
+		}
 	if G49_STREET_VIGNETTE:
 		return {
 			"mercantile_door": Vector2i(16, 18),
@@ -289,6 +413,8 @@ static func proof_street_walk_targets() -> Dictionary:
 	}
 
 static func lived_in_detail_count() -> int:
+	if G410_STARTER_HARBOR_TOWN:
+		return 66
 	if G49_STREET_VIGNETTE:
 		return 38
 	if G48_PROOF_STREET:
@@ -300,6 +426,24 @@ static func lived_in_detail_count() -> int:
 	return 52
 
 static func detail_blockers() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			_blocker("tavern_loading_barrels", Rect2(334, 548, 30, 18)),
+			_blocker("mercantile_front_crates", Rect2(460, 548, 32, 18)),
+			_blocker("west_alley_rope", Rect2(526, 550, 28, 18)),
+			_blocker("counting_house_goods_left", Rect2(596, 544, 34, 18)),
+			_blocker("counting_house_goods_right", Rect2(730, 546, 30, 18)),
+			_blocker("chandlery_rope_stack", Rect2(790, 548, 30, 18)),
+			_blocker("shop_house_crates", Rect2(1030, 550, 32, 18)),
+			_blocker("wharf_west_cargo", Rect2(370, 666, 36, 20)),
+			_blocker("wharf_market_table", Rect2(706, 656, 62, 20)),
+			_blocker("wharf_east_barrels", Rect2(1024, 666, 34, 22)),
+			_blocker("west_pier_posts", Rect2(374, 758, 34, 18)),
+			_blocker("central_pier_cargo", Rect2(746, 742, 36, 20)),
+			_blocker("east_pier_net", Rect2(1070, 746, 34, 20)),
+			_blocker("inland_civic_bench", Rect2(628, 374, 42, 16)),
+			_blocker("support_lane_woodpile", Rect2(404, 418, 40, 18)),
+		]
 	if G49_STREET_VIGNETTE:
 		return [
 			_blocker("mercantile_base_barrels", Rect2(428, 544, 26, 18)),
@@ -345,6 +489,28 @@ static func player_spawn_tile() -> Vector2i:
 	return Vector2i(floori(PLAYER_SPAWN.x / TILE), floori(PLAYER_SPAWN.y / TILE))
 
 static func building_specs() -> Array:
+	if G410_STARTER_HARBOR_TOWN:
+		return [
+			_proof_street_building("b_inn_tavern", "Inn & Tavern", "inn_tavern_v1", Vector2(9.8, 17.45), Vector2(192.5, 350.0), Vector2(124.0, 34.0), Vector2(0.0, 26.0), 132.0, Vector2(142.0, 20.0), 142.0, {
+				"occupied_rect": Rect2(Vector2(-72.0, -150.0), Vector2(144.0, 162.0)),
+			}),
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.7, 17.55), Vector2(193.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
+				"occupied_rect": Rect2(Vector2(-82.0, -160.0), Vector2(164.0, 172.0)),
+			}),
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.55, 17.55), Vector2(223.0, 340.0), Vector2(104.0, 32.0), Vector2(0.0, 25.0), 150.0, Vector2(166.0, 18.0), 190.0, {
+				"occupied_rect": Rect2(Vector2(-104.0, -166.0), Vector2(208.0, 178.0)),
+			}),
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(25.95, 17.55), Vector2(211.5, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 24.0), 132.0, Vector2(154.0, 18.0), 181.0, {
+				"occupied_rect": Rect2(Vector2(-92.0, -168.0), Vector2(184.0, 180.0)),
+			}),
+			_proof_street_building("b_shop_house", "Shop House", "newport_shopfront_awning", Vector2(32.8, 17.45), Vector2(198.0, 370.0), Vector2(92.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
+				"occupied_rect": Rect2(Vector2(-82.0, -158.0), Vector2(164.0, 170.0)),
+			}),
+			_building("b_dock_storehouse", "Dock Storehouse", "newport_dockside_storehouse_long", "working_wharf", "dock_services", Vector2(37.1, 21.05), 4.0, 1.0),
+			_building("b_market_shed", "Market Shed", "newport_market_shed_stalls", "working_wharf", "dock_services", Vector2(23.6, 21.25), 3.0, 1.0),
+			_building("b_village_hall", "Village Hall", "village_hall_meeting_house", "inland_residential_civic", "civic", Vector2(21.6, 11.4), 3.8, 1.0),
+			_building("b_res_small", "Harbor Cottage", "residence_small", "inland_residential_civic", "residential", Vector2(13.4, 12.6), 2.4, 1.0),
+		]
 	if G49_STREET_VIGNETTE:
 		return [
 			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.9, 17.55), Vector2(193.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
@@ -410,6 +576,69 @@ static func substitution_notes() -> Dictionary:
 		"b_prestige_block": "Uses the formal townhouse block from Newport pack B.",
 	}
 
+static func starter_district_plan() -> Dictionary:
+	return {
+		"target_total_lots": "10-16",
+		"active_building_count": STARTER_HARBOR_BUILDING_IDS.size(),
+		"planned_lot_count": STARTER_HARBOR_PLANNED_LOT_IDS.size(),
+		"districts": [
+			"harborfront_commercial",
+			"working_wharf",
+			"inland_residential_civic",
+			"support_lane",
+		],
+		"movement_loop": [
+			"harborfront_main_street",
+			"dock_access",
+			"working_wharf_edge",
+			"inland_cross_lane",
+			"support_lane_return",
+		],
+	}
+
+static func starter_lot_specs() -> Array:
+	return [
+		_lot("lot_tavern_anchor", "actual", "harborfront_commercial", "tavern", Rect2i(7, 13, 6, 5), "b_inn_tavern"),
+		_lot("lot_mercantile_anchor", "actual", "harborfront_commercial", "mercantile", Rect2i(13, 13, 5, 5), "b_mercantile"),
+		_lot("lot_counting_house_anchor", "actual", "harborfront_commercial", "civic_exchange", Rect2i(18, 12, 6, 6), "b_counting_house"),
+		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(24, 13, 5, 5), "b_chandlery_front"),
+		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(31, 13, 5, 5), "b_shop_house"),
+		_lot("lot_market_shed_anchor", "actual", "working_wharf", "market_stall", Rect2i(21, 20, 5, 3), "b_market_shed"),
+		_lot("lot_storehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(35, 19, 6, 4), "b_dock_storehouse"),
+		_lot("lot_village_hall_anchor", "actual", "inland_residential_civic", "civic", Rect2i(18, 7, 8, 5), "b_village_hall"),
+		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(11, 8, 5, 5), "b_res_small"),
+		_lot("lot_west_fishmonger_future", "planned", "harborfront_commercial", "fishmonger_or_service_shop", Rect2i(3, 14, 4, 4)),
+		_lot("lot_wharf_chandler_yard_future", "planned", "working_wharf", "chandler_yard", Rect2i(14, 21, 4, 3)),
+		_lot("lot_east_warehouse_future", "planned", "harborfront_commercial", "warehouse_or_chandlery", Rect2i(41, 14, 5, 4)),
+		_lot("lot_dock_shack_future", "planned", "working_wharf", "dock_services", Rect2i(30, 21, 4, 3)),
+		_lot("lot_civic_residence_future", "planned", "inland_residential_civic", "civic_residence", Rect2i(27, 7, 7, 5)),
+		_lot("lot_lane_home_a_future", "planned", "support_lane", "small_home", Rect2i(35, 8, 5, 4)),
+		_lot("lot_lane_home_b_future", "planned", "support_lane", "small_home", Rect2i(6, 8, 4, 4)),
+	]
+
+static func planned_lot_specs() -> Array:
+	var planned: Array = []
+	for lot in starter_lot_specs():
+		if lot.get("status", "") == "planned":
+			planned.append(lot)
+	return planned
+
+static func missing_asset_manifest() -> Array:
+	return [
+		"small home variants",
+		"warehouse",
+		"chandlery/fishmonger",
+		"dock shack",
+		"civic/residence variant",
+		"market stall",
+		"carts",
+		"crates",
+		"barrels",
+		"rope coils",
+		"signs",
+		"fencing",
+	]
+
 static func calibration_variants() -> Array:
 	return [
 		{"id": "A", "label": "A Current scale reference - likely failing", "rect": Rect2(58, 72, 650, 345), "player_scale": 1.12, "recommendation": "baseline"},
@@ -426,7 +655,8 @@ static func _calibration_building(id: String, display_name: String, sprite_id: S
 	return config
 
 static func _proof_street_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2, draw_width_override := 0.0, seating_overrides := {}) -> Dictionary:
-	var config := _building(id, display_name, sprite_id, "waterfront_commercial", "commercial", foot_tile, collision_size.x / TILE, collision_size.y / TILE)
+	var district_id := "harborfront_commercial" if G410_STARTER_HARBOR_TOWN else "waterfront_commercial"
+	var config := _building(id, display_name, sprite_id, district_id, "commercial", foot_tile, collision_size.x / TILE, collision_size.y / TILE)
 	var occupied_rect := Rect2(Vector2(-collision_size.x * 0.5, -collision_size.y), collision_size)
 	if seating_overrides.has("occupied_rect"):
 		occupied_rect = seating_overrides["occupied_rect"]
@@ -465,6 +695,16 @@ static func _building(id: String, display_name: String, sprite_id: String, distr
 		"interaction_size": Vector2(max(72.0, collision_tiles_w * TILE * 0.72), 44.0),
 		"interaction_offset": Vector2(0.0, 20.0),
 		"door_offset": Vector2.ZERO,
+	}
+
+static func _lot(id: String, status: String, district: String, role: String, rect: Rect2i, building_id := "") -> Dictionary:
+	return {
+		"id": id,
+		"status": status,
+		"district": district,
+		"role": role,
+		"rect": rect,
+		"building_id": building_id,
 	}
 
 static func _blocker(id: String, rect: Rect2) -> Dictionary:
