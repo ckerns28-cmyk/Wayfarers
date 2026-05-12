@@ -112,7 +112,9 @@ street composition: proof-street building crops were still contaminated by
 neighboring atlas cells. G-4.9.1 does not tune the street. It isolates
 `b_mercantile`, `b_counting_house`, `b_chandlery_front`, and `b_shop_house`
 into standalone transparent PNGs, switches the Godot catalog to those files,
-and updates the review identity to `Godot G-4.9.1 Sprite Crop Isolation`.
+updates the review identity to `Godot G-4.9.1 Sprite Crop Isolation`, and
+expands proof-street collision from shallow facade strips into occupied
+building lots.
 
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
@@ -599,6 +601,8 @@ direction:
 - `b_shop_house` uses `assets/sprites/buildings/isolated/newport_shopfront_awning_isolated.png`.
 - The source atlases remain tracked as source material, but these four
   proof-street sprites no longer render from unsafe atlas subregions.
+- Proof-street `collision_rect`/`lot_rect` metadata now blocks the occupied
+  building volume behind the frontage instead of only a shallow facade strip.
 - The HUD review identity should show
   `Godot G-4.9.1 Sprite Crop Isolation`.
 
