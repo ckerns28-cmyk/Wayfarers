@@ -212,9 +212,9 @@ static func waterfront_apron_rects() -> Array:
 static func pier_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			{"id": "west_service_pier", "rect": Rect2i(11, 22, 3, 5)},
-			{"id": "central_market_pier", "rect": Rect2i(22, 21, 4, 6)},
-			{"id": "east_storehouse_pier", "rect": Rect2i(33, 22, 3, 5)},
+			{"id": "west_service_pier", "rect": Rect2i(10, 22, 5, 6)},
+			{"id": "central_market_pier", "rect": Rect2i(19, 22, 8, 6)},
+			{"id": "east_storehouse_pier", "rect": Rect2i(34, 22, 5, 6)},
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -497,9 +497,9 @@ static func building_specs() -> Array:
 			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.7, 17.55), true),
 			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(33.8, 17.45), true),
 			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(39.3, 17.45)),
-			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(37.0, 24.0)),
-			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(22.0, 24.05)),
-			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(11.4, 24.0)),
+			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(37.0, 25.05)),
+			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(22.0, 25.05)),
+			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(11.4, 25.05)),
 			_catalog_building("b_village_hall", "inland_residential_civic", "civic", Vector2(25.5, 12.0)),
 			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(14.0, 11.65)),
 		]
@@ -596,9 +596,9 @@ static func starter_lot_specs() -> Array:
 		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(25, 13, 5, 5), "b_chandlery_front"),
 		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(32, 13, 5, 5), "b_shop_house"),
 		_lot("lot_market_shed_anchor", "actual", "harborfront_commercial", "market_stall", Rect2i(37, 13, 6, 5), "b_market_shed"),
-		_lot("lot_storehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(35, 21, 6, 4), "b_dock_storehouse"),
-		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "dock_service", Rect2i(19, 21, 7, 4), "b_wharf_boathouse"),
-		_lot("lot_dock_warehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(9, 21, 6, 4), "b_dock_warehouse"),
+		_lot("lot_storehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(35, 22, 6, 5), "b_dock_storehouse"),
+		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "dock_service", Rect2i(19, 22, 8, 5), "b_wharf_boathouse"),
+		_lot("lot_dock_warehouse_anchor", "actual", "working_wharf", "warehouse", Rect2i(9, 22, 7, 5), "b_dock_warehouse"),
 		_lot("lot_village_hall_anchor", "actual", "inland_residential_civic", "civic", Rect2i(23, 8, 8, 5), "b_village_hall"),
 		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(12, 8, 5, 4), "b_res_small"),
 		_lot("lot_west_fishmonger_future", "planned", "harborfront_commercial", "fishmonger_or_service_shop", Rect2i(3, 14, 4, 4)),
