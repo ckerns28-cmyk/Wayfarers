@@ -487,6 +487,26 @@ After G-4.9.6 is accepted on itch, the next Godot phase is G-4.10 Newport
 Harbor Walk Acceptance: a 60-90 second player-facing harbor walk using the
 accepted street/dock scene.
 
+## G-4.9.7 Street Vignette Polish Gate
+
+G-4.9.7 keeps the accepted G-4.9.4/G-4.9.6 building crops, anchors,
+vertical seating, camera, and debug-default behavior. It only polishes the
+current street vignette:
+
+```text
+Build label: Godot G-4.9.7 Street Vignette Polish Gate
+Phase: G-4.9.7 | Review host: itch
+Channel: manual ZIP
+Branch: codex/g-4-9-7-street-vignette-polish-gate
+```
+
+The pass tightens the three-building horizontal rhythm, dresses the remaining
+gaps as loading/setback space with existing props, strengthens sidewalk/curb/
+road/harbor-walk/water separation, adds subtle contact shadows to street and
+dock details, and restyles the rear lot blocks as muted background silhouettes.
+It does not add new buildings, interiors, quests, combat, inventory, save
+systems, production cutover, or a larger map.
+
 ## Deferred
 
 - Final art parity with JavaScript Phase 35.13R.

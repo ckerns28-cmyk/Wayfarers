@@ -122,12 +122,12 @@ seating, extraction, grounding, camera, and player scale, then adjusts only
 horizontal spacing, lot gaps, alleys/setbacks, and nearby props so the three
 waterfront buildings read more like one Newport street frontage.
 
-Current G-4.9.6 target: G-4.9.6 is a small Street Vignette Acceptance Gate.
-It does not change the accepted seating or spacing. It converts the current
-street vignette into a clean player-facing review build: debug overlays are
-off by default, building IDs/debug labels are hidden in normal review mode,
-the G-4.9.6 build identity is visible, and validation confirms sidewalk/
-street reachability plus no crop/seating regression.
+Current G-4.9.7 target: G-4.9.7 is a Street Vignette Polish Gate on top of
+the accepted G-4.9.6 placement fix. It keeps crop seating, vertical grounding,
+camera, and debug-default behavior intact while tightening horizontal spacing,
+dressing remaining gaps with existing props, strengthening sidewalk/curb/road/
+harbor-walk/water readability, and muting rear lot blocks so the first
+player-facing review looks less like staged geometry.
 
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
@@ -675,9 +675,39 @@ Acceptance:
 - If debug overlays or building labels appear by default, classify as
   `DEBUG_REVIEW_BLOCKER`.
 
+## G-4.9.7: Street Vignette Polish Gate
+
+Status: acceptance polish after the G-4.9.6 placement fix.
+
+G-4.9.7 preserves the accepted building extraction, crop seating, vertical
+grounding, camera, and debug-label behavior. It is scoped to player-facing
+streetscape polish:
+
+- HUD identity: `Godot G-4.9.7 Street Vignette Polish Gate`.
+- Horizontal spacing is adjusted only enough to make the three accepted
+  buildings feel like a natural Newport frontage rather than evenly staged
+  test sprites.
+- Remaining gaps are dressed as loading/setback space with existing props.
+- Sidewalk, curb, road, harbor walk, dock edge, and water receive stronger
+  tonal separation.
+- Rear lot silhouettes are muted so they read as background massing instead
+  of temporary debug rectangles.
+- Contact shadows under props, stoops, lamps, dock details, and building
+  bases are used to reduce floating.
+- No Worker files, `wrangler.toml`, interiors, economy, inventory, combat,
+  save systems, or map expansion are included.
+
+Acceptance:
+
+- Latest itch upload shows the G-4.9.7 build label.
+- The three accepted buildings remain seated with no crop/seating regression.
+- Player walkable space in front of each building and toward the pier-facing
+  edge remains obvious.
+- Background lots no longer read as debug geometry.
+
 ## G-4.10: Newport Harbor Walk Acceptance
 
-Status: next phase after G-4.9.6 is visually accepted.
+Status: next phase after G-4.9.7 is visually accepted.
 
 G-4.10 turns the accepted street/dock vignette into a 60-90 second
 player-facing Newport harbor walk. It should use the existing street/dock

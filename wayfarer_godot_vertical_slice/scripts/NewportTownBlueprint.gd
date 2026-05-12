@@ -290,7 +290,7 @@ static func proof_street_walk_targets() -> Dictionary:
 
 static func lived_in_detail_count() -> int:
 	if G49_STREET_VIGNETTE:
-		return 30
+		return 38
 	if G48_PROOF_STREET:
 		return 24
 	if G47_CALIBRATION_MODE:
@@ -302,12 +302,12 @@ static func lived_in_detail_count() -> int:
 static func detail_blockers() -> Array:
 	if G49_STREET_VIGNETTE:
 		return [
-			_blocker("mercantile_base_barrels", Rect2(430, 544, 26, 18)),
-			_blocker("west_loading_crates", Rect2(526, 548, 28, 18)),
-			_blocker("counting_house_left_goods", Rect2(602, 542, 32, 18)),
-			_blocker("counting_house_right_barrels", Rect2(728, 546, 28, 18)),
+			_blocker("mercantile_base_barrels", Rect2(428, 544, 26, 18)),
+			_blocker("west_loading_crates", Rect2(522, 548, 28, 18)),
+			_blocker("counting_house_left_goods", Rect2(592, 542, 32, 18)),
+			_blocker("counting_house_right_barrels", Rect2(730, 546, 28, 18)),
 			_blocker("east_alley_rope_stack", Rect2(786, 548, 30, 18)),
-			_blocker("chandlery_side_crates", Rect2(900, 550, 28, 18)),
+			_blocker("chandlery_side_crates", Rect2(890, 550, 28, 18)),
 			_blocker("foreground_post_stack", Rect2(398, 678, 24, 16)),
 		]
 	if G48_PROOF_STREET:
@@ -347,13 +347,13 @@ static func player_spawn_tile() -> Vector2i:
 static func building_specs() -> Array:
 	if G49_STREET_VIGNETTE:
 		return [
-			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(15.0, 17.55), Vector2(193.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
+			_proof_street_building("b_mercantile", "Mercantile", "mercantile_shop", Vector2(14.9, 17.55), Vector2(193.0, 421.0), Vector2(88.0, 30.0), Vector2(0.0, 24.0), 122.0, Vector2(138.0, 17.0), 150.0, {
 				"occupied_rect": Rect2(Vector2(-82.0, -160.0), Vector2(164.0, 172.0)),
 			}),
-			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.75, 17.55), Vector2(223.0, 340.0), Vector2(104.0, 32.0), Vector2(0.0, 25.0), 150.0, Vector2(166.0, 18.0), 190.0, {
+			_proof_street_building("b_counting_house", "Counting House", "newport_counting_house_civic_exchange", Vector2(20.55, 17.55), Vector2(223.0, 340.0), Vector2(104.0, 32.0), Vector2(0.0, 25.0), 150.0, Vector2(166.0, 18.0), 190.0, {
 				"occupied_rect": Rect2(Vector2(-104.0, -166.0), Vector2(208.0, 178.0)),
 			}),
-			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(26.45, 17.55), Vector2(211.5, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 24.0), 132.0, Vector2(154.0, 18.0), 181.0, {
+			_proof_street_building("b_chandlery_front", "Chandlery", "newport_chandlery_outfitter_front", Vector2(25.95, 17.55), Vector2(211.5, 370.0), Vector2(98.0, 31.0), Vector2(0.0, 24.0), 132.0, Vector2(154.0, 18.0), 181.0, {
 				"occupied_rect": Rect2(Vector2(-92.0, -168.0), Vector2(184.0, 180.0)),
 			}),
 		]

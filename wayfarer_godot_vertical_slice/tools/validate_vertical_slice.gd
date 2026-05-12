@@ -26,8 +26,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.9.6", "build_phase_g_4_9_6")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.9.6 Street Vignette Acceptance Gate", "build_label_g_4_9_6")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.9.7", "build_phase_g_4_9_7")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.9.7 Street Vignette Polish Gate", "build_label_g_4_9_7")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")

@@ -209,11 +209,11 @@ func _draw_props() -> void:
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)
 	_draw_soft_rect(Rect2(280, 268, 830, 330), Color("#516d49"), Color("#405a3f"), 0.80, 18)
-	_draw_soft_rect(Rect2(330, 392, 690, 118), Color("#5e7353"), Color("#4e6648"), 0.72, 10)
+	_draw_soft_rect(Rect2(324, 386, 700, 128), Color("#607854"), Color("#4e6849"), 0.64, 10)
 	_draw_g49_building_lots()
-	_draw_planting_bed(Rect2(300, 430, 72, 58), Color("#637a55"), Color("#4f6848"))
-	_draw_planting_bed(Rect2(940, 404, 96, 72), Color("#637a55"), Color("#4f6848"))
-	_draw_planting_bed(Rect2(550, 338, 96, 42), Color("#617650"), Color("#4e6648"))
+	_draw_planting_bed(Rect2(286, 430, 70, 54), Color("#637a55"), Color("#4f6848"))
+	_draw_planting_bed(Rect2(930, 404, 92, 70), Color("#637a55"), Color("#4f6848"))
+	_draw_planting_bed(Rect2(548, 338, 92, 40), Color("#617650"), Color("#4e6648"))
 
 func _draw_g49_building_lots() -> void:
 	for raw_config in NEWPORT_TOWN.building_specs():
@@ -225,46 +225,53 @@ func _draw_g49_building_lots() -> void:
 		var lot := Rect2(origin + local_lot.position, local_lot.size)
 		var frontage_y := lot.position.y + lot.size.y
 
-		draw_rect(lot.grow(9.0), Color(0.03, 0.04, 0.025, 0.20), true)
-		draw_rect(lot, Color("#495a43").lerp(Color("#2f3d31"), 0.35), true)
-		draw_rect(Rect2(lot.position.x, lot.position.y, lot.size.x, maxf(0.0, lot.size.y - 34.0)), Color(0.16, 0.20, 0.15, 0.28), true)
-		draw_rect(Rect2(lot.position.x + 6.0, lot.position.y + 8.0, maxf(0.0, lot.size.x - 12.0), maxf(0.0, lot.size.y - 48.0)), Color(0.38, 0.47, 0.35, 0.18), true)
-		draw_rect(Rect2(lot.position.x + 2.0, frontage_y - 34.0, maxf(0.0, lot.size.x - 4.0), 34.0), Color("#766f5b").lerp(Color("#555143"), 0.26), true)
-		draw_line(Vector2(lot.position.x + 2.0, frontage_y - 34.0), Vector2(lot.position.x + lot.size.x - 2.0, frontage_y - 34.0), Color(0.04, 0.04, 0.03, 0.34), 2.0)
-		draw_line(Vector2(lot.position.x, lot.position.y), Vector2(lot.position.x, frontage_y), Color(0.03, 0.04, 0.025, 0.26), 2.0)
-		draw_line(Vector2(lot.position.x + lot.size.x, lot.position.y), Vector2(lot.position.x + lot.size.x, frontage_y), Color(0.03, 0.04, 0.025, 0.26), 2.0)
-		draw_line(Vector2(lot.position.x + 5.0, lot.position.y + 5.0), Vector2(lot.position.x + lot.size.x - 5.0, lot.position.y + 5.0), Color(0.80, 0.77, 0.58, 0.10), 1.0)
-		draw_line(Vector2(lot.position.x + 8.0, frontage_y), Vector2(lot.position.x + lot.size.x - 8.0, frontage_y), Color("#d2bd7f"), 1.8)
-		for x in range(int(lot.position.x + 12.0), int(lot.position.x + lot.size.x - 12.0), 34):
-			draw_line(Vector2(x, frontage_y - 12.0), Vector2(x + 18.0, frontage_y - 12.0), Color(0.86, 0.80, 0.58, 0.14), 1.0)
+		var rear_rect := Rect2(lot.position + Vector2(10.0, 14.0), Vector2(maxf(0.0, lot.size.x - 20.0), maxf(0.0, lot.size.y - 54.0)))
+		var frontage_rect := Rect2(lot.position.x + 4.0, frontage_y - 32.0, maxf(0.0, lot.size.x - 8.0), 32.0)
+		draw_rect(lot.grow(10.0), Color(0.02, 0.03, 0.02, 0.12), true)
+		_draw_soft_rect(rear_rect, Color("#40523f"), Color("#2f3f32"), 0.22, 5)
+		draw_rect(Rect2(rear_rect.position.x + 8.0, rear_rect.position.y + 8.0, maxf(0.0, rear_rect.size.x - 16.0), maxf(0.0, rear_rect.size.y - 18.0)), Color(0.53, 0.60, 0.45, 0.055), true)
+		draw_rect(frontage_rect, Color(0.57, 0.55, 0.44, 0.42), true)
+		draw_line(Vector2(frontage_rect.position.x, frontage_rect.position.y + 2.0), Vector2(frontage_rect.position.x + frontage_rect.size.x, frontage_rect.position.y + 2.0), Color(0.04, 0.04, 0.03, 0.22), 1.6)
+		draw_line(Vector2(frontage_rect.position.x + 6.0, frontage_y - 1.0), Vector2(frontage_rect.position.x + frontage_rect.size.x - 6.0, frontage_y - 1.0), Color("#c8b985"), 1.2)
+		for x in range(int(frontage_rect.position.x + 14.0), int(frontage_rect.position.x + frontage_rect.size.x - 12.0), 38):
+			draw_line(Vector2(x, frontage_y - 13.0), Vector2(x + 16.0, frontage_y - 13.0), Color(0.90, 0.82, 0.58, 0.10), 1.0)
 
 func _draw_g49_street_plane() -> void:
-	_draw_cobbled_world_rect(Rect2(326, 538, 705, 36), Color("#9b9278"), Color("#746d5a"), 46)
-	for p in [Vector2(480, 566), Vector2(664, 562), Vector2(846, 568)]:
+	_draw_cobbled_world_rect(Rect2(312, 538, 724, 36), Color("#9b9278"), Color("#746d5a"), 54)
+	draw_line(Vector2(318, 541), Vector2(1030, 541), Color(1.0, 0.93, 0.68, 0.10), 1.0)
+	draw_line(Vector2(318, 573), Vector2(1030, 573), Color(0.05, 0.04, 0.03, 0.20), 1.0)
+	for p in [Vector2(477, 566), Vector2(658, 562), Vector2(831, 568)]:
 		_draw_g47_threshold(p, 58)
-	for p in [Vector2(562, 566), Vector2(765, 566)]:
-		draw_rect(Rect2(p + Vector2(-16, -10), Vector2(32, 24)), Color("#6b624f"), true)
-		draw_rect(Rect2(p + Vector2(-16, -10), Vector2(32, 24)), Color(0, 0, 0, 0.20), false, 1.0)
-	draw_rect(Rect2(326, 574, 705, 7), Color("#3d372d"), true)
-	draw_line(Vector2(332, 576), Vector2(1025, 576), Color("#d6c48e"), 1.2)
-	_draw_cobbled_world_rect(Rect2(306, 586, 746, 48), Color("#655f52"), Color("#4b473e"), 72)
-	draw_line(Vector2(316, 608), Vector2(1044, 604), Color(0.96, 0.86, 0.62, 0.10), 1.0)
-	draw_line(Vector2(318, 630), Vector2(1040, 626), Color(0.04, 0.04, 0.03, 0.18), 1.0)
-	_draw_plank_world_rect(Rect2(315, 646, 718, 36), Color("#766950"), Color("#5b503d"))
-	draw_line(Vector2(320, 644), Vector2(1028, 644), Color(0.04, 0.04, 0.03, 0.30), 2.0)
-	for p in [Vector2(344, 646), Vector2(414, 646), Vector2(548, 646), Vector2(692, 646), Vector2(828, 646), Vector2(998, 646)]:
+	for p in [Vector2(548, 566), Vector2(760, 566)]:
+		draw_rect(Rect2(p + Vector2(-20, -10), Vector2(40, 24)), Color("#6b624f"), true)
+		draw_rect(Rect2(p + Vector2(-20, -10), Vector2(40, 24)), Color(0, 0, 0, 0.20), false, 1.0)
+	draw_rect(Rect2(312, 574, 724, 7), Color("#3d372d"), true)
+	draw_line(Vector2(318, 576), Vector2(1030, 576), Color("#d6c48e"), 1.2)
+	draw_rect(Rect2(312, 581, 724, 3), Color(0.06, 0.05, 0.04, 0.26), true)
+	_draw_cobbled_world_rect(Rect2(292, 586, 764, 48), Color("#655f52"), Color("#4b473e"), 86)
+	draw_line(Vector2(302, 608), Vector2(1048, 604), Color(0.96, 0.86, 0.62, 0.10), 1.0)
+	draw_line(Vector2(304, 630), Vector2(1044, 626), Color(0.04, 0.04, 0.03, 0.18), 1.0)
+	draw_rect(Rect2(296, 634, 756, 4), Color(0.03, 0.035, 0.03, 0.28), true)
+	_draw_plank_world_rect(Rect2(300, 646, 742, 38), Color("#766950"), Color("#5b503d"))
+	draw_line(Vector2(306, 644), Vector2(1036, 644), Color(0.04, 0.04, 0.03, 0.30), 2.0)
+	draw_line(Vector2(306, 684), Vector2(1036, 684), Color(0.02, 0.03, 0.025, 0.24), 2.0)
+	for p in [Vector2(334, 646), Vector2(414, 646), Vector2(548, 646), Vector2(692, 646), Vector2(828, 646), Vector2(1008, 646)]:
 		_draw_post(p)
-	for p in [Vector2(372, 574), Vector2(536, 574), Vector2(746, 574), Vector2(918, 574)]:
+	for p in [Vector2(372, 574), Vector2(536, 574), Vector2(746, 574), Vector2(916, 574)]:
 		draw_circle(p, 3.5, Color("#30271d"))
 		draw_circle(p + Vector2(0, -5), 2.8, Color("#d8b56f"))
 
 func _draw_g49_wharf_water() -> void:
 	_draw_soft_rect(Rect2(0, 704, NEWPORT_TOWN.WORLD_SIZE.x, 320), Color("#2f7184"), Color("#1f5369"), 1.0, 24)
 	draw_colored_polygon(PackedVector2Array([
-		Vector2(0, 676), Vector2(310, 672), Vector2(430, 682), Vector2(600, 674),
-		Vector2(760, 682), Vector2(930, 674), Vector2(1120, 684), Vector2(1600, 676),
+		Vector2(0, 678), Vector2(310, 674), Vector2(430, 682), Vector2(600, 676),
+		Vector2(760, 682), Vector2(930, 676), Vector2(1120, 684), Vector2(1600, 678),
 		Vector2(1600, 724), Vector2(0, 724)
-	]), Color(0.28, 0.38, 0.32, 0.38))
+	]), Color(0.28, 0.38, 0.32, 0.44))
+	draw_polyline(PackedVector2Array([
+		Vector2(0, 678), Vector2(310, 674), Vector2(430, 682), Vector2(600, 676),
+		Vector2(760, 682), Vector2(930, 676), Vector2(1120, 684), Vector2(1600, 678)
+	]), Color(0.04, 0.10, 0.10, 0.36), 3.0)
 	_draw_plank_world_rect(Rect2(640, 676, 86, 154), Color("#846849"), Color("#604a35"))
 	_draw_post_line(Vector2(318, 684), Vector2(1030, 684), 72.0)
 	_draw_post_line(Vector2(648, 686), Vector2(648, 818), 48.0)
@@ -277,23 +284,31 @@ func _draw_g49_wharf_water() -> void:
 		draw_line(Vector2(x, y), Vector2(x + 22.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.13), 2.0)
 
 func _draw_g49_props() -> void:
-	for pos in [Vector2(430, 544), Vector2(526, 548), Vector2(602, 542), Vector2(900, 550)]:
+	for pos in [Vector2(428, 544), Vector2(522, 548), Vector2(592, 542), Vector2(890, 550)]:
+		_draw_contact_shadow(pos + Vector2(14, 11), Vector2(20, 7), 0.15)
 		_draw_crate_stack(pos)
-	for pos in [Vector2(458, 548), Vector2(728, 546), Vector2(936, 548)]:
+	for pos in [Vector2(456, 548), Vector2(730, 546), Vector2(928, 548)]:
+		_draw_contact_shadow(pos + Vector2(8, 6), Vector2(17, 6), 0.16)
 		_draw_barrels(pos, 2)
 	for pos in [Vector2(786, 548), Vector2(462, 636), Vector2(918, 636)]:
+		_draw_contact_shadow(pos + Vector2(3, 5), Vector2(15, 5), 0.13)
 		_draw_rope_coil(pos)
-	_draw_sign_post(Vector2(558, 536), Color("#4f6d48"))
+	_draw_sign_post(Vector2(552, 536), Color("#4f6d48"))
 	_draw_sign_post(Vector2(770, 536), Color("#7a7047"))
 	_draw_sign_post(Vector2(908, 536), Color("#90703d"))
+	_draw_contact_shadow(Vector2(1014, 561), Vector2(20, 7), 0.14)
+	_draw_crate_stack(Vector2(1000, 550))
+	_draw_contact_shadow(Vector2(771, 656), Vector2(34, 8), 0.14)
 	_draw_market_table(Vector2(742, 636))
 	_draw_net_bundle(Vector2(336, 674))
 	_draw_net_bundle(Vector2(1000, 676))
 	_draw_rowboat(Vector2(684, 852))
 	for p in [Vector2(376, 562), Vector2(786, 560), Vector2(1010, 565)]:
+		_draw_contact_shadow(p + Vector2(0, 9), Vector2(9, 4), 0.12)
 		draw_rect(Rect2(p + Vector2(-3, -10), Vector2(6, 20)), Color("#3f2e20"), true)
 		draw_circle(p + Vector2(0, -14), 4, Color("#d6b36e"))
 	for pos in [Vector2(354, 530), Vector2(988, 528)]:
+		_draw_contact_shadow(pos + Vector2(4, 10), Vector2(10, 4), 0.10)
 		draw_rect(Rect2(pos, Vector2(5, 12)), Color("#4a5f39"), true)
 		draw_circle(pos + Vector2(2, -2), 5, Color("#6f8b55"))
 
@@ -719,3 +734,6 @@ func _draw_ellipse(center: Vector2, radii: Vector2, color: Color) -> void:
 	draw_set_transform(center, 0.0, Vector2(radii.x / 16.0, radii.y / 16.0))
 	draw_circle(Vector2.ZERO, 16.0, color)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+func _draw_contact_shadow(center: Vector2, radii: Vector2, alpha := 0.14) -> void:
+	_draw_ellipse(center, radii, Color(0.02, 0.02, 0.015, alpha))
