@@ -643,23 +643,28 @@ Build label: Godot G-4.13B Rowhouse Infill Density
 Asset audit:
 
 - `newport_narrow_merchant_townhouse_a`: activated as a narrow
-  shop-house/rowhouse for `b_printer_rowhouse`.
+  shop-house/rowhouse for `b_printer_rowhouse`, then re-seated as a commercial
+  street-wall stitch between the chandlery and shop house.
 - `newport_formal_townhouse_block_a`: activated as a formal inland townhouse
-  block for `b_clerk_townhouse`.
+  block for `b_clerk_townhouse`, fronting the inland/support road west of the
+  custom house.
 - `newport_modest_clapboard_residence_a`: reused at smaller scale as
   `b_dockworker_rowhouse`; it already has an isolated crop and remains suitable
-  for support-lane lodging.
+  for lane-front support-lane lodging.
 - Deferred candidates: `newport_chandlery_cottage`,
   `newport_waterfront_shop_house`, and `newport_market_frontage_row`.
 
 Infill slots used:
 
-- `slot_shop_market_townhouse_pair`: partially active with
-  `b_printer_rowhouse`, keeping the market approach and east service lane open.
+- `slot_shop_market_townhouse_pair`: active with `b_printer_rowhouse` as a
+  street-wall infill between the chandlery and shop house after rejecting the
+  old behind-market placement.
 - `slot_cottage_customs_inland_townhouse`: active with `b_clerk_townhouse`,
-  keeping the inland road and custom-house approach walkable.
+  seated on the inland/support road edge while keeping the custom-house
+  approach walkable.
 - `slot_support_lane_boarding_gap`: active with `b_dockworker_rowhouse`,
-  keeping the east support-lane return readable.
+  seated as a lane-front rowhouse beside the boarding-house block while keeping
+  the east support-lane return readable.
 
 Infill slots deferred:
 

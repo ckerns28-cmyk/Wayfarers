@@ -189,14 +189,15 @@ lane, rear roads, cross-lanes, commercial street, and dock layer. The HUD
 review identity should show `Godot G-4.13A.1 Walkability Blocker Hotfix`.
 
 Current G-4.13B result: three narrow infill buildings are active without
-changing the town footprint or undoing G-4.13A footprints. `b_printer_rowhouse`
-uses the narrow merchant townhouse asset between the shop house and market,
-`b_clerk_townhouse` uses the formal townhouse block between the cottage and
-custom house, and `b_dockworker_rowhouse` uses the modest clapboard residence
-as support-lane lodging. The tavern-to-mercantile and counting-to-chandlery
-one-tile throats stay deferred because they protect the accepted rear-road and
-cross-lane walkability. The HUD review identity should show `Godot G-4.13B
-Rowhouse Infill Density`.
+changing the town footprint or undoing G-4.13A footprints. After screenshot
+review, the infill was re-seated as purposeful street-wall fabric rather than
+back-lot gap filling: `b_printer_rowhouse` now stitches the commercial frontage
+between the chandlery and shop house, `b_clerk_townhouse` fronts the
+inland/support road west of the custom house, and `b_dockworker_rowhouse`
+fronts the support-lane return beside the boarding-house block. The
+tavern-to-mercantile and counting-to-chandlery one-tile throats stay deferred
+because they protect the accepted rear-road and cross-lane walkability. The HUD
+review identity should show `Godot G-4.13B Rowhouse Infill Density`.
 
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
@@ -1076,13 +1077,15 @@ Implemented:
 - Branch: `codex/g-4-13b-rowhouse-townhouse-infill-density`.
 - Active infill:
   - `b_printer_rowhouse`: `newport_narrow_merchant_townhouse_a`, placed in
-    `slot_shop_market_townhouse_pair` as a narrow print-shop/rowhouse between
-    the shop house and market shed.
+    `slot_shop_market_townhouse_pair` as a narrow print-shop/rowhouse street
+    stitch between the chandlery and shop house after rejecting the old
+    behind-market placement.
   - `b_clerk_townhouse`: `newport_formal_townhouse_block_a`, placed in
-    `slot_cottage_customs_inland_townhouse` between the cottage and custom
-    house.
+    `slot_cottage_customs_inland_townhouse` on the inland/support road edge
+    west of the custom house.
   - `b_dockworker_rowhouse`: `newport_modest_clapboard_residence_a`, placed in
-    `slot_support_lane_boarding_gap` as support-lane lodging.
+    `slot_support_lane_boarding_gap` as lane-front support-lane lodging beside
+    the boarding-house block.
 - Deferred infill:
   - `slot_tavern_mercantile_narrow_rowhouse`, kept open to preserve the
     accepted tavern/mercantile rear-lane throat.
