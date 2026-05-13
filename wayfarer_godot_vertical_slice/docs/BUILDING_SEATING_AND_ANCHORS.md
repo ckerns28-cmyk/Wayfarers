@@ -32,11 +32,11 @@ standalone PNGs from `assets/sprites/buildings/isolated/`, not unsafe live
 atlas subregions. Seating is only meaningful once the rendered sprite contains
 one building and no neighboring atlas fragments.
 
-G-4.9.1 also changes the proof-street collision expectation: a building is not
-just a facade strip. Its `collision_rect`/`lot_rect` represents the occupied
-building lot behind the street frontage so the player cannot walk through or
-behind the building body. The frontage interaction area remains south of the
-footline, but the solid lot extends north from the street edge.
+G-4.13A supersedes the older proof-street collision expectation. A building is
+not a facade strip, but its full painted rectangle is also not the gameplay
+body. The broad lot/body rectangle remains planning and debug context only.
+The blocking physics is now the shallow `collision_footprint` at the visible
+ground contact so rear roads, alleys, and cross-lanes can stay walkable.
 
 ## Runtime Meaning
 
@@ -70,24 +70,37 @@ large correction, recheck the source `visual_base_anchor` first.
 
 The width of the visible footline marker shown in seating debug mode.
 
+`visual_bounds`
+
+The full rendered sprite rectangle in local world space. It is for art/crop
+review only and must not be used as a physics blocker.
+
 `frontage_offset`
 
 The local world-space point where the building faces walkable street or apron
 space. Door and interaction markers use this same frontage plane unless a
 building needs a special case.
 
-`collision_rect`
+`collision_footprint`
 
-The local world-space physical building footprint. In the current proof
-street, this covers the occupied lot behind the facade, not only the visible
-front trim. It should block the playable body of the building while still
-ignoring roof overhangs, painted shadows, chimneys, signboards, and transparent
-image padding.
+The local world-space physical blocker used by the `StaticBody2D`. It should
+cover the base/foundation/solid ground contact of the building, not the roof,
+upper wall projection, painted shadows, transparent padding, or planning lot.
 
-`lot_rect`
+`interaction_zone`
 
-The same occupied lot expressed for visual/debug review. It is the answer to
-"which ground squares does this building actually take up?"
+The local standing/interact rectangle, usually just south of the frontage. It
+must stay aligned to doors and street-facing approaches.
+
+`lot_bounds`
+
+The planning/placement area for composition review. It answers "where does
+this building belong in the town plan?" but does not block movement.
+
+`collision_rect` and `lot_rect`
+
+Legacy aliases kept for compatibility. In G-4.13A, `collision_rect` mirrors
+`collision_footprint`, while `lot_rect` mirrors `lot_bounds`.
 
 `y_sort_offset`
 
@@ -106,14 +119,18 @@ Press `B` to toggle the proof-street seating overlay. It is off by default.
 
 The overlay shows:
 
+- visual bounds
+- lot bounds
+- collision footprint
+- interaction zone
 - base/footline marker
 - frontage marker
-- collision rectangle
 - y-sort/depth anchor
 - building ID label
 
-`F3` still toggles the broader building debug overlay. Use `B` for G-4.9
-seating review because it only targets the active vignette buildings.
+`F3` still toggles the broader building debug overlay. In the starter harbor
+town, `B` targets the active town buildings and uses the same labels. Clean
+review mode keeps all of these overlays hidden.
 
 ## Adding Future Buildings
 
@@ -122,11 +139,12 @@ seating review because it only targets the active vignette buildings.
 3. Measure or estimate `visual_base_anchor` from the source region.
 4. Keep `sprite_offset` small and review the door/base against the street.
 5. Set `frontage_offset` toward real walkable street space.
-6. Set `collision_rect`/`lot_rect` to the occupied building lot behind the
-   facade, not to a shallow label strip and not to the whole transparent image.
-7. Set `shadow_size` and `shadow_offset` under the visual base.
-8. Review with `B` enabled and debug off.
-9. Run `tools/validate_vertical_slice.gd`.
+6. Set `lot_bounds` for planning and composition.
+7. Set `collision_footprint` to the tight ground-contact body only.
+8. Set `interaction_zone` at the frontage where the player should stand.
+9. Set `shadow_size` and `shadow_offset` under the visual base.
+10. Review with `B` enabled and debug off.
+11. Run `tools/validate_vertical_slice.gd`.
 
 The acceptance test is player-scale: the player should be able to walk in
 front of the building, read the door/frontage, and understand why the building

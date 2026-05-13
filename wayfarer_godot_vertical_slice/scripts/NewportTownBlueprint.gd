@@ -43,6 +43,14 @@ const STARTER_HARBOR_PLANNED_LOT_IDS := [
 	"lot_east_warehouse_future",
 ]
 
+const G413B_ROWHOUSE_INFILL_SLOT_IDS := [
+	"slot_tavern_mercantile_narrow_rowhouse",
+	"slot_counting_chandlery_lane_edge_shop",
+	"slot_shop_market_townhouse_pair",
+	"slot_cottage_customs_inland_townhouse",
+	"slot_support_lane_boarding_gap",
+]
+
 const FULL_TOWN_BUILDING_IDS := [
 	"b_boathouse",
 	"b_dock_storehouse",
@@ -583,6 +591,8 @@ static func starter_district_plan() -> Dictionary:
 		"active_building_count": STARTER_HARBOR_BUILDING_IDS.size(),
 		"planned_lot_count": STARTER_HARBOR_PLANNED_LOT_IDS.size(),
 		"composition_pass": "G-4.12B",
+		"footprint_pass": "G-4.13A",
+		"collision_model": "visual_bounds and lot_bounds are review/planning data; collision_footprint is the only blocking building body.",
 		"clean_review_default": true,
 		"surface_cohesion_gate": true,
 		"districts": [
@@ -599,11 +609,14 @@ static func starter_district_plan() -> Dictionary:
 		},
 		"movement_loop": [
 			"harborfront_main_street",
+			"commercial_rear_road",
+			"mercantile_counting_house_rear_road",
 			"dock_access",
 			"working_wharf_edge",
 			"inland_cross_lane",
 			"support_lane_return",
 		],
+		"planned_g413b_infill_slots": G413B_ROWHOUSE_INFILL_SLOT_IDS,
 	}
 
 static func starter_lot_specs() -> Array:
@@ -632,6 +645,45 @@ static func planned_lot_specs() -> Array:
 		if lot.get("status", "") == "planned":
 			planned.append(lot)
 	return planned
+
+static func g413b_rowhouse_infill_slots() -> Array:
+	return [
+		_infill_slot(
+			"slot_tavern_mercantile_narrow_rowhouse",
+			"harborfront_commercial",
+			"narrow townhouse or signboard shop between tavern and mercantile",
+			Rect2i(12, 14, 1, 4),
+			"Keep the west cross-lane open; this is a one-tile visual infill slot, not a new active building yet."
+		),
+		_infill_slot(
+			"slot_counting_chandlery_lane_edge_shop",
+			"harborfront_commercial",
+			"skinny lane-edge shop face east of counting house",
+			Rect2i(24, 14, 1, 4),
+			"Only fill if it preserves the commercial rear road and the central cross-lane sightline."
+		),
+		_infill_slot(
+			"slot_shop_market_townhouse_pair",
+			"harborfront_commercial",
+			"paired shop/townhouse infill between shop house and market shed",
+			Rect2i(36, 14, 1, 4),
+			"Do not close the east service lane or the market approach."
+		),
+		_infill_slot(
+			"slot_cottage_customs_inland_townhouse",
+			"inland_residential_civic",
+			"small inland townhouse west of the custom house",
+			Rect2i(16, 8, 3, 4),
+			"Leave the central inland road and civic square approach walkable."
+		),
+		_infill_slot(
+			"slot_support_lane_boarding_gap",
+			"support_lane",
+			"boarding-house side-yard rowhouse or narrow dependency",
+			Rect2i(41, 8, 2, 4),
+			"Keep the east return lane readable and avoid expanding the town edge."
+		),
+	]
 
 static func missing_asset_manifest() -> Array:
 	return [
@@ -666,7 +718,8 @@ static func _calibration_building(id: String, display_name: String, sprite_id: S
 static func _proof_street_building(id: String, display_name: String, sprite_id: String, foot_tile: Vector2, visual_base_anchor: Vector2, collision_size: Vector2, frontage_offset: Vector2, base_width: float, shadow_size: Vector2, draw_width_override := 0.0, seating_overrides := {}) -> Dictionary:
 	var district_id := "harborfront_commercial" if G410_STARTER_HARBOR_TOWN else "waterfront_commercial"
 	var config := _building(id, display_name, sprite_id, district_id, "commercial", foot_tile, collision_size.x / TILE, collision_size.y / TILE)
-	var occupied_rect := Rect2(Vector2(-collision_size.x * 0.5, -collision_size.y), collision_size)
+	var collision_footprint := Rect2(Vector2(-collision_size.x * 0.5, -collision_size.y), collision_size)
+	var occupied_rect := collision_footprint
 	if seating_overrides.has("occupied_rect"):
 		occupied_rect = seating_overrides["occupied_rect"]
 	config["proof_street"] = true
@@ -675,17 +728,22 @@ static func _proof_street_building(id: String, display_name: String, sprite_id: 
 	config["visual_base_anchor"] = visual_base_anchor
 	config["sprite_offset"] = seating_overrides.get("sprite_offset", Vector2.ZERO)
 	config["visual_base_width"] = base_width
-	config["collision_rect"] = occupied_rect
+	config["collision_footprint"] = collision_footprint
+	config["collision_rect"] = collision_footprint
+	config["collision_size"] = collision_footprint.size
+	config["collision_offset"] = collision_footprint.position + collision_footprint.size * 0.5
 	config["frontage_offset"] = frontage_offset
 	config["interaction_size"] = Vector2(maxf(84.0, collision_size.x * 0.76), 42.0)
 	config["interaction_offset"] = frontage_offset
+	config["interaction_zone"] = Rect2(frontage_offset - config["interaction_size"] * 0.5, config["interaction_size"])
 	config["door_offset"] = frontage_offset
 	config["y_sort_offset"] = Vector2.ZERO
 	config["shadow_offset"] = Vector2(0.0, -6.0)
 	config["shadow_size"] = shadow_size
+	config["lot_bounds"] = occupied_rect
 	config["lot_rect"] = occupied_rect
 	config["building_volume_rect"] = occupied_rect
-	config["frontage_body_rect"] = Rect2(Vector2(-base_width * 0.5, -maxf(34.0, collision_size.y)), Vector2(base_width, maxf(34.0, collision_size.y)))
+	config["frontage_body_rect"] = Rect2(Vector2(-base_width * 0.5, -maxf(34.0, collision_footprint.size.y)), Vector2(base_width, maxf(34.0, collision_footprint.size.y)))
 	config["street_edge"] = Vector2(foot_tile.x * TILE, foot_tile.y * TILE + frontage_offset.y)
 	return config
 
@@ -699,11 +757,19 @@ static func _building(id: String, display_name: String, sprite_id: String, distr
 		"district_tag": district_tag,
 		"position": foot_tile * TILE,
 		"foot_tile": Vector2i(roundi(foot_tile.x), roundi(foot_tile.y)),
+		"foot_anchor": Vector2.ZERO,
 		"collision_size": Vector2(collision_tiles_w * TILE, collision_h),
 		"collision_offset": Vector2(0.0, -collision_h * 0.5),
+		"collision_footprint": Rect2(Vector2(-collision_tiles_w * TILE * 0.5, -collision_h), Vector2(collision_tiles_w * TILE, collision_h)),
+		"collision_rect": Rect2(Vector2(-collision_tiles_w * TILE * 0.5, -collision_h), Vector2(collision_tiles_w * TILE, collision_h)),
 		"interaction_size": Vector2(max(72.0, collision_tiles_w * TILE * 0.72), 44.0),
 		"interaction_offset": Vector2(0.0, 20.0),
+		"interaction_zone": Rect2(Vector2(-max(72.0, collision_tiles_w * TILE * 0.72) * 0.5, -2.0), Vector2(max(72.0, collision_tiles_w * TILE * 0.72), 44.0)),
 		"door_offset": Vector2.ZERO,
+		"lot_bounds": Rect2(Vector2(-collision_tiles_w * TILE * 0.5, -collision_h), Vector2(collision_tiles_w * TILE, collision_h)),
+		"lot_rect": Rect2(Vector2(-collision_tiles_w * TILE * 0.5, -collision_h), Vector2(collision_tiles_w * TILE, collision_h)),
+		"building_volume_rect": Rect2(Vector2(-collision_tiles_w * TILE * 0.5, -collision_h), Vector2(collision_tiles_w * TILE, collision_h)),
+		"y_sort_offset": Vector2.ZERO,
 	}
 
 static func _catalog_building(id: String, district: String, district_tag: String, foot_tile: Vector2, proof_street := false) -> Dictionary:
@@ -726,6 +792,16 @@ static func _lot(id: String, status: String, district: String, role: String, rec
 		"role": role,
 		"rect": rect,
 		"building_id": building_id,
+	}
+
+static func _infill_slot(id: String, district: String, role: String, rect: Rect2i, guardrail: String) -> Dictionary:
+	return {
+		"id": id,
+		"status": "planned_g413b",
+		"district": district,
+		"role": role,
+		"rect": rect,
+		"guardrail": guardrail,
 	}
 
 static func _blocker(id: String, rect: Rect2) -> Dictionary:

@@ -5,7 +5,8 @@
 The slice isolates the problems that made Newport hard in the JavaScript build:
 
 - visual foot anchors instead of tile guesses
-- collision shapes that match visible building bases
+- collision footprints that match ground-contact building bases, not full
+  sprite rectangles
 - Y-sort depth using Godot scene objects
 - interaction/frontage points positioned at obvious doors
 - harbor-town readability without placing all 19 production buildings
@@ -48,11 +49,12 @@ The atlas grid contract for the Godot slice is in `SPRITE_ATLAS_GODOT.md`
 Press `F3` while the slice is running to toggle the per-building debug
 overlay. It draws (for each building):
 
-- yellow sprite-region outline
-- red collision-rect fill + outline (the body that blocks the player)
-- blue interaction-rect fill + outline (the frontage zone)
+- yellow visual-bounds outline
+- amber lot-bounds fill + outline (planning/debug context)
+- red collision-footprint fill + outline (the body that blocks the player)
+- blue interaction-zone fill + outline (the frontage zone)
 - green foot-anchor cross at the building's visible base
-- yellow door-marker dot
+- yellow door-marker dot and magenta y-sort marker
 
 The same overlay is captured in
 `artifacts/screenshots/vertical_slice_collision_debug.png`.
@@ -61,12 +63,14 @@ The same overlay is captured in
 
 `tools/validate_vertical_slice.gd` now enforces:
 
-- world Y-sort is on; player, HUD, map, and 5 expected buildings exist
+- world Y-sort is on; player, HUD, map, and the expected town buildings exist
 - every building has a non-null `AtlasTexture` whose region is within the
   source atlas and has positive size
 - foot anchor sits on the visible base (sprite bottom ≈ FootAnchor)
-- collision overlaps the lower visible/base area (and does not float below
-  the visible building)
+- collision footprint is shallow, separate from visual bounds and lot bounds,
+  and stays on the lower visible/base area
+- rear-road samples behind the mercantile/counting house and cross-lane
+  samples avoid building collision
 - interaction rect's X overlaps the door marker and the rect extends south
   of the door (player walks up to the door from the south)
 - there's a valid stand-position south of at least two buildings (player

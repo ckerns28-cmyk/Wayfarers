@@ -42,9 +42,10 @@ branch/channel/objective metadata.
 
 Press `B` during local or itch review to toggle the building seating debug
 overlay for the vignette buildings. The overlay is off by default and shows
-base anchors, frontage markers, collision rectangles, y-sort anchors, and
-building IDs only after the debug toggle is enabled. Normal review screenshots
-should not show red/yellow/blue debug boxes or building names.
+visual bounds, lot bounds, collision footprints, interaction zones, base
+anchors, frontage markers, y-sort anchors, and building IDs only after the
+debug toggle is enabled. Normal review screenshots should not show debug boxes
+or building names.
 
 G-4.9.6 preserves the accepted G-4.9.4/G-4.9.5 crop, seating, grounding, and
 spacing behavior, then gates the build for clean player-facing review. The

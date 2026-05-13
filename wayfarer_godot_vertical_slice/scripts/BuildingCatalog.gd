@@ -144,11 +144,15 @@ static func _asset(sprite_id: String, role_candidates: String, status: String, n
 		"notes": notes,
 	}
 
-static func _definition(building_id: String, display_name: String, sprite_id: String, district_role: String, draw_width: float, visual_base_anchor: Vector2, shadow_size: Vector2, collision_rect: Rect2, frontage_offset: Vector2, visual_base_width := 122.0, harbor_integrated := false, district_placement_tags := [], notes := "") -> Dictionary:
+static func _definition(building_id: String, display_name: String, sprite_id: String, district_role: String, draw_width: float, visual_base_anchor: Vector2, shadow_size: Vector2, lot_bounds: Rect2, frontage_offset: Vector2, visual_base_width := 122.0, harbor_integrated := false, district_placement_tags := [], notes := "") -> Dictionary:
 	var sprite := sprite_config(sprite_id)
 	var placement_tags: Array = district_placement_tags.duplicate()
 	if placement_tags.is_empty():
 		placement_tags = [district_role]
+	var collision_footprint := _collision_footprint_for(building_id, lot_bounds, visual_base_width)
+	var interaction_size := Vector2(maxf(84.0, collision_footprint.size.x * 0.76), 42.0)
+	var interaction_zone := Rect2(frontage_offset - interaction_size * 0.5, interaction_size)
+	var visual_bounds := _visual_bounds(sprite, draw_width, visual_base_anchor)
 	return {
 		"id": building_id,
 		"building_id": building_id,
@@ -163,14 +167,18 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 		"visual_scale": draw_width,
 		"scale": draw_width,
 		"draw_width_override": draw_width,
-		"foot_anchor": visual_base_anchor,
+		"foot_anchor": Vector2.ZERO,
+		"source_foot_anchor": visual_base_anchor,
 		"visual_base_anchor": visual_base_anchor,
 		"visual_base_width": visual_base_width,
+		"visual_bounds": visual_bounds,
 		"collision_shape": "rectangle",
-		"collision_rect": collision_rect,
-		"collision_size": collision_rect.size,
-		"collision_offset": collision_rect.position + collision_rect.size * 0.5,
-		"interaction_size": Vector2(maxf(84.0, collision_rect.size.x * 0.76), 42.0),
+		"collision_footprint": collision_footprint,
+		"collision_rect": collision_footprint,
+		"collision_size": collision_footprint.size,
+		"collision_offset": collision_footprint.position + collision_footprint.size * 0.5,
+		"interaction_zone": interaction_zone,
+		"interaction_size": interaction_size,
 		"interaction_offset": frontage_offset,
 		"interaction_zone_placeholder": true,
 		"frontage_offset": frontage_offset,
@@ -180,9 +188,55 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 		"y_sort_offset": Vector2.ZERO,
 		"shadow_offset": Vector2(0.0, -6.0),
 		"shadow_size": shadow_size,
-		"lot_rect": collision_rect,
-		"building_volume_rect": collision_rect,
-		"frontage_body_rect": Rect2(Vector2(-visual_base_width * 0.5, -maxf(34.0, collision_rect.size.y)), Vector2(visual_base_width, maxf(34.0, collision_rect.size.y))),
+		"lot_bounds": lot_bounds,
+		"lot_rect": lot_bounds,
+		"building_volume_rect": lot_bounds,
+		"frontage_body_rect": Rect2(Vector2(-visual_base_width * 0.5, -maxf(34.0, collision_footprint.size.y)), Vector2(visual_base_width, maxf(34.0, collision_footprint.size.y))),
 		"harbor_integrated": harbor_integrated,
 		"definition_normalized": true,
 	}
+
+static func _visual_bounds(sprite: Dictionary, draw_width: float, visual_base_anchor: Vector2, sprite_offset := Vector2.ZERO) -> Rect2:
+	var source_size: Vector2 = sprite.get("source_size", Vector2(1.0, 1.0))
+	var scale_factor := draw_width / maxf(1.0, source_size.x)
+	return Rect2(-visual_base_anchor * scale_factor + sprite_offset, source_size * scale_factor)
+
+static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, visual_base_width: float) -> Rect2:
+	match building_id:
+		"b_inn_tavern":
+			return _base_footprint(148.0, 18.0, 12.0)
+		"b_mercantile":
+			return _base_footprint(116.0, 16.0, 12.0)
+		"b_counting_house":
+			return _base_footprint(140.0, 16.0, 12.0)
+		"b_chandlery_front":
+			return _base_footprint(154.0, 16.0, 12.0)
+		"b_shop_house":
+			return _base_footprint(126.0, 16.0, 12.0)
+		"b_market_shed":
+			return _base_footprint(164.0, 18.0, 14.0)
+		"b_custom_house":
+			return _base_footprint(148.0, 18.0, 12.0)
+		"b_large_residence":
+			return _base_footprint(150.0, 18.0, 12.0)
+		"b_boarding_house":
+			return _base_footprint(104.0, 18.0, 12.0)
+		"b_res_small":
+			return _base_footprint(104.0, 16.0, 12.0)
+		"b_cooperage_shed":
+			return _base_footprint(92.0, 16.0, 12.0)
+		"b_dock_storehouse":
+			return _base_footprint(178.0, 34.0, 14.0)
+		"b_wharf_boathouse":
+			return _base_footprint(196.0, 38.0, 14.0)
+		"b_dock_warehouse":
+			return _base_footprint(174.0, 34.0, 14.0)
+		"b_village_hall":
+			return _base_footprint(142.0, 18.0, 12.0)
+		_:
+			var width := minf(lot_bounds.size.x, maxf(72.0, visual_base_width))
+			var rear_depth := minf(24.0, maxf(16.0, lot_bounds.size.y * 0.18))
+			return _base_footprint(width, rear_depth, 12.0)
+
+static func _base_footprint(width: float, rear_depth: float, front_depth: float) -> Rect2:
+	return Rect2(Vector2(-width * 0.5, -rear_depth), Vector2(width, rear_depth + front_depth))
