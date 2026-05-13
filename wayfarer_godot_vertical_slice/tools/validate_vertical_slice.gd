@@ -2,6 +2,7 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
+const BUILDING_CATALOG := preload("res://scripts/BuildingCatalog.gd")
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
 
 var failures: Array[String] = []
@@ -26,14 +27,16 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.9.7", "build_phase_g_4_9_7")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.9.7 Street Vignette Polish Gate", "build_label_g_4_9_7")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.11", "build_phase_g_4_11")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.11 Town Asset Kit Expansion", "build_label_g_4_11")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
 	_expect(player != null, "player_exists")
 	_expect(hud != null, "hud_exists")
 	_expect(map != null, "map_exists")
+	if not NEWPORT_TOWN.NPCS_ENABLED:
+		_expect(main.get_node_or_null("World/EdrinVale") == null, "npcs_disabled_for_g_4_11")
 
 	if player:
 		_expect(player.get_node_or_null("Camera2D") != null, "player_camera_exists")
@@ -58,6 +61,7 @@ func _validate_scene(main: Node) -> void:
 			_validate_detail_blockers(collision_layer)
 
 	_validate_buildings()
+	_validate_starter_harbor_plan()
 	_validate_proof_street(main)
 	_validate_lived_in_details()
 	_validate_reachability()
@@ -70,7 +74,7 @@ func _validate_detail_blockers(collision_layer: Node) -> void:
 	_expect(detail_count == NEWPORT_TOWN.detail_blockers().size(), "detail_blocker_count")
 
 func _validate_lived_in_details() -> void:
-	var minimum_detail_count := 20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40)))
+	var minimum_detail_count := 70 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
 	_expect(NEWPORT_TOWN.lived_in_detail_count() >= minimum_detail_count, "lived_in_detail_density")
 
 func _validate_buildings() -> void:
@@ -95,9 +99,82 @@ func _validate_buildings() -> void:
 		district_counts[district] = district_counts.get(district, 0) + 1
 		_expect(seen.has(id), "building_present_" + id)
 
-	var expected_districts := ["visual_calibration"] if NEWPORT_TOWN.G47_CALIBRATION_MODE else (["waterfront_commercial"] if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else ["harbor_wharf", "waterfront_commercial", "civic_district", "upper_residential_terrace", "service_outfitter_lane"])
+	var expected_districts := ["harborfront_commercial", "working_wharf", "inland_residential_civic", "support_lane"] if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (["visual_calibration"] if NEWPORT_TOWN.G47_CALIBRATION_MODE else (["waterfront_commercial"] if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else ["harbor_wharf", "waterfront_commercial", "civic_district", "upper_residential_terrace", "service_outfitter_lane"]))
 	for district_id in expected_districts:
 		_expect(district_counts.get(district_id, 0) > 0, "district_has_building_" + district_id)
+
+func _validate_starter_harbor_plan() -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+
+	var lots: Array = NEWPORT_TOWN.starter_lot_specs()
+	var planned_lots: Array = NEWPORT_TOWN.planned_lot_specs()
+	var total_lots := lots.size()
+	_expect(total_lots >= 10 and total_lots <= 16, "starter_lot_count_10_to_16")
+	_expect(planned_lots.size() == NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS.size(), "planned_lot_manifest_count")
+	_expect(NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size() == NEWPORT_TOWN.BUILDING_IDS.size(), "starter_building_manifest_matches_active")
+
+	var lot_ids := {}
+	var actual_building_lots := {}
+	var district_lots := {}
+	for raw_lot in lots:
+		var lot: Dictionary = raw_lot
+		var id: String = lot["id"]
+		_expect(not lot_ids.has(id), "unique_lot_id_" + id)
+		lot_ids[id] = true
+		var district: String = lot["district"]
+		district_lots[district] = district_lots.get(district, 0) + 1
+		var rect: Rect2i = lot["rect"]
+		_expect(rect.size.x > 0 and rect.size.y > 0, "lot_has_area_" + id)
+		if lot.get("status", "") == "actual":
+			actual_building_lots[lot.get("building_id", "")] = true
+
+	for building_id in NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS:
+		_expect(actual_building_lots.has(building_id), "actual_lot_for_" + building_id)
+	_expect(not actual_building_lots.has("b_village_hall"), "chapel_coded_hall_not_active")
+	_expect(actual_building_lots.has("b_custom_house"), "custom_house_replaces_civic_hall")
+	for planned_id in NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS:
+		_expect(lot_ids.has(planned_id), "planned_lot_present_" + planned_id)
+	for district_id in ["harborfront_commercial", "working_wharf", "inland_residential_civic", "support_lane"]:
+		_expect(district_lots.get(district_id, 0) > 0, "starter_lots_cover_" + district_id)
+
+	for building_id in ["b_dock_storehouse", "b_wharf_boathouse", "b_dock_warehouse"]:
+		_expect(actual_building_lots.has(building_id), "harbor_water_asset_placed_" + building_id)
+		for config in NEWPORT_TOWN.building_specs():
+			if String(config.get("id", "")) == building_id:
+				var water_position: Vector2 = config.get("position", Vector2.ZERO)
+				var water_foot_tile_y := water_position.y / float(NEWPORT_TOWN.TILE)
+				_expect(water_foot_tile_y >= 27.25 and water_foot_tile_y <= 28.25, "harbor_water_asset_in_wharf_edge_water_pocket_" + building_id)
+				var water_foot_tile_x := water_position.x / float(NEWPORT_TOWN.TILE)
+				if building_id == "b_dock_warehouse":
+					_expect(water_foot_tile_x >= 14.5 and water_foot_tile_x <= 16.5, "harbor_water_asset_beside_west_pier_" + building_id)
+				elif building_id == "b_wharf_boathouse":
+					_expect(water_foot_tile_x >= 27.0 and water_foot_tile_x <= 29.5, "harbor_water_asset_beside_center_pier_" + building_id)
+				else:
+					_expect(water_foot_tile_x >= 40.0 and water_foot_tile_x <= 42.5, "harbor_water_asset_beside_east_pier_" + building_id)
+
+	for config in NEWPORT_TOWN.building_specs():
+		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")
+		if config.has("definition_id"):
+			var definition := BUILDING_CATALOG.building_definition(String(config["definition_id"]))
+			for key in ["building_id", "display_name", "role", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "foot_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "shadow_size", "district_role", "district_placement_tags", "notes"]:
+				_expect(definition.has(key), String(config["id"]) + "_definition_has_" + key)
+			var texture_path: String = definition.get("texture_path", "")
+			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
+			var tags: Array = definition.get("district_placement_tags", [])
+			_expect(not tags.is_empty(), String(config["id"]) + "_has_district_placement_tags")
+
+	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
+	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "dedicated crate/barrel/rope prop sprites", "sign variants", "fencing variants", "lantern variants", "chapel/church decision and final art if needed"]:
+		_expect(manifest.has(needed), "missing_asset_manifest_" + needed.replace("/", "_").replace(" ", "_"))
+
+	var plan: Dictionary = NEWPORT_TOWN.starter_district_plan()
+	var plan_districts: Array = plan.get("districts", [])
+	var plan_loop: Array = plan.get("movement_loop", [])
+	_expect(plan.get("target_total_lots", "") == "10-16", "starter_plan_target_lot_range")
+	_expect(plan_districts.size() >= 4, "starter_plan_district_structure")
+	_expect(plan_loop.size() >= 4, "starter_plan_movement_loop")
+	_expect(BUILDING_CATALOG.available_building_assets().size() >= 20, "asset_audit_catalog_populated")
 
 func _validate_building_node(building: Node2D) -> void:
 	var sprite := building.get_node_or_null("Sprite2D") as Sprite2D
@@ -117,10 +194,16 @@ func _validate_building_node(building: Node2D) -> void:
 		var region_size := _texture_region_size(sprite.texture)
 		var sprite_bottom_y := sprite.position.y + region_size.y * sprite.scale.y
 		var proof_street: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
-		if proof_street:
-			_expect(sprite_bottom_y > 3.0 and sprite_bottom_y < 18.0, building.name + "_painterly_base_padding_allowed")
+		var harbor_integrated: bool = building.has_method("is_harbor_integrated") and building.is_harbor_integrated()
+		if harbor_integrated:
+			_expect(sprite_bottom_y > 20.0 and sprite_bottom_y < 78.0, building.name + "_harbor_sprite_extends_into_water")
+		elif proof_street:
+			_expect(sprite_bottom_y > 3.0 and sprite_bottom_y < 28.0, building.name + "_painterly_base_padding_allowed")
 		else:
-			_expect(absf(sprite_bottom_y) <= 2.5, building.name + "_foot_anchor_at_visual_base")
+			_expect(sprite_bottom_y >= -2.5 and sprite_bottom_y <= 22.0, building.name + "_foot_anchor_at_visual_base")
+
+	if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		_expect(building.has_method("uses_normalized_definition") and building.uses_normalized_definition(), building.name + "_uses_normalized_definition")
 
 	if body_shape and body_shape.shape is RectangleShape2D:
 		var body_size := (body_shape.shape as RectangleShape2D).size
@@ -137,6 +220,8 @@ func _validate_proof_street(main: Node) -> void:
 	if NEWPORT_TOWN.G47_CALIBRATION_MODE:
 		_expect(proof_ids.size() == 8, "calibration_building_count_8")
 		_expect(NEWPORT_TOWN.calibration_variants().size() == 4, "calibration_variant_count_4")
+	elif NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		_expect(proof_ids.size() == 5, "starter_harborfront_building_count_5")
 	elif NEWPORT_TOWN.G46_PROOF_FRAME:
 		_expect(proof_ids.size() == 3, "proof_street_building_count_3")
 	elif NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE:
@@ -146,7 +231,12 @@ func _validate_proof_street(main: Node) -> void:
 
 	var configs_by_id := {}
 	for config in NEWPORT_TOWN.building_specs():
-		configs_by_id[config["id"]] = config
+		var merged_config: Dictionary = config
+		if config.has("definition_id"):
+			merged_config = BUILDING_CATALOG.building_definition(String(config["definition_id"]))
+			for key in config:
+				merged_config[key] = config[key]
+		configs_by_id[config["id"]] = merged_config
 
 	for id in proof_ids:
 		_expect(configs_by_id.has(id), "proof_street_config_present_" + id)
@@ -180,6 +270,8 @@ func _validate_proof_street(main: Node) -> void:
 			if overlay == null:
 				continue
 			var is_proof: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
+			if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+				is_proof = true
 			_expect(overlay.visible == is_proof, building.name + "_seating_debug_toggle_scope")
 		main.set_building_seating_overlay(false)
 	else:
@@ -241,6 +333,10 @@ func _print_report() -> void:
 	print("buildingCount=", get_nodes_in_group("buildings").size())
 	print("expectedBuildings=", NEWPORT_TOWN.BUILDING_IDS)
 	print("districtCounts=", districts)
+	if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		print("starterLotCount=", NEWPORT_TOWN.starter_lot_specs().size())
+		print("plannedLots=", NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS)
+		print("missingAssets=", NEWPORT_TOWN.missing_asset_manifest())
 	print("reachabilityTargets=", NEWPORT_TOWN.reachability_targets())
 	print("failureCount=", failures.size())
 	print("failures=", failures)

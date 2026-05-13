@@ -12,7 +12,11 @@ class_name WayfarerBuilding
 
 var building_id := ""
 var display_name := ""
+var definition_id := ""
+var district_role := ""
 var proof_street := false
+var harbor_integrated := false
+var definition_normalized := false
 var _ground_shadow_size := Vector2(96.0, 22.0)
 var _ground_shadow_offset := Vector2(0.0, -6.0)
 var _visual_base_width := 96.0
@@ -20,7 +24,11 @@ var _visual_base_width := 96.0
 func configure(config: Dictionary) -> void:
 	building_id = config.get("id", name)
 	display_name = config.get("display_name", building_id)
+	definition_id = config.get("definition_id", building_id)
+	district_role = config.get("district_role", "")
 	proof_street = config.get("proof_street", false)
+	harbor_integrated = config.get("harbor_integrated", false)
+	definition_normalized = config.get("definition_normalized", false)
 	name = building_id
 	add_to_group("buildings")
 	if proof_street:
@@ -77,6 +85,12 @@ func is_proof_street_building() -> bool:
 
 func has_seating_metadata() -> bool:
 	return proof_street and _visual_base_width > 0.0 and body_collision.shape is RectangleShape2D and frontage_marker != null and y_sort_anchor != null
+
+func uses_normalized_definition() -> bool:
+	return definition_normalized and definition_id != "" and district_role != ""
+
+func is_harbor_integrated() -> bool:
+	return harbor_integrated
 
 func get_visual_base_width() -> float:
 	return _visual_base_width
