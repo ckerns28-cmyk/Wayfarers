@@ -645,11 +645,14 @@ Asset audit:
 - `newport_narrow_merchant_townhouse_a`: activated as a narrow
   shop-house/rowhouse for `b_printer_rowhouse`, now seated on the east market
   street edge after the shop-house gap proved too tight.
-- `newport_formal_townhouse_single_bay`: activated as the `b_clerk_townhouse`
-  crop between the tavern and mercantile, preserving native townhouse height
-  instead of shrinking the full three-bay formal block into the slot.
+- `newport_narrow_clapboard_townhouse_b`: activated as the
+  `b_clerk_townhouse` asset between the tavern and mercantile, preserving a
+  complete narrow-building read instead of shrinking the full three-bay formal
+  block or slicing one bay out of it.
 - `newport_formal_townhouse_block_a`: retained as available deferred art for a
   larger formal residential row.
+- `newport_formal_townhouse_single_bay`: rejected after QA because the crop
+  reads like a cut facade column rather than a whole townhouse.
 - `newport_waterfront_shop_house`: activated as the four-unit clapboard
   `b_dockworker_rowhouse`, replacing the duplicate boarding-house sprite.
 - Deferred candidates: `newport_chandlery_cottage` and
@@ -658,8 +661,9 @@ Asset audit:
 Infill slots used:
 
 - `slot_tavern_mercantile_narrow_rowhouse`: active with `b_clerk_townhouse`
-  as a single-bay formal townhouse crop, keeping visible daylight from both
-  neighbors without miniaturizing the three-bay source block.
+  as a complete narrow clapboard townhouse, keeping visible daylight from both
+  neighbors without miniaturizing the three-bay source block or showing a
+  sliced facade bay.
 - `slot_support_lane_boarding_gap`: active with `b_dockworker_rowhouse`,
   seated as a four-unit lane-front rowhouse beside the boarding-house block
   while keeping the east support-lane return readable.
@@ -696,14 +700,13 @@ Collision/footprint model:
   collision is a shallow ground-contact footprint near the building base.
 - Interaction zones remain south/frontage-aligned.
 
-G-4.13B.3 clerk townhouse bay fix:
+G-4.13B.4 clerk townhouse complete asset fix:
 
-- Build label: Godot G-4.13B.3 Clerk Townhouse Bay Fix.
-- Replaces the clerk's scaled-down three-bay formal block with a single-bay
-  crop from the same formal townhouse art.
-- Adds a validation guard that the clerk townhouse keeps a vertical rowhouse
-  read and remains tall enough in world pixels to avoid the miniature-block
-  failure mode.
+- Build label: Godot G-4.13B.4 Clerk Townhouse Complete Asset Fix.
+- Replaces the rejected single-bay crop with a complete narrow clapboard
+  townhouse from the same Newport source pack.
+- Adds validation guards that reject both squat miniature-block reads and
+  over-narrow sliced-column reads for the clerk townhouse.
 
 Routes revalidated:
 

@@ -702,9 +702,9 @@ static func g413b_rowhouse_infill_slots() -> Array:
 		_infill_slot(
 			"slot_tavern_mercantile_narrow_rowhouse",
 			"harborfront_commercial",
-			"single-bay clerk townhouse seated between tavern and mercantile",
+			"complete narrow clerk townhouse seated between tavern and mercantile",
 			Rect2i(12, 14, 3, 4),
-			"Uses a native-scale single-bay crop from the formal townhouse block so the clerk house reads as a narrow townhouse, not a shrunken three-bay block.",
+			"Uses a complete narrow clapboard townhouse so the clerk house reads as a whole building, not a shrunken block or sliced facade bay.",
 			"active_g413b",
 			"b_clerk_townhouse",
 			"future clerk lodging, tavern rumor, rented-room lead, or suspicious-neighbor hook"
