@@ -572,6 +572,66 @@ Remaining known issues:
 - G-4.13D still needs final manual navigation/collision/interaction-zone
   validation after rowhouse density and prop-atlas dressing.
 
+## G-4.13A.1 Walkability Blocker Hotfix
+
+Status: implemented as the remaining G-4.13A acceptance hotfix. It does not add
+rowhouses, prop-atlas assets, NPCs, quests, combat, inventory, economy,
+interiors, town expansion, or Worker route changes.
+
+Build label: Godot G-4.13A.1 Walkability Blocker Hotfix
+
+Issue found:
+
+- The black-box marked rear-lane location near the tavern, mercantile, and
+  `b_res_small` area still blocked the player even though it looked like open
+  road/lane space.
+- Runtime collision-owner probing found the exact owners:
+  `DetailBlocker_mercantile_front_crates`, `DetailBlocker_west_alley_rope`, and
+  grown player-body contact with `Building_b_mercantile`.
+- The detail blockers were not building bounds; they were prop/scenery
+  collision rectangles sitting too high in the lane. The mercantile base was
+  also wide enough that the player radius pinched the lane edge.
+
+Fix:
+
+- `b_mercantile` keeps a real base/foundation `collision_footprint`, but it is
+  slightly narrower and shallower than the G-4.13A version.
+- `mercantile_front_crates` and `west_alley_rope` were moved down to visible
+  frontage clutter so they no longer occupy the rear-lane throat.
+- The collision/navigation debug overlay labels detail-blocker owners and adds
+  debug-only route probes. Clean review mode leaves these hidden.
+- The validator now checks route samples against building, prop/detail, water,
+  and map collision owners rather than only building footprints.
+
+Routes revalidated:
+
+- black-box marked rear lane north/west of `b_mercantile`
+- road behind `b_mercantile`
+- road behind `b_counting_house`
+- lane near `b_res_small`
+- tavern/mercantile rear-lane throat
+- inland road to commercial row access
+- commercial row to dock-layer access
+- central/east rear roads, commercial street, and dock boardwalk
+
+Files changed for the hotfix:
+
+- `scripts/BuildInfo.gd`
+- `scripts/BuildingCatalog.gd`
+- `scripts/NewportTownBlueprint.gd`
+- `scenes/Main.gd`
+- `scenes/map/CollisionNavigationLayer.gd`
+- `tools/validate_vertical_slice.gd`
+- `docs/NEWPORT_TOWN_GODOT.md`
+- `docs/WAYFARER_GODOT_ROADMAP.md`
+
+Remaining known issues:
+
+- G-4.13B rowhouse/townhouse infill slots remain planning metadata only.
+- Prop atlas integration is still deferred to G-4.13C.
+- G-4.13D remains the final whole-town manual navigation/collision validation
+  pass.
+
 ## G-4.2 Lived-In Pass
 
 G-4.2 does not add more buildings. It keeps all 19 G-4.1 building IDs and

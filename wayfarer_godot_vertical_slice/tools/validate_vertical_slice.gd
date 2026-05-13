@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13A", "build_phase_g_4_13a")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13A Building Footprint Walkability Gate", "build_label_g_4_13a")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13A.1", "build_phase_g_4_13a_1")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13A.1 Walkability Blocker Hotfix", "build_label_g_4_13a_1")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -66,6 +66,7 @@ func _validate_scene(main: Node) -> void:
 	_validate_lived_in_details()
 	_validate_reachability()
 	_validate_building_walkability_gate()
+	_validate_route_debug_probes()
 
 func _validate_detail_blockers(collision_layer: Node) -> void:
 	var detail_count := 0
@@ -73,6 +74,13 @@ func _validate_detail_blockers(collision_layer: Node) -> void:
 		if child.name.begins_with("DetailBlocker_"):
 			detail_count += 1
 	_expect(detail_count == NEWPORT_TOWN.detail_blockers().size(), "detail_blocker_count")
+	for blocker in NEWPORT_TOWN.detail_blockers():
+		var id := String(blocker.get("id", ""))
+		var rect: Rect2 = blocker.get("rect", Rect2())
+		if id == "mercantile_front_crates":
+			_expect(rect.position.y >= 570.0, "mercantile_front_crates_clear_rear_lane_throat")
+		elif id == "west_alley_rope":
+			_expect(rect.position.x >= 560.0 and rect.position.y >= 570.0, "west_alley_rope_clear_rear_lane_throat")
 
 func _validate_lived_in_details() -> void:
 	var minimum_detail_count := 118 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
@@ -182,6 +190,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan_loop.has("mercantile_counting_house_rear_road"), "starter_plan_includes_mercantile_counting_rear_road")
 	_expect(plan_loop.size() >= 6, "starter_plan_movement_loop")
 	_expect(NEWPORT_TOWN.g413b_rowhouse_infill_slots().size() == NEWPORT_TOWN.G413B_ROWHOUSE_INFILL_SLOT_IDS.size(), "g413b_rowhouse_infill_slot_manifest_count")
+	_expect(NEWPORT_TOWN.route_debug_probes().size() >= 10, "g413a1_route_debug_probe_count")
 	_expect(BUILDING_CATALOG.available_building_assets().size() >= 20, "asset_audit_catalog_populated")
 
 func _validate_building_node(building: Node2D) -> void:
@@ -335,7 +344,7 @@ func _validate_building_walkability_gate() -> void:
 	}
 	for sample_name in walk_samples.keys():
 		var point: Vector2 = walk_samples[sample_name]
-		_expect(not _point_hits_building_collision(point, 10.0), "walkability_" + sample_name)
+		_expect(_collision_owner_labels_at(point, 10.0).is_empty(), "walkability_" + sample_name)
 
 	for raw_building in get_nodes_in_group("buildings"):
 		var building := raw_building as Node2D
@@ -346,6 +355,16 @@ func _validate_building_walkability_gate() -> void:
 			continue
 		_expect(rect.has_point(rect.get_center()), String(building.name) + "_obvious_building_body_blocks_center")
 
+func _validate_route_debug_probes() -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+	for probe in NEWPORT_TOWN.route_debug_probes():
+		var id := String(probe.get("id", ""))
+		var position: Vector2 = probe.get("position", Vector2.ZERO)
+		var owners := _collision_owner_labels_at(position, 10.0)
+		if not owners.is_empty():
+			failures.append("route_probe_" + id + "_blocked_by_" + ",".join(owners))
+
 func _point_hits_building_collision(point: Vector2, player_radius: float) -> bool:
 	for raw_building in get_nodes_in_group("buildings"):
 		var building := raw_building as Node2D
@@ -355,6 +374,38 @@ func _point_hits_building_collision(point: Vector2, player_radius: float) -> boo
 		if rect.has_point(point):
 			return true
 	return false
+
+func _collision_owner_labels_at(point: Vector2, player_radius: float) -> Array[String]:
+	var owners: Array[String] = []
+	var collision_layer := root.get_node_or_null("Main/World/TownMap/CollisionNavigationLayer")
+	if collision_layer:
+		for raw_body in collision_layer.get_children():
+			var body := raw_body as StaticBody2D
+			if body == null:
+				continue
+			for raw_shape in body.get_children():
+				var shape := raw_shape as CollisionShape2D
+				if shape == null or not (shape.shape is RectangleShape2D):
+					continue
+				var size := (shape.shape as RectangleShape2D).size
+				var rect := Rect2(shape.global_position - size * 0.5, size).grow(player_radius)
+				if rect.has_point(point):
+					owners.append(_collision_body_owner_label(String(body.name)))
+	for raw_building in get_nodes_in_group("buildings"):
+		var building := raw_building as Node2D
+		if building == null:
+			continue
+		var rect := _building_collision_world_rect(building).grow(player_radius)
+		if rect.size.x > 0.0 and rect.size.y > 0.0 and rect.has_point(point):
+			owners.append("building:" + String(building.name))
+	return owners
+
+func _collision_body_owner_label(body_name: String) -> String:
+	if body_name.begins_with("DetailBlocker_"):
+		return "prop:" + body_name.trim_prefix("DetailBlocker_")
+	if body_name.begins_with("HarborWater_"):
+		return "map_water:" + body_name.trim_prefix("HarborWater_")
+	return "map:" + body_name
 
 func _building_collision_world_rect(building: Node2D) -> Rect2:
 	var body_shape := building.get_node_or_null("Body/CollisionShape2D") as CollisionShape2D
@@ -405,6 +456,7 @@ func _print_report() -> void:
 		print("starterLotCount=", NEWPORT_TOWN.starter_lot_specs().size())
 		print("plannedLots=", NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS)
 		print("missingAssets=", NEWPORT_TOWN.missing_asset_manifest())
+		print("routeDebugProbes=", NEWPORT_TOWN.route_debug_probes())
 	print("reachabilityTargets=", NEWPORT_TOWN.reachability_targets())
 	print("failureCount=", failures.size())
 	print("failures=", failures)

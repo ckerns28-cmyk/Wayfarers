@@ -132,6 +132,12 @@ The overlay shows:
 town, `B` targets the active town buildings and uses the same labels. Clean
 review mode keeps all of these overlays hidden.
 
+G-4.13A.1 also lets the collision/navigation layer draw debug-only owner labels
+for non-building blockers such as `DetailBlocker_*` props, plus route probe
+markers for the marked rear lane, rear roads, cross-lanes, commercial street,
+and dock layer. These markers are diagnostic only and remain hidden in clean
+review mode.
+
 ## Adding Future Buildings
 
 1. Choose the intended street edge or frontage point in world space.
