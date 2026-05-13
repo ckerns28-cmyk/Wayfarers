@@ -147,6 +147,22 @@ buildings are reserved for wharf/water lots instead of being treated like dry
 streetfront buildings. The HUD review identity should show
 `Godot G-4.10A Building Anchor/Crop Gate`.
 
+Current G-4.11 result: the starter town asset kit is expanded and accepted as
+an asset-integration milestone. The active kit now includes inn/tavern,
+mercantile, counting house, chandlery, shop house, market shed, custom house,
+large residence, boarding house, small residence, cooperage shed, dock
+warehouse, wharf boathouse, and dock storehouse. The church-coded village hall
+is not the starter civic anchor; it is demoted as deferred chapel/meeting-house
+art.
+
+Current G-4.12 result: the expanded kit has been recomposed and dressed into a
+more believable Newport Starter Harbor without adding gameplay systems.
+Frontage spacing is less grid-like, the commercial street / dock economy /
+inland civic-residential layers have clearer visual identities, planned lots
+are muted into background yards, and the wharf buildings remain beside the
+main wharf with readable side landings onto their own dock platforms. The HUD
+review identity should show `Godot G-4.12 Starter Town Composition + Dressing`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -824,12 +840,62 @@ Before G-4.11:
 
 ## G-4.11: Town Asset Kit Expansion / Missing Building Set
 
-Status: next, only after G-4.10A is accepted.
+Status: accepted as the asset-integration milestone for the starter harbor.
 
-Add or integrate the matching building and prop assets needed to replace the
-temporary planned lots and make the starter village feel complete. This phase
-should prioritize small homes, warehouse/chandlery/fishmonger, dock shack,
-civic/residence variants, market stall/carts, and dedicated harbor clutter.
+Implemented:
+
+- HUD identity: `Godot G-4.11 Town Asset Kit Expansion`.
+- Branch: `codex/g-4-11-town-asset-kit-expansion`.
+- Active buildings: 14, across harborfront commercial, working wharf, inland
+  residential/civic, and support-lane layers.
+- Integrated roles: inn/tavern, mercantile, counting house, chandlery, shop
+  house, market shed, custom house, large residence, boarding house, small
+  residence, cooperage shed, dock warehouse, wharf boathouse, and dock
+  storehouse.
+- The church-looking hall is deliberately demoted to deferred chapel /
+  meeting-house art and is not active as the starter civic anchor.
+- Every active starter building uses the reusable building-definition system.
+
+Deferred asset needs:
+
+- Dedicated fishmonger storefront.
+- Final cooperage / barrel-shop art.
+- Blacksmith or smithy art, if the role belongs in the starter town.
+- More small-home variants.
+- Dedicated cart, crate, barrel, rope, sign, fence, and lantern sprites.
+
+## G-4.12: Starter Town Composition + Dressing
+
+Status: ready for manual itch upload.
+
+G-4.12 deliberately uses the accepted G-4.11 building kit instead of adding
+more buildings. The work targets composition, town logic, role-based dressing,
+lot treatment, road readability, and dock transitions.
+
+Implemented:
+
+- HUD identity: `Godot G-4.12 Starter Town Composition + Dressing`.
+- Branch: `codex/g-4-12-starter-town-composition-dressing`.
+- Harborfront commercial buildings have small frontage-depth and spacing
+  variations so the street reads less like an asset board.
+- The commercial street is dressed with role-specific signs, stoops, crates,
+  barrels, market tables, rope, and lamps.
+- The dock / wharf layer uses extended narrow side landings, cargo, rope,
+  nets, fish racks, rowboats, and waterline clutter to clarify how goods move
+  between water, storage, market, and street.
+- Inland civic/residential/support lots are dressed with cleaner custom-house
+  frontage, fences, yards, benches, clotheslines, shrubs, cooperage barrels,
+  and wood clutter.
+- Planned lots and distant blocks are visually muted into background yards or
+  planned silhouettes instead of debug rectangles.
+- Debug overlays stay hidden by default for clean review. Press `B` for
+  building seating overlays or `F3` for full building debug overlays.
+
+Before NPCs/quests begin:
+
+- G-4.13 must validate navigation, collision, approach zones, interaction-zone
+  placeholders, dock access, and invisible blocker reliability across the
+  expanded starter town.
 
 ## G-5: Migration Architecture
 

@@ -27,13 +27,13 @@ text = "Wayfarer"
 [node name="BuildLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 11
-text = "Build label: Godot G-4.11 Town Asset Kit Expansion"
+text = "Build label: Godot G-4.12 Starter Town Composition + Dressing"
 autowrap_mode = 3
 
 [node name="PhaseHost" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 11
-text = "Phase: G-4.11 | Review host: itch"
+text = "Phase: G-4.12 | Review host: itch"
 autowrap_mode = 3
 
 [node name="Channel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
@@ -45,12 +45,12 @@ autowrap_mode = 3
 [node name="Branch" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 10
-text = "Branch: g-4-11-town-asset..."
+text = "Branch: g-4-12-starter..."
 autowrap_mode = 3
 
 [node name="Objective" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 11
-text = "Objective: Expanded harbor town kit"
+text = "Objective: Town composition + dressing"
 autowrap_mode = 3
 
 [node name="Zone" type="Label" parent="Panel/MarginContainer/VBoxContainer"]

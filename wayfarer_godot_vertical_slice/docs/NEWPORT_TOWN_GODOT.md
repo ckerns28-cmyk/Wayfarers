@@ -68,6 +68,13 @@ church-looking village hall is no longer the central civic anchor; it is
 demoted as a deferred chapel/meeting-house asset, and the starter civic read is
 now the custom house / harbor administration role.
 
+G-4.12 uses that accepted building kit as a composition and dressing pass. It
+does not add buildings or gameplay systems; it varies frontage placement,
+tones down prototype lot rectangles, clarifies the commercial / dock / inland
+district reads, adds role-specific prop clusters, and extends the wharf side
+landings so the water-bottom warehouse, boathouse, and storehouse read as
+reachable dock platforms beside the main wharf.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -75,8 +82,7 @@ The Godot town layout is authored in:
 - `scripts/NewportTownBlueprint.gd`: map dimensions, road hierarchy, water,
   wharf/pier layout, districts, building placements, spawn, and QA targets.
 - `scripts/BuildingCatalog.gd`: atlas or isolated sprite source, region,
-  anchor, draw width, reusable building definitions, and the G-4.11 asset-kit
-  audit.
+  anchor, draw width, reusable building definitions, and the asset-kit audit.
 
 `Main.gd`, `MapLayer.gd`, `CollisionNavigationLayer.gd`, and
 `tools/validate_vertical_slice.gd` consume the blueprint instead of each keeping
@@ -380,10 +386,56 @@ Still missing for the starter village:
 - A deliberate chapel/church roadmap decision if that building should exist in
   Newport at all.
 
-G-4.12 should turn this expanded kit into a more believable lived-in town
-composition. It should tune spacing, district dressing, prop clustering,
-signage, road/dock transitions, and visual storytelling before NPCs or quests
-begin.
+## G-4.12 Starter Town Composition + Dressing
+
+Status: implemented as a composition and dressing pass only. No NPCs, quests,
+combat, inventory, economy, save systems, interiors, or Worker route changes
+were added.
+
+Build label: Godot G-4.12 Starter Town Composition + Dressing
+
+Composition changes:
+
+- The G-4.11 building kit remains active, but harborfront buildings now have
+  slight frontage-depth variation instead of a perfectly even asset row.
+- The custom house, residences, boarding house, and cooperage keep the inland /
+  support structure while reading more like civic lots, yards, and work lanes.
+- Wharf building positions remain in the blue water pockets beside the main
+  wharf, with extended narrow side landings from the pier fingers to make a
+  practical walk path onto each building's own dock platform.
+- Planned future lots remain, but their rendering is muted into low planned
+  yards / silhouettes rather than high-contrast debug rectangles.
+
+District identity:
+
+- Harborfront commercial street: tavern, mercantile, counting house, chandlery,
+  shop house, and market shed are dressed as a working shopfront street with
+  signs, thresholds, crates, barrels, market tables, rope, and lamps.
+- Dock / wharf layer: the wharf apron, pier fingers, side landings, cargo,
+  rope, nets, fish racks, rowboats, and waterline clutter now tell a clearer
+  goods-movement story between water, storage, market, and street.
+- Inland civic / residential / support layer: the custom house has a cleaner
+  frontage, residences and boarding house have fences, clotheslines, shrubs,
+  benches, and yard texture, and the cooperage is dressed with barrels and
+  wood clutter.
+
+Technical notes:
+
+- All active buildings still use `_catalog_building()` and reusable
+  `BuildingCatalog.building_definition()` entries.
+- Debug overlays remain off by default for clean visual review. Press `B` for
+  building seating overlays or `F3` for full building debug overlays.
+- The validator now expects the G-4.12 label, clean review default, the
+  G-4.12 district plan marker, and higher lived-in detail density.
+
+Still remaining before NPC / quest work:
+
+- G-4.13 should validate navigation and collision as a playable space: routes
+  from town entry to harborfront to dock side landings to inland civic/support
+  areas, interaction-zone placeholders, invisible blockers, and approach zones.
+- Dedicated fishmonger storefront, final cooperage art, blacksmith/smithy if
+  needed, more small-home variants, carts, and dedicated prop sprites remain
+  useful asset needs.
 
 ## G-4.2 Lived-In Pass
 
