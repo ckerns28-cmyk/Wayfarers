@@ -420,7 +420,7 @@ static func proof_street_walk_targets() -> Dictionary:
 
 static func lived_in_detail_count() -> int:
 	if G410_STARTER_HARBOR_TOWN:
-		return 104
+		return 132
 	if G49_STREET_VIGNETTE:
 		return 38
 	if G48_PROOF_STREET:
@@ -582,8 +582,9 @@ static func starter_district_plan() -> Dictionary:
 		"target_total_lots": "10-16",
 		"active_building_count": STARTER_HARBOR_BUILDING_IDS.size(),
 		"planned_lot_count": STARTER_HARBOR_PLANNED_LOT_IDS.size(),
-		"composition_pass": "G-4.12",
+		"composition_pass": "G-4.12B",
 		"clean_review_default": true,
+		"surface_cohesion_gate": true,
 		"districts": [
 			"harborfront_commercial",
 			"working_wharf",
