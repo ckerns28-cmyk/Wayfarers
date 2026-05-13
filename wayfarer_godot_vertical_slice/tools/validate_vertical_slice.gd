@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B", "build_phase_g_4_13b")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B Rowhouse Infill Density", "build_label_g_4_13b")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.2", "build_phase_g_4_13b_2")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.2 Street-Wall Hard Spacing Fix", "build_label_g_4_13b_2")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -63,6 +63,7 @@ func _validate_scene(main: Node) -> void:
 	_validate_buildings()
 	_validate_starter_harbor_plan()
 	_validate_proof_street(main)
+	_validate_visual_composition_spacing()
 	_validate_lived_in_details()
 	_validate_reachability()
 	_validate_building_walkability_gate()
@@ -185,7 +186,7 @@ func _validate_starter_harbor_plan() -> void:
 	var plan_districts: Array = plan.get("districts", [])
 	var plan_loop: Array = plan.get("movement_loop", [])
 	_expect(plan.get("target_total_lots", "") == "14-20", "starter_plan_target_lot_range")
-	_expect(plan.get("composition_pass", "") == "G-4.12B", "starter_plan_composition_pass_g_4_12b")
+	_expect(plan.get("composition_pass", "") == "G-4.13B.1", "starter_plan_composition_pass_g_4_13b_1")
 	_expect(plan.get("footprint_pass", "") == "G-4.13A", "starter_plan_footprint_pass_g_4_13a")
 	_expect(plan.get("density_pass", "") == "G-4.13B", "starter_plan_density_pass_g_4_13b")
 	_expect(int(plan.get("active_g413b_infill_count", 0)) >= 3, "starter_plan_active_g413b_infill_count")
@@ -216,6 +217,43 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(deferred_slots >= 2, "g413b_deferred_infill_slot_count")
 	_expect(NEWPORT_TOWN.route_debug_probes().size() >= 13, "g413b_route_debug_probe_count")
 	_expect(BUILDING_CATALOG.available_building_assets().size() >= 20, "asset_audit_catalog_populated")
+
+func _validate_visual_composition_spacing() -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+
+	_validate_visual_sequence_has_daylight("harborfront_street_wall", [
+		"b_inn_tavern",
+		"b_clerk_townhouse",
+		"b_mercantile",
+		"b_counting_house",
+		"b_chandlery_front",
+		"b_shop_house",
+		"b_market_shed",
+		"b_printer_rowhouse",
+	], 12.0)
+	_validate_visual_sequence_has_daylight("support_lane_row", [
+		"b_boarding_house",
+		"b_dockworker_rowhouse",
+	], 10.0)
+
+func _validate_visual_sequence_has_daylight(label: String, ids: Array, min_gap: float) -> void:
+	var entries: Array = []
+	for id in ids:
+		var building := _building_by_name(String(id))
+		if building == null:
+			failures.append("visual_sequence_missing_" + label + "_" + String(id))
+			continue
+		var rect := _building_visual_world_rect(building)
+		_expect(rect.size.x > 0.0 and rect.size.y > 0.0, "visual_sequence_rect_" + label + "_" + String(id))
+		entries.append({"id": String(id), "rect": rect})
+
+	for i in range(entries.size() - 1):
+		var left: Dictionary = entries[i]
+		var right: Dictionary = entries[i + 1]
+		var left_rect: Rect2 = left["rect"]
+		var right_rect: Rect2 = right["rect"]
+		_expect(left_rect.end.x + min_gap <= right_rect.position.x, "visual_gap_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
 
 func _validate_building_node(building: Node2D) -> void:
 	var sprite := building.get_node_or_null("Sprite2D") as Sprite2D
@@ -366,8 +404,8 @@ func _validate_building_walkability_gate() -> void:
 		"east_commercial_cross_lane": Vector2(1100.0, 520.0),
 		"dock_layer_walk": Vector2(824.0, 710.0),
 		"clerk_rowhouse_front_walk": Vector2(420.0, 604.0),
-		"market_east_edge_front_walk": Vector2(1408.0, 604.0),
-		"support_boarding_gap_walk": Vector2(1340.0, 462.0),
+		"market_east_edge_front_walk": Vector2(1496.0, 604.0),
+		"support_boarding_gap_walk": Vector2(1420.0, 418.0),
 	}
 	for sample_name in walk_samples.keys():
 		var point: Vector2 = walk_samples[sample_name]
@@ -440,6 +478,19 @@ func _building_collision_world_rect(building: Node2D) -> Rect2:
 		return Rect2()
 	var body_size := (body_shape.shape as RectangleShape2D).size
 	var local_rect := Rect2(body_shape.position - body_size * 0.5, body_size)
+	return Rect2(building.global_position + local_rect.position, local_rect.size)
+
+func _building_by_name(building_name: String) -> Node2D:
+	for raw_building in get_nodes_in_group("buildings"):
+		var building := raw_building as Node2D
+		if building and String(building.name) == building_name:
+			return building
+	return null
+
+func _building_visual_world_rect(building: Node2D) -> Rect2:
+	if building == null or not building.has_method("get_visual_bounds"):
+		return Rect2()
+	var local_rect: Rect2 = building.get_visual_bounds()
 	return Rect2(building.global_position + local_rect.position, local_rect.size)
 
 func _flood_route_tiles(start: Vector2i, route_set: Dictionary) -> Dictionary:
