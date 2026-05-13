@@ -915,7 +915,7 @@ or navigation-validation phase.
 Implemented:
 
 - HUD identity: `Godot G-4.12B Surface Cohesion Gate`.
-- Branch: `codex/g-4-12b-newport-surface-cohesion-clean-review`.
+- Branch: `codex/g-4-12b-surface-cohesion-clean-review`.
 - Clean review remains the default: building overlays are hidden unless `B` or
   `F3` is toggled, and `F2` controls review metadata.
 - Roads and sidewalks received worn surface patches, grime, seams, edge
