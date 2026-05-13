@@ -24,7 +24,7 @@ reference prototype.
 
 - Move: WASD or arrow keys
 - Interact: E
-- Toggle debug overlay (sprite outline / collision / interaction / foot anchor): F3
+- Toggle debug overlay (visual bounds / lot bounds / collision footprint / interaction / anchors): F3
 
 ## Run
 

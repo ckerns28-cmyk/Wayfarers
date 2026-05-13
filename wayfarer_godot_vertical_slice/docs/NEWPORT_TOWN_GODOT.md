@@ -22,7 +22,9 @@ G-4.5 is a one-street seating proof for the waterfront commercial frontage.
 It keeps the town footprint and building count stable, then makes five
 frontage buildings sit on a shared street plane with explicit visual-base
 anchors, frontage points, collision rectangles, y-sort markers, grounding
-shadows, and a `B` debug overlay.
+shadows, and a `B` debug overlay. G-4.13A later separates those older
+collision rectangles into visual bounds, lot bounds, and tight collision
+footprints.
 
 G-4.6 responds to screenshot review that showed G-4.5 still failed at player
 scale. It does not defend the five-building layout. It shrinks the acceptance
@@ -260,8 +262,9 @@ Implemented correction:
   sprite region for each active sprite.
 - `BuildingCatalog.building_definition()` records the reusable building asset
   contract: building ID, display name, sprite source, visual scale, foot anchor,
-  collision rectangle, interaction zone, shadow/contact ellipse, district role,
-  and harbor-integration flag where needed.
+  collision footprint, interaction zone, shadow/contact ellipse, district role,
+  and harbor-integration flag where needed. G-4.13A also separates visual bounds
+  and lot bounds from that collision footprint.
 - `NewportTownBlueprint.building_specs()` places buildings by `definition_id`
   and layout position. The blueprint no longer has to hardcode each crop,
   anchor, collision, and interaction rectangle.
@@ -358,7 +361,8 @@ Definition-system update:
   `definition_id`.
 - `BuildingCatalog.building_definition()` now records `building_id`,
   `display_name`, `role`, `texture_path`, `visual_scale`, `foot_anchor`,
-  `collision_shape`, `collision_rect`, `interaction_zone_placeholder`,
+  `visual_bounds`, `lot_bounds`, `collision_footprint`, `collision_shape`,
+  `collision_rect`, `interaction_zone`, `interaction_zone_placeholder`,
   `interaction_size`, `interaction_offset`, `district_placement_tags`, and
   `notes`.
 - New G-4.11 definitions: `b_custom_house`, `b_large_residence`,
@@ -432,14 +436,18 @@ Technical notes:
   `BuildingCatalog.building_definition()` entries.
 - Debug overlays remain off by default for clean visual review. Press `B` for
   building seating overlays or `F3` for full building debug overlays.
-- The validator now expects the G-4.12 label, clean review default, the
-  G-4.12 district plan marker, and higher lived-in detail density.
+- The G-4.12 validator expected the G-4.12 label, clean review default, the
+  G-4.12 district plan marker, and higher lived-in detail density. Later gates
+  advance the build label while preserving this clean review contract.
 
 Still remaining before NPC / quest work:
 
-- G-4.13 should validate navigation and collision as a playable space: routes
-  from town entry to harborfront to dock side landings to inland civic/support
-  areas, interaction-zone placeholders, invisible blockers, and approach zones.
+- G-4.13B should use the corrected footprints for townhouse/rowhouse density
+  without closing the rear road, cross-lanes, or dock approaches.
+- G-4.13C should integrate the prop atlas and role-based dressing.
+- G-4.13D should perform final navigation/collision/interaction-zone
+  validation across town entry, harborfront, dock side landings, and inland
+  civic/support areas.
 - Dedicated fishmonger storefront, final cooperage art, blacksmith/smithy if
   needed, more small-home variants, carts, and dedicated prop sprites remain
   useful asset needs.
@@ -476,15 +484,93 @@ Surface and environment changes:
   mercantile goods, civic/custom-house order, chandlery rope/cargo, market
   tables, cooperage hoops/wood/barrels, domestic yards, and dockside freight.
 
-Known weak spots before G-4.13:
+Known weak spots before G-4.13A:
 
 - Roads, water, and props are still drawn primitives rather than dedicated
   painterly sprite assets, so final art can still raise cohesion further.
 - Dedicated cart, sack, crate, barrel, rope, fence, lantern, and sign sprites
   would improve the town once available.
-- G-4.13 should validate the playable routes, dock access, building approach
-  zones, NPC staging locations, collision reliability, and interaction-zone
-  placeholders after this visual gate passes.
+- Building collision must be separated from the tall front-facing sprite
+  rectangles before prop-atlas integration or final navigation validation.
+
+## G-4.13A Building Footprint Walkability Gate
+
+Status: implemented as the footprint/collision correction pass after the
+G-4.12B surface gate. It does not add NPCs, quests, combat, inventory,
+economy, interiors, rowhouses, prop-atlas integration, town expansion, or
+Worker route changes.
+
+Build label: Godot G-4.13A Building Footprint Walkability Gate
+
+Issue found:
+
+- The debug overlay showed red blocking rectangles that effectively matched
+  tall painted building bounds on several front-facing sprites.
+- Those rectangles overlapped the commercial rear road, especially behind
+  `b_mercantile` and `b_counting_house`, so visually open lanes could feel
+  blocked by invisible building height.
+
+Collision model after G-4.13A:
+
+- `visual_bounds`: full rendered sprite rectangle for art/crop review only.
+- `lot_bounds`: planning/composition rectangle for lots and future density.
+- `collision_footprint`: the only blocking body; a shallow base/foundation
+  footprint near the ground contact.
+- `interaction_zone`: the frontage standing rectangle aligned to doors.
+- `foot_anchor`: local ground contact at the node origin.
+- `y_sort_offset`: remains `Vector2.ZERO`; buildings sort from their foot
+  anchor/frontage plane.
+
+Adjusted active building footprints:
+
+| Building id | Footprint treatment |
+| --- | --- |
+| `b_inn_tavern` | shallow tavern foundation strip, not the roof/body art |
+| `b_mercantile` | tight shop base so the rear road stays walkable |
+| `b_counting_house` | tight civic-shop base so the rear road stays walkable |
+| `b_chandlery_front` | storefront base only; side-lane props remain separate blockers |
+| `b_shop_house` | storefront base only |
+| `b_market_shed` | wider low shed base, still separate from sprite height |
+| `b_custom_house` | civic base/foundation only |
+| `b_large_residence` | house base/foundation only |
+| `b_boarding_house` | narrow house base/foundation only |
+| `b_res_small` | cottage base/foundation only |
+| `b_cooperage_shed` | compact shed base/foundation only |
+| `b_dock_warehouse` | dockside warehouse ground-contact footprint |
+| `b_wharf_boathouse` | boathouse ground-contact footprint |
+| `b_dock_storehouse` | storehouse ground-contact footprint |
+
+Validated routes in this gate:
+
+- road behind `b_mercantile`
+- road behind `b_counting_house`
+- harborfront commercial rear road generally
+- west, central, and east cross-lanes
+- inland road to commercial street access
+- commercial street frontage and dock-layer walk
+
+Debug overlay meaning:
+
+- Yellow outline: `visual_bounds`
+- Amber outline/fill: `lot_bounds`
+- Red fill/outline: `collision_footprint`, the actual blocker
+- Blue fill/outline: `interaction_zone`
+- Green/cyan/magenta markers: foot anchor, frontage, door, and y-sort points
+
+Planned G-4.13B rowhouse/townhouse infill slots:
+
+- `slot_tavern_mercantile_narrow_rowhouse`
+- `slot_counting_chandlery_lane_edge_shop`
+- `slot_shop_market_townhouse_pair`
+- `slot_cottage_customs_inland_townhouse`
+- `slot_support_lane_boarding_gap`
+
+Remaining known issues:
+
+- Roads, water, and props still need final painterly asset support.
+- Infill slots are planning metadata only; no rowhouse sprites are active yet.
+- G-4.13D still needs final manual navigation/collision/interaction-zone
+  validation after rowhouse density and prop-atlas dressing.
 
 ## G-4.2 Lived-In Pass
 
@@ -791,11 +877,10 @@ Acceptance is intentionally narrow: no proof-street building may show pieces
 of a neighboring atlas building. If any contamination remains after upload,
 classify the pass as `SPRITE_CROP_CONTAMINATION_REMAINS`.
 
-The proof street also now treats each building as an occupied lot rather than a
-flat facade. Each active building has a `lot_rect`/`collision_rect` extending
-behind the street frontage so the player cannot walk directly behind the
-building body. This is the foundation for future enterable buildings: doors
-face the street, while the building volume owns real ground behind the facade.
+The proof street also began treating each building as an occupied lot rather
+than a flat facade. That early `lot_rect`/`collision_rect` coupling was later
+corrected in G-4.13A: `lot_bounds` remains planning/debug context, while the
+blocking `collision_footprint` is a tight ground-contact base.
 
 ## G-4.9.5 and G-4.9.6 Street Review Stack
 

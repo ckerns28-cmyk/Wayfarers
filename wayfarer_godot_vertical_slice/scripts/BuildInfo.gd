@@ -1,10 +1,10 @@
 extends RefCounted
 class_name BuildInfo
 
-const BUILD_PHASE := "G-4.12B"
-const BUILD_LABEL := "Godot G-4.12B Surface Cohesion Gate"
+const BUILD_PHASE := "G-4.13A"
+const BUILD_LABEL := "Godot G-4.13A Building Footprint Walkability Gate"
 const REVIEW_HOST := "itch"
 const REVIEW_CHANNEL := "manual ZIP"
-const SOURCE_BRANCH := "codex/g-4-12b-surface-cohesion-clean-review"
+const SOURCE_BRANCH := "codex/g-4-13a-building-footprint-walkability-gate"
 const DEBUG_OVERLAYS_DEFAULT := false
 const DEBUG_OVERLAY_TOGGLE_ENABLED := true

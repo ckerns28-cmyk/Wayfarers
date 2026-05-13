@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.12B", "build_phase_g_4_12b")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.12B Surface Cohesion Gate", "build_label_g_4_12b")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13A", "build_phase_g_4_13a")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13A Building Footprint Walkability Gate", "build_label_g_4_13a")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -65,6 +65,7 @@ func _validate_scene(main: Node) -> void:
 	_validate_proof_street(main)
 	_validate_lived_in_details()
 	_validate_reachability()
+	_validate_building_walkability_gate()
 
 func _validate_detail_blockers(collision_layer: Node) -> void:
 	var detail_count := 0
@@ -157,7 +158,7 @@ func _validate_starter_harbor_plan() -> void:
 		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")
 		if config.has("definition_id"):
 			var definition := BUILDING_CATALOG.building_definition(String(config["definition_id"]))
-			for key in ["building_id", "display_name", "role", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "foot_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "shadow_size", "district_role", "district_placement_tags", "notes"]:
+			for key in ["building_id", "display_name", "role", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "visual_bounds", "lot_bounds", "collision_footprint", "interaction_zone", "foot_anchor", "visual_base_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "shadow_size", "district_role", "district_placement_tags", "notes"]:
 				_expect(definition.has(key), String(config["id"]) + "_definition_has_" + key)
 			var texture_path: String = definition.get("texture_path", "")
 			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
@@ -173,9 +174,14 @@ func _validate_starter_harbor_plan() -> void:
 	var plan_loop: Array = plan.get("movement_loop", [])
 	_expect(plan.get("target_total_lots", "") == "10-16", "starter_plan_target_lot_range")
 	_expect(plan.get("composition_pass", "") == "G-4.12B", "starter_plan_composition_pass_g_4_12b")
+	_expect(plan.get("footprint_pass", "") == "G-4.13A", "starter_plan_footprint_pass_g_4_13a")
+	_expect(String(plan.get("collision_model", "")).find("collision_footprint") >= 0, "starter_plan_collision_model_mentions_collision_footprint")
 	_expect(plan.get("clean_review_default", false) == true, "starter_plan_clean_review_default")
 	_expect(plan_districts.size() >= 4, "starter_plan_district_structure")
-	_expect(plan_loop.size() >= 4, "starter_plan_movement_loop")
+	_expect(plan_loop.has("commercial_rear_road"), "starter_plan_includes_commercial_rear_road")
+	_expect(plan_loop.has("mercantile_counting_house_rear_road"), "starter_plan_includes_mercantile_counting_rear_road")
+	_expect(plan_loop.size() >= 6, "starter_plan_movement_loop")
+	_expect(NEWPORT_TOWN.g413b_rowhouse_infill_slots().size() == NEWPORT_TOWN.G413B_ROWHOUSE_INFILL_SLOT_IDS.size(), "g413b_rowhouse_infill_slot_manifest_count")
 	_expect(BUILDING_CATALOG.available_building_assets().size() >= 20, "asset_audit_catalog_populated")
 
 func _validate_building_node(building: Node2D) -> void:
@@ -209,13 +215,28 @@ func _validate_building_node(building: Node2D) -> void:
 
 	if body_shape and body_shape.shape is RectangleShape2D:
 		var body_size := (body_shape.shape as RectangleShape2D).size
+		var body_rect := Rect2(body_shape.position - body_size * 0.5, body_size)
 		_expect(body_size.x >= 60.0 and body_size.y >= 28.0, building.name + "_playable_collision_footprint")
+		_expect(body_size.y <= 64.0, building.name + "_collision_footprint_not_visual_height")
+		_expect(body_rect.position.y >= -42.0 and body_rect.end.y <= 18.0, building.name + "_collision_footprint_sits_on_ground_contact")
 		var proof_street: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
 		if proof_street:
-			_expect(body_size.y >= 150.0, building.name + "_occupied_building_volume_depth")
+			_expect(body_size.y <= 48.0, building.name + "_proof_street_uses_tight_ground_footprint")
+		if building.has_method("get_visual_bounds"):
+			var visual_bounds: Rect2 = building.get_visual_bounds()
+			_expect(visual_bounds.size.y > body_size.y * 2.0, building.name + "_visual_bounds_separate_from_collision_footprint")
+		if building.has_method("get_lot_bounds"):
+			var lot_bounds: Rect2 = building.get_lot_bounds()
+			_expect(lot_bounds.size.y > body_size.y, building.name + "_lot_bounds_separate_from_collision_footprint")
 
 	if interaction_shape and interaction_shape.shape is RectangleShape2D:
 		_expect(interaction_shape.position.y > 0.0, building.name + "_frontage_interaction_south")
+		if body_shape and body_shape.shape is RectangleShape2D:
+			var interaction_size := (interaction_shape.shape as RectangleShape2D).size
+			var interaction_rect := Rect2(interaction_shape.position - interaction_size * 0.5, interaction_size)
+			var body_size := (body_shape.shape as RectangleShape2D).size
+			var body_rect := Rect2(body_shape.position - body_size * 0.5, body_size)
+			_expect(interaction_rect.position.y >= body_rect.position.y, building.name + "_interaction_zone_not_rear_blocker")
 
 func _validate_proof_street(main: Node) -> void:
 	var proof_ids: Array = NEWPORT_TOWN.proof_street_ids()
@@ -245,7 +266,7 @@ func _validate_proof_street(main: Node) -> void:
 		if configs_by_id.has(id):
 			var config: Dictionary = configs_by_id[id]
 			_expect(config.get("proof_street", false), id + "_proof_street_flag")
-			for key in ["visual_base_anchor", "frontage_offset", "collision_rect", "lot_rect", "building_volume_rect", "y_sort_offset", "shadow_size"]:
+			for key in ["visual_base_anchor", "frontage_offset", "visual_bounds", "collision_footprint", "collision_rect", "interaction_zone", "lot_bounds", "lot_rect", "building_volume_rect", "y_sort_offset", "shadow_size"]:
 				_expect(config.has(key), id + "_seating_metadata_" + key)
 
 	var proof_buildings := get_nodes_in_group("proof_street_buildings")
@@ -297,6 +318,51 @@ func _validate_reachability() -> void:
 		for target_name in NEWPORT_TOWN.proof_street_walk_targets().keys():
 			var tile: Vector2i = NEWPORT_TOWN.proof_street_walk_targets()[target_name]
 			_expect(reached.has(_key(tile)), "proof_street_walk_reachable_" + target_name)
+
+func _validate_building_walkability_gate() -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+
+	var walk_samples := {
+		"road_behind_b_mercantile": Vector2(492.0, 526.0),
+		"road_behind_b_counting_house": Vector2(680.0, 526.0),
+		"harborfront_rear_commercial_row": Vector2(892.0, 526.0),
+		"west_commercial_cross_lane": Vector2(392.0, 520.0),
+		"central_inland_cross_lane": Vector2(672.0, 430.0),
+		"central_front_cross_lane": Vector2(668.0, 592.0),
+		"east_commercial_cross_lane": Vector2(1100.0, 520.0),
+		"dock_layer_walk": Vector2(824.0, 710.0),
+	}
+	for sample_name in walk_samples.keys():
+		var point: Vector2 = walk_samples[sample_name]
+		_expect(not _point_hits_building_collision(point, 10.0), "walkability_" + sample_name)
+
+	for raw_building in get_nodes_in_group("buildings"):
+		var building := raw_building as Node2D
+		if building == null:
+			continue
+		var rect := _building_collision_world_rect(building)
+		if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+			continue
+		_expect(rect.has_point(rect.get_center()), String(building.name) + "_obvious_building_body_blocks_center")
+
+func _point_hits_building_collision(point: Vector2, player_radius: float) -> bool:
+	for raw_building in get_nodes_in_group("buildings"):
+		var building := raw_building as Node2D
+		if building == null:
+			continue
+		var rect := _building_collision_world_rect(building).grow(player_radius)
+		if rect.has_point(point):
+			return true
+	return false
+
+func _building_collision_world_rect(building: Node2D) -> Rect2:
+	var body_shape := building.get_node_or_null("Body/CollisionShape2D") as CollisionShape2D
+	if body_shape == null or not (body_shape.shape is RectangleShape2D):
+		return Rect2()
+	var body_size := (body_shape.shape as RectangleShape2D).size
+	var local_rect := Rect2(body_shape.position - body_size * 0.5, body_size)
+	return Rect2(building.global_position + local_rect.position, local_rect.size)
 
 func _flood_route_tiles(start: Vector2i, route_set: Dictionary) -> Dictionary:
 	var reached := {}

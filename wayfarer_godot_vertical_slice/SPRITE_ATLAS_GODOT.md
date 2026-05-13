@@ -114,11 +114,12 @@ sprite ids they use.
 
 ## Collision / interaction
 
-- Collision body is a `RectangleShape2D` sized to roughly the lower
-  10–14% of the building visual; positioned with
-  `collision_offset.y = -collision_size.y / 2` so it spans from
-  `y = -collision_size.y` (top of foundation) to `y = 0` (the visible
-  base = foot anchor).
+- `visual_bounds` is the full rendered sprite rectangle and is review-only.
+- `lot_bounds` is the planning/composition area and is review-only.
+- `collision_footprint` is the blocking `RectangleShape2D`, sized to the
+  visible ground-contact/base footprint rather than the full front-facing art.
+  It may extend slightly south of the foot anchor for steps or foundations,
+  but it must not use the full sprite rectangle.
 - Interaction area is a `RectangleShape2D` placed *south* of the foot
   anchor (positive y, in front of the door). Its X is aligned with the
   building's door marker.
@@ -131,7 +132,7 @@ sprite ids they use.
    `anchor` to `(region.size.x / 2, region.size.y)`.
 4. Set `position` to where the visible base of the building should appear
    in world coords.
-5. Set `collision_size`, `collision_offset`, `interaction_size`,
-   `interaction_offset`, `door_offset` so the validator passes.
+5. Set `visual_bounds`, `lot_bounds`, `collision_footprint`,
+   `interaction_zone`, and `door_offset` so the validator passes.
 6. Re-run `tools/validate_vertical_slice.gd` and the F3 debug overlay
    before committing.

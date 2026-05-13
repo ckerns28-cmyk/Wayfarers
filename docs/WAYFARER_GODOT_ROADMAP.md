@@ -170,6 +170,14 @@ and muted background lots have been restyled so the non-building environment
 better matches the detailed Newport building art. The HUD review identity
 should show `Godot G-4.12B Surface Cohesion Gate`.
 
+Current G-4.13A result: building visual bounds, planning lot bounds, collision
+footprints, interaction zones, and foot anchors are separate concepts. The
+full tall sprite rectangle is review-only; the player is blocked by shallow
+ground-contact `collision_footprint` rectangles. This fixes the road behind
+the mercantile/counting-house row and prepares planning-only rowhouse slots for
+G-4.13B. The HUD review identity should show `Godot G-4.13A Building Footprint
+Walkability Gate`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -900,8 +908,11 @@ Implemented:
 
 Before NPCs/quests begin:
 
-- G-4.13 must validate navigation, collision, approach zones, interaction-zone
-  placeholders, dock access, and invisible blocker reliability across the
+- G-4.13B should use the corrected footprints for townhouse/rowhouse infill
+  without closing rear roads, side lanes, or dock approaches.
+- G-4.13C should integrate the prop atlas and role-based dressing.
+- G-4.13D should complete final navigation, collision, approach-zone,
+  interaction-zone, dock-access, and invisible-blocker validation across the
   expanded starter town.
 
 ## G-4.12B: Newport Surface Cohesion + Clean Review Gate
@@ -938,9 +949,47 @@ Still weak / deferred:
 - Many environment details are still drawn primitives. Dedicated painterly
   prop sprites for carts, sacks, crates, barrels, rope, signs, fences, and
   lanterns would improve final cohesion.
-- G-4.13 should happen only after this visual pass is accepted and should
-  focus on routes, collision, approach zones, NPC staging spots, dock access,
-  interaction placeholders, and invisible blockers.
+- G-4.13A should happen only after this visual pass is accepted and should
+  focus first on separating building visual bounds from physical footprints.
+
+## G-4.13A: Building Footprint / Collision / Walkability Gate
+
+Status: implemented for local validation.
+
+G-4.13A fixes the blocker found during G-4.12B review: several red debug
+rectangles were effectively tall visual sprite bounds, so visually open rear
+roads behind `b_mercantile` and `b_counting_house` could not be walked
+reliably. This pass keeps the town footprint and building placement stable.
+
+Implemented:
+
+- HUD identity: `Godot G-4.13A Building Footprint Walkability Gate`.
+- Branch: `codex/g-4-13a-building-footprint-walkability-gate`.
+- Runtime building metadata now separates `visual_bounds`, `lot_bounds`,
+  `collision_footprint`, `interaction_zone`, `foot_anchor`, and y-sort data.
+- The actual `StaticBody2D` uses `collision_footprint`, not `visual_bounds` or
+  `lot_bounds`.
+- Active town buildings received tight ground-contact footprints:
+  `b_inn_tavern`, `b_mercantile`, `b_counting_house`,
+  `b_chandlery_front`, `b_shop_house`, `b_market_shed`, `b_custom_house`,
+  `b_large_residence`, `b_boarding_house`, `b_res_small`,
+  `b_cooperage_shed`, `b_dock_warehouse`, `b_wharf_boathouse`, and
+  `b_dock_storehouse`.
+- `B`/`F3` overlays label visual bounds, lot bounds, collision footprint,
+  interaction zone, foot anchor, and y-sort marker so the actual blocker is
+  obvious.
+- Validator samples confirm the rear road behind the mercantile/counting-house
+  row, harborfront rear road, west/central/east cross-lanes, and dock walk do
+  not hit building collision.
+- G-4.13B planning-only infill slots are recorded for tavern-to-mercantile,
+  counting-house-to-chandlery, shop-to-market, inland civic, and support-lane
+  gaps.
+
+Remaining known issues:
+
+- The infill slots are not active buildings yet.
+- Prop atlas integration is still deferred to G-4.13C.
+- Final whole-town manual route validation remains G-4.13D.
 
 ## G-5: Migration Architecture
 
