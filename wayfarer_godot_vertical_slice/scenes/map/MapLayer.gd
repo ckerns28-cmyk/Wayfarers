@@ -478,7 +478,7 @@ func _draw_g410_props() -> void:
 	_draw_fence_line(Vector2(1118, 382), Vector2(1262, 382), Color("#d9c89c"))
 	_draw_fence_line(Vector2(1000, 410), Vector2(1090, 410), Color("#d9c89c"))
 	_draw_fence_line(Vector2(406, 442), Vector2(530, 442), Color("#cdbb86"))
-	_draw_woodpile(Vector2(396, 418))
+	_draw_woodpile(Vector2(396, 462))
 	_draw_woodpile(Vector2(278, 420))
 	_draw_woodpile(Vector2(488, 566))
 	for pos in [Vector2(134, 438), Vector2(1452, 430), Vector2(1320, 332), Vector2(150, 612), Vector2(1368, 642), Vector2(584, 356), Vector2(1018, 356), Vector2(1190, 326)]:

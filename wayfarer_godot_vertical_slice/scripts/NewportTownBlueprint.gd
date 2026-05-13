@@ -441,6 +441,7 @@ static func route_debug_probes() -> Array:
 			_route_probe("commercial_to_dock_access", Vector2(672.0, 652.0), "commercial row to dock layer access", "dock access"),
 			_route_probe("dock_boardwalk", Vector2(824.0, 710.0), "dock boardwalk", "dock walk"),
 			_route_probe("central_cross_lane", Vector2(672.0, 430.0), "inland road to commercial row access", "cross C"),
+			_route_probe("support_lane_woodpile_road", Vector2(424.0, 430.0), "old support-lane woodpile road position", "wood road"),
 		]
 	return []
 
@@ -474,7 +475,7 @@ static func detail_blockers() -> Array:
 			_blocker("central_pier_cargo", Rect2(746, 742, 36, 20)),
 			_blocker("east_pier_net", Rect2(1070, 746, 34, 20)),
 			_blocker("inland_civic_bench", Rect2(628, 374, 42, 16)),
-			_blocker("support_lane_woodpile", Rect2(404, 418, 40, 18)),
+			_blocker("support_lane_woodpile", Rect2(404, 462, 40, 18)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
