@@ -44,6 +44,8 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 			return _sprite(ISOLATED_BUILDINGS + "/newport_custom_house_civic_front_isolated.png", Rect2(0, 0, 437, 433), 176.0)
 		"newport_formal_townhouse_block_a":
 			return _sprite(PACK_B, Rect2(444, 67, 371, 336), 188.0)
+		"newport_formal_townhouse_single_bay":
+			return _sprite(PACK_B, Rect2(568, 67, 124, 336), 64.0)
 		"newport_elite_mansion_white":
 			return _sprite(PACK_B, Rect2(840, 60, 380, 348), 192.0)
 		"newport_modest_clapboard_residence_a":
@@ -97,7 +99,7 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_printer_rowhouse":
 			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 88.0, Vector2(136.5, 360.0), Vector2(72.0, 14.0), Rect2(Vector2(-38.0, -112.0), Vector2(76.0, 124.0)), Vector2(0.0, 22.0), 66.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.13B.1 narrow rowhouse/shopfront infill for a future pamphlet printer, apprentice errand, or rented-room rumor hook; deliberately scaled as infill so it reads beside the market without touching it.")
 		"b_clerk_townhouse":
-			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_block_a", "clerk_lodging", 104.0, Vector2(185.5, 310.0), Vector2(86.0, 14.0), Rect2(Vector2(-50.0, -104.0), Vector2(100.0, 116.0)), Vector2(0.0, 22.0), 76.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B.1 townhouse row infill seated between the tavern and mercantile at a true infill scale; supports future clerk lodging, family dispute, suspicious-neighbor, or quiet artifact-discovery starts.")
+			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_single_bay", "clerk_lodging", 64.0, Vector2(62.0, 310.0), Vector2(64.0, 14.0), Rect2(Vector2(-38.0, -132.0), Vector2(76.0, 144.0)), Vector2(0.0, 22.0), 58.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B.3 single-bay formal townhouse crop seated between the tavern and mercantile at native rowhouse scale; avoids shrinking the full three-bay block while preserving clerk lodging hooks.")
 		"b_dockworker_rowhouse":
 			return _definition(building_id, "Dockworker Rowhouse", "newport_waterfront_shop_house", "dockworker_lodging", 154.0, Vector2(175.5, 300.0), Vector2(124.0, 15.0), Rect2(Vector2(-76.0, -112.0), Vector2(152.0, 124.0)), Vector2(0.0, 21.0), 124.0, false, ["support_lane", "residential", "rowhouse", "future_dockworker_lodging"], "G-4.13B.1 support-lane lodging infill using the four-unit clapboard rowhouse from Newport pack A, seated beside the boarding house with a hard visible gap.")
 		_:
@@ -128,7 +130,8 @@ static func available_building_assets() -> Array:
 		_asset("newport_waterfront_shop_house", "dockworker rowhouse / attached housing", "integrated_g413b", "Used for the Dockworker Rowhouse four-unit clapboard street-wall infill beside the boarding-house/support lane."),
 		_asset("newport_narrow_merchant_townhouse_a", "shop house / townhouse", "integrated_g413b", "Used for the Printer Rowhouse street-front infill east of the market shed."),
 		_asset("newport_chandlery_cottage", "chandlery / cottage / service shop", "available_deferred", "Possible smaller service-lane shop."),
-		_asset("newport_formal_townhouse_block_a", "formal townhouse row / residential row", "integrated_g413b", "Used for the Clerk Townhouse row between the tavern and mercantile."),
+		_asset("newport_formal_townhouse_block_a", "formal townhouse row / residential row", "available_deferred", "Full three-bay block remains available, but is too wide for the clerk slot without reading as a shrunken miniature."),
+		_asset("newport_formal_townhouse_single_bay", "formal single-bay townhouse / clerk lodging", "integrated_g413b", "Used for the Clerk Townhouse between the tavern and mercantile at native rowhouse scale."),
 		_asset("newport_elite_mansion_white", "large residence / boarding house", "available_deferred", "Potential upper-town residence."),
 		_asset("newport_market_frontage_row", "mercantile / market frontage", "available_deferred", "Duplicate commercial frontage for later dressing."),
 	]
@@ -234,7 +237,7 @@ static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, vis
 		"b_printer_rowhouse":
 			return _base_footprint(66.0, 18.0, 12.0)
 		"b_clerk_townhouse":
-			return _base_footprint(76.0, 18.0, 12.0)
+			return _base_footprint(62.0, 18.0, 12.0)
 		"b_dockworker_rowhouse":
 			return _base_footprint(124.0, 18.0, 12.0)
 		"b_dock_storehouse":

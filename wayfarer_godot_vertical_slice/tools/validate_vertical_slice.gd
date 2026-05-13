@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.2", "build_phase_g_4_13b_2")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.2 Street-Wall Hard Spacing Fix", "build_label_g_4_13b_2")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.3", "build_phase_g_4_13b_3")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.3 Clerk Townhouse Bay Fix", "build_label_g_4_13b_3")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -177,6 +177,11 @@ func _validate_starter_harbor_plan() -> void:
 			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
 			var tags: Array = definition.get("district_placement_tags", [])
 			_expect(not tags.is_empty(), String(config["id"]) + "_has_district_placement_tags")
+			if String(config["id"]) == "b_clerk_townhouse":
+				var clerk_visual: Rect2 = definition.get("visual_bounds", Rect2())
+				_expect(definition.get("sprite_id", "") == "newport_formal_townhouse_single_bay", "clerk_townhouse_uses_single_bay_crop")
+				_expect(clerk_visual.size.y >= clerk_visual.size.x * 2.4, "clerk_townhouse_keeps_vertical_rowhouse_read")
+				_expect(float(definition.get("visual_scale", 0.0)) >= 60.0, "clerk_townhouse_not_under_scaled")
 
 	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
 	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "dedicated crate/barrel/rope prop sprites", "sign variants", "fencing variants", "lantern variants", "chapel/church decision and final art if needed"]:
@@ -236,6 +241,12 @@ func _validate_visual_composition_spacing() -> void:
 		"b_boarding_house",
 		"b_dockworker_rowhouse",
 	], 10.0)
+
+	var clerk := _building_by_name("b_clerk_townhouse")
+	if clerk:
+		var clerk_rect := _building_visual_world_rect(clerk)
+		_expect(clerk_rect.size.y >= 150.0, "clerk_townhouse_world_height_not_miniature")
+		_expect(clerk_rect.size.y >= clerk_rect.size.x * 2.4, "clerk_townhouse_world_vertical_read")
 
 func _validate_visual_sequence_has_daylight(label: String, ids: Array, min_gap: float) -> void:
 	var entries: Array = []

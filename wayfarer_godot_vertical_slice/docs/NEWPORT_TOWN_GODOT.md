@@ -645,10 +645,11 @@ Asset audit:
 - `newport_narrow_merchant_townhouse_a`: activated as a narrow
   shop-house/rowhouse for `b_printer_rowhouse`, now seated on the east market
   street edge after the shop-house gap proved too tight.
-- `newport_formal_townhouse_block_a`: activated as a formal townhouse block for
-  `b_clerk_townhouse`, now filling the tavern-to-mercantile street-wall slot
-  after the tavern/mercantile bounds were tightened and the mercantile was
-  nudged east.
+- `newport_formal_townhouse_single_bay`: activated as the `b_clerk_townhouse`
+  crop between the tavern and mercantile, preserving native townhouse height
+  instead of shrinking the full three-bay formal block into the slot.
+- `newport_formal_townhouse_block_a`: retained as available deferred art for a
+  larger formal residential row.
 - `newport_waterfront_shop_house`: activated as the four-unit clapboard
   `b_dockworker_rowhouse`, replacing the duplicate boarding-house sprite.
 - Deferred candidates: `newport_chandlery_cottage` and
@@ -657,8 +658,8 @@ Asset audit:
 Infill slots used:
 
 - `slot_tavern_mercantile_narrow_rowhouse`: active with `b_clerk_townhouse`
-  after tightening the tavern and mercantile planning/visual widths and sliding
-  the mercantile east enough for a deliberate attached-rowhouse read.
+  as a single-bay formal townhouse crop, keeping visible daylight from both
+  neighbors without miniaturizing the three-bay source block.
 - `slot_support_lane_boarding_gap`: active with `b_dockworker_rowhouse`,
   seated as a four-unit lane-front rowhouse beside the boarding-house block
   while keeping the east support-lane return readable.
@@ -694,6 +695,15 @@ Collision/footprint model:
 - The visual sprite rectangles are review/art bounds only. New blocking
   collision is a shallow ground-contact footprint near the building base.
 - Interaction zones remain south/frontage-aligned.
+
+G-4.13B.3 clerk townhouse bay fix:
+
+- Build label: Godot G-4.13B.3 Clerk Townhouse Bay Fix.
+- Replaces the clerk's scaled-down three-bay formal block with a single-bay
+  crop from the same formal townhouse art.
+- Adds a validation guard that the clerk townhouse keeps a vertical rowhouse
+  read and remains tall enough in world pixels to avoid the miniature-block
+  failure mode.
 
 Routes revalidated:
 
