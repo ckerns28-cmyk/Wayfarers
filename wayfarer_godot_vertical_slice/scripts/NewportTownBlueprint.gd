@@ -543,7 +543,7 @@ static func building_specs() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
 			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(8.95, 17.38), true),
-			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(16.25, 17.68), true),
+			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(16.25, 17.77), true),
 			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(21.25, 17.42), true),
 			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.85, 17.62), true),
 			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(34.10, 17.36), true),
