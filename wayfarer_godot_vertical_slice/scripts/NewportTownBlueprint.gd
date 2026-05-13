@@ -48,13 +48,13 @@ const G413B_ACTIVE_INFILL_BUILDING_IDS := [
 ]
 
 const G413B_DEFERRED_INFILL_SLOT_IDS := [
-	"slot_tavern_mercantile_narrow_rowhouse",
 	"slot_counting_chandlery_lane_edge_shop",
+	"slot_shop_market_townhouse_pair",
+	"slot_cottage_customs_inland_townhouse",
 ]
 
 const STARTER_HARBOR_PLANNED_LOT_IDS := [
 	"lot_west_fishmonger_future",
-	"lot_east_warehouse_future",
 ]
 
 const G413B_ROWHOUSE_INFILL_SLOT_IDS := [
@@ -63,6 +63,7 @@ const G413B_ROWHOUSE_INFILL_SLOT_IDS := [
 	"slot_shop_market_townhouse_pair",
 	"slot_cottage_customs_inland_townhouse",
 	"slot_support_lane_boarding_gap",
+	"slot_market_east_edge_narrow_shop",
 ]
 
 const FULL_TOWN_BUILDING_IDS := [
@@ -335,7 +336,7 @@ static func reachability_targets() -> Dictionary:
 		return {
 			"harborfront_main_street": Vector2i(21, 19),
 			"west_tavern_frontage": Vector2i(10, 18),
-			"mercantile_frontage": Vector2i(15, 18),
+			"mercantile_frontage": Vector2i(16, 18),
 			"counting_house_frontage": Vector2i(21, 18),
 			"chandlery_frontage": Vector2i(26, 18),
 			"east_storefront_frontage": Vector2i(33, 18),
@@ -398,7 +399,7 @@ static func proof_street_walk_targets() -> Dictionary:
 	if G410_STARTER_HARBOR_TOWN:
 		return {
 			"tavern_door": Vector2i(10, 18),
-			"mercantile_door": Vector2i(15, 18),
+			"mercantile_door": Vector2i(16, 18),
 			"counting_house_door": Vector2i(21, 18),
 			"chandlery_door": Vector2i(26, 18),
 			"shop_house_door": Vector2i(33, 18),
@@ -456,9 +457,9 @@ static func route_debug_probes() -> Array:
 			_route_probe("dock_boardwalk", Vector2(824.0, 710.0), "dock boardwalk", "dock walk"),
 			_route_probe("central_cross_lane", Vector2(672.0, 430.0), "inland road to commercial row access", "cross C"),
 			_route_probe("support_lane_woodpile_road", Vector2(424.0, 430.0), "old support-lane woodpile road position", "wood road"),
-			_route_probe("inland_townhouse_walk", Vector2(562.0, 462.0), "walkable inland/support road south of the clerk townhouse street wall", "inland infill"),
-			_route_probe("printer_rowhouse_front_walk", Vector2(998.0, 604.0), "commercial street approach below the printer rowhouse street wall", "print shop"),
-			_route_probe("support_boarding_gap_walk", Vector2(1360.0, 462.0), "east support-lane return below the dockworker rowhouse street wall", "dockworker"),
+			_route_probe("clerk_rowhouse_front_walk", Vector2(420.0, 604.0), "commercial street approach below the tavern/mercantile clerk-rowhouse infill", "clerk row"),
+			_route_probe("market_east_edge_front_walk", Vector2(1408.0, 604.0), "commercial street approach below the east market-edge printer rowhouse", "market edge"),
+			_route_probe("support_boarding_gap_walk", Vector2(1340.0, 462.0), "east support-lane return below the dockworker rowhouse street wall", "dockworker"),
 		]
 	return []
 
@@ -542,21 +543,21 @@ static func building_specs() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
 			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(8.95, 17.38), true),
-			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(15.35, 17.68), true),
+			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(16.25, 17.68), true),
 			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(21.25, 17.42), true),
 			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.85, 17.62), true),
 			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(34.10, 17.36), true),
-			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(31.15, 17.32)),
+			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(43.85, 17.58)),
 			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(39.45, 17.68)),
 			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(41.35, 27.55)),
 			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(28.05, 27.65)),
 			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(15.20, 27.55)),
 			_catalog_building("b_custom_house", "inland_residential_civic", "customs_house", Vector2(25.10, 11.70)),
-			_catalog_building("b_clerk_townhouse", "inland_residential_civic", "rowhouse_clerk_lodging", Vector2(17.55, 13.05)),
+			_catalog_building("b_clerk_townhouse", "harborfront_commercial", "rowhouse_clerk_lodging", Vector2(12.70, 17.42)),
 			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(13.65, 11.45)),
 			_catalog_building("b_large_residence", "inland_residential_civic", "civic_residence", Vector2(31.80, 11.55)),
 			_catalog_building("b_boarding_house", "support_lane", "boarding_house", Vector2(38.35, 11.70)),
-			_catalog_building("b_dockworker_rowhouse", "support_lane", "rowhouse_dockworker_lodging", Vector2(42.55, 13.05)),
+			_catalog_building("b_dockworker_rowhouse", "support_lane", "rowhouse_dockworker_lodging", Vector2(42.35, 13.05)),
 			_catalog_building("b_cooperage_shed", "support_lane", "cooperage", Vector2(8.25, 11.85)),
 		]
 	if G49_STREET_VIGNETTE:
@@ -670,24 +671,23 @@ static func starter_district_plan() -> Dictionary:
 static func starter_lot_specs() -> Array:
 	return [
 		_lot("lot_tavern_anchor", "actual", "harborfront_commercial", "tavern", Rect2i(6, 13, 6, 5), "b_inn_tavern"),
-		_lot("lot_mercantile_anchor", "actual", "harborfront_commercial", "mercantile", Rect2i(13, 13, 5, 5), "b_mercantile"),
+		_lot("lot_mercantile_anchor", "actual", "harborfront_commercial", "mercantile", Rect2i(14, 13, 5, 5), "b_mercantile"),
 		_lot("lot_counting_house_anchor", "actual", "harborfront_commercial", "civic_exchange", Rect2i(18, 12, 7, 6), "b_counting_house"),
 		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(25, 13, 6, 5), "b_chandlery_front"),
 		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(32, 13, 5, 5), "b_shop_house"),
-		_lot("lot_printer_rowhouse_infill", "actual", "harborfront_commercial", "printer_rowhouse", Rect2i(30, 13, 3, 5), "b_printer_rowhouse"),
+		_lot("lot_printer_rowhouse_infill", "actual", "harborfront_commercial", "printer_rowhouse", Rect2i(42, 13, 4, 5), "b_printer_rowhouse"),
 		_lot("lot_market_shed_anchor", "actual", "harborfront_commercial", "market_stall", Rect2i(37, 13, 6, 5), "b_market_shed"),
 		_lot("lot_storehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(39, 24, 7, 5), "b_dock_storehouse"),
 		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "waterline_dock_service", Rect2i(25, 24, 8, 5), "b_wharf_boathouse"),
 		_lot("lot_dock_warehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(12, 24, 7, 5), "b_dock_warehouse"),
 		_lot("lot_customs_house_anchor", "actual", "inland_residential_civic", "customs_house", Rect2i(22, 8, 8, 5), "b_custom_house"),
-		_lot("lot_clerk_townhouse_infill", "actual", "inland_residential_civic", "clerk_lodging", Rect2i(16, 10, 4, 4), "b_clerk_townhouse"),
+		_lot("lot_clerk_townhouse_infill", "actual", "harborfront_commercial", "clerk_lodging", Rect2i(11, 13, 3, 5), "b_clerk_townhouse"),
 		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(11, 8, 5, 4), "b_res_small"),
 		_lot("lot_civic_residence_anchor", "actual", "inland_residential_civic", "civic_residence", Rect2i(29, 7, 7, 5), "b_large_residence"),
 		_lot("lot_lane_boarding_house_anchor", "actual", "support_lane", "boarding_house", Rect2i(36, 8, 5, 4), "b_boarding_house"),
-		_lot("lot_dockworker_rowhouse_infill", "actual", "support_lane", "dockworker_lodging", Rect2i(41, 10, 3, 4), "b_dockworker_rowhouse"),
+		_lot("lot_dockworker_rowhouse_infill", "actual", "support_lane", "dockworker_lodging", Rect2i(40, 10, 5, 4), "b_dockworker_rowhouse"),
 		_lot("lot_lane_cooperage_anchor", "actual", "support_lane", "cooperage_or_barrel_shop", Rect2i(6, 8, 4, 4), "b_cooperage_shed"),
 		_lot("lot_west_fishmonger_future", "planned", "harborfront_commercial", "fishmonger_or_service_shop", Rect2i(3, 14, 4, 4)),
-		_lot("lot_east_warehouse_future", "planned", "harborfront_commercial", "warehouse_or_chandlery", Rect2i(42, 14, 4, 4)),
 	]
 
 static func planned_lot_specs() -> Array:
@@ -702,12 +702,12 @@ static func g413b_rowhouse_infill_slots() -> Array:
 		_infill_slot(
 			"slot_tavern_mercantile_narrow_rowhouse",
 			"harborfront_commercial",
-			"narrow townhouse or signboard shop between tavern and mercantile",
-			Rect2i(12, 14, 1, 4),
-			"Keep the west cross-lane open; this remains deferred because the one-tile throat carries the accepted rear-road walkability fix.",
-			"deferred_g413b",
-			"",
-			"future tavern rumor / rented-room lead if a narrower isolated rowhouse asset becomes available"
+			"formal clerk townhouse row seated between tavern and mercantile",
+			Rect2i(11, 14, 3, 4),
+			"Mercantile was nudged east and the tavern/mercantile planning bounds were tightened so this reads as attached street fabric without choking the rear-lane throat.",
+			"active_g413b",
+			"b_clerk_townhouse",
+			"future clerk lodging, tavern rumor, rented-room lead, or suspicious-neighbor hook"
 		),
 		_infill_slot(
 			"slot_counting_chandlery_lane_edge_shop",
@@ -722,32 +722,42 @@ static func g413b_rowhouse_infill_slots() -> Array:
 		_infill_slot(
 			"slot_shop_market_townhouse_pair",
 			"harborfront_commercial",
-			"narrow printer rowhouse used as a commercial street-wall stitch between chandlery and shop house",
+			"narrow shop-house gap between chandlery/shop-house and market frontage",
 			Rect2i(30, 14, 3, 4),
-			"Rejected the old behind-market placement; keep this on the main street frontage so it reads as attached village fabric, not back-lot clutter.",
-			"active_g413b",
-			"b_printer_rowhouse",
-			"future revolutionary pamphlet, apprentice errand, rented-room rumor, or suspicious printing job"
+			"Deferred after visual review: the shop-house bounds and storefront dressing make this gap too tight for a readable rowhouse without crowding the shop facade.",
+			"deferred_g413b",
+			"",
+			"future small signboard shop or alley-width storefront after the shop-house crop/bounds are revisited"
 		),
 		_infill_slot(
 			"slot_cottage_customs_inland_townhouse",
 			"inland_residential_civic",
 			"small inland townhouse fronting the inland/support road west of the custom house",
 			Rect2i(16, 10, 4, 4),
-			"Seat the townhouse on the road edge, not in an isolated yard; leave the central inland road and civic approach walkable.",
-			"active_g413b",
-			"b_clerk_townhouse",
-			"future customs-clerk lodging, family dispute, or quiet artifact-discovery hook"
+			"Deferred after visual review: this read as an orphaned yard object instead of village street fabric.",
+			"deferred_g413b",
+			"",
+			"future customs-clerk lodging, family dispute, or quiet artifact-discovery hook once an inland street edge exists"
 		),
 		_infill_slot(
 			"slot_support_lane_boarding_gap",
 			"support_lane",
-			"boarding-house side-yard rowhouse fronting the support-lane return",
-			Rect2i(41, 10, 3, 4),
-			"Seat this as a lane-front rowhouse beside the boarding-house block, not as an orphan behind the market shed.",
+			"four-unit dockworker rowhouse fronting the support-lane return beside boarding",
+			Rect2i(40, 10, 5, 4),
+			"Uses the attached clapboard rowhouse sprite and sits directly off the support road so it reads as purposeful worker lodging, not another boarding-house duplicate.",
 			"active_g413b",
 			"b_dockworker_rowhouse",
 			"future missing-person, dockworker connection, or suspicious-neighbor hook"
+		),
+		_infill_slot(
+			"slot_market_east_edge_narrow_shop",
+			"harborfront_commercial",
+			"narrow printer rowhouse on the east market street edge",
+			Rect2i(42, 14, 4, 4),
+			"Moved out of the shop-house gap and seated on the visible street edge east of the market shed while keeping the dock access and market approach clear.",
+			"active_g413b",
+			"b_printer_rowhouse",
+			"future revolutionary pamphlet, apprentice errand, rented-room rumor, or suspicious printing job"
 		),
 	]
 
