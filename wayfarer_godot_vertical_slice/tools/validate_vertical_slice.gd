@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13A.1", "build_phase_g_4_13a_1")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13A.1 Walkability Blocker Hotfix", "build_label_g_4_13a_1")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B", "build_phase_g_4_13b")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B Rowhouse Infill Density", "build_label_g_4_13b")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -121,7 +121,7 @@ func _validate_starter_harbor_plan() -> void:
 	var lots: Array = NEWPORT_TOWN.starter_lot_specs()
 	var planned_lots: Array = NEWPORT_TOWN.planned_lot_specs()
 	var total_lots := lots.size()
-	_expect(total_lots >= 10 and total_lots <= 16, "starter_lot_count_10_to_16")
+	_expect(total_lots >= 14 and total_lots <= 20, "starter_lot_count_14_to_20")
 	_expect(planned_lots.size() == NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS.size(), "planned_lot_manifest_count")
 	_expect(NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size() == NEWPORT_TOWN.BUILDING_IDS.size(), "starter_building_manifest_matches_active")
 
@@ -146,6 +146,8 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(actual_building_lots.has("b_custom_house"), "custom_house_replaces_civic_hall")
 	for planned_id in NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS:
 		_expect(lot_ids.has(planned_id), "planned_lot_present_" + planned_id)
+	for building_id in NEWPORT_TOWN.G413B_ACTIVE_INFILL_BUILDING_IDS:
+		_expect(actual_building_lots.has(building_id), "g413b_active_infill_lot_for_" + building_id)
 	for district_id in ["harborfront_commercial", "working_wharf", "inland_residential_civic", "support_lane"]:
 		_expect(district_lots.get(district_id, 0) > 0, "starter_lots_cover_" + district_id)
 
@@ -182,9 +184,14 @@ func _validate_starter_harbor_plan() -> void:
 	var plan: Dictionary = NEWPORT_TOWN.starter_district_plan()
 	var plan_districts: Array = plan.get("districts", [])
 	var plan_loop: Array = plan.get("movement_loop", [])
-	_expect(plan.get("target_total_lots", "") == "10-16", "starter_plan_target_lot_range")
+	_expect(plan.get("target_total_lots", "") == "14-20", "starter_plan_target_lot_range")
 	_expect(plan.get("composition_pass", "") == "G-4.12B", "starter_plan_composition_pass_g_4_12b")
 	_expect(plan.get("footprint_pass", "") == "G-4.13A", "starter_plan_footprint_pass_g_4_13a")
+	_expect(plan.get("density_pass", "") == "G-4.13B", "starter_plan_density_pass_g_4_13b")
+	_expect(int(plan.get("active_g413b_infill_count", 0)) >= 3, "starter_plan_active_g413b_infill_count")
+	var plan_active_infill: Array = plan.get("active_g413b_infill_buildings", [])
+	for building_id in NEWPORT_TOWN.G413B_ACTIVE_INFILL_BUILDING_IDS:
+		_expect(plan_active_infill.has(building_id), "starter_plan_active_infill_" + building_id)
 	_expect(String(plan.get("collision_model", "")).find("collision_footprint") >= 0, "starter_plan_collision_model_mentions_collision_footprint")
 	_expect(plan.get("clean_review_default", false) == true, "starter_plan_clean_review_default")
 	_expect(plan_districts.size() >= 4, "starter_plan_district_structure")
@@ -192,7 +199,22 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan_loop.has("mercantile_counting_house_rear_road"), "starter_plan_includes_mercantile_counting_rear_road")
 	_expect(plan_loop.size() >= 6, "starter_plan_movement_loop")
 	_expect(NEWPORT_TOWN.g413b_rowhouse_infill_slots().size() == NEWPORT_TOWN.G413B_ROWHOUSE_INFILL_SLOT_IDS.size(), "g413b_rowhouse_infill_slot_manifest_count")
-	_expect(NEWPORT_TOWN.route_debug_probes().size() >= 10, "g413a1_route_debug_probe_count")
+	var active_slots := 0
+	var deferred_slots := 0
+	for raw_slot in NEWPORT_TOWN.g413b_rowhouse_infill_slots():
+		var slot: Dictionary = raw_slot
+		var status := String(slot.get("status", ""))
+		if status == "active_g413b":
+			active_slots += 1
+			_expect(NEWPORT_TOWN.G413B_ACTIVE_INFILL_BUILDING_IDS.has(String(slot.get("building_id", ""))), "g413b_slot_active_building_" + String(slot.get("id", "")))
+		elif status == "deferred_g413b":
+			deferred_slots += 1
+			_expect(NEWPORT_TOWN.G413B_DEFERRED_INFILL_SLOT_IDS.has(String(slot.get("id", ""))), "g413b_slot_deferred_manifest_" + String(slot.get("id", "")))
+		_expect(not String(slot.get("guardrail", "")).is_empty(), "g413b_slot_guardrail_" + String(slot.get("id", "")))
+		_expect(not String(slot.get("future_hook", "")).is_empty(), "g413b_slot_future_hook_" + String(slot.get("id", "")))
+	_expect(active_slots >= 3, "g413b_active_infill_slot_count")
+	_expect(deferred_slots >= 2, "g413b_deferred_infill_slot_count")
+	_expect(NEWPORT_TOWN.route_debug_probes().size() >= 13, "g413b_route_debug_probe_count")
 	_expect(BUILDING_CATALOG.available_building_assets().size() >= 20, "asset_audit_catalog_populated")
 
 func _validate_building_node(building: Node2D) -> void:
@@ -343,6 +365,9 @@ func _validate_building_walkability_gate() -> void:
 		"central_front_cross_lane": Vector2(668.0, 592.0),
 		"east_commercial_cross_lane": Vector2(1100.0, 520.0),
 		"dock_layer_walk": Vector2(824.0, 710.0),
+		"inland_townhouse_walk": Vector2(558.0, 430.0),
+		"shop_market_gap_front_walk": Vector2(1168.0, 604.0),
+		"support_boarding_gap_walk": Vector2(1336.0, 430.0),
 	}
 	for sample_name in walk_samples.keys():
 		var point: Vector2 = walk_samples[sample_name]
