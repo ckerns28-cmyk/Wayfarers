@@ -95,11 +95,11 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_cooperage_shed":
 			return _definition(building_id, "Cooperage Shed", "service_dependency_shed", "cooperage", 124.0, Vector2(149.0, 269.0), Vector2(98.0, 16.0), Rect2(Vector2(-58.0, -108.0), Vector2(116.0, 118.0)), Vector2(0.0, 20.0), 92.0, false, ["support_lane", "working_wharf", "dock_service"], "Compact service shed standing in for cooperage/barrel-shop support with an isolated crop to remove the building above it.")
 		"b_printer_rowhouse":
-			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 108.0, Vector2(136.5, 360.0), Vector2(86.0, 15.0), Rect2(Vector2(-46.0, -126.0), Vector2(92.0, 138.0)), Vector2(0.0, 23.0), 82.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.13B narrow rowhouse/shopfront infill for a future pamphlet printer, apprentice errand, or rented-room rumor hook; placed on the east market street edge after the shop-house gap proved too tight.")
+			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 88.0, Vector2(136.5, 360.0), Vector2(72.0, 14.0), Rect2(Vector2(-38.0, -112.0), Vector2(76.0, 124.0)), Vector2(0.0, 22.0), 66.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.13B.1 narrow rowhouse/shopfront infill for a future pamphlet printer, apprentice errand, or rented-room rumor hook; deliberately scaled as infill so it reads beside the market without touching it.")
 		"b_clerk_townhouse":
-			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_block_a", "clerk_lodging", 132.0, Vector2(185.5, 310.0), Vector2(104.0, 15.0), Rect2(Vector2(-64.0, -120.0), Vector2(128.0, 132.0)), Vector2(0.0, 23.0), 98.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B townhouse row infill seated between the tavern and mercantile after the mercantile nudge; supports future clerk lodging, family dispute, suspicious-neighbor, or quiet artifact-discovery starts.")
+			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_block_a", "clerk_lodging", 104.0, Vector2(185.5, 310.0), Vector2(86.0, 14.0), Rect2(Vector2(-50.0, -104.0), Vector2(100.0, 116.0)), Vector2(0.0, 22.0), 76.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B.1 townhouse row infill seated between the tavern and mercantile at a true infill scale; supports future clerk lodging, family dispute, suspicious-neighbor, or quiet artifact-discovery starts.")
 		"b_dockworker_rowhouse":
-			return _definition(building_id, "Dockworker Rowhouse", "newport_waterfront_shop_house", "dockworker_lodging", 166.0, Vector2(175.5, 300.0), Vector2(134.0, 16.0), Rect2(Vector2(-82.0, -118.0), Vector2(164.0, 130.0)), Vector2(0.0, 22.0), 136.0, false, ["support_lane", "residential", "rowhouse", "future_dockworker_lodging"], "G-4.13B support-lane lodging infill using the four-unit clapboard rowhouse from Newport pack A, so it no longer duplicates the boarding-house sprite.")
+			return _definition(building_id, "Dockworker Rowhouse", "newport_waterfront_shop_house", "dockworker_lodging", 154.0, Vector2(175.5, 300.0), Vector2(124.0, 15.0), Rect2(Vector2(-76.0, -112.0), Vector2(152.0, 124.0)), Vector2(0.0, 21.0), 124.0, false, ["support_lane", "residential", "rowhouse", "future_dockworker_lodging"], "G-4.13B.1 support-lane lodging infill using the four-unit clapboard rowhouse from Newport pack A, seated beside the boarding house with a hard visible gap.")
 		_:
 			push_error("Unknown building definition id: " + building_id)
 			return {}
@@ -232,11 +232,11 @@ static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, vis
 		"b_cooperage_shed":
 			return _base_footprint(92.0, 16.0, 12.0)
 		"b_printer_rowhouse":
-			return _base_footprint(74.0, 18.0, 12.0)
+			return _base_footprint(66.0, 18.0, 12.0)
 		"b_clerk_townhouse":
-			return _base_footprint(96.0, 18.0, 12.0)
+			return _base_footprint(76.0, 18.0, 12.0)
 		"b_dockworker_rowhouse":
-			return _base_footprint(132.0, 18.0, 12.0)
+			return _base_footprint(124.0, 18.0, 12.0)
 		"b_dock_storehouse":
 			return _base_footprint(178.0, 34.0, 14.0)
 		"b_wharf_boathouse":
