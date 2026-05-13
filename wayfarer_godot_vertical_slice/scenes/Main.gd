@@ -82,6 +82,7 @@ func _set_debug_overlay(enabled: bool) -> void:
 		var building := raw_building as Node2D
 		if building and building.has_method("set_debug_overlay"):
 			building.set_debug_overlay(enabled)
+	_set_collision_debug_overlay(enabled)
 
 func _set_building_seating_overlay(enabled: bool) -> void:
 	_seating_debug_enabled = enabled
@@ -90,6 +91,12 @@ func _set_building_seating_overlay(enabled: bool) -> void:
 		if building and building.has_method("set_debug_overlay"):
 			var show_overlay: bool = enabled and (NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN or (building.has_method("is_proof_street_building") and building.is_proof_street_building()))
 			building.set_debug_overlay(show_overlay)
+	_set_collision_debug_overlay(enabled and NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN)
+
+func _set_collision_debug_overlay(enabled: bool) -> void:
+	var collision_layer := world.get_node_or_null("TownMap/CollisionNavigationLayer")
+	if collision_layer and collision_layer.has_method("set_debug_overlay"):
+		collision_layer.set_debug_overlay(enabled)
 
 func _atlas(path: String, region: Rect2) -> AtlasTexture:
 	var texture := AtlasTexture.new()

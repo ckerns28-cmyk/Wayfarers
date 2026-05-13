@@ -178,6 +178,16 @@ the mercantile/counting-house row and prepares planning-only rowhouse slots for
 G-4.13B. The HUD review identity should show `Godot G-4.13A Building Footprint
 Walkability Gate`.
 
+Current G-4.13A.1 result: the remaining marked rear-lane choke near the
+tavern/mercantile/small-residence area has a specific owner and fix. The
+blocking contact came from `DetailBlocker_mercantile_front_crates`,
+`DetailBlocker_west_alley_rope`, and the grown player radius touching
+`Building_b_mercantile` at its western/rear footprint edge. The hotfix moves
+those decorative blockers onto visibly solid frontage clutter, tightens the
+mercantile ground footprint, and adds debug-only route probes for the marked
+lane, rear roads, cross-lanes, commercial street, and dock layer. The HUD
+review identity should show `Godot G-4.13A.1 Walkability Blocker Hotfix`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -954,7 +964,7 @@ Still weak / deferred:
 
 ## G-4.13A: Building Footprint / Collision / Walkability Gate
 
-Status: implemented for local validation.
+Status: implemented; accepted only with the G-4.13A.1 hotfix below.
 
 G-4.13A fixes the blocker found during G-4.12B review: several red debug
 rectangles were effectively tall visual sprite bounds, so visually open rear
@@ -990,6 +1000,57 @@ Remaining known issues:
 - The infill slots are not active buildings yet.
 - Prop atlas integration is still deferred to G-4.13C.
 - Final whole-town manual route validation remains G-4.13D.
+
+## G-4.13A.1: Remaining Walkability Blocker Hotfix
+
+Status: implemented for local validation.
+
+G-4.13A.1 fixes the remaining black-box marked rear-lane blocker from the
+review screenshots without changing the town footprint or advancing rowhouse,
+prop-atlas, or gameplay-system work.
+
+Root cause:
+
+- The exact blocking owners at the marked lane throat were
+  `DetailBlocker_mercantile_front_crates`, `DetailBlocker_west_alley_rope`,
+  and the grown player collision radius against `Building_b_mercantile`.
+- The crates and rope were separate scenery blockers placed in visually open
+  road/lane space.
+- The mercantile collision footprint was already separated from its tall
+  `visual_bounds`, but its rear/west edge still pinched the intended lane once
+  the player body radius was included.
+
+Implemented:
+
+- HUD identity: `Godot G-4.13A.1 Walkability Blocker Hotfix`.
+- Branch: `codex/g-4-13a-1-walkability-blocker-hotfix`.
+- `b_mercantile` keeps a solid base/foundation blocker, but its
+  `collision_footprint` is slightly narrower and shallower so the rear lane is
+  no longer blocked by the shop's painted facade area.
+- `mercantile_front_crates` and `west_alley_rope` detail blockers were moved
+  onto lower frontage clutter where they read as visible obstructions instead
+  of invisible rear-lane blockers.
+- `B`/`F3` debug now also labels collision-layer owners such as
+  `DetailBlocker_*` and shows debug-only route probe markers.
+- The validator now checks all collision owners, not only building bodies, for
+  route samples and G-4.13A.1 probes.
+
+Routes revalidated:
+
+- black-box marked rear lane north/west of `b_mercantile`
+- road behind `b_mercantile`
+- road behind `b_counting_house`
+- lane near `b_res_small`
+- tavern/mercantile rear-lane throat
+- inland road to commercial row access
+- commercial row to dock-layer access
+- central/east rear roads, commercial street, and dock boardwalk
+
+Remaining known issues:
+
+- G-4.13B rowhouse/townhouse infill remains planning-only metadata.
+- Prop atlas integration is still deferred to G-4.13C.
+- G-4.13D remains the final whole-town manual navigation/collision pass.
 
 ## G-5: Migration Architecture
 
