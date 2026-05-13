@@ -189,14 +189,18 @@ lane, rear roads, cross-lanes, commercial street, and dock layer. The HUD
 review identity should show `Godot G-4.13A.1 Walkability Blocker Hotfix`.
 
 Current G-4.13B result: three narrow infill buildings are active without
-changing the town footprint or undoing G-4.13A footprints. `b_printer_rowhouse`
-uses the narrow merchant townhouse asset between the shop house and market,
-`b_clerk_townhouse` uses the formal townhouse block between the cottage and
-custom house, and `b_dockworker_rowhouse` uses the modest clapboard residence
-as support-lane lodging. The tavern-to-mercantile and counting-to-chandlery
-one-tile throats stay deferred because they protect the accepted rear-road and
-cross-lane walkability. The HUD review identity should show `Godot G-4.13B
-Rowhouse Infill Density`.
+changing the town footprint or undoing G-4.13A footprints. After screenshot
+review, the infill was re-seated as purposeful street-wall fabric rather than
+back-lot gap filling: the tavern and mercantile planning/visual widths were
+tightened, the mercantile was nudged east, and `b_clerk_townhouse` now occupies
+the tavern-to-mercantile street-wall slot. `b_printer_rowhouse` moved out of
+the too-tight shop-house gap to the east market street edge, and
+`b_dockworker_rowhouse` now uses the four-unit clapboard rowhouse art from
+Newport pack A instead of duplicating the boarding-house sprite. The
+counting-to-chandlery, shop-to-market, and inland/civic townhouse slots stay
+deferred because they protect walkability or currently read as orphaned
+placement. The HUD review identity should show `Godot G-4.13B Rowhouse Infill
+Density`.
 
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
@@ -1076,18 +1080,21 @@ Implemented:
 - Branch: `codex/g-4-13b-rowhouse-townhouse-infill-density`.
 - Active infill:
   - `b_printer_rowhouse`: `newport_narrow_merchant_townhouse_a`, placed in
-    `slot_shop_market_townhouse_pair` as a narrow print-shop/rowhouse between
-    the shop house and market shed.
+    `slot_market_east_edge_narrow_shop` as a narrow print-shop/rowhouse on
+    the east market street edge after the shop-house gap proved too tight.
   - `b_clerk_townhouse`: `newport_formal_townhouse_block_a`, placed in
-    `slot_cottage_customs_inland_townhouse` between the cottage and custom
-    house.
-  - `b_dockworker_rowhouse`: `newport_modest_clapboard_residence_a`, placed in
-    `slot_support_lane_boarding_gap` as support-lane lodging.
+    `slot_tavern_mercantile_narrow_rowhouse` after tightening tavern and
+    mercantile planning bounds and nudging the mercantile east.
+  - `b_dockworker_rowhouse`: `newport_waterfront_shop_house`, placed in
+    `slot_support_lane_boarding_gap` as four-unit clapboard support-lane
+    lodging beside the boarding-house block.
 - Deferred infill:
-  - `slot_tavern_mercantile_narrow_rowhouse`, kept open to preserve the
-    accepted tavern/mercantile rear-lane throat.
   - `slot_counting_chandlery_lane_edge_shop`, kept open to preserve the
     central cross-lane and rear-road sightline.
+  - `slot_shop_market_townhouse_pair`, deferred because the shop-house visual
+    bounds/frontage make that gap too tight for readable rowhouse placement.
+  - `slot_cottage_customs_inland_townhouse`, deferred because the earlier
+    placement read as an isolated yard object rather than street fabric.
 - Every active infill building uses the separated G-4.13A metadata:
   `visual_bounds`, `lot_bounds`, `collision_footprint`, `interaction_zone`,
   `foot_anchor`, and y-sort/debug data. Full sprite bounds are not blocking
@@ -1115,9 +1122,8 @@ Routes revalidated:
 
 Remaining known issues:
 
-- `newport_chandlery_cottage`, `newport_waterfront_shop_house`, and
-  `newport_market_frontage_row` remain deferred candidates for later layout or
-  role passes.
+- `newport_chandlery_cottage` and `newport_market_frontage_row` remain
+  deferred candidates for later layout or role passes.
 - Prop atlas integration is still deferred to G-4.13C.
 - G-4.13D remains the final whole-town manual navigation/collision validation
   pass after prop dressing.

@@ -365,9 +365,9 @@ func _validate_building_walkability_gate() -> void:
 		"central_front_cross_lane": Vector2(668.0, 592.0),
 		"east_commercial_cross_lane": Vector2(1100.0, 520.0),
 		"dock_layer_walk": Vector2(824.0, 710.0),
-		"inland_townhouse_walk": Vector2(558.0, 430.0),
-		"shop_market_gap_front_walk": Vector2(1168.0, 604.0),
-		"support_boarding_gap_walk": Vector2(1336.0, 430.0),
+		"clerk_rowhouse_front_walk": Vector2(420.0, 604.0),
+		"market_east_edge_front_walk": Vector2(1408.0, 604.0),
+		"support_boarding_gap_walk": Vector2(1340.0, 462.0),
 	}
 	for sample_name in walk_samples.keys():
 		var point: Vector2 = walk_samples[sample_name]

@@ -317,8 +317,8 @@ Asset audit by role:
 
 - Tavern / inn: `inn_tavern_v1` integrated.
 - Mercantile / general goods: `mercantile_shop` and `newport_shopfront_awning`
-  integrated; `newport_waterfront_shop_house` and
-  `newport_market_frontage_row` deferred as duplicate frontage variants.
+  integrated; `newport_market_frontage_row` deferred as a duplicate frontage
+  variant.
 - Counting house / administrative office: `newport_counting_house_civic_exchange`
   integrated; `newport_formal_townhouse_block_a` is available but deferred for
   a later row-house or residential-block purpose.
@@ -643,30 +643,38 @@ Build label: Godot G-4.13B Rowhouse Infill Density
 Asset audit:
 
 - `newport_narrow_merchant_townhouse_a`: activated as a narrow
-  shop-house/rowhouse for `b_printer_rowhouse`.
-- `newport_formal_townhouse_block_a`: activated as a formal inland townhouse
-  block for `b_clerk_townhouse`.
-- `newport_modest_clapboard_residence_a`: reused at smaller scale as
-  `b_dockworker_rowhouse`; it already has an isolated crop and remains suitable
-  for support-lane lodging.
-- Deferred candidates: `newport_chandlery_cottage`,
-  `newport_waterfront_shop_house`, and `newport_market_frontage_row`.
+  shop-house/rowhouse for `b_printer_rowhouse`, now seated on the east market
+  street edge after the shop-house gap proved too tight.
+- `newport_formal_townhouse_block_a`: activated as a formal townhouse block for
+  `b_clerk_townhouse`, now filling the tavern-to-mercantile street-wall slot
+  after the tavern/mercantile bounds were tightened and the mercantile was
+  nudged east.
+- `newport_waterfront_shop_house`: activated as the four-unit clapboard
+  `b_dockworker_rowhouse`, replacing the duplicate boarding-house sprite.
+- Deferred candidates: `newport_chandlery_cottage` and
+  `newport_market_frontage_row`.
 
 Infill slots used:
 
-- `slot_shop_market_townhouse_pair`: partially active with
-  `b_printer_rowhouse`, keeping the market approach and east service lane open.
-- `slot_cottage_customs_inland_townhouse`: active with `b_clerk_townhouse`,
-  keeping the inland road and custom-house approach walkable.
+- `slot_tavern_mercantile_narrow_rowhouse`: active with `b_clerk_townhouse`
+  after tightening the tavern and mercantile planning/visual widths and sliding
+  the mercantile east enough for a deliberate attached-rowhouse read.
 - `slot_support_lane_boarding_gap`: active with `b_dockworker_rowhouse`,
-  keeping the east support-lane return readable.
+  seated as a four-unit lane-front rowhouse beside the boarding-house block
+  while keeping the east support-lane return readable.
+- `slot_market_east_edge_narrow_shop`: active with `b_printer_rowhouse`,
+  seated on the east market street edge while keeping market approach and dock
+  access walkable.
 
 Infill slots deferred:
 
-- `slot_tavern_mercantile_narrow_rowhouse`: deferred because this one-tile
-  throat protects the accepted tavern/mercantile rear-lane walkability fix.
 - `slot_counting_chandlery_lane_edge_shop`: deferred because this gap protects
   the rear road and central cross-lane sightline.
+- `slot_shop_market_townhouse_pair`: deferred because visual review showed the
+  shop-house frontage/bounds make that gap too tight for readable placement.
+- `slot_cottage_customs_inland_townhouse`: deferred because the earlier
+  townhouse read as an isolated yard object, not a purposeful village street
+  edge.
 
 New building definitions:
 
@@ -697,7 +705,8 @@ Routes revalidated:
 - commercial street
 - commercial row to dock-layer access
 - wharf boardwalk and dock layer
-- new route probes below the clerk, printer, and dockworker infill buildings
+- new route probes below the tavern/mercantile clerk rowhouse, east market-edge
+  printer rowhouse, and dockworker infill buildings
 
 Files changed for the pass:
 
