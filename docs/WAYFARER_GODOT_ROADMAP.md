@@ -163,6 +163,13 @@ are muted into background yards, and the wharf buildings remain beside the
 main wharf with readable side landings onto their own dock platforms. The HUD
 review identity should show `Godot G-4.12 Starter Town Composition + Dressing`.
 
+Current G-4.12B result: the same town composition now has a surface-cohesion
+pass for clean visual review. Roads, sidewalks, dock planks, wharf edges,
+water, shoreline contact, yards, fences, laundry, role-based prop clusters,
+and muted background lots have been restyled so the non-building environment
+better matches the detailed Newport building art. The HUD review identity
+should show `Godot G-4.12B Surface Cohesion Gate`.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -896,6 +903,44 @@ Before NPCs/quests begin:
 - G-4.13 must validate navigation, collision, approach zones, interaction-zone
   placeholders, dock access, and invisible blocker reliability across the
   expanded starter town.
+
+## G-4.12B: Newport Surface Cohesion + Clean Review Gate
+
+Status: ready for manual itch upload.
+
+G-4.12B keeps the accepted G-4.12 starter town composition and focuses on the
+environment around the buildings. It is a visual cohesion gate, not a gameplay
+or navigation-validation phase.
+
+Implemented:
+
+- HUD identity: `Godot G-4.12B Surface Cohesion Gate`.
+- Branch: `codex/g-4-12b-newport-surface-cohesion-clean-review`.
+- Clean review remains the default: building overlays are hidden unless `B` or
+  `F3` is toggled, and `F2` controls review metadata.
+- Roads and sidewalks received worn surface patches, grime, seams, edge
+  variation, and less rectangular material breaks.
+- Dock and wharf surfaces received plank weathering, edge shadows, stronger
+  post/piling language, side-landing contact, cargo clusters, and transition
+  detail.
+- Water and shoreline received depth bands, extra ripple variation, and
+  waterline contact marks near dock buildings and wharf structures.
+- Residential/civic/support lots received yard paths, shrubs, low walls,
+  benches, softened fences, clotheslines, and domestic clutter.
+- Background lots were restyled as faded structures, yards, low walls, and
+  distant town silhouettes instead of obvious layout blocks.
+- Role-based prop clusters were strengthened for tavern, mercantile, counting
+  house/custom house, chandlery, shop/market, residences/boarding house,
+  cooperage, and dock warehouse/boathouse/storehouse reads.
+
+Still weak / deferred:
+
+- Many environment details are still drawn primitives. Dedicated painterly
+  prop sprites for carts, sacks, crates, barrels, rope, signs, fences, and
+  lanterns would improve final cohesion.
+- G-4.13 should happen only after this visual pass is accepted and should
+  focus on routes, collision, approach zones, NPC staging spots, dock access,
+  interaction placeholders, and invisible blockers.
 
 ## G-5: Migration Architecture
 

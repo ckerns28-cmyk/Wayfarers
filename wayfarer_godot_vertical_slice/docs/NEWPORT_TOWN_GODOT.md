@@ -75,6 +75,13 @@ district reads, adds role-specific prop clusters, and extends the wharf side
 landings so the water-bottom warehouse, boathouse, and storehouse read as
 reachable dock platforms beside the main wharf.
 
+G-4.12B is a surface cohesion gate on top of that composition. It keeps the
+same town and building kit, then improves roads, sidewalks, docks, water,
+shoreline contact, yards, fences, laundry, role-based prop clusters, and muted
+background depth so the non-building environment supports the quality of the
+building art. It is still not navigation/collision validation and adds no
+gameplay systems.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -436,6 +443,48 @@ Still remaining before NPC / quest work:
 - Dedicated fishmonger storefront, final cooperage art, blacksmith/smithy if
   needed, more small-home variants, carts, and dedicated prop sprites remain
   useful asset needs.
+
+## G-4.12B Surface Cohesion Gate
+
+Status: implemented as a clean visual review gate. It does not add buildings,
+NPCs, quests, combat, inventory, economy, interiors, save systems, or Worker
+route changes.
+
+Build label: Godot G-4.12B Surface Cohesion Gate
+
+Clean review mode:
+
+- Default review presentation has building debug overlays hidden.
+- Press `B` to toggle the building seating overlay.
+- Press `F3` to toggle the full building debug overlay.
+- Press `F2` to toggle review metadata on the HUD.
+
+Surface and environment changes:
+
+- Roads and sidewalks gained worn patches, edge grime, seam lines, dirt
+  variation, and less rigid material breaks while preserving route readability.
+- Docks and wharf surfaces gained plank weathering, darker edge shadows,
+  stronger pilings/post language, side-landing contact, and cargo/waterline
+  support.
+- Water gained depth bands, extra ripples, dock/building contact scum, and
+  clearer separation between deep water, shoreline, and wharf edges.
+- Residential/civic yards gained paths, shrubs, low walls, softened fences,
+  clotheslines, benches, and domestic clutter so they read as lived-in lots.
+- Background blocks were restyled with faded distant structures, low walls,
+  tree/shrub depth, and muted silhouettes instead of prominent layout blocks.
+- Role-based prop clusters now better distinguish tavern/social frontage,
+  mercantile goods, civic/custom-house order, chandlery rope/cargo, market
+  tables, cooperage hoops/wood/barrels, domestic yards, and dockside freight.
+
+Known weak spots before G-4.13:
+
+- Roads, water, and props are still drawn primitives rather than dedicated
+  painterly sprite assets, so final art can still raise cohesion further.
+- Dedicated cart, sack, crate, barrel, rope, fence, lantern, and sign sprites
+  would improve the town once available.
+- G-4.13 should validate the playable routes, dock access, building approach
+  zones, NPC staging locations, collision reliability, and interaction-zone
+  placeholders after this visual gate passes.
 
 ## G-4.2 Lived-In Pass
 

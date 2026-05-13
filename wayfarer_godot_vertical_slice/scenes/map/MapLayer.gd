@@ -232,11 +232,17 @@ func _draw_g410_ground() -> void:
 	for rect in [Rect2(184, 206, 174, 86), Rect2(426, 176, 256, 92), Rect2(742, 186, 218, 82), Rect2(1044, 174, 240, 98), Rect2(1288, 314, 180, 96)]:
 		_draw_soft_rect(rect, Color("#4f6849"), Color("#40583e"), 0.16, 4)
 		draw_rect(rect.grow(-7.0), Color(0.08, 0.12, 0.08, 0.10), false, 1.0)
+	_draw_g410_background_depth()
 	_draw_g410_lot_plan()
 	_draw_planting_bed(Rect2(190, 260, 112, 52), Color("#718c62"), Color("#5c7a53"))
 	_draw_planting_bed(Rect2(844, 238, 134, 58), Color("#718c62"), Color("#5c7a53"))
 	_draw_planting_bed(Rect2(1122, 248, 122, 54), Color("#718c62"), Color("#5c7a53"))
 	_draw_planting_bed(Rect2(1210, 338, 106, 46), Color("#647d55"), Color("#4e6b49"))
+	_draw_shrub_cluster(Vector2(248, 272))
+	_draw_shrub_cluster(Vector2(905, 260))
+	_draw_shrub_cluster(Vector2(1180, 270))
+	_draw_low_wall(Vector2(790, 420), Vector2(990, 414), Color("#68715b", 0.42))
+	_draw_low_wall(Vector2(1100, 424), Vector2(1280, 418), Color("#68715b", 0.38))
 
 func _draw_g410_lot_plan() -> void:
 	for raw_lot in NEWPORT_TOWN.starter_lot_specs():
@@ -277,15 +283,20 @@ func _draw_g410_active_lot(rect: Rect2, district: String, role := "") -> void:
 		var frontage := Rect2(rect.position.x + 8.0, rect.position.y + rect.size.y - 24.0, maxf(0.0, rect.size.x - 16.0), 18.0)
 		draw_rect(frontage, Color("#80745c", 0.20), true)
 		draw_line(frontage.position + Vector2(4.0, 3.0), frontage.position + Vector2(frontage.size.x - 4.0, 3.0), Color("#dac68f", 0.14), 1.0)
+		_draw_surface_speckles(frontage.grow(3.0), 7, Color(0.12, 0.10, 0.07, 0.10), Vector2(14, 4))
 	elif district == "inland_residential_civic":
 		var yard := rect.grow(-14.0)
 		draw_rect(yard, Color("#789365", 0.12), true)
+		_draw_residential_path(yard.position + Vector2(yard.size.x * 0.5, yard.size.y - 6.0), rect.position + Vector2(rect.size.x * 0.5, rect.size.y + 8.0), 12.0)
+		_draw_shrub_cluster(yard.position + Vector2(18.0, yard.size.y - 18.0))
+		_draw_shrub_cluster(yard.position + Vector2(yard.size.x - 22.0, yard.size.y - 20.0))
 		_draw_fence_line(rect.position + Vector2(10.0, rect.size.y - 10.0), rect.position + Vector2(rect.size.x - 10.0, rect.size.y - 8.0), Color("#c9b781", 0.58))
 	elif district == "support_lane":
 		var work_yard := Rect2(rect.position + Vector2(10.0, rect.size.y - 34.0), Vector2(maxf(0.0, rect.size.x - 20.0), 24.0))
 		draw_rect(work_yard, Color("#79634a", 0.16), true)
 		for x in range(int(work_yard.position.x + 12.0), int(work_yard.position.x + work_yard.size.x - 8.0), 26):
 			draw_line(Vector2(x, work_yard.position.y + 9.0), Vector2(x + 12.0, work_yard.position.y + 8.0), Color("#d3b675", 0.16), 1.0)
+		_draw_surface_speckles(work_yard, 8, Color(0.17, 0.12, 0.07, 0.12), Vector2(18, 4))
 	elif role.begins_with("waterline_"):
 		draw_line(rect.position + Vector2(10.0, rect.size.y - 12.0), rect.position + Vector2(rect.size.x - 10.0, rect.size.y - 8.0), Color(0.75, 0.95, 1.0, 0.08), 1.0)
 	var edge_alpha := 0.035 if role.begins_with("waterline_") else 0.055
@@ -312,6 +323,7 @@ func _draw_g410_planned_lot(rect: Rect2, district: String, role: String) -> void
 	else:
 		for x in range(int(inset.position.x + 16.0), int(inset.position.x + inset.size.x - 10.0), 34):
 			draw_line(Vector2(x, inset.position.y + 8), Vector2(x + 12, inset.position.y + 8), Color(0.94, 0.86, 0.61, 0.08), 1.0)
+	_draw_shrub_cluster(rect.position + Vector2(rect.size.x - 20.0, rect.size.y - 16.0), 0.55)
 
 func _draw_g410_street_plan() -> void:
 	_draw_path_line(Vector2(392, 414), Vector2(384, 680), 30.0, Color("#8d7353"), Color("#655541"), false)
@@ -330,6 +342,7 @@ func _draw_g410_street_plan() -> void:
 	]), Color(1.0, 0.93, 0.68, 0.10), 1.0)
 	for p in [Vector2(286, 534), Vector2(492, 562), Vector2(680, 536), Vector2(892, 562), Vector2(1090, 536), Vector2(1262, 562)]:
 		_draw_g47_threshold(p, 56)
+	_draw_street_wear(Rect2(232, 504, 1116, 42), 34)
 
 	draw_colored_polygon(PackedVector2Array([
 		Vector2(232, 544), Vector2(546, 548), Vector2(826, 542), Vector2(1090, 550),
@@ -348,13 +361,19 @@ func _draw_g410_street_plan() -> void:
 	for rect in [Rect2(368, 586, 120, 18), Rect2(720, 570, 92, 16), Rect2(988, 592, 150, 18), Rect2(1190, 562, 72, 14)]:
 		draw_rect(rect, Color("#7b735f", 0.20), true)
 		draw_line(rect.position + Vector2(8.0, 3.0), rect.position + Vector2(rect.size.x - 8.0, 3.0), Color("#d2bf87", 0.10), 1.0)
+		_draw_surface_speckles(rect.grow(4.0), 5, Color(0.10, 0.08, 0.05, 0.10), Vector2(16, 4))
+	_draw_street_wear(Rect2(226, 552, 1134, 78), 64)
+	for p in [Vector2(380, 548), Vector2(664, 542), Vector2(1088, 550)]:
+		_draw_edge_grime(p, 112.0)
 
 	_draw_cobbled_world_rect(Rect2(232, 642, 1116, 58), Color("#766f57"), Color("#5a5542"), 76)
 	draw_polyline(PackedVector2Array([
 		Vector2(240, 644), Vector2(530, 640), Vector2(812, 648), Vector2(1084, 642),
 		Vector2(1338, 646)
 	]), Color("#b9aa80", 0.26), 1.2)
+	_draw_street_wear(Rect2(232, 642, 1116, 58), 48)
 	_draw_plank_world_rect(Rect2(238, 696, 1112, 46), Color("#766950"), Color("#5b503d"))
+	_draw_plank_weathering(Rect2(238, 696, 1112, 46), 42)
 	draw_line(Vector2(248, 696), Vector2(1338, 696), Color(0.04, 0.04, 0.03, 0.32), 2.0)
 	for p in [Vector2(284, 696), Vector2(392, 696), Vector2(548, 696), Vector2(692, 696), Vector2(824, 696), Vector2(1008, 696), Vector2(1180, 696), Vector2(1318, 696)]:
 		_draw_post(p)
@@ -364,6 +383,7 @@ func _draw_g410_street_plan() -> void:
 
 func _draw_g410_wharf_water() -> void:
 	_draw_soft_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, 282), Color("#2f7184"), Color("#1f5369"), 1.0, 30)
+	_draw_water_depth_bands()
 	draw_colored_polygon(PackedVector2Array([
 		Vector2(0, 712), Vector2(240, 706), Vector2(352, 724), Vector2(500, 708),
 		Vector2(642, 718), Vector2(792, 706), Vector2(972, 720), Vector2(1140, 708),
@@ -375,6 +395,7 @@ func _draw_g410_wharf_water() -> void:
 		Vector2(1324, 724), Vector2(1600, 714)
 	]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
 	_draw_plank_world_rect(Rect2(260, 704, 1110, 54), Color("#84765a"), Color("#625841"))
+	_draw_plank_weathering(Rect2(260, 704, 1110, 54), 62)
 	_draw_plank_world_rect(Rect2(342, 724, 46, 118), Color("#806548"), Color("#5d4934"))
 	_draw_plank_world_rect(Rect2(372, 808, 92, 30), Color("#806548"), Color("#5d4934"))
 	_draw_plank_world_rect(Rect2(452, 816, 46, 18), Color("#735c42"), Color("#54412f"))
@@ -384,6 +405,9 @@ func _draw_g410_wharf_water() -> void:
 	_draw_plank_world_rect(Rect2(1168, 724, 46, 118), Color("#806548"), Color("#5d4934"))
 	_draw_plank_world_rect(Rect2(1204, 808, 98, 30), Color("#806548"), Color("#5d4934"))
 	_draw_plank_world_rect(Rect2(1288, 816, 52, 18), Color("#735c42"), Color("#54412f"))
+	for rect in [Rect2(342, 724, 46, 118), Rect2(372, 808, 126, 30), Rect2(686, 718, 54, 124), Rect2(730, 808, 154, 30), Rect2(1168, 724, 46, 118), Rect2(1204, 808, 136, 30)]:
+		_draw_plank_weathering(rect, 8)
+		draw_rect(Rect2(rect.position.x, rect.position.y + rect.size.y - 3.0, rect.size.x, 5.0), Color(0.02, 0.035, 0.025, 0.24), true)
 	_draw_post_line(Vector2(270, 708), Vector2(1360, 708), 68.0)
 	_draw_post_line(Vector2(348, 738), Vector2(382, 738), 34.0)
 	_draw_post_line(Vector2(694, 730), Vector2(734, 730), 36.0)
@@ -399,10 +423,12 @@ func _draw_g410_wharf_water() -> void:
 	_draw_post_line(Vector2(1214, 812), Vector2(1334, 812), 38.0)
 	for p in [Vector2(266, 714), Vector2(358, 724), Vector2(526, 708), Vector2(716, 718), Vector2(934, 712), Vector2(1140, 716), Vector2(1322, 724)]:
 		_draw_shore_rocks(p)
-	for i in range(26):
+	for p in [Vector2(422, 846), Vector2(802, 846), Vector2(1252, 846)]:
+		_draw_waterline_scum(p, 150.0)
+	for i in range(46):
 		var x := 28.0 + float((i * 67) % 1510)
 		var y := 776.0 + float((i * 41) % 220)
-		draw_line(Vector2(x, y), Vector2(x + 24.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.14), 2.0)
+		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
 
 func _draw_g410_props() -> void:
 	for pos in [Vector2(250, 386), Vector2(330, 548), Vector2(456, 552), Vector2(594, 544), Vector2(812, 388), Vector2(986, 386), Vector2(1034, 548), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:
@@ -414,6 +440,11 @@ func _draw_g410_props() -> void:
 	for pos in [Vector2(298, 408), Vector2(526, 550), Vector2(790, 548), Vector2(552, 688), Vector2(872, 684), Vector2(1256, 408), Vector2(1070, 746), Vector2(664, 694), Vector2(872, 552), Vector2(1286, 812)]:
 		_draw_contact_shadow(pos + Vector2(3, 5), Vector2(15, 5), 0.13)
 		_draw_rope_coil(pos)
+	for pos in [Vector2(470, 566), Vector2(520, 560), Vector2(1048, 566), Vector2(1194, 682)]:
+		_draw_contact_shadow(pos + Vector2(10, 9), Vector2(17, 6), 0.13)
+		_draw_sack_stack(pos)
+	for pos in [Vector2(252, 432), Vector2(290, 432), Vector2(326, 432)]:
+		_draw_hoop_stack(pos)
 	_draw_market_table(Vector2(706, 656))
 	_draw_market_table(Vector2(800, 650))
 	_draw_market_table(Vector2(1174, 660))
@@ -436,6 +467,8 @@ func _draw_g410_props() -> void:
 	_draw_sign_post(Vector2(1092, 536), Color("#7e6240"))
 	_draw_sign_post(Vector2(1218, 392), Color("#6c5c43"))
 	_draw_sign_post(Vector2(1246, 536), Color("#8c6a3f"))
+	for pos in [Vector2(300, 520), Vector2(510, 520), Vector2(770, 520), Vector2(920, 520), Vector2(1088, 520), Vector2(820, 374), Vector2(1218, 376)]:
+		_draw_lantern(pos)
 	_draw_clothesline(Vector2(1118, 350), Vector2(1238, 330))
 	_draw_clothesline(Vector2(220, 356), Vector2(320, 338))
 	_draw_clothesline(Vector2(1164, 398), Vector2(1258, 384))
@@ -977,6 +1010,114 @@ func _draw_woodpile(pos: Vector2) -> void:
 		var p := pos + Vector2(i * 7, (i % 2) * 4)
 		draw_rect(Rect2(p, Vector2(10, 3)), Color("#775032"), true)
 		draw_circle(p + Vector2(1, 1.5), 1.5, Color("#b98750"))
+
+func _draw_g410_background_depth() -> void:
+	for spec in [
+		{"base": Rect2(112, 210, 90, 54), "roof": Color("#2f3e35", 0.18), "wall": Color("#6f8065", 0.13)},
+		{"base": Rect2(474, 140, 128, 58), "roof": Color("#2e3d36", 0.16), "wall": Color("#6b7f62", 0.12)},
+		{"base": Rect2(1012, 142, 112, 54), "roof": Color("#2e3a34", 0.16), "wall": Color("#708163", 0.12)},
+		{"base": Rect2(1316, 214, 116, 58), "roof": Color("#2c3932", 0.15), "wall": Color("#6a7c5f", 0.11)},
+	]:
+		var base: Rect2 = spec["base"]
+		draw_rect(base, spec["wall"], true)
+		draw_colored_polygon(PackedVector2Array([
+			base.position + Vector2(-8.0, 6.0),
+			base.position + Vector2(base.size.x * 0.5, -22.0),
+			base.position + Vector2(base.size.x + 8.0, 6.0),
+		]), spec["roof"])
+		draw_line(base.position + Vector2(8.0, base.size.y - 7.0), base.position + Vector2(base.size.x - 8.0, base.size.y - 7.0), Color("#d0bf87", 0.08), 1.0)
+	for wall in [
+		[Vector2(150, 318), Vector2(324, 304)],
+		[Vector2(466, 300), Vector2(620, 294)],
+		[Vector2(1068, 314), Vector2(1248, 306)],
+		[Vector2(1300, 430), Vector2(1440, 420)],
+	]:
+		_draw_low_wall(wall[0], wall[1], Color("#67735d", 0.30))
+
+func _draw_surface_speckles(rect: Rect2, count: int, color: Color, max_size: Vector2) -> void:
+	for i in range(count):
+		var x := rect.position.x + fmod(float(i * 37 + 11), maxf(1.0, rect.size.x - max_size.x))
+		var y := rect.position.y + fmod(float(i * 19 + 7), maxf(1.0, rect.size.y - max_size.y))
+		var w := 4.0 + float((i * 5) % int(maxf(5.0, max_size.x)))
+		var h := 1.0 + float((i * 3) % int(maxf(2.0, max_size.y)))
+		draw_rect(Rect2(Vector2(x, y), Vector2(w, h)), color, true)
+
+func _draw_residential_path(a: Vector2, b: Vector2, width: float) -> void:
+	draw_line(a, b, Color("#8b7657", 0.22), width + 4.0, true)
+	draw_line(a, b, Color("#b0996d", 0.18), width, true)
+	draw_line(a, b, Color(0.08, 0.07, 0.04, 0.10), width + 1.0, true)
+	for i in range(4):
+		var t := float(i + 1) / 5.0
+		var p := a.lerp(b, t)
+		draw_line(p + Vector2(-8.0, 2.0), p + Vector2(8.0, -1.0), Color("#d9c28a", 0.12), 1.0)
+
+func _draw_shrub_cluster(pos: Vector2, scale := 1.0) -> void:
+	draw_circle(pos, 7.0 * scale, Color("#2f5d35", 0.86))
+	draw_circle(pos + Vector2(-6.0, -5.0) * scale, 5.0 * scale, Color("#3d7042", 0.86))
+	draw_circle(pos + Vector2(7.0, -3.0) * scale, 4.5 * scale, Color("#486f3f", 0.72))
+	draw_rect(Rect2(pos + Vector2(-2.0, 4.0) * scale, Vector2(4.0, 4.0) * scale), Color("#2b3f28", 0.45), true)
+
+func _draw_low_wall(a: Vector2, b: Vector2, color: Color) -> void:
+	draw_line(a, b, Color(0.03, 0.035, 0.025, color.a * 0.45), 5.0, true)
+	draw_line(a, b, color, 3.0, true)
+	var distance := a.distance_to(b)
+	var steps := int(distance / 20.0)
+	for i in range(steps + 1):
+		var p := a.lerp(b, float(i) / maxf(1.0, float(steps)))
+		draw_line(p + Vector2(-5.0, 1.0), p + Vector2(5.0, -1.0), Color("#d0c28d", color.a * 0.34), 1.0)
+
+func _draw_street_wear(rect: Rect2, count: int) -> void:
+	for i in range(count):
+		var x := rect.position.x + fmod(float(i * 43 + 17), maxf(1.0, rect.size.x - 38.0))
+		var y := rect.position.y + fmod(float(i * 29 + 13), maxf(1.0, rect.size.y - 8.0))
+		var w := 14.0 + float((i * 7) % 32)
+		var alpha := 0.05 + float(i % 4) * 0.012
+		draw_rect(Rect2(Vector2(x, y), Vector2(w, 3.0)), Color(0.10, 0.08, 0.05, alpha), true)
+		if i % 5 == 0:
+			draw_line(Vector2(x + 2.0, y + 5.0), Vector2(x + w - 2.0, y + 3.0), Color("#d7c58e", 0.07), 1.0)
+
+func _draw_edge_grime(pos: Vector2, width: float) -> void:
+	draw_line(pos + Vector2(-width * 0.5, 0.0), pos + Vector2(width * 0.5, -4.0), Color(0.05, 0.04, 0.025, 0.16), 8.0, true)
+	draw_line(pos + Vector2(-width * 0.45, 2.0), pos + Vector2(width * 0.45, -2.0), Color("#bfa774", 0.08), 2.0, true)
+
+func _draw_plank_weathering(rect: Rect2, count: int) -> void:
+	for i in range(count):
+		var x := rect.position.x + fmod(float(i * 31 + 9), maxf(1.0, rect.size.x - 26.0))
+		var y := rect.position.y + fmod(float(i * 47 + 15), maxf(1.0, rect.size.y - 8.0))
+		var w := 10.0 + float((i * 5) % 24)
+		draw_line(Vector2(x, y), Vector2(x + w, y - 1.0), Color(0.05, 0.035, 0.025, 0.16), 1.0)
+		if i % 4 == 0:
+			draw_circle(Vector2(x + 3.0, y + 2.0), 1.2, Color("#2b2118", 0.26))
+
+func _draw_water_depth_bands() -> void:
+	_draw_soft_rect(Rect2(0, 792, NEWPORT_TOWN.WORLD_SIZE.x, 64), Color("#28687b"), Color("#1d4d62"), 0.18, 12)
+	_draw_soft_rect(Rect2(0, 896, NEWPORT_TOWN.WORLD_SIZE.x, 80), Color("#225c70"), Color("#193f55"), 0.20, 12)
+	draw_line(Vector2(0, 744), Vector2(1600, 736), Color("#86b6bf", 0.08), 2.0)
+	for i in range(18):
+		var p := Vector2(50.0 + float((i * 83) % 1500), 756.0 + float((i * 31) % 90))
+		draw_line(p, p + Vector2(42.0, -2.0), Color("#9ed1d8", 0.075), 1.0)
+
+func _draw_waterline_scum(pos: Vector2, width: float) -> void:
+	draw_line(pos + Vector2(-width * 0.5, 0.0), pos + Vector2(width * 0.5, -3.0), Color("#83a98d", 0.20), 4.0, true)
+	draw_line(pos + Vector2(-width * 0.42, 5.0), pos + Vector2(width * 0.42, 2.0), Color("#d4c790", 0.10), 1.4, true)
+
+func _draw_sack_stack(pos: Vector2) -> void:
+	_draw_ellipse(pos + Vector2(8.0, 6.0), Vector2(10.0, 6.0), Color("#b69a68", 0.92))
+	_draw_ellipse(pos + Vector2(20.0, 7.0), Vector2(9.0, 6.0), Color("#9e8458", 0.92))
+	_draw_ellipse(pos + Vector2(14.0, -1.0), Vector2(11.0, 6.0), Color("#c0a873", 0.92))
+	draw_line(pos + Vector2(8.0, 1.0), pos + Vector2(20.0, 0.0), Color("#6a5232", 0.35), 1.0)
+
+func _draw_lantern(pos: Vector2) -> void:
+	draw_rect(Rect2(pos + Vector2(-1.0, 0.0), Vector2(2.0, 18.0)), Color("#3e2c1d"), true)
+	draw_rect(Rect2(pos + Vector2(-5.0, -9.0), Vector2(10.0, 11.0)), Color("#4a3320"), true)
+	draw_rect(Rect2(pos + Vector2(-3.0, -7.0), Vector2(6.0, 7.0)), Color("#d2a956", 0.72), true)
+	draw_circle(pos + Vector2(0.0, -3.0), 8.0, Color("#d2a956", 0.08))
+
+func _draw_hoop_stack(pos: Vector2) -> void:
+	for i in range(3):
+		var center := pos + Vector2(i * 8.0, float(i % 2) * 2.0)
+		draw_arc(center, 8.0, 0.0, TAU, 18, Color("#b48750", 0.88), 1.4)
+		draw_arc(center, 5.0, 0.0, TAU, 14, Color("#5f4025", 0.72), 1.0)
 
 func _draw_bench(pos: Vector2) -> void:
 	draw_rect(Rect2(pos + Vector2(-18, -3), Vector2(36, 6)), Color("#6f4b2f"), true)

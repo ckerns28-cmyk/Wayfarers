@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.12", "build_phase_g_4_12")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.12 Starter Town Composition + Dressing", "build_label_g_4_12")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.12B", "build_phase_g_4_12b")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.12B Surface Cohesion Gate", "build_label_g_4_12b")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -74,7 +74,7 @@ func _validate_detail_blockers(collision_layer: Node) -> void:
 	_expect(detail_count == NEWPORT_TOWN.detail_blockers().size(), "detail_blocker_count")
 
 func _validate_lived_in_details() -> void:
-	var minimum_detail_count := 92 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
+	var minimum_detail_count := 118 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
 	_expect(NEWPORT_TOWN.lived_in_detail_count() >= minimum_detail_count, "lived_in_detail_density")
 
 func _validate_buildings() -> void:
@@ -172,7 +172,7 @@ func _validate_starter_harbor_plan() -> void:
 	var plan_districts: Array = plan.get("districts", [])
 	var plan_loop: Array = plan.get("movement_loop", [])
 	_expect(plan.get("target_total_lots", "") == "10-16", "starter_plan_target_lot_range")
-	_expect(plan.get("composition_pass", "") == "G-4.12", "starter_plan_composition_pass_g_4_12")
+	_expect(plan.get("composition_pass", "") == "G-4.12B", "starter_plan_composition_pass_g_4_12b")
 	_expect(plan.get("clean_review_default", false) == true, "starter_plan_clean_review_default")
 	_expect(plan_districts.size() >= 4, "starter_plan_district_structure")
 	_expect(plan_loop.size() >= 4, "starter_plan_movement_loop")
