@@ -212,7 +212,7 @@ static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, vis
 		"b_inn_tavern":
 			return _base_footprint(148.0, 18.0, 12.0)
 		"b_mercantile":
-			return _base_footprint(108.0, 6.0, 22.0)
+			return _base_footprint(108.0, 10.0, 18.0)
 		"b_counting_house":
 			return _base_footprint(140.0, 16.0, 12.0)
 		"b_chandlery_front":
