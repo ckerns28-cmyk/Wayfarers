@@ -143,7 +143,15 @@ func _validate_starter_harbor_plan() -> void:
 		for config in NEWPORT_TOWN.building_specs():
 			if String(config.get("id", "")) == building_id:
 				var water_position: Vector2 = config.get("position", Vector2.ZERO)
-				_expect(water_position.y >= 29.5, "harbor_water_asset_in_blue_water_band_" + building_id)
+				var water_foot_tile_y := water_position.y / float(NEWPORT_TOWN.TILE)
+				_expect(water_foot_tile_y >= 27.25 and water_foot_tile_y <= 28.25, "harbor_water_asset_in_wharf_edge_water_pocket_" + building_id)
+				var water_foot_tile_x := water_position.x / float(NEWPORT_TOWN.TILE)
+				if building_id == "b_dock_warehouse":
+					_expect(water_foot_tile_x >= 14.5 and water_foot_tile_x <= 16.5, "harbor_water_asset_beside_west_pier_" + building_id)
+				elif building_id == "b_wharf_boathouse":
+					_expect(water_foot_tile_x >= 27.0 and water_foot_tile_x <= 29.5, "harbor_water_asset_beside_center_pier_" + building_id)
+				else:
+					_expect(water_foot_tile_x >= 40.0 and water_foot_tile_x <= 42.5, "harbor_water_asset_beside_east_pier_" + building_id)
 
 	for config in NEWPORT_TOWN.building_specs():
 		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")

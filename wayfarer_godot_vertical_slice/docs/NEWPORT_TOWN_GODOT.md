@@ -362,10 +362,12 @@ Props and dressing:
   rowboats, lanterns, wharf planks, and waterline clutter.
 - G-4.11 adds more support-lane and inland/civic prop dressing around the
   custom house, residence, boarding house, and cooperage shed.
-- The three water-base wharf buildings are positioned in the blue harbor water
-  band, with the background dock fingers narrowed to access gangways so their
-  built-in water and pier bases blend with the shoreline instead of sitting on
-  top of broad brown dock slabs.
+- The three water-base wharf buildings are positioned in the blue water pockets
+  immediately below the main wharf edge and laterally beside the pier fingers,
+  with the background dock fingers shortened into narrow gangways and side
+  landings so players can read a path from the wharf onto each building's own
+  dock instead of seeing the building art pasted on top of broad brown dock
+  slabs or floating out of reach.
 
 Still missing for the starter village:
 

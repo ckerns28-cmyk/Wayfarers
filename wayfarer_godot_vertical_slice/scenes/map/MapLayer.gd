@@ -242,12 +242,17 @@ func _draw_g410_lot_plan() -> void:
 		if lot.get("status", "") == "planned":
 			_draw_g410_planned_lot(world_rect, String(lot.get("district", "")), String(lot.get("role", "")))
 		else:
-			_draw_g410_active_lot(world_rect, String(lot.get("district", "")))
+			_draw_g410_active_lot(world_rect, String(lot.get("district", "")), String(lot.get("role", "")))
 
-func _draw_g410_active_lot(rect: Rect2, district: String) -> void:
+func _draw_g410_active_lot(rect: Rect2, district: String, role := "") -> void:
 	var base := Color("#5f7554")
 	var alt := Color("#4c6649")
-	if district == "working_wharf":
+	var alpha := 0.38
+	if role.begins_with("waterline_"):
+		base = Color("#2f7184")
+		alt = Color("#1f5369")
+		alpha = 0.18
+	elif district == "working_wharf":
 		base = Color("#6b6049")
 		alt = Color("#534936")
 	elif district == "harborfront_commercial":
@@ -259,8 +264,9 @@ func _draw_g410_active_lot(rect: Rect2, district: String) -> void:
 	elif district == "support_lane":
 		base = Color("#5d724f")
 		alt = Color("#486442")
-	_draw_soft_rect(rect, base, alt, 0.38, 5)
-	draw_rect(rect, Color(0.03, 0.04, 0.03, 0.16), false, 1.0)
+	_draw_soft_rect(rect, base, alt, alpha, 5)
+	var edge_alpha := 0.08 if role.begins_with("waterline_") else 0.16
+	draw_rect(rect, Color(0.03, 0.04, 0.03, edge_alpha), false, 1.0)
 
 func _draw_g410_planned_lot(rect: Rect2, district: String, role: String) -> void:
 	var fill := Color("#53624e", 0.34)
@@ -323,19 +329,25 @@ func _draw_g410_wharf_water() -> void:
 		Vector2(1324, 724), Vector2(1600, 714)
 	]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
 	_draw_plank_world_rect(Rect2(260, 704, 1110, 54), Color("#84765a"), Color("#625841"))
-	_draw_plank_world_rect(Rect2(342, 724, 46, 206), Color("#806548"), Color("#5d4934"))
-	_draw_plank_world_rect(Rect2(686, 718, 54, 216), Color("#886a48"), Color("#624a34"))
-	_draw_plank_world_rect(Rect2(1168, 724, 46, 206), Color("#806548"), Color("#5d4934"))
+	_draw_plank_world_rect(Rect2(342, 724, 46, 118), Color("#806548"), Color("#5d4934"))
+	_draw_plank_world_rect(Rect2(372, 808, 66, 34), Color("#806548"), Color("#5d4934"))
+	_draw_plank_world_rect(Rect2(686, 718, 54, 124), Color("#886a48"), Color("#624a34"))
+	_draw_plank_world_rect(Rect2(730, 808, 72, 34), Color("#886a48"), Color("#624a34"))
+	_draw_plank_world_rect(Rect2(1168, 724, 46, 118), Color("#806548"), Color("#5d4934"))
+	_draw_plank_world_rect(Rect2(1204, 808, 74, 34), Color("#806548"), Color("#5d4934"))
 	_draw_post_line(Vector2(270, 708), Vector2(1360, 708), 68.0)
 	_draw_post_line(Vector2(348, 738), Vector2(382, 738), 34.0)
 	_draw_post_line(Vector2(694, 730), Vector2(734, 730), 36.0)
 	_draw_post_line(Vector2(1174, 738), Vector2(1208, 738), 34.0)
-	_draw_post_line(Vector2(346, 742), Vector2(346, 918), 44.0)
-	_draw_post_line(Vector2(386, 742), Vector2(386, 918), 44.0)
-	_draw_post_line(Vector2(690, 728), Vector2(690, 922), 46.0)
-	_draw_post_line(Vector2(738, 728), Vector2(738, 922), 46.0)
-	_draw_post_line(Vector2(1172, 742), Vector2(1172, 918), 44.0)
-	_draw_post_line(Vector2(1212, 742), Vector2(1212, 918), 44.0)
+	_draw_post_line(Vector2(346, 742), Vector2(346, 834), 44.0)
+	_draw_post_line(Vector2(386, 742), Vector2(386, 834), 44.0)
+	_draw_post_line(Vector2(690, 728), Vector2(690, 834), 46.0)
+	_draw_post_line(Vector2(738, 728), Vector2(738, 834), 46.0)
+	_draw_post_line(Vector2(1172, 742), Vector2(1172, 834), 44.0)
+	_draw_post_line(Vector2(1212, 742), Vector2(1212, 834), 44.0)
+	_draw_post_line(Vector2(382, 812), Vector2(428, 812), 34.0)
+	_draw_post_line(Vector2(740, 812), Vector2(792, 812), 36.0)
+	_draw_post_line(Vector2(1214, 812), Vector2(1268, 812), 36.0)
 	for p in [Vector2(266, 714), Vector2(358, 724), Vector2(526, 708), Vector2(716, 718), Vector2(934, 712), Vector2(1140, 716), Vector2(1322, 724)]:
 		_draw_shore_rocks(p)
 	for i in range(26):
