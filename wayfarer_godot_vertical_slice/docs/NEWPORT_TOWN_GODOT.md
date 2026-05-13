@@ -48,6 +48,26 @@ building sprites still showed neighboring atlas content at their edges. It
 does not continue street tuning. It isolates the proof-street building sprites
 into standalone PNGs and switches the catalog to those files first.
 
+G-4.10 resets the work from three-building vignette polish into the first
+starter harbor district buildout. The three accepted hero buildings remain as
+style anchors, but the active scene now has a 16-lot district plan with
+harborfront commercial, working wharf, inland civic/residential, and support
+lane layers.
+
+G-4.10A pauses town expansion for a building asset gate. The G-4.10 layout is
+kept, but every currently visible building is now backed by an isolated padded
+sprite and a reusable `BuildingCatalog.building_definition()` entry with
+texture path, source region, draw scale, foot anchor, collision, interaction,
+shadow, and district-role metadata.
+
+G-4.11 expands the starter town asset kit without adding gameplay. It keeps
+the harborfront street, wharf/service layer, inland civic/residential layer,
+and expandable lot plan, then integrates additional Newport-compatible
+buildings through the normalized building definition system. The
+church-looking village hall is no longer the central civic anchor; it is
+demoted as a deferred chapel/meeting-house asset, and the starter civic read is
+now the custom house / harbor administration role.
+
 ## Source Of Truth
 
 The Godot town layout is authored in:
@@ -55,7 +75,8 @@ The Godot town layout is authored in:
 - `scripts/NewportTownBlueprint.gd`: map dimensions, road hierarchy, water,
   wharf/pier layout, districts, building placements, spawn, and QA targets.
 - `scripts/BuildingCatalog.gd`: atlas or isolated sprite source, region,
-  anchor, and draw width metadata for the current building sprites.
+  anchor, draw width, reusable building definitions, and the G-4.11 asset-kit
+  audit.
 
 `Main.gd`, `MapLayer.gd`, `CollisionNavigationLayer.gd`, and
 `tools/validate_vertical_slice.gd` consume the blueprint instead of each keeping
@@ -117,7 +138,7 @@ blueprint slots.
 
 ## Movement And Collision
 
-G-4.1 through G-4.9 provide practical collision/navigation support only:
+G-4.1 through G-4.11 provide practical collision/navigation support only:
 
 - Building bodies block the player at the visual base/foot line.
 - Water collision is generated from blueprint water tiles while leaving wharf
@@ -145,10 +166,224 @@ G-4.1 through G-4.9 provide practical collision/navigation support only:
   `b_counting_house`, and `b_chandlery_front`, moves the spawn onto the
   storefront lane, and treats harbor/water as foreground context rather than
   a separating map band.
+- G-4.10 is a starter district mode: it keeps the accepted hero buildings,
+  adds compatible existing anchor buildings, draws planned future lots as
+  muted foundations/silhouettes, and validates the main street -> dock ->
+  inland lane -> main street loop before any NPCs or quests are added.
+- G-4.10A keeps that district mode but requires every active building to use a
+  normalized reusable definition. Debug overlays are hidden by default for
+  review; press `B` to show building footprints, collision, interaction zones,
+  and anchors for the starter-town buildings.
+- G-4.11 expands the active starter kit to fourteen normalized buildings:
+  harborfront commerce, wharf/service buildings, harbor administration,
+  residences, a boarding house, and a temporary cooperage shed. Player movement
+  still uses the same harborfront -> dock -> inland lane loop.
+
+## G-4.10 Starter Harbor District
+
+G-4.10 is the first pass after the vignette gate. It should not be reviewed as
+another tiny polish task. The product target is the beginning of a believable
+functional Newport-inspired starting village that can later support NPCs,
+shops, quests, docks, and town traversal.
+
+Implemented structure:
+
+- Harborfront/commercial row: `b_inn_tavern`, `b_mercantile`,
+  `b_counting_house`, `b_chandlery_front`, and `b_shop_house`.
+- Dock/wharf layer: `b_market_shed`, `b_dock_storehouse`,
+  `b_wharf_boathouse`, `b_dock_warehouse`, wharf apron, three pier fingers,
+  dock clutter, rope, cargo, barrels, crates, nets, fish racks, rowboats, and
+  post lines.
+- Inland/background layer: `b_village_hall`, `b_res_small`, planned homes,
+  civic-residence slot, support lane, fencing, clothesline, planting beds, and
+  muted town-block massing.
+- Planned future lots: `lot_west_fishmonger_future`,
+  `lot_east_warehouse_future`, `lot_civic_residence_future`,
+  `lot_lane_home_a_future`, and `lot_lane_home_b_future`.
+- Movement loop: harborfront main street, storefront doors, wharf edge,
+  west/central/east piers, dock access, inland cross lane, support lanes, and
+  return to the main street.
+
+The active layout data lives in `NewportTownBlueprint.gd`:
+
+- `STARTER_HARBOR_BUILDING_IDS` lists the currently instantiated buildings.
+- `STARTER_HARBOR_PLANNED_LOT_IDS` lists intentional future-lot markers.
+- `starter_lot_specs()` maps actual/planned lots to districts and roles.
+- `starter_district_plan()` records the district structure and loop intent.
+- `missing_asset_manifest()` is the asset TODO list for G-4.11.
+
+Missing asset manifest:
+
+- small home variants
+- warehouse
+- chandlery/fishmonger
+- dock shack
+- civic/residence variant
+- market stall
+- carts
+- crates
+- barrels
+- rope coils
+- signs
+- fencing
+
+G-4.11 replaces three of those planned inland/support lots with matching
+Newport building art. G-4.12 should now focus on composition and dressing:
+street spacing, district dressing, prop clusters, signage, road/dock
+transitions, and visual storytelling.
+
+## G-4.10A Building Asset Gate
+
+Root cause: G-4.10 correctly expanded the starter district, but several new
+buildings were still rendered from loose atlas regions or crops that included
+neighboring sprite pixels. They also used per-instance placement metadata
+instead of a single reusable building definition that owned the foot anchor and
+ground contact.
+
+Implemented correction:
+
+- Isolated padded PNGs now drive all active G-4.10A buildings.
+- `BuildingCatalog.sprite_config()` records the texture path and full isolated
+  sprite region for each active sprite.
+- `BuildingCatalog.building_definition()` records the reusable building asset
+  contract: building ID, display name, sprite source, visual scale, foot anchor,
+  collision rectangle, interaction zone, shadow/contact ellipse, district role,
+  and harbor-integration flag where needed.
+- `NewportTownBlueprint.building_specs()` places buildings by `definition_id`
+  and layout position. The blueprint no longer has to hardcode each crop,
+  anchor, collision, and interaction rectangle.
+- The three water-bottom assets are dedicated wharf/water buildings:
+  `b_dock_storehouse`, `b_wharf_boathouse`, and `b_dock_warehouse`.
+- Planned lots now remain limited to future fishmonger/service, east
+  warehouse/chandlery, civic residence, and support-lane homes.
+- The validator fails if an active starter-town building lacks a definition,
+  project building sprite source, normalized anchor, or valid crop/grounding
+  behavior.
+
+To add the next building safely:
+
+1. Prefer an existing isolated sprite when available; otherwise register a
+   verified atlas-pack region and inspect the crop/anchor in review.
+2. If a source region includes neighbors or unsafe padding, add or adjust its
+   isolated crop in `tools/extract_building_sprites.gd` and run the extractor.
+3. Add the sprite source to `BuildingCatalog.sprite_config()`.
+4. Add the reusable prefab-style entry to
+   `BuildingCatalog.building_definition()`.
+5. Place it in `NewportTownBlueprint.building_specs()` with `_catalog_building`
+   and a matching `starter_lot_specs()` actual lot.
+6. Run `tools/validate_vertical_slice.gd` before packaging.
 
 This deliberately avoids recreating the JavaScript seating-contract audit.
 Godot uses sprite anchors, collision shapes, and a route-oriented playability
 validator instead.
+
+## G-4.11 Town Asset Kit Expansion
+
+Status: implemented as an asset-kit expansion pass only. No NPCs, quests,
+combat, inventory, economy, save systems, interiors, or Worker route changes
+were added.
+
+Build label: Godot G-4.11 Town Asset Kit Expansion
+
+Active starter mix:
+
+- Harborfront/commercial row: `b_inn_tavern`, `b_mercantile`,
+  `b_counting_house`, `b_chandlery_front`, `b_shop_house`, plus
+  `b_market_shed` as market/fish-stall frontage.
+- Dock/warehouse/service layer: `b_dock_storehouse`, `b_wharf_boathouse`, and
+  `b_dock_warehouse`.
+- Inland/civic/residential/support layer: `b_custom_house`, `b_res_small`,
+  `b_large_residence`, `b_boarding_house`, and `b_cooperage_shed`.
+- Planned placeholders remaining: `lot_west_fishmonger_future` and
+  `lot_east_warehouse_future`.
+
+Asset audit by role:
+
+- Tavern / inn: `inn_tavern_v1` integrated.
+- Mercantile / general goods: `mercantile_shop` and `newport_shopfront_awning`
+  integrated; `newport_waterfront_shop_house` and
+  `newport_market_frontage_row` deferred as duplicate frontage variants.
+- Counting house / administrative office: `newport_counting_house_civic_exchange`
+  integrated; `newport_formal_townhouse_block_a` is available but deferred for
+  a later row-house or residential-block purpose.
+- Chandlery / rope / sail shop: `newport_chandlery_outfitter_front`
+  integrated; `newport_chandlery_cottage` deferred.
+- Warehouse: `newport_dockside_storehouse_long` and
+  `newport_dockside_storehouse` integrated.
+- Dock shack / dock service: `newport_wharf_boathouse_large` integrated;
+  `service_dependency_shed` integrated as a temporary cooperage/service shed.
+- Fishmonger: `newport_market_shed_stalls` integrated as a market/fish-stall
+  stand-in; a dedicated fishmonger storefront is still missing.
+- Cooperage / barrel shop: `service_dependency_shed` stands in for now; final
+  cooperage art is still needed.
+- Blacksmith / smithy: no suitable Newport-starting-town asset found.
+- Small residence: `residence_small` and `newport_modest_clapboard_residence_a`
+  integrated.
+- Large residence / boarding house: `newport_large_front_residence`
+  integrated; `residence_large`, `newport_georgian_merchant_residence_a`,
+  `newport_elite_garden_mansion_a`, and `newport_elite_mansion_white` deferred
+  because they are either redundant or too grand for this starter pass.
+- Civic / customs / harbor master building: `newport_custom_house_civic_front`
+  integrated as `b_custom_house` using the dedicated left-side custom-house
+  building from Newport pack B. It is intentionally classified as a customs /
+  harbor administration building, not a church.
+- Church / chapel: `village_hall_meeting_house` is present but demoted to
+  `Meeting House Chapel`; it is not active as the starter town civic anchor.
+
+Church-looking hall decision:
+
+- Replaced in the active starter layout. `b_village_hall` no longer appears in
+  `STARTER_HARBOR_BUILDING_IDS`, `building_specs()`, or actual starter lots.
+- The active central civic role is now `b_custom_house`, intentionally reading
+  as customs / harbor administration using the dedicated custom-house asset.
+- The old hall remains cataloged only as a deferred chapel/meeting-house asset
+  so future roadmap decisions can use it deliberately instead of accidentally.
+
+Definition-system update:
+
+- Every active G-4.11 building is placed with `_catalog_building()` and a
+  `definition_id`.
+- `BuildingCatalog.building_definition()` now records `building_id`,
+  `display_name`, `role`, `texture_path`, `visual_scale`, `foot_anchor`,
+  `collision_shape`, `collision_rect`, `interaction_zone_placeholder`,
+  `interaction_size`, `interaction_offset`, `district_placement_tags`, and
+  `notes`.
+- New G-4.11 definitions: `b_custom_house`, `b_large_residence`,
+  `b_boarding_house`, and `b_cooperage_shed`.
+- G-4.11 review cleanup isolates the custom house, large residence, boarding
+  house, and cooperage shed into transparent per-building sprites so neighboring
+  sheet pixels do not bleed into the active town.
+- Existing definitions remain normalized for the harborfront and wharf assets.
+
+Props and dressing:
+
+- Existing G-4.10 harbor identity props remain: barrels, crates, rope coils,
+  signs, fences, dock posts, cargo piles, market tables, fish racks, nets,
+  rowboats, lanterns, wharf planks, and waterline clutter.
+- G-4.11 adds more support-lane and inland/civic prop dressing around the
+  custom house, residence, boarding house, and cooperage shed.
+- The three water-base wharf buildings are positioned in the blue water pockets
+  immediately below the main wharf edge and laterally beside the pier fingers,
+  with the background dock fingers shortened into narrow gangways and side
+  landings so players can read a path from the wharf onto each building's own
+  dock instead of seeing the building art pasted on top of broad brown dock
+  slabs or floating out of reach.
+
+Still missing for the starter village:
+
+- Dedicated fishmonger storefront.
+- Final cooperage / barrel-shop art.
+- Blacksmith or smithy art, if that role belongs in the starter town.
+- More small-home variants that are not obvious repeats.
+- Dedicated prop sprites for carts, crates, barrels, rope coils, sign variants,
+  fencing variants, and lantern variants.
+- A deliberate chapel/church roadmap decision if that building should exist in
+  Newport at all.
+
+G-4.12 should turn this expanded kit into a more believable lived-in town
+composition. It should tune spacing, district dressing, prop clustering,
+signage, road/dock transitions, and visual storytelling before NPCs or quests
+begin.
 
 ## G-4.2 Lived-In Pass
 
@@ -483,9 +718,9 @@ debug rectangles, no anchor markers, and no building IDs. The seating overlay
 remains available with `B` for inspection, but must be off before screenshots
 used for acceptance.
 
-After G-4.9.6 is accepted on itch, the next Godot phase is G-4.10 Newport
-Harbor Walk Acceptance: a 60-90 second player-facing harbor walk using the
-accepted street/dock scene.
+After G-4.9.6, G-4.9.7 provided the final street-vignette polish gate. G-4.10
+then resets the work from vignette polish into the starter harbor town
+buildout described above.
 
 ## G-4.9.7 Street Vignette Polish Gate
 
