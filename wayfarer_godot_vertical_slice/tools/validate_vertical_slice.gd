@@ -81,6 +81,8 @@ func _validate_detail_blockers(collision_layer: Node) -> void:
 			_expect(rect.position.y >= 570.0, "mercantile_front_crates_clear_rear_lane_throat")
 		elif id == "west_alley_rope":
 			_expect(rect.position.x >= 560.0 and rect.position.y >= 570.0, "west_alley_rope_clear_rear_lane_throat")
+		elif id == "support_lane_woodpile":
+			_expect(rect.position.y >= 460.0, "support_lane_woodpile_clear_rear_lane_road")
 
 func _validate_lived_in_details() -> void:
 	var minimum_detail_count := 118 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))

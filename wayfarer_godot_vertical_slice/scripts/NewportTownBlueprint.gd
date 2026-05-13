@@ -429,18 +429,19 @@ static func proof_street_walk_targets() -> Dictionary:
 static func route_debug_probes() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_route_probe("black_box_marked_lane", Vector2(500.0, 536.0), "G-4.13A.1 marked lane throat north of mercantile"),
-			_route_probe("tavern_mercantile_rear_lane", Vector2(500.0, 528.0), "rear lane between tavern, mercantile, and small residence"),
-			_route_probe("tavern_mercantile_east_throat", Vector2(562.0, 548.0), "east edge of the tavern/mercantile connector"),
-			_route_probe("road_behind_b_mercantile", Vector2(492.0, 526.0), "road behind b_mercantile"),
-			_route_probe("road_behind_b_counting_house", Vector2(680.0, 526.0), "road behind b_counting_house"),
-			_route_probe("lane_near_b_res_small", Vector2(492.0, 500.0), "lane near b_res_small"),
-			_route_probe("central_rear_road", Vector2(748.0, 526.0), "central rear road"),
-			_route_probe("east_rear_road", Vector2(1040.0, 526.0), "east rear road"),
-			_route_probe("commercial_street", Vector2(824.0, 600.0), "commercial street"),
-			_route_probe("commercial_to_dock_access", Vector2(672.0, 652.0), "commercial row to dock layer access"),
-			_route_probe("dock_boardwalk", Vector2(824.0, 710.0), "dock boardwalk"),
-			_route_probe("central_cross_lane", Vector2(672.0, 430.0), "inland road to commercial row access"),
+			_route_probe("black_box_marked_lane", Vector2(500.0, 536.0), "G-4.13A.1 marked lane throat north of mercantile", "black-box"),
+			_route_probe("tavern_mercantile_rear_lane", Vector2(500.0, 528.0), "rear lane between tavern, mercantile, and small residence", "tav/merc"),
+			_route_probe("tavern_mercantile_east_throat", Vector2(562.0, 548.0), "east edge of the tavern/mercantile connector", "east throat"),
+			_route_probe("road_behind_b_mercantile", Vector2(492.0, 526.0), "road behind b_mercantile", "merc rear"),
+			_route_probe("road_behind_b_counting_house", Vector2(680.0, 526.0), "road behind b_counting_house", "count rear"),
+			_route_probe("lane_near_b_res_small", Vector2(492.0, 500.0), "lane near b_res_small", "res lane"),
+			_route_probe("central_rear_road", Vector2(748.0, 526.0), "central rear road", "rear C"),
+			_route_probe("east_rear_road", Vector2(1040.0, 526.0), "east rear road", "rear E"),
+			_route_probe("commercial_street", Vector2(824.0, 600.0), "commercial street", "comm street"),
+			_route_probe("commercial_to_dock_access", Vector2(672.0, 652.0), "commercial row to dock layer access", "dock access"),
+			_route_probe("dock_boardwalk", Vector2(824.0, 710.0), "dock boardwalk", "dock walk"),
+			_route_probe("central_cross_lane", Vector2(672.0, 430.0), "inland road to commercial row access", "cross C"),
+			_route_probe("support_lane_woodpile_road", Vector2(424.0, 430.0), "old support-lane woodpile road position", "wood road"),
 		]
 	return []
 
@@ -474,7 +475,7 @@ static func detail_blockers() -> Array:
 			_blocker("central_pier_cargo", Rect2(746, 742, 36, 20)),
 			_blocker("east_pier_net", Rect2(1070, 746, 34, 20)),
 			_blocker("inland_civic_bench", Rect2(628, 374, 42, 16)),
-			_blocker("support_lane_woodpile", Rect2(404, 418, 40, 18)),
+			_blocker("support_lane_woodpile", Rect2(404, 462, 40, 18)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -822,9 +823,10 @@ static func _infill_slot(id: String, district: String, role: String, rect: Rect2
 		"guardrail": guardrail,
 	}
 
-static func _route_probe(id: String, position: Vector2, notes: String) -> Dictionary:
+static func _route_probe(id: String, position: Vector2, notes: String, label: String = "") -> Dictionary:
 	return {
 		"id": id,
+		"label": label if not label.is_empty() else id,
 		"position": position,
 		"notes": notes,
 	}

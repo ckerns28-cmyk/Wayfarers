@@ -10,6 +10,9 @@ const WATER_OUTLINE := Color(0.25, 0.55, 1.0, 0.58)
 const BOUNDARY_OUTLINE := Color(1.0, 0.15, 0.15, 0.35)
 const PROBE_COLOR := Color(0.20, 1.0, 0.70, 1.0)
 const LABEL_COLOR := Color(1.0, 0.96, 0.70, 0.95)
+const OWNER_LABEL_SIZE := 8
+const PROBE_LABEL_SIZE := 8
+const MAX_OWNER_LABEL_CHARS := 28
 
 var _debug_overlay_enabled := false
 var _debug_bodies: Array = []
@@ -56,12 +59,12 @@ func _draw() -> void:
 			draw_rect(rect, fill, true)
 		draw_rect(rect, outline, false, 1.4)
 		if label.begins_with("DetailBlocker_"):
-			_draw_text_tag(label, rect.position + Vector2(3.0, -3.0), DETAIL_OUTLINE)
+			_draw_text_tag(_owner_label(label), rect.position + Vector2(2.0, -2.0), DETAIL_OUTLINE, OWNER_LABEL_SIZE)
 	for probe in NEWPORT_TOWN.route_debug_probes():
 		var position: Vector2 = probe["position"]
 		draw_circle(position, 5.0, PROBE_COLOR)
 		draw_arc(position, 10.0, 0.0, TAU, 24, PROBE_COLOR, 1.5)
-		_draw_text_tag("route_probe:" + String(probe["id"]), position + Vector2(8.0, -8.0), PROBE_COLOR)
+		_draw_text_tag("probe:" + _probe_label(probe), position + Vector2(8.0, -8.0), PROBE_COLOR, PROBE_LABEL_SIZE)
 
 func _add_world_edge_collision() -> void:
 	var world_size := NEWPORT_TOWN.WORLD_SIZE
@@ -79,11 +82,20 @@ func _add_detail_blockers() -> void:
 		var blocker: Dictionary = blocker_config
 		_add_body(blocker["rect"], "DetailBlocker_" + String(blocker["id"]))
 
-func _draw_text_tag(text: String, at: Vector2, color: Color) -> void:
+func _draw_text_tag(text: String, at: Vector2, color: Color, font_size: int) -> void:
 	var font := ThemeDB.fallback_font
 	if font == null:
 		return
 	draw_string(font, at + Vector2(1.0, 1.0), text, HORIZONTAL_ALIGNMENT_LEFT,
-		-1, 10, Color(0, 0, 0, 0.84))
+		-1, font_size, Color(0, 0, 0, 0.84))
 	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT,
-		-1, 10, color.lightened(0.25) if color != Color.TRANSPARENT else LABEL_COLOR)
+		-1, font_size, color.lightened(0.25) if color != Color.TRANSPARENT else LABEL_COLOR)
+
+func _owner_label(label: String) -> String:
+	var owner := "prop:" + label.trim_prefix("DetailBlocker_")
+	if owner.length() <= MAX_OWNER_LABEL_CHARS:
+		return owner
+	return owner.left(MAX_OWNER_LABEL_CHARS - 3) + "..."
+
+func _probe_label(probe: Dictionary) -> String:
+	return String(probe.get("label", probe.get("id", "")))
