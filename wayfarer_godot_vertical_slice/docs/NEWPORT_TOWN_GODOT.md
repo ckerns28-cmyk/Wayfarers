@@ -627,10 +627,94 @@ Files changed for the hotfix:
 
 Remaining known issues:
 
-- G-4.13B rowhouse/townhouse infill slots remain planning metadata only.
+- G-4.13B now owns rowhouse/townhouse infill activation.
 - Prop atlas integration is still deferred to G-4.13C.
 - G-4.13D remains the final whole-town manual navigation/collision validation
   pass.
+
+## G-4.13B Townhouse / Rowhouse Infill + Density Pass
+
+Status: implemented for local validation. It does not add NPCs, quests, combat,
+inventory, economy, interiors, town expansion, prop atlas integration, or Worker
+route changes.
+
+Build label: Godot G-4.13B Rowhouse Infill Density
+
+Asset audit:
+
+- `newport_narrow_merchant_townhouse_a`: activated as a narrow
+  shop-house/rowhouse for `b_printer_rowhouse`.
+- `newport_formal_townhouse_block_a`: activated as a formal inland townhouse
+  block for `b_clerk_townhouse`.
+- `newport_modest_clapboard_residence_a`: reused at smaller scale as
+  `b_dockworker_rowhouse`; it already has an isolated crop and remains suitable
+  for support-lane lodging.
+- Deferred candidates: `newport_chandlery_cottage`,
+  `newport_waterfront_shop_house`, and `newport_market_frontage_row`.
+
+Infill slots used:
+
+- `slot_shop_market_townhouse_pair`: partially active with
+  `b_printer_rowhouse`, keeping the market approach and east service lane open.
+- `slot_cottage_customs_inland_townhouse`: active with `b_clerk_townhouse`,
+  keeping the inland road and custom-house approach walkable.
+- `slot_support_lane_boarding_gap`: active with `b_dockworker_rowhouse`,
+  keeping the east support-lane return readable.
+
+Infill slots deferred:
+
+- `slot_tavern_mercantile_narrow_rowhouse`: deferred because this one-tile
+  throat protects the accepted tavern/mercantile rear-lane walkability fix.
+- `slot_counting_chandlery_lane_edge_shop`: deferred because this gap protects
+  the rear road and central cross-lane sightline.
+
+New building definitions:
+
+- `b_printer_rowhouse`: role `printer_rowhouse`, future hooks for a
+  revolutionary pamphlet, apprentice errand, rented-room rumor, or suspicious
+  print job.
+- `b_clerk_townhouse`: role `clerk_lodging`, future hooks for customs lodging,
+  family dispute, suspicious neighbor, or quiet artifact discovery.
+- `b_dockworker_rowhouse`: role `dockworker_lodging`, future hooks for a
+  missing person, wharf job, or neighbor rumor.
+
+Collision/footprint model:
+
+- Each active infill building uses the G-4.13A split metadata:
+  `visual_bounds`, `lot_bounds`, `collision_footprint`, `interaction_zone`,
+  `foot_anchor`, district tags, and y-sort/debug data.
+- The visual sprite rectangles are review/art bounds only. New blocking
+  collision is a shallow ground-contact footprint near the building base.
+- Interaction zones remain south/frontage-aligned.
+
+Routes revalidated:
+
+- road behind `b_mercantile`
+- road behind `b_counting_house`
+- tavern / mercantile / `b_res_small` rear-lane throat
+- central and east rear roads
+- inland civic road and cross-lane
+- commercial street
+- commercial row to dock-layer access
+- wharf boardwalk and dock layer
+- new route probes below the clerk, printer, and dockworker infill buildings
+
+Files changed for the pass:
+
+- `scripts/BuildInfo.gd`
+- `scripts/BuildingCatalog.gd`
+- `scripts/NewportTownBlueprint.gd`
+- `tools/validate_vertical_slice.gd`
+- `docs/NEWPORT_TOWN_GODOT.md`
+- `docs/WAYFARER_GODOT_ROADMAP.md`
+
+Remaining known issues:
+
+- Prop atlas integration and role-based dressing remain deferred to G-4.13C.
+- G-4.13D remains the final whole-town navigation/collision/interaction-zone
+  validation pass.
+- Some currently deferred narrow-building candidates may need isolated crops or
+  a later placement pass before use.
 
 ## G-4.2 Lived-In Pass
 

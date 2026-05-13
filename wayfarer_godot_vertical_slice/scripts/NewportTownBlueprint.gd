@@ -27,15 +27,29 @@ const STARTER_HARBOR_BUILDING_IDS := [
 	"b_counting_house",
 	"b_chandlery_front",
 	"b_shop_house",
+	"b_printer_rowhouse",
 	"b_dock_storehouse",
 	"b_wharf_boathouse",
 	"b_dock_warehouse",
 	"b_market_shed",
 	"b_custom_house",
+	"b_clerk_townhouse",
 	"b_res_small",
 	"b_large_residence",
 	"b_boarding_house",
+	"b_dockworker_rowhouse",
 	"b_cooperage_shed",
+]
+
+const G413B_ACTIVE_INFILL_BUILDING_IDS := [
+	"b_printer_rowhouse",
+	"b_clerk_townhouse",
+	"b_dockworker_rowhouse",
+]
+
+const G413B_DEFERRED_INFILL_SLOT_IDS := [
+	"slot_tavern_mercantile_narrow_rowhouse",
+	"slot_counting_chandlery_lane_edge_shop",
 ]
 
 const STARTER_HARBOR_PLANNED_LOT_IDS := [
@@ -442,6 +456,9 @@ static func route_debug_probes() -> Array:
 			_route_probe("dock_boardwalk", Vector2(824.0, 710.0), "dock boardwalk", "dock walk"),
 			_route_probe("central_cross_lane", Vector2(672.0, 430.0), "inland road to commercial row access", "cross C"),
 			_route_probe("support_lane_woodpile_road", Vector2(424.0, 430.0), "old support-lane woodpile road position", "wood road"),
+			_route_probe("inland_townhouse_walk", Vector2(558.0, 430.0), "walkable inland road south of the new clerk townhouse", "inland infill"),
+			_route_probe("shop_market_gap_front_walk", Vector2(1168.0, 604.0), "commercial street approach below the new printer rowhouse", "print shop"),
+			_route_probe("support_boarding_gap_walk", Vector2(1336.0, 430.0), "east support-lane return below the new dockworker rowhouse", "dockworker"),
 		]
 	return []
 
@@ -529,14 +546,17 @@ static func building_specs() -> Array:
 			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(21.25, 17.42), true),
 			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.85, 17.62), true),
 			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(34.10, 17.36), true),
+			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(36.62, 17.38)),
 			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(39.45, 17.68)),
 			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(41.35, 27.55)),
 			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(28.05, 27.65)),
 			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(15.20, 27.55)),
 			_catalog_building("b_custom_house", "inland_residential_civic", "customs_house", Vector2(25.10, 11.70)),
+			_catalog_building("b_clerk_townhouse", "inland_residential_civic", "rowhouse_clerk_lodging", Vector2(17.35, 11.48)),
 			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(13.65, 11.45)),
 			_catalog_building("b_large_residence", "inland_residential_civic", "civic_residence", Vector2(31.80, 11.55)),
 			_catalog_building("b_boarding_house", "support_lane", "boarding_house", Vector2(38.35, 11.70)),
+			_catalog_building("b_dockworker_rowhouse", "support_lane", "rowhouse_dockworker_lodging", Vector2(41.70, 11.62)),
 			_catalog_building("b_cooperage_shed", "support_lane", "cooperage", Vector2(8.25, 11.85)),
 		]
 	if G49_STREET_VIGNETTE:
@@ -606,11 +626,15 @@ static func substitution_notes() -> Dictionary:
 
 static func starter_district_plan() -> Dictionary:
 	return {
-		"target_total_lots": "10-16",
+		"target_total_lots": "14-20",
 		"active_building_count": STARTER_HARBOR_BUILDING_IDS.size(),
+		"active_g413b_infill_count": G413B_ACTIVE_INFILL_BUILDING_IDS.size(),
+		"active_g413b_infill_buildings": G413B_ACTIVE_INFILL_BUILDING_IDS,
+		"deferred_g413b_infill_slots": G413B_DEFERRED_INFILL_SLOT_IDS,
 		"planned_lot_count": STARTER_HARBOR_PLANNED_LOT_IDS.size(),
 		"composition_pass": "G-4.12B",
 		"footprint_pass": "G-4.13A",
+		"density_pass": "G-4.13B",
 		"collision_model": "visual_bounds and lot_bounds are review/planning data; collision_footprint is the only blocking building body.",
 		"clean_review_default": true,
 		"surface_cohesion_gate": true,
@@ -636,6 +660,11 @@ static func starter_district_plan() -> Dictionary:
 			"support_lane_return",
 		],
 		"planned_g413b_infill_slots": G413B_ROWHOUSE_INFILL_SLOT_IDS,
+		"future_story_hooks": [
+			"printer_rowhouse_revolutionary_pamphlet_or_apprentice_errand",
+			"clerk_townhouse_customs_lodging_family_dispute_or_artifact_hook",
+			"dockworker_rowhouse_missing_person_neighbor_or_wharf_job_hook",
+		],
 	}
 
 static func starter_lot_specs() -> Array:
@@ -645,14 +674,17 @@ static func starter_lot_specs() -> Array:
 		_lot("lot_counting_house_anchor", "actual", "harborfront_commercial", "civic_exchange", Rect2i(18, 12, 7, 6), "b_counting_house"),
 		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(25, 13, 6, 5), "b_chandlery_front"),
 		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(32, 13, 5, 5), "b_shop_house"),
+		_lot("lot_printer_rowhouse_infill", "actual", "harborfront_commercial", "printer_rowhouse", Rect2i(36, 13, 2, 5), "b_printer_rowhouse"),
 		_lot("lot_market_shed_anchor", "actual", "harborfront_commercial", "market_stall", Rect2i(37, 13, 6, 5), "b_market_shed"),
 		_lot("lot_storehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(39, 24, 7, 5), "b_dock_storehouse"),
 		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "waterline_dock_service", Rect2i(25, 24, 8, 5), "b_wharf_boathouse"),
 		_lot("lot_dock_warehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(12, 24, 7, 5), "b_dock_warehouse"),
 		_lot("lot_customs_house_anchor", "actual", "inland_residential_civic", "customs_house", Rect2i(22, 8, 8, 5), "b_custom_house"),
+		_lot("lot_clerk_townhouse_infill", "actual", "inland_residential_civic", "clerk_lodging", Rect2i(16, 8, 3, 4), "b_clerk_townhouse"),
 		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(11, 8, 5, 4), "b_res_small"),
 		_lot("lot_civic_residence_anchor", "actual", "inland_residential_civic", "civic_residence", Rect2i(29, 7, 7, 5), "b_large_residence"),
 		_lot("lot_lane_boarding_house_anchor", "actual", "support_lane", "boarding_house", Rect2i(36, 8, 5, 4), "b_boarding_house"),
+		_lot("lot_dockworker_rowhouse_infill", "actual", "support_lane", "dockworker_lodging", Rect2i(41, 8, 2, 4), "b_dockworker_rowhouse"),
 		_lot("lot_lane_cooperage_anchor", "actual", "support_lane", "cooperage_or_barrel_shop", Rect2i(6, 8, 4, 4), "b_cooperage_shed"),
 		_lot("lot_west_fishmonger_future", "planned", "harborfront_commercial", "fishmonger_or_service_shop", Rect2i(3, 14, 4, 4)),
 		_lot("lot_east_warehouse_future", "planned", "harborfront_commercial", "warehouse_or_chandlery", Rect2i(42, 14, 4, 4)),
@@ -672,35 +704,50 @@ static func g413b_rowhouse_infill_slots() -> Array:
 			"harborfront_commercial",
 			"narrow townhouse or signboard shop between tavern and mercantile",
 			Rect2i(12, 14, 1, 4),
-			"Keep the west cross-lane open; this is a one-tile visual infill slot, not a new active building yet."
+			"Keep the west cross-lane open; this remains deferred because the one-tile throat carries the accepted rear-road walkability fix.",
+			"deferred_g413b",
+			"",
+			"future tavern rumor / rented-room lead if a narrower isolated rowhouse asset becomes available"
 		),
 		_infill_slot(
 			"slot_counting_chandlery_lane_edge_shop",
 			"harborfront_commercial",
 			"skinny lane-edge shop face east of counting house",
 			Rect2i(24, 14, 1, 4),
-			"Only fill if it preserves the commercial rear road and the central cross-lane sightline."
+			"Deferred to preserve the commercial rear road and the central cross-lane sightline.",
+			"deferred_g413b",
+			"",
+			"future lane-edge shop or apothecary frontage after prop dressing confirms the lane remains clear"
 		),
 		_infill_slot(
 			"slot_shop_market_townhouse_pair",
 			"harborfront_commercial",
 			"paired shop/townhouse infill between shop house and market shed",
 			Rect2i(36, 14, 1, 4),
-			"Do not close the east service lane or the market approach."
+			"Use only the west half of the pair for now; the market approach and east service lane remain open.",
+			"active_g413b",
+			"b_printer_rowhouse",
+			"future revolutionary pamphlet, apprentice errand, rented-room rumor, or suspicious printing job"
 		),
 		_infill_slot(
 			"slot_cottage_customs_inland_townhouse",
 			"inland_residential_civic",
 			"small inland townhouse west of the custom house",
 			Rect2i(16, 8, 3, 4),
-			"Leave the central inland road and civic square approach walkable."
+			"Leave the central inland road and civic square approach walkable.",
+			"active_g413b",
+			"b_clerk_townhouse",
+			"future customs-clerk lodging, family dispute, or quiet artifact-discovery hook"
 		),
 		_infill_slot(
 			"slot_support_lane_boarding_gap",
 			"support_lane",
 			"boarding-house side-yard rowhouse or narrow dependency",
 			Rect2i(41, 8, 2, 4),
-			"Keep the east return lane readable and avoid expanding the town edge."
+			"Keep the east return lane readable and avoid expanding the town edge.",
+			"active_g413b",
+			"b_dockworker_rowhouse",
+			"future missing-person, dockworker connection, or suspicious-neighbor hook"
 		),
 	]
 
@@ -813,14 +860,16 @@ static func _lot(id: String, status: String, district: String, role: String, rec
 		"building_id": building_id,
 	}
 
-static func _infill_slot(id: String, district: String, role: String, rect: Rect2i, guardrail: String) -> Dictionary:
+static func _infill_slot(id: String, district: String, role: String, rect: Rect2i, guardrail: String, status := "planned_g413b", building_id := "", future_hook := "") -> Dictionary:
 	return {
 		"id": id,
-		"status": "planned_g413b",
+		"status": status,
 		"district": district,
 		"role": role,
 		"rect": rect,
 		"guardrail": guardrail,
+		"building_id": building_id,
+		"future_hook": future_hook,
 	}
 
 static func _route_probe(id: String, position: Vector2, notes: String, label: String = "") -> Dictionary:
