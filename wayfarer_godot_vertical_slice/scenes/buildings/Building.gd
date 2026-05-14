@@ -36,6 +36,7 @@ var _interaction_zone := Rect2()
 var _lot_bounds := Rect2()
 var _foot_anchor_point := Vector2.ZERO
 var _y_sort_point := Vector2.ZERO
+var _projection_detail_names: Array[String] = []
 
 func configure(config: Dictionary) -> void:
 	building_id = config.get("id", name)
@@ -74,6 +75,7 @@ func configure(config: Dictionary) -> void:
 	sprite.centered = false
 	sprite.scale = Vector2(scale_factor, scale_factor)
 	sprite.position = -visual_base_anchor * scale_factor + sprite_offset
+	_configure_projection_details(config.get("projection_details", []), texture, visual_base_anchor, scale_factor, sprite_offset)
 	_visual_base_width = config.get("visual_base_width", draw_width * 0.86)
 	var default_visual_bounds := Rect2(sprite.position, source_size * scale_factor)
 	_visual_bounds = config.get("visual_bounds", default_visual_bounds)
@@ -183,6 +185,46 @@ func get_foot_anchor_local() -> Vector2:
 
 func get_y_sort_anchor_local() -> Vector2:
 	return _y_sort_point
+
+func get_projection_detail_names() -> Array[String]:
+	return _projection_detail_names.duplicate()
+
+func _configure_projection_details(details: Array, source_texture: Texture2D, visual_base_anchor: Vector2, scale_factor: float, sprite_offset: Vector2) -> void:
+	_projection_detail_names.clear()
+	for child in get_children():
+		if String(child.name).begins_with("Projection_"):
+			remove_child(child)
+			child.queue_free()
+
+	var source_atlas := source_texture as AtlasTexture
+	if source_atlas == null:
+		return
+
+	for raw_detail in details:
+		if not raw_detail is Dictionary:
+			continue
+		var detail: Dictionary = raw_detail
+		var source_rect: Rect2 = detail.get("source_rect", Rect2())
+		if source_rect.size.x <= 0.0 or source_rect.size.y <= 0.0:
+			continue
+
+		var projection_texture := AtlasTexture.new()
+		projection_texture.atlas = source_atlas.atlas
+		projection_texture.region = Rect2(source_atlas.region.position + source_rect.position, source_rect.size)
+		projection_texture.filter_clip = true
+
+		var projection_sprite := Sprite2D.new()
+		var detail_id := String(detail.get("id", "frontage_detail"))
+		projection_sprite.name = "Projection_" + detail_id
+		projection_sprite.texture = projection_texture
+		projection_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		projection_sprite.centered = false
+		projection_sprite.scale = Vector2(scale_factor, scale_factor)
+		projection_sprite.position = (source_rect.position - visual_base_anchor) * scale_factor + sprite_offset
+		projection_sprite.z_index = int(detail.get("z_index", 12))
+		projection_sprite.z_as_relative = false
+		add_child(projection_sprite)
+		_projection_detail_names.append(detail_id)
 
 func _draw() -> void:
 	draw_set_transform(_ground_shadow_offset, 0.0, Vector2(_ground_shadow_size.x / 32.0, _ground_shadow_size.y / 32.0))

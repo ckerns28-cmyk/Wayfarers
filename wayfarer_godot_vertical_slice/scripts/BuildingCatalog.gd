@@ -171,6 +171,7 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 	var visual_bounds := _visual_bounds(sprite, draw_width, visual_base_anchor)
 	var review_lot_bounds := _review_lot_bounds(building_id, lot_bounds, visual_bounds)
 	var entity_metadata := _entity_metadata_for(building_id, display_name, district_role)
+	var projection_details := _projection_details_for(building_id)
 	return {
 		"id": building_id,
 		"building_id": building_id,
@@ -215,12 +216,29 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 		"y_sort_offset": Vector2.ZERO,
 		"shadow_offset": Vector2(0.0, -6.0),
 		"shadow_size": shadow_size,
+		"projection_details": projection_details,
 		"lot_bounds": review_lot_bounds,
 		"lot_rect": review_lot_bounds,
 		"building_volume_rect": review_lot_bounds,
 		"frontage_body_rect": Rect2(Vector2(-visual_base_width * 0.5, -maxf(34.0, collision_footprint.size.y)), Vector2(visual_base_width, maxf(34.0, collision_footprint.size.y))),
 		"harbor_integrated": harbor_integrated,
 		"definition_normalized": true,
+	}
+
+static func _projection_details_for(building_id: String) -> Array:
+	match building_id:
+		"b_mercantile":
+			return [
+				_projection_detail("mercantile_hanging_sign", Rect2(Vector2(18.0, 212.0), Vector2(72.0, 96.0)), 12),
+			]
+		_:
+			return []
+
+static func _projection_detail(id: String, source_rect: Rect2, z_index: int) -> Dictionary:
+	return {
+		"id": id,
+		"source_rect": source_rect,
+		"z_index": z_index,
 	}
 
 static func _visual_bounds(sprite: Dictionary, draw_width: float, visual_base_anchor: Vector2, sprite_offset := Vector2.ZERO) -> Rect2:

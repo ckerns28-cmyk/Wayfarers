@@ -224,7 +224,7 @@ func _validate_player_uses_building_door_target(player: Node) -> void:
 	player_node.global_position = original_position
 
 func _validate_building_definition_entity_metadata(id: String, definition: Dictionary) -> void:
-	for key in ["building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_label", "locked_message", "unavailable_message", "collision_footprint", "interaction_zone"]:
+	for key in ["building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_label", "locked_message", "unavailable_message", "collision_footprint", "interaction_zone", "projection_details"]:
 		_expect(definition.has(key), id + "_entity_definition_has_" + key)
 	_expect(definition.has("door_offset") or definition.has("frontage_offset"), id + "_entity_definition_has_door_or_frontage_offset")
 
@@ -244,6 +244,16 @@ func _validate_building_definition_entity_metadata(id: String, definition: Dicti
 	elif G414A_PRIVATE_OR_FUTURE_HOME_IDS.has(id):
 		_expect(["private", "owner_only_future"].has(access_rule), id + "_entity_private_or_owner_future_access")
 		_expect(not bool(definition.get("is_enterable", false)), id + "_entity_private_not_enterable")
+
+	if id == "b_mercantile":
+		var projection_details: Array = definition.get("projection_details", [])
+		_expect(projection_details.size() == 1, "mercantile_hanging_sign_projection_declared")
+		if not projection_details.is_empty():
+			var sign_projection: Dictionary = projection_details[0]
+			var source_rect: Rect2 = sign_projection.get("source_rect", Rect2())
+			_expect(String(sign_projection.get("id", "")) == "mercantile_hanging_sign", "mercantile_hanging_sign_projection_id")
+			_expect(source_rect.size.x > 0.0 and source_rect.size.y > 0.0, "mercantile_hanging_sign_projection_source_rect")
+			_expect(int(sign_projection.get("z_index", 0)) > 0, "mercantile_hanging_sign_projection_foreground_z")
 
 func _validate_g414a_street_wall_curb_datum() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
@@ -313,7 +323,7 @@ func _validate_starter_harbor_plan() -> void:
 		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")
 		if config.has("definition_id"):
 			var definition := BUILDING_CATALOG.building_definition(String(config["definition_id"]))
-			for key in ["building_id", "display_name", "role", "building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_enabled", "interaction_label", "locked_message", "unavailable_message", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "visual_bounds", "lot_bounds", "collision_footprint", "interaction_zone", "foot_anchor", "visual_base_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "frontage_offset", "door_offset", "shadow_size", "district_role", "district_placement_tags", "notes"]:
+			for key in ["building_id", "display_name", "role", "building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_enabled", "interaction_label", "locked_message", "unavailable_message", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "visual_bounds", "lot_bounds", "collision_footprint", "interaction_zone", "foot_anchor", "visual_base_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "frontage_offset", "door_offset", "shadow_size", "projection_details", "district_role", "district_placement_tags", "notes"]:
 				_expect(definition.has(key), String(config["id"]) + "_definition_has_" + key)
 			var texture_path: String = definition.get("texture_path", "")
 			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
@@ -380,7 +390,8 @@ func _validate_visual_composition_spacing() -> void:
 		"b_shop_house",
 		"b_market_shed",
 		"b_printer_rowhouse",
-	], 0.0, 8.0)
+	], 0.0, 16.0)
+	_validate_harborfront_parcel_rhythm()
 	_validate_review_bounds_track_art_body("harborfront_street_wall", [
 		"b_inn_tavern",
 		"b_clerk_townhouse",
@@ -410,6 +421,18 @@ func _validate_visual_composition_spacing() -> void:
 			var clerk_to_mercantile_gap := mercantile_rect.position.x - clerk_rect.end.x
 			_expect(clerk_to_mercantile_gap >= 0.0, "clerk_townhouse_not_cut_off_by_mercantile")
 			_expect(clerk_to_mercantile_gap <= 4.0, "clerk_townhouse_sits_against_mercantile")
+
+func _validate_harborfront_parcel_rhythm() -> void:
+	var chandlery_to_shop_gap := _visual_gap_between("b_chandlery_front", "b_shop_house")
+	var shop_to_market_gap := _visual_gap_between("b_shop_house", "b_market_shed")
+	_expect(chandlery_to_shop_gap >= 7.0 and chandlery_to_shop_gap <= 14.0, "shop_house_has_chandlery_service_slit")
+	_expect(shop_to_market_gap >= 10.0 and shop_to_market_gap <= 18.0, "shop_house_has_market_breathing_room")
+
+	var chandlery := _building_by_name("b_chandlery_front")
+	var shop := _building_by_name("b_shop_house")
+	var market := _building_by_name("b_market_shed")
+	if chandlery and shop and market:
+		_expect(chandlery.global_position.x < shop.global_position.x and shop.global_position.x < market.global_position.x, "shop_house_parcel_order_between_chandlery_and_market")
 
 func _validate_review_bounds_track_art_body(label: String, ids: Array) -> void:
 	for id in ids:
@@ -444,6 +467,16 @@ func _validate_visual_sequence_has_tight_seams(label: String, ids: Array, min_ga
 		_expect(gap >= min_gap, "visual_seam_not_overlapping_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
 		_expect(gap <= max_gap, "visual_seam_not_detached_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
 
+func _visual_gap_between(left_id: String, right_id: String) -> float:
+	var left := _building_by_name(left_id)
+	var right := _building_by_name(right_id)
+	if left == null or right == null:
+		failures.append("visual_gap_missing_" + left_id + "_to_" + right_id)
+		return -INF
+	var left_rect := _building_visual_world_rect(left)
+	var right_rect := _building_visual_world_rect(right)
+	return right_rect.position.x - left_rect.end.x
+
 func _validate_building_node(building: Node2D) -> void:
 	var sprite := building.get_node_or_null("Sprite2D") as Sprite2D
 	var body_shape := building.get_node_or_null("Body/CollisionShape2D") as CollisionShape2D
@@ -469,6 +502,14 @@ func _validate_building_node(building: Node2D) -> void:
 			_expect(sprite_bottom_y > 3.0 and sprite_bottom_y < 28.0, building.name + "_painterly_base_padding_allowed")
 		else:
 			_expect(sprite_bottom_y >= -2.5 and sprite_bottom_y <= 22.0, building.name + "_foot_anchor_at_visual_base")
+
+	if String(building.name) == "b_mercantile":
+		var projection := building.get_node_or_null("Projection_mercantile_hanging_sign") as Sprite2D
+		_expect(projection != null and projection.texture is AtlasTexture, "mercantile_hanging_sign_projection_runtime_sprite")
+		_expect(projection == null or projection.z_index > 0, "mercantile_hanging_sign_projection_draws_foreground")
+		_expect(projection == null or projection.z_as_relative == false, "mercantile_hanging_sign_projection_uses_absolute_z")
+		if building.has_method("get_projection_detail_names"):
+			_expect(building.get_projection_detail_names().has("mercantile_hanging_sign"), "mercantile_hanging_sign_projection_registered")
 
 	if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
 		_expect(building.has_method("uses_normalized_definition") and building.uses_normalized_definition(), building.name + "_uses_normalized_definition")
