@@ -12,6 +12,7 @@ const G47_CALIBRATION_MODE := false
 const NPCS_ENABLED := false
 const PLAYER_SPAWN := Vector2(675, 612)
 const EDRIN_SPAWN := Vector2(-800, -800)
+const G414A_STREET_WALL_CURB_DATUM_Y := 17.77
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
@@ -542,18 +543,18 @@ static func player_spawn_tile() -> Vector2i:
 static func building_specs() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(8.95, 17.38), true),
-			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(17.66, 17.77), true),
-			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(22.20, 17.42), true),
-			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.27, 17.62), true),
-			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(31.71, 17.36), true),
-			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(40.55, 17.58)),
-			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(36.63, 17.68)),
+			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(8.95, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(17.66, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(22.20, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.27, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(31.71, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(40.55, G414A_STREET_WALL_CURB_DATUM_Y)),
+			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(36.63, G414A_STREET_WALL_CURB_DATUM_Y)),
 			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(41.35, 27.55)),
 			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(28.05, 27.65)),
 			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(15.20, 27.55)),
 			_catalog_building("b_custom_house", "inland_residential_civic", "customs_house", Vector2(25.10, 11.70)),
-			_catalog_building("b_clerk_townhouse", "harborfront_commercial", "rowhouse_clerk_lodging", Vector2(13.85, 17.70)),
+			_catalog_building("b_clerk_townhouse", "harborfront_commercial", "rowhouse_clerk_lodging", Vector2(13.85, G414A_STREET_WALL_CURB_DATUM_Y)),
 			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(13.65, 11.45)),
 			_catalog_building("b_large_residence", "inland_residential_civic", "civic_residence", Vector2(31.80, 11.55)),
 			_catalog_building("b_boarding_house", "support_lane", "boarding_house", Vector2(38.35, 11.70)),

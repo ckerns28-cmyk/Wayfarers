@@ -21,6 +21,17 @@ const G414A_PRIVATE_OR_FUTURE_HOME_IDS := [
 	"b_dockworker_rowhouse",
 ]
 
+const G414A_CURB_DATUM_BUILDING_IDS := [
+	"b_inn_tavern",
+	"b_clerk_townhouse",
+	"b_mercantile",
+	"b_counting_house",
+	"b_chandlery_front",
+	"b_shop_house",
+	"b_market_shed",
+	"b_printer_rowhouse",
+]
+
 var failures: Array[String] = []
 
 func _init() -> void:
@@ -80,6 +91,7 @@ func _validate_scene(main: Node) -> void:
 
 	_validate_buildings()
 	_validate_building_entity_contract(player)
+	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
 	_validate_proof_street(main)
 	_validate_visual_composition_spacing()
@@ -242,6 +254,18 @@ func _validate_building_definition_entity_metadata(id: String, definition: Dicti
 			_expect(String(sign_projection.get("id", "")) == "mercantile_hanging_sign", "mercantile_hanging_sign_projection_id")
 			_expect(source_rect.size.x > 0.0 and source_rect.size.y > 0.0, "mercantile_hanging_sign_projection_source_rect")
 			_expect(int(sign_projection.get("z_index", 0)) > 0, "mercantile_hanging_sign_projection_foreground_z")
+
+func _validate_g414a_street_wall_curb_datum() -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+
+	var target_y := NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * NEWPORT_TOWN.TILE
+	for id in G414A_CURB_DATUM_BUILDING_IDS:
+		var building := _building_by_name(id)
+		_expect(building != null, id + "_curb_datum_building_present")
+		if building == null:
+			continue
+		_expect(absf(building.global_position.y - target_y) <= 0.5, id + "_curb_datum_global_y")
 
 func _validate_starter_harbor_plan() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
