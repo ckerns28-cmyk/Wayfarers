@@ -336,6 +336,11 @@ func _validate_starter_harbor_plan() -> void:
 				_expect(clerk_region.size.x >= 360.0 and clerk_region.size.y >= 330.0, "clerk_townhouse_uses_uncut_brick_block_region")
 				_expect(clerk_visual.size.x >= 145.0 and clerk_visual.size.y >= 150.0, "clerk_townhouse_not_under_scaled_or_cropped")
 				_expect(float(definition.get("visual_scale", 0.0)) >= 160.0, "clerk_townhouse_newport_rowhouse_scale")
+			if String(config["id"]) == "b_shop_house":
+				var shop_visual: Rect2 = definition.get("visual_bounds", Rect2())
+				_expect(definition.get("sprite_id", "") == "newport_shopfront_awning", "shop_house_uses_awning_storefront_asset")
+				_expect(shop_visual.size.x >= 145.0 and shop_visual.size.y >= 140.0, "shop_house_not_under_scaled_or_cropped")
+				_expect(float(definition.get("visual_scale", 0.0)) >= 185.0, "shop_house_newport_storefront_scale")
 
 	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
 	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "dedicated crate/barrel/rope prop sprites", "sign variants", "fencing variants", "lantern variants", "chapel/church decision and final art if needed"]:
@@ -391,6 +396,7 @@ func _validate_visual_composition_spacing() -> void:
 		"b_market_shed",
 		"b_printer_rowhouse",
 	], 0.0, 16.0)
+	_validate_harborfront_visual_bottom_datum()
 	_validate_harborfront_parcel_rhythm()
 	_validate_review_bounds_track_art_body("harborfront_street_wall", [
 		"b_inn_tavern",
@@ -433,6 +439,16 @@ func _validate_harborfront_parcel_rhythm() -> void:
 	var market := _building_by_name("b_market_shed")
 	if chandlery and shop and market:
 		_expect(chandlery.global_position.x < shop.global_position.x and shop.global_position.x < market.global_position.x, "shop_house_parcel_order_between_chandlery_and_market")
+
+func _validate_harborfront_visual_bottom_datum() -> void:
+	var street_bottom_y := NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * float(NEWPORT_TOWN.TILE)
+	for id in NEWPORT_TOWN.G414A_CURB_DATUM_BUILDING_IDS:
+		var building := _building_by_name(String(id))
+		if building == null:
+			failures.append("harborfront_bottom_datum_missing_" + String(id))
+			continue
+		var rect := _building_visual_world_rect(building)
+		_expect(absf(rect.end.y - street_bottom_y) <= 1.0, "harborfront_visual_bottom_on_curb_datum_" + String(id))
 
 func _validate_review_bounds_track_art_body(label: String, ids: Array) -> void:
 	for id in ids:
@@ -494,14 +510,19 @@ func _validate_building_node(building: Node2D) -> void:
 	if sprite and sprite.texture:
 		var region_size := _texture_region_size(sprite.texture)
 		var sprite_bottom_y := sprite.position.y + region_size.y * sprite.scale.y
+		var visual_bottom_y := sprite_bottom_y
+		if building.has_method("get_visual_bounds"):
+			var visual_bounds: Rect2 = building.get_visual_bounds()
+			visual_bottom_y = visual_bounds.end.y
 		var proof_street: bool = building.has_method("is_proof_street_building") and building.is_proof_street_building()
 		var harbor_integrated: bool = building.has_method("is_harbor_integrated") and building.is_harbor_integrated()
 		if harbor_integrated:
 			_expect(sprite_bottom_y > 20.0 and sprite_bottom_y < 78.0, building.name + "_harbor_sprite_extends_into_water")
 		elif proof_street:
-			_expect(sprite_bottom_y > 3.0 and sprite_bottom_y < 28.0, building.name + "_painterly_base_padding_allowed")
+			_expect(visual_bottom_y >= -2.5 and visual_bottom_y <= 22.0, building.name + "_foot_anchor_at_visual_base")
+			_expect(sprite_bottom_y > -2.5 and sprite_bottom_y < 44.0, building.name + "_painterly_base_padding_allowed")
 		else:
-			_expect(sprite_bottom_y >= -2.5 and sprite_bottom_y <= 22.0, building.name + "_foot_anchor_at_visual_base")
+			_expect(visual_bottom_y >= -2.5 and visual_bottom_y <= 22.0, building.name + "_foot_anchor_at_visual_base")
 
 	if String(building.name) == "b_mercantile":
 		var projection := building.get_node_or_null("Projection_mercantile_hanging_sign") as Sprite2D

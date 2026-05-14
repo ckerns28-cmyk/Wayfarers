@@ -69,7 +69,7 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 static func building_definition(building_id: String) -> Dictionary:
 	match building_id:
 		"b_inn_tavern":
-			return _definition(building_id, "Inn & Tavern", "inn_tavern_v1", "tavern", 166.0, Vector2(214.0, 392.0), Vector2(154.0, 22.0), Rect2(Vector2(-78.0, -164.0), Vector2(156.0, 176.0)), Vector2(0.0, 26.0), 138.0)
+			return _definition(building_id, "Inn & Tavern", "inn_tavern_v1", "tavern", 166.0, Vector2(214.0, 444.0), Vector2(154.0, 22.0), Rect2(Vector2(-78.0, -164.0), Vector2(156.0, 176.0)), Vector2(0.0, 26.0), 138.0)
 		"b_mercantile":
 			return _definition(building_id, "Mercantile", "mercantile_shop", "mercantile", 150.0, Vector2(199.0, 427.0), Vector2(138.0, 17.0), Rect2(Vector2(-74.0, -160.0), Vector2(148.0, 172.0)), Vector2(0.0, 24.0), 116.0)
 		"b_counting_house":
@@ -77,9 +77,9 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_chandlery_front":
 			return _definition(building_id, "Chandlery", "newport_chandlery_outfitter_front", "chandlery", 181.0, Vector2(217.5, 376.0), Vector2(154.0, 18.0), Rect2(Vector2(-92.0, -168.0), Vector2(184.0, 180.0)), Vector2(0.0, 24.0), 132.0)
 		"b_shop_house":
-			return _definition(building_id, "Shop House", "newport_shopfront_awning", "shop", 150.0, Vector2(206.5, 402.0), Vector2(138.0, 17.0), Rect2(Vector2(-82.0, -158.0), Vector2(164.0, 170.0)), Vector2(0.0, 24.0))
+			return _definition(building_id, "Shop House", "newport_shopfront_awning", "shop", 190.0, Vector2(206.5, 364.0), Vector2(162.0, 20.0), Rect2(Vector2(-96.0, -174.0), Vector2(192.0, 186.0)), Vector2(0.0, 24.0), 146.0)
 		"b_market_shed":
-			return _definition(building_id, "Market Shed", "newport_market_shed_stalls", "dock_service", 210.0, Vector2(217.0, 394.0), Vector2(154.0, 18.0), Rect2(Vector2(-86.0, -92.0), Vector2(172.0, 102.0)), Vector2(0.0, 24.0), 132.0)
+			return _definition(building_id, "Market Shed", "newport_market_shed_stalls", "dock_service", 210.0, Vector2(217.0, 389.0), Vector2(154.0, 18.0), Rect2(Vector2(-86.0, -92.0), Vector2(172.0, 102.0)), Vector2(0.0, 24.0), 132.0)
 		"b_dock_storehouse":
 			return _definition(building_id, "Dock Storehouse", "newport_dockside_storehouse_long", "warehouse", 220.0, Vector2(194.0, 318.0), Vector2(176.0, 18.0), Rect2(Vector2(-104.0, -122.0), Vector2(208.0, 128.0)), Vector2(0.0, 20.0), 156.0, true)
 		"b_wharf_boathouse":
@@ -99,9 +99,9 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_cooperage_shed":
 			return _definition(building_id, "Cooperage Shed", "service_dependency_shed", "cooperage", 124.0, Vector2(149.0, 269.0), Vector2(98.0, 16.0), Rect2(Vector2(-58.0, -108.0), Vector2(116.0, 118.0)), Vector2(0.0, 20.0), 92.0, false, ["support_lane", "working_wharf", "dock_service"], "Compact service shed standing in for cooperage/barrel-shop support with an isolated crop to remove the building above it.")
 		"b_printer_rowhouse":
-			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 88.0, Vector2(136.5, 360.0), Vector2(72.0, 14.0), Rect2(Vector2(-38.0, -112.0), Vector2(76.0, 124.0)), Vector2(0.0, 22.0), 66.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.13B.1 narrow rowhouse/shopfront infill for a future pamphlet printer, apprentice errand, or rented-room rumor hook; deliberately scaled as infill so it reads beside the market without touching it.")
+			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 88.0, Vector2(136.5, 385.0), Vector2(72.0, 14.0), Rect2(Vector2(-38.0, -112.0), Vector2(76.0, 124.0)), Vector2(0.0, 22.0), 66.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.13B.1 narrow rowhouse/shopfront infill for a future pamphlet printer, apprentice errand, or rented-room rumor hook; deliberately scaled as infill so it reads beside the market without touching it.")
 		"b_clerk_townhouse":
-			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_block_a", "clerk_lodging", 168.0, Vector2(185.5, 310.0), Vector2(136.0, 15.0), Rect2(Vector2(-78.0, -140.0), Vector2(156.0, 152.0)), Vector2(0.0, 24.0), 136.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B.7 brick formal townhouse row restored at Newport scale and packed by street-wall art bounds rather than transparent or prop padding.")
+			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_block_a", "clerk_lodging", 168.0, Vector2(185.5, 336.0), Vector2(136.0, 15.0), Rect2(Vector2(-78.0, -140.0), Vector2(156.0, 152.0)), Vector2(0.0, 24.0), 136.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B.7 brick formal townhouse row restored at Newport scale and packed by street-wall art bounds rather than transparent or prop padding.")
 		"b_dockworker_rowhouse":
 			return _definition(building_id, "Dockworker Rowhouse", "newport_waterfront_shop_house", "dockworker_lodging", 154.0, Vector2(175.5, 300.0), Vector2(124.0, 15.0), Rect2(Vector2(-76.0, -112.0), Vector2(152.0, 124.0)), Vector2(0.0, 21.0), 124.0, false, ["support_lane", "residential", "rowhouse", "future_dockworker_lodging"], "G-4.13B.1 support-lane lodging infill using the four-unit clapboard rowhouse from Newport pack A, seated beside the boarding house with a hard visible gap.")
 		_:
@@ -319,7 +319,7 @@ static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, vis
 		"b_chandlery_front":
 			return _base_footprint(154.0, 16.0, 12.0)
 		"b_shop_house":
-			return _base_footprint(126.0, 16.0, 12.0)
+			return _base_footprint(150.0, 16.0, 12.0)
 		"b_market_shed":
 			return _base_footprint(164.0, 18.0, 14.0)
 		"b_custom_house":
