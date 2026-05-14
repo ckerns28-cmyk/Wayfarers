@@ -14,14 +14,25 @@ const FRONTAGE_COLOR := Color(0.15, 0.85, 1.0, 1.0)
 const YSORT_COLOR := Color(1.0, 0.35, 1.0, 1.0)
 const LABEL_COLOR := Color(1, 1, 1, 0.95)
 
+var _debug_enabled := false
+
 func _ready() -> void:
 	z_index = 100
-	visible = false
+	set_debug_enabled(false)
 
 func refresh() -> void:
+	if _debug_enabled:
+		queue_redraw()
+
+func set_debug_enabled(enabled: bool) -> void:
+	_debug_enabled = enabled
+	visible = enabled
 	queue_redraw()
 
 func _draw() -> void:
+	if not _debug_enabled:
+		return
+
 	var building := get_parent()
 	if not (building is Node2D):
 		return

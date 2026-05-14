@@ -21,6 +21,17 @@ const G414A_PRIVATE_OR_FUTURE_HOME_IDS := [
 	"b_dockworker_rowhouse",
 ]
 
+const G414A_CURB_DATUM_BUILDING_IDS := [
+	"b_inn_tavern",
+	"b_clerk_townhouse",
+	"b_mercantile",
+	"b_counting_house",
+	"b_chandlery_front",
+	"b_shop_house",
+	"b_market_shed",
+	"b_printer_rowhouse",
+]
+
 var failures: Array[String] = []
 
 func _init() -> void:
@@ -74,10 +85,13 @@ func _validate_scene(main: Node) -> void:
 		var minimum_collision_bodies := 3 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (20 if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else 40)
 		_expect(collision_layer != null and collision_layer.get_child_count() > minimum_collision_bodies, "collision_navigation_bodies")
 		if collision_layer:
+			_expect(not collision_layer.visible, "collision_probe_debug_layer_hidden_by_default")
+			_expect(collision_layer.get("_debug_overlay_enabled") == false, "collision_probe_debug_flag_off_by_default")
 			_validate_detail_blockers(collision_layer)
 
 	_validate_buildings()
 	_validate_building_entity_contract(player)
+	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
 	_validate_proof_street(main)
 	_validate_visual_composition_spacing()
@@ -230,6 +244,18 @@ func _validate_building_definition_entity_metadata(id: String, definition: Dicti
 	elif G414A_PRIVATE_OR_FUTURE_HOME_IDS.has(id):
 		_expect(["private", "owner_only_future"].has(access_rule), id + "_entity_private_or_owner_future_access")
 		_expect(not bool(definition.get("is_enterable", false)), id + "_entity_private_not_enterable")
+
+func _validate_g414a_street_wall_curb_datum() -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+
+	var target_y := NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * NEWPORT_TOWN.TILE
+	for id in G414A_CURB_DATUM_BUILDING_IDS:
+		var building := _building_by_name(id)
+		_expect(building != null, id + "_curb_datum_building_present")
+		if building == null:
+			continue
+		_expect(absf(building.global_position.y - target_y) <= 0.5, id + "_curb_datum_global_y")
 
 func _validate_starter_harbor_plan() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
@@ -513,6 +539,7 @@ func _validate_proof_street(main: Node) -> void:
 		var overlay := building.get_node_or_null("DebugOverlay") as Node2D
 		_expect(overlay != null and not overlay.visible, building.name + "_seating_debug_off_by_default")
 		_expect(overlay == null or overlay.visible == false, building.name + "_debug_labels_hidden_in_review_mode")
+		_expect(overlay == null or overlay.get("_debug_enabled") == false, building.name + "_debug_overlay_not_armed_in_review_mode")
 		_expect(building.has_method("has_seating_metadata") and building.has_seating_metadata(), building.name + "_runtime_seating_metadata")
 		_expect(building.get_node_or_null("FrontageMarker") != null, building.name + "_frontage_marker")
 		_expect(building.get_node_or_null("YSortAnchor") != null, building.name + "_ysort_marker")

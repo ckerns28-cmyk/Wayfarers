@@ -18,6 +18,7 @@ var _debug_overlay_enabled := false
 var _debug_bodies: Array = []
 
 func _ready() -> void:
+	set_debug_overlay(false)
 	_add_world_edge_collision()
 	_add_water_collision()
 	_add_detail_blockers()
@@ -39,6 +40,7 @@ func _add_body(rect: Rect2, label: String) -> void:
 
 func set_debug_overlay(enabled: bool) -> void:
 	_debug_overlay_enabled = enabled
+	visible = enabled
 	queue_redraw()
 
 func _draw() -> void:
