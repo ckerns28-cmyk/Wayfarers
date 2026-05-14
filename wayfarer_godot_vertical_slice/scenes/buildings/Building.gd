@@ -14,6 +14,14 @@ var building_id := ""
 var display_name := ""
 var definition_id := ""
 var district_role := ""
+var building_type := ""
+var access_rule := ""
+var interior_scene := ""
+var owner_id := ""
+var is_enterable := false
+var interaction_label := ""
+var locked_message := ""
+var unavailable_message := ""
 var proof_street := false
 var harbor_integrated := false
 var definition_normalized := false
@@ -32,6 +40,14 @@ func configure(config: Dictionary) -> void:
 	display_name = config.get("display_name", building_id)
 	definition_id = config.get("definition_id", building_id)
 	district_role = config.get("district_role", "")
+	building_type = config.get("building_type", district_role)
+	access_rule = config.get("access_rule", "locked")
+	interior_scene = config.get("interior_scene", "")
+	owner_id = config.get("owner_id", "")
+	is_enterable = config.get("is_enterable", false)
+	interaction_label = config.get("interaction_label", "")
+	locked_message = config.get("locked_message", "")
+	unavailable_message = config.get("unavailable_message", "")
 	proof_street = config.get("proof_street", false)
 	harbor_integrated = config.get("harbor_integrated", false)
 	definition_normalized = config.get("definition_normalized", false)
@@ -39,6 +55,8 @@ func configure(config: Dictionary) -> void:
 	add_to_group("buildings")
 	if proof_street:
 		add_to_group("proof_street_buildings")
+	if is_enterable or config.get("interaction_enabled", false):
+		add_to_group("interactable")
 	position = config.get("position", position)
 
 	var texture: Texture2D = config.get("texture")
@@ -97,6 +115,34 @@ func get_foot_anchor() -> Vector2:
 
 func set_debug_overlay(enabled: bool) -> void:
 	debug_overlay.visible = enabled
+
+func get_interaction_label() -> String:
+	if not interaction_label.is_empty():
+		return interaction_label
+	return "Press E to inspect " + display_name
+
+func get_interaction_position() -> Vector2:
+	if door_marker:
+		return door_marker.global_position
+	return global_position
+
+func interact() -> String:
+	if can_player_enter():
+		if not unavailable_message.is_empty():
+			return unavailable_message
+		return "%s will be enterable in G-4.15." % display_name
+	if access_rule == "private" or access_rule == "owner_only_future":
+		if not locked_message.is_empty():
+			return locked_message
+		return "This residence is private."
+	if not unavailable_message.is_empty():
+		return unavailable_message
+	if not locked_message.is_empty():
+		return locked_message
+	return "%s is not open yet." % display_name
+
+func can_player_enter() -> bool:
+	return is_enterable and access_rule == "public" and not interior_scene.is_empty()
 
 func is_proof_street_building() -> bool:
 	return proof_street

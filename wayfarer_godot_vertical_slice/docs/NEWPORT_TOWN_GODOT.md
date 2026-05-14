@@ -1135,6 +1135,59 @@ dock details, and restyles the rear lot blocks as muted background silhouettes.
 It does not add new buildings, interiors, quests, combat, inventory, save
 systems, production cutover, or a larger map.
 
+## G-4.14A Building Entity Contract
+
+G-4.14A keeps the accepted Newport layout and art exactly in place, then turns
+the existing building scaffold into a reusable gameplay entity contract. It
+does not move buildings, change draw widths, crop sprites, swap art, or alter
+the road, harbor, dock, contact shadow, or collision layout.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.14A Building Entity Contract
+Phase: G-4.14A | Review host: itch
+Branch: codex/g-4-14a-building-entity-contract
+```
+
+Building definitions now carry future-ready gameplay metadata:
+
+- `building_type`
+- `access_rule`
+- `interior_scene`
+- `owner_id`
+- `is_enterable`
+- `interaction_label`
+- `locked_message`
+- `unavailable_message`
+
+`Building.gd` exposes the shared methods `get_interaction_label()`,
+`get_interaction_position()`, `interact()`, and `can_player_enter()`. Door
+identity is still authored from the existing `door_offset`, `DoorMarker`, and
+`interaction_zone` data. The player interaction check now uses
+`get_interaction_position()` when an interactable provides it, so building
+prompts attach to the doorway/frontage instead of the sprite origin.
+
+Public door stubs for G-4.15 interior handoff:
+
+- Inn & Tavern
+- Harbor Mercantile
+- Counting House
+- Chandlery
+- Shop House
+
+Private or future-owner metadata candidates:
+
+- Harbor Cottage
+- Harbor Residence
+- Boarding House
+- Clerk Rowhouse
+- Dockworker Rowhouse
+
+Locked civic/service buildings still have building identity and readable stub
+messages, but do not claim to be enterable. No interior scene files are created
+in this pass; `interior_scene` stores future placeholder paths only.
+
 ## Deferred
 
 - Final art parity with JavaScript Phase 35.13R.

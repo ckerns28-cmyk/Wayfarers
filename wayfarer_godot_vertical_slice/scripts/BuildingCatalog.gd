@@ -170,11 +170,21 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 	var interaction_zone := Rect2(frontage_offset - interaction_size * 0.5, interaction_size)
 	var visual_bounds := _visual_bounds(sprite, draw_width, visual_base_anchor)
 	var review_lot_bounds := _review_lot_bounds(building_id, lot_bounds, visual_bounds)
+	var entity_metadata := _entity_metadata_for(building_id, display_name, district_role)
 	return {
 		"id": building_id,
 		"building_id": building_id,
 		"display_name": display_name,
 		"role": district_role,
+		"building_type": entity_metadata.get("building_type", district_role),
+		"access_rule": entity_metadata.get("access_rule", "locked"),
+		"interior_scene": entity_metadata.get("interior_scene", "res://scenes/interiors/building_stub.tscn"),
+		"owner_id": entity_metadata.get("owner_id", ""),
+		"is_enterable": entity_metadata.get("is_enterable", false),
+		"interaction_enabled": entity_metadata.get("interaction_enabled", false),
+		"interaction_label": entity_metadata.get("interaction_label", ""),
+		"locked_message": entity_metadata.get("locked_message", ""),
+		"unavailable_message": entity_metadata.get("unavailable_message", ""),
 		"sprite_id": sprite_id,
 		"texture_path": sprite.get("atlas_path", ""),
 		"sprite_region": sprite.get("region", Rect2()),
@@ -225,6 +235,60 @@ static func _review_lot_bounds(building_id: String, declared_lot_bounds: Rect2, 
 			return visual_bounds
 		_:
 			return declared_lot_bounds
+
+static func _entity_metadata_for(building_id: String, display_name: String, district_role: String) -> Dictionary:
+	match building_id:
+		"b_inn_tavern":
+			return _entity("tavern", "public", "res://scenes/interiors/tavern_stub.tscn", true, "Press E to enter Inn & Tavern", "", "Inn & Tavern will be enterable in G-4.15.")
+		"b_mercantile":
+			return _entity("mercantile", "public", "res://scenes/interiors/mercantile_stub.tscn", true, "Press E to enter Harbor Mercantile", "", "Harbor Mercantile will be enterable in G-4.15.")
+		"b_counting_house":
+			return _entity("civic", "public", "res://scenes/interiors/counting_house_stub.tscn", true, "Press E to enter Counting House", "", "The Counting House will be enterable in G-4.15.")
+		"b_chandlery_front":
+			return _entity("shop", "public", "res://scenes/interiors/chandlery_stub.tscn", true, "Press E to enter Chandlery", "", "The Chandlery will be enterable in G-4.15.")
+		"b_shop_house":
+			return _entity("shop", "public", "res://scenes/interiors/shop_house_stub.tscn", true, "Press E to enter Shop House", "", "The Shop House will be enterable in G-4.15.")
+		"b_custom_house":
+			return _entity("civic", "locked", "res://scenes/interiors/customs_house_stub.tscn", false, "Press E to inspect Customs House", "", "The Customs House is not open yet.")
+		"b_market_shed":
+			return _entity("shop", "locked", "res://scenes/interiors/market_shed_stub.tscn", false, "Press E to inspect Market Shed", "", "The market shed is not staffed yet.")
+		"b_printer_rowhouse":
+			return _entity("rowhouse", "locked", "res://scenes/interiors/printer_rowhouse_stub.tscn", false, "Press E to inspect Printer Rowhouse", "", "The printer rowhouse is not open yet.")
+		"b_clerk_townhouse":
+			return _entity("rowhouse", "private", "res://scenes/interiors/residence_stub.tscn", false, "Press E to inspect Clerk Townhouse", "This rowhouse is private.", "")
+		"b_res_small":
+			return _entity("residence", "owner_only_future", "res://scenes/interiors/residence_stub.tscn", false, "Press E to inspect Harbor Cottage", "This residence is private.", "This cottage is reserved for future ownership.")
+		"b_large_residence":
+			return _entity("residence", "private", "res://scenes/interiors/residence_stub.tscn", false, "Press E to inspect Harbor Residence", "This residence is private.", "")
+		"b_boarding_house":
+			return _entity("boarding_house", "private", "res://scenes/interiors/boarding_house_stub.tscn", false, "Press E to inspect Boarding House", "The boarding house is private for now.", "")
+		"b_dockworker_rowhouse":
+			return _entity("rowhouse", "private", "res://scenes/interiors/residence_stub.tscn", false, "Press E to inspect Dockworker Rowhouse", "This rowhouse is private.", "")
+		"b_dock_storehouse":
+			return _entity("warehouse", "locked", "res://scenes/interiors/warehouse_stub.tscn", false, "Press E to inspect Dock Storehouse", "", "The dock storehouse is locked.")
+		"b_dock_warehouse":
+			return _entity("warehouse", "locked", "res://scenes/interiors/warehouse_stub.tscn", false, "Press E to inspect Dock Warehouse", "", "The dock warehouse is locked.")
+		"b_wharf_boathouse":
+			return _entity("dock_service", "locked", "res://scenes/interiors/boathouse_stub.tscn", false, "Press E to inspect Wharf Boathouse", "", "The wharf boathouse is locked.")
+		"b_cooperage_shed":
+			return _entity("dock_service", "locked", "res://scenes/interiors/cooperage_stub.tscn", false, "Press E to inspect Cooperage Shed", "", "The cooperage shed is not open yet.")
+		"b_village_hall":
+			return _entity("civic", "locked", "res://scenes/interiors/chapel_stub.tscn", false, "Press E to inspect Meeting House Chapel", "", "The meeting house is not open yet.")
+		_:
+			return _entity(district_role, "locked", "res://scenes/interiors/building_stub.tscn", false, "Press E to inspect " + display_name, "", display_name + " is not open yet.")
+
+static func _entity(building_type: String, access_rule: String, interior_scene: String, is_enterable: bool, interaction_label: String, locked_message: String, unavailable_message: String, owner_id := "") -> Dictionary:
+	return {
+		"building_type": building_type,
+		"access_rule": access_rule,
+		"interior_scene": interior_scene,
+		"owner_id": owner_id,
+		"is_enterable": is_enterable,
+		"interaction_enabled": true,
+		"interaction_label": interaction_label,
+		"locked_message": locked_message,
+		"unavailable_message": unavailable_message,
+	}
 
 static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, visual_base_width: float) -> Rect2:
 	match building_id:
