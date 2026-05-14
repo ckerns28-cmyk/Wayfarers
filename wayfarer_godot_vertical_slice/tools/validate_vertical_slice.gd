@@ -543,8 +543,8 @@ func _validate_visual_composition_spacing() -> void:
 		if mercantile:
 			var mercantile_rect := _building_visual_world_rect(mercantile)
 			var clerk_to_mercantile_gap := mercantile_rect.position.x - clerk_rect.end.x
-			_expect(clerk_to_mercantile_gap >= 0.0, "clerk_townhouse_not_cut_off_by_mercantile")
-			_expect(clerk_to_mercantile_gap <= 4.0, "clerk_townhouse_sits_against_mercantile")
+			_expect(clerk_to_mercantile_gap >= 8.0, "clerk_townhouse_not_cut_off_by_mercantile")
+			_expect(clerk_to_mercantile_gap <= 12.0, "clerk_townhouse_keeps_tight_mercantile_gutter")
 
 func _validate_harborfront_parcel_rhythm() -> void:
 	var chandlery_to_shop_gap := _visual_gap_between("b_chandlery_front", "b_shop_house")
