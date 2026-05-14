@@ -55,7 +55,8 @@ func configure(config: Dictionary) -> void:
 	sprite.scale = Vector2(scale_factor, scale_factor)
 	sprite.position = -visual_base_anchor * scale_factor + sprite_offset
 	_visual_base_width = config.get("visual_base_width", draw_width * 0.86)
-	_visual_bounds = Rect2(sprite.position, source_size * scale_factor)
+	var default_visual_bounds := Rect2(sprite.position, source_size * scale_factor)
+	_visual_bounds = config.get("visual_bounds", default_visual_bounds)
 	_lot_bounds = config.get("lot_bounds", config.get("lot_rect", _visual_bounds))
 
 	var collision_shape := RectangleShape2D.new()

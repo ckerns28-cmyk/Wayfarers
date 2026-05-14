@@ -9,9 +9,9 @@ const ISOLATED_BUILDINGS := "res://assets/sprites/buildings/isolated"
 static func sprite_config(sprite_id: String) -> Dictionary:
 	match sprite_id:
 		"inn_tavern_v1":
-			return _sprite(ISOLATED_BUILDINGS + "/inn_tavern_v1_isolated.png", Rect2(0, 0, 473, 468), 142.0)
+			return _sprite(ISOLATED_BUILDINGS + "/inn_tavern_v1_isolated.png", Rect2(0, 0, 473, 468), 142.0, Rect2(55, 24, 379, 420))
 		"mercantile_shop":
-			return _sprite(ISOLATED_BUILDINGS + "/mercantile_shop_isolated.png", Rect2(0, 0, 398, 451), 150.0)
+			return _sprite(ISOLATED_BUILDINGS + "/mercantile_shop_isolated.png", Rect2(0, 0, 398, 451), 150.0, Rect2(83, 24, 277, 403))
 		"village_hall_meeting_house":
 			return _sprite(ISOLATED_BUILDINGS + "/village_hall_meeting_house_isolated.png", Rect2(0, 0, 438, 498), 178.0)
 		"residence_small":
@@ -31,7 +31,7 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 		"newport_large_front_residence":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_large_front_residence_isolated.png", Rect2(0, 0, 435, 369), 200.0)
 		"newport_shopfront_awning":
-			return _sprite(ISOLATED_BUILDINGS + "/newport_shopfront_awning_isolated.png", Rect2(0, 0, 413, 448), 150.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_shopfront_awning_isolated.png", Rect2(0, 0, 413, 448), 150.0, Rect2(42, 52, 321, 312))
 		"newport_narrow_merchant_townhouse_a":
 			return _sprite(PACK_A, Rect2(836, 451, 273, 385), 118.0)
 		"newport_chandlery_cottage":
@@ -43,7 +43,7 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 		"newport_custom_house_civic_front":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_custom_house_civic_front_isolated.png", Rect2(0, 0, 437, 433), 176.0)
 		"newport_formal_townhouse_block_a":
-			return _sprite(PACK_B, Rect2(444, 67, 371, 336), 188.0)
+			return _sprite(PACK_B, Rect2(444, 67, 371, 336), 168.0, Rect2(16, 0, 335, 336))
 		"newport_formal_townhouse_single_bay":
 			return _sprite(PACK_B, Rect2(568, 67, 124, 336), 64.0)
 		"newport_narrow_clapboard_townhouse_b":
@@ -53,13 +53,13 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 		"newport_modest_clapboard_residence_a":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_modest_clapboard_residence_a_isolated.png", Rect2(0, 0, 247, 418), 126.0)
 		"newport_counting_house_civic_exchange":
-			return _sprite(ISOLATED_BUILDINGS + "/newport_counting_house_civic_exchange_isolated.png", Rect2(0, 0, 458, 370), 190.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_counting_house_civic_exchange_isolated.png", Rect2(0, 0, 458, 370), 190.0, Rect2(32, 24, 394, 322))
 		"newport_chandlery_outfitter_front":
-			return _sprite(ISOLATED_BUILDINGS + "/newport_chandlery_outfitter_front_isolated.png", Rect2(0, 0, 435, 400), 181.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_chandlery_outfitter_front_isolated.png", Rect2(0, 0, 435, 400), 181.0, Rect2(31, 24, 365, 352))
 		"newport_dockside_storehouse":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_dockside_storehouse_isolated.png", Rect2(0, 0, 443, 448), 220.0)
 		"newport_market_shed_stalls":
-			return _sprite(ISOLATED_BUILDINGS + "/newport_market_shed_stalls_isolated.png", Rect2(0, 0, 434, 438), 210.0)
+			return _sprite(ISOLATED_BUILDINGS + "/newport_market_shed_stalls_isolated.png", Rect2(0, 0, 434, 438), 210.0, Rect2(35, 36, 344, 353))
 		"newport_market_frontage_row":
 			return _sprite(PACK_B, Rect2(836, 842, 373, 355), 178.0)
 		_:
@@ -101,7 +101,7 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_printer_rowhouse":
 			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 88.0, Vector2(136.5, 360.0), Vector2(72.0, 14.0), Rect2(Vector2(-38.0, -112.0), Vector2(76.0, 124.0)), Vector2(0.0, 22.0), 66.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.13B.1 narrow rowhouse/shopfront infill for a future pamphlet printer, apprentice errand, or rented-room rumor hook; deliberately scaled as infill so it reads beside the market without touching it.")
 		"b_clerk_townhouse":
-			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_block_a", "clerk_lodging", 188.0, Vector2(185.5, 310.0), Vector2(150.0, 16.0), Rect2(Vector2(-96.0, -154.0), Vector2(192.0, 166.0)), Vector2(0.0, 24.0), 150.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B.6 brick formal townhouse row restored for the clerk lodging and placed as a full, uncut building directly against the mercantile street wall.")
+			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_block_a", "clerk_lodging", 168.0, Vector2(185.5, 310.0), Vector2(136.0, 15.0), Rect2(Vector2(-78.0, -140.0), Vector2(156.0, 152.0)), Vector2(0.0, 24.0), 136.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B.7 brick formal townhouse row restored at Newport scale and packed by street-wall art bounds rather than transparent or prop padding.")
 		"b_dockworker_rowhouse":
 			return _definition(building_id, "Dockworker Rowhouse", "newport_waterfront_shop_house", "dockworker_lodging", 154.0, Vector2(175.5, 300.0), Vector2(124.0, 15.0), Rect2(Vector2(-76.0, -112.0), Vector2(152.0, 124.0)), Vector2(0.0, 21.0), 124.0, false, ["support_lane", "residential", "rowhouse", "future_dockworker_lodging"], "G-4.13B.1 support-lane lodging infill using the four-unit clapboard rowhouse from Newport pack A, seated beside the boarding house with a hard visible gap.")
 		_:
@@ -139,11 +139,15 @@ static func available_building_assets() -> Array:
 		_asset("newport_market_frontage_row", "mercantile / market frontage", "available_deferred", "Duplicate commercial frontage for later dressing."),
 	]
 
-static func _sprite(atlas_path: String, region: Rect2, draw_width: float) -> Dictionary:
+static func _sprite(atlas_path: String, region: Rect2, draw_width: float, visible_region := Rect2()) -> Dictionary:
+	var normalized_visible_region := visible_region
+	if normalized_visible_region.size.x <= 0.0 or normalized_visible_region.size.y <= 0.0:
+		normalized_visible_region = Rect2(Vector2.ZERO, region.size)
 	return {
 		"atlas_path": atlas_path,
 		"region": region,
 		"source_size": region.size,
+		"visible_region": normalized_visible_region,
 		"draw_width": draw_width,
 		"anchor": Vector2(region.size.x * 0.5, region.size.y)
 	}
@@ -165,6 +169,7 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 	var interaction_size := Vector2(maxf(84.0, collision_footprint.size.x * 0.76), 42.0)
 	var interaction_zone := Rect2(frontage_offset - interaction_size * 0.5, interaction_size)
 	var visual_bounds := _visual_bounds(sprite, draw_width, visual_base_anchor)
+	var review_lot_bounds := _review_lot_bounds(building_id, lot_bounds, visual_bounds)
 	return {
 		"id": building_id,
 		"building_id": building_id,
@@ -200,9 +205,9 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 		"y_sort_offset": Vector2.ZERO,
 		"shadow_offset": Vector2(0.0, -6.0),
 		"shadow_size": shadow_size,
-		"lot_bounds": lot_bounds,
-		"lot_rect": lot_bounds,
-		"building_volume_rect": lot_bounds,
+		"lot_bounds": review_lot_bounds,
+		"lot_rect": review_lot_bounds,
+		"building_volume_rect": review_lot_bounds,
 		"frontage_body_rect": Rect2(Vector2(-visual_base_width * 0.5, -maxf(34.0, collision_footprint.size.y)), Vector2(visual_base_width, maxf(34.0, collision_footprint.size.y))),
 		"harbor_integrated": harbor_integrated,
 		"definition_normalized": true,
@@ -210,8 +215,16 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 
 static func _visual_bounds(sprite: Dictionary, draw_width: float, visual_base_anchor: Vector2, sprite_offset := Vector2.ZERO) -> Rect2:
 	var source_size: Vector2 = sprite.get("source_size", Vector2(1.0, 1.0))
+	var visible_region: Rect2 = sprite.get("visible_region", Rect2(Vector2.ZERO, source_size))
 	var scale_factor := draw_width / maxf(1.0, source_size.x)
-	return Rect2(-visual_base_anchor * scale_factor + sprite_offset, source_size * scale_factor)
+	return Rect2((visible_region.position - visual_base_anchor) * scale_factor + sprite_offset, visible_region.size * scale_factor)
+
+static func _review_lot_bounds(building_id: String, declared_lot_bounds: Rect2, visual_bounds: Rect2) -> Rect2:
+	match building_id:
+		"b_inn_tavern", "b_clerk_townhouse", "b_mercantile", "b_counting_house", "b_chandlery_front", "b_shop_house", "b_market_shed", "b_printer_rowhouse", "b_boarding_house", "b_dockworker_rowhouse":
+			return visual_bounds
+		_:
+			return declared_lot_bounds
 
 static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, visual_base_width: float) -> Rect2:
 	match building_id:
@@ -240,7 +253,7 @@ static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, vis
 		"b_printer_rowhouse":
 			return _base_footprint(66.0, 18.0, 12.0)
 		"b_clerk_townhouse":
-			return _base_footprint(150.0, 18.0, 12.0)
+			return _base_footprint(132.0, 18.0, 12.0)
 		"b_dockworker_rowhouse":
 			return _base_footprint(124.0, 18.0, 12.0)
 		"b_dock_storehouse":

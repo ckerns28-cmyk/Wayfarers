@@ -726,6 +726,29 @@ G-4.13B.6 brick clerk rowhouse placement fix:
   region, full rowhouse scale, and a tight non-overlapping clerk-to-mercantile
   seam.
 
+G-4.13B.7 street-wall art bounds fix:
+
+- Build label: Godot G-4.13B.7 Street-Wall Art Bounds Fix.
+- Keeps `b_clerk_townhouse` on the full brick formal townhouse block and
+  reduces it back to a normal Newport rowhouse scale instead of compensating
+  with an oversized or swapped sprite.
+- The street-wall row is now packed from catalog-authored art-body bounds
+  rather than loose source rectangles, transparent padding, or planning lots.
+- `Building.gd` now honors the catalog `visual_bounds` at runtime instead of
+  rebuilding debug bounds from the full source rectangle.
+- Harborfront and support-row review `lot_bounds` now track the same art-body
+  envelope as `visual_bounds`, so the `B` overlay no longer hides fake spacing
+  behind oversized lot rectangles. Collision remains the separate shallow
+  ground-contact footprint.
+- The validator now fails if street-wall review lot bounds drift away from the
+  art body, and still requires tight non-overlapping seams.
+- Measured final street-wall visual gaps: inn -> clerk `2.84px`, clerk ->
+  mercantile `3.26px`, mercantile -> counting house `2.88px`, counting house
+  -> chandlery `2.91px`, chandlery -> shop house `3.26px`, shop house ->
+  market shed `2.94px`, market shed -> printer rowhouse `3.05px`.
+- The exported Web build was checked in-browser in clean and `B` overlay modes
+  after packaging.
+
 Routes revalidated:
 
 - road behind `b_mercantile`
