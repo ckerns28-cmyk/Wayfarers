@@ -129,6 +129,10 @@ func set_debug_overlay(enabled: bool) -> void:
 	else:
 		debug_overlay.visible = effective_enabled
 
+func set_debug_label_detail(enabled: bool) -> void:
+	if debug_overlay.has_method("set_label_detail"):
+		debug_overlay.set_label_detail(enabled)
+
 func get_interaction_label() -> String:
 	if not interaction_label.is_empty():
 		return interaction_label

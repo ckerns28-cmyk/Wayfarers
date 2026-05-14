@@ -17,6 +17,7 @@ const YSORT_COLOR := Color(1.0, 0.35, 1.0, 1.0)
 const LABEL_COLOR := Color(1, 1, 1, 0.95)
 
 var _debug_enabled := false
+var _label_detail := true
 
 func _ready() -> void:
 	z_index = 100
@@ -29,6 +30,10 @@ func refresh() -> void:
 func set_debug_enabled(enabled: bool) -> void:
 	_debug_enabled = enabled
 	visible = enabled
+	queue_redraw()
+
+func set_label_detail(enabled: bool) -> void:
+	_label_detail = enabled
 	queue_redraw()
 
 func _draw() -> void:
@@ -124,8 +129,11 @@ func _draw() -> void:
 	if label != "":
 		var font := ThemeDB.fallback_font
 		if font:
-			draw_string(font, Vector2(-72, -10), label, HORIZONTAL_ALIGNMENT_LEFT,
-				-1, 12, LABEL_COLOR)
+			var label_text := label if _label_detail else label.split(" / ")[0]
+			var label_size := 12 if _label_detail else 9
+			var label_pos := Vector2(-72, -10) if _label_detail else Vector2(-42, 11)
+			draw_string(font, label_pos, label_text, HORIZONTAL_ALIGNMENT_LEFT,
+				-1, label_size, LABEL_COLOR)
 
 func _draw_rect_outline(rect: Rect2, color: Color, width: float) -> void:
 	var tl := rect.position
@@ -138,6 +146,8 @@ func _draw_rect_outline(rect: Rect2, color: Color, width: float) -> void:
 	draw_line(bl, tl, color, width)
 
 func _draw_text_tag(text: String, at: Vector2, color: Color) -> void:
+	if not _label_detail:
+		return
 	var font := ThemeDB.fallback_font
 	if font == null:
 		return
