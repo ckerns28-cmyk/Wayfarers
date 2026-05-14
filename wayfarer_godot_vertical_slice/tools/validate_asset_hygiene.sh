@@ -51,6 +51,8 @@ check_no_tracked ':(glob)**/.godot/**' ".godot cache files"
 check_no_tracked ':(glob)**/web_build/**' "web_build export files"
 check_no_tracked ':(glob)**/artifacts/**' "generated artifacts"
 check_no_tracked ':(glob)**/*.zip' "generated ZIP files"
+check_no_tracked ':(glob)**/._*' "nested AppleDouble sidecars"
+check_no_tracked ':(glob)._*' "root AppleDouble sidecars"
 
 if grep -Fq '! -name "._*"' "$PROJECT_ROOT/tools/package_itch_web.sh"; then
     pass "package script excludes AppleDouble sidecars"
