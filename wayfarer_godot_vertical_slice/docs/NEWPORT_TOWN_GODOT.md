@@ -320,8 +320,8 @@ Asset audit by role:
   integrated; `newport_market_frontage_row` deferred as a duplicate frontage
   variant.
 - Counting house / administrative office: `newport_counting_house_civic_exchange`
-  integrated; `newport_formal_townhouse_block_a` is available but deferred for
-  a later row-house or residential-block purpose.
+  integrated; `newport_formal_townhouse_block_a` is integrated as the brick
+  clerk rowhouse beside the mercantile.
 - Chandlery / rope / sail shop: `newport_chandlery_outfitter_front`
   integrated; `newport_chandlery_cottage` deferred.
 - Warehouse: `newport_dockside_storehouse_long` and
@@ -559,7 +559,7 @@ Debug overlay meaning:
 
 Planned G-4.13B rowhouse/townhouse infill slots:
 
-- `slot_tavern_mercantile_narrow_rowhouse`
+- `slot_tavern_mercantile_brick_rowhouse`
 - `slot_counting_chandlery_lane_edge_shop`
 - `slot_shop_market_townhouse_pair`
 - `slot_cottage_customs_inland_townhouse`
@@ -645,12 +645,11 @@ Asset audit:
 - `newport_narrow_merchant_townhouse_a`: activated as a narrow
   shop-house/rowhouse for `b_printer_rowhouse`, now seated on the east market
   street edge after the shop-house gap proved too tight.
-- `newport_narrow_clapboard_townhouse_b`: activated as the
-  `b_clerk_townhouse` asset between the tavern and mercantile, preserving a
-  complete narrow-building read instead of shrinking the full three-bay formal
-  block or slicing one bay out of it.
-- `newport_formal_townhouse_block_a`: retained as available deferred art for a
-  larger formal residential row.
+- `newport_formal_townhouse_block_a`: activated as the `b_clerk_townhouse`
+  brick rowhouse between the tavern and mercantile, restored after QA clarified
+  the desired asset and placement.
+- `newport_narrow_clapboard_townhouse_b`: available deferred art for later
+  residential infill, but not used for the clerk rowhouse slot.
 - `newport_formal_townhouse_single_bay`: rejected after QA because the crop
   reads like a cut facade column rather than a whole townhouse.
 - `newport_waterfront_shop_house`: activated as the four-unit clapboard
@@ -660,10 +659,9 @@ Asset audit:
 
 Infill slots used:
 
-- `slot_tavern_mercantile_narrow_rowhouse`: active with `b_clerk_townhouse`
-  as a complete narrow clapboard townhouse, keeping visible daylight from both
-  neighbors without miniaturizing the three-bay source block or showing a
-  sliced facade bay.
+- `slot_tavern_mercantile_brick_rowhouse`: active with `b_clerk_townhouse`
+  as the full brick formal townhouse block, seated directly against the
+  mercantile without cropping or overlapping the sprite.
 - `slot_support_lane_boarding_gap`: active with `b_dockworker_rowhouse`,
   seated as a four-unit lane-front rowhouse beside the boarding-house block
   while keeping the east support-lane return readable.
@@ -716,6 +714,17 @@ G-4.13B.5 street-wall tight seam fix:
 - Repacked the harborfront row and support-lane row so the clerk, mercantile,
   counting house, chandlery, shop, market, printer, and dockworker rowhouse
   read as continuous street frontage instead of freestanding buildings.
+
+G-4.13B.6 brick clerk rowhouse placement fix:
+
+- Build label: Godot G-4.13B.6 Brick Clerk Rowhouse Placement Fix.
+- Restores the full brick formal townhouse block for `b_clerk_townhouse`;
+  the clapboard townhouse is no longer used for this slot.
+- Repacked the tavern, brick clerk rowhouse, and mercantile so the brick rowhouse
+  sits directly against the mercantile without being cropped or overlapped.
+- Adds validation guards that require the brick block asset, the uncut source
+  region, full rowhouse scale, and a tight non-overlapping clerk-to-mercantile
+  seam.
 
 Routes revalidated:
 

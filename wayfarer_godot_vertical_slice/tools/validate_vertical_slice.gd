@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.5", "build_phase_g_4_13b_5")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.5 Street-Wall Tight Seam Fix", "build_label_g_4_13b_5")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.6", "build_phase_g_4_13b_6")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.6 Brick Clerk Rowhouse Placement Fix", "build_label_g_4_13b_6")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -179,10 +179,11 @@ func _validate_starter_harbor_plan() -> void:
 			_expect(not tags.is_empty(), String(config["id"]) + "_has_district_placement_tags")
 			if String(config["id"]) == "b_clerk_townhouse":
 				var clerk_visual: Rect2 = definition.get("visual_bounds", Rect2())
-				_expect(definition.get("sprite_id", "") == "newport_narrow_clapboard_townhouse_b", "clerk_townhouse_uses_complete_narrow_asset")
-				_expect(clerk_visual.size.y >= clerk_visual.size.x * 1.2, "clerk_townhouse_not_squat_miniature")
-				_expect(clerk_visual.size.y <= clerk_visual.size.x * 1.8, "clerk_townhouse_not_sliced_column")
-				_expect(float(definition.get("visual_scale", 0.0)) >= 96.0, "clerk_townhouse_not_under_scaled")
+				var clerk_region: Rect2 = definition.get("sprite_region", Rect2())
+				_expect(definition.get("sprite_id", "") == "newport_formal_townhouse_block_a", "clerk_townhouse_uses_brick_rowhouse_asset")
+				_expect(clerk_region.size.x >= 360.0 and clerk_region.size.y >= 330.0, "clerk_townhouse_uses_uncut_brick_block_region")
+				_expect(clerk_visual.size.x >= 180.0 and clerk_visual.size.y >= 160.0, "clerk_townhouse_not_under_scaled_or_cropped")
+				_expect(float(definition.get("visual_scale", 0.0)) >= 180.0, "clerk_townhouse_full_rowhouse_scale")
 
 	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
 	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "dedicated crate/barrel/rope prop sprites", "sign variants", "fencing variants", "lantern variants", "chapel/church decision and final art if needed"]:
@@ -246,9 +247,13 @@ func _validate_visual_composition_spacing() -> void:
 	var clerk := _building_by_name("b_clerk_townhouse")
 	if clerk:
 		var clerk_rect := _building_visual_world_rect(clerk)
-		_expect(clerk_rect.size.y >= 130.0, "clerk_townhouse_world_height_not_miniature")
-		_expect(clerk_rect.size.y >= clerk_rect.size.x * 1.2, "clerk_townhouse_world_not_squat")
-		_expect(clerk_rect.size.y <= clerk_rect.size.x * 1.8, "clerk_townhouse_world_not_sliced_column")
+		_expect(clerk_rect.size.x >= 180.0 and clerk_rect.size.y >= 160.0, "clerk_townhouse_world_full_brick_block")
+		var mercantile := _building_by_name("b_mercantile")
+		if mercantile:
+			var mercantile_rect := _building_visual_world_rect(mercantile)
+			var clerk_to_mercantile_gap := mercantile_rect.position.x - clerk_rect.end.x
+			_expect(clerk_to_mercantile_gap >= 0.0, "clerk_townhouse_not_cut_off_by_mercantile")
+			_expect(clerk_to_mercantile_gap <= 3.0, "clerk_townhouse_sits_against_mercantile")
 
 func _validate_visual_sequence_has_tight_seams(label: String, ids: Array, min_gap: float, max_gap: float) -> void:
 	var entries: Array = []
@@ -415,7 +420,7 @@ func _validate_building_walkability_gate() -> void:
 		"harborfront_rear_commercial_row": Vector2(892.0, 526.0),
 		"west_commercial_cross_lane": Vector2(392.0, 520.0),
 		"central_inland_cross_lane": Vector2(672.0, 430.0),
-		"central_front_cross_lane": Vector2(668.0, 592.0),
+		"central_front_cross_lane": Vector2(752.0, 604.0),
 		"east_commercial_cross_lane": Vector2(1100.0, 520.0),
 		"dock_layer_walk": Vector2(824.0, 710.0),
 		"clerk_rowhouse_front_walk": Vector2(420.0, 604.0),

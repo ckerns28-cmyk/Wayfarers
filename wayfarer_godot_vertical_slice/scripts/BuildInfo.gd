@@ -1,8 +1,8 @@
 extends RefCounted
 class_name BuildInfo
 
-const BUILD_PHASE := "G-4.13B.5"
-const BUILD_LABEL := "Godot G-4.13B.5 Street-Wall Tight Seam Fix"
+const BUILD_PHASE := "G-4.13B.6"
+const BUILD_LABEL := "Godot G-4.13B.6 Brick Clerk Rowhouse Placement Fix"
 const REVIEW_HOST := "itch"
 const REVIEW_CHANNEL := "manual ZIP"
 const SOURCE_BRANCH := "codex/g-4-13b-rowhouse-townhouse-infill-density"
