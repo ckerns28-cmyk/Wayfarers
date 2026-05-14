@@ -1,6 +1,8 @@
 extends Node2D
 class_name WayfarerBuilding
 
+const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
+
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var body_collision: CollisionShape2D = $Body/CollisionShape2D
 @onready var interaction_collision: CollisionShape2D = $InteractionArea/CollisionShape2D
@@ -108,13 +110,18 @@ func configure(config: Dictionary) -> void:
 	_y_sort_point = config.get("y_sort_offset", Vector2.ZERO)
 	y_sort_anchor.position = _y_sort_point
 	debug_overlay.refresh()
+	set_debug_overlay(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT)
 	queue_redraw()
 
 func get_foot_anchor() -> Vector2:
 	return global_position
 
 func set_debug_overlay(enabled: bool) -> void:
-	debug_overlay.visible = enabled
+	var effective_enabled := enabled and BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED
+	if debug_overlay.has_method("set_debug_enabled"):
+		debug_overlay.set_debug_enabled(effective_enabled)
+	else:
+		debug_overlay.visible = effective_enabled
 
 func get_interaction_label() -> String:
 	if not interaction_label.is_empty():

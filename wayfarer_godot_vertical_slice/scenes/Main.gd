@@ -22,8 +22,8 @@ const GAMEPLAY_KEYCODES := [
 @onready var hud: CanvasLayer = $HUD
 
 var _atlas_cache: Dictionary = {}
-var _debug_overlay_enabled := BUILD_INFO.DEBUG_OVERLAYS_DEFAULT
-var _seating_debug_enabled := BUILD_INFO.DEBUG_OVERLAYS_DEFAULT
+var _debug_overlay_enabled := false
+var _seating_debug_enabled := false
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -36,8 +36,8 @@ func _ready() -> void:
 	elif edrin:
 		edrin.global_position = NEWPORT_TOWN.EDRIN_SPAWN
 	_place_buildings()
-	_set_debug_overlay(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT)
-	_set_building_seating_overlay(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT)
+	_set_debug_overlay(false)
+	_set_building_seating_overlay(false)
 	player.dialogue_triggered.connect(hud.show_dialogue)
 
 func _input(event: InputEvent) -> void:
@@ -77,21 +77,23 @@ func set_building_seating_overlay(enabled: bool) -> void:
 	_set_building_seating_overlay(enabled)
 
 func _set_debug_overlay(enabled: bool) -> void:
-	_debug_overlay_enabled = enabled
+	var effective_enabled := enabled and BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED
+	_debug_overlay_enabled = effective_enabled
 	for raw_building in get_tree().get_nodes_in_group("buildings"):
 		var building := raw_building as Node2D
 		if building and building.has_method("set_debug_overlay"):
-			building.set_debug_overlay(enabled)
-	_set_collision_debug_overlay(enabled)
+			building.set_debug_overlay(effective_enabled)
+	_set_collision_debug_overlay(effective_enabled)
 
 func _set_building_seating_overlay(enabled: bool) -> void:
-	_seating_debug_enabled = enabled
+	var effective_enabled := enabled and BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED
+	_seating_debug_enabled = effective_enabled
 	for raw_building in get_tree().get_nodes_in_group("buildings"):
 		var building := raw_building as Node2D
 		if building and building.has_method("set_debug_overlay"):
-			var show_overlay: bool = enabled and (NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN or (building.has_method("is_proof_street_building") and building.is_proof_street_building()))
+			var show_overlay: bool = effective_enabled and (NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN or (building.has_method("is_proof_street_building") and building.is_proof_street_building()))
 			building.set_debug_overlay(show_overlay)
-	_set_collision_debug_overlay(enabled and NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN)
+	_set_collision_debug_overlay(effective_enabled and NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN)
 
 func _set_collision_debug_overlay(enabled: bool) -> void:
 	var collision_layer := world.get_node_or_null("TownMap/CollisionNavigationLayer")
