@@ -9,7 +9,7 @@ const WORLD_LIMIT_RIGHT := 1600
 const WORLD_LIMIT_BOTTOM := 1024
 
 @export var speed := 185.0
-@export var interaction_radius := 86.0
+@export var interaction_radius := 44.0
 
 @onready var camera: Camera2D = $Camera2D
 @onready var prompt_label: Label = $PromptLabel
@@ -24,6 +24,13 @@ func _ready() -> void:
 	prompt_label.z_as_relative = false
 	prompt_label.z_index = 100
 	prompt_label.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	prompt_label.offset_left = -92.0
+	prompt_label.offset_top = -50.0
+	prompt_label.offset_right = 92.0
+	prompt_label.offset_bottom = -28.0
+	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	prompt_label.clip_text = false
+	prompt_label.add_theme_font_size_override("font_size", 15)
 	queue_redraw()
 
 func _physics_process(_delta: float) -> void:
@@ -102,19 +109,27 @@ func _movement_axis() -> Vector2:
 
 func _update_interaction_target() -> void:
 	var nearest: Node = null
-	var nearest_dist := interaction_radius
+	var nearest_dist := 1.0e20
 	for candidate in get_tree().get_nodes_in_group("interactable"):
 		if not candidate is Node2D:
 			continue
-		var dist := global_position.distance_to(_candidate_interaction_position(candidate as Node2D))
-		if dist < nearest_dist:
+		var candidate_node := candidate as Node2D
+		var dist := global_position.distance_to(_candidate_interaction_position(candidate_node))
+		var is_in_zone := dist <= interaction_radius
+		if candidate_node.has_method("is_player_in_interaction_area"):
+			is_in_zone = bool(candidate_node.call("is_player_in_interaction_area", global_position))
+		if is_in_zone and dist < nearest_dist:
 			nearest = candidate
 			nearest_dist = dist
 
 	_current_target = nearest
 	prompt_label.visible = _current_target != null
-	if _current_target and _current_target.has_method("get_interaction_label"):
+	if _current_target and _current_target.has_method("get_prompt_text"):
+		prompt_label.text = _current_target.call("get_prompt_text")
+	elif _current_target and _current_target.has_method("get_interaction_label"):
 		prompt_label.text = _current_target.get_interaction_label()
+	else:
+		prompt_label.text = ""
 
 func _candidate_interaction_position(candidate: Node2D) -> Vector2:
 	if candidate.has_method("get_interaction_position"):

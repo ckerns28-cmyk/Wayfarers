@@ -8,6 +8,8 @@ const COLLISION_FILL := Color(1.0, 0.35, 0.35, 0.22)
 const COLLISION_OUTLINE := Color(1.0, 0.20, 0.20, 0.95)
 const INTERACTION_FILL := Color(0.35, 0.85, 1.0, 0.25)
 const INTERACTION_OUTLINE := Color(0.25, 0.70, 1.0, 0.95)
+const GROUND_CONTACT_FILL := Color(0.25, 1.0, 0.45, 0.16)
+const GROUND_CONTACT_OUTLINE := Color(0.25, 1.0, 0.45, 0.85)
 const ANCHOR_COLOR := Color(0.10, 1.0, 0.45, 1.0)
 const DOOR_COLOR := Color(1.0, 0.85, 0.30, 1.0)
 const FRONTAGE_COLOR := Color(0.15, 0.85, 1.0, 1.0)
@@ -15,6 +17,7 @@ const YSORT_COLOR := Color(1.0, 0.35, 1.0, 1.0)
 const LABEL_COLOR := Color(1, 1, 1, 0.95)
 
 var _debug_enabled := false
+var _label_detail := true
 
 func _ready() -> void:
 	z_index = 100
@@ -27,6 +30,10 @@ func refresh() -> void:
 func set_debug_enabled(enabled: bool) -> void:
 	_debug_enabled = enabled
 	visible = enabled
+	queue_redraw()
+
+func set_label_detail(enabled: bool) -> void:
+	_label_detail = enabled
 	queue_redraw()
 
 func _draw() -> void:
@@ -60,6 +67,13 @@ func _draw() -> void:
 			_draw_rect_outline(lot_rect, LOT_OUTLINE, 1.2)
 			_draw_text_tag("lot_bounds", lot_rect.position + Vector2(4.0, 14.0), LOT_OUTLINE)
 
+	if building.has_method("get_ground_contact_rect"):
+		var ground_rect: Rect2 = building.get_ground_contact_rect()
+		if ground_rect.size.x > 0.0 and ground_rect.size.y > 0.0:
+			draw_rect(ground_rect, GROUND_CONTACT_FILL, true)
+			_draw_rect_outline(ground_rect, GROUND_CONTACT_OUTLINE, 1.6)
+			_draw_text_tag("ground_contact", ground_rect.position + Vector2(4.0, -3.0), GROUND_CONTACT_OUTLINE)
+
 	var body_collision := building.get_node_or_null("Body/CollisionShape2D") as CollisionShape2D
 	if body_collision and body_collision.shape is RectangleShape2D:
 		var rect_shape := body_collision.shape as RectangleShape2D
@@ -89,6 +103,8 @@ func _draw() -> void:
 	var door_marker := building.get_node_or_null("DoorMarker") as Marker2D
 	if door_marker:
 		draw_circle(door_marker.position, 4.0, DOOR_COLOR)
+		_draw_cross(door_marker.position, 6.0, DOOR_COLOR, 1.4)
+		_draw_text_tag("door_anchor", door_marker.position + Vector2(8.0, -8.0), DOOR_COLOR)
 
 	var frontage_marker := building.get_node_or_null("FrontageMarker") as Marker2D
 	if frontage_marker:
@@ -103,12 +119,21 @@ func _draw() -> void:
 
 	var label := ""
 	if building is Node:
-		label = String(building.name)
+		var building_id := String(building.get("building_id"))
+		var display_name := String(building.get("display_name"))
+		if building_id.is_empty():
+			building_id = String(building.name)
+		label = building_id
+		if not display_name.is_empty():
+			label += " / " + display_name
 	if label != "":
 		var font := ThemeDB.fallback_font
 		if font:
-			draw_string(font, Vector2(-58, -8), label, HORIZONTAL_ALIGNMENT_LEFT,
-				-1, 12, LABEL_COLOR)
+			var label_text := label if _label_detail else label.split(" / ")[0]
+			var label_size := 12 if _label_detail else 9
+			var label_pos := Vector2(-72, -10) if _label_detail else Vector2(-42, 11)
+			draw_string(font, label_pos, label_text, HORIZONTAL_ALIGNMENT_LEFT,
+				-1, label_size, LABEL_COLOR)
 
 func _draw_rect_outline(rect: Rect2, color: Color, width: float) -> void:
 	var tl := rect.position
@@ -121,6 +146,8 @@ func _draw_rect_outline(rect: Rect2, color: Color, width: float) -> void:
 	draw_line(bl, tl, color, width)
 
 func _draw_text_tag(text: String, at: Vector2, color: Color) -> void:
+	if not _label_detail:
+		return
 	var font := ThemeDB.fallback_font
 	if font == null:
 		return

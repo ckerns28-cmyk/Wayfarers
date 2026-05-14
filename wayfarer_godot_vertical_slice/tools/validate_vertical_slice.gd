@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.14A", "build_phase_g_4_14a")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.14A Building Entity Contract", "build_label_g_4_14a")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.15", "build_phase_g_4_15")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.15 Village Layout Using Object Rules", "build_label_g_4_15")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -90,9 +90,10 @@ func _validate_scene(main: Node) -> void:
 			_validate_detail_blockers(collision_layer)
 
 	_validate_buildings()
-	_validate_building_entity_contract(player)
+	_validate_building_entity_contract(player, hud)
 	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
+	_validate_g415_layout_rules()
 	_validate_proof_street(main)
 	_validate_visual_composition_spacing()
 	_validate_lived_in_details()
@@ -146,7 +147,7 @@ func _validate_buildings() -> void:
 	for district_id in expected_districts:
 		_expect(district_counts.get(district_id, 0) > 0, "district_has_building_" + district_id)
 
-func _validate_building_entity_contract(player: Node) -> void:
+func _validate_building_entity_contract(player: Node, hud: CanvasLayer) -> void:
 	var public_runtime_count := 0
 	var interactable_names := {}
 	for raw_interactable in get_nodes_in_group("interactable"):
@@ -168,7 +169,7 @@ func _validate_building_entity_contract(player: Node) -> void:
 		if runtime_building == null:
 			continue
 
-		for method in ["get_interaction_label", "get_interaction_position", "interact", "can_player_enter"]:
+		for method in ["get_interaction_label", "get_interaction_position", "get_prompt_text", "is_player_in_interaction_area", "interact", "can_player_enter", "get_door_anchor_local", "get_ground_contact_rect", "get_y_sort_anchor_local", "set_debug_label_detail"]:
 			_expect(runtime_building.has_method(method), id + "_entity_method_" + method)
 
 		if bool(definition.get("is_enterable", false)) or bool(definition.get("interaction_enabled", false)):
@@ -178,6 +179,15 @@ func _validate_building_entity_contract(player: Node) -> void:
 			var door_marker := runtime_building.get_node_or_null("DoorMarker") as Marker2D
 			var interaction_position: Vector2 = runtime_building.get_interaction_position()
 			_expect(door_marker != null and interaction_position.distance_to(door_marker.global_position) <= 1.0, id + "_entity_interaction_position_uses_door")
+			if door_marker and runtime_building.has_method("get_door_anchor_local"):
+				var door_anchor_local: Vector2 = runtime_building.get_door_anchor_local()
+				_expect(door_anchor_local.distance_to(door_marker.position) <= 1.0, id + "_entity_door_anchor_matches_marker")
+			if runtime_building.has_method("is_player_in_interaction_area"):
+				_expect(bool(runtime_building.call("is_player_in_interaction_area", interaction_position)), id + "_entity_door_anchor_inside_interaction_area")
+				_expect(not bool(runtime_building.call("is_player_in_interaction_area", interaction_position + Vector2(0.0, 72.0))), id + "_entity_interaction_not_middle_of_street")
+			if runtime_building.has_method("get_ground_contact_rect"):
+				var ground_contact: Rect2 = runtime_building.get_ground_contact_rect()
+				_expect(ground_contact.size.x > 0.0 and ground_contact.size.y > 0.0 and absf(ground_contact.get_center().y) <= 4.0, id + "_entity_ground_contact_at_base")
 
 		if G414A_PUBLIC_BUILDING_IDS.has(id):
 			public_runtime_count += 1
@@ -194,9 +204,29 @@ func _validate_building_entity_contract(player: Node) -> void:
 				_expect(private_message.find("private") >= 0 or private_message.find("future ownership") >= 0, id + "_private_building_stub_message")
 
 	_expect(public_runtime_count >= 5, "g414a_public_door_stub_count")
+	_validate_g414b_minimum_conversion_scope()
 	if player:
 		_expect(player.has_signal("dialogue_triggered"), "player_dialogue_signal_for_building_interaction")
 		_validate_player_uses_building_door_target(player)
+		if hud and player is Node2D:
+			_validate_player_interaction_message(player as Node2D, hud, "b_counting_house", "Counting House", "G-4.15", "player_public_counting_house_hud_stub")
+			_validate_player_interaction_message(player as Node2D, hud, "b_res_small", "Harbor Cottage", "private", "player_private_harbor_cottage_hud_stub")
+
+func _validate_g414b_minimum_conversion_scope() -> void:
+	var scoped_buildings := {
+		"b_counting_house": "civic",
+		"b_large_residence": "large_residence",
+		"b_mercantile": "shopfront",
+		"b_dock_storehouse": "warehouse",
+	}
+	for id in scoped_buildings.keys():
+		var building := _building_by_name(id)
+		_expect(building != null, "g414b_scope_" + id + "_present")
+		if building == null:
+			continue
+		_expect(building.has_method("uses_normalized_definition") and building.uses_normalized_definition(), "g414b_scope_" + id + "_normalized_entity")
+		_expect(building.has_method("has_seating_metadata") and building.has_seating_metadata(), "g414b_scope_" + id + "_grounding_metadata")
+		_expect(building.get_node_or_null("DebugOverlay") != null, "g414b_scope_" + id + "_debug_overlay")
 
 func _validate_player_uses_building_door_target(player: Node) -> void:
 	var mercantile := _building_by_name("b_mercantile")
@@ -218,13 +248,52 @@ func _validate_player_uses_building_door_target(player: Node) -> void:
 	var prompt_label := player.get_node_or_null("PromptLabel") as Label
 	_expect(prompt_label != null and prompt_label.visible, "player_door_targeting_prompt_visible")
 	if prompt_label:
-		_expect(prompt_label.text == "Press E to enter Harbor Mercantile", "player_door_targeting_prompt_uses_building_label")
+		_expect(prompt_label.text.find("Harbor Mercantile") >= 0, "player_door_targeting_prompt_identifies_building")
+		_expect(prompt_label.text.length() <= 28, "player_door_targeting_prompt_less_intrusive")
+		_expect(prompt_label.get_theme_font_size("font_size") <= 16, "player_door_targeting_prompt_font_smaller")
+		_expect((prompt_label.offset_right - prompt_label.offset_left) <= 200.0, "player_door_targeting_prompt_width_controlled")
 	if mercantile.has_method("interact"):
 		_expect(String(mercantile.interact()) == "Harbor Mercantile will be enterable in G-4.15.", "player_door_targeting_interact_stub")
+	player_node.global_position = mercantile.get_interaction_position() + Vector2(0.0, 72.0)
+	if player.has_method("_update_interaction_target"):
+		player.call("_update_interaction_target")
+	if prompt_label:
+		_expect(not prompt_label.visible, "player_door_targeting_no_prompt_from_street")
 	player_node.global_position = original_position
 
+func _validate_player_interaction_message(player: Node2D, hud: CanvasLayer, building_id: String, expected_prompt_fragment: String, expected_message_fragment: String, label: String) -> void:
+	var building := _building_by_name(building_id)
+	if building == null or not building.has_method("get_interaction_position"):
+		failures.append(label + "_building_missing")
+		return
+
+	var prompt_label := player.get_node_or_null("PromptLabel") as Label
+	var dialogue_label := hud.get_node_or_null("DialoguePanel/MarginContainer/DialogueLabel") as Label
+	var dialogue_panel := hud.get_node_or_null("DialoguePanel") as PanelContainer
+	var original_position := player.global_position
+
+	if dialogue_label:
+		dialogue_label.text = ""
+	if dialogue_panel:
+		dialogue_panel.visible = false
+
+	player.global_position = building.get_interaction_position()
+	if player.has_method("_update_interaction_target"):
+		player.call("_update_interaction_target")
+	_expect(prompt_label != null and prompt_label.visible, label + "_prompt_visible")
+	if prompt_label:
+		_expect(prompt_label.text.find(expected_prompt_fragment) >= 0, label + "_prompt_identifies_building")
+
+	if building.has_method("interact") and player.has_signal("dialogue_triggered"):
+		player.emit_signal("dialogue_triggered", building.interact())
+
+	var message := String(dialogue_label.text) if dialogue_label else ""
+	_expect(dialogue_panel != null and dialogue_panel.visible, label + "_dialogue_panel_visible")
+	_expect(message.find(expected_message_fragment) >= 0, label + "_dialogue_message")
+	player.global_position = original_position
+
 func _validate_building_definition_entity_metadata(id: String, definition: Dictionary) -> void:
-	for key in ["building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_label", "locked_message", "unavailable_message", "collision_footprint", "interaction_zone", "projection_details"]:
+	for key in ["building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_label", "locked_message", "unavailable_message", "collision_footprint", "interaction_zone", "door_anchor", "ground_contact_rect", "y_sort_anchor", "projection_details"]:
 		_expect(definition.has(key), id + "_entity_definition_has_" + key)
 	_expect(definition.has("door_offset") or definition.has("frontage_offset"), id + "_entity_definition_has_door_or_frontage_offset")
 
@@ -236,6 +305,8 @@ func _validate_building_definition_entity_metadata(id: String, definition: Dicti
 	_expect(interior_scene.begins_with("res://scenes/interiors/") and interior_scene.ends_with("_stub.tscn"), id + "_entity_interior_stub_path")
 	_expect((definition.get("collision_footprint", Rect2()) as Rect2).size.x > 0.0, id + "_entity_collision_footprint_present")
 	_expect((definition.get("interaction_zone", Rect2()) as Rect2).size.x > 0.0, id + "_entity_interaction_zone_present")
+	var interaction_zone: Rect2 = definition.get("interaction_zone", Rect2())
+	_expect(interaction_zone.size.x <= 64.0 and interaction_zone.size.y <= 36.0, id + "_entity_interaction_zone_tight_to_door")
 	_expect(not String(definition.get("interaction_label", "")).is_empty(), id + "_entity_interaction_label_present")
 
 	if G414A_PUBLIC_BUILDING_IDS.has(id):
@@ -323,7 +394,7 @@ func _validate_starter_harbor_plan() -> void:
 		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")
 		if config.has("definition_id"):
 			var definition := BUILDING_CATALOG.building_definition(String(config["definition_id"]))
-			for key in ["building_id", "display_name", "role", "building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_enabled", "interaction_label", "locked_message", "unavailable_message", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "visual_bounds", "lot_bounds", "collision_footprint", "interaction_zone", "foot_anchor", "visual_base_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "frontage_offset", "door_offset", "shadow_size", "projection_details", "district_role", "district_placement_tags", "notes"]:
+			for key in ["building_id", "display_name", "role", "building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_enabled", "interaction_label", "locked_message", "unavailable_message", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "visual_bounds", "lot_bounds", "collision_footprint", "interaction_zone", "foot_anchor", "visual_base_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "frontage_offset", "door_offset", "door_anchor", "ground_contact_rect", "y_sort_anchor", "shadow_size", "projection_details", "district_role", "district_placement_tags", "notes"]:
 				_expect(definition.has(key), String(config["id"]) + "_definition_has_" + key)
 			var texture_path: String = definition.get("texture_path", "")
 			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
@@ -353,6 +424,9 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("composition_pass", "") == "G-4.13B.1", "starter_plan_composition_pass_g_4_13b_1")
 	_expect(plan.get("footprint_pass", "") == "G-4.13A", "starter_plan_footprint_pass_g_4_13a")
 	_expect(plan.get("density_pass", "") == "G-4.13B", "starter_plan_density_pass_g_4_13b")
+	_expect(plan.get("layout_rules_pass", "") == "G-4.15", "starter_plan_layout_rules_pass_g_4_15")
+	_expect(int(plan.get("layout_rule_count", 0)) == NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size(), "starter_plan_g415_layout_rule_count")
+	_expect(float(plan.get("visual_acceptance_score_target", 0.0)) >= 8.5, "starter_plan_g415_visual_acceptance_target")
 	_expect(int(plan.get("active_g413b_infill_count", 0)) >= 3, "starter_plan_active_g413b_infill_count")
 	var plan_active_infill: Array = plan.get("active_g413b_infill_buildings", [])
 	for building_id in NEWPORT_TOWN.G413B_ACTIVE_INFILL_BUILDING_IDS:
@@ -382,11 +456,55 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(NEWPORT_TOWN.route_debug_probes().size() >= 13, "g413b_route_debug_probe_count")
 	_expect(BUILDING_CATALOG.available_building_assets().size() >= 20, "asset_audit_catalog_populated")
 
+func _validate_g415_layout_rules() -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+
+	var rules: Dictionary = NEWPORT_TOWN.g415_layout_rules()
+	_expect(rules.size() == NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size(), "g415_layout_rule_count_matches_buildings")
+
+	var configs_by_id := {}
+	for config in NEWPORT_TOWN.building_specs():
+		configs_by_id[String(config.get("id", ""))] = config
+
+	for building_id in NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS:
+		var id := String(building_id)
+		_expect(rules.has(id), "g415_layout_rule_present_" + id)
+		if not rules.has(id):
+			continue
+		var rule: Dictionary = rules[id]
+		for key in ["parcel_id", "district_band", "frontage_line_y", "setback_from_road", "side_gap_minimum", "door_path_target", "prop_band", "ground_pad", "lot_type"]:
+			_expect(rule.has(key), "g415_layout_rule_" + id + "_has_" + key)
+
+		var ground_pad: Dictionary = rule.get("ground_pad", {})
+		var ground_rect: Rect2 = ground_pad.get("rect", Rect2())
+		var prop_band: Rect2 = rule.get("prop_band", Rect2())
+		var door_path_target: Vector2 = rule.get("door_path_target", Vector2.ZERO)
+		_expect(not String(rule.get("parcel_id", "")).is_empty(), "g415_layout_rule_" + id + "_parcel_id_named")
+		_expect(["commercial", "market", "civic", "residential", "support", "dock"].has(String(rule.get("district_band", ""))), "g415_layout_rule_" + id + "_district_band_known")
+		_expect(float(rule.get("frontage_line_y", 0.0)) > 0.0, "g415_layout_rule_" + id + "_frontage_line_y_authored")
+		_expect(float(rule.get("setback_from_road", 0.0)) >= 0.0, "g415_layout_rule_" + id + "_setback_authored")
+		_expect(float(rule.get("side_gap_minimum", 0.0)) >= 0.0, "g415_layout_rule_" + id + "_side_gap_authored")
+		_expect(door_path_target.x > 0.0 and door_path_target.y > 0.0, "g415_layout_rule_" + id + "_door_path_target_authored")
+		_expect(prop_band.size.x > 0.0 and prop_band.size.y > 0.0, "g415_layout_rule_" + id + "_prop_band_authored")
+		_expect(ground_rect.size.x > 0.0 and ground_rect.size.y > 0.0, "g415_layout_rule_" + id + "_ground_pad_authored")
+		_expect(not String(ground_pad.get("type", "")).is_empty(), "g415_layout_rule_" + id + "_ground_pad_type")
+
+		var config: Dictionary = configs_by_id.get(id, {})
+		for key in ["parcel_id", "district_band", "frontage_line_y", "setback_from_road", "side_gap_minimum", "door_path_target", "prop_band", "ground_pad", "lot_type", "layout_rule"]:
+			_expect(config.has(key), "g415_building_spec_" + id + "_carries_" + key)
+
+	var rubric: Dictionary = NEWPORT_TOWN.g415_visual_qa_rubric()
+	var target := float(rubric.get("target_score", 0.0))
+	_expect(target >= 8.5, "g415_visual_target_8_5")
+	for key in ["building_grounding", "readable_doors", "believable_spacing", "prop_purposefulness", "walkable_roads", "harbor_identity", "depth_y_sort_believability", "screenshot_beauty", "not_pasted_feel"]:
+		_expect(float(rubric.get(key, 0.0)) >= target, "g415_visual_rubric_" + key + "_meets_target")
+
 func _validate_visual_composition_spacing() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
 		return
 
-	_validate_visual_sequence_has_tight_seams("harborfront_street_wall", [
+	_validate_visual_sequence_has_tight_seams("harborfront_parceled_street_wall", [
 		"b_inn_tavern",
 		"b_clerk_townhouse",
 		"b_mercantile",
@@ -395,7 +513,7 @@ func _validate_visual_composition_spacing() -> void:
 		"b_shop_house",
 		"b_market_shed",
 		"b_printer_rowhouse",
-	], 0.0, 16.0)
+	], 0.0, 32.0)
 	_validate_harborfront_visual_bottom_datum()
 	_validate_harborfront_parcel_rhythm()
 	_validate_review_bounds_track_art_body("harborfront_street_wall", [
@@ -431,14 +549,17 @@ func _validate_visual_composition_spacing() -> void:
 func _validate_harborfront_parcel_rhythm() -> void:
 	var chandlery_to_shop_gap := _visual_gap_between("b_chandlery_front", "b_shop_house")
 	var shop_to_market_gap := _visual_gap_between("b_shop_house", "b_market_shed")
-	_expect(chandlery_to_shop_gap >= 7.0 and chandlery_to_shop_gap <= 14.0, "shop_house_has_chandlery_service_slit")
-	_expect(shop_to_market_gap >= 10.0 and shop_to_market_gap <= 18.0, "shop_house_has_market_breathing_room")
+	var market_to_printer_gap := _visual_gap_between("b_market_shed", "b_printer_rowhouse")
+	_expect(chandlery_to_shop_gap >= 10.0 and chandlery_to_shop_gap <= 18.0, "g415_shop_house_has_chandlery_service_slit")
+	_expect(shop_to_market_gap >= 18.0 and shop_to_market_gap <= 32.0, "g415_shop_house_has_market_breathing_room")
+	_expect(market_to_printer_gap >= 10.0 and market_to_printer_gap <= 26.0, "g415_market_to_printer_has_east_gutter")
 
 	var chandlery := _building_by_name("b_chandlery_front")
 	var shop := _building_by_name("b_shop_house")
 	var market := _building_by_name("b_market_shed")
-	if chandlery and shop and market:
-		_expect(chandlery.global_position.x < shop.global_position.x and shop.global_position.x < market.global_position.x, "shop_house_parcel_order_between_chandlery_and_market")
+	var printer := _building_by_name("b_printer_rowhouse")
+	if chandlery and shop and market and printer:
+		_expect(chandlery.global_position.x < shop.global_position.x and shop.global_position.x < market.global_position.x and market.global_position.x < printer.global_position.x, "g415_parcel_order_chandlery_shop_market_printer")
 
 func _validate_harborfront_visual_bottom_datum() -> void:
 	var street_bottom_y := NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * float(NEWPORT_TOWN.TILE)
@@ -608,6 +729,8 @@ func _validate_proof_street(main: Node) -> void:
 
 	if main.has_method("set_building_seating_overlay"):
 		main.set_building_seating_overlay(true)
+		var collision_layer := main.get_node_or_null("World/TownMap/CollisionNavigationLayer")
+		_expect(collision_layer == null or collision_layer.get("_debug_overlay_enabled") == false, "g415_building_seating_overlay_keeps_route_collision_labels_off")
 		for raw_building in get_nodes_in_group("buildings"):
 			var building := raw_building as Node2D
 			if building == null:
@@ -619,9 +742,25 @@ func _validate_proof_street(main: Node) -> void:
 			if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
 				is_proof = true
 			_expect(overlay.visible == is_proof, building.name + "_seating_debug_toggle_scope")
+			if is_proof:
+				_expect(overlay.get("_label_detail") == false, building.name + "_seating_debug_uses_compact_labels")
 		main.set_building_seating_overlay(false)
 	else:
 		failures.append("main_set_building_seating_overlay_method")
+
+	if main.has_method("set_debug_overlay"):
+		main.set_debug_overlay(true)
+		for raw_building in get_nodes_in_group("buildings"):
+			var building := raw_building as Node2D
+			if building == null:
+				continue
+			var overlay := building.get_node_or_null("DebugOverlay") as Node2D
+			if overlay:
+				_expect(overlay.visible, building.name + "_full_debug_overlay_scope")
+				_expect(overlay.get("_label_detail") == true, building.name + "_full_debug_overlay_detailed_labels")
+		main.set_debug_overlay(false)
+	else:
+		failures.append("main_set_debug_overlay_method")
 
 func _validate_reachability() -> void:
 	var route_tiles: Array = NEWPORT_TOWN.route_tiles()

@@ -1192,8 +1192,90 @@ in this pass; `interior_scene` stores future placeholder paths only.
 
 - Final art parity with JavaScript Phase 35.13R.
 - Quests, combat, inventory, save migration, and production cutover.
-- Butler automation and Cloudflare Pages deployment.
+- Automated hosting or deployment handoff.
 - New source art for exact per-building replacements.
 
 Manual review still requires uploading
 `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` to itch.
+
+## G-4.14B Building Grounding + Entity Contract Repair
+
+G-4.14B keeps the G-4.14A metadata contract while repairing the object-level
+grounding and interaction behavior that made the town read as pasted sprites.
+It does not add interiors, new buildings, new art, a larger map, or unrelated
+gameplay systems.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.14B Building Grounding + Entity Contract Repair
+Phase: G-4.14B | Review host: itch
+Branch: codex/g-4-14b-building-grounding-entity-repair
+```
+
+QA note:
+
+- Converted/verified: Counting House, Harbor Residence, Harbor Mercantile, Dock Storehouse, plus the rest of the active starter-harbor building definitions through the normalized catalog path.
+- Grounding repair: definitions now expose `door_anchor`, `y_sort_anchor`, and `ground_contact_rect`; the debug overlay can prove collision footprint, door anchor, interaction area, base/y-sort anchor, and `building_id / display_name`.
+- Interaction repair: prompts are driven by the authored doorway interaction area instead of broad player radius alone, so they appear at the door/frontage and stay off in the middle of the street.
+- Presentation repair: commercial-row thresholds and cargo props were nudged to the street-side band so they no longer pierce the foundation/base reading.
+- Debug toggle: `F3` toggles the full QA overlay; `B` toggles building seating overlays. Both remain off on normal load.
+- Known visual issues: prop art is still drawn from simple procedural placeholders until a later prop-art integration pass.
+
+## G-4.15 Village Layout Using Object Rules
+
+G-4.15 keeps the G-4.14B building contract and uses it to improve the actual
+town composition. The pass does not add interiors, new gameplay systems, new
+buildings, new art, or a larger map.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.15 Village Layout Using Object Rules
+Phase: G-4.15 | Review host: itch
+Branch: codex/g-4-15-village-layout-object-rules
+```
+
+Formalized layout rules:
+
+- Every active starter-harbor building has `parcel_id`, `district_band`,
+  `frontage_line_y`, `setback_from_road`, `side_gap_minimum`,
+  `door_path_target`, `prop_band`, `ground_pad`, and `lot_type`.
+- Those rules are authored in `NewportTownBlueprint.gd`, copied onto runtime
+  building specs, and validated by `tools/validate_vertical_slice.gd`.
+- The visual target is stored as an 8.5+/10 rubric so validation can confirm
+  this pass is a visual-composition gate, not only a runtime-contract gate.
+
+Composition changes:
+
+- Upper civic/residential band: yard pads, work-yard pads, and walk paths make
+  the Custom House, cottage, Harbor Residence, boarding house, dockworker
+  rowhouse, and cooperage read as grounded parcels.
+- Middle commercial band: stone pads, thresholds, short door paths, and subtle
+  side gutters make the row read as a street frontage while preserving the
+  shared G-4.14A curb datum.
+- Shop House / Market Shed / Printer Rowhouse: the Shop House moved from
+  `31.71` to `31.85` tiles, Market Shed moved from `36.63` to `37.15` tiles,
+  and Printer Rowhouse moved from `40.55` to `41.40` tiles. This opens a more
+  believable market-frontage rhythm without rescaling or replacing art.
+- Lower dock band: plank pads and cargo zones attach the warehouse, boathouse,
+  and storehouse to the wharf work areas.
+- Props are now tied to purpose bands. Mercantile crates, the west rope coil,
+  Chandlery rope, and Shop House crates were moved out of doorway interaction
+  zones while staying visually tied to their buildings.
+
+Debug and interaction:
+
+- `F3` remains the detailed full object-contract overlay.
+- `B` remains the building seating overlay, but uses compact building labels so
+  QA can inspect footprints, doors, interaction zones, and lot bounds with less
+  label overlap.
+- Debug overlays remain off by default.
+- Door prompts still use the G-4.14B doorway interaction zones and continue to
+  show public stub messages or private/locked messages as appropriate.
+
+Remaining known visual issues:
+
+- Procedural props and road/ground textures still need final painterly asset
+  support in a later art pass.
+- Interiors remain intentionally deferred.

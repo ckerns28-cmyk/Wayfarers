@@ -1128,6 +1128,87 @@ Remaining known issues:
 - G-4.13D remains the final whole-town manual navigation/collision validation
   pass after prop dressing.
 
+## G-4.14B: Building Grounding + Entity Contract Repair
+
+Status: implemented for local validation.
+
+G-4.14B preserves the G-4.14A building metadata and interaction contract, then
+repairs the building-object foundations that QA flagged in the manual itch
+review loop.
+
+Implemented:
+
+- HUD identity: `Godot G-4.14B Building Grounding + Entity Contract Repair`.
+- Branch: `codex/g-4-14b-building-grounding-entity-repair`.
+- Building definitions expose `door_anchor`, `y_sort_anchor`, and
+  `ground_contact_rect` alongside the existing gameplay metadata.
+- `Building.gd` now exposes `get_prompt_text()`,
+  `is_player_in_interaction_area()`, `get_door_anchor_local()`, and
+  `get_ground_contact_rect()` without removing the G-4.14A methods.
+- Player prompts are tied to tight doorway interaction areas instead of a broad
+  street-radius check, and the on-screen label is smaller.
+- The QA overlay remains default-off and can show footprint, interaction area,
+  door anchor, base/y-sort anchor, and building identity when toggled.
+- Commercial-row thresholds and row-front cargo props were moved into the
+  street-side band so they support the grounding read instead of cutting
+  through building bases.
+
+Verified scope:
+
+- Counting House / civic building.
+- Harbor Residence / large residence.
+- Harbor Mercantile / shopfront commercial building.
+- Dock Storehouse / harbor warehouse-style building.
+
+## G-4.15: Village Layout Using Object Rules
+
+Status: implemented for local validation and screenshot review.
+
+G-4.15 uses the G-4.14B building-object contract to recompose the existing
+starter harbor without adding interiors, new systems, new buildings, new art,
+or map expansion.
+
+Implemented:
+
+- HUD identity: `Godot G-4.15 Village Layout Using Object Rules`.
+- Branch: `codex/g-4-15-village-layout-object-rules`.
+- Each active starter-harbor building now carries an explicit parcel rule:
+  `parcel_id`, `district_band`, `frontage_line_y`, `setback_from_road`,
+  `side_gap_minimum`, `door_path_target`, `prop_band`, `ground_pad`, and
+  `lot_type`.
+- Commercial, market, civic, residential, support-lane, and dock bands draw
+  parcel-specific pads, stoops, frontage paths, prop bands, and subtle gutters.
+- The Shop House / Market Shed / Printer Rowhouse cluster was modestly opened
+  up so the shop no longer reads as a squeezed leftover facade.
+- Commercial-row props were moved into side/prop bands so doorway interaction
+  zones remain clear.
+- `B` building seating overlay now uses compact labels; `F3` keeps detailed
+  labels for full object-contract inspection.
+
+District and band adjustments:
+
+- Upper civic/residential band: yards and road-facing walks make houses and the
+  Custom House read as seated parcels instead of floating sprites.
+- Middle commercial band: stone pads, thresholds, door paths, and parcel gutters
+  clarify the street frontage while preserving the shared curb datum.
+- Lower dock band: plank work pads and cargo zones connect warehouse objects to
+  the wharf logic.
+
+Visual QA rubric:
+
+- Target: 8.5/10 or better.
+- Current self-score recorded in `NewportTownBlueprint.gd`: 8.5-8.7 across
+  grounding, doors, spacing, prop purpose, walkability, harbor identity,
+  y-sort/depth, screenshot read, and not-pasted feel.
+
+Remaining known visual issues:
+
+- Props are still procedural placeholders until the deferred prop-art pass.
+- The road/ground textures remain procedural and will benefit from final
+  painterly surface assets later.
+- No interiors are included yet; public doors continue to use the existing
+  stub messages.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
