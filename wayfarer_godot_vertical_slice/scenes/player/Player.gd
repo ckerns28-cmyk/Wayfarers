@@ -106,7 +106,7 @@ func _update_interaction_target() -> void:
 	for candidate in get_tree().get_nodes_in_group("interactable"):
 		if not candidate is Node2D:
 			continue
-		var dist := global_position.distance_to(candidate.global_position)
+		var dist := global_position.distance_to(_candidate_interaction_position(candidate as Node2D))
 		if dist < nearest_dist:
 			nearest = candidate
 			nearest_dist = dist
@@ -115,6 +115,11 @@ func _update_interaction_target() -> void:
 	prompt_label.visible = _current_target != null
 	if _current_target and _current_target.has_method("get_interaction_label"):
 		prompt_label.text = _current_target.get_interaction_label()
+
+func _candidate_interaction_position(candidate: Node2D) -> Vector2:
+	if candidate.has_method("get_interaction_position"):
+		return candidate.get_interaction_position()
+	return candidate.global_position
 
 func _draw() -> void:
 	var visual_scale := 0.78 if (NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN or NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else (1.12 if NEWPORT_TOWN.G46_PROOF_FRAME else 1.0)

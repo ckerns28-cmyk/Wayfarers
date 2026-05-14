@@ -5,6 +5,22 @@ const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
 const BUILDING_CATALOG := preload("res://scripts/BuildingCatalog.gd")
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
 
+const G414A_PUBLIC_BUILDING_IDS := [
+	"b_inn_tavern",
+	"b_mercantile",
+	"b_counting_house",
+	"b_chandlery_front",
+	"b_shop_house",
+]
+
+const G414A_PRIVATE_OR_FUTURE_HOME_IDS := [
+	"b_res_small",
+	"b_large_residence",
+	"b_boarding_house",
+	"b_clerk_townhouse",
+	"b_dockworker_rowhouse",
+]
+
 var failures: Array[String] = []
 
 func _init() -> void:
@@ -27,8 +43,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.7", "build_phase_g_4_13b_7")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.7 Street-Wall Art Bounds Fix", "build_label_g_4_13b_7")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.14A", "build_phase_g_4_14a")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.14A Building Entity Contract", "build_label_g_4_14a")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -61,6 +77,7 @@ func _validate_scene(main: Node) -> void:
 			_validate_detail_blockers(collision_layer)
 
 	_validate_buildings()
+	_validate_building_entity_contract(player)
 	_validate_starter_harbor_plan()
 	_validate_proof_street(main)
 	_validate_visual_composition_spacing()
@@ -114,6 +131,105 @@ func _validate_buildings() -> void:
 	var expected_districts := ["harborfront_commercial", "working_wharf", "inland_residential_civic", "support_lane"] if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (["visual_calibration"] if NEWPORT_TOWN.G47_CALIBRATION_MODE else (["waterfront_commercial"] if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else ["harbor_wharf", "waterfront_commercial", "civic_district", "upper_residential_terrace", "service_outfitter_lane"]))
 	for district_id in expected_districts:
 		_expect(district_counts.get(district_id, 0) > 0, "district_has_building_" + district_id)
+
+func _validate_building_entity_contract(player: Node) -> void:
+	var public_runtime_count := 0
+	var interactable_names := {}
+	for raw_interactable in get_nodes_in_group("interactable"):
+		var interactable := raw_interactable as Node
+		if interactable:
+			interactable_names[String(interactable.name)] = true
+
+	for config in NEWPORT_TOWN.building_specs():
+		var id: String = config["id"]
+		_expect(config.has("definition_id"), id + "_entity_has_definition_id")
+		if not config.has("definition_id"):
+			continue
+
+		var definition := BUILDING_CATALOG.building_definition(String(config["definition_id"]))
+		_validate_building_definition_entity_metadata(id, definition)
+
+		var runtime_building := _building_by_name(id)
+		_expect(runtime_building != null, id + "_entity_runtime_node")
+		if runtime_building == null:
+			continue
+
+		for method in ["get_interaction_label", "get_interaction_position", "interact", "can_player_enter"]:
+			_expect(runtime_building.has_method(method), id + "_entity_method_" + method)
+
+		if bool(definition.get("is_enterable", false)) or bool(definition.get("interaction_enabled", false)):
+			_expect(interactable_names.has(id), id + "_entity_in_interactable_group")
+
+		if runtime_building.has_method("get_interaction_position"):
+			var door_marker := runtime_building.get_node_or_null("DoorMarker") as Marker2D
+			var interaction_position: Vector2 = runtime_building.get_interaction_position()
+			_expect(door_marker != null and interaction_position.distance_to(door_marker.global_position) <= 1.0, id + "_entity_interaction_position_uses_door")
+
+		if G414A_PUBLIC_BUILDING_IDS.has(id):
+			public_runtime_count += 1
+			_expect(runtime_building.has_method("can_player_enter") and runtime_building.can_player_enter(), id + "_public_building_can_enter_future_stub")
+			if runtime_building.has_method("get_interaction_label"):
+				_expect(String(runtime_building.get_interaction_label()).begins_with("Press E to enter "), id + "_public_building_enter_prompt")
+			if runtime_building.has_method("interact"):
+				var message := String(runtime_building.interact())
+				_expect(message.find("G-4.15") >= 0, id + "_public_building_stub_mentions_g_4_15")
+		elif G414A_PRIVATE_OR_FUTURE_HOME_IDS.has(id):
+			_expect(runtime_building.has_method("can_player_enter") and not runtime_building.can_player_enter(), id + "_private_building_cannot_enter")
+			if runtime_building.has_method("interact"):
+				var private_message := String(runtime_building.interact())
+				_expect(private_message.find("private") >= 0 or private_message.find("future ownership") >= 0, id + "_private_building_stub_message")
+
+	_expect(public_runtime_count >= 5, "g414a_public_door_stub_count")
+	if player:
+		_expect(player.has_signal("dialogue_triggered"), "player_dialogue_signal_for_building_interaction")
+		_validate_player_uses_building_door_target(player)
+
+func _validate_player_uses_building_door_target(player: Node) -> void:
+	var mercantile := _building_by_name("b_mercantile")
+	if mercantile == null or not mercantile.has_method("get_interaction_position"):
+		failures.append("player_door_targeting_missing_mercantile")
+		return
+	if not player is Node2D:
+		failures.append("player_door_targeting_player_not_node2d")
+		return
+
+	var player_node := player as Node2D
+	var original_position := player_node.global_position
+	player_node.global_position = mercantile.get_interaction_position()
+	if player.has_method("_update_interaction_target"):
+		player.call("_update_interaction_target")
+	else:
+		failures.append("player_door_targeting_update_method")
+
+	var prompt_label := player.get_node_or_null("PromptLabel") as Label
+	_expect(prompt_label != null and prompt_label.visible, "player_door_targeting_prompt_visible")
+	if prompt_label:
+		_expect(prompt_label.text == "Press E to enter Harbor Mercantile", "player_door_targeting_prompt_uses_building_label")
+	if mercantile.has_method("interact"):
+		_expect(String(mercantile.interact()) == "Harbor Mercantile will be enterable in G-4.15.", "player_door_targeting_interact_stub")
+	player_node.global_position = original_position
+
+func _validate_building_definition_entity_metadata(id: String, definition: Dictionary) -> void:
+	for key in ["building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_label", "locked_message", "unavailable_message", "collision_footprint", "interaction_zone"]:
+		_expect(definition.has(key), id + "_entity_definition_has_" + key)
+	_expect(definition.has("door_offset") or definition.has("frontage_offset"), id + "_entity_definition_has_door_or_frontage_offset")
+
+	var building_type := String(definition.get("building_type", ""))
+	var access_rule := String(definition.get("access_rule", ""))
+	var interior_scene := String(definition.get("interior_scene", ""))
+	_expect(not building_type.is_empty(), id + "_entity_building_type_present")
+	_expect(["public", "private", "locked", "owner_only_future"].has(access_rule), id + "_entity_access_rule_known")
+	_expect(interior_scene.begins_with("res://scenes/interiors/") and interior_scene.ends_with("_stub.tscn"), id + "_entity_interior_stub_path")
+	_expect((definition.get("collision_footprint", Rect2()) as Rect2).size.x > 0.0, id + "_entity_collision_footprint_present")
+	_expect((definition.get("interaction_zone", Rect2()) as Rect2).size.x > 0.0, id + "_entity_interaction_zone_present")
+	_expect(not String(definition.get("interaction_label", "")).is_empty(), id + "_entity_interaction_label_present")
+
+	if G414A_PUBLIC_BUILDING_IDS.has(id):
+		_expect(access_rule == "public", id + "_entity_public_access_rule")
+		_expect(bool(definition.get("is_enterable", false)), id + "_entity_public_is_enterable")
+	elif G414A_PRIVATE_OR_FUTURE_HOME_IDS.has(id):
+		_expect(["private", "owner_only_future"].has(access_rule), id + "_entity_private_or_owner_future_access")
+		_expect(not bool(definition.get("is_enterable", false)), id + "_entity_private_not_enterable")
 
 func _validate_starter_harbor_plan() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
@@ -171,7 +287,7 @@ func _validate_starter_harbor_plan() -> void:
 		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")
 		if config.has("definition_id"):
 			var definition := BUILDING_CATALOG.building_definition(String(config["definition_id"]))
-			for key in ["building_id", "display_name", "role", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "visual_bounds", "lot_bounds", "collision_footprint", "interaction_zone", "foot_anchor", "visual_base_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "shadow_size", "district_role", "district_placement_tags", "notes"]:
+			for key in ["building_id", "display_name", "role", "building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_enabled", "interaction_label", "locked_message", "unavailable_message", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "visual_bounds", "lot_bounds", "collision_footprint", "interaction_zone", "foot_anchor", "visual_base_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "frontage_offset", "door_offset", "shadow_size", "district_role", "district_placement_tags", "notes"]:
 				_expect(definition.has(key), String(config["id"]) + "_definition_has_" + key)
 			var texture_path: String = definition.get("texture_path", "")
 			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
