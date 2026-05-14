@@ -10,15 +10,10 @@ reference prototype.
 - One small Newport/Hearthvale harbor-town scene.
 - Top-down player movement with collision and camera follow.
 - Layered map structure: ground, roads/plaza, wharf/water, props, collision/navigation.
-- Five production-style building scene instances:
-  - inn/tavern
-  - dock storehouse
-  - custom house
-  - merchant shop house
-  - large residence
-- Each building is a Godot object with sprite, foot anchor, collision shape, and interaction/frontage area.
-- One interactable NPC: Edrin Vale.
-- Minimal HUD and one objective: "The Still Water Objective: Speak with Edrin Vale".
+- Seventeen active starter-harbor building objects across civic, residential, commercial, support, and dock bands.
+- Each building is a Godot object with sprite, parcel rule, foot/y-sort anchor, collision shape, door anchor, and interaction/frontage area.
+- NPCs are disabled for the current town-layout review pass.
+- Minimal HUD with build identity, review host, and interaction/dialogue feedback.
 
 ## Controls
 
@@ -41,8 +36,14 @@ godot --headless --path . --script res://tools/validate_vertical_slice.gd
 
 Current review captures are stored in `artifacts/screenshots/`:
 
-- `vertical_slice_gameplay.png`
-- `vertical_slice_collision_debug.png`
+- `g415/normal_full_harbor.png`
+- `g415/normal_upper_band.png`
+- `g415/normal_middle_commercial_row.png`
+- `g415/normal_dock_band.png`
+- `g415/building_seating_overlay.png`
+- `g415/door_interaction_prompt.png`
+- `g415/street_no_prompt.png`
+- `g415/full_debug_overlay.png`
 
 ## Web Delivery
 

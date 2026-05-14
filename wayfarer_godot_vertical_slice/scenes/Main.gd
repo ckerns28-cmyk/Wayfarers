@@ -82,6 +82,8 @@ func _set_debug_overlay(enabled: bool) -> void:
 	for raw_building in get_tree().get_nodes_in_group("buildings"):
 		var building := raw_building as Node2D
 		if building and building.has_method("set_debug_overlay"):
+			if building.has_method("set_debug_label_detail"):
+				building.set_debug_label_detail(true)
 			building.set_debug_overlay(effective_enabled)
 	_set_collision_debug_overlay(effective_enabled)
 
@@ -92,8 +94,10 @@ func _set_building_seating_overlay(enabled: bool) -> void:
 		var building := raw_building as Node2D
 		if building and building.has_method("set_debug_overlay"):
 			var show_overlay: bool = effective_enabled and (NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN or (building.has_method("is_proof_street_building") and building.is_proof_street_building()))
+			if building.has_method("set_debug_label_detail"):
+				building.set_debug_label_detail(false)
 			building.set_debug_overlay(show_overlay)
-	_set_collision_debug_overlay(effective_enabled and NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN)
+	_set_collision_debug_overlay(false)
 
 func _set_collision_debug_overlay(enabled: bool) -> void:
 	var collision_layer := world.get_node_or_null("TownMap/CollisionNavigationLayer")

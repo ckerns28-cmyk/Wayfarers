@@ -1221,3 +1221,61 @@ QA note:
 - Presentation repair: commercial-row thresholds and cargo props were nudged to the street-side band so they no longer pierce the foundation/base reading.
 - Debug toggle: `F3` toggles the full QA overlay; `B` toggles building seating overlays. Both remain off on normal load.
 - Known visual issues: prop art is still drawn from simple procedural placeholders until a later prop-art integration pass.
+
+## G-4.15 Village Layout Using Object Rules
+
+G-4.15 keeps the G-4.14B building contract and uses it to improve the actual
+town composition. The pass does not add interiors, new gameplay systems, new
+buildings, new art, or a larger map.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.15 Village Layout Using Object Rules
+Phase: G-4.15 | Review host: itch
+Branch: codex/g-4-15-village-layout-object-rules
+```
+
+Formalized layout rules:
+
+- Every active starter-harbor building has `parcel_id`, `district_band`,
+  `frontage_line_y`, `setback_from_road`, `side_gap_minimum`,
+  `door_path_target`, `prop_band`, `ground_pad`, and `lot_type`.
+- Those rules are authored in `NewportTownBlueprint.gd`, copied onto runtime
+  building specs, and validated by `tools/validate_vertical_slice.gd`.
+- The visual target is stored as an 8.5+/10 rubric so validation can confirm
+  this pass is a visual-composition gate, not only a runtime-contract gate.
+
+Composition changes:
+
+- Upper civic/residential band: yard pads, work-yard pads, and walk paths make
+  the Custom House, cottage, Harbor Residence, boarding house, dockworker
+  rowhouse, and cooperage read as grounded parcels.
+- Middle commercial band: stone pads, thresholds, short door paths, and subtle
+  side gutters make the row read as a street frontage while preserving the
+  shared G-4.14A curb datum.
+- Shop House / Market Shed / Printer Rowhouse: the Shop House moved from
+  `31.71` to `31.85` tiles, Market Shed moved from `36.63` to `37.15` tiles,
+  and Printer Rowhouse moved from `40.55` to `41.40` tiles. This opens a more
+  believable market-frontage rhythm without rescaling or replacing art.
+- Lower dock band: plank pads and cargo zones attach the warehouse, boathouse,
+  and storehouse to the wharf work areas.
+- Props are now tied to purpose bands. Mercantile crates, the west rope coil,
+  Chandlery rope, and Shop House crates were moved out of doorway interaction
+  zones while staying visually tied to their buildings.
+
+Debug and interaction:
+
+- `F3` remains the detailed full object-contract overlay.
+- `B` remains the building seating overlay, but uses compact building labels so
+  QA can inspect footprints, doors, interaction zones, and lot bounds with less
+  label overlap.
+- Debug overlays remain off by default.
+- Door prompts still use the G-4.14B doorway interaction zones and continue to
+  show public stub messages or private/locked messages as appropriate.
+
+Remaining known visual issues:
+
+- Procedural props and road/ground textures still need final painterly asset
+  support in a later art pass.
+- Interiors remain intentionally deferred.

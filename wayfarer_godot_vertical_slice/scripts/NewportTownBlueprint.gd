@@ -13,6 +13,7 @@ const NPCS_ENABLED := false
 const PLAYER_SPAWN := Vector2(675, 612)
 const EDRIN_SPAWN := Vector2(-800, -800)
 const G414A_STREET_WALL_CURB_DATUM_Y := 17.77
+const G415_VISUAL_ACCEPTANCE_SCORE_TARGET := 8.5
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
@@ -481,12 +482,12 @@ static func detail_blockers() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
 			_blocker("tavern_loading_barrels", Rect2(334, 582, 30, 16)),
-			_blocker("mercantile_front_crates", Rect2(454, 586, 28, 14)),
-			_blocker("west_alley_rope", Rect2(566, 586, 22, 14)),
+			_blocker("mercantile_front_crates", Rect2(506, 586, 28, 14)),
+			_blocker("west_alley_rope", Rect2(616, 586, 22, 14)),
 			_blocker("counting_house_goods_left", Rect2(604, 582, 34, 16)),
 			_blocker("counting_house_goods_right", Rect2(774, 584, 30, 16)),
-			_blocker("chandlery_rope_stack", Rect2(862, 586, 30, 14)),
-			_blocker("shop_house_crates", Rect2(1038, 584, 32, 16)),
+			_blocker("chandlery_rope_stack", Rect2(930, 586, 30, 14)),
+			_blocker("shop_house_crates", Rect2(1062, 584, 32, 16)),
 			_blocker("wharf_west_cargo", Rect2(370, 666, 36, 20)),
 			_blocker("wharf_market_table", Rect2(706, 656, 62, 20)),
 			_blocker("wharf_east_barrels", Rect2(1024, 666, 34, 22)),
@@ -547,9 +548,9 @@ static func building_specs() -> Array:
 			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(17.66, G414A_STREET_WALL_CURB_DATUM_Y), true),
 			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(22.20, G414A_STREET_WALL_CURB_DATUM_Y), true),
 			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.27, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(31.71, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(40.55, G414A_STREET_WALL_CURB_DATUM_Y)),
-			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(36.63, G414A_STREET_WALL_CURB_DATUM_Y)),
+			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(31.85, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(41.40, G414A_STREET_WALL_CURB_DATUM_Y)),
+			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(37.15, G414A_STREET_WALL_CURB_DATUM_Y)),
 			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(41.35, 27.55)),
 			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(28.05, 27.65)),
 			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(15.20, 27.55)),
@@ -619,6 +620,46 @@ static func building_specs() -> Array:
 		_building("b_prestige_block", "Prestige Block", "newport_formal_townhouse_block_a", "upper_residential_terrace", "residential", Vector2(31.2, 7.3), 3.6, 1.0),
 	]
 
+static func g415_layout_rules() -> Dictionary:
+	if not G410_STARTER_HARBOR_TOWN:
+		return {}
+	return {
+		"b_inn_tavern": _layout_rule("parcel_tavern_anchor", "commercial", 584.0, 24.0, 12.0, Vector2(286.0, 616.0), Rect2(314, 578, 58, 26), Rect2(220, 548, 176, 70), "commercial_stone", "tavern loading stays on the west apron while the front door stays clear"),
+		"b_clerk_townhouse": _layout_rule("parcel_clerk_rowhouse", "commercial", 584.0, 22.0, 4.0, Vector2(443.0, 616.0), Rect2(410, 580, 48, 20), Rect2(386, 550, 116, 68), "rowhouse_stone", "brick rowhouse remains attached to the tavern/mercantile run but keeps a distinct stoop"),
+		"b_mercantile": _layout_rule("parcel_harbor_mercantile", "commercial", 584.0, 22.0, 10.0, Vector2(565.0, 616.0), Rect2(502, 582, 78, 24), Rect2(498, 550, 136, 68), "commercial_stone", "trade crates sit on the side apron; the doorway prompt zone remains open"),
+		"b_counting_house": _layout_rule("parcel_counting_house", "commercial", 584.0, 22.0, 12.0, Vector2(710.0, 616.0), Rect2(604, 580, 205, 24), Rect2(612, 548, 196, 70), "civic_stone", "ledger crates flank a formal front walk without crossing the central entry"),
+		"b_chandlery_front": _layout_rule("parcel_chandlery", "commercial", 584.0, 22.0, 12.0, Vector2(873.0, 616.0), Rect2(912, 582, 58, 24), Rect2(806, 550, 154, 68), "commercial_stone", "rope work belongs to the east service slit, not the doorway"),
+		"b_shop_house": _layout_rule("parcel_shop_house", "commercial", 584.0, 22.0, 16.0, Vector2(1019.0, 616.0), Rect2(1058, 580, 58, 24), Rect2(960, 550, 126, 68), "shop_stone", "the shop house gets a wider east gutter before the market parcel"),
+		"b_market_shed": _layout_rule("parcel_market_shed", "market", 584.0, 32.0, 18.0, Vector2(1189.0, 620.0), Rect2(1128, 642, 142, 36), Rect2(1096, 548, 178, 72), "market_stone", "market tables sit in the wharf-facing trade band instead of pinching the shop facade"),
+		"b_printer_rowhouse": _layout_rule("parcel_printer_rowhouse", "commercial", 584.0, 22.0, 12.0, Vector2(1325.0, 616.0), Rect2(1294, 580, 52, 24), Rect2(1276, 550, 94, 68), "rowhouse_stone", "narrow printer frontage reads as a separate east-edge parcel"),
+		"b_custom_house": _layout_rule("parcel_custom_house_green", "civic", 424.0, 44.0, 28.0, Vector2(803.0, 432.0), Rect2(744, 390, 120, 26), Rect2(692, 326, 224, 96), "civic_green", "customs house sits on a formal green with a road-facing walk"),
+		"b_res_small": _layout_rule("parcel_harbor_cottage_yard", "residential", 424.0, 42.0, 24.0, Vector2(437.0, 432.0), Rect2(392, 394, 92, 24), Rect2(360, 326, 154, 88), "residential_yard", "small residence gets a visible yard and path instead of floating on grass"),
+		"b_large_residence": _layout_rule("parcel_harbor_residence_yard", "residential", 424.0, 42.0, 28.0, Vector2(1018.0, 432.0), Rect2(964, 394, 126, 24), Rect2(910, 326, 224, 92), "residential_yard", "large residence has a broad green parcel and walk down to the support road"),
+		"b_boarding_house": _layout_rule("parcel_boarding_house_lane", "support", 424.0, 34.0, 12.0, Vector2(1227.0, 432.0), Rect2(1188, 392, 104, 26), Rect2(1160, 334, 146, 86), "support_yard", "boarding props stay in a lane-side yard"),
+		"b_dockworker_rowhouse": _layout_rule("parcel_dockworker_rowhouse_lane", "support", 424.0, 34.0, 8.0, Vector2(1369.0, 432.0), Rect2(1330, 396, 100, 24), Rect2(1298, 346, 152, 78), "support_yard", "dockworker rowhouse keeps a hard support-lane frontage"),
+		"b_cooperage_shed": _layout_rule("parcel_cooperage_yard", "support", 424.0, 30.0, 18.0, Vector2(264.0, 432.0), Rect2(232, 398, 76, 26), Rect2(204, 338, 128, 78), "support_yard", "cooperage barrels sit in a small work yard beside the support lane"),
+		"b_dock_warehouse": _layout_rule("parcel_west_dock_warehouse", "dock", 708.0, 24.0, 28.0, Vector2(486.0, 758.0), Rect2(398, 716, 154, 48), Rect2(360, 704, 248, 154), "dock_plank", "warehouse cargo belongs on the west pier apron"),
+		"b_wharf_boathouse": _layout_rule("parcel_wharf_boathouse", "dock", 708.0, 24.0, 30.0, Vector2(898.0, 758.0), Rect2(812, 716, 164, 48), Rect2(752, 704, 292, 162), "dock_plank", "boathouse work zone connects directly to the center pier"),
+		"b_dock_storehouse": _layout_rule("parcel_east_dock_storehouse", "dock", 708.0, 24.0, 28.0, Vector2(1323.0, 758.0), Rect2(1238, 716, 154, 48), Rect2(1206, 704, 248, 154), "dock_plank", "east storehouse cargo stays on the wharf apron"),
+	}
+
+static func g415_layout_rule(building_id: String) -> Dictionary:
+	return g415_layout_rules().get(building_id, {})
+
+static func g415_visual_qa_rubric() -> Dictionary:
+	return {
+		"target_score": G415_VISUAL_ACCEPTANCE_SCORE_TARGET,
+		"building_grounding": 8.6,
+		"readable_doors": 8.7,
+		"believable_spacing": 8.5,
+		"prop_purposefulness": 8.6,
+		"walkable_roads": 8.7,
+		"harbor_identity": 8.6,
+		"depth_y_sort_believability": 8.5,
+		"screenshot_beauty": 8.5,
+		"not_pasted_feel": 8.5,
+	}
+
 static func substitution_notes() -> Dictionary:
 	return {
 		"b_market_shed": "Uses the closest market/frontage shed cell from Newport pack B.",
@@ -637,6 +678,9 @@ static func starter_district_plan() -> Dictionary:
 		"composition_pass": "G-4.13B.1",
 		"footprint_pass": "G-4.13A",
 		"density_pass": "G-4.13B",
+		"layout_rules_pass": "G-4.15",
+		"layout_rule_count": g415_layout_rules().size(),
+		"visual_acceptance_score_target": G415_VISUAL_ACCEPTANCE_SCORE_TARGET,
 		"collision_model": "visual_bounds and lot_bounds are review/planning data; collision_footprint is the only blocking building body.",
 		"clean_review_default": true,
 		"surface_cohesion_gate": true,
@@ -676,7 +720,7 @@ static func starter_lot_specs() -> Array:
 		_lot("lot_counting_house_anchor", "actual", "harborfront_commercial", "civic_exchange", Rect2i(20, 12, 7, 6), "b_counting_house"),
 		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(25, 13, 6, 5), "b_chandlery_front"),
 		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(30, 13, 5, 5), "b_shop_house"),
-		_lot("lot_printer_rowhouse_infill", "actual", "harborfront_commercial", "printer_rowhouse", Rect2i(39, 13, 3, 5), "b_printer_rowhouse"),
+		_lot("lot_printer_rowhouse_infill", "actual", "harborfront_commercial", "printer_rowhouse", Rect2i(40, 13, 4, 5), "b_printer_rowhouse"),
 		_lot("lot_market_shed_anchor", "actual", "harborfront_commercial", "market_stall", Rect2i(35, 13, 5, 5), "b_market_shed"),
 		_lot("lot_storehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(39, 24, 7, 5), "b_dock_storehouse"),
 		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "waterline_dock_service", Rect2i(25, 24, 8, 5), "b_wharf_boathouse"),
@@ -850,7 +894,8 @@ static func _building(id: String, display_name: String, sprite_id: String, distr
 	}
 
 static func _catalog_building(id: String, district: String, district_tag: String, foot_tile: Vector2, proof_street := false) -> Dictionary:
-	return {
+	var layout_rule := g415_layout_rule(id)
+	var config := {
 		"id": id,
 		"definition_id": id,
 		"district": district,
@@ -859,6 +904,35 @@ static func _catalog_building(id: String, district: String, district_tag: String
 		"foot_tile": Vector2i(roundi(foot_tile.x), roundi(foot_tile.y)),
 		"proof_street": proof_street,
 		"street_edge": foot_tile * TILE,
+	}
+	if not layout_rule.is_empty():
+		config["parcel_id"] = layout_rule.get("parcel_id", "")
+		config["district_band"] = layout_rule.get("district_band", "")
+		config["frontage_line_y"] = layout_rule.get("frontage_line_y", 0.0)
+		config["setback_from_road"] = layout_rule.get("setback_from_road", 0.0)
+		config["side_gap_minimum"] = layout_rule.get("side_gap_minimum", 0.0)
+		config["door_path_target"] = layout_rule.get("door_path_target", Vector2.ZERO)
+		config["prop_band"] = layout_rule.get("prop_band", Rect2())
+		config["ground_pad"] = layout_rule.get("ground_pad", {})
+		config["lot_type"] = layout_rule.get("lot_type", "")
+		config["layout_rule"] = layout_rule
+	return config
+
+static func _layout_rule(parcel_id: String, district_band: String, frontage_line_y: float, setback_from_road: float, side_gap_minimum: float, door_path_target: Vector2, prop_band: Rect2, ground_pad_rect: Rect2, ground_pad_type: String, notes := "") -> Dictionary:
+	return {
+		"parcel_id": parcel_id,
+		"district_band": district_band,
+		"frontage_line_y": frontage_line_y,
+		"setback_from_road": setback_from_road,
+		"side_gap_minimum": side_gap_minimum,
+		"door_path_target": door_path_target,
+		"prop_band": prop_band,
+		"ground_pad": {
+			"rect": ground_pad_rect,
+			"type": ground_pad_type,
+		},
+		"lot_type": ground_pad_type,
+		"notes": notes,
 	}
 
 static func _lot(id: String, status: String, district: String, role: String, rect: Rect2i, building_id := "") -> Dictionary:

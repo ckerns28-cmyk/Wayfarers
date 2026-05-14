@@ -234,6 +234,7 @@ func _draw_g410_ground() -> void:
 		draw_rect(rect.grow(-7.0), Color(0.08, 0.12, 0.08, 0.10), false, 1.0)
 	_draw_g410_background_depth()
 	_draw_g410_lot_plan()
+	_draw_g415_parcel_grounding()
 	_draw_planting_bed(Rect2(190, 260, 112, 52), Color("#718c62"), Color("#5c7a53"))
 	_draw_planting_bed(Rect2(844, 238, 134, 58), Color("#718c62"), Color("#5c7a53"))
 	_draw_planting_bed(Rect2(1122, 248, 122, 54), Color("#718c62"), Color("#5c7a53"))
@@ -325,6 +326,132 @@ func _draw_g410_planned_lot(rect: Rect2, district: String, role: String) -> void
 			draw_line(Vector2(x, inset.position.y + 8), Vector2(x + 12, inset.position.y + 8), Color(0.94, 0.86, 0.61, 0.08), 1.0)
 	_draw_shrub_cluster(rect.position + Vector2(rect.size.x - 20.0, rect.size.y - 16.0), 0.55)
 
+func _draw_g415_parcel_grounding() -> void:
+	var rules: Dictionary = NEWPORT_TOWN.g415_layout_rules()
+	for raw_id in rules.keys():
+		var rule: Dictionary = rules[raw_id]
+		var band := String(rule.get("district_band", ""))
+		if band == "dock":
+			continue
+		_draw_g415_ground_pad(rule)
+		_draw_g415_prop_band(rule)
+		if ["commercial", "market"].has(band):
+			_draw_g415_commercial_gutters(rule)
+
+func _draw_g415_dock_grounding() -> void:
+	var rules: Dictionary = NEWPORT_TOWN.g415_layout_rules()
+	for raw_id in rules.keys():
+		var rule: Dictionary = rules[raw_id]
+		if String(rule.get("district_band", "")) != "dock":
+			continue
+		_draw_g415_ground_pad(rule)
+		_draw_g415_prop_band(rule)
+
+func _draw_g415_ground_pad(rule: Dictionary) -> void:
+	var pad: Dictionary = rule.get("ground_pad", {})
+	var rect: Rect2 = pad.get("rect", Rect2())
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return
+
+	match String(pad.get("type", "")):
+		"commercial_stone", "rowhouse_stone", "shop_stone":
+			_draw_soft_rect(rect, Color("#6d6958"), Color("#565142"), 0.34, 5)
+			draw_rect(rect.grow(-4.0), Color("#d2c08b", 0.10), false, 1.0)
+			_draw_surface_speckles(rect.grow(-6.0), 8, Color(0.10, 0.08, 0.05, 0.12), Vector2(16, 4))
+		"market_stone":
+			_draw_soft_rect(rect, Color("#716a56"), Color("#594f3d"), 0.36, 6)
+			draw_rect(rect.grow(-4.0), Color("#d9c286", 0.12), false, 1.0)
+			_draw_surface_speckles(rect.grow(-6.0), 10, Color(0.12, 0.09, 0.05, 0.13), Vector2(18, 4))
+		"civic_stone":
+			_draw_soft_rect(rect, Color("#746f60"), Color("#5a5548"), 0.38, 6)
+			draw_line(rect.position + Vector2(12.0, rect.size.y - 8.0), rect.position + Vector2(rect.size.x - 12.0, rect.size.y - 8.0), Color("#d6c795", 0.16), 1.2)
+			_draw_surface_speckles(rect.grow(-8.0), 8, Color(0.10, 0.09, 0.06, 0.12), Vector2(18, 4))
+		"civic_green":
+			_draw_soft_rect(rect, Color("#6d865f"), Color("#536f50"), 0.34, 8)
+			draw_rect(rect.grow(-8.0), Color("#cbbf86", 0.10), false, 1.0)
+			_draw_shrub_cluster(rect.position + Vector2(20.0, rect.size.y - 20.0), 0.55)
+			_draw_shrub_cluster(rect.position + Vector2(rect.size.x - 22.0, rect.size.y - 20.0), 0.55)
+		"residential_yard":
+			_draw_soft_rect(rect, Color("#6c875e"), Color("#526f4e"), 0.30, 7)
+			draw_rect(rect.grow(-9.0), Color("#c4b77c", 0.09), false, 1.0)
+			_draw_shrub_cluster(rect.position + Vector2(18.0, rect.size.y - 18.0), 0.50)
+			_draw_shrub_cluster(rect.position + Vector2(rect.size.x - 22.0, rect.size.y - 20.0), 0.50)
+		"support_yard":
+			_draw_soft_rect(rect, Color("#655f49"), Color("#4d533e"), 0.26, 6)
+			_draw_surface_speckles(rect.grow(-5.0), 9, Color(0.16, 0.12, 0.07, 0.14), Vector2(16, 4))
+		"dock_plank":
+			_draw_plank_world_rect(rect, Color("#786a50"), Color("#5a4d3a"))
+			_draw_plank_weathering(rect, 12)
+		_:
+			draw_rect(rect, Color("#6a765d", 0.18), true)
+
+func _draw_g415_prop_band(rule: Dictionary) -> void:
+	var rect: Rect2 = rule.get("prop_band", Rect2())
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return
+
+	var band := String(rule.get("district_band", ""))
+	var fill := Color("#77674e", 0.14)
+	if band == "residential" or band == "civic":
+		fill = Color("#6f8a5f", 0.13)
+	elif band == "dock":
+		fill = Color("#6f573c", 0.20)
+	elif band == "market":
+		fill = Color("#8a714d", 0.17)
+	draw_rect(rect, fill, true)
+	draw_rect(rect, Color(0.04, 0.04, 0.03, 0.08), false, 1.0)
+
+func _draw_g415_commercial_gutters(rule: Dictionary) -> void:
+	var pad: Dictionary = rule.get("ground_pad", {})
+	var rect: Rect2 = pad.get("rect", Rect2())
+	if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return
+	var side_gap := float(rule.get("side_gap_minimum", 0.0))
+	if side_gap < 10.0:
+		return
+	var gutter_alpha: float = clamp(side_gap / 80.0, 0.10, 0.28)
+	draw_rect(Rect2(rect.position.x - 3.0, rect.position.y + 8.0, 4.0, rect.size.y - 14.0), Color(0.06, 0.06, 0.045, gutter_alpha), true)
+	draw_rect(Rect2(rect.end.x - 1.0, rect.position.y + 8.0, 4.0, rect.size.y - 14.0), Color(0.06, 0.06, 0.045, gutter_alpha * 0.84), true)
+
+func _draw_g415_lane_connections() -> void:
+	var rules: Dictionary = NEWPORT_TOWN.g415_layout_rules()
+	for raw_id in rules.keys():
+		var id := String(raw_id)
+		var rule: Dictionary = rules[id]
+		var band := String(rule.get("district_band", ""))
+		if band == "dock":
+			continue
+
+		var target: Vector2 = rule.get("door_path_target", Vector2.ZERO)
+		var frontage_y := float(rule.get("frontage_line_y", target.y))
+		if ["commercial", "market"].has(band):
+			var threshold_center := Vector2(target.x, frontage_y)
+			_draw_g47_threshold(threshold_center, _g415_threshold_width_for(id, band))
+			_draw_path_line(threshold_center + Vector2(0.0, 12.0), target, 14.0, Color("#8d7c60"), Color("#625746"), true)
+			continue
+
+		var pad: Dictionary = rule.get("ground_pad", {})
+		var rect: Rect2 = pad.get("rect", Rect2())
+		if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+			continue
+		var path_start := Vector2(clamp(target.x, rect.position.x + 18.0, rect.end.x - 18.0), rect.end.y - 8.0)
+		var path_width := 14.0 if band == "civic" else 11.0
+		var path_base := Color("#9a835f") if band == "civic" else Color("#8b7655")
+		var path_edge := Color("#665743") if band == "civic" else Color("#5d503d")
+		_draw_path_line(path_start, target, path_width, path_base, path_edge, band == "civic")
+		_draw_door_step(path_start)
+
+func _g415_threshold_width_for(id: String, band: String) -> float:
+	match id:
+		"b_counting_house":
+			return 58.0
+		"b_inn_tavern", "b_market_shed":
+			return 56.0
+		"b_clerk_townhouse", "b_printer_rowhouse":
+			return 38.0
+		_:
+			return 46.0 if band == "commercial" else 52.0
+
 func _draw_g410_street_plan() -> void:
 	_draw_path_line(Vector2(392, 414), Vector2(384, 680), 30.0, Color("#8d7353"), Color("#655541"), false)
 	_draw_path_line(Vector2(676, 350), Vector2(664, 682), 34.0, Color("#9b815d"), Color("#6f5d45"))
@@ -340,8 +467,6 @@ func _draw_g410_street_plan() -> void:
 		Vector2(240, 512), Vector2(466, 506), Vector2(612, 516), Vector2(824, 510),
 		Vector2(1032, 516), Vector2(1338, 520)
 	]), Color(1.0, 0.93, 0.68, 0.10), 1.0)
-	for p in [Vector2(286, 582), Vector2(443, 582), Vector2(565, 584), Vector2(710, 582), Vector2(873, 584), Vector2(1015, 584), Vector2(1172, 584), Vector2(1298, 584)]:
-		_draw_g47_threshold(p, 48)
 	_draw_street_wear(Rect2(232, 504, 1116, 42), 34)
 
 	draw_colored_polygon(PackedVector2Array([
@@ -365,6 +490,7 @@ func _draw_g410_street_plan() -> void:
 	_draw_street_wear(Rect2(226, 552, 1134, 78), 64)
 	for p in [Vector2(380, 548), Vector2(664, 542), Vector2(1088, 550)]:
 		_draw_edge_grime(p, 112.0)
+	_draw_g415_lane_connections()
 
 	_draw_cobbled_world_rect(Rect2(232, 642, 1116, 58), Color("#766f57"), Color("#5a5542"), 76)
 	draw_polyline(PackedVector2Array([
@@ -396,6 +522,7 @@ func _draw_g410_wharf_water() -> void:
 	]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
 	_draw_plank_world_rect(Rect2(260, 704, 1110, 54), Color("#84765a"), Color("#625841"))
 	_draw_plank_weathering(Rect2(260, 704, 1110, 54), 62)
+	_draw_g415_dock_grounding()
 	_draw_plank_world_rect(Rect2(342, 724, 46, 118), Color("#806548"), Color("#5d4934"))
 	_draw_plank_world_rect(Rect2(372, 808, 92, 30), Color("#806548"), Color("#5d4934"))
 	_draw_plank_world_rect(Rect2(452, 816, 46, 18), Color("#735c42"), Color("#54412f"))
@@ -431,13 +558,13 @@ func _draw_g410_wharf_water() -> void:
 		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
 
 func _draw_g410_props() -> void:
-	for pos in [Vector2(250, 386), Vector2(334, 582), Vector2(454, 586), Vector2(604, 582), Vector2(812, 388), Vector2(986, 386), Vector2(1038, 584), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:
+	for pos in [Vector2(250, 386), Vector2(334, 582), Vector2(506, 586), Vector2(604, 582), Vector2(812, 388), Vector2(986, 386), Vector2(1062, 584), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:
 		_draw_contact_shadow(pos + Vector2(14, 11), Vector2(20, 7), 0.15)
 		_draw_crate_stack(pos)
 	for pos in [Vector2(286, 394), Vector2(348, 584), Vector2(774, 584), Vector2(850, 390), Vector2(938, 584), Vector2(1182, 392), Vector2(1058, 668), Vector2(418, 728), Vector2(1160, 728), Vector2(254, 410), Vector2(1222, 418)]:
 		_draw_contact_shadow(pos + Vector2(8, 6), Vector2(17, 6), 0.16)
 		_draw_barrels(pos, 3)
-	for pos in [Vector2(298, 408), Vector2(566, 586), Vector2(862, 586), Vector2(552, 688), Vector2(872, 684), Vector2(1256, 408), Vector2(1070, 746), Vector2(664, 694), Vector2(904, 586), Vector2(1286, 812)]:
+	for pos in [Vector2(298, 408), Vector2(616, 586), Vector2(930, 586), Vector2(552, 688), Vector2(872, 684), Vector2(1256, 408), Vector2(1070, 746), Vector2(664, 694), Vector2(904, 586), Vector2(1286, 812)]:
 		_draw_contact_shadow(pos + Vector2(3, 5), Vector2(15, 5), 0.13)
 		_draw_rope_coil(pos)
 	for pos in [Vector2(476, 592), Vector2(526, 592), Vector2(1052, 592), Vector2(1194, 682)]:
