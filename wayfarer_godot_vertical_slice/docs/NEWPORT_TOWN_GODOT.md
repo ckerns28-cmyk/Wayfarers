@@ -708,6 +708,15 @@ G-4.13B.4 clerk townhouse complete asset fix:
 - Adds validation guards that reject both squat miniature-block reads and
   over-narrow sliced-column reads for the clerk townhouse.
 
+G-4.13B.5 street-wall tight seam fix:
+
+- Build label: Godot G-4.13B.5 Street-Wall Tight Seam Fix.
+- Replaces the detached 12px daylight rule with a tight seam band: building
+  sprites may not overlap, but adjacent street-wall gaps must remain small.
+- Repacked the harborfront row and support-lane row so the clerk, mercantile,
+  counting house, chandlery, shop, market, printer, and dockworker rowhouse
+  read as continuous street frontage instead of freestanding buildings.
+
 Routes revalidated:
 
 - road behind `b_mercantile`

@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.4", "build_phase_g_4_13b_4")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.4 Clerk Townhouse Complete Asset Fix", "build_label_g_4_13b_4")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.5", "build_phase_g_4_13b_5")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.5 Street-Wall Tight Seam Fix", "build_label_g_4_13b_5")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -228,7 +228,7 @@ func _validate_visual_composition_spacing() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
 		return
 
-	_validate_visual_sequence_has_daylight("harborfront_street_wall", [
+	_validate_visual_sequence_has_tight_seams("harborfront_street_wall", [
 		"b_inn_tavern",
 		"b_clerk_townhouse",
 		"b_mercantile",
@@ -237,11 +237,11 @@ func _validate_visual_composition_spacing() -> void:
 		"b_shop_house",
 		"b_market_shed",
 		"b_printer_rowhouse",
-	], 12.0)
-	_validate_visual_sequence_has_daylight("support_lane_row", [
+	], 0.0, 8.0)
+	_validate_visual_sequence_has_tight_seams("support_lane_row", [
 		"b_boarding_house",
 		"b_dockworker_rowhouse",
-	], 10.0)
+	], 0.0, 8.0)
 
 	var clerk := _building_by_name("b_clerk_townhouse")
 	if clerk:
@@ -250,7 +250,7 @@ func _validate_visual_composition_spacing() -> void:
 		_expect(clerk_rect.size.y >= clerk_rect.size.x * 1.2, "clerk_townhouse_world_not_squat")
 		_expect(clerk_rect.size.y <= clerk_rect.size.x * 1.8, "clerk_townhouse_world_not_sliced_column")
 
-func _validate_visual_sequence_has_daylight(label: String, ids: Array, min_gap: float) -> void:
+func _validate_visual_sequence_has_tight_seams(label: String, ids: Array, min_gap: float, max_gap: float) -> void:
 	var entries: Array = []
 	for id in ids:
 		var building := _building_by_name(String(id))
@@ -266,7 +266,9 @@ func _validate_visual_sequence_has_daylight(label: String, ids: Array, min_gap: 
 		var right: Dictionary = entries[i + 1]
 		var left_rect: Rect2 = left["rect"]
 		var right_rect: Rect2 = right["rect"]
-		_expect(left_rect.end.x + min_gap <= right_rect.position.x, "visual_gap_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
+		var gap := right_rect.position.x - left_rect.end.x
+		_expect(gap >= min_gap, "visual_seam_not_overlapping_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
+		_expect(gap <= max_gap, "visual_seam_not_detached_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
 
 func _validate_building_node(building: Node2D) -> void:
 	var sprite := building.get_node_or_null("Sprite2D") as Sprite2D
@@ -417,8 +419,8 @@ func _validate_building_walkability_gate() -> void:
 		"east_commercial_cross_lane": Vector2(1100.0, 520.0),
 		"dock_layer_walk": Vector2(824.0, 710.0),
 		"clerk_rowhouse_front_walk": Vector2(420.0, 604.0),
-		"market_east_edge_front_walk": Vector2(1496.0, 604.0),
-		"support_boarding_gap_walk": Vector2(1420.0, 418.0),
+		"market_east_edge_front_walk": Vector2(1430.0, 604.0),
+		"support_boarding_gap_walk": Vector2(1380.0, 418.0),
 	}
 	for sample_name in walk_samples.keys():
 		var point: Vector2 = walk_samples[sample_name]
