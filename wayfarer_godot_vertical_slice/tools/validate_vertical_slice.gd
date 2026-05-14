@@ -27,8 +27,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.2", "build_phase_g_4_13b_2")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.2 Street-Wall Hard Spacing Fix", "build_label_g_4_13b_2")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.13B.7", "build_phase_g_4_13b_7")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.13B.7 Street-Wall Art Bounds Fix", "build_label_g_4_13b_7")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
@@ -177,6 +177,13 @@ func _validate_starter_harbor_plan() -> void:
 			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
 			var tags: Array = definition.get("district_placement_tags", [])
 			_expect(not tags.is_empty(), String(config["id"]) + "_has_district_placement_tags")
+			if String(config["id"]) == "b_clerk_townhouse":
+				var clerk_visual: Rect2 = definition.get("visual_bounds", Rect2())
+				var clerk_region: Rect2 = definition.get("sprite_region", Rect2())
+				_expect(definition.get("sprite_id", "") == "newport_formal_townhouse_block_a", "clerk_townhouse_uses_brick_rowhouse_asset")
+				_expect(clerk_region.size.x >= 360.0 and clerk_region.size.y >= 330.0, "clerk_townhouse_uses_uncut_brick_block_region")
+				_expect(clerk_visual.size.x >= 145.0 and clerk_visual.size.y >= 150.0, "clerk_townhouse_not_under_scaled_or_cropped")
+				_expect(float(definition.get("visual_scale", 0.0)) >= 160.0, "clerk_townhouse_newport_rowhouse_scale")
 
 	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
 	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "dedicated crate/barrel/rope prop sprites", "sign variants", "fencing variants", "lantern variants", "chapel/church decision and final art if needed"]:
@@ -222,7 +229,7 @@ func _validate_visual_composition_spacing() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
 		return
 
-	_validate_visual_sequence_has_daylight("harborfront_street_wall", [
+	_validate_visual_sequence_has_tight_seams("harborfront_street_wall", [
 		"b_inn_tavern",
 		"b_clerk_townhouse",
 		"b_mercantile",
@@ -231,13 +238,51 @@ func _validate_visual_composition_spacing() -> void:
 		"b_shop_house",
 		"b_market_shed",
 		"b_printer_rowhouse",
-	], 12.0)
-	_validate_visual_sequence_has_daylight("support_lane_row", [
+	], 0.0, 8.0)
+	_validate_review_bounds_track_art_body("harborfront_street_wall", [
+		"b_inn_tavern",
+		"b_clerk_townhouse",
+		"b_mercantile",
+		"b_counting_house",
+		"b_chandlery_front",
+		"b_shop_house",
+		"b_market_shed",
+		"b_printer_rowhouse",
+	])
+	_validate_visual_sequence_has_tight_seams("support_lane_row", [
 		"b_boarding_house",
 		"b_dockworker_rowhouse",
-	], 10.0)
+	], 0.0, 8.0)
+	_validate_review_bounds_track_art_body("support_lane_row", [
+		"b_boarding_house",
+		"b_dockworker_rowhouse",
+	])
 
-func _validate_visual_sequence_has_daylight(label: String, ids: Array, min_gap: float) -> void:
+	var clerk := _building_by_name("b_clerk_townhouse")
+	if clerk:
+		var clerk_rect := _building_visual_world_rect(clerk)
+		_expect(clerk_rect.size.x >= 145.0 and clerk_rect.size.y >= 150.0, "clerk_townhouse_world_full_brick_block")
+		var mercantile := _building_by_name("b_mercantile")
+		if mercantile:
+			var mercantile_rect := _building_visual_world_rect(mercantile)
+			var clerk_to_mercantile_gap := mercantile_rect.position.x - clerk_rect.end.x
+			_expect(clerk_to_mercantile_gap >= 0.0, "clerk_townhouse_not_cut_off_by_mercantile")
+			_expect(clerk_to_mercantile_gap <= 4.0, "clerk_townhouse_sits_against_mercantile")
+
+func _validate_review_bounds_track_art_body(label: String, ids: Array) -> void:
+	for id in ids:
+		var building := _building_by_name(String(id))
+		if building == null or not building.has_method("get_visual_bounds") or not building.has_method("get_lot_bounds"):
+			failures.append("review_bounds_missing_" + label + "_" + String(id))
+			continue
+		var visual_rect: Rect2 = building.get_visual_bounds()
+		var lot_rect: Rect2 = building.get_lot_bounds()
+		_expect(absf(lot_rect.position.x - visual_rect.position.x) <= 1.0, "review_bounds_left_tracks_art_" + label + "_" + String(id))
+		_expect(absf(lot_rect.end.x - visual_rect.end.x) <= 1.0, "review_bounds_right_tracks_art_" + label + "_" + String(id))
+		_expect(absf(lot_rect.position.y - visual_rect.position.y) <= 1.0, "review_bounds_top_tracks_art_" + label + "_" + String(id))
+		_expect(absf(lot_rect.end.y - visual_rect.end.y) <= 1.0, "review_bounds_bottom_tracks_art_" + label + "_" + String(id))
+
+func _validate_visual_sequence_has_tight_seams(label: String, ids: Array, min_gap: float, max_gap: float) -> void:
 	var entries: Array = []
 	for id in ids:
 		var building := _building_by_name(String(id))
@@ -253,7 +298,9 @@ func _validate_visual_sequence_has_daylight(label: String, ids: Array, min_gap: 
 		var right: Dictionary = entries[i + 1]
 		var left_rect: Rect2 = left["rect"]
 		var right_rect: Rect2 = right["rect"]
-		_expect(left_rect.end.x + min_gap <= right_rect.position.x, "visual_gap_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
+		var gap := right_rect.position.x - left_rect.end.x
+		_expect(gap >= min_gap, "visual_seam_not_overlapping_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
+		_expect(gap <= max_gap, "visual_seam_not_detached_" + label + "_" + String(left["id"]) + "_to_" + String(right["id"]))
 
 func _validate_building_node(building: Node2D) -> void:
 	var sprite := building.get_node_or_null("Sprite2D") as Sprite2D
@@ -400,12 +447,12 @@ func _validate_building_walkability_gate() -> void:
 		"harborfront_rear_commercial_row": Vector2(892.0, 526.0),
 		"west_commercial_cross_lane": Vector2(392.0, 520.0),
 		"central_inland_cross_lane": Vector2(672.0, 430.0),
-		"central_front_cross_lane": Vector2(668.0, 592.0),
+		"central_front_cross_lane": Vector2(752.0, 604.0),
 		"east_commercial_cross_lane": Vector2(1100.0, 520.0),
 		"dock_layer_walk": Vector2(824.0, 710.0),
 		"clerk_rowhouse_front_walk": Vector2(420.0, 604.0),
-		"market_east_edge_front_walk": Vector2(1496.0, 604.0),
-		"support_boarding_gap_walk": Vector2(1420.0, 418.0),
+		"market_east_edge_front_walk": Vector2(1430.0, 604.0),
+		"support_boarding_gap_walk": Vector2(1380.0, 418.0),
 	}
 	for sample_name in walk_samples.keys():
 		var point: Vector2 = walk_samples[sample_name]

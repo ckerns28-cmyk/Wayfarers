@@ -320,8 +320,8 @@ Asset audit by role:
   integrated; `newport_market_frontage_row` deferred as a duplicate frontage
   variant.
 - Counting house / administrative office: `newport_counting_house_civic_exchange`
-  integrated; `newport_formal_townhouse_block_a` is available but deferred for
-  a later row-house or residential-block purpose.
+  integrated; `newport_formal_townhouse_block_a` is integrated as the brick
+  clerk rowhouse beside the mercantile.
 - Chandlery / rope / sail shop: `newport_chandlery_outfitter_front`
   integrated; `newport_chandlery_cottage` deferred.
 - Warehouse: `newport_dockside_storehouse_long` and
@@ -559,7 +559,7 @@ Debug overlay meaning:
 
 Planned G-4.13B rowhouse/townhouse infill slots:
 
-- `slot_tavern_mercantile_narrow_rowhouse`
+- `slot_tavern_mercantile_brick_rowhouse`
 - `slot_counting_chandlery_lane_edge_shop`
 - `slot_shop_market_townhouse_pair`
 - `slot_cottage_customs_inland_townhouse`
@@ -645,10 +645,13 @@ Asset audit:
 - `newport_narrow_merchant_townhouse_a`: activated as a narrow
   shop-house/rowhouse for `b_printer_rowhouse`, now seated on the east market
   street edge after the shop-house gap proved too tight.
-- `newport_formal_townhouse_block_a`: activated as a formal townhouse block for
-  `b_clerk_townhouse`, now filling the tavern-to-mercantile street-wall slot
-  after the tavern/mercantile bounds were tightened and the mercantile was
-  nudged east.
+- `newport_formal_townhouse_block_a`: activated as the `b_clerk_townhouse`
+  brick rowhouse between the tavern and mercantile, restored after QA clarified
+  the desired asset and placement.
+- `newport_narrow_clapboard_townhouse_b`: available deferred art for later
+  residential infill, but not used for the clerk rowhouse slot.
+- `newport_formal_townhouse_single_bay`: rejected after QA because the crop
+  reads like a cut facade column rather than a whole townhouse.
 - `newport_waterfront_shop_house`: activated as the four-unit clapboard
   `b_dockworker_rowhouse`, replacing the duplicate boarding-house sprite.
 - Deferred candidates: `newport_chandlery_cottage` and
@@ -656,9 +659,9 @@ Asset audit:
 
 Infill slots used:
 
-- `slot_tavern_mercantile_narrow_rowhouse`: active with `b_clerk_townhouse`
-  after tightening the tavern and mercantile planning/visual widths and sliding
-  the mercantile east enough for a deliberate attached-rowhouse read.
+- `slot_tavern_mercantile_brick_rowhouse`: active with `b_clerk_townhouse`
+  as the full brick formal townhouse block, seated directly against the
+  mercantile without cropping or overlapping the sprite.
 - `slot_support_lane_boarding_gap`: active with `b_dockworker_rowhouse`,
   seated as a four-unit lane-front rowhouse beside the boarding-house block
   while keeping the east support-lane return readable.
@@ -694,6 +697,57 @@ Collision/footprint model:
 - The visual sprite rectangles are review/art bounds only. New blocking
   collision is a shallow ground-contact footprint near the building base.
 - Interaction zones remain south/frontage-aligned.
+
+G-4.13B.4 clerk townhouse complete asset fix:
+
+- Build label: Godot G-4.13B.4 Clerk Townhouse Complete Asset Fix.
+- Replaces the rejected single-bay crop with a complete narrow clapboard
+  townhouse from the same Newport source pack.
+- Adds validation guards that reject both squat miniature-block reads and
+  over-narrow sliced-column reads for the clerk townhouse.
+
+G-4.13B.5 street-wall tight seam fix:
+
+- Build label: Godot G-4.13B.5 Street-Wall Tight Seam Fix.
+- Replaces the detached 12px daylight rule with a tight seam band: building
+  sprites may not overlap, but adjacent street-wall gaps must remain small.
+- Repacked the harborfront row and support-lane row so the clerk, mercantile,
+  counting house, chandlery, shop, market, printer, and dockworker rowhouse
+  read as continuous street frontage instead of freestanding buildings.
+
+G-4.13B.6 brick clerk rowhouse placement fix:
+
+- Build label: Godot G-4.13B.6 Brick Clerk Rowhouse Placement Fix.
+- Restores the full brick formal townhouse block for `b_clerk_townhouse`;
+  the clapboard townhouse is no longer used for this slot.
+- Repacked the tavern, brick clerk rowhouse, and mercantile so the brick rowhouse
+  sits directly against the mercantile without being cropped or overlapped.
+- Adds validation guards that require the brick block asset, the uncut source
+  region, full rowhouse scale, and a tight non-overlapping clerk-to-mercantile
+  seam.
+
+G-4.13B.7 street-wall art bounds fix:
+
+- Build label: Godot G-4.13B.7 Street-Wall Art Bounds Fix.
+- Keeps `b_clerk_townhouse` on the full brick formal townhouse block and
+  reduces it back to a normal Newport rowhouse scale instead of compensating
+  with an oversized or swapped sprite.
+- The street-wall row is now packed from catalog-authored art-body bounds
+  rather than loose source rectangles, transparent padding, or planning lots.
+- `Building.gd` now honors the catalog `visual_bounds` at runtime instead of
+  rebuilding debug bounds from the full source rectangle.
+- Harborfront and support-row review `lot_bounds` now track the same art-body
+  envelope as `visual_bounds`, so the `B` overlay no longer hides fake spacing
+  behind oversized lot rectangles. Collision remains the separate shallow
+  ground-contact footprint.
+- The validator now fails if street-wall review lot bounds drift away from the
+  art body, and still requires tight non-overlapping seams.
+- Measured final street-wall visual gaps: inn -> clerk `2.84px`, clerk ->
+  mercantile `3.26px`, mercantile -> counting house `2.88px`, counting house
+  -> chandlery `2.91px`, chandlery -> shop house `3.26px`, shop house ->
+  market shed `2.94px`, market shed -> printer rowhouse `3.05px`.
+- The exported Web build was checked in-browser in clean and `B` overlay modes
+  after packaging.
 
 Routes revalidated:
 
