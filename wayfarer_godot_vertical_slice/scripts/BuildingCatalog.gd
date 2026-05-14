@@ -166,8 +166,9 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 	if placement_tags.is_empty():
 		placement_tags = [district_role]
 	var collision_footprint := _collision_footprint_for(building_id, lot_bounds, visual_base_width)
-	var interaction_size := Vector2(maxf(84.0, collision_footprint.size.x * 0.76), 42.0)
-	var interaction_zone := Rect2(frontage_offset - interaction_size * 0.5, interaction_size)
+	var door_anchor := frontage_offset
+	var interaction_size := _interaction_size_for(building_id, collision_footprint)
+	var interaction_zone := Rect2(door_anchor - interaction_size * 0.5, interaction_size)
 	var visual_bounds := _visual_bounds(sprite, draw_width, visual_base_anchor)
 	var review_lot_bounds := _review_lot_bounds(building_id, lot_bounds, visual_bounds)
 	var entity_metadata := _entity_metadata_for(building_id, display_name, district_role)
@@ -211,9 +212,11 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 		"interaction_zone_placeholder": true,
 		"frontage_offset": frontage_offset,
 		"door_offset": frontage_offset,
+		"door_anchor": door_anchor,
 		"district_placement_tags": placement_tags,
 		"notes": notes,
 		"y_sort_offset": Vector2.ZERO,
+		"y_sort_anchor": Vector2.ZERO,
 		"shadow_offset": Vector2(0.0, -6.0),
 		"shadow_size": shadow_size,
 		"projection_details": projection_details,
@@ -221,6 +224,7 @@ static func _definition(building_id: String, display_name: String, sprite_id: St
 		"lot_rect": review_lot_bounds,
 		"building_volume_rect": review_lot_bounds,
 		"frontage_body_rect": Rect2(Vector2(-visual_base_width * 0.5, -maxf(34.0, collision_footprint.size.y)), Vector2(visual_base_width, maxf(34.0, collision_footprint.size.y))),
+		"ground_contact_rect": Rect2(Vector2(-visual_base_width * 0.5, -4.0), Vector2(visual_base_width, 8.0)),
 		"harbor_integrated": harbor_integrated,
 		"definition_normalized": true,
 	}
@@ -353,3 +357,16 @@ static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, vis
 
 static func _base_footprint(width: float, rear_depth: float, front_depth: float) -> Rect2:
 	return Rect2(Vector2(-width * 0.5, -rear_depth), Vector2(width, rear_depth + front_depth))
+
+static func _interaction_size_for(building_id: String, _collision_footprint: Rect2) -> Vector2:
+	match building_id:
+		"b_dock_storehouse", "b_dock_warehouse", "b_wharf_boathouse":
+			return Vector2(64.0, 36.0)
+		"b_counting_house", "b_custom_house":
+			return Vector2(58.0, 36.0)
+		"b_inn_tavern", "b_mercantile", "b_chandlery_front", "b_shop_house":
+			return Vector2(56.0, 34.0)
+		"b_market_shed":
+			return Vector2(60.0, 34.0)
+		_:
+			return Vector2(48.0, 32.0)

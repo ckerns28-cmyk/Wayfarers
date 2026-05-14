@@ -27,13 +27,13 @@ text = "Wayfarer"
 [node name="BuildLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 11
-text = "Build label: Godot G-4.14A Building Entity Contract"
+text = "Build label: Godot G-4.14B Building Grounding + Entity Contract Repair"
 autowrap_mode = 3
 
 [node name="PhaseHost" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 11
-text = "Phase: G-4.14A | Review host: itch"
+text = "Phase: G-4.14B | Review host: itch"
 autowrap_mode = 3
 
 [node name="Channel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]

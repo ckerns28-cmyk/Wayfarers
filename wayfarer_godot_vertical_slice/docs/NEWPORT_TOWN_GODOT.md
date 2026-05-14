@@ -1192,8 +1192,32 @@ in this pass; `interior_scene` stores future placeholder paths only.
 
 - Final art parity with JavaScript Phase 35.13R.
 - Quests, combat, inventory, save migration, and production cutover.
-- Butler automation and Cloudflare Pages deployment.
+- Automated hosting or deployment handoff.
 - New source art for exact per-building replacements.
 
 Manual review still requires uploading
 `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` to itch.
+
+## G-4.14B Building Grounding + Entity Contract Repair
+
+G-4.14B keeps the G-4.14A metadata contract while repairing the object-level
+grounding and interaction behavior that made the town read as pasted sprites.
+It does not add interiors, new buildings, new art, a larger map, or unrelated
+gameplay systems.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.14B Building Grounding + Entity Contract Repair
+Phase: G-4.14B | Review host: itch
+Branch: codex/g-4-14b-building-grounding-entity-repair
+```
+
+QA note:
+
+- Converted/verified: Counting House, Harbor Residence, Harbor Mercantile, Dock Storehouse, plus the rest of the active starter-harbor building definitions through the normalized catalog path.
+- Grounding repair: definitions now expose `door_anchor`, `y_sort_anchor`, and `ground_contact_rect`; the debug overlay can prove collision footprint, door anchor, interaction area, base/y-sort anchor, and `building_id / display_name`.
+- Interaction repair: prompts are driven by the authored doorway interaction area instead of broad player radius alone, so they appear at the door/frontage and stay off in the middle of the street.
+- Presentation repair: commercial-row thresholds and cargo props were nudged to the street-side band so they no longer pierce the foundation/base reading.
+- Debug toggle: `F3` toggles the full QA overlay; `B` toggles building seating overlays. Both remain off on normal load.
+- Known visual issues: prop art is still drawn from simple procedural placeholders until a later prop-art integration pass.

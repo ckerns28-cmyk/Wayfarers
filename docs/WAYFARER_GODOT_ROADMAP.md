@@ -1128,6 +1128,38 @@ Remaining known issues:
 - G-4.13D remains the final whole-town manual navigation/collision validation
   pass after prop dressing.
 
+## G-4.14B: Building Grounding + Entity Contract Repair
+
+Status: implemented for local validation.
+
+G-4.14B preserves the G-4.14A building metadata and interaction contract, then
+repairs the building-object foundations that QA flagged in the manual itch
+review loop.
+
+Implemented:
+
+- HUD identity: `Godot G-4.14B Building Grounding + Entity Contract Repair`.
+- Branch: `codex/g-4-14b-building-grounding-entity-repair`.
+- Building definitions expose `door_anchor`, `y_sort_anchor`, and
+  `ground_contact_rect` alongside the existing gameplay metadata.
+- `Building.gd` now exposes `get_prompt_text()`,
+  `is_player_in_interaction_area()`, `get_door_anchor_local()`, and
+  `get_ground_contact_rect()` without removing the G-4.14A methods.
+- Player prompts are tied to tight doorway interaction areas instead of a broad
+  street-radius check, and the on-screen label is smaller.
+- The QA overlay remains default-off and can show footprint, interaction area,
+  door anchor, base/y-sort anchor, and building identity when toggled.
+- Commercial-row thresholds and row-front cargo props were moved into the
+  street-side band so they support the grounding read instead of cutting
+  through building bases.
+
+Verified scope:
+
+- Counting House / civic building.
+- Harbor Residence / large residence.
+- Harbor Mercantile / shopfront commercial building.
+- Dock Storehouse / harbor warehouse-style building.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
