@@ -24,7 +24,8 @@ reference prototype.
 
 - Move: WASD or arrow keys
 - Interact: E
-- Toggle debug overlay (visual bounds / lot bounds / collision footprint / interaction / anchors): F3
+- Toggle full debug overlay (visual bounds / lot bounds / collision footprint / interaction / anchors): F3
+- Toggle building seating overlay only: B
 
 ## Run
 
@@ -46,9 +47,8 @@ Current review captures are stored in `artifacts/screenshots/`:
 ## Web Delivery
 
 See `WEB_DELIVERY.md`. The Godot slice exports to `web_build/` (gitignored)
-via `tools/export_web.sh` and ships to a *separate* Cloudflare Pages project
-named `wayfarers-godot-slice`. The existing JavaScript Worker
-(`wrangler.toml` → `wayfarer_v7_github_ready/`) is not touched.
+via `tools/export_web.sh`, then `tools/package_itch_web.sh` creates the
+manual HTML5 ZIP used for itch review.
 
 ## Slice Intent
 

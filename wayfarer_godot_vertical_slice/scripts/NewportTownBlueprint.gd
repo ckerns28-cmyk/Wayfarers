@@ -480,13 +480,13 @@ static func lived_in_detail_count() -> int:
 static func detail_blockers() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_blocker("tavern_loading_barrels", Rect2(334, 548, 30, 18)),
-			_blocker("mercantile_front_crates", Rect2(454, 574, 28, 14)),
-			_blocker("west_alley_rope", Rect2(566, 574, 22, 14)),
-			_blocker("counting_house_goods_left", Rect2(596, 544, 34, 18)),
-			_blocker("counting_house_goods_right", Rect2(730, 546, 30, 18)),
-			_blocker("chandlery_rope_stack", Rect2(790, 548, 30, 18)),
-			_blocker("shop_house_crates", Rect2(1030, 550, 32, 18)),
+			_blocker("tavern_loading_barrels", Rect2(334, 582, 30, 16)),
+			_blocker("mercantile_front_crates", Rect2(454, 586, 28, 14)),
+			_blocker("west_alley_rope", Rect2(566, 586, 22, 14)),
+			_blocker("counting_house_goods_left", Rect2(604, 582, 34, 16)),
+			_blocker("counting_house_goods_right", Rect2(774, 584, 30, 16)),
+			_blocker("chandlery_rope_stack", Rect2(862, 586, 30, 14)),
+			_blocker("shop_house_crates", Rect2(1038, 584, 32, 16)),
 			_blocker("wharf_west_cargo", Rect2(370, 666, 36, 20)),
 			_blocker("wharf_market_table", Rect2(706, 656, 62, 20)),
 			_blocker("wharf_east_barrels", Rect2(1024, 666, 34, 22)),

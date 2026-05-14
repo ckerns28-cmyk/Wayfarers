@@ -340,8 +340,8 @@ func _draw_g410_street_plan() -> void:
 		Vector2(240, 512), Vector2(466, 506), Vector2(612, 516), Vector2(824, 510),
 		Vector2(1032, 516), Vector2(1338, 520)
 	]), Color(1.0, 0.93, 0.68, 0.10), 1.0)
-	for p in [Vector2(286, 534), Vector2(492, 562), Vector2(680, 536), Vector2(892, 562), Vector2(1090, 536), Vector2(1262, 562)]:
-		_draw_g47_threshold(p, 56)
+	for p in [Vector2(286, 582), Vector2(443, 582), Vector2(565, 584), Vector2(710, 582), Vector2(873, 584), Vector2(1015, 584), Vector2(1172, 584), Vector2(1298, 584)]:
+		_draw_g47_threshold(p, 48)
 	_draw_street_wear(Rect2(232, 504, 1116, 42), 34)
 
 	draw_colored_polygon(PackedVector2Array([
@@ -431,16 +431,16 @@ func _draw_g410_wharf_water() -> void:
 		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
 
 func _draw_g410_props() -> void:
-	for pos in [Vector2(250, 386), Vector2(330, 548), Vector2(456, 552), Vector2(594, 544), Vector2(812, 388), Vector2(986, 386), Vector2(1034, 548), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:
+	for pos in [Vector2(250, 386), Vector2(334, 582), Vector2(454, 586), Vector2(604, 582), Vector2(812, 388), Vector2(986, 386), Vector2(1038, 584), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:
 		_draw_contact_shadow(pos + Vector2(14, 11), Vector2(20, 7), 0.15)
 		_draw_crate_stack(pos)
-	for pos in [Vector2(286, 394), Vector2(354, 550), Vector2(724, 546), Vector2(850, 390), Vector2(936, 548), Vector2(1182, 392), Vector2(1058, 668), Vector2(418, 728), Vector2(1160, 728), Vector2(254, 410), Vector2(1222, 418)]:
+	for pos in [Vector2(286, 394), Vector2(348, 584), Vector2(774, 584), Vector2(850, 390), Vector2(938, 584), Vector2(1182, 392), Vector2(1058, 668), Vector2(418, 728), Vector2(1160, 728), Vector2(254, 410), Vector2(1222, 418)]:
 		_draw_contact_shadow(pos + Vector2(8, 6), Vector2(17, 6), 0.16)
 		_draw_barrels(pos, 3)
-	for pos in [Vector2(298, 408), Vector2(526, 550), Vector2(790, 548), Vector2(552, 688), Vector2(872, 684), Vector2(1256, 408), Vector2(1070, 746), Vector2(664, 694), Vector2(872, 552), Vector2(1286, 812)]:
+	for pos in [Vector2(298, 408), Vector2(566, 586), Vector2(862, 586), Vector2(552, 688), Vector2(872, 684), Vector2(1256, 408), Vector2(1070, 746), Vector2(664, 694), Vector2(904, 586), Vector2(1286, 812)]:
 		_draw_contact_shadow(pos + Vector2(3, 5), Vector2(15, 5), 0.13)
 		_draw_rope_coil(pos)
-	for pos in [Vector2(470, 566), Vector2(520, 560), Vector2(1048, 566), Vector2(1194, 682)]:
+	for pos in [Vector2(476, 592), Vector2(526, 592), Vector2(1052, 592), Vector2(1194, 682)]:
 		_draw_contact_shadow(pos + Vector2(10, 9), Vector2(17, 6), 0.13)
 		_draw_sack_stack(pos)
 	for pos in [Vector2(252, 432), Vector2(290, 432), Vector2(326, 432)]:
@@ -480,11 +480,11 @@ func _draw_g410_props() -> void:
 	_draw_fence_line(Vector2(406, 442), Vector2(530, 442), Color("#cdbb86"))
 	_draw_woodpile(Vector2(396, 462))
 	_draw_woodpile(Vector2(278, 420))
-	_draw_woodpile(Vector2(488, 566))
+	_draw_woodpile(Vector2(534, 592))
 	for pos in [Vector2(134, 438), Vector2(1452, 430), Vector2(1320, 332), Vector2(150, 612), Vector2(1368, 642), Vector2(584, 356), Vector2(1018, 356), Vector2(1190, 326)]:
 		draw_circle(pos, 13, Color("#2f5d35"))
 		draw_circle(pos + Vector2(-8, -8), 8, Color("#3d7042"))
-	for bench in [Vector2(792, 404), Vector2(952, 404), Vector2(1178, 410), Vector2(342, 566)]:
+	for bench in [Vector2(792, 404), Vector2(952, 404), Vector2(1178, 410), Vector2(342, 596)]:
 		_draw_bench(bench)
 
 func _draw_g49_ground() -> void:

@@ -35,7 +35,9 @@ var _collision_footprint := Rect2()
 var _interaction_zone := Rect2()
 var _lot_bounds := Rect2()
 var _foot_anchor_point := Vector2.ZERO
+var _door_anchor_point := Vector2.ZERO
 var _y_sort_point := Vector2.ZERO
+var _ground_contact_rect := Rect2()
 var _projection_detail_names: Array[String] = []
 
 func configure(config: Dictionary) -> void:
@@ -96,6 +98,7 @@ func configure(config: Dictionary) -> void:
 
 	var interaction_shape := RectangleShape2D.new()
 	var frontage_offset: Vector2 = config.get("frontage_offset", config.get("interaction_offset", Vector2(0.0, 22.0)))
+	_door_anchor_point = config.get("door_anchor", config.get("door_offset", frontage_offset))
 	if config.has("interaction_zone"):
 		_interaction_zone = config["interaction_zone"]
 		interaction_shape.size = _interaction_zone.size
@@ -105,12 +108,13 @@ func configure(config: Dictionary) -> void:
 		interaction_collision.position = config.get("interaction_offset", frontage_offset)
 		_interaction_zone = Rect2(interaction_collision.position - interaction_shape.size * 0.5, interaction_shape.size)
 	interaction_collision.shape = interaction_shape
-	door_marker.position = config.get("door_offset", frontage_offset)
+	door_marker.position = _door_anchor_point
 	_foot_anchor_point = config.get("foot_anchor", Vector2.ZERO)
 	foot_anchor.position = _foot_anchor_point
 	frontage_marker.position = frontage_offset
-	_y_sort_point = config.get("y_sort_offset", Vector2.ZERO)
+	_y_sort_point = config.get("y_sort_anchor", config.get("y_sort_offset", Vector2.ZERO))
 	y_sort_anchor.position = _y_sort_point
+	_ground_contact_rect = config.get("ground_contact_rect", Rect2(Vector2(-_visual_base_width * 0.5, -4.0), Vector2(_visual_base_width, 8.0)))
 	debug_overlay.refresh()
 	set_debug_overlay(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT)
 	queue_redraw()
@@ -135,6 +139,22 @@ func get_interaction_position() -> Vector2:
 		return door_marker.global_position
 	return global_position
 
+func get_prompt_text() -> String:
+	var label := get_interaction_label()
+	var enter_prefix := "Press E to enter "
+	var inspect_prefix := "Press E to inspect "
+	if label.begins_with(enter_prefix):
+		return "E: " + label.substr(enter_prefix.length())
+	if label.begins_with(inspect_prefix):
+		return "E: Inspect " + label.substr(inspect_prefix.length())
+	return label
+
+func is_player_in_interaction_area(world_position: Vector2) -> bool:
+	if _interaction_zone.size.x <= 0.0 or _interaction_zone.size.y <= 0.0:
+		return global_position.distance_to(world_position) <= 42.0
+	var local_point := to_local(world_position)
+	return _interaction_zone.grow(4.0).has_point(local_point)
+
 func interact() -> String:
 	if can_player_enter():
 		if not unavailable_message.is_empty():
@@ -157,7 +177,7 @@ func is_proof_street_building() -> bool:
 	return proof_street
 
 func has_seating_metadata() -> bool:
-	return proof_street and _visual_base_width > 0.0 and body_collision.shape is RectangleShape2D and _lot_bounds.size.x > 0.0 and _lot_bounds.size.y > 0.0 and _interaction_zone.size.x > 0.0 and _interaction_zone.size.y > 0.0 and frontage_marker != null and y_sort_anchor != null
+	return _visual_base_width > 0.0 and body_collision.shape is RectangleShape2D and _lot_bounds.size.x > 0.0 and _lot_bounds.size.y > 0.0 and _interaction_zone.size.x > 0.0 and _interaction_zone.size.y > 0.0 and _ground_contact_rect.size.x > 0.0 and _ground_contact_rect.size.y > 0.0 and frontage_marker != null and door_marker != null and y_sort_anchor != null
 
 func uses_normalized_definition() -> bool:
 	return definition_normalized and definition_id != "" and district_role != ""
@@ -183,8 +203,17 @@ func get_lot_bounds() -> Rect2:
 func get_foot_anchor_local() -> Vector2:
 	return _foot_anchor_point
 
+func get_door_anchor_local() -> Vector2:
+	return _door_anchor_point
+
+func get_door_anchor() -> Vector2:
+	return get_interaction_position()
+
 func get_y_sort_anchor_local() -> Vector2:
 	return _y_sort_point
+
+func get_ground_contact_rect() -> Rect2:
+	return _ground_contact_rect
 
 func get_projection_detail_names() -> Array[String]:
 	return _projection_detail_names.duplicate()
