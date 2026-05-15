@@ -99,7 +99,7 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_cooperage_shed":
 			return _definition(building_id, "Cooperage Shed", "service_dependency_shed", "cooperage", 124.0, Vector2(149.0, 269.0), Vector2(98.0, 16.0), Rect2(Vector2(-58.0, -108.0), Vector2(116.0, 118.0)), Vector2(0.0, 20.0), 92.0, false, ["support_lane", "working_wharf", "dock_service"], "Compact service shed standing in for cooperage/barrel-shop support with an isolated crop to remove the building above it.")
 		"b_printer_rowhouse":
-			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 88.0, Vector2(136.5, 385.0), Vector2(72.0, 14.0), Rect2(Vector2(-38.0, -112.0), Vector2(76.0, 124.0)), Vector2(0.0, 22.0), 66.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.13B.1 narrow rowhouse/shopfront infill for a future pamphlet printer, apprentice errand, or rented-room rumor hook; deliberately scaled as infill so it reads beside the market without touching it.")
+			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 118.0, Vector2(136.5, 385.0), Vector2(96.0, 16.0), Rect2(Vector2(-52.0, -154.0), Vector2(104.0, 166.0)), Vector2(0.0, 24.0), 92.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.15 scales the narrow printer rowhouse at the asset's Newport default width so it reads as a real street-wall building beside the market shed instead of a prop-sized infill.")
 		"b_clerk_townhouse":
 			return _definition(building_id, "Clerk Townhouse", "newport_formal_townhouse_block_a", "clerk_lodging", 168.0, Vector2(185.5, 336.0), Vector2(136.0, 15.0), Rect2(Vector2(-78.0, -140.0), Vector2(156.0, 152.0)), Vector2(0.0, 24.0), 136.0, false, ["harborfront_commercial", "residential", "rowhouse", "future_clerk_lodging"], "G-4.13B.7 brick formal townhouse row restored at Newport scale and packed by street-wall art bounds rather than transparent or prop padding.")
 		"b_dockworker_rowhouse":
@@ -337,7 +337,7 @@ static func _collision_footprint_for(building_id: String, lot_bounds: Rect2, vis
 		"b_cooperage_shed":
 			return _base_footprint(92.0, 16.0, 12.0)
 		"b_printer_rowhouse":
-			return _base_footprint(66.0, 18.0, 12.0)
+			return _base_footprint(92.0, 18.0, 12.0)
 		"b_clerk_townhouse":
 			return _base_footprint(132.0, 18.0, 12.0)
 		"b_dockworker_rowhouse":
