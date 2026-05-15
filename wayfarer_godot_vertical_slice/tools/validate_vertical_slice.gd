@@ -563,7 +563,7 @@ func _validate_harborfront_parcel_rhythm() -> void:
 
 func _validate_harborfront_visual_bottom_datum() -> void:
 	var street_bottom_y := NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * float(NEWPORT_TOWN.TILE)
-	for id in NEWPORT_TOWN.G414A_CURB_DATUM_BUILDING_IDS:
+	for id in G414A_CURB_DATUM_BUILDING_IDS:
 		var building := _building_by_name(String(id))
 		if building == null:
 			failures.append("harborfront_bottom_datum_missing_" + String(id))
