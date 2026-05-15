@@ -13,7 +13,8 @@ reference prototype.
 - Seventeen active starter-harbor building objects across civic, residential, commercial, support, and dock bands.
 - Each building is a Godot object with sprite, parcel rule, foot/y-sort anchor, collision shape, door anchor, and interaction/frontage area.
 - Newport Visual Cohesion Rules now gate surfaces, props, player/NPC/monster art, equipment, VFX, and UI-world objects before review acceptance.
-- The G-4.16 surface kit replaces flat placeholder streets, curbs, grass transitions, dock planks, pier edges, lot traces, and weak hero props.
+- The G-4.16 surface kit remains the fallback outside the hero area.
+- G-4.17 adds the first Newport asset pipeline and a central commercial-row atlas proof for street, curb/stoop, base shadow, grass edge, dock transition, and hero prop clusters.
 - NPCs are disabled for the current town-layout review pass.
 - Minimal HUD with build identity, review host, and interaction/dialogue feedback.
 
@@ -38,14 +39,16 @@ Run the scene-contract check from this folder:
 godot --headless --path . --script res://tools/validate_vertical_slice.gd
 ```
 
-Current review captures are stored in `artifacts/screenshots/`:
+Current G-4.17 review captures should be stored in `artifacts/screenshots/g417/`:
 
-- `g416/normal_full_harbor.png`
-- `g416/no_hud_full_harbor.png`
-- `g416/normal_middle_commercial_row.png`
-- `g416/normal_dock_band.png`
-- `g416/building_seating_overlay.png`
-- `g416/full_debug_overlay.png`
+- `normal_full_harbor.png`
+- `no_hud_full_harbor.png`
+- `hero_street_atlas_closeup.png`
+- `dock_harbor_closeup.png`
+- `debug_overlay_proof.png`
+
+The repeatable capture path is documented in
+`art_pipeline/newport/reports/G417_SCREENSHOT_REVIEW_PATH.md`.
 
 ## Web Delivery
 
@@ -53,7 +56,7 @@ See `WEB_DELIVERY.md`. The Godot slice exports to `web_build/` (gitignored)
 via `tools/export_web.sh`, then `tools/package_itch_web.sh` creates the
 manual HTML5 ZIP used for itch review. The stable upload path is
 `artifacts/wayfarers-tale-godot-web.zip`; the script also creates a versioned
-ZIP such as `artifacts/wayfarers-tale-godot-g-4-16-newport-art-cohesion-reset.zip`.
+ZIP such as `artifacts/wayfarers-tale-godot-g-4-17-newport-asset-pipeline-hero-street-atlas.zip`.
 
 ## Slice Intent
 

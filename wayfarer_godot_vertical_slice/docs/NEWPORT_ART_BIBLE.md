@@ -2,10 +2,16 @@
 
 ## Newport Visual Cohesion Rules
 
-G-4.16 makes the high-detail Newport building sprites the art standard for the
-whole town. Any new asset, prop, terrain tile, character, NPC, monster,
-equipment item, VFX element, or UI-world object must pass this standard before
-it is accepted into a player-facing review build.
+The building sprites define the visual standard. Future terrain, props,
+characters, NPCs, monsters, equipment, UI-world objects, VFX, interiors, and
+interactables must match this standard before they are accepted into the review
+build.
+
+G-4.16 made the high-detail Newport building sprites the art standard for the
+whole town. G-4.17 turns that rule into a repeatable asset-pipeline gate. Any
+new asset, prop, terrain tile, character, NPC, monster, equipment item, VFX
+element, or UI-world object must pass this standard before it is accepted into
+a player-facing review build.
 
 Target pixel density / apparent detail:
 
@@ -107,3 +113,28 @@ The kit is currently procedural in `MapLayer.gd` so it can cover the starter
 harbor consistently before dedicated bitmap terrain assets exist. Dedicated
 terrain sprites may replace these pieces later, but they must preserve the
 same material rules and validation gate.
+
+## G-4.17 Asset Pipeline Gate
+
+Pipeline folders live under `art_pipeline/newport/`:
+
+- `source_refs/`
+- `generated_contact_sheets/`
+- `manifests/`
+- `atlases/`
+- `reports/`
+- `scripts/`
+
+The style extraction script measures the existing building sprites and writes
+a markdown report, palette contact sheet, and JSON style manifest. The hero
+street atlas generator creates project-owned bitmap atlas pieces and records
+source, ownership, license, region, scale, collision, y-sort, contact shadow,
+placeholder/final state, and review eligibility in the asset manifest.
+
+Assets marked `placeholder=false` and `review_eligible=true` must satisfy the
+Newport Visual Cohesion Rules before they can appear in the review build.
+
+The current player is still a temporary scale/debug avatar. Player sprite
+sheets need a dedicated art pipeline pass, and NPCs, monsters, equipment,
+armor, weapons, and combat VFX cannot be introduced until character style
+rules are defined.

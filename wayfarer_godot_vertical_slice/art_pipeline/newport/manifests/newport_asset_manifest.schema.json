@@ -1,0 +1,33 @@
+{
+  "schema_id": "wayfarer.newport.asset_manifest.v1",
+  "description": "Required fields for Newport terrain and prop assets. Assets with placeholder=false and review_eligible=true must satisfy NEWPORT_ART_BIBLE.md.",
+  "required_asset_fields": [
+    "asset_id",
+    "material_category",
+    "source_file",
+    "source",
+    "atlas_region",
+    "intended_scale",
+    "collision_behavior",
+    "y_sort_behavior",
+    "contact_shadow_required",
+    "visual_cohesion_status",
+    "placeholder",
+    "final",
+    "review_eligible"
+  ],
+  "source_fields": [
+    "type",
+    "created_by",
+    "ownership",
+    "license",
+    "notes"
+  ],
+  "allowed_visual_cohesion_status": [
+    "blocked",
+    "placeholder",
+    "g417_review_candidate",
+    "accepted"
+  ],
+  "hard_rule": "If placeholder is false and review_eligible is true, the asset must satisfy the Newport Visual Cohesion Rules: muted palette, dark outline or dark-side shading, internal material detail, contact shadow where seated, and scale compatibility with building doors/windows/player."
+}

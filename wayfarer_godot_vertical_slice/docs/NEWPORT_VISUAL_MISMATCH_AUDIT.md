@@ -57,3 +57,27 @@ placement.
   muted harbor net/canvas lines.
 - F4 and `--review-no-hud` provide a no-HUD review screenshot mode so the town
   can be judged without the upper-left HUD covering the civic/residential band.
+
+## G-4.17 Asset-Pipeline Proof
+
+- The central commercial row now has an atlas-based proof area layered over the
+  procedural fallback: cobbled harbor road, curb/sidewalk/stoop strip,
+  building contact shadow, dirt/wear transitions, grass edge, and dock/market
+  transition.
+- Weak central procedural props in the proof rectangle are skipped and replaced
+  with generated atlas prop clusters that include dark outlines or dark-side
+  shading, material detail, muted Newport colors, and contact shadows.
+- The atlas is project-owned generated art. Source, ownership/license,
+  placeholder/final flags, atlas regions, scale, collision behavior, y-sort
+  behavior, contact-shadow requirements, cohesion status, and review
+  eligibility are recorded in the Newport asset manifest.
+- Outside the hero proof, the G-4.16 procedural surface kit remains an accepted
+  fallback until later atlas passes replace more of the town.
+
+Known blocker:
+
+- The current player remains a temporary scale/debug avatar. A dedicated player
+  sprite-sheet pipeline pass is required before player art can be accepted.
+  NPCs and monsters should not be introduced until character style rules are
+  defined, and equipment, armor, weapons, and combat VFX must match the future
+  player/NPC sprite detail.

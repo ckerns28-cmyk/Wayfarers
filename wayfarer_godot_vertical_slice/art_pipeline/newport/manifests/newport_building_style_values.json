@@ -1,0 +1,2004 @@
+{
+  "schema_id": "wayfarer.newport.building_style_values.v1",
+  "generated_at": "2026-05-15T13:27:58.480405+00:00",
+  "source_count": 18,
+  "source_files": [
+    "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
+    "assets/sprites/buildings/isolated/mercantile_shop_isolated.png",
+    "assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png",
+    "assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png",
+    "assets/sprites/buildings/isolated/newport_custom_house_civic_front_isolated.png",
+    "assets/sprites/buildings/isolated/newport_dockside_storehouse_isolated.png",
+    "assets/sprites/buildings/isolated/newport_dockside_storehouse_long_isolated.png",
+    "assets/sprites/buildings/isolated/newport_large_front_residence_isolated.png",
+    "assets/sprites/buildings/isolated/newport_market_shed_stalls_isolated.png",
+    "assets/sprites/buildings/isolated/newport_modest_clapboard_residence_a_isolated.png",
+    "assets/sprites/buildings/isolated/newport_shopfront_awning_isolated.png",
+    "assets/sprites/buildings/isolated/newport_wharf_boathouse_large_isolated.png",
+    "assets/sprites/buildings/isolated/residence_small_isolated.png",
+    "assets/sprites/buildings/isolated/service_dependency_shed_isolated.png",
+    "assets/sprites/buildings/isolated/village_hall_meeting_house_isolated.png",
+    "assets/buildings/hearthvale_buildings_atlas_v1.png",
+    "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+    "assets/buildings/hearthvale_newport_structure_pack_v1_b.png"
+  ],
+  "dominant_palette_bands": [
+    {
+      "hex": "#080808",
+      "rgb": [
+        8,
+        8,
+        8
+      ],
+      "share": 0.1013,
+      "luminance": 8.0,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#181818",
+      "rgb": [
+        24,
+        24,
+        24
+      ],
+      "share": 0.0597,
+      "luminance": 24.0,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#282818",
+      "rgb": [
+        40,
+        40,
+        24
+      ],
+      "share": 0.0408,
+      "luminance": 38.8,
+      "saturation": 0.4
+    },
+    {
+      "hex": "#584838",
+      "rgb": [
+        88,
+        72,
+        56
+      ],
+      "share": 0.0361,
+      "luminance": 74.2,
+      "saturation": 0.364
+    },
+    {
+      "hex": "#383828",
+      "rgb": [
+        56,
+        56,
+        40
+      ],
+      "share": 0.0356,
+      "luminance": 54.8,
+      "saturation": 0.286
+    },
+    {
+      "hex": "#483828",
+      "rgb": [
+        72,
+        56,
+        40
+      ],
+      "share": 0.0349,
+      "luminance": 58.2,
+      "saturation": 0.444
+    },
+    {
+      "hex": "#382828",
+      "rgb": [
+        56,
+        40,
+        40
+      ],
+      "share": 0.0346,
+      "luminance": 43.4,
+      "saturation": 0.286
+    },
+    {
+      "hex": "#181808",
+      "rgb": [
+        24,
+        24,
+        8
+      ],
+      "share": 0.0307,
+      "luminance": 22.8,
+      "saturation": 0.667
+    },
+    {
+      "hex": "#281818",
+      "rgb": [
+        40,
+        24,
+        24
+      ],
+      "share": 0.0295,
+      "luminance": 27.4,
+      "saturation": 0.4
+    },
+    {
+      "hex": "#282828",
+      "rgb": [
+        40,
+        40,
+        40
+      ],
+      "share": 0.0286,
+      "luminance": 40.0,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#685848",
+      "rgb": [
+        104,
+        88,
+        72
+      ],
+      "share": 0.0266,
+      "luminance": 90.2,
+      "saturation": 0.308
+    },
+    {
+      "hex": "#483838",
+      "rgb": [
+        72,
+        56,
+        56
+      ],
+      "share": 0.0229,
+      "luminance": 59.4,
+      "saturation": 0.222
+    },
+    {
+      "hex": "#382818",
+      "rgb": [
+        56,
+        40,
+        24
+      ],
+      "share": 0.0208,
+      "luminance": 42.2,
+      "saturation": 0.571
+    },
+    {
+      "hex": "#180808",
+      "rgb": [
+        24,
+        8,
+        8
+      ],
+      "share": 0.0186,
+      "luminance": 11.4,
+      "saturation": 0.667
+    },
+    {
+      "hex": "#786858",
+      "rgb": [
+        120,
+        104,
+        88
+      ],
+      "share": 0.018,
+      "luminance": 106.2,
+      "saturation": 0.267
+    },
+    {
+      "hex": "#484838",
+      "rgb": [
+        72,
+        72,
+        56
+      ],
+      "share": 0.017,
+      "luminance": 70.8,
+      "saturation": 0.222
+    }
+  ],
+  "outline_dark_edge_samples": [
+    {
+      "hex": "#080808",
+      "rgb": [
+        8,
+        8,
+        8
+      ],
+      "share": 0.2045,
+      "luminance": 8.0,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#181818",
+      "rgb": [
+        24,
+        24,
+        24
+      ],
+      "share": 0.1206,
+      "luminance": 24.0,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#282818",
+      "rgb": [
+        40,
+        40,
+        24
+      ],
+      "share": 0.0824,
+      "luminance": 38.8,
+      "saturation": 0.4
+    },
+    {
+      "hex": "#382828",
+      "rgb": [
+        56,
+        40,
+        40
+      ],
+      "share": 0.0698,
+      "luminance": 43.4,
+      "saturation": 0.286
+    },
+    {
+      "hex": "#383828",
+      "rgb": [
+        56,
+        56,
+        40
+      ],
+      "share": 0.0696,
+      "luminance": 54.8,
+      "saturation": 0.286
+    },
+    {
+      "hex": "#181808",
+      "rgb": [
+        24,
+        24,
+        8
+      ],
+      "share": 0.0619,
+      "luminance": 22.8,
+      "saturation": 0.667
+    },
+    {
+      "hex": "#281818",
+      "rgb": [
+        40,
+        24,
+        24
+      ],
+      "share": 0.0595,
+      "luminance": 27.4,
+      "saturation": 0.4
+    },
+    {
+      "hex": "#282828",
+      "rgb": [
+        40,
+        40,
+        40
+      ],
+      "share": 0.0578,
+      "luminance": 40.0,
+      "saturation": 0.0
+    }
+  ],
+  "common_shadow_colors": [
+    {
+      "hex": "#584838",
+      "rgb": [
+        88,
+        72,
+        56
+      ],
+      "share": 0.135,
+      "luminance": 74.2,
+      "saturation": 0.364
+    },
+    {
+      "hex": "#685848",
+      "rgb": [
+        104,
+        88,
+        72
+      ],
+      "share": 0.0994,
+      "luminance": 90.2,
+      "saturation": 0.308
+    },
+    {
+      "hex": "#483838",
+      "rgb": [
+        72,
+        56,
+        56
+      ],
+      "share": 0.0804,
+      "luminance": 59.4,
+      "saturation": 0.222
+    },
+    {
+      "hex": "#484838",
+      "rgb": [
+        72,
+        72,
+        56
+      ],
+      "share": 0.0635,
+      "luminance": 70.8,
+      "saturation": 0.222
+    },
+    {
+      "hex": "#483828",
+      "rgb": [
+        72,
+        56,
+        40
+      ],
+      "share": 0.0559,
+      "luminance": 58.2,
+      "saturation": 0.444
+    },
+    {
+      "hex": "#585848",
+      "rgb": [
+        88,
+        88,
+        72
+      ],
+      "share": 0.039,
+      "luminance": 86.8,
+      "saturation": 0.182
+    },
+    {
+      "hex": "#584848",
+      "rgb": [
+        88,
+        72,
+        72
+      ],
+      "share": 0.0364,
+      "luminance": 75.4,
+      "saturation": 0.182
+    },
+    {
+      "hex": "#686858",
+      "rgb": [
+        104,
+        104,
+        88
+      ],
+      "share": 0.0273,
+      "luminance": 102.8,
+      "saturation": 0.154
+    }
+  ],
+  "midtone_material_colors": [
+    {
+      "hex": "#887868",
+      "rgb": [
+        136,
+        120,
+        104
+      ],
+      "share": 0.0894,
+      "luminance": 122.2,
+      "saturation": 0.235
+    },
+    {
+      "hex": "#786858",
+      "rgb": [
+        120,
+        104,
+        88
+      ],
+      "share": 0.0889,
+      "luminance": 106.2,
+      "saturation": 0.267
+    },
+    {
+      "hex": "#988878",
+      "rgb": [
+        152,
+        136,
+        120
+      ],
+      "share": 0.071,
+      "luminance": 138.2,
+      "saturation": 0.211
+    },
+    {
+      "hex": "#a89888",
+      "rgb": [
+        168,
+        152,
+        136
+      ],
+      "share": 0.067,
+      "luminance": 154.2,
+      "saturation": 0.19
+    },
+    {
+      "hex": "#a89878",
+      "rgb": [
+        168,
+        152,
+        120
+      ],
+      "share": 0.0397,
+      "luminance": 153.1,
+      "saturation": 0.286
+    },
+    {
+      "hex": "#887858",
+      "rgb": [
+        136,
+        120,
+        88
+      ],
+      "share": 0.0385,
+      "luminance": 121.1,
+      "saturation": 0.353
+    },
+    {
+      "hex": "#988868",
+      "rgb": [
+        152,
+        136,
+        104
+      ],
+      "share": 0.0363,
+      "luminance": 137.1,
+      "saturation": 0.316
+    },
+    {
+      "hex": "#787868",
+      "rgb": [
+        120,
+        120,
+        104
+      ],
+      "share": 0.0354,
+      "luminance": 118.8,
+      "saturation": 0.133
+    },
+    {
+      "hex": "#886858",
+      "rgb": [
+        136,
+        104,
+        88
+      ],
+      "share": 0.0339,
+      "luminance": 109.6,
+      "saturation": 0.353
+    },
+    {
+      "hex": "#b8a888",
+      "rgb": [
+        184,
+        168,
+        136
+      ],
+      "share": 0.0325,
+      "luminance": 169.1,
+      "saturation": 0.261
+    }
+  ],
+  "highlight_colors": [
+    {
+      "hex": "#d8c8b8",
+      "rgb": [
+        216,
+        200,
+        184
+      ],
+      "share": 0.1065,
+      "luminance": 202.2,
+      "saturation": 0.148
+    },
+    {
+      "hex": "#c8b8a8",
+      "rgb": [
+        200,
+        184,
+        168
+      ],
+      "share": 0.1018,
+      "luminance": 186.2,
+      "saturation": 0.16
+    },
+    {
+      "hex": "#e8d8c8",
+      "rgb": [
+        232,
+        216,
+        200
+      ],
+      "share": 0.0894,
+      "luminance": 218.2,
+      "saturation": 0.138
+    },
+    {
+      "hex": "#d8c8a8",
+      "rgb": [
+        216,
+        200,
+        168
+      ],
+      "share": 0.0721,
+      "luminance": 201.1,
+      "saturation": 0.222
+    },
+    {
+      "hex": "#c8b898",
+      "rgb": [
+        200,
+        184,
+        152
+      ],
+      "share": 0.0717,
+      "luminance": 185.1,
+      "saturation": 0.24
+    },
+    {
+      "hex": "#b8a898",
+      "rgb": [
+        184,
+        168,
+        152
+      ],
+      "share": 0.0664,
+      "luminance": 170.2,
+      "saturation": 0.174
+    },
+    {
+      "hex": "#d8b8a8",
+      "rgb": [
+        216,
+        184,
+        168
+      ],
+      "share": 0.0476,
+      "luminance": 189.6,
+      "saturation": 0.222
+    },
+    {
+      "hex": "#c8a898",
+      "rgb": [
+        200,
+        168,
+        152
+      ],
+      "share": 0.0436,
+      "luminance": 173.6,
+      "saturation": 0.24
+    }
+  ],
+  "approximate_sprite_pixel_density": {
+    "mean_opaque_density": 0.7349,
+    "mean_edge_density": 0.4139,
+    "visible_width_range_px": [
+      199,
+      1184
+    ],
+    "visible_height_range_px": [
+      245,
+      1215
+    ],
+    "draw_width_targets_world_px": [
+      116,
+      132,
+      138,
+      146,
+      150,
+      154,
+      166,
+      176,
+      181,
+      190,
+      210,
+      220,
+      280
+    ]
+  },
+  "material_notes": {
+    "wood": "Weathered tan and umber boards, dark end grain, sparse warm highlights, visible seams.",
+    "stone": "Grey-brown slabs/cobbles with chipped warm highlights and green-brown shadow edges.",
+    "clapboard": "Muted off-white, blue-grey, and tan siding with dark painterly outlines and narrow plank rhythm.",
+    "roof": "Low-saturation red-brown, charcoal, or moss-dark roof masses with edge highlights.",
+    "metal_glass": "Small dark accents with restrained blue-grey or warm cream highlights, never saturated."
+  },
+  "contact_shadow_examples": {
+    "direction": "south/southeast",
+    "alpha_range": [
+      0.1,
+      0.24
+    ],
+    "color_family": "dark umber, green-brown, blue-green",
+    "shape": "soft ellipse or irregular strip under base/props, not a hard black outline"
+  },
+  "door_window_scale_references": {
+    "door_height_to_drawn_building_height": "roughly 0.16-0.26 in the active street sprites",
+    "window_height_to_door_height": "roughly 0.35-0.55",
+    "hero_prop_height_rule": "barrels, crates, signs, and tables must stay clearly below door height",
+    "player_note": "current player is a temporary scale/debug avatar and is not a style reference"
+  },
+  "per_sprite": [
+    {
+      "file": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
+      "size": [
+        473,
+        468
+      ],
+      "visible_bbox": [
+        24,
+        24,
+        441,
+        444
+      ],
+      "visible_size": [
+        417,
+        420
+      ],
+      "opaque_density": 0.8063,
+      "edge_density": 0.4054,
+      "dominant": [
+        {
+          "hex": "#382828",
+          "rgb": [
+            56,
+            40,
+            40
+          ],
+          "share": 0.0722,
+          "luminance": 43.4,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0718,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#483828",
+          "rgb": [
+            72,
+            56,
+            40
+          ],
+          "share": 0.0641,
+          "luminance": 58.2,
+          "saturation": 0.444
+        },
+        {
+          "hex": "#584838",
+          "rgb": [
+            88,
+            72,
+            56
+          ],
+          "share": 0.0632,
+          "luminance": 74.2,
+          "saturation": 0.364
+        },
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.0585,
+          "luminance": 8.0,
+          "saturation": 0.0
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/mercantile_shop_isolated.png",
+      "size": [
+        398,
+        451
+      ],
+      "visible_bbox": [
+        24,
+        24,
+        374,
+        427
+      ],
+      "visible_size": [
+        350,
+        403
+      ],
+      "opaque_density": 0.7042,
+      "edge_density": 0.4174,
+      "dominant": [
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0656,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.0627,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#382828",
+          "rgb": [
+            56,
+            40,
+            40
+          ],
+          "share": 0.0556,
+          "luminance": 43.4,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#483828",
+          "rgb": [
+            72,
+            56,
+            40
+          ],
+          "share": 0.0499,
+          "luminance": 58.2,
+          "saturation": 0.444
+        },
+        {
+          "hex": "#584838",
+          "rgb": [
+            88,
+            72,
+            56
+          ],
+          "share": 0.0474,
+          "luminance": 74.2,
+          "saturation": 0.364
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png",
+      "size": [
+        435,
+        400
+      ],
+      "visible_bbox": [
+        24,
+        24,
+        411,
+        376
+      ],
+      "visible_size": [
+        387,
+        352
+      ],
+      "opaque_density": 0.8268,
+      "edge_density": 0.3333,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1804,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181808",
+          "rgb": [
+            24,
+            24,
+            8
+          ],
+          "share": 0.0647,
+          "luminance": 22.8,
+          "saturation": 0.667
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.064,
+          "luminance": 38.8,
+          "saturation": 0.4
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0577,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.0444,
+          "luminance": 54.8,
+          "saturation": 0.286
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png",
+      "size": [
+        458,
+        370
+      ],
+      "visible_bbox": [
+        24,
+        24,
+        434,
+        346
+      ],
+      "visible_size": [
+        410,
+        322
+      ],
+      "opaque_density": 0.9014,
+      "edge_density": 0.4231,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1124,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0636,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#585858",
+          "rgb": [
+            88,
+            88,
+            88
+          ],
+          "share": 0.0508,
+          "luminance": 88.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#483828",
+          "rgb": [
+            72,
+            56,
+            40
+          ],
+          "share": 0.0479,
+          "luminance": 58.2,
+          "saturation": 0.444
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.0386,
+          "luminance": 38.8,
+          "saturation": 0.4
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_custom_house_civic_front_isolated.png",
+      "size": [
+        437,
+        433
+      ],
+      "visible_bbox": [
+        24,
+        24,
+        413,
+        409
+      ],
+      "visible_size": [
+        389,
+        385
+      ],
+      "opaque_density": 0.6094,
+      "edge_density": 0.4516,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1108,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0569,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#282828",
+          "rgb": [
+            40,
+            40,
+            40
+          ],
+          "share": 0.041,
+          "luminance": 40.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.0351,
+          "luminance": 38.8,
+          "saturation": 0.4
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.0348,
+          "luminance": 54.8,
+          "saturation": 0.286
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_dockside_storehouse_isolated.png",
+      "size": [
+        443,
+        448
+      ],
+      "visible_bbox": [
+        35,
+        30,
+        396,
+        411
+      ],
+      "visible_size": [
+        361,
+        381
+      ],
+      "opaque_density": 0.7305,
+      "edge_density": 0.3655,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1446,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.054,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.0506,
+          "luminance": 38.8,
+          "saturation": 0.4
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.047,
+          "luminance": 54.8,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#181808",
+          "rgb": [
+            24,
+            24,
+            8
+          ],
+          "share": 0.0427,
+          "luminance": 22.8,
+          "saturation": 0.667
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_dockside_storehouse_long_isolated.png",
+      "size": [
+        388,
+        398
+      ],
+      "visible_bbox": [
+        24,
+        39,
+        356,
+        339
+      ],
+      "visible_size": [
+        332,
+        300
+      ],
+      "opaque_density": 0.8802,
+      "edge_density": 0.4036,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1232,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0647,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.0518,
+          "luminance": 38.8,
+          "saturation": 0.4
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.0467,
+          "luminance": 54.8,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#181808",
+          "rgb": [
+            24,
+            24,
+            8
+          ],
+          "share": 0.0349,
+          "luminance": 22.8,
+          "saturation": 0.667
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_large_front_residence_isolated.png",
+      "size": [
+        435,
+        369
+      ],
+      "visible_bbox": [
+        24,
+        24,
+        411,
+        345
+      ],
+      "visible_size": [
+        387,
+        321
+      ],
+      "opaque_density": 0.8568,
+      "edge_density": 0.4081,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.0865,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0832,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#382828",
+          "rgb": [
+            56,
+            40,
+            40
+          ],
+          "share": 0.0397,
+          "luminance": 43.4,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.0384,
+          "luminance": 54.8,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.0377,
+          "luminance": 38.8,
+          "saturation": 0.4
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_market_shed_stalls_isolated.png",
+      "size": [
+        434,
+        438
+      ],
+      "visible_bbox": [
+        24,
+        36,
+        393,
+        389
+      ],
+      "visible_size": [
+        369,
+        353
+      ],
+      "opaque_density": 0.5872,
+      "edge_density": 0.4554,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1896,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0606,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181808",
+          "rgb": [
+            24,
+            24,
+            8
+          ],
+          "share": 0.0473,
+          "luminance": 22.8,
+          "saturation": 0.667
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.0463,
+          "luminance": 38.8,
+          "saturation": 0.4
+        },
+        {
+          "hex": "#584838",
+          "rgb": [
+            88,
+            72,
+            56
+          ],
+          "share": 0.041,
+          "luminance": 74.2,
+          "saturation": 0.364
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_modest_clapboard_residence_a_isolated.png",
+      "size": [
+        247,
+        418
+      ],
+      "visible_bbox": [
+        24,
+        24,
+        223,
+        394
+      ],
+      "visible_size": [
+        199,
+        370
+      ],
+      "opaque_density": 0.7486,
+      "edge_density": 0.4579,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1145,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0586,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#483828",
+          "rgb": [
+            72,
+            56,
+            40
+          ],
+          "share": 0.0433,
+          "luminance": 58.2,
+          "saturation": 0.444
+        },
+        {
+          "hex": "#584838",
+          "rgb": [
+            88,
+            72,
+            56
+          ],
+          "share": 0.0386,
+          "luminance": 74.2,
+          "saturation": 0.364
+        },
+        {
+          "hex": "#181808",
+          "rgb": [
+            24,
+            24,
+            8
+          ],
+          "share": 0.0354,
+          "luminance": 22.8,
+          "saturation": 0.667
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_shopfront_awning_isolated.png",
+      "size": [
+        413,
+        448
+      ],
+      "visible_bbox": [
+        30,
+        52,
+        377,
+        364
+      ],
+      "visible_size": [
+        347,
+        312
+      ],
+      "opaque_density": 0.8441,
+      "edge_density": 0.3999,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1346,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0767,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#382828",
+          "rgb": [
+            56,
+            40,
+            40
+          ],
+          "share": 0.0366,
+          "luminance": 43.4,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#282828",
+          "rgb": [
+            40,
+            40,
+            40
+          ],
+          "share": 0.036,
+          "luminance": 40.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.0277,
+          "luminance": 54.8,
+          "saturation": 0.286
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/newport_wharf_boathouse_large_isolated.png",
+      "size": [
+        578,
+        478
+      ],
+      "visible_bbox": [
+        36,
+        44,
+        506,
+        416
+      ],
+      "visible_size": [
+        470,
+        372
+      ],
+      "opaque_density": 0.736,
+      "edge_density": 0.387,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1193,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0473,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.0466,
+          "luminance": 54.8,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.0437,
+          "luminance": 38.8,
+          "saturation": 0.4
+        },
+        {
+          "hex": "#686858",
+          "rgb": [
+            104,
+            104,
+            88
+          ],
+          "share": 0.0353,
+          "luminance": 102.8,
+          "saturation": 0.154
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/residence_small_isolated.png",
+      "size": [
+        393,
+        368
+      ],
+      "visible_bbox": [
+        27,
+        24,
+        336,
+        344
+      ],
+      "visible_size": [
+        309,
+        320
+      ],
+      "opaque_density": 0.7575,
+      "edge_density": 0.4625,
+      "dominant": [
+        {
+          "hex": "#584838",
+          "rgb": [
+            88,
+            72,
+            56
+          ],
+          "share": 0.0661,
+          "luminance": 74.2,
+          "saturation": 0.364
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.059,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#382828",
+          "rgb": [
+            56,
+            40,
+            40
+          ],
+          "share": 0.059,
+          "luminance": 43.4,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.0558,
+          "luminance": 54.8,
+          "saturation": 0.286
+        },
+        {
+          "hex": "#483828",
+          "rgb": [
+            72,
+            56,
+            40
+          ],
+          "share": 0.0526,
+          "luminance": 58.2,
+          "saturation": 0.444
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/service_dependency_shed_isolated.png",
+      "size": [
+        298,
+        293
+      ],
+      "visible_bbox": [
+        24,
+        24,
+        274,
+        269
+      ],
+      "visible_size": [
+        250,
+        245
+      ],
+      "opaque_density": 0.8592,
+      "edge_density": 0.4424,
+      "dominant": [
+        {
+          "hex": "#584838",
+          "rgb": [
+            88,
+            72,
+            56
+          ],
+          "share": 0.0638,
+          "luminance": 74.2,
+          "saturation": 0.364
+        },
+        {
+          "hex": "#685848",
+          "rgb": [
+            104,
+            88,
+            72
+          ],
+          "share": 0.0469,
+          "luminance": 90.2,
+          "saturation": 0.308
+        },
+        {
+          "hex": "#483828",
+          "rgb": [
+            72,
+            56,
+            40
+          ],
+          "share": 0.0457,
+          "luminance": 58.2,
+          "saturation": 0.444
+        },
+        {
+          "hex": "#684828",
+          "rgb": [
+            104,
+            72,
+            40
+          ],
+          "share": 0.0403,
+          "luminance": 76.5,
+          "saturation": 0.615
+        },
+        {
+          "hex": "#382818",
+          "rgb": [
+            56,
+            40,
+            24
+          ],
+          "share": 0.0364,
+          "luminance": 42.2,
+          "saturation": 0.571
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/buildings/isolated/village_hall_meeting_house_isolated.png",
+      "size": [
+        438,
+        498
+      ],
+      "visible_bbox": [
+        27,
+        24,
+        354,
+        474
+      ],
+      "visible_size": [
+        327,
+        450
+      ],
+      "opaque_density": 0.5547,
+      "edge_density": 0.48,
+      "dominant": [
+        {
+          "hex": "#e8d8c8",
+          "rgb": [
+            232,
+            216,
+            200
+          ],
+          "share": 0.0619,
+          "luminance": 218.2,
+          "saturation": 0.138
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.06,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.042,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#282828",
+          "rgb": [
+            40,
+            40,
+            40
+          ],
+          "share": 0.0385,
+          "luminance": 40.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#d8c8b8",
+          "rgb": [
+            216,
+            200,
+            184
+          ],
+          "share": 0.0364,
+          "luminance": 202.2,
+          "saturation": 0.148
+        }
+      ]
+    },
+    {
+      "file": "assets/buildings/hearthvale_buildings_atlas_v1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "visible_bbox": [
+        33,
+        10,
+        1217,
+        1225
+      ],
+      "visible_size": [
+        1184,
+        1215
+      ],
+      "opaque_density": 0.5726,
+      "edge_density": 0.3996,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.0571,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0545,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#584838",
+          "rgb": [
+            88,
+            72,
+            56
+          ],
+          "share": 0.0507,
+          "luminance": 74.2,
+          "saturation": 0.364
+        },
+        {
+          "hex": "#483828",
+          "rgb": [
+            72,
+            56,
+            40
+          ],
+          "share": 0.0463,
+          "luminance": 58.2,
+          "saturation": 0.444
+        },
+        {
+          "hex": "#382828",
+          "rgb": [
+            56,
+            40,
+            40
+          ],
+          "share": 0.0451,
+          "luminance": 43.4,
+          "saturation": 0.286
+        }
+      ]
+    },
+    {
+      "file": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "visible_bbox": [
+        57,
+        56,
+        1215,
+        1188
+      ],
+      "visible_size": [
+        1158,
+        1132
+      ],
+      "opaque_density": 0.631,
+      "edge_density": 0.4037,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1039,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0703,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.038,
+          "luminance": 38.8,
+          "saturation": 0.4
+        },
+        {
+          "hex": "#282828",
+          "rgb": [
+            40,
+            40,
+            40
+          ],
+          "share": 0.0361,
+          "luminance": 40.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#383828",
+          "rgb": [
+            56,
+            56,
+            40
+          ],
+          "share": 0.0351,
+          "luminance": 54.8,
+          "saturation": 0.286
+        }
+      ]
+    },
+    {
+      "file": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "visible_bbox": [
+        38,
+        19,
+        1220,
+        1213
+      ],
+      "visible_size": [
+        1182,
+        1194
+      ],
+      "opaque_density": 0.6213,
+      "edge_density": 0.3542,
+      "dominant": [
+        {
+          "hex": "#080808",
+          "rgb": [
+            8,
+            8,
+            8
+          ],
+          "share": 0.1354,
+          "luminance": 8.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#181818",
+          "rgb": [
+            24,
+            24,
+            24
+          ],
+          "share": 0.0608,
+          "luminance": 24.0,
+          "saturation": 0.0
+        },
+        {
+          "hex": "#282818",
+          "rgb": [
+            40,
+            40,
+            24
+          ],
+          "share": 0.0428,
+          "luminance": 38.8,
+          "saturation": 0.4
+        },
+        {
+          "hex": "#181808",
+          "rgb": [
+            24,
+            24,
+            8
+          ],
+          "share": 0.0416,
+          "luminance": 22.8,
+          "saturation": 0.667
+        },
+        {
+          "hex": "#483828",
+          "rgb": [
+            72,
+            56,
+            40
+          ],
+          "share": 0.0339,
+          "luminance": 58.2,
+          "saturation": 0.444
+        }
+      ]
+    }
+  ]
+}

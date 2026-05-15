@@ -1,0 +1,278 @@
+{
+  "schema_id": "wayfarer.newport.asset_manifest.v1",
+  "generated_at": "2026-05-15T13:27:35.739904+00:00",
+  "atlas": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+  "assets": [
+    {
+      "asset_id": "commercial_cobble_long_a",
+      "material_category": "commercial street/cobble",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 96
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "none; decorative/grounding only",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "curb_sidewalk_stoop_strip",
+      "material_category": "curb/sidewalk/stoop",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 0,
+        "y": 96,
+        "w": 256,
+        "h": 64
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "none; decorative/grounding only",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "building_contact_shadow_strip",
+      "material_category": "building contact-shadow/base",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 0,
+        "y": 160,
+        "w": 256,
+        "h": 48
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "none; decorative/grounding only",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "dirt_wear_transition",
+      "material_category": "dirt/wear transition",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 0,
+        "y": 208,
+        "w": 256,
+        "h": 64
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "none; decorative/grounding only",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "grass_edge_north",
+      "material_category": "grass edge",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 0,
+        "y": 272,
+        "w": 256,
+        "h": 64
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "none; decorative/grounding only",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "dock_market_transition",
+      "material_category": "dock/market transition",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 0,
+        "y": 336,
+        "w": 256,
+        "h": 64
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "none; decorative/grounding only",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "crate_barrel_table_cluster",
+      "material_category": "crate/barrel/table prop cluster",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 256,
+        "y": 0,
+        "w": 128,
+        "h": 112
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "fence_sign_market_cluster",
+      "material_category": "fence/sign/market object cluster",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 112
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "small_crate_barrel_cluster",
+      "material_category": "crate/barrel prop cluster",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 256,
+        "y": 112,
+        "w": 128,
+        "h": 96
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    },
+    {
+      "asset_id": "market_sign_cluster",
+      "material_category": "fence/sign/market object cluster",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_generated_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+      },
+      "atlas_region": {
+        "x": 384,
+        "y": 112,
+        "w": 128,
+        "h": 96
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+    }
+  ],
+  "review_gate": "Assets with placeholder=false and review_eligible=true must satisfy NEWPORT_ART_BIBLE.md."
+}

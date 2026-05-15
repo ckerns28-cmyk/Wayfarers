@@ -15,6 +15,7 @@ const EDRIN_SPAWN := Vector2(-800, -800)
 const G414A_STREET_WALL_CURB_DATUM_Y := 17.77
 const G415_VISUAL_ACCEPTANCE_SCORE_TARGET := 8.5
 const G416_SURFACE_KIT_PASS := "G-4.16"
+const G417_ASSET_PIPELINE_PASS := "G-4.17"
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
@@ -681,6 +682,8 @@ static func starter_district_plan() -> Dictionary:
 		"density_pass": "G-4.13B",
 		"layout_rules_pass": "G-4.15",
 		"surface_kit_pass": G416_SURFACE_KIT_PASS,
+		"asset_pipeline_pass": G417_ASSET_PIPELINE_PASS,
+		"hero_street_atlas_proof": "central commercial row uses manifest-backed atlas pieces; G-4.16 surfaces remain fallback outside the proof",
 		"layout_rule_count": g415_layout_rules().size(),
 		"visual_acceptance_score_target": G415_VISUAL_ACCEPTANCE_SCORE_TARGET,
 		"collision_model": "visual_bounds and lot_bounds are review/planning data; collision_footprint is the only blocking building body.",

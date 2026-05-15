@@ -10,6 +10,9 @@ Phase 35.13R production/reference route.
 Tracked Godot asset folders:
 
 - `assets/buildings/`: current building atlas PNGs used by the vertical slice.
+- `art_pipeline/newport/`: G-4.17 source refs, generated contact sheets,
+  manifests, generated atlases, reports, and scripts for Newport terrain/prop
+  production.
 - `scenes/`: scene files plus scene scripts and stable `.gd.uid` metadata.
 - `scripts/`: shared Godot-side metadata helpers such as `BuildInfo.gd`.
 
@@ -60,6 +63,10 @@ Current compatibility rule:
 
 - Existing building atlases stay in `assets/buildings/` until a deliberate
   migration pass moves them and updates every `res://` reference.
+- Newport production-pipeline outputs live in `art_pipeline/newport/` while the
+  pipeline is being established. Any generated/imported asset used in the
+  review build must have a manifest entry with source, ownership/license,
+  placeholder/final state, and review eligibility.
 - New atlas families should prefer `assets/atlases/<domain>/`.
 - New original art should go in `assets/source/<domain>/`.
 - New committed reference screenshots should go in `assets/references/<phase>/`.
@@ -72,6 +79,8 @@ Sprite and atlas metadata lives in:
 
 - `SPRITE_ATLAS_GODOT.md` for current atlas cells and regions.
 - `docs/SPRITE_ANCHORS.md` for origin, grounding, collision, and y-sort rules.
+- `art_pipeline/newport/manifests/*.json` for Newport style values and terrain/
+  prop asset manifests.
 
 ## Import Discipline
 
@@ -140,11 +149,13 @@ Naming conventions:
 3. Let Godot regenerate stable `.import` metadata, then commit it with the
    asset.
 4. Document atlas regions and anchor assumptions.
-5. Run `bash wayfarer_godot_vertical_slice/tools/validate_asset_hygiene.sh`.
-6. Run `bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh`.
-7. Upload `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip`
+5. Add or update the Newport manifest entry, including source, license/
+   ownership, placeholder/final flag, and review eligibility.
+6. Run `bash wayfarer_godot_vertical_slice/tools/validate_asset_hygiene.sh`.
+7. Run `bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh`.
+8. Upload `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip`
    to itch manually.
-8. Hard-refresh `https://wayfarersguild.itch.io/wayfarers-tale` and confirm the
+9. Hard-refresh `https://wayfarersguild.itch.io/wayfarers-tale` and confirm the
    on-screen build label before visual review.
 
 Cloudflare Pages remains deferred for the current stock export because
