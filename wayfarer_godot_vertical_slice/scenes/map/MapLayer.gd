@@ -26,24 +26,30 @@ const NEWPORT_HERO_ATLAS_MATERIALS := [
 	"dirt_wear_transition",
 	"grass_edge_north",
 	"dock_market_transition",
+	"dock_pier_vertical",
 	"crate_barrel_table_cluster",
 	"fence_sign_market_cluster",
 	"small_crate_barrel_cluster",
 	"market_sign_cluster",
+	"wharf_crate_pile_cluster",
+	"chandlery_base_cluster",
 ]
 const NEWPORT_HERO_ATLAS_REGIONS := {
-	"commercial_cobble_long_a": Rect2(0, 0, 256, 96),
-	"curb_sidewalk_stoop_strip": Rect2(0, 96, 256, 64),
-	"building_contact_shadow_strip": Rect2(0, 160, 256, 48),
-	"dirt_wear_transition": Rect2(0, 208, 256, 64),
-	"grass_edge_north": Rect2(0, 272, 256, 64),
-	"dock_market_transition": Rect2(0, 336, 256, 64),
-	"crate_barrel_table_cluster": Rect2(256, 0, 128, 112),
-	"fence_sign_market_cluster": Rect2(384, 0, 128, 112),
-	"small_crate_barrel_cluster": Rect2(256, 112, 128, 96),
-	"market_sign_cluster": Rect2(384, 112, 128, 96),
+	"commercial_cobble_long_a": Rect2(0, 0, 320, 96),
+	"curb_sidewalk_stoop_strip": Rect2(0, 96, 320, 72),
+	"building_contact_shadow_strip": Rect2(0, 168, 320, 48),
+	"dirt_wear_transition": Rect2(0, 216, 320, 64),
+	"grass_edge_north": Rect2(0, 280, 320, 64),
+	"dock_market_transition": Rect2(0, 344, 320, 96),
+	"dock_pier_vertical": Rect2(0, 448, 96, 224),
+	"crate_barrel_table_cluster": Rect2(336, 0, 184, 136),
+	"fence_sign_market_cluster": Rect2(536, 0, 184, 136),
+	"small_crate_barrel_cluster": Rect2(336, 152, 160, 112),
+	"market_sign_cluster": Rect2(536, 152, 160, 112),
+	"wharf_crate_pile_cluster": Rect2(336, 288, 220, 146),
+	"chandlery_base_cluster": Rect2(536, 288, 220, 146),
 }
-const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(460, 518, 610, 184)
+const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
 var _newport_hero_atlas: Texture2D
 
@@ -86,6 +92,23 @@ func _draw_hero_atlas_piece(region_id: String, dest: Rect2, alpha := 1.0) -> voi
 		push_error("Unknown Newport hero atlas region: " + region_id)
 		return
 	draw_texture_rect_region(_newport_hero_atlas, dest, NEWPORT_HERO_ATLAS_REGIONS[region_id], Color(1, 1, 1, alpha), false, true)
+
+func _draw_hero_atlas_tiled(region_id: String, dest: Rect2, alpha := 1.0, scale := 1.0) -> void:
+	if _newport_hero_atlas == null:
+		return
+	if not NEWPORT_HERO_ATLAS_REGIONS.has(region_id):
+		push_error("Unknown Newport hero atlas region: " + region_id)
+		return
+	var source: Rect2 = NEWPORT_HERO_ATLAS_REGIONS[region_id]
+	var tile_size := source.size * scale
+	var y := dest.position.y
+	while y < dest.end.y:
+		var x := dest.position.x
+		while x < dest.end.x:
+			var size := Vector2(min(tile_size.x, dest.end.x - x), min(tile_size.y, dest.end.y - y))
+			draw_texture_rect_region(_newport_hero_atlas, Rect2(Vector2(x, y), size), source, Color(1, 1, 1, alpha), false, true)
+			x += tile_size.x
+		y += tile_size.y
 
 func _is_g417_hero_prop_placeholder(pos: Vector2) -> bool:
 	return G417_HERO_PROP_REPLACEMENT_RECT.has_point(pos)
@@ -557,13 +580,23 @@ func _draw_g410_street_plan() -> void:
 func _draw_g417_hero_street_atlas_proof() -> void:
 	if _newport_hero_atlas == null:
 		return
-	_draw_hero_atlas_piece("grass_edge_north", Rect2(500, 500, 492, 48), 0.96)
-	_draw_hero_atlas_piece("building_contact_shadow_strip", Rect2(498, 534, 500, 34), 0.94)
-	_draw_hero_atlas_piece("curb_sidewalk_stoop_strip", Rect2(492, 548, 520, 46), 1.0)
-	_draw_hero_atlas_piece("dirt_wear_transition", Rect2(506, 574, 480, 34), 0.68)
-	_draw_hero_atlas_piece("commercial_cobble_long_a", Rect2(486, 586, 530, 82), 1.0)
-	_draw_hero_atlas_piece("dirt_wear_transition", Rect2(520, 646, 456, 30), 0.56)
-	_draw_hero_atlas_piece("dock_market_transition", Rect2(612, 668, 322, 42), 0.88)
+	_draw_hero_atlas_tiled("grass_edge_north", Rect2(244, 500, 906, 54), 1.0, 1.0)
+	_draw_hero_atlas_tiled("building_contact_shadow_strip", Rect2(236, 530, 920, 42), 1.0, 1.0)
+	_draw_hero_atlas_tiled("curb_sidewalk_stoop_strip", Rect2(236, 548, 920, 62), 1.0, 1.0)
+	_draw_hero_atlas_tiled("commercial_cobble_long_a", Rect2(236, 604, 920, 76), 1.0, 1.0)
+	_draw_hero_atlas_tiled("dirt_wear_transition", Rect2(242, 660, 896, 34), 0.92, 1.0)
+
+func _draw_g417_hero_wharf_atlas_proof() -> void:
+	if _newport_hero_atlas == null:
+		return
+	draw_rect(Rect2(248, 686, 884, 172), Color("#1b120b"), true)
+	_draw_hero_atlas_tiled("dock_market_transition", Rect2(252, 690, 874, 84), 1.0, 1.0)
+	_draw_hero_atlas_tiled("dock_market_transition", Rect2(252, 770, 874, 84), 0.96, 1.0)
+	_draw_hero_atlas_tiled("dock_pier_vertical", Rect2(382, 718, 92, 142), 1.0, 1.0)
+	_draw_hero_atlas_tiled("dock_pier_vertical", Rect2(724, 712, 92, 148), 1.0, 1.0)
+	draw_line(Vector2(252, 690), Vector2(1126, 690), Color("#d6bd7d", 0.44), 1.4)
+	draw_line(Vector2(252, 770), Vector2(1126, 770), Color("#0f0a06", 0.72), 2.0)
+	draw_line(Vector2(252, 854), Vector2(1126, 854), Color("#0f0a06", 0.72), 2.0)
 
 func _draw_g410_wharf_water() -> void:
 	_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, 282), 1.0)
@@ -618,6 +651,7 @@ func _draw_g410_wharf_water() -> void:
 		var x := 28.0 + float((i * 67) % 1510)
 		var y := 776.0 + float((i * 41) % 220)
 		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
+	_draw_g417_hero_wharf_atlas_proof()
 
 func _draw_g410_props() -> void:
 	for pos in [Vector2(250, 386), Vector2(334, 582), Vector2(506, 586), Vector2(604, 582), Vector2(812, 388), Vector2(986, 386), Vector2(1062, 584), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:
@@ -701,10 +735,12 @@ func _draw_g410_props() -> void:
 func _draw_g417_hero_prop_clusters() -> void:
 	if _newport_hero_atlas == null:
 		return
-	_draw_hero_atlas_piece("crate_barrel_table_cluster", Rect2(512, 594, 154, 134), 1.0)
-	_draw_hero_atlas_piece("small_crate_barrel_cluster", Rect2(666, 610, 128, 96), 0.98)
-	_draw_hero_atlas_piece("fence_sign_market_cluster", Rect2(804, 584, 154, 134), 1.0)
-	_draw_hero_atlas_piece("market_sign_cluster", Rect2(928, 552, 128, 96), 0.96)
+	_draw_hero_atlas_piece("crate_barrel_table_cluster", Rect2(486, 610, 128, 95), 1.0)
+	_draw_hero_atlas_piece("small_crate_barrel_cluster", Rect2(642, 626, 104, 73), 1.0)
+	_draw_hero_atlas_piece("fence_sign_market_cluster", Rect2(850, 604, 128, 95), 1.0)
+	_draw_hero_atlas_piece("chandlery_base_cluster", Rect2(948, 578, 143, 95), 1.0)
+	_draw_hero_atlas_piece("wharf_crate_pile_cluster", Rect2(538, 698, 150, 100), 1.0)
+	_draw_hero_atlas_piece("market_sign_cluster", Rect2(778, 688, 104, 73), 1.0)
 
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)
