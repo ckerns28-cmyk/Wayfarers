@@ -1,0 +1,303 @@
+{
+  "schema_id": "wayfarer.newport_green_origin.asset_manifest.v1",
+  "phase": "G-4.18B",
+  "generated_at": "2026-05-15T00:00:00Z",
+  "atlas": "art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
+  "generated_asset_root": "art_pipeline/newport_green_origin/generated",
+  "contact_sheets": [
+    "art_pipeline/newport_green_origin/contact_sheets/green_origin_asset_contact_sheet.png",
+    "art_pipeline/newport_green_origin/contact_sheets/green_origin_palette_shadow_sheet.png",
+    "art_pipeline/newport_green_origin/contact_sheets/green_origin_dock_before_after_comparison.png"
+  ],
+  "origin_taxonomy": [
+    "temporary_review_yellow",
+    "green_origin_candidate",
+    "final_commercial_green",
+    "red_unsafe"
+  ],
+  "source_policy": "Green-origin assets may use only project scripts, authored parameters, and documented project-owned sources. Yellow/uncertain sprites are visual reference only and cannot be source pixels.",
+  "assets": [
+    {
+      "asset_id": "green_dock_plank_strip",
+      "asset_type": "dock_plank_tile",
+      "path": "art_pipeline/newport_green_origin/generated/green_dock_plank_strip.png",
+      "atlas": "art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 72
+      },
+      "source_type": "deterministic_python_pillow",
+      "created_by": "Wayfarer project local deterministic generator",
+      "generation_script": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+      "input_sources": [
+        {
+          "type": "project_script",
+          "path": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_authored_parameters",
+          "path": "art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "Wayfarer project-owned deterministic generated bitmap; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; commercial project use allowed.",
+      "ownership": "project-owned",
+      "commercial_use_status": "green_origin_candidate",
+      "review_eligible": true,
+      "final_commercial_candidate": true,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": false,
+      "deterministic_generated": true,
+      "sha256": "087b959b601c48f80d269d04137d95a4efade357427b7511db53054f95da2f4e",
+      "notes": "Original Pillow mark-making from authored palettes and geometry rules. Yellow Newport building sprites were not opened, sampled, cropped, traced, or copied."
+    },
+    {
+      "asset_id": "green_dock_plank_patch",
+      "asset_type": "dock_plank_tile",
+      "path": "art_pipeline/newport_green_origin/generated/green_dock_plank_patch.png",
+      "atlas": "art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 84,
+        "w": 180,
+        "h": 72
+      },
+      "source_type": "deterministic_python_pillow",
+      "created_by": "Wayfarer project local deterministic generator",
+      "generation_script": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+      "input_sources": [
+        {
+          "type": "project_script",
+          "path": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_authored_parameters",
+          "path": "art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "Wayfarer project-owned deterministic generated bitmap; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; commercial project use allowed.",
+      "ownership": "project-owned",
+      "commercial_use_status": "green_origin_candidate",
+      "review_eligible": true,
+      "final_commercial_candidate": true,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": false,
+      "deterministic_generated": true,
+      "sha256": "33e0633a9c1c962e756a2f54418aac68a816c9b27d009bff1aedbbbb946cd7e3",
+      "notes": "Original Pillow mark-making from authored palettes and geometry rules. Yellow Newport building sprites were not opened, sampled, cropped, traced, or copied."
+    },
+    {
+      "asset_id": "green_dock_edge_shadow",
+      "asset_type": "contact_shadow_tile",
+      "path": "art_pipeline/newport_green_origin/generated/green_dock_edge_shadow.png",
+      "atlas": "art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 168,
+        "w": 320,
+        "h": 42
+      },
+      "source_type": "deterministic_python_pillow",
+      "created_by": "Wayfarer project local deterministic generator",
+      "generation_script": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+      "input_sources": [
+        {
+          "type": "project_script",
+          "path": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_authored_parameters",
+          "path": "art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "Wayfarer project-owned deterministic generated bitmap; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; commercial project use allowed.",
+      "ownership": "project-owned",
+      "commercial_use_status": "green_origin_candidate",
+      "review_eligible": true,
+      "final_commercial_candidate": true,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": false,
+      "deterministic_generated": true,
+      "sha256": "413c086def57b6670709f71c5d9ff755de3ddaba617d1bea595fe18efc5d672d",
+      "notes": "Original Pillow mark-making from authored palettes and geometry rules. Yellow Newport building sprites were not opened, sampled, cropped, traced, or copied."
+    },
+    {
+      "asset_id": "green_pier_post_pair",
+      "asset_type": "dock_post_prop",
+      "path": "art_pipeline/newport_green_origin/generated/green_pier_post_pair.png",
+      "atlas": "art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
+      "atlas_region": {
+        "x": 336,
+        "y": 0,
+        "w": 112,
+        "h": 92
+      },
+      "source_type": "deterministic_python_pillow",
+      "created_by": "Wayfarer project local deterministic generator",
+      "generation_script": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+      "input_sources": [
+        {
+          "type": "project_script",
+          "path": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_authored_parameters",
+          "path": "art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "Wayfarer project-owned deterministic generated bitmap; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; commercial project use allowed.",
+      "ownership": "project-owned",
+      "commercial_use_status": "green_origin_candidate",
+      "review_eligible": true,
+      "final_commercial_candidate": true,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": false,
+      "deterministic_generated": true,
+      "sha256": "1e96fb2ab08765c1285fe707d2dde2a5c4b12f08203a16842234ea535af3f199",
+      "notes": "Original Pillow mark-making from authored palettes and geometry rules. Yellow Newport building sprites were not opened, sampled, cropped, traced, or copied."
+    },
+    {
+      "asset_id": "green_rope_coil_small",
+      "asset_type": "rope_prop",
+      "path": "art_pipeline/newport_green_origin/generated/green_rope_coil_small.png",
+      "atlas": "art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
+      "atlas_region": {
+        "x": 336,
+        "y": 104,
+        "w": 80,
+        "h": 56
+      },
+      "source_type": "deterministic_python_pillow",
+      "created_by": "Wayfarer project local deterministic generator",
+      "generation_script": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+      "input_sources": [
+        {
+          "type": "project_script",
+          "path": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_authored_parameters",
+          "path": "art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "Wayfarer project-owned deterministic generated bitmap; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; commercial project use allowed.",
+      "ownership": "project-owned",
+      "commercial_use_status": "green_origin_candidate",
+      "review_eligible": true,
+      "final_commercial_candidate": true,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": false,
+      "deterministic_generated": true,
+      "sha256": "401a608fe94c810676c0078accd71aad216a7eca1f612da353cbf810385f74e9",
+      "notes": "Original Pillow mark-making from authored palettes and geometry rules. Yellow Newport building sprites were not opened, sampled, cropped, traced, or copied."
+    },
+    {
+      "asset_id": "green_plank_contact_shadow",
+      "asset_type": "contact_shadow_tile",
+      "path": "art_pipeline/newport_green_origin/generated/green_plank_contact_shadow.png",
+      "atlas": "art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
+      "atlas_region": {
+        "x": 336,
+        "y": 172,
+        "w": 144,
+        "h": 36
+      },
+      "source_type": "deterministic_python_pillow",
+      "created_by": "Wayfarer project local deterministic generator",
+      "generation_script": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+      "input_sources": [
+        {
+          "type": "project_script",
+          "path": "art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_authored_parameters",
+          "path": "art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "Wayfarer project-owned deterministic generated bitmap; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; commercial project use allowed.",
+      "ownership": "project-owned",
+      "commercial_use_status": "green_origin_candidate",
+      "review_eligible": true,
+      "final_commercial_candidate": true,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": false,
+      "deterministic_generated": true,
+      "sha256": "452efc99f067cf75fcc33e5883a8b8c17a0dda3bb4d51ae5fd16b79d742cfcb1",
+      "notes": "Original Pillow mark-making from authored palettes and geometry rules. Yellow Newport building sprites were not opened, sampled, cropped, traced, or copied."
+    }
+  ]
+}

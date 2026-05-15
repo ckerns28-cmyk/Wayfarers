@@ -1,0 +1,59 @@
+{
+  "schema_id": "wayfarer.newport_green_origin.style_tokens.v1",
+  "purpose": "Hand-authored Wayfarer Newport material tokens for deterministic green-origin Pillow generation.",
+  "source_policy": "Project-owned authored parameters only. No source pixels from yellow Newport building sprites, marketplace packs, web art, or third-party games.",
+  "created_by": "Wayfarer project local authoring",
+  "license": "Wayfarer project-owned authored data; commercial project use allowed.",
+  "palettes": {
+    "dock_wood": [
+      "#3d2d1f",
+      "#4b3828",
+      "#5f4932",
+      "#73573a",
+      "#856948",
+      "#9a7a54",
+      "#b28f63"
+    ],
+    "dock_shadow": [
+      "#151713",
+      "#20231d",
+      "#2b2b22",
+      "#343225"
+    ],
+    "dock_highlight": [
+      "#b89b70",
+      "#c2aa80",
+      "#d0bb91"
+    ],
+    "rope": [
+      "#6f6040",
+      "#8a7951",
+      "#a89566",
+      "#c0ad7d"
+    ],
+    "harbor_contact": [
+      "#10262a",
+      "#17343a",
+      "#21444a",
+      "#2a5257"
+    ],
+    "oxidized_green": [
+      "#40533e",
+      "#506545",
+      "#687a52"
+    ]
+  },
+  "scale_notes": {
+    "tile_px": 32,
+    "dock_board_width_px": 9,
+    "dock_board_length_px": 72,
+    "post_diameter_px": 12,
+    "rope_coil_outer_px": 34
+  },
+  "material_rules": [
+    "Use uneven plank seams, dark waterline contact, muted weathered browns, and sparse warm highlights.",
+    "Seat every prop-like element with a soft contact shadow.",
+    "Use deterministic jitter from asset ids instead of external texture samples.",
+    "Treat yellow Newport building sprites as visual reference only; do not read or copy their pixels."
+  ]
+}

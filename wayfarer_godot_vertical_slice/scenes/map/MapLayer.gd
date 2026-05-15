@@ -9,6 +9,8 @@ const MAP_H := NEWPORT_TOWN.MAP_TILES.y
 const NEWPORT_SURFACE_KIT_VERSION := "G-4.16"
 const NEWPORT_HERO_ATLAS_VERSION := "G-4.18"
 const NEWPORT_HERO_ATLAS_PATH := "res://art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png"
+const NEWPORT_GREEN_ORIGIN_VERSION := "G-4.18B"
+const NEWPORT_GREEN_ORIGIN_ATLAS_PATH := "res://art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -40,6 +42,14 @@ const NEWPORT_HERO_ATLAS_MATERIALS := [
 	"wharf_crate_pile_cluster",
 	"chandlery_base_cluster",
 ]
+const NEWPORT_GREEN_ORIGIN_MATERIALS := [
+	"green_dock_plank_strip",
+	"green_dock_plank_patch",
+	"green_dock_edge_shadow",
+	"green_pier_post_pair",
+	"green_rope_coil_small",
+	"green_plank_contact_shadow",
+]
 const NEWPORT_HERO_ATLAS_REGIONS := {
 	"commercial_cobble_long_a": Rect2(0, 0, 320, 96),
 	"commercial_cobble_patch_b": Rect2(0, 104, 220, 72),
@@ -61,14 +71,26 @@ const NEWPORT_HERO_ATLAS_REGIONS := {
 	"wharf_crate_pile_cluster": Rect2(448, 424, 220, 146),
 	"chandlery_base_cluster": Rect2(684, 424, 220, 146),
 }
+const NEWPORT_GREEN_ORIGIN_ATLAS_REGIONS := {
+	"green_dock_plank_strip": Rect2(0, 0, 320, 72),
+	"green_dock_plank_patch": Rect2(0, 84, 180, 72),
+	"green_dock_edge_shadow": Rect2(0, 168, 320, 42),
+	"green_pier_post_pair": Rect2(336, 0, 112, 92),
+	"green_rope_coil_small": Rect2(336, 104, 80, 56),
+	"green_plank_contact_shadow": Rect2(336, 172, 144, 36),
+}
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
 var _newport_hero_atlas: Texture2D
+var _newport_green_origin_atlas: Texture2D
 
 func _ready() -> void:
 	_newport_hero_atlas = ResourceLoader.load(NEWPORT_HERO_ATLAS_PATH, "Texture2D") as Texture2D
 	if _newport_hero_atlas == null:
 		push_error("Failed to load Newport hero atlas: " + NEWPORT_HERO_ATLAS_PATH)
+	_newport_green_origin_atlas = ResourceLoader.load(NEWPORT_GREEN_ORIGIN_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_green_origin_atlas == null:
+		push_error("Failed to load Newport green-origin atlas: " + NEWPORT_GREEN_ORIGIN_ATLAS_PATH)
 	queue_redraw()
 
 func newport_surface_kit_version() -> String:
@@ -82,6 +104,12 @@ func newport_hero_atlas_version() -> String:
 
 func newport_hero_atlas_materials() -> Array:
 	return NEWPORT_HERO_ATLAS_MATERIALS.duplicate()
+
+func newport_green_origin_version() -> String:
+	return NEWPORT_GREEN_ORIGIN_VERSION
+
+func newport_green_origin_materials() -> Array:
+	return NEWPORT_GREEN_ORIGIN_MATERIALS.duplicate()
 
 func _draw() -> void:
 	match layer_id:
@@ -121,6 +149,14 @@ func _draw_hero_atlas_tiled(region_id: String, dest: Rect2, alpha := 1.0, scale 
 			draw_texture_rect_region(_newport_hero_atlas, Rect2(Vector2(x, y), size), source, Color(1, 1, 1, alpha), false, true)
 			x += tile_size.x
 		y += tile_size.y
+
+func _draw_green_origin_piece(region_id: String, dest: Rect2, alpha := 1.0) -> void:
+	if _newport_green_origin_atlas == null:
+		return
+	if not NEWPORT_GREEN_ORIGIN_ATLAS_REGIONS.has(region_id):
+		push_error("Unknown Newport green-origin atlas region: " + region_id)
+		return
+	draw_texture_rect_region(_newport_green_origin_atlas, dest, NEWPORT_GREEN_ORIGIN_ATLAS_REGIONS[region_id], Color(1, 1, 1, alpha), false, true)
 
 func _is_g417_hero_prop_placeholder(pos: Vector2) -> bool:
 	return G417_HERO_PROP_REPLACEMENT_RECT.has_point(pos)
@@ -637,6 +673,16 @@ func _draw_g417_hero_wharf_atlas_proof() -> void:
 	draw_line(Vector2(252, 770), Vector2(1126, 770), Color("#0f0a06", 0.34), 1.4)
 	draw_line(Vector2(252, 854), Vector2(1126, 854), Color("#0f0a06", 0.38), 1.4)
 
+func _draw_g418b_green_origin_dock_proof() -> void:
+	if _newport_green_origin_atlas == null:
+		return
+	_draw_green_origin_piece("green_plank_contact_shadow", Rect2(1010, 772, 178, 32), 0.82)
+	_draw_green_origin_piece("green_dock_plank_strip", Rect2(1014, 728, 256, 58), 0.96)
+	_draw_green_origin_piece("green_dock_edge_shadow", Rect2(1014, 780, 256, 28), 0.76)
+	_draw_green_origin_piece("green_dock_plank_patch", Rect2(1076, 800, 144, 48), 0.92)
+	_draw_green_origin_piece("green_pier_post_pair", Rect2(1018, 714, 74, 62), 0.95)
+	_draw_green_origin_piece("green_rope_coil_small", Rect2(1188, 770, 54, 38), 0.98)
+
 func _draw_g410_wharf_water() -> void:
 	_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, 282), 1.0)
 	_draw_water_depth_bands()
@@ -691,6 +737,7 @@ func _draw_g410_wharf_water() -> void:
 		var y := 776.0 + float((i * 41) % 220)
 		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
 	_draw_g417_hero_wharf_atlas_proof()
+	_draw_g418b_green_origin_dock_proof()
 
 func _draw_g410_props() -> void:
 	for pos in [Vector2(250, 386), Vector2(334, 582), Vector2(506, 586), Vector2(604, 582), Vector2(812, 388), Vector2(986, 386), Vector2(1062, 584), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:

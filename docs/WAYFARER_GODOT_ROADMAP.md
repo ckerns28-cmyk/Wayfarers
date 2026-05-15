@@ -1388,6 +1388,19 @@ Implemented:
   source files have no in-repo prompt, PSD/layer source, generation log, or
   explicit commercial license record.
 
+## G-4.18B: Green-Origin Newport Art Factory
+
+Temporary yellow review art may be used to prototype composition, scale, and
+gameplay, but final-commercial Wayfarer art must come from green-origin assets
+with documented provenance. Yellow assets cannot be used as pixel sources for
+green final art.
+
+G-4.18B starts the separate `art_pipeline/newport_green_origin/` factory. Assets
+in this namespace must come from deterministic project scripts, hand-authored
+project parameters, or documented project-owned/commercial-compatible sources.
+The current Newport buildings and crop-derived G-4.17/G-4.18 hero atlas remain
+`temporary_review_yellow`, not `final_commercial_green`.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
