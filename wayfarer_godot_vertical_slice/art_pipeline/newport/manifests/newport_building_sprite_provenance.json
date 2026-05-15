@@ -59,7 +59,9 @@
       "asset_id": "inn_tavern_v1",
       "filename": "inn_tavern_v1_isolated.png",
       "path": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
-      "building_ids": ["b_inn_tavern"],
+      "building_ids": [
+        "b_inn_tavern"
+      ],
       "current_in_game_building_id": "b_inn_tavern",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -71,8 +73,16 @@
       "source_atlas": "assets/buildings/hearthvale_buildings_atlas_v1.png",
       "source_atlas_first_repository_commit": "eecb68d138a5ca6ff7d11784ad3c77701984557d",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [36, 45, 425, 420],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_buildings_atlas_v1.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        36,
+        45,
+        425,
+        420
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_buildings_atlas_v1.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -83,13 +93,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Safe enough for temporary review only because the crop is reproducible from a tracked atlas, but no upstream source or license record proves final commercial ownership."
+      "notes": "Safe enough for temporary review only because the crop is reproducible from a tracked atlas, but no upstream source or license record proves final commercial ownership.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "mercantile_shop",
       "filename": "mercantile_shop_isolated.png",
       "path": "assets/sprites/buildings/isolated/mercantile_shop_isolated.png",
-      "building_ids": ["b_mercantile"],
+      "building_ids": [
+        "b_mercantile"
+      ],
       "current_in_game_building_id": "b_mercantile",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -101,8 +117,16 @@
       "source_atlas": "assets/buildings/hearthvale_buildings_atlas_v1.png",
       "source_atlas_first_repository_commit": "eecb68d138a5ca6ff7d11784ad3c77701984557d",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [452, 67, 350, 403],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_buildings_atlas_v1.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        452,
+        67,
+        350,
+        403
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_buildings_atlas_v1.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -113,13 +137,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Modified after first entry in commits 85ce135 and 3aea723. Keep as temporary review art until the upstream atlas is cleared or replaced."
+      "notes": "Modified after first entry in commits 85ce135 and 3aea723. Keep as temporary review art until the upstream atlas is cleared or replaced.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_chandlery_outfitter_front",
       "filename": "newport_chandlery_outfitter_front_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png",
-      "building_ids": ["b_chandlery_front"],
+      "building_ids": [
+        "b_chandlery_front"
+      ],
       "current_in_game_building_id": "b_chandlery_front",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -131,8 +161,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [815, 444, 387, 352],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_b.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        815,
+        444,
+        387,
+        352
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -143,13 +181,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Specific G-4.18A audit target. It cannot be treated as final project-owned art because the original generation/source record is absent, even though no identical third-party match was found."
+      "notes": "Specific G-4.18A audit target. It cannot be treated as final project-owned art because the original generation/source record is absent, even though no identical third-party match was found.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_counting_house_civic_exchange",
       "filename": "newport_counting_house_civic_exchange_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png",
-      "building_ids": ["b_counting_house"],
+      "building_ids": [
+        "b_counting_house"
+      ],
       "current_in_game_building_id": "b_counting_house",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -161,8 +205,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [378, 475, 410, 322],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_b.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        378,
+        475,
+        410,
+        322
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -173,13 +225,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Current hero-street source crop for generated G-4.18 surface assets; those derived assets inherit this yellow upstream uncertainty for final/commercial use."
+      "notes": "Current hero-street source crop for generated G-4.18 surface assets; those derived assets inherit this yellow upstream uncertainty for final/commercial use.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_custom_house_civic_front",
       "filename": "newport_custom_house_civic_front_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_custom_house_civic_front_isolated.png",
-      "building_ids": ["b_custom_house"],
+      "building_ids": [
+        "b_custom_house"
+      ],
       "current_in_game_building_id": "b_custom_house",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -191,8 +249,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [38, 19, 389, 385],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_b.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        38,
+        19,
+        389,
+        385
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -203,13 +269,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Dedicated civic/admin anchor in normal review, but final commercial status is blocked by missing upstream source evidence."
+      "notes": "Dedicated civic/admin anchor in normal review, but final commercial status is blocked by missing upstream source evidence.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_dockside_storehouse",
       "filename": "newport_dockside_storehouse_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_dockside_storehouse_isolated.png",
-      "building_ids": ["b_dock_warehouse"],
+      "building_ids": [
+        "b_dock_warehouse"
+      ],
       "current_in_game_building_id": "b_dock_warehouse",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -221,8 +293,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [40, 826, 395, 400],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_b.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        40,
+        826,
+        395,
+        400
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -233,13 +313,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active wharf warehouse sprite. Treat as temporary review art only."
+      "notes": "Active wharf warehouse sprite. Treat as temporary review art only.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_dockside_storehouse_long",
       "filename": "newport_dockside_storehouse_long_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_dockside_storehouse_long_isolated.png",
-      "building_ids": ["b_dock_storehouse"],
+      "building_ids": [
+        "b_dock_storehouse"
+      ],
       "current_in_game_building_id": "b_dock_storehouse",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -251,8 +337,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [386, 870, 340, 350],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_a.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        386,
+        870,
+        340,
+        350
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -263,13 +357,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active wharf storehouse sprite. Treat as temporary review art only."
+      "notes": "Active wharf storehouse sprite. Treat as temporary review art only.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_large_front_residence",
       "filename": "newport_large_front_residence_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_large_front_residence_isolated.png",
-      "building_ids": ["b_large_residence"],
+      "building_ids": [
+        "b_large_residence"
+      ],
       "current_in_game_building_id": "b_large_residence",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -281,8 +381,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [61, 469, 387, 321],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_a.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        61,
+        469,
+        387,
+        321
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -293,13 +401,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active inland residence sprite. Treat as temporary review art only."
+      "notes": "Active inland residence sprite. Treat as temporary review art only.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_market_shed_stalls",
       "filename": "newport_market_shed_stalls_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_market_shed_stalls_isolated.png",
-      "building_ids": ["b_market_shed"],
+      "building_ids": [
+        "b_market_shed"
+      ],
       "current_in_game_building_id": "b_market_shed",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -311,8 +425,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [430, 826, 386, 390],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_b.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        430,
+        826,
+        386,
+        390
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -323,13 +445,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Marketplace-looking active sprite; no identical marketplace-pack match found, but upstream provenance remains unverified."
+      "notes": "Marketplace-looking active sprite; no identical marketplace-pack match found, but upstream provenance remains unverified.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_modest_clapboard_residence_a",
       "filename": "newport_modest_clapboard_residence_a_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_modest_clapboard_residence_a_isolated.png",
-      "building_ids": ["b_boarding_house"],
+      "building_ids": [
+        "b_boarding_house"
+      ],
       "current_in_game_building_id": "b_boarding_house",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -341,8 +469,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [104, 433, 199, 370],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_b.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        104,
+        433,
+        199,
+        370
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -353,13 +489,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active boarding-house sprite. Treat as temporary review art only."
+      "notes": "Active boarding-house sprite. Treat as temporary review art only.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_shopfront_awning",
       "filename": "newport_shopfront_awning_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_shopfront_awning_isolated.png",
-      "building_ids": ["b_shop_house"],
+      "building_ids": [
+        "b_shop_house"
+      ],
       "current_in_game_building_id": "b_shop_house",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -371,8 +513,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [486, 442, 365, 400],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_a.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        486,
+        442,
+        365,
+        400
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -383,13 +533,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Modified after first entry in commit 3aea723. Treat as temporary review art only."
+      "notes": "Modified after first entry in commit 3aea723. Treat as temporary review art only.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_wharf_boathouse_large",
       "filename": "newport_wharf_boathouse_large_isolated.png",
       "path": "assets/sprites/buildings/isolated/newport_wharf_boathouse_large_isolated.png",
-      "building_ids": ["b_wharf_boathouse"],
+      "building_ids": [
+        "b_wharf_boathouse"
+      ],
       "current_in_game_building_id": "b_wharf_boathouse",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -401,8 +557,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [724, 796, 530, 430],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_a.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        724,
+        796,
+        530,
+        430
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -413,13 +577,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active wharf service sprite and G-4.18 material crop source. Treat as temporary review art only until upstream source is proven."
+      "notes": "Active wharf service sprite and G-4.18 material crop source. Treat as temporary review art only until upstream source is proven.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "residence_small",
       "filename": "residence_small_isolated.png",
       "path": "assets/sprites/buildings/isolated/residence_small_isolated.png",
-      "building_ids": ["b_res_small"],
+      "building_ids": [
+        "b_res_small"
+      ],
       "current_in_game_building_id": "b_res_small",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -431,8 +601,16 @@
       "source_atlas": "assets/buildings/hearthvale_buildings_atlas_v1.png",
       "source_atlas_first_repository_commit": "eecb68d138a5ca6ff7d11784ad3c77701984557d",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [58, 520, 345, 320],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_buildings_atlas_v1.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        58,
+        520,
+        345,
+        320
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_buildings_atlas_v1.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -443,13 +621,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active cottage sprite. Treat as temporary review art only."
+      "notes": "Active cottage sprite. Treat as temporary review art only.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "service_dependency_shed",
       "filename": "service_dependency_shed_isolated.png",
       "path": "assets/sprites/buildings/isolated/service_dependency_shed_isolated.png",
-      "building_ids": ["b_cooperage_shed"],
+      "building_ids": [
+        "b_cooperage_shed"
+      ],
       "current_in_game_building_id": "b_cooperage_shed",
       "active_normal_review": true,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -461,8 +645,16 @@
       "source_atlas": "assets/buildings/hearthvale_buildings_atlas_v1.png",
       "source_atlas_first_repository_commit": "eecb68d138a5ca6ff7d11784ad3c77701984557d",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [899, 939, 250, 245],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_buildings_atlas_v1.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        899,
+        939,
+        250,
+        245
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_buildings_atlas_v1.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -473,13 +665,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active cooperage/service placeholder sprite. Treat as temporary review art only."
+      "notes": "Active cooperage/service placeholder sprite. Treat as temporary review art only.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "village_hall_meeting_house",
       "filename": "village_hall_meeting_house_isolated.png",
       "path": "assets/sprites/buildings/isolated/village_hall_meeting_house_isolated.png",
-      "building_ids": ["b_village_hall"],
+      "building_ids": [
+        "b_village_hall"
+      ],
       "current_in_game_building_id": null,
       "active_normal_review": false,
       "source_type": "derived_crop_from_in_repo_atlas",
@@ -491,8 +689,16 @@
       "source_atlas": "assets/buildings/hearthvale_buildings_atlas_v1.png",
       "source_atlas_first_repository_commit": "eecb68d138a5ca6ff7d11784ad3c77701984557d",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [850, 10, 390, 450],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_buildings_atlas_v1.png", "tools/extract_building_sprites.gd"],
+      "source_rect": [
+        850,
+        10,
+        390,
+        450
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_buildings_atlas_v1.png",
+        "tools/extract_building_sprites.gd"
+      ],
       "generation_record_status": "crop script exists; original atlas generation record absent",
       "authorship_classification": "derived; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -503,13 +709,19 @@
       "review_eligible": false,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "PNG remains in the isolated folder but is not active in normal G-4.18A review. It should not be promoted without a cleared source chain."
+      "notes": "PNG remains in the isolated folder but is not active in normal G-4.18A review. It should not be promoted without a cleared source chain.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_narrow_merchant_townhouse_a",
       "filename": "hearthvale_newport_structure_pack_v1_a.png",
       "path": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
-      "building_ids": ["b_printer_rowhouse"],
+      "building_ids": [
+        "b_printer_rowhouse"
+      ],
       "current_in_game_building_id": "b_printer_rowhouse",
       "active_normal_review": true,
       "source_type": "direct_atlas_region_from_in_repo_atlas",
@@ -521,8 +733,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [836, 451, 273, 385],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_a.png", "scripts/BuildingCatalog.gd"],
+      "source_rect": [
+        836,
+        451,
+        273,
+        385
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+        "scripts/BuildingCatalog.gd"
+      ],
       "generation_record_status": "runtime atlas region exists; original atlas generation record absent",
       "authorship_classification": "atlas import/region; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -533,13 +753,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active normal-review building sprite is an atlas region rather than an isolated PNG; included so the validator gates every active building sprite."
+      "notes": "Active normal-review building sprite is an atlas region rather than an isolated PNG; included so the validator gates every active building sprite.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_formal_townhouse_block_a",
       "filename": "hearthvale_newport_structure_pack_v1_b.png",
       "path": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
-      "building_ids": ["b_clerk_townhouse"],
+      "building_ids": [
+        "b_clerk_townhouse"
+      ],
       "current_in_game_building_id": "b_clerk_townhouse",
       "active_normal_review": true,
       "source_type": "direct_atlas_region_from_in_repo_atlas",
@@ -551,8 +777,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [444, 67, 371, 336],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_b.png", "scripts/BuildingCatalog.gd"],
+      "source_rect": [
+        444,
+        67,
+        371,
+        336
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+        "scripts/BuildingCatalog.gd"
+      ],
       "generation_record_status": "runtime atlas region exists; original atlas generation record absent",
       "authorship_classification": "atlas import/region; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -563,13 +797,19 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active normal-review building sprite is an atlas region rather than an isolated PNG; included so the validator gates every active building sprite."
+      "notes": "Active normal-review building sprite is an atlas region rather than an isolated PNG; included so the validator gates every active building sprite.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     },
     {
       "asset_id": "newport_waterfront_shop_house",
       "filename": "hearthvale_newport_structure_pack_v1_a.png",
       "path": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
-      "building_ids": ["b_dockworker_rowhouse"],
+      "building_ids": [
+        "b_dockworker_rowhouse"
+      ],
       "current_in_game_building_id": "b_dockworker_rowhouse",
       "active_normal_review": true,
       "source_type": "direct_atlas_region_from_in_repo_atlas",
@@ -581,8 +821,16 @@
       "source_atlas": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
       "source_atlas_first_repository_commit": "585f2d55832344d8fc494805da073bb9f4bd898e",
       "source_atlas_current_godot_commit": "33f528e4062d7269cc2368a387f7a37b6c809737",
-      "source_rect": [864, 86, 351, 315],
-      "intermediate_or_source_files": ["assets/buildings/hearthvale_newport_structure_pack_v1_a.png", "scripts/BuildingCatalog.gd"],
+      "source_rect": [
+        864,
+        86,
+        351,
+        315
+      ],
+      "intermediate_or_source_files": [
+        "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+        "scripts/BuildingCatalog.gd"
+      ],
       "generation_record_status": "runtime atlas region exists; original atlas generation record absent",
       "authorship_classification": "atlas import/region; upstream hand-authored vs AI-generated vs imported unknown",
       "license": "No explicit source license or original art grant found for upstream atlas; temporary Wayfarer review use only.",
@@ -593,7 +841,18 @@
       "review_eligible": true,
       "final_commercial_eligible": false,
       "replacement_queue": true,
-      "notes": "Active normal-review building sprite is an atlas region rather than an isolated PNG; included so the validator gates every active building sprite."
+      "notes": "Active normal-review building sprite is an atlas region rather than an isolated PNG; included so the validator gates every active building sprite.",
+      "provenance_classification": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
+      "green_origin_source_allowed": false
     }
-  ]
+  ],
+  "origin_taxonomy": [
+    "temporary_review_yellow",
+    "green_origin_candidate",
+    "final_commercial_green",
+    "red_unsafe"
+  ],
+  "g418b_policy": "Current Newport building sprites are temporary_review_yellow visual reference only. Their pixels cannot source green-origin or final-commercial assets unless source proof changes their classification."
 }

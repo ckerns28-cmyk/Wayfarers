@@ -1,7 +1,7 @@
 {
   "schema_id": "wayfarer.newport.asset_manifest.v2",
   "generated_at": "2026-05-15T19:25:32.568457+00:00",
-  "phase": "G-4.18",
+  "phase": "G-4.18-temporary-yellow",
   "atlas": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
   "generated_asset_root": "art_pipeline/newport/generated_assets/hero_strip",
   "blender_component_manifest": "art_pipeline/newport/generated_assets/blender_components/newport_blender_components_manifest.json",
@@ -13,7 +13,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_long_a.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -21,8 +21,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_long_a.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -101,7 +101,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -114,18 +116,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "commercial_cobble_patch_b",
@@ -134,7 +142,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_patch_b.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -142,8 +150,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_patch_b.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -208,7 +216,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -221,18 +231,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "commercial_cobble_patch_c",
@@ -241,7 +257,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_patch_c.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -249,8 +265,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_patch_c.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -315,7 +331,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -328,18 +346,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "curb_sidewalk_stoop_strip",
@@ -348,7 +372,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/curb_sidewalk_stoop_strip.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -356,8 +380,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/curb_sidewalk_stoop_strip.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -408,7 +432,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -421,18 +447,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "curb_sidewalk_broken_edge",
@@ -441,7 +473,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/curb_sidewalk_broken_edge.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -449,8 +481,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/curb_sidewalk_broken_edge.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -501,7 +533,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -514,18 +548,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "building_contact_shadow_strip",
@@ -534,7 +574,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/building_contact_shadow_strip.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -542,8 +582,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/building_contact_shadow_strip.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -579,7 +619,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -592,18 +634,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": false,
       "source_pixels_from_project_owned_wayfarer_assets": false,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "dirt_wear_transition",
@@ -612,7 +660,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/dirt_wear_transition.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -620,8 +668,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/dirt_wear_transition.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -657,7 +705,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -670,18 +720,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": false,
       "source_pixels_from_project_owned_wayfarer_assets": false,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "grass_edge_north",
@@ -690,7 +746,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/grass_edge_north.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -698,8 +754,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/grass_edge_north.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -735,7 +791,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -748,18 +806,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": false,
       "source_pixels_from_project_owned_wayfarer_assets": false,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "grass_cobble_feather",
@@ -768,7 +832,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/grass_cobble_feather.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -776,8 +840,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/grass_cobble_feather.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -813,7 +877,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -826,18 +892,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": false,
       "source_pixels_from_project_owned_wayfarer_assets": false,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "dock_market_transition",
@@ -846,7 +918,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/dock_market_transition.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -854,8 +926,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/dock_market_transition.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -920,7 +992,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 0,
@@ -933,18 +1007,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "dock_pier_vertical",
@@ -953,7 +1033,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/dock_pier_vertical.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -961,8 +1041,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/dock_pier_vertical.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1013,7 +1093,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 336,
@@ -1026,18 +1108,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "dock_edge_feather",
@@ -1046,7 +1134,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/dock_edge_feather.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -1054,8 +1142,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/dock_edge_feather.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1120,7 +1208,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 448,
@@ -1133,18 +1223,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "pier_shadow_post_strip",
@@ -1153,7 +1249,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/pier_shadow_post_strip.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -1161,8 +1257,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/pier_shadow_post_strip.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1213,7 +1309,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 448,
@@ -1226,18 +1324,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "crate_barrel_table_cluster",
@@ -1246,7 +1350,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/crate_barrel_table_cluster.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [
@@ -1256,8 +1360,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/crate_barrel_table_cluster.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1332,7 +1436,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 448,
@@ -1345,18 +1451,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "fence_sign_market_cluster",
@@ -1365,7 +1477,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/fence_sign_market_cluster.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [
@@ -1375,8 +1487,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/fence_sign_market_cluster.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1451,7 +1563,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 648,
@@ -1464,18 +1578,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "small_crate_barrel_cluster",
@@ -1484,7 +1604,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/small_crate_barrel_cluster.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -1492,8 +1612,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/small_crate_barrel_cluster.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1558,7 +1678,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 448,
@@ -1571,18 +1693,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "market_sign_cluster",
@@ -1591,7 +1719,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/market_sign_cluster.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [
@@ -1601,8 +1729,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/market_sign_cluster.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1677,7 +1805,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 624,
@@ -1690,18 +1820,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "wharf_crate_pile_cluster",
@@ -1710,7 +1846,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/wharf_crate_pile_cluster.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -1718,8 +1854,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/wharf_crate_pile_cluster.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1798,7 +1934,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 448,
@@ -1811,18 +1949,24 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     },
     {
       "asset_id": "chandlery_base_cluster",
@@ -1831,7 +1975,7 @@
       "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/chandlery_base_cluster.png",
       "source": {
         "type": "deterministic_generated_bitmap",
-        "source_kind": "project_owned_pillow_generation_with_documented_newport_crops",
+        "source_kind": "temporary_review_yellow_with_documented_newport_crop_or_palette_influence",
         "created_by": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "creation_script": "art_pipeline/newport/scripts/generate_newport_asset_factory.py",
         "support_scripts": [],
@@ -1839,8 +1983,8 @@
         "generated_piece_file": "art_pipeline/newport/generated_assets/hero_strip/chandlery_base_cluster.png",
         "atlas_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
         "ownership": "project-owned",
-        "license": "Wayfarer project-owned deterministic generated/composited asset; commercial project use allowed; any copied pixels are documented in-repo Newport building sprite crops; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels.",
-        "license_ownership_status": "project-owned deterministic generated/composited asset; approved for normal G-4.18 review.",
+        "license": "Wayfarer temporary yellow review asset; commercial final use blocked until every yellow/uncertain Newport building source influence is replaced or proven green; no third-party game sprites, ripped assets, marketplace/demo/sample assets, web-scraped art, copied prior prop-sheet pixels, or copied third-party pixels are allowed.",
+        "license_ownership_status": "temporary yellow review asset; not final-commercial eligible after G-4.18A.",
         "palette_reference_manifest": "art_pipeline/newport/manifests/newport_building_style_values.json",
         "palette_reference_sources": [
           "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
@@ -1905,7 +2049,9 @@
         "ai_generated": false,
         "hand_authored": true,
         "deterministic_generated": true,
-        "notes": "Built with deterministic Pillow mark-making from Newport palette/style rules. Project-owned Newport building crops are used only where documented above as material/prop pixels. Local Blender components, when listed, are project-owned procedural silhouettes and are color-stylized before compositing."
+        "notes": "Built for prototype review with deterministic Pillow mark-making and documented Newport building crop/palette influence. Because those Newport building sources are yellow/uncertain, this asset is yellow review art only and cannot seed green final assets.",
+        "source_pixels_from_yellow_uncertain_assets": true,
+        "green_origin_candidate": false
       },
       "atlas_region": {
         "x": 684,
@@ -1918,23 +2064,37 @@
       "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands and remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g418_review_candidate",
-      "provenance_status": "passed",
+      "provenance_status": "temporary_review_yellow",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
       "review_eligibility": "eligible",
-      "license_ownership_status": "project-owned deterministic generated/composited asset; documented Newport building crop pixels only; no prior-prop-sheet, third-party, marketplace, web-scraped, or ripped sprite pixels.",
+      "license_ownership_status": "temporary yellow review asset; no third-party, marketplace, web-scraped, or ripped pixels known, but yellow/uncertain Newport building source influence prevents final-commercial classification.",
       "normal_review_mode": true,
       "source_pixels_from_prior_wayfarer_assets": true,
       "source_pixels_from_project_owned_wayfarer_assets": true,
       "palette_reference_from_project_owned_wayfarer_assets": true,
       "source_pixels_from_third_party_material": false,
-      "review_notes": "Passes G-4.18 Newport Visual Cohesion and Asset Provenance gates by using deterministic generated marks, Newport building palettes, and documented local procedural support assets only."
+      "review_notes": "Reclassified by G-4.18B as temporary yellow review art due to yellow/uncertain Newport building crop or palette influence. Still allowed in prototype review composition; not final-commercial.",
+      "origin_classification": "temporary_review_yellow",
+      "commercial_use_status": "temporary_review_yellow",
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": true,
+      "yellow_source_policy": "Visual review only. Do not use this asset or its source pixels as source material for green/final-commercial assets without source proof."
     }
   ],
-  "source_policy": "No asset enters the player-facing review build unless it passes both Newport Visual Cohesion and Asset Provenance gates.",
+  "source_policy": "Temporary yellow review art may be used to prototype composition, scale, and gameplay, but final-commercial Wayfarer art must come from green-origin assets with documented provenance. Yellow assets cannot be used as pixel sources for green final art.",
   "review_gate": "Assets with placeholder=false and review_eligible=true must satisfy NEWPORT_ART_BIBLE.md and must have project-owned or compatible licensed provenance.",
   "third_party_policy": "No third-party game sprites, ripped assets, marketplace/demo/sample assets, mystery assets, web-scraped art, or copied recognizable third-party sprite pixels are allowed.",
   "generation_policy": "Review-facing G-4.18 hero assets are deterministic project-owned Pillow output plus documented in-repo Newport material/prop crops where listed; no prior prop-sheet, third-party, marketplace, scraped, or ripped pixels are copied.",
-  "legacy_manifest_mirror": "art_pipeline/newport/manifests/newport_hero_street_assets.json"
+  "legacy_manifest_mirror": "art_pipeline/newport/manifests/newport_hero_street_assets.json",
+  "origin_taxonomy": [
+    "temporary_review_yellow",
+    "green_origin_candidate",
+    "final_commercial_green",
+    "red_unsafe"
+  ],
+  "g418b_reclassification": "G-4.17/G-4.18 hero assets remain review-eligible temporary yellow art because their source chain includes yellow/uncertain Newport building crop or palette influence.",
+  "green_origin_manifest": "art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json"
 }

@@ -158,10 +158,22 @@ canonical review manifest. Review-facing hero assets must document:
   source pixels are present
 - license/ownership status and review eligibility
 
-G-4.18 allowed sources are deterministic generated Pillow output, local
-hand-authored output, documented local Blender procedural support components,
-and exact crops from project-owned in-repo Newport building sprites. The old
-G-4.17 prior prop-sheet crop path is not eligible for normal review.
+After G-4.18A, the current Newport building sprites and any G-4.17/G-4.18
+assets derived from their pixels are `temporary_review_yellow`. They may remain
+in prototype review for composition, scale, and gameplay, but they are not
+final-commercial art and cannot seed green final assets.
+
+## G-4.18B Green-Origin Gate
+
+Temporary yellow review art may be used to prototype composition, scale, and
+gameplay, but final-commercial Wayfarer art must come from green-origin assets
+with documented provenance. Yellow assets cannot be used as pixel sources for
+green final art.
+
+Green-origin candidates must come from project-owned authored data,
+deterministic project scripts, hand-authored local assets, or documented
+commercial-compatible sources. If an asset uses yellow/uncertain source pixels,
+even through a crop or texture transfer, it remains `temporary_review_yellow`.
 
 The player remains temporary scale/debug art. G-4.19 or soon after must begin
 the player/NPC sprite-style foundation, and no NPC, monster, combat, or

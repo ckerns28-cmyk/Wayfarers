@@ -15,9 +15,26 @@ LEGACY_MANIFEST_PATH = PIPELINE_ROOT / "manifests" / "newport_hero_street_assets
 BUILDING_PROVENANCE_PATH = PIPELINE_ROOT / "manifests" / "newport_building_sprite_provenance.json"
 AUDIT_PATH = PIPELINE_ROOT / "reports" / "G417_G418_ASSET_PROVENANCE_AUDIT.md"
 BUILDING_AUDIT_PATH = PIPELINE_ROOT / "reports" / "G418A_BUILDING_SPRITE_PROVENANCE_AUDIT.md"
+GREEN_ORIGIN_ROOT = PROJECT_ROOT / "art_pipeline" / "newport_green_origin"
+GREEN_ORIGIN_MANIFEST_PATH = GREEN_ORIGIN_ROOT / "manifests" / "green_origin_asset_manifest.json"
+GREEN_ORIGIN_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418B_GREEN_ORIGIN_ASSET_FACTORY.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 ISOLATED_BUILDING_DIR = PROJECT_ROOT / "assets" / "sprites" / "buildings" / "isolated"
+ORIGIN_TAXONOMY = {"temporary_review_yellow", "green_origin_candidate", "final_commercial_green", "red_unsafe"}
+GREEN_ORIGIN_FORBIDDEN_INPUTS = [
+    "assets/sprites/buildings/isolated",
+    "assets/buildings",
+    "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+    "art_pipeline/newport/generated_assets",
+    "art_pipeline/newport/source_refs",
+    "hearthvale",
+    "yellow",
+    "uncertain",
+    "marketplace",
+    "web-scraped",
+    "ripped",
+]
 
 
 def fail(message: str, failures: list[str]) -> None:
@@ -74,10 +91,10 @@ def validate_manifest(manifest: dict, failures: list[str]) -> None:
         pass_check("manifest schema id")
 
     gate = str(manifest.get("source_policy", ""))
-    if "Visual Cohesion" in gate and "Asset Provenance" in gate:
-        pass_check("permanent visual/provenance gate recorded")
+    if "Temporary yellow review art" in gate and "green-origin assets" in gate:
+        pass_check("permanent yellow/green provenance gate recorded")
     else:
-        fail("source_policy must include both Visual Cohesion and Asset Provenance gates", failures)
+        fail("source_policy must include the G-4.18B yellow/prototype vs green/final gate", failures)
 
     path_exists(str(manifest.get("atlas", "")), failures)
     path_exists(str(manifest.get("generated_asset_root", "")), failures)
@@ -109,6 +126,10 @@ def validate_manifest(manifest: dict, failures: list[str]) -> None:
         "source_pixels_from_prior_wayfarer_assets",
         "source_pixels_from_project_owned_wayfarer_assets",
         "source_pixels_from_third_party_material",
+        "origin_classification",
+        "commercial_use_status",
+        "final_commercial_candidate",
+        "source_pixels_from_yellow_uncertain_assets",
     ]
     for asset in assets:
         if not isinstance(asset, dict):
@@ -126,8 +147,16 @@ def validate_manifest(manifest: dict, failures: list[str]) -> None:
                 fail(f"{asset_id} missing field {field}", failures)
         if asset.get("visual_cohesion_status") != "g418_review_candidate":
             fail(f"{asset_id} visual_cohesion_status must be g418_review_candidate", failures)
-        if asset.get("provenance_status") != "passed":
-            fail(f"{asset_id} provenance_status must be passed", failures)
+        if asset.get("provenance_status") != "temporary_review_yellow":
+            fail(f"{asset_id} provenance_status must be temporary_review_yellow after G-4.18A", failures)
+        if asset.get("origin_classification") != "temporary_review_yellow":
+            fail(f"{asset_id} origin_classification must be temporary_review_yellow", failures)
+        if asset.get("commercial_use_status") != "temporary_review_yellow":
+            fail(f"{asset_id} commercial_use_status must be temporary_review_yellow", failures)
+        if asset.get("final_commercial_candidate") is not False:
+            fail(f"{asset_id} must not be a final commercial candidate while yellow-source derived", failures)
+        if asset.get("source_pixels_from_yellow_uncertain_assets") is not True:
+            fail(f"{asset_id} must declare yellow/uncertain source influence", failures)
         if asset.get("placeholder") is not False:
             fail(f"{asset_id} must not be placeholder in review manifest", failures)
         if asset.get("review_eligible") is not True:
@@ -157,8 +186,15 @@ def validate_manifest(manifest: dict, failures: list[str]) -> None:
             fail(f"{asset_id} source must explicitly declare project-owned Wayfarer source pixel use", failures)
         if source.get("source_pixels_from_third_party_material") is not False:
             fail(f"{asset_id} source copied third-party pixels", failures)
+        if source.get("source_pixels_from_yellow_uncertain_assets") is not True:
+            fail(f"{asset_id} source must declare yellow/uncertain Newport source influence", failures)
+        if source.get("green_origin_candidate") is True:
+            fail(f"{asset_id} cannot be green_origin_candidate because it uses yellow-source influence", failures)
         if "no third-party" not in str(source.get("license", "")).lower():
             fail(f"{asset_id} license text must forbid third-party pixels", failures)
+        license_text = str(source.get("license", "")).lower()
+        if "temporary review" not in license_text and "temporary yellow review" not in license_text:
+            fail(f"{asset_id} license text must mark yellow-source assets as temporary review only", failures)
         path_exists(str(source.get("exact_source_path", "")), failures)
 
         material_sources = source.get("material_sources", [])
@@ -181,7 +217,7 @@ def validate_manifest(manifest: dict, failures: list[str]) -> None:
             path_exists(file_path, failures)
 
     if not failures:
-        pass_check("all review-facing assets pass provenance gate")
+        pass_check("all G-4.17/G-4.18 review-facing assets are quarantined as temporary yellow")
 
 
 def _extract_quoted_list(source: str, const_name: str) -> list[str]:
@@ -244,6 +280,9 @@ def validate_building_sprite_provenance(failures: list[str]) -> None:
         "reverse_search_status",
         "commercial_use_status",
         "review_eligible",
+        "provenance_classification",
+        "final_commercial_candidate",
+        "source_pixel_policy",
         "notes",
     ]
     for asset_id, asset in by_id.items():
@@ -251,14 +290,23 @@ def validate_building_sprite_provenance(failures: list[str]) -> None:
             if field not in asset:
                 fail(f"{asset_id} missing building provenance field {field}", failures)
         status = str(asset.get("commercial_use_status", "")).lower()
+        classification = str(asset.get("provenance_classification", "")).lower()
         if status not in {"green", "yellow", "red", "unknown"}:
             fail(f"{asset_id} commercial_use_status must be green, yellow, red, or unknown", failures)
+        if classification and classification not in ORIGIN_TAXONOMY:
+            fail(f"{asset_id} provenance_classification must use the G-4.18B taxonomy", failures)
         if status in {"red", "unknown"} and asset.get("review_eligible") is True:
             fail(f"{asset_id} is {status} but still review_eligible", failures)
         if status == "yellow":
             warn(f"{asset_id} is temporary review art only; not final/commercial eligible")
             if asset.get("final_commercial_eligible") is not False:
                 fail(f"{asset_id} yellow status must set final_commercial_eligible=false", failures)
+            if classification != "temporary_review_yellow":
+                fail(f"{asset_id} yellow status must set provenance_classification=temporary_review_yellow", failures)
+            if asset.get("final_commercial_candidate") is not False:
+                fail(f"{asset_id} yellow status must set final_commercial_candidate=false", failures)
+            if "cannot be used as source pixels" not in str(asset.get("source_pixel_policy", "")).lower():
+                fail(f"{asset_id} source_pixel_policy must block yellow pixels from green final art", failures)
         filename = str(asset.get("filename", ""))
         if filename.endswith(".png") and not filename.startswith("assets/buildings/"):
             path_exists(str(asset.get("path", f"assets/sprites/buildings/isolated/{filename}")), failures)
@@ -299,6 +347,92 @@ def validate_building_sprite_provenance(failures: list[str]) -> None:
         fail(f"missing building provenance audit report: {BUILDING_AUDIT_PATH}", failures)
 
 
+def validate_green_origin_asset_manifest(failures: list[str]) -> None:
+    manifest = load_json(GREEN_ORIGIN_MANIFEST_PATH, failures)
+    if not manifest:
+        return
+    if manifest.get("schema_id") != "wayfarer.newport_green_origin.asset_manifest.v1":
+        fail("green-origin manifest schema_id must be wayfarer.newport_green_origin.asset_manifest.v1", failures)
+    else:
+        pass_check("green-origin manifest schema id")
+    taxonomy = manifest.get("origin_taxonomy", [])
+    for required in sorted(ORIGIN_TAXONOMY):
+        if required not in taxonomy:
+            fail(f"green-origin manifest taxonomy missing {required}", failures)
+    path_exists(str(manifest.get("atlas", "")), failures)
+    path_exists(str(manifest.get("generated_asset_root", "")), failures)
+    for contact_sheet in manifest.get("contact_sheets", []):
+        path_exists(str(contact_sheet), failures)
+
+    assets = manifest.get("assets", [])
+    if not isinstance(assets, list):
+        fail("green-origin manifest assets must be a list", failures)
+        return
+    if len(assets) < 4:
+        fail("green-origin manifest must contain a small proof asset family", failures)
+    else:
+        pass_check(f"green-origin asset entries: {len(assets)}")
+
+    required_fields = [
+        "asset_id",
+        "asset_type",
+        "source_type",
+        "created_by",
+        "generation_script",
+        "input_sources",
+        "license",
+        "ownership",
+        "commercial_use_status",
+        "review_eligible",
+        "final_commercial_candidate",
+        "notes",
+    ]
+    for asset in assets:
+        if not isinstance(asset, dict):
+            fail("green-origin asset entry is not an object", failures)
+            continue
+        asset_id = str(asset.get("asset_id", ""))
+        for field in required_fields:
+            if field not in asset:
+                fail(f"{asset_id or 'unknown'} missing green-origin field {field}", failures)
+        path_exists(str(asset.get("path", "")), failures)
+        path_exists(str(asset.get("generation_script", "")), failures)
+        if asset.get("ownership") != "project-owned":
+            fail(f"{asset_id} ownership must be project-owned", failures)
+        status = str(asset.get("commercial_use_status", ""))
+        if status not in {"green_origin_candidate", "final_commercial_green"}:
+            fail(f"{asset_id} commercial_use_status must be green_origin_candidate or final_commercial_green", failures)
+        if asset.get("final_commercial_candidate") is True and status not in {"green_origin_candidate", "final_commercial_green"}:
+            fail(f"{asset_id} final_commercial_candidate requires green status", failures)
+        if asset.get("source_pixels_from_yellow_uncertain_assets") is not False:
+            fail(f"{asset_id} uses yellow/uncertain source pixels", failures)
+        if asset.get("source_pixels_from_third_party_material") is not False:
+            fail(f"{asset_id} uses third-party source pixels", failures)
+        if asset.get("web_scraped_source_pixels") is not False:
+            fail(f"{asset_id} uses web-scraped source pixels", failures)
+        for raw_source in asset.get("input_sources", []):
+            if not isinstance(raw_source, dict):
+                fail(f"{asset_id} input source is not an object", failures)
+                continue
+            source_text = json.dumps(raw_source, sort_keys=True).lower()
+            for forbidden in GREEN_ORIGIN_FORBIDDEN_INPUTS:
+                if forbidden.lower() in source_text:
+                    fail(f"{asset_id} forbidden green-origin input source: {forbidden}", failures)
+            if raw_source.get("source_pixels_used") is not False:
+                fail(f"{asset_id} green-origin input source uses source pixels", failures)
+            if "path" in raw_source:
+                path_exists(str(raw_source["path"]), failures)
+
+    if GREEN_ORIGIN_REPORT_PATH.exists():
+        report = GREEN_ORIGIN_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in ["green_origin_candidate", "No yellow Newport building sprite", "Godot Proof Area"]:
+            if required_text not in report:
+                fail(f"green-origin report missing text: {required_text}", failures)
+        pass_check("green-origin report present")
+    else:
+        fail(f"missing green-origin report: {GREEN_ORIGIN_REPORT_PATH}", failures)
+
+
 def main() -> int:
     failures: list[str] = []
     manifest = load_json(MANIFEST_PATH, failures)
@@ -320,6 +454,7 @@ def main() -> int:
     if manifest:
         validate_manifest(manifest, failures)
     validate_building_sprite_provenance(failures)
+    validate_green_origin_asset_manifest(failures)
 
     if failures:
         print(f"Newport provenance validation: FAIL ({len(failures)} issue(s))")

@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18", "build_phase_g_4_18")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18 Newport Proprietary Asset Factory + Style Unification", "build_label_g_4_18")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18B", "build_phase_g_4_18b")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18B Green-Origin Newport Art Factory", "build_label_g_4_18b")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -152,6 +152,13 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport/atlases",
 		"res://art_pipeline/newport/reports",
 		"res://art_pipeline/newport/scripts",
+		"res://art_pipeline/newport_green_origin/source_authored",
+		"res://art_pipeline/newport_green_origin/generated",
+		"res://art_pipeline/newport_green_origin/contact_sheets",
+		"res://art_pipeline/newport_green_origin/atlases",
+		"res://art_pipeline/newport_green_origin/manifests",
+		"res://art_pipeline/newport_green_origin/reports",
+		"res://art_pipeline/newport_green_origin/scripts",
 	]:
 		_expect(DirAccess.dir_exists_absolute(dir_path), "g418_pipeline_dir_" + dir_path.get_file())
 
@@ -171,6 +178,14 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport/manifests/newport_asset_manifest.json",
 		"res://art_pipeline/newport/manifests/newport_hero_street_assets.json",
 		"res://art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+		"res://art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
+		"res://art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+		"res://art_pipeline/newport_green_origin/scripts/validate_green_origin_assets.py",
+		"res://art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json",
+		"res://art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/green_origin_asset_contact_sheet.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/green_origin_palette_shadow_sheet.png",
+		"res://art_pipeline/newport_green_origin/reports/G418B_GREEN_ORIGIN_ASSET_FACTORY.md",
 	]:
 		_expect(FileAccess.file_exists(file_path), "g418_pipeline_file_" + file_path.get_file())
 
@@ -183,12 +198,19 @@ func _validate_g418_asset_factory(map: Node) -> void:
 			var materials: Array = layer.call("newport_hero_atlas_materials")
 			for material in ["commercial_cobble_long_a", "commercial_cobble_patch_b", "commercial_cobble_patch_c", "curb_sidewalk_stoop_strip", "curb_sidewalk_broken_edge", "building_contact_shadow_strip", "dirt_wear_transition", "grass_edge_north", "grass_cobble_feather", "dock_market_transition", "dock_pier_vertical", "dock_edge_feather", "pier_shadow_post_strip", "crate_barrel_table_cluster", "fence_sign_market_cluster", "small_crate_barrel_cluster", "market_sign_cluster", "wharf_crate_pile_cluster", "chandlery_base_cluster"]:
 				_expect(materials.has(material), "g418_hero_atlas_material_" + material + "_" + layer_name)
+		_expect(layer != null and layer.has_method("newport_green_origin_version"), "g418b_green_origin_api_" + layer_name)
+		if layer and layer.has_method("newport_green_origin_version"):
+			_expect(String(layer.call("newport_green_origin_version")) == "G-4.18B", "g418b_green_origin_version_" + layer_name)
+		if layer and layer.has_method("newport_green_origin_materials"):
+			var green_materials: Array = layer.call("newport_green_origin_materials")
+			for material in ["green_dock_plank_strip", "green_dock_plank_patch", "green_dock_edge_shadow", "green_pier_post_pair", "green_rope_coil_small", "green_plank_contact_shadow"]:
+				_expect(green_materials.has(material), "g418b_green_origin_material_" + material + "_" + layer_name)
 
 	var manifest := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_asset_manifest.json")
 	_expect(not manifest.is_empty(), "g418_asset_manifest_json")
 	_expect(String(manifest.get("schema_id", "")) == "wayfarer.newport.asset_manifest.v2", "g418_asset_manifest_schema")
-	_expect(String(manifest.get("phase", "")) == "G-4.18", "g418_asset_manifest_phase")
-	_expect(String(manifest.get("source_policy", "")).find("Visual Cohesion") >= 0 and String(manifest.get("source_policy", "")).find("Asset Provenance") >= 0, "g418_asset_manifest_permanent_gate")
+	_expect(String(manifest.get("phase", "")) == "G-4.18-temporary-yellow", "g418_asset_manifest_phase_temporary_yellow")
+	_expect(String(manifest.get("source_policy", "")).find("Temporary yellow review art") >= 0 and String(manifest.get("source_policy", "")).find("green-origin assets") >= 0, "g418_asset_manifest_yellow_green_gate")
 	var legacy_manifest := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_hero_street_assets.json")
 	_expect(not legacy_manifest.is_empty(), "g418_legacy_asset_manifest_json")
 	if not manifest.is_empty() and not legacy_manifest.is_empty():
@@ -201,29 +223,71 @@ func _validate_g418_asset_factory(map: Node) -> void:
 			failures.append("g418_asset_manifest_asset_not_dictionary")
 			continue
 		var asset: Dictionary = raw_asset
-		for key in ["asset_id", "material_category", "source_file", "generated_piece_file", "atlas_region", "intended_scale", "collision_behavior", "y_sort_behavior", "contact_shadow_required", "visual_cohesion_status", "provenance_status", "placeholder", "final", "review_eligible", "license_ownership_status", "source_pixels_from_project_owned_wayfarer_assets", "source_pixels_from_third_party_material"]:
+		for key in ["asset_id", "material_category", "source_file", "generated_piece_file", "atlas_region", "intended_scale", "collision_behavior", "y_sort_behavior", "contact_shadow_required", "visual_cohesion_status", "provenance_status", "placeholder", "final", "review_eligible", "license_ownership_status", "source_pixels_from_project_owned_wayfarer_assets", "source_pixels_from_third_party_material", "origin_classification", "commercial_use_status", "final_commercial_candidate", "source_pixels_from_yellow_uncertain_assets"]:
 			_expect(asset.has(key), "g418_asset_manifest_field_" + String(asset.get("asset_id", "unknown")) + "_" + key)
 		if bool(asset.get("review_eligible", false)) and not bool(asset.get("placeholder", true)):
 			review_ready_assets += 1
 			_expect(String(asset.get("visual_cohesion_status", "")) == "g418_review_candidate", "g418_review_asset_visual_status_" + String(asset.get("asset_id", "unknown")))
-			_expect(String(asset.get("provenance_status", "")) == "passed", "g418_review_asset_provenance_status_" + String(asset.get("asset_id", "unknown")))
+			_expect(String(asset.get("provenance_status", "")) == "temporary_review_yellow", "g418_review_asset_provenance_status_" + String(asset.get("asset_id", "unknown")))
+			_expect(String(asset.get("origin_classification", "")) == "temporary_review_yellow", "g418_review_asset_origin_classification_" + String(asset.get("asset_id", "unknown")))
+			_expect(String(asset.get("commercial_use_status", "")) == "temporary_review_yellow", "g418_review_asset_commercial_status_" + String(asset.get("asset_id", "unknown")))
+			_expect(bool(asset.get("final_commercial_candidate", true)) == false, "g418_review_asset_not_final_commercial_" + String(asset.get("asset_id", "unknown")))
+			_expect(bool(asset.get("source_pixels_from_yellow_uncertain_assets", false)) == true, "g418_review_asset_yellow_source_declared_" + String(asset.get("asset_id", "unknown")))
 			_expect(bool(asset.get("contact_shadow_required", false)), "g418_review_asset_contact_shadow_" + String(asset.get("asset_id", "unknown")))
 			_expect(bool(asset.get("source_pixels_from_third_party_material", true)) == false, "g418_review_asset_no_third_party_source_pixels_" + String(asset.get("asset_id", "unknown")))
 		var source: Dictionary = asset.get("source", {})
-		_expect(String(source.get("ownership", "")) == "project-owned", "g418_asset_source_owned_" + String(asset.get("asset_id", "unknown")))
+		_expect(String(source.get("ownership", "")).find("project-owned") >= 0, "g418_asset_source_owned_" + String(asset.get("asset_id", "unknown")))
 		_expect(String(source.get("license", "")).to_lower().find("no third-party") >= 0, "g418_asset_source_license_no_third_party_" + String(asset.get("asset_id", "unknown")))
 		_expect(String(source.get("license", "")).to_lower().find("prior prop-sheet") >= 0, "g418_asset_source_license_no_prior_prop_sheet_" + String(asset.get("asset_id", "unknown")))
+		_expect(String(source.get("license", "")).to_lower().find("temporary yellow review") >= 0, "g418_asset_source_license_temporary_yellow_" + String(asset.get("asset_id", "unknown")))
 		_expect(source.has("material_sources"), "g418_asset_source_material_refs_" + String(asset.get("asset_id", "unknown")))
 		_expect(source.has("blender_component_sources"), "g418_asset_source_blender_refs_" + String(asset.get("asset_id", "unknown")))
 		_expect(source.has("prior_project_prop_sources") and source.get("prior_project_prop_sources", []) == [], "g418_asset_source_prior_prop_refs_empty_" + String(asset.get("asset_id", "unknown")))
 		_expect(bool(source.get("source_pixels_from_third_party_material", true)) == false, "g418_asset_source_no_third_party_pixels_" + String(asset.get("asset_id", "unknown")))
 		_expect(bool(source.get("web_scraped_source_pixels", true)) == false, "g418_asset_source_no_web_scraped_pixels_" + String(asset.get("asset_id", "unknown")))
+		_expect(bool(source.get("source_pixels_from_yellow_uncertain_assets", false)) == true, "g418_asset_source_yellow_influence_declared_" + String(asset.get("asset_id", "unknown")))
+		_expect(bool(source.get("green_origin_candidate", true)) == false, "g418_asset_source_not_green_origin_" + String(asset.get("asset_id", "unknown")))
 		for raw_crop in source.get("material_sources", []):
 			if raw_crop is Dictionary:
 				var crop: Dictionary = raw_crop
 				_expect(String(crop.get("ownership", "")).find("project-owned") >= 0, "g418_asset_crop_owned_" + String(asset.get("asset_id", "unknown")) + "_" + String(crop.get("source_crop_id", "unknown")))
 				_expect(bool(crop.get("third_party_pixels", true)) == false, "g418_asset_crop_no_third_party_" + String(asset.get("asset_id", "unknown")) + "_" + String(crop.get("source_crop_id", "unknown")))
 	_expect(review_ready_assets >= 16, "g418_asset_manifest_review_ready_assets")
+	_validate_g418b_green_origin_manifest()
+
+func _validate_g418b_green_origin_manifest() -> void:
+	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json")
+	_expect(not manifest.is_empty(), "g418b_green_origin_manifest_json")
+	_expect(String(manifest.get("schema_id", "")) == "wayfarer.newport_green_origin.asset_manifest.v1", "g418b_green_origin_manifest_schema")
+	_expect(String(manifest.get("phase", "")) == "G-4.18B", "g418b_green_origin_manifest_phase")
+	var taxonomy: Array = manifest.get("origin_taxonomy", [])
+	for status in ["temporary_review_yellow", "green_origin_candidate", "final_commercial_green", "red_unsafe"]:
+		_expect(taxonomy.has(status), "g418b_origin_taxonomy_" + status)
+	var assets: Array = manifest.get("assets", [])
+	_expect(assets.size() >= 4, "g418b_green_origin_asset_family_count")
+	for raw_asset in assets:
+		if not raw_asset is Dictionary:
+			failures.append("g418b_green_origin_asset_not_dictionary")
+			continue
+		var asset: Dictionary = raw_asset
+		var asset_id := String(asset.get("asset_id", "unknown"))
+		for key in ["asset_id", "asset_type", "source_type", "generation_script", "input_sources", "license", "ownership", "commercial_use_status", "review_eligible", "final_commercial_candidate", "notes"]:
+			_expect(asset.has(key), "g418b_green_origin_field_" + asset_id + "_" + key)
+		_expect(String(asset.get("source_type", "")) == "deterministic_python_pillow", "g418b_green_origin_source_type_" + asset_id)
+		_expect(String(asset.get("ownership", "")) == "project-owned", "g418b_green_origin_owned_" + asset_id)
+		_expect(String(asset.get("commercial_use_status", "")) == "green_origin_candidate" or String(asset.get("commercial_use_status", "")) == "final_commercial_green", "g418b_green_origin_status_" + asset_id)
+		_expect(bool(asset.get("review_eligible", false)) == true, "g418b_green_origin_review_eligible_" + asset_id)
+		_expect(bool(asset.get("final_commercial_candidate", false)) == true, "g418b_green_origin_final_candidate_" + asset_id)
+		_expect(bool(asset.get("source_pixels_from_yellow_uncertain_assets", true)) == false, "g418b_green_origin_no_yellow_pixels_" + asset_id)
+		_expect(bool(asset.get("source_pixels_from_third_party_material", true)) == false, "g418b_green_origin_no_third_party_pixels_" + asset_id)
+		_expect(bool(asset.get("web_scraped_source_pixels", true)) == false, "g418b_green_origin_no_web_pixels_" + asset_id)
+		for raw_source in asset.get("input_sources", []):
+			if raw_source is Dictionary:
+				var source: Dictionary = raw_source
+				var source_text := JSON.stringify(source).to_lower()
+				for forbidden in ["assets/sprites/buildings/isolated", "assets/buildings", "hearthvale", "yellow", "uncertain", "marketplace", "web-scraped", "ripped"]:
+					_expect(source_text.find(forbidden) < 0, "g418b_green_origin_input_not_" + forbidden.replace("/", "_").replace("-", "_") + "_" + asset_id)
+				_expect(bool(source.get("source_pixels_used", true)) == false, "g418b_green_origin_input_no_source_pixels_" + asset_id)
 
 func _load_json_dictionary(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
@@ -559,8 +623,10 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("density_pass", "") == "G-4.13B", "starter_plan_density_pass_g_4_13b")
 	_expect(plan.get("layout_rules_pass", "") == "G-4.15", "starter_plan_layout_rules_pass_g_4_15")
 	_expect(plan.get("surface_kit_pass", "") == "G-4.16", "starter_plan_surface_kit_pass_g_4_16")
-	_expect(plan.get("asset_pipeline_pass", "") == "G-4.18", "starter_plan_asset_pipeline_pass_g_4_18")
+	_expect(plan.get("asset_pipeline_pass", "") == "G-4.18B", "starter_plan_asset_pipeline_pass_g_4_18b")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0, "starter_plan_hero_street_atlas_proof")
+	_expect(plan.get("green_origin_pipeline_pass", "") == "G-4.18B", "starter_plan_green_origin_pipeline_pass")
+	_expect(String(plan.get("yellow_review_art_policy", "")).find("yellow pixels cannot source final-commercial green assets") >= 0, "starter_plan_yellow_review_art_policy")
 	_expect(int(plan.get("layout_rule_count", 0)) == NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size(), "starter_plan_g415_layout_rule_count")
 	_expect(float(plan.get("visual_acceptance_score_target", 0.0)) >= 8.5, "starter_plan_g415_visual_acceptance_target")
 	_expect(int(plan.get("active_g413b_infill_count", 0)) >= 3, "starter_plan_active_g413b_infill_count")

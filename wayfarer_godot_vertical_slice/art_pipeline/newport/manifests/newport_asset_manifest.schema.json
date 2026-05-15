@@ -1,7 +1,7 @@
 {
   "schema_id": "wayfarer.newport.asset_manifest.v2",
-  "description": "Required fields for Newport terrain and prop assets. Assets with placeholder=false and review_eligible=true must pass both Newport Visual Cohesion and Asset Provenance gates.",
-  "permanent_gate": "No asset enters the player-facing review build unless it passes both Newport Visual Cohesion and Asset Provenance gates.",
+  "description": "Required fields for Newport terrain and prop assets. After G-4.18A/G-4.18B, crop-derived review assets are temporary_review_yellow unless their full source chain is proven green.",
+  "permanent_gate": "Temporary yellow review art may be used to prototype composition, scale, and gameplay, but final-commercial Wayfarer art must come from green-origin assets with documented provenance. Yellow assets cannot be used as pixel sources for green final art.",
   "required_asset_fields": [
     "asset_id",
     "material_category",
@@ -20,7 +20,11 @@
     "review_eligible",
     "license_ownership_status",
     "source_pixels_from_project_owned_wayfarer_assets",
-    "source_pixels_from_third_party_material"
+    "source_pixels_from_third_party_material",
+    "origin_classification",
+    "commercial_use_status",
+    "final_commercial_candidate",
+    "source_pixels_from_yellow_uncertain_assets"
   ],
   "source_fields": [
     "type",
@@ -56,7 +60,17 @@
   "allowed_provenance_status": [
     "blocked",
     "pending",
-    "passed"
+    "passed",
+    "temporary_review_yellow",
+    "green_origin_candidate",
+    "final_commercial_green",
+    "red_unsafe"
+  ],
+  "origin_taxonomy": [
+    "temporary_review_yellow",
+    "green_origin_candidate",
+    "final_commercial_green",
+    "red_unsafe"
   ],
   "review_source_policy": {
     "third_party_game_sprites": "forbidden",
@@ -65,8 +79,9 @@
     "mystery_assets": "forbidden",
     "web_scraped_art": "forbidden",
     "uncertain_source": "review_eligible=false",
-    "project_owned_newport_crops": "allowed only when exact source path, crop rectangle, and ownership are documented",
-    "deterministic_generated_assets": "allowed when creation script and generated piece path are documented"
+    "yellow_uncertain_newport_crops": "allowed only for temporary_review_yellow prototype review art and never as source pixels for green final art",
+    "green_origin_assets": "allowed when generated from project scripts, authored parameters, and documented green/project-owned sources only",
+    "deterministic_generated_assets": "allowed when creation script, generated piece path, source inputs, and commercial status are documented"
   },
-  "hard_rule": "If placeholder is false and review_eligible is true, the asset must satisfy the Newport Visual Cohesion Rules and Asset Provenance gate: muted palette, dark outline or dark-side shading, internal material detail, contact shadow where seated, scale compatibility with building doors/windows/player, exact source documentation, and no unsafe third-party or mystery pixels."
+  "hard_rule": "If placeholder is false and review_eligible is true, the asset must satisfy the Newport Visual Cohesion Rules and Asset Provenance gate: muted palette, dark outline or dark-side shading, internal material detail, contact shadow where seated, scale compatibility with building doors/windows/player, exact source documentation, no unsafe third-party or mystery pixels, and no silent promotion from temporary_review_yellow to green."
 }
