@@ -20,6 +20,7 @@ const DIALOGUE_MIN_WIDTH := 340.0
 @onready var dialogue_label: Label = $DialoguePanel/MarginContainer/DialogueLabel
 
 var _metadata_expanded := false
+var _review_screenshot_mode := false
 
 func _ready() -> void:
 	_apply_panel_styles()
@@ -30,9 +31,13 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_apply_layout)
 
 func show_dialogue(text: String) -> void:
+	if _review_screenshot_mode:
+		return
 	dialogue_label.text = text
 	dialogue_panel.visible = true
 	await get_tree().create_timer(4.0).timeout
+	if _review_screenshot_mode:
+		return
 	dialogue_panel.visible = false
 
 func _apply_build_identity() -> void:
@@ -47,9 +52,20 @@ func _apply_build_identity() -> void:
 	stats_label.text = "Level 1  HP 52/52"
 
 func toggle_review_metadata() -> void:
+	if _review_screenshot_mode:
+		return
 	_metadata_expanded = not _metadata_expanded
 	_apply_metadata_visibility()
 	_apply_layout()
+
+func set_review_screenshot_mode(enabled: bool) -> void:
+	_review_screenshot_mode = enabled
+	status_panel.visible = not enabled
+	dialogue_panel.visible = false
+	_apply_layout()
+
+func toggle_review_screenshot_mode() -> void:
+	set_review_screenshot_mode(not _review_screenshot_mode)
 
 func _apply_metadata_visibility() -> void:
 	channel_label.visible = _metadata_expanded
@@ -80,6 +96,8 @@ func _apply_panel_styles() -> void:
 func _apply_layout() -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	if viewport_size.x <= 0 or viewport_size.y <= 0:
+		return
+	if _review_screenshot_mode:
 		return
 
 	var max_width := STATUS_EXPANDED_MAX_WIDTH if _metadata_expanded else STATUS_MAX_WIDTH

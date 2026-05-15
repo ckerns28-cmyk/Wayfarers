@@ -1209,6 +1209,47 @@ Remaining known visual issues:
 - No interiors are included yet; public doors continue to use the existing
   stub messages.
 
+## G-4.16: Newport Art Cohesion Reset
+
+Status: implemented for local validation and screenshot review.
+
+G-4.16 is an art-direction foundation pass, not a position nudge. It preserves
+the G-4.15 building object rules while raising the surrounding surfaces and
+props toward the visual standard set by the Newport building sprites.
+
+Implemented:
+
+- HUD identity: `Godot G-4.16 Newport Art Cohesion Reset`.
+- Branch: `codex/g-4-16-newport-art-cohesion-reset`.
+- Newport Visual Cohesion Rules are now documented in
+  `wayfarer_godot_vertical_slice/docs/NEWPORT_ART_BIBLE.md` as a permanent
+  acceptance gate.
+- A Visual Mismatch Audit is documented in
+  `wayfarer_godot_vertical_slice/docs/NEWPORT_VISUAL_MISMATCH_AUDIT.md`.
+- `MapLayer.gd` exposes a G-4.16 reusable surface kit covering commercial
+  street, curb/sidewalk, dirt paths, grass-road transitions, dock planks,
+  pier edges, building-base/shadow support, and service lanes.
+- Main street, frontage pads, dock planks, harbor edge, grass/yards, service
+  lanes, and hero props have been redrawn/restyled from that kit.
+- Debug/parcel/propland rectangles no longer dominate normal review; they are
+  restyled into surface wear, pads, yards, and service-lane marks. Explicit
+  object-rule debug remains toggle-only.
+- `F4` and `--review-no-hud` provide no-HUD screenshot review mode.
+- `tools/package_itch_web.sh` now creates both the stable itch ZIP and a
+  versioned ZIP so the newest upload candidate is clear.
+
+Permanent future-art rule:
+
+- Player character sprite sheets, NPC sprite sheets, monsters, items, weapons,
+  armor, equipment, animation style, combat VFX, and UI-world objects must
+  follow the Newport Visual Cohesion Rules before review acceptance.
+
+Validation gates:
+
+- Validator expects the G-4.16 build label and surface-kit API.
+- Validator confirms the surface kit material manifest, no-HUD screenshot mode,
+  clean review default, and the G-4.16 `surface_kit_pass` plan marker.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to

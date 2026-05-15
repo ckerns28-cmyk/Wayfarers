@@ -14,6 +14,7 @@ const PLAYER_SPAWN := Vector2(675, 612)
 const EDRIN_SPAWN := Vector2(-800, -800)
 const G414A_STREET_WALL_CURB_DATUM_Y := 17.77
 const G415_VISUAL_ACCEPTANCE_SCORE_TARGET := 8.5
+const G416_SURFACE_KIT_PASS := "G-4.16"
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
@@ -467,7 +468,7 @@ static func route_debug_probes() -> Array:
 
 static func lived_in_detail_count() -> int:
 	if G410_STARTER_HARBOR_TOWN:
-		return 132
+		return 168
 	if G49_STREET_VIGNETTE:
 		return 38
 	if G48_PROOF_STREET:
@@ -679,11 +680,14 @@ static func starter_district_plan() -> Dictionary:
 		"footprint_pass": "G-4.13A",
 		"density_pass": "G-4.13B",
 		"layout_rules_pass": "G-4.15",
+		"surface_kit_pass": G416_SURFACE_KIT_PASS,
 		"layout_rule_count": g415_layout_rules().size(),
 		"visual_acceptance_score_target": G415_VISUAL_ACCEPTANCE_SCORE_TARGET,
 		"collision_model": "visual_bounds and lot_bounds are review/planning data; collision_footprint is the only blocking building body.",
 		"clean_review_default": true,
 		"surface_cohesion_gate": true,
+		"newport_visual_cohesion_gate": true,
+		"review_screenshot_mode": "F4 or --review-no-hud",
 		"districts": [
 			"harborfront_commercial",
 			"working_wharf",
@@ -818,6 +822,11 @@ static func missing_asset_manifest() -> Array:
 		"sign variants",
 		"fencing variants",
 		"lantern variants",
+		"Newport-detail player character sprite sheet",
+		"Newport-detail NPC sprite sheets",
+		"Newport-detail monster sprite sheets",
+		"Newport-detail equipment, weapons, armor, and combat VFX",
+		"UI-world objects that match Newport material and outline rules",
 		"chapel/church decision and final art if needed",
 	]
 
