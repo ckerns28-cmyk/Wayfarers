@@ -1,0 +1,109 @@
+# Newport Art Bible
+
+## Newport Visual Cohesion Rules
+
+G-4.16 makes the high-detail Newport building sprites the art standard for the
+whole town. Any new asset, prop, terrain tile, character, NPC, monster,
+equipment item, VFX element, or UI-world object must pass this standard before
+it is accepted into a player-facing review build.
+
+Target pixel density / apparent detail:
+
+- World surfaces and props must read within one detail band of the building
+  sprites. Large flat fills, single-color roads, single-line fences, and
+  unshaded rectangle props are placeholders.
+- Ground materials need layered base tone, mid-tone patches, small marks, edge
+  dirt, contact shadow, and hand-authored seams or texture breaks.
+- Props near hero buildings need bevels, outlines, highlights, cast/contact
+  shadows, and material-specific internal detail at normal camera zoom.
+
+Outline and edge rules:
+
+- Buildings use dark painterly contours. Props should use 1-2 px dark outlines
+  or dark-side shading at the apparent screen scale.
+- Roads, yards, docks, and water should avoid hard debug-box borders. Edges
+  must be material transitions: curb stones, dirt feathering, worn grass,
+  algae, pier shadow, plank lips, or low walls.
+
+Shadow direction and softness:
+
+- Contact shadows fall slightly south/southeast and stay soft. They should seat
+  buildings, props, posts, tables, barrels, crates, and pier edges without
+  becoming black outlines.
+- Building bases keep the G-4.15 object-rule grounding. Surface shadows support
+  those bases; they do not replace anchors, footprints, or collision metadata.
+
+Color palette:
+
+- Newport uses weathered coastal neutrals: grey-brown stone, aged tan planks,
+  muted clapboard whites, mossy greens, low-saturation harbor blues, and warm
+  rope/lantern accents.
+- Avoid saturated toy colors, single-hue green fields, flat brown roads, pure
+  white cloth blocks, and high-contrast debug colors in normal review mode.
+- Highlights should be warm and sparing; shadows should be green-brown,
+  blue-green, or dark umber rather than pure black.
+
+Material rules:
+
+- Wood: plank seams, board variation, nail/dark specks, worn highlights,
+  darker end grain, and grounding shadow at contact edges.
+- Stone: uneven cobbles, slab seams, chipped highlights, edge grime, and curb
+  lips where buildings meet the street.
+- Dirt: layered tan/umber tracks, small stones, scuffed darker edges, and
+  feathered transitions into grass.
+- Grass: mottled fields, tufts, darker patches, worn routes near roads and
+  doors, and no plain rectangle lots in review mode.
+- Water: depth bands, subdued ripples, dark pier contact, shoreline scum, and
+  irregular edge treatment.
+- Roads: cobble or compacted road texture with rutting, repair patches, curb
+  shadow, and authored thresholds at doors.
+- Docks: visibly built from planks with board direction, posts, dark waterline
+  contact, weathering, and pier-edge shadow.
+- Fences: posts plus rails with shadow/highlight, not single pale lines.
+- Cloth: no bright flat laundry in hero review. Cloth must be shaded, muted,
+  or replaced by role-appropriate nets/canvas until final art exists.
+- Crates/barrels/signs/market props: outlined, shaded, material detailed, and
+  seated by contact shadow. Remove or defer any prop that still reads as a
+  layout marker.
+
+Scale relationship:
+
+- Buildings define the scale. Door height, stoop depth, curb height, player
+  height, barrel/crate size, table height, cart width, dock boards, road width,
+  and fence height must all read against the building doors and windows.
+- Roads and docks must be walkable but not vacant bands. Door paths and service
+  lanes should feel human-scaled.
+- Vehicles/carts must not exceed building door/story proportions unless they
+  are intentionally large wagons.
+- The current player is a temporary scale marker, not final character art.
+
+Review-build acceptance:
+
+- Allowed: Newport-compatible buildings, G-4.16 surface kit materials,
+  authored prop clusters, muted construction/lot traces that read as ground,
+  debug overlays only when explicitly toggled, and no-HUD screenshots.
+- Placeholder art: flat roads, flat grass, hard parcel/debug rectangles,
+  generic colored boxes, unshaded line props, bright cloth blocks, props that
+  lack contact shadows, and any future character/monster/UI-world element that
+  does not match the Newport detail level.
+- Hard gate: future player sprite sheets, NPC sprite sheets, monsters,
+  equipment, weapons, armor, combat VFX, items, and UI-world objects must meet
+  these rules before they can be considered review-ready.
+
+## G-4.16 Surface Kit
+
+Implemented surface-kit materials:
+
+- commercial street surface
+- curb and sidewalk edge pieces
+- dirt path pieces
+- grass-to-road transition pieces
+- dock plank pieces
+- pier edge pieces
+- building base/shadow/footprint support pieces
+- alley and service-lane pieces
+
+The kit is currently procedural in `MapLayer.gd` so it can cover the starter
+harbor consistently before dedicated bitmap terrain assets exist. Dedicated
+terrain sprites may replace these pieces later, but they must preserve the
+same material rules and validation gate.

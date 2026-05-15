@@ -6,9 +6,26 @@ const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
 const TILE := NEWPORT_TOWN.TILE
 const MAP_W := NEWPORT_TOWN.MAP_TILES.x
 const MAP_H := NEWPORT_TOWN.MAP_TILES.y
+const NEWPORT_SURFACE_KIT_VERSION := "G-4.16"
+const NEWPORT_SURFACE_KIT_MATERIALS := [
+	"commercial_street",
+	"curb_sidewalk",
+	"dirt_path",
+	"grass_road_transition",
+	"dock_plank",
+	"pier_edge",
+	"building_base_shadow",
+	"service_lane",
+]
 
 func _ready() -> void:
 	queue_redraw()
+
+func newport_surface_kit_version() -> String:
+	return NEWPORT_SURFACE_KIT_VERSION
+
+func newport_surface_kit_materials() -> Array:
+	return NEWPORT_SURFACE_KIT_MATERIALS.duplicate()
 
 func _draw() -> void:
 	match layer_id:
@@ -223,15 +240,14 @@ func _draw_props() -> void:
 		draw_circle(pos + Vector2(0, -6), 3, Color("#d8b56f"))
 
 func _draw_g410_ground() -> void:
-	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#496943"), Color("#3a573b"), 1.0, 38)
-	_draw_soft_rect(Rect2(150, 160, 1240, 270), Color("#617a55"), Color("#4d6848"), 0.72, 24)
-	_draw_soft_rect(Rect2(208, 372, 1192, 224), Color("#596f50"), Color("#465f43"), 0.70, 22)
-	_draw_soft_rect(Rect2(198, 606, 1190, 170), Color("#5f6750"), Color("#4d5944"), 0.48, 18)
-	_draw_soft_rect(Rect2(42, 392, 178, 178), Color("#526b49"), Color("#405d3f"), 0.40, 10)
-	_draw_soft_rect(Rect2(1384, 398, 98, 172), Color("#536b4a"), Color("#405d3f"), 0.38, 10)
+	_draw_newport_grass_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#4a6a42"), Color("#314d35"), 1.0, 64)
+	_draw_newport_grass_rect(Rect2(150, 160, 1240, 270), Color("#647f57"), Color("#496744"), 0.76, 42)
+	_draw_newport_grass_rect(Rect2(208, 372, 1192, 224), Color("#5b7251"), Color("#405c41"), 0.72, 38)
+	_draw_newport_grass_rect(Rect2(198, 606, 1190, 170), Color("#5d6650"), Color("#454f3d"), 0.50, 28)
+	_draw_newport_grass_rect(Rect2(42, 392, 178, 178), Color("#526b49"), Color("#36543a"), 0.42, 18)
+	_draw_newport_grass_rect(Rect2(1384, 398, 98, 172), Color("#536b4a"), Color("#36543a"), 0.40, 14)
 	for rect in [Rect2(184, 206, 174, 86), Rect2(426, 176, 256, 92), Rect2(742, 186, 218, 82), Rect2(1044, 174, 240, 98), Rect2(1288, 314, 180, 96)]:
-		_draw_soft_rect(rect, Color("#4f6849"), Color("#40583e"), 0.16, 4)
-		draw_rect(rect.grow(-7.0), Color(0.08, 0.12, 0.08, 0.10), false, 1.0)
+		_draw_newport_lot_variation(rect, Color("#4f6849"), Color("#40583e"), 0.12, "distant")
 	_draw_g410_background_depth()
 	_draw_g410_lot_plan()
 	_draw_g415_parcel_grounding()
@@ -258,72 +274,62 @@ func _draw_g410_lot_plan() -> void:
 func _draw_g410_active_lot(rect: Rect2, district: String, role := "") -> void:
 	var base := Color("#5f7554")
 	var alt := Color("#4c6649")
-	var alpha := 0.22
+	var alpha := 0.12
 	if role.begins_with("waterline_"):
 		base = Color("#2f7184")
 		alt = Color("#1f5369")
-		alpha = 0.12
+		alpha = 0.06
 	elif district == "working_wharf":
 		base = Color("#6b6049")
 		alt = Color("#534936")
-		alpha = 0.16
+		alpha = 0.08
 	elif district == "harborfront_commercial":
 		base = Color("#647157")
 		alt = Color("#4d5f49")
-		alpha = 0.20
+		alpha = 0.10
 	elif district == "inland_residential_civic":
 		base = Color("#69835d")
 		alt = Color("#54724f")
-		alpha = 0.18
+		alpha = 0.10
 	elif district == "support_lane":
 		base = Color("#5d724f")
 		alt = Color("#486442")
-		alpha = 0.18
-	_draw_soft_rect(rect, base, alt, alpha, 4)
+		alpha = 0.09
+	_draw_newport_lot_variation(rect, base, alt, alpha, district)
 	if district == "harborfront_commercial":
 		var frontage := Rect2(rect.position.x + 8.0, rect.position.y + rect.size.y - 24.0, maxf(0.0, rect.size.x - 16.0), 18.0)
-		draw_rect(frontage, Color("#80745c", 0.20), true)
-		draw_line(frontage.position + Vector2(4.0, 3.0), frontage.position + Vector2(frontage.size.x - 4.0, 3.0), Color("#dac68f", 0.14), 1.0)
-		_draw_surface_speckles(frontage.grow(3.0), 7, Color(0.12, 0.10, 0.07, 0.10), Vector2(14, 4))
+		_draw_newport_sidewalk_panel(frontage, "frontage", 0.38)
 	elif district == "inland_residential_civic":
 		var yard := rect.grow(-14.0)
-		draw_rect(yard, Color("#789365", 0.12), true)
-		_draw_residential_path(yard.position + Vector2(yard.size.x * 0.5, yard.size.y - 6.0), rect.position + Vector2(rect.size.x * 0.5, rect.size.y + 8.0), 12.0)
+		_draw_newport_grass_rect(yard, Color("#789365"), Color("#56784f"), 0.14, 8)
+		_draw_newport_dirt_path(yard.position + Vector2(yard.size.x * 0.5, yard.size.y - 6.0), rect.position + Vector2(rect.size.x * 0.5, rect.size.y + 8.0), 12.0, true)
 		_draw_shrub_cluster(yard.position + Vector2(18.0, yard.size.y - 18.0))
 		_draw_shrub_cluster(yard.position + Vector2(yard.size.x - 22.0, yard.size.y - 20.0))
-		_draw_fence_line(rect.position + Vector2(10.0, rect.size.y - 10.0), rect.position + Vector2(rect.size.x - 10.0, rect.size.y - 8.0), Color("#c9b781", 0.58))
+		_draw_fence_line(rect.position + Vector2(10.0, rect.size.y - 10.0), rect.position + Vector2(rect.size.x - 10.0, rect.size.y - 8.0), Color("#c9b781", 0.42))
 	elif district == "support_lane":
 		var work_yard := Rect2(rect.position + Vector2(10.0, rect.size.y - 34.0), Vector2(maxf(0.0, rect.size.x - 20.0), 24.0))
-		draw_rect(work_yard, Color("#79634a", 0.16), true)
-		for x in range(int(work_yard.position.x + 12.0), int(work_yard.position.x + work_yard.size.x - 8.0), 26):
-			draw_line(Vector2(x, work_yard.position.y + 9.0), Vector2(x + 12.0, work_yard.position.y + 8.0), Color("#d3b675", 0.16), 1.0)
-		_draw_surface_speckles(work_yard, 8, Color(0.17, 0.12, 0.07, 0.12), Vector2(18, 4))
+		_draw_newport_service_lane_rect(work_yard, 0.34)
 	elif role.begins_with("waterline_"):
 		draw_line(rect.position + Vector2(10.0, rect.size.y - 12.0), rect.position + Vector2(rect.size.x - 10.0, rect.size.y - 8.0), Color(0.75, 0.95, 1.0, 0.08), 1.0)
-	var edge_alpha := 0.035 if role.begins_with("waterline_") else 0.055
-	draw_rect(rect, Color(0.03, 0.04, 0.03, edge_alpha), false, 1.0)
 
 func _draw_g410_planned_lot(rect: Rect2, district: String, role: String) -> void:
-	var fill := Color("#53624e", 0.18)
-	var edge := Color("#c8b985", 0.18)
+	var fill := Color("#53624e", 0.08)
 	if district == "working_wharf":
-		fill = Color("#66563f", 0.18)
-		edge = Color("#d0b77a", 0.18)
+		fill = Color("#66563f", 0.08)
 	elif district == "harborfront_commercial":
-		fill = Color("#5c6652", 0.16)
+		fill = Color("#5c6652", 0.075)
 	elif district == "support_lane":
-		fill = Color("#52634d", 0.14)
-	_draw_soft_rect(rect, Color(fill.r, fill.g, fill.b), Color(fill.r * 0.78, fill.g * 0.82, fill.b * 0.78), fill.a, 3)
-	draw_rect(rect, edge, false, 0.8)
+		fill = Color("#52634d", 0.07)
+	_draw_newport_lot_variation(rect, Color(fill.r, fill.g, fill.b), Color(fill.r * 0.78, fill.g * 0.82, fill.b * 0.78), fill.a, district)
 	var inset := rect.grow(-14.0)
-	draw_rect(inset, Color(fill.r * 0.86, fill.g * 0.86, fill.b * 0.86, fill.a * 0.52), true)
+	_draw_surface_speckles(inset, 6, Color(0.09, 0.075, 0.045, 0.045), Vector2(22, 3))
 	if role.contains("home") or role.contains("residence"):
-		_draw_fence_line(rect.position + Vector2(6, rect.size.y - 8), rect.position + Vector2(rect.size.x - 8, rect.size.y - 7), Color("#c9b781", 0.45))
+		_draw_fence_line(rect.position + Vector2(6, rect.size.y - 8), rect.position + Vector2(rect.size.x - 8, rect.size.y - 7), Color("#c9b781", 0.28))
 	elif role.contains("dock") or role.contains("chandler"):
 		_draw_post_line(rect.position + Vector2(14, rect.size.y - 9), rect.position + Vector2(rect.size.x - 14, rect.size.y - 8), 42.0)
 	else:
 		for x in range(int(inset.position.x + 16.0), int(inset.position.x + inset.size.x - 10.0), 34):
-			draw_line(Vector2(x, inset.position.y + 8), Vector2(x + 12, inset.position.y + 8), Color(0.94, 0.86, 0.61, 0.08), 1.0)
+			draw_line(Vector2(x, inset.position.y + 8), Vector2(x + 12, inset.position.y + 8), Color(0.94, 0.86, 0.61, 0.045), 1.0)
 	_draw_shrub_cluster(rect.position + Vector2(rect.size.x - 20.0, rect.size.y - 16.0), 0.55)
 
 func _draw_g415_parcel_grounding() -> void:
@@ -355,35 +361,27 @@ func _draw_g415_ground_pad(rule: Dictionary) -> void:
 
 	match String(pad.get("type", "")):
 		"commercial_stone", "rowhouse_stone", "shop_stone":
-			_draw_soft_rect(rect, Color("#6d6958"), Color("#565142"), 0.34, 5)
-			draw_rect(rect.grow(-4.0), Color("#d2c08b", 0.10), false, 1.0)
-			_draw_surface_speckles(rect.grow(-6.0), 8, Color(0.10, 0.08, 0.05, 0.12), Vector2(16, 4))
+			_draw_newport_sidewalk_panel(rect, "commercial", 0.58)
 		"market_stone":
-			_draw_soft_rect(rect, Color("#716a56"), Color("#594f3d"), 0.36, 6)
-			draw_rect(rect.grow(-4.0), Color("#d9c286", 0.12), false, 1.0)
-			_draw_surface_speckles(rect.grow(-6.0), 10, Color(0.12, 0.09, 0.05, 0.13), Vector2(18, 4))
+			_draw_newport_sidewalk_panel(rect, "market", 0.62)
 		"civic_stone":
-			_draw_soft_rect(rect, Color("#746f60"), Color("#5a5548"), 0.38, 6)
-			draw_line(rect.position + Vector2(12.0, rect.size.y - 8.0), rect.position + Vector2(rect.size.x - 12.0, rect.size.y - 8.0), Color("#d6c795", 0.16), 1.2)
-			_draw_surface_speckles(rect.grow(-8.0), 8, Color(0.10, 0.09, 0.06, 0.12), Vector2(18, 4))
+			_draw_newport_sidewalk_panel(rect, "civic", 0.60)
 		"civic_green":
-			_draw_soft_rect(rect, Color("#6d865f"), Color("#536f50"), 0.34, 8)
-			draw_rect(rect.grow(-8.0), Color("#cbbf86", 0.10), false, 1.0)
+			_draw_newport_grass_rect(rect, Color("#6d865f"), Color("#4e6b4b"), 0.34, 16)
+			_draw_newport_grass_transition(Rect2(rect.position.x, rect.end.y - 16.0, rect.size.x, 16.0), "south", 0.24)
 			_draw_shrub_cluster(rect.position + Vector2(20.0, rect.size.y - 20.0), 0.55)
 			_draw_shrub_cluster(rect.position + Vector2(rect.size.x - 22.0, rect.size.y - 20.0), 0.55)
 		"residential_yard":
-			_draw_soft_rect(rect, Color("#6c875e"), Color("#526f4e"), 0.30, 7)
-			draw_rect(rect.grow(-9.0), Color("#c4b77c", 0.09), false, 1.0)
+			_draw_newport_grass_rect(rect, Color("#6c875e"), Color("#4f6e4c"), 0.30, 14)
+			_draw_newport_grass_transition(Rect2(rect.position.x, rect.end.y - 14.0, rect.size.x, 14.0), "south", 0.20)
 			_draw_shrub_cluster(rect.position + Vector2(18.0, rect.size.y - 18.0), 0.50)
 			_draw_shrub_cluster(rect.position + Vector2(rect.size.x - 22.0, rect.size.y - 20.0), 0.50)
 		"support_yard":
-			_draw_soft_rect(rect, Color("#655f49"), Color("#4d533e"), 0.26, 6)
-			_draw_surface_speckles(rect.grow(-5.0), 9, Color(0.16, 0.12, 0.07, 0.14), Vector2(16, 4))
+			_draw_newport_service_lane_rect(rect, 0.40)
 		"dock_plank":
-			_draw_plank_world_rect(rect, Color("#786a50"), Color("#5a4d3a"))
-			_draw_plank_weathering(rect, 12)
+			_draw_newport_dock_planks(rect, 20)
 		_:
-			draw_rect(rect, Color("#6a765d", 0.18), true)
+			_draw_newport_lot_variation(rect, Color("#6a765d"), Color("#4f6048"), 0.12, "default")
 
 func _draw_g415_prop_band(rule: Dictionary) -> void:
 	var rect: Rect2 = rule.get("prop_band", Rect2())
@@ -391,15 +389,17 @@ func _draw_g415_prop_band(rule: Dictionary) -> void:
 		return
 
 	var band := String(rule.get("district_band", ""))
-	var fill := Color("#77674e", 0.14)
+	var fill := Color(0.12, 0.09, 0.05, 0.11)
 	if band == "residential" or band == "civic":
-		fill = Color("#6f8a5f", 0.13)
+		fill = Color(0.11, 0.16, 0.08, 0.08)
 	elif band == "dock":
-		fill = Color("#6f573c", 0.20)
+		fill = Color(0.10, 0.07, 0.04, 0.14)
 	elif band == "market":
-		fill = Color("#8a714d", 0.17)
-	draw_rect(rect, fill, true)
-	draw_rect(rect, Color(0.04, 0.04, 0.03, 0.08), false, 1.0)
+		fill = Color(0.13, 0.09, 0.045, 0.13)
+	_draw_surface_speckles(rect, maxi(5, int(rect.size.x / 18.0)), fill, Vector2(18, 4))
+	for x in range(int(rect.position.x + 8.0), int(rect.end.x - 8.0), 34):
+		var y := rect.position.y + 5.0 + fmod(float(x * 3), maxf(1.0, rect.size.y - 10.0))
+		draw_line(Vector2(x, y), Vector2(x + 13.0, y - 1.0), Color(0.94, 0.82, 0.55, fill.a * 0.55), 1.0)
 
 func _draw_g415_commercial_gutters(rule: Dictionary) -> void:
 	var pad: Dictionary = rule.get("ground_pad", {})
@@ -427,7 +427,7 @@ func _draw_g415_lane_connections() -> void:
 		if ["commercial", "market"].has(band):
 			var threshold_center := Vector2(target.x, frontage_y)
 			_draw_g47_threshold(threshold_center, _g415_threshold_width_for(id, band))
-			_draw_path_line(threshold_center + Vector2(0.0, 12.0), target, 14.0, Color("#8d7c60"), Color("#625746"), true)
+			_draw_newport_dirt_path(threshold_center + Vector2(0.0, 12.0), target, 14.0, true)
 			continue
 
 		var pad: Dictionary = rule.get("ground_pad", {})
@@ -436,9 +436,7 @@ func _draw_g415_lane_connections() -> void:
 			continue
 		var path_start := Vector2(clamp(target.x, rect.position.x + 18.0, rect.end.x - 18.0), rect.end.y - 8.0)
 		var path_width := 14.0 if band == "civic" else 11.0
-		var path_base := Color("#9a835f") if band == "civic" else Color("#8b7655")
-		var path_edge := Color("#665743") if band == "civic" else Color("#5d503d")
-		_draw_path_line(path_start, target, path_width, path_base, path_edge, band == "civic")
+		_draw_newport_dirt_path(path_start, target, path_width, band == "civic")
 		_draw_door_step(path_start)
 
 func _g415_threshold_width_for(id: String, band: String) -> float:
@@ -453,53 +451,52 @@ func _g415_threshold_width_for(id: String, band: String) -> float:
 			return 46.0 if band == "commercial" else 52.0
 
 func _draw_g410_street_plan() -> void:
-	_draw_path_line(Vector2(392, 414), Vector2(384, 680), 30.0, Color("#8d7353"), Color("#655541"), false)
-	_draw_path_line(Vector2(676, 350), Vector2(664, 682), 34.0, Color("#9b815d"), Color("#6f5d45"))
-	_draw_path_line(Vector2(1110, 420), Vector2(1090, 690), 30.0, Color("#8d7353"), Color("#655541"), false)
-	_draw_path_line(Vector2(318, 430), Vector2(1268, 424), 34.0, Color("#9d865f"), Color("#726049"))
-	_draw_path_line(Vector2(438, 484), Vector2(1140, 476), 22.0, Color("#806d50"), Color("#5e503c"), false)
+	_draw_newport_dirt_path(Vector2(392, 414), Vector2(384, 680), 30.0, false)
+	_draw_newport_service_lane_path(Vector2(676, 350), Vector2(664, 682), 34.0)
+	_draw_newport_dirt_path(Vector2(1110, 420), Vector2(1090, 690), 30.0, false)
+	_draw_newport_service_lane_path(Vector2(318, 430), Vector2(1268, 424), 34.0)
+	_draw_newport_dirt_path(Vector2(438, 484), Vector2(1140, 476), 22.0, false)
 
-	_draw_cobbled_world_rect(Rect2(232, 504, 312, 34), Color("#92886f"), Color("#6c6655"), 24)
-	_draw_cobbled_world_rect(Rect2(544, 512, 286, 30), Color("#91856d"), Color("#6a6351"), 24)
-	_draw_cobbled_world_rect(Rect2(818, 506, 284, 36), Color("#938870"), Color("#6c6655"), 24)
-	_draw_cobbled_world_rect(Rect2(1090, 516, 258, 30), Color("#8f826a"), Color("#675f4f"), 22)
+	for rect in [Rect2(232, 504, 312, 34), Rect2(544, 512, 286, 30), Rect2(818, 506, 284, 36), Rect2(1090, 516, 258, 30)]:
+		_draw_newport_commercial_street(rect, 38, 0.62)
 	draw_polyline(PackedVector2Array([
 		Vector2(240, 512), Vector2(466, 506), Vector2(612, 516), Vector2(824, 510),
 		Vector2(1032, 516), Vector2(1338, 520)
 	]), Color(1.0, 0.93, 0.68, 0.10), 1.0)
 	_draw_street_wear(Rect2(232, 504, 1116, 42), 34)
 
-	draw_colored_polygon(PackedVector2Array([
+	var main_street_poly := PackedVector2Array([
 		Vector2(232, 544), Vector2(546, 548), Vector2(826, 542), Vector2(1090, 550),
 		Vector2(1354, 546), Vector2(1354, 634), Vector2(1092, 626), Vector2(842, 632),
 		Vector2(560, 624), Vector2(226, 632)
-	]), Color("#665f51"))
-	_draw_cobbled_world_rect(Rect2(226, 552, 1134, 78), Color("#686153"), Color("#4e493f"), 104)
+	])
+	draw_colored_polygon(main_street_poly, Color("#5f594c"))
+	_draw_newport_grass_transition(Rect2(218, 532, 1148, 18), "north", 0.18)
+	_draw_newport_sidewalk_panel(Rect2(218, 540, 1148, 20), "curb", 0.62)
+	_draw_newport_commercial_street(Rect2(226, 558, 1134, 68), 168, 0.98)
+	_draw_newport_sidewalk_panel(Rect2(226, 624, 1130, 18), "curb_shadow", 0.46)
 	draw_polyline(PackedVector2Array([
 		Vector2(238, 548), Vector2(544, 550), Vector2(824, 544), Vector2(1090, 552),
 		Vector2(1348, 548)
-	]), Color("#d6c48e"), 1.2)
+	]), Color("#d6c48e", 0.62), 1.4)
 	draw_polyline(PackedVector2Array([
 		Vector2(238, 626), Vector2(560, 622), Vector2(842, 628), Vector2(1090, 622),
 		Vector2(1348, 626)
 	]), Color(0.04, 0.04, 0.03, 0.20), 1.0)
 	for rect in [Rect2(368, 586, 120, 18), Rect2(720, 570, 92, 16), Rect2(988, 592, 150, 18), Rect2(1190, 562, 72, 14)]:
-		draw_rect(rect, Color("#7b735f", 0.20), true)
-		draw_line(rect.position + Vector2(8.0, 3.0), rect.position + Vector2(rect.size.x - 8.0, 3.0), Color("#d2bf87", 0.10), 1.0)
-		_draw_surface_speckles(rect.grow(4.0), 5, Color(0.10, 0.08, 0.05, 0.10), Vector2(16, 4))
+		_draw_newport_sidewalk_panel(rect, "street_patch", 0.34)
 	_draw_street_wear(Rect2(226, 552, 1134, 78), 64)
 	for p in [Vector2(380, 548), Vector2(664, 542), Vector2(1088, 550)]:
 		_draw_edge_grime(p, 112.0)
 	_draw_g415_lane_connections()
 
-	_draw_cobbled_world_rect(Rect2(232, 642, 1116, 58), Color("#766f57"), Color("#5a5542"), 76)
+	_draw_newport_commercial_street(Rect2(232, 642, 1116, 58), 118, 0.80)
 	draw_polyline(PackedVector2Array([
 		Vector2(240, 644), Vector2(530, 640), Vector2(812, 648), Vector2(1084, 642),
 		Vector2(1338, 646)
 	]), Color("#b9aa80", 0.26), 1.2)
 	_draw_street_wear(Rect2(232, 642, 1116, 58), 48)
-	_draw_plank_world_rect(Rect2(238, 696, 1112, 46), Color("#766950"), Color("#5b503d"))
-	_draw_plank_weathering(Rect2(238, 696, 1112, 46), 42)
+	_draw_newport_dock_planks(Rect2(238, 696, 1112, 46), 74)
 	draw_line(Vector2(248, 696), Vector2(1338, 696), Color(0.04, 0.04, 0.03, 0.32), 2.0)
 	for p in [Vector2(284, 696), Vector2(392, 696), Vector2(548, 696), Vector2(692, 696), Vector2(824, 696), Vector2(1008, 696), Vector2(1180, 696), Vector2(1318, 696)]:
 		_draw_post(p)
@@ -508,32 +505,36 @@ func _draw_g410_street_plan() -> void:
 		draw_circle(p + Vector2(0, -6), 3, Color("#d8b56f"))
 
 func _draw_g410_wharf_water() -> void:
-	_draw_soft_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, 282), Color("#2f7184"), Color("#1f5369"), 1.0, 30)
+	_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, 282), 1.0)
 	_draw_water_depth_bands()
-	draw_colored_polygon(PackedVector2Array([
+	var shore_poly := PackedVector2Array([
 		Vector2(0, 712), Vector2(240, 706), Vector2(352, 724), Vector2(500, 708),
 		Vector2(642, 718), Vector2(792, 706), Vector2(972, 720), Vector2(1140, 708),
 		Vector2(1324, 724), Vector2(1600, 714), Vector2(1600, 752), Vector2(0, 752)
-	]), Color(0.30, 0.43, 0.36, 0.46))
+	])
+	draw_colored_polygon(shore_poly, Color(0.30, 0.43, 0.36, 0.46))
 	draw_polyline(PackedVector2Array([
 		Vector2(0, 712), Vector2(240, 706), Vector2(352, 724), Vector2(500, 708),
 		Vector2(642, 718), Vector2(792, 706), Vector2(972, 720), Vector2(1140, 708),
 		Vector2(1324, 724), Vector2(1600, 714)
 	]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
-	_draw_plank_world_rect(Rect2(260, 704, 1110, 54), Color("#84765a"), Color("#625841"))
-	_draw_plank_weathering(Rect2(260, 704, 1110, 54), 62)
+	_draw_newport_pier_edge(PackedVector2Array([
+		Vector2(0, 712), Vector2(240, 706), Vector2(352, 724), Vector2(500, 708),
+		Vector2(642, 718), Vector2(792, 706), Vector2(972, 720), Vector2(1140, 708),
+		Vector2(1324, 724), Vector2(1600, 714)
+	]))
+	_draw_newport_dock_planks(Rect2(260, 704, 1110, 54), 112)
 	_draw_g415_dock_grounding()
-	_draw_plank_world_rect(Rect2(342, 724, 46, 118), Color("#806548"), Color("#5d4934"))
-	_draw_plank_world_rect(Rect2(372, 808, 92, 30), Color("#806548"), Color("#5d4934"))
-	_draw_plank_world_rect(Rect2(452, 816, 46, 18), Color("#735c42"), Color("#54412f"))
-	_draw_plank_world_rect(Rect2(686, 718, 54, 124), Color("#886a48"), Color("#624a34"))
-	_draw_plank_world_rect(Rect2(730, 808, 112, 30), Color("#886a48"), Color("#624a34"))
-	_draw_plank_world_rect(Rect2(826, 816, 58, 18), Color("#765b3f"), Color("#57422f"))
-	_draw_plank_world_rect(Rect2(1168, 724, 46, 118), Color("#806548"), Color("#5d4934"))
-	_draw_plank_world_rect(Rect2(1204, 808, 98, 30), Color("#806548"), Color("#5d4934"))
-	_draw_plank_world_rect(Rect2(1288, 816, 52, 18), Color("#735c42"), Color("#54412f"))
+	_draw_newport_dock_planks(Rect2(342, 724, 46, 118), 22)
+	_draw_newport_dock_planks(Rect2(372, 808, 92, 30), 18)
+	_draw_newport_dock_planks(Rect2(452, 816, 46, 18), 10)
+	_draw_newport_dock_planks(Rect2(686, 718, 54, 124), 24)
+	_draw_newport_dock_planks(Rect2(730, 808, 112, 30), 22)
+	_draw_newport_dock_planks(Rect2(826, 816, 58, 18), 12)
+	_draw_newport_dock_planks(Rect2(1168, 724, 46, 118), 22)
+	_draw_newport_dock_planks(Rect2(1204, 808, 98, 30), 20)
+	_draw_newport_dock_planks(Rect2(1288, 816, 52, 18), 10)
 	for rect in [Rect2(342, 724, 46, 118), Rect2(372, 808, 126, 30), Rect2(686, 718, 54, 124), Rect2(730, 808, 154, 30), Rect2(1168, 724, 46, 118), Rect2(1204, 808, 136, 30)]:
-		_draw_plank_weathering(rect, 8)
 		draw_rect(Rect2(rect.position.x, rect.position.y + rect.size.y - 3.0, rect.size.x, 5.0), Color(0.02, 0.035, 0.025, 0.24), true)
 	_draw_post_line(Vector2(270, 708), Vector2(1360, 708), 68.0)
 	_draw_post_line(Vector2(348, 738), Vector2(382, 738), 34.0)
@@ -596,9 +597,9 @@ func _draw_g410_props() -> void:
 	_draw_sign_post(Vector2(1246, 536), Color("#8c6a3f"))
 	for pos in [Vector2(300, 520), Vector2(510, 520), Vector2(770, 520), Vector2(920, 520), Vector2(1088, 520), Vector2(820, 374), Vector2(1218, 376)]:
 		_draw_lantern(pos)
-	_draw_clothesline(Vector2(1118, 350), Vector2(1238, 330))
-	_draw_clothesline(Vector2(220, 356), Vector2(320, 338))
-	_draw_clothesline(Vector2(1164, 398), Vector2(1258, 384))
+	_draw_net_drying_line(Vector2(1118, 350), Vector2(1238, 330))
+	_draw_net_drying_line(Vector2(220, 356), Vector2(320, 338))
+	_draw_net_drying_line(Vector2(1164, 398), Vector2(1258, 384))
 	_draw_fence_line(Vector2(210, 410), Vector2(330, 410), Color("#d9c89c"))
 	_draw_fence_line(Vector2(196, 380), Vector2(310, 380), Color("#d9c89c"))
 	_draw_fence_line(Vector2(828, 374), Vector2(966, 374), Color("#d9c89c"))
@@ -949,6 +950,171 @@ func _draw_soft_rect(rect: Rect2, base: Color, alt: Color, alpha := 1.0, detail_
 		var patch_color := Color(alt.r, alt.g, alt.b, alpha * 0.22)
 		draw_rect(Rect2(patch_pos, patch_size), patch_color, true)
 
+func _draw_newport_grass_rect(rect: Rect2, base: Color, alt: Color, alpha := 1.0, detail_count := 24) -> void:
+	_draw_soft_rect(rect, base, alt, alpha, detail_count)
+	var tuft_count := maxi(8, int(rect.size.x * rect.size.y / 12500.0))
+	for i in range(tuft_count):
+		var x := rect.position.x + fmod(float(i * 67 + 19), maxf(1.0, rect.size.x - 12.0))
+		var y := rect.position.y + fmod(float(i * 43 + 31), maxf(1.0, rect.size.y - 8.0))
+		var p := Vector2(x, y)
+		var grass_alpha := alpha * (0.11 + float(i % 3) * 0.025)
+		draw_line(p, p + Vector2(5.0, -2.0), Color("#9fb071", grass_alpha), 1.0)
+		draw_line(p + Vector2(6.0, 1.0), p + Vector2(10.0, -1.0), Color("#2f4d31", grass_alpha * 0.78), 1.0)
+		if i % 5 == 0:
+			draw_rect(Rect2(p + Vector2(2.0, 3.0), Vector2(11.0, 2.0)), Color(0.06, 0.08, 0.04, alpha * 0.055), true)
+
+func _draw_newport_lot_variation(rect: Rect2, base: Color, alt: Color, alpha: float, district: String) -> void:
+	_draw_soft_rect(rect, base, alt, alpha, 5)
+	var edge_color := Color(0.05, 0.065, 0.035, alpha * 0.34)
+	if district == "working_wharf":
+		edge_color = Color(0.05, 0.04, 0.025, alpha * 0.45)
+	for i in range(6):
+		var y := rect.position.y + 8.0 + fmod(float(i * 17 + 5), maxf(1.0, rect.size.y - 18.0))
+		draw_line(Vector2(rect.position.x + 10.0, y), Vector2(rect.end.x - 12.0, y - 2.0), edge_color, 1.0)
+	_draw_surface_speckles(rect.grow(-8.0), 8, Color(0.09, 0.075, 0.045, alpha * 0.52), Vector2(18, 3))
+
+func _draw_newport_grass_transition(rect: Rect2, edge: String, alpha: float) -> void:
+	_draw_surface_speckles(rect, 16, Color(0.05, 0.07, 0.035, alpha), Vector2(28, 4))
+	var step := 18
+	var start_x := int(rect.position.x + 4.0)
+	var end_x := int(rect.end.x - 4.0)
+	for x in range(start_x, end_x, step):
+		var t := fmod(float(x * 11), 100.0) / 100.0
+		var y := rect.position.y + (rect.size.y * t if edge == "south" else rect.size.y * (1.0 - t))
+		draw_line(Vector2(x, y), Vector2(x + 12.0, y - 1.0), Color("#a79a66", alpha * 0.42), 1.0)
+		draw_line(Vector2(x + 3.0, y + 3.0), Vector2(x + 14.0, y + 2.0), Color("#263f2a", alpha * 0.32), 1.0)
+
+func _draw_newport_sidewalk_panel(rect: Rect2, kind: String, alpha := 0.55) -> void:
+	var base := Color("#756e5b", alpha)
+	var edge := Color("#4d4638", alpha * 0.74)
+	var hi := Color("#d5c28c", alpha * 0.26)
+	if kind == "market":
+		base = Color("#796d55", alpha)
+	elif kind == "civic":
+		base = Color("#777264", alpha)
+	elif kind == "curb" or kind == "curb_shadow":
+		base = Color("#81775f", alpha)
+		edge = Color("#3f382d", alpha * 0.80)
+	elif kind == "frontage":
+		base = Color("#7d7159", alpha)
+	elif kind == "street_patch":
+		base = Color("#746e5c", alpha)
+	draw_rect(Rect2(rect.position - Vector2(2.0, 3.0), rect.size + Vector2(4.0, 6.0)), Color(0.02, 0.025, 0.018, alpha * 0.26), true)
+	draw_rect(rect, base, true)
+	var seams := maxi(2, int(rect.size.x / 34.0))
+	for i in range(seams + 1):
+		var x := rect.position.x + fmod(float(i * 37 + 9), maxf(1.0, rect.size.x))
+		draw_line(Vector2(x, rect.position.y + 3.0), Vector2(x - 4.0, rect.end.y - 4.0), Color(0.03, 0.03, 0.025, alpha * 0.34), 1.0)
+	for y in range(int(rect.position.y + 6.0), int(rect.end.y - 3.0), 13):
+		draw_line(Vector2(rect.position.x + 6.0, y), Vector2(rect.end.x - 8.0, y - 1.0), Color(0.03, 0.03, 0.025, alpha * 0.18), 1.0)
+	draw_line(rect.position + Vector2(6.0, 3.0), rect.position + Vector2(rect.size.x - 8.0, 2.0), hi, 1.0)
+	draw_line(rect.position + Vector2(4.0, rect.size.y - 2.0), rect.position + Vector2(rect.size.x - 6.0, rect.size.y - 3.0), edge, 1.3)
+	_draw_surface_speckles(rect.grow(-4.0), maxi(4, int(rect.size.x / 24.0)), Color(0.10, 0.08, 0.05, alpha * 0.16), Vector2(14, 3))
+
+func _draw_newport_commercial_street(rect: Rect2, detail_count: int, alpha := 1.0) -> void:
+	draw_rect(rect.grow(5.0), Color(0.02, 0.022, 0.018, 0.12 * alpha), true)
+	draw_rect(rect, Color("#635d50", alpha), true)
+	for i in range(detail_count):
+		var w := 12.0 + float((i * 7) % 17)
+		var h := 5.0 + float((i * 5) % 9)
+		var x := rect.position.x + fmod(float(i * 43 + 17), maxf(1.0, rect.size.x - w))
+		var y := rect.position.y + fmod(float(i * 31 + 11), maxf(1.0, rect.size.y - h))
+		var n := fmod(float(i * 19), 100.0) / 100.0
+		var stone := Color("#6f6958").lerp(Color("#a69a75"), n * 0.34)
+		draw_rect(Rect2(Vector2(x, y), Vector2(w, h)), Color(stone.r, stone.g, stone.b, 0.22 * alpha), true)
+		if i % 3 == 0:
+			draw_line(Vector2(x + 2.0, y + 1.0), Vector2(x + w - 2.0, y), Color("#d6c28b", 0.08 * alpha), 1.0)
+		if i % 4 == 0:
+			draw_line(Vector2(x + 2.0, y + h - 1.0), Vector2(x + w - 2.0, y + h - 2.0), Color(0.04, 0.035, 0.025, 0.10 * alpha), 1.0)
+	draw_line(rect.position + Vector2(4.0, 3.0), rect.position + Vector2(rect.size.x - 5.0, 2.0), Color("#d0bd85", 0.10 * alpha), 1.0)
+	draw_line(rect.position + Vector2(3.0, rect.size.y - 2.0), rect.position + Vector2(rect.size.x - 4.0, rect.size.y - 4.0), Color(0.025, 0.025, 0.02, 0.20 * alpha), 1.4)
+
+func _draw_newport_dirt_path(a: Vector2, b: Vector2, width: float, stone := true) -> void:
+	draw_line(a, b, Color("#514432", 0.38), width + 12.0, true)
+	draw_line(a, b, Color("#8d7656", 0.92), width, true)
+	draw_line(a, b, Color("#b19569", 0.26), maxf(2.0, width - 7.0), true)
+	var length := a.distance_to(b)
+	var steps: int = maxi(1, int(length / 28.0))
+	var dir := (b - a).normalized()
+	var normal := Vector2(-dir.y, dir.x)
+	for i in range(steps):
+		var t := float(i) / float(maxi(1, steps - 1))
+		var p := a.lerp(b, t)
+		var side := (fmod(float(i * 37), 100.0) / 100.0 - 0.5) * width * 0.70
+		draw_line(p + normal * side - dir * 7.0, p + normal * side + dir * (8.0 + float(i % 3) * 2.0), Color(0.10, 0.075, 0.045, 0.16), 1.0)
+		if stone and i % 2 == 0:
+			draw_line(p - normal * side * 0.3 - dir * 4.0, p - normal * side * 0.3 + dir * 5.0, Color("#d7c28a", 0.12), 1.0)
+
+func _draw_newport_service_lane_path(a: Vector2, b: Vector2, width: float) -> void:
+	_draw_newport_dirt_path(a, b, width, true)
+	var dir := (b - a).normalized()
+	var normal := Vector2(-dir.y, dir.x)
+	draw_line(a + normal * width * 0.42, b + normal * width * 0.42, Color(0.04, 0.035, 0.025, 0.18), 1.0, true)
+	draw_line(a - normal * width * 0.42, b - normal * width * 0.42, Color("#cfba82", 0.12), 1.0, true)
+
+func _draw_newport_service_lane_rect(rect: Rect2, alpha := 0.40) -> void:
+	draw_rect(rect.grow(4.0), Color(0.02, 0.025, 0.018, alpha * 0.28), true)
+	_draw_soft_rect(rect, Color("#675f49"), Color("#4a503b"), alpha, 5)
+	for x in range(int(rect.position.x + 10.0), int(rect.end.x - 8.0), 26):
+		var y := rect.position.y + 8.0 + fmod(float(x * 5), maxf(1.0, rect.size.y - 12.0))
+		draw_line(Vector2(x, y), Vector2(x + 13.0, y - 1.0), Color("#d2b675", alpha * 0.36), 1.0)
+		if x % 3 == 0:
+			draw_circle(Vector2(x + 5.0, y + 4.0), 1.5, Color(0.10, 0.07, 0.04, alpha * 0.45))
+
+func _draw_newport_dock_planks(rect: Rect2, weather_count := 24) -> void:
+	draw_rect(rect.grow(4.0), Color(0.02, 0.025, 0.018, 0.24), true)
+	draw_rect(rect, Color("#7a6749"), true)
+	var along_x := rect.size.x >= rect.size.y
+	if along_x:
+		var plank_index := 0
+		for y in range(int(rect.position.y), int(rect.end.y), 11):
+			var plank_h := 10.0 + float(plank_index % 2)
+			var row := Rect2(rect.position.x, float(y), rect.size.x, minf(plank_h, rect.end.y - float(y)))
+			var shade := Color("#806b4d").lerp(Color("#5e4c36"), float(plank_index % 5) / 8.0)
+			draw_rect(row, shade, true)
+			draw_line(Vector2(row.position.x + 4.0, row.position.y), Vector2(row.end.x - 6.0, row.position.y - 1.0), Color("#c5a66b", 0.13), 1.0)
+			draw_line(Vector2(row.position.x + 3.0, row.end.y - 1.0), Vector2(row.end.x - 5.0, row.end.y - 2.0), Color(0.03, 0.025, 0.018, 0.22), 1.0)
+			plank_index += 1
+		for x in range(int(rect.position.x) + 18, int(rect.end.x), 44):
+			draw_line(Vector2(x, rect.position.y + 3.0), Vector2(x - 3.0, rect.end.y - 4.0), Color(0.03, 0.025, 0.018, 0.16), 1.0)
+	else:
+		var plank_index := 0
+		for x in range(int(rect.position.x), int(rect.end.x), 11):
+			var plank_w := 10.0 + float(plank_index % 2)
+			var col := Rect2(float(x), rect.position.y, minf(plank_w, rect.end.x - float(x)), rect.size.y)
+			var shade := Color("#806548").lerp(Color("#594330"), float(plank_index % 5) / 8.0)
+			draw_rect(col, shade, true)
+			draw_line(Vector2(col.position.x, col.position.y + 4.0), Vector2(col.position.x - 1.0, col.end.y - 6.0), Color("#c5a66b", 0.12), 1.0)
+			draw_line(Vector2(col.end.x - 1.0, col.position.y + 3.0), Vector2(col.end.x - 2.0, col.end.y - 5.0), Color(0.03, 0.025, 0.018, 0.22), 1.0)
+			plank_index += 1
+		for y in range(int(rect.position.y) + 20, int(rect.end.y), 42):
+			draw_line(Vector2(rect.position.x + 3.0, y), Vector2(rect.end.x - 4.0, y - 2.0), Color(0.03, 0.025, 0.018, 0.16), 1.0)
+	_draw_plank_weathering(rect, weather_count)
+	draw_rect(rect, Color(0.0, 0.0, 0.0, 0.20), false, 1.0)
+
+func _draw_newport_water_rect(rect: Rect2, alpha := 1.0) -> void:
+	_draw_soft_rect(rect, Color("#2e7183"), Color("#1d5267"), alpha, 36)
+	for i in range(30):
+		var x := rect.position.x + fmod(float(i * 71 + 23), maxf(1.0, rect.size.x - 40.0))
+		var y := rect.position.y + fmod(float(i * 47 + 13), maxf(1.0, rect.size.y - 10.0))
+		draw_line(Vector2(x, y), Vector2(x + 24.0 + float(i % 5) * 4.0, y - 1.0), Color("#9ed1d8", 0.06 * alpha), 1.0)
+		if i % 4 == 0:
+			draw_line(Vector2(x + 4.0, y + 5.0), Vector2(x + 36.0, y + 3.0), Color("#123a4d", 0.07 * alpha), 1.0)
+
+func _draw_newport_pier_edge(points: PackedVector2Array) -> void:
+	draw_polyline(points, Color(0.018, 0.025, 0.018, 0.42), 6.0, true)
+	draw_polyline(points, Color("#bfa873", 0.16), 1.4, true)
+	for i in range(points.size()):
+		if i == points.size() - 1:
+			continue
+		var a := points[i]
+		var b := points[i + 1]
+		var length := a.distance_to(b)
+		var steps := maxi(1, int(length / 58.0))
+		for j in range(steps):
+			var p := a.lerp(b, float(j) / float(maxi(1, steps)))
+			draw_line(p + Vector2(4.0, 6.0), p + Vector2(22.0, 4.0), Color("#88a98c", 0.13), 1.0)
+
 func _draw_planting_bed(rect: Rect2, base := Color("#789969"), alt := Color("#5f844f")) -> void:
 	_draw_soft_rect(rect, base, alt, 0.76, 8)
 	draw_rect(rect.grow(-5.0), Color(0.15, 0.25, 0.13, 0.18), false, 1.0)
@@ -1071,22 +1237,35 @@ func _draw_rope_coil(pos: Vector2) -> void:
 	draw_arc(pos, 4.5, 0, TAU, 14, Color("#d5b574"), 1.2)
 
 func _draw_crate_stack(pos: Vector2) -> void:
-	draw_rect(Rect2(pos, Vector2(17, 15)), Color("#9b7042"), true)
-	draw_rect(Rect2(pos, Vector2(17, 15)), Color("#392819"), false, 1.3)
-	draw_line(pos + Vector2(2, 3), pos + Vector2(15, 13), Color(0.18, 0.11, 0.06, 0.55), 1.0)
-	draw_rect(Rect2(pos + Vector2(14, -7), Vector2(13, 12)), Color("#ad7d49"), true)
-	draw_rect(Rect2(pos + Vector2(14, -7), Vector2(13, 12)), Color("#392819"), false, 1.0)
+	_draw_contact_shadow(pos + Vector2(14.0, 12.0), Vector2(18.0, 5.0), 0.12)
+	_draw_crate(pos, Vector2(18, 16), Color("#9b7042"))
+	_draw_crate(pos + Vector2(14, -7), Vector2(14, 13), Color("#ad7d49"))
+
+func _draw_crate(pos: Vector2, size: Vector2, color: Color) -> void:
+	draw_rect(Rect2(pos, size), color, true)
+	draw_rect(Rect2(pos, size), Color("#2e2117"), false, 1.2)
+	draw_line(pos + Vector2(2.0, 3.0), pos + Vector2(size.x - 2.0, size.y - 3.0), Color(0.16, 0.09, 0.05, 0.62), 1.0)
+	draw_line(pos + Vector2(2.0, size.y - 4.0), pos + Vector2(size.x - 3.0, 3.0), Color("#d1a36a", 0.24), 1.0)
+	draw_line(pos + Vector2(3.0, 4.0), pos + Vector2(size.x - 4.0, 4.0), Color("#d4a66a", 0.20), 1.0)
+	draw_line(pos + Vector2(3.0, size.y - 3.0), pos + Vector2(size.x - 4.0, size.y - 4.0), Color(0.08, 0.05, 0.03, 0.30), 1.0)
 
 func _draw_barrels(pos: Vector2, count: int) -> void:
 	for i in range(count):
 		var barrel_pos := pos + Vector2(i * 9, 0)
-		_draw_ellipse(barrel_pos, Vector2(4, 7), Color("#7f5631"))
-		draw_rect(Rect2(barrel_pos + Vector2(-4, -1), Vector2(8, 2)), Color("#3f2c1d"), true)
-		draw_arc(barrel_pos, 6, 0, TAU, 12, Color("#b48750"), 1.0)
+		_draw_ellipse(barrel_pos + Vector2(1.0, 6.0), Vector2(6, 2.2), Color(0.02, 0.018, 0.012, 0.15))
+		_draw_ellipse(barrel_pos, Vector2(4.8, 7.4), Color("#7f5631"))
+		_draw_ellipse(barrel_pos + Vector2(-1.2, -1.8), Vector2(2.0, 4.5), Color("#a46e3c", 0.36))
+		draw_rect(Rect2(barrel_pos + Vector2(-4.5, -2.0), Vector2(9.0, 2.0)), Color("#3f2c1d"), true)
+		draw_rect(Rect2(barrel_pos + Vector2(-4.5, 2.0), Vector2(9.0, 2.0)), Color("#3f2c1d"), true)
+		draw_arc(barrel_pos, 6.0, 0, TAU, 16, Color("#c2965a"), 1.1)
 
 func _draw_market_table(pos: Vector2) -> void:
+	_draw_contact_shadow(pos + Vector2(29.0, 22.0), Vector2(32.0, 6.0), 0.12)
+	draw_rect(Rect2(pos + Vector2(-2.0, -2.0), Vector2(62, 20)), Color("#3b2a1c"), true)
 	draw_rect(Rect2(pos, Vector2(58, 17)), Color("#80603c"), true)
-	draw_rect(Rect2(pos + Vector2(2, 2), Vector2(54, 4)), Color("#d2b06e"), true)
+	for y in [3, 8, 13]:
+		draw_line(pos + Vector2(4, y), pos + Vector2(54, y - 1), Color(0.15, 0.09, 0.05, 0.34), 1.0)
+	draw_rect(Rect2(pos + Vector2(2, 2), Vector2(54, 4)), Color("#d2b06e", 0.76), true)
 	for i in range(7):
 		var color := Color("#d9c37a") if i % 2 == 0 else Color("#a95e45")
 		draw_circle(pos + Vector2(8 + i * 7, 11), 2.4, color)
@@ -1094,11 +1273,14 @@ func _draw_market_table(pos: Vector2) -> void:
 	draw_rect(Rect2(pos + Vector2(50, 17), Vector2(3, 8)), Color("#4d3824"), true)
 
 func _draw_fish_rack(pos: Vector2) -> void:
+	draw_line(pos + Vector2(1.0, 18.0), pos + Vector2(39.0, 18.0), Color(0.02, 0.018, 0.012, 0.16), 3.0)
 	draw_line(pos, pos + Vector2(38, 0), Color("#6c4b30"), 2.0)
 	draw_line(pos + Vector2(3, 0), pos + Vector2(3, 18), Color("#6c4b30"), 2.0)
 	draw_line(pos + Vector2(35, 0), pos + Vector2(35, 18), Color("#6c4b30"), 2.0)
+	draw_line(pos + Vector2(0, -1), pos + Vector2(38, -1), Color("#c29a62", 0.24), 1.0)
 	for i in range(7):
 		draw_rect(Rect2(pos + Vector2(6 + i * 5, 2), Vector2(2, 9)), Color("#c9b98c"), true)
+		draw_line(pos + Vector2(7 + i * 5, 2), pos + Vector2(7 + i * 5, 11), Color("#4b4538", 0.22), 1.0)
 
 func _draw_net_bundle(pos: Vector2) -> void:
 	draw_arc(pos, 14, 0.15, PI - 0.15, 16, Color("#c8b277"), 1.0)
@@ -1113,9 +1295,22 @@ func _draw_rowboat(pos: Vector2) -> void:
 	draw_line(pos + Vector2(-18, -2), pos + Vector2(18, -2), Color("#a67c4c"), 1.5)
 
 func _draw_sign_post(pos: Vector2, color: Color) -> void:
-	draw_rect(Rect2(pos + Vector2(-1, 0), Vector2(2, 18)), Color("#3e2c1d"), true)
-	draw_rect(Rect2(pos + Vector2(-8, 1), Vector2(16, 8)), color, true)
-	draw_rect(Rect2(pos + Vector2(-8, 1), Vector2(16, 8)), Color(0, 0, 0, 0.35), false, 1.0)
+	_draw_contact_shadow(pos + Vector2(0.0, 18.0), Vector2(8.0, 3.0), 0.10)
+	draw_rect(Rect2(pos + Vector2(-1.5, -1.0), Vector2(3, 20)), Color("#3e2c1d"), true)
+	draw_rect(Rect2(pos + Vector2(-9, 1), Vector2(18, 9)), color, true)
+	draw_rect(Rect2(pos + Vector2(-9, 1), Vector2(18, 9)), Color(0, 0, 0, 0.36), false, 1.0)
+	draw_line(pos + Vector2(-7.0, 3.0), pos + Vector2(7.0, 3.0), Color("#d3b06c", 0.20), 1.0)
+	draw_line(pos + Vector2(-6.0, 8.0), pos + Vector2(6.0, 8.0), Color(0.07, 0.045, 0.025, 0.22), 1.0)
+
+func _draw_net_drying_line(a: Vector2, b: Vector2) -> void:
+	draw_line(a, b, Color("#6f5a38", 0.72), 1.4)
+	for i in range(3):
+		var t := float(i + 1) / 4.0
+		var p := a.lerp(b, t)
+		draw_line(p + Vector2(-8.0, 1.0), p + Vector2(8.0, -1.0), Color("#b9a66f", 0.54), 1.0)
+		draw_line(p + Vector2(-6.0, 4.0), p + Vector2(6.0, 2.0), Color("#8e7b50", 0.42), 1.0)
+		draw_line(p + Vector2(-5.0, 1.0), p + Vector2(-3.0, 9.0), Color("#b9a66f", 0.34), 1.0)
+		draw_line(p + Vector2(4.0, 0.0), p + Vector2(5.0, 8.0), Color("#b9a66f", 0.34), 1.0)
 
 func _draw_clothesline(a: Vector2, b: Vector2) -> void:
 	draw_line(a, b, Color("#d6c49c"), 1.0)
@@ -1125,14 +1320,17 @@ func _draw_clothesline(a: Vector2, b: Vector2) -> void:
 		draw_rect(Rect2(p + Vector2(-5, 1), Vector2(10, 9)), Color("#d8d2b6") if i % 2 == 0 else Color("#7b8c9c"), true)
 
 func _draw_fence_line(a: Vector2, b: Vector2, color: Color) -> void:
-	draw_line(a, b, color, 1.5)
+	draw_line(a + Vector2(0, 3), b + Vector2(0, 3), Color(0.02, 0.02, 0.014, color.a * 0.22), 2.0)
+	draw_line(a, b, color, 2.0)
 	var distance := a.distance_to(b)
 	var steps := int(distance / 12.0)
 	for i in range(steps + 1):
 		var p := a.lerp(b, float(i) / maxf(1.0, steps))
-		draw_rect(Rect2(p + Vector2(-1, -6), Vector2(2, 12)), color.darkened(0.25), true)
+		draw_rect(Rect2(p + Vector2(-1.5, -7), Vector2(3, 14)), color.darkened(0.32), true)
+		draw_rect(Rect2(p + Vector2(-1.0, -7), Vector2(2, 3)), color.lightened(0.18), true)
 
 func _draw_woodpile(pos: Vector2) -> void:
+	_draw_contact_shadow(pos + Vector2(16.0, 8.0), Vector2(22.0, 5.0), 0.12)
 	for i in range(5):
 		var p := pos + Vector2(i * 7, (i % 2) * 4)
 		draw_rect(Rect2(p, Vector2(10, 3)), Color("#775032"), true)

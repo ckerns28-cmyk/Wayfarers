@@ -1279,3 +1279,60 @@ Remaining known visual issues:
 - Procedural props and road/ground textures still need final painterly asset
   support in a later art pass.
 - Interiors remain intentionally deferred.
+
+## G-4.16 Newport Art Cohesion Reset
+
+G-4.16 treats the Newport building sprites as the art standard and rebuilds the
+surrounding surface language around them. It preserves the G-4.15 building
+object rules, footprint/shadow logic, anchors, scale fixes, printer rowhouse
+repair, and collision metadata.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.16 Newport Art Cohesion Reset
+Phase: G-4.16 | Review host: itch
+Branch: codex/g-4-16-newport-art-cohesion-reset
+```
+
+Art-direction gates:
+
+- `docs/NEWPORT_ART_BIBLE.md` defines the permanent Newport Visual Cohesion
+  Rules. Future terrain, props, player sprites, NPCs, monsters, equipment,
+  weapons, armor, combat VFX, items, and UI-world objects must match that
+  standard before review acceptance.
+- `docs/NEWPORT_VISUAL_MISMATCH_AUDIT.md` records the specific mismatch
+  categories that blocked lock: flat roads, flat grass, weak dock wood, weak
+  dirt/path transitions, water-edge treatment, bright laundry, weak fences,
+  weak props, dominant debug/parcel rectangles, and player/NPC style risk.
+
+Surface-kit changes:
+
+- The main commercial street now uses the G-4.16 commercial street surface
+  with layered cobbles, ruts, repair patches, curb panels, and edge grime.
+- Building bases use sidewalk/curb panels, thresholds, dirt paths, service-lane
+  wear, and grass transitions instead of hard review rectangles.
+- Wharf and pier pieces now use denser plank drawing, weathering, board seams,
+  post language, dark waterline lips, and pier-edge scum.
+- Grass, yard, and service-lane areas now use mottled fields, tufts, worn
+  ground, and naturalized lot traces.
+- Hero prop primitives were upgraded with outlines, material details, and
+  contact shadows; bright laundry in hero areas is replaced by muted harbor
+  net/canvas lines.
+
+Review controls:
+
+- `F2`: toggle review metadata in the HUD.
+- `F3`: toggle full object-contract debug overlay.
+- `B`: toggle compact building seating overlay.
+- `F4`: toggle no-HUD screenshot review mode.
+- `--review-no-hud`: starts the scene in no-HUD review mode for automated or
+  local screenshot capture.
+
+Packaging:
+
+- `tools/package_itch_web.sh` still writes the stable upload path
+  `artifacts/wayfarers-tale-godot-web.zip`.
+- It also writes a versioned ZIP, for example
+  `artifacts/wayfarers-tale-godot-g-4-16-newport-art-cohesion-reset.zip`, so
+  the newest itch upload candidate is obvious in Finder.

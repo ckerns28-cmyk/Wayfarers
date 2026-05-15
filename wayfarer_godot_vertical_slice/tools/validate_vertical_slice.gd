@@ -54,10 +54,11 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.15", "build_phase_g_4_15")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.15 Village Layout Using Object Rules", "build_label_g_4_15")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.16", "build_phase_g_4_16")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.16 Newport Art Cohesion Reset", "build_label_g_4_16")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
+	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
 	_expect(player != null, "player_exists")
 	_expect(hud != null, "hud_exists")
@@ -81,6 +82,7 @@ func _validate_scene(main: Node) -> void:
 	if map:
 		for layer_name in ["GroundGrassLayer", "WharfWaterLayer", "RoadsPlazaLayer", "DecorativePropsLayer", "CollisionNavigationLayer"]:
 			_expect(map.get_node_or_null(layer_name) != null, "map_layer_" + layer_name)
+		_validate_g416_surface_kit(map)
 		var collision_layer := map.get_node_or_null("CollisionNavigationLayer")
 		var minimum_collision_bodies := 3 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (20 if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else 40)
 		_expect(collision_layer != null and collision_layer.get_child_count() > minimum_collision_bodies, "collision_navigation_bodies")
@@ -90,6 +92,7 @@ func _validate_scene(main: Node) -> void:
 			_validate_detail_blockers(collision_layer)
 
 	_validate_buildings()
+	_validate_review_screenshot_mode(main, hud)
 	_validate_building_entity_contract(player, hud)
 	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
@@ -117,8 +120,43 @@ func _validate_detail_blockers(collision_layer: Node) -> void:
 		elif id == "support_lane_woodpile":
 			_expect(rect.position.y >= 460.0, "support_lane_woodpile_clear_rear_lane_road")
 
+func _validate_g416_surface_kit(map: Node) -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+
+	for layer_name in ["GroundGrassLayer", "WharfWaterLayer", "RoadsPlazaLayer", "DecorativePropsLayer"]:
+		var layer := map.get_node_or_null(layer_name)
+		_expect(layer != null and layer.has_method("newport_surface_kit_version"), "g416_surface_kit_api_" + layer_name)
+		if layer and layer.has_method("newport_surface_kit_version"):
+			_expect(String(layer.call("newport_surface_kit_version")) == "G-4.16", "g416_surface_kit_version_" + layer_name)
+
+	var ground_layer := map.get_node_or_null("GroundGrassLayer")
+	if ground_layer and ground_layer.has_method("newport_surface_kit_materials"):
+		var materials: Array = ground_layer.call("newport_surface_kit_materials")
+		for material in ["commercial_street", "curb_sidewalk", "dirt_path", "grass_road_transition", "dock_plank", "pier_edge", "building_base_shadow", "service_lane"]:
+			_expect(materials.has(material), "g416_surface_kit_material_" + material)
+	else:
+		failures.append("g416_surface_kit_material_manifest")
+
+func _validate_review_screenshot_mode(main: Node, hud: CanvasLayer) -> void:
+	_expect(main.has_method("set_review_screenshot_mode"), "review_screenshot_mode_main_api")
+	_expect(main.has_method("is_review_screenshot_mode"), "review_screenshot_mode_query_api")
+	_expect(hud != null and hud.has_method("set_review_screenshot_mode"), "review_screenshot_mode_hud_api")
+	if not main.has_method("set_review_screenshot_mode") or hud == null:
+		return
+
+	var status_panel := hud.get_node_or_null("Panel") as Control
+	var dialogue_panel := hud.get_node_or_null("DialoguePanel") as Control
+	main.call("set_review_screenshot_mode", true)
+	_expect(bool(main.call("is_review_screenshot_mode")), "review_screenshot_mode_enabled")
+	_expect(status_panel == null or not status_panel.visible, "review_screenshot_mode_hides_status_panel")
+	_expect(dialogue_panel == null or not dialogue_panel.visible, "review_screenshot_mode_hides_dialogue_panel")
+	main.call("set_review_screenshot_mode", false)
+	_expect(not bool(main.call("is_review_screenshot_mode")), "review_screenshot_mode_disabled")
+	_expect(status_panel == null or status_panel.visible, "review_screenshot_mode_restores_status_panel")
+
 func _validate_lived_in_details() -> void:
-	var minimum_detail_count := 118 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
+	var minimum_detail_count := 150 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
 	_expect(NEWPORT_TOWN.lived_in_detail_count() >= minimum_detail_count, "lived_in_detail_density")
 
 func _validate_buildings() -> void:
@@ -425,6 +463,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("footprint_pass", "") == "G-4.13A", "starter_plan_footprint_pass_g_4_13a")
 	_expect(plan.get("density_pass", "") == "G-4.13B", "starter_plan_density_pass_g_4_13b")
 	_expect(plan.get("layout_rules_pass", "") == "G-4.15", "starter_plan_layout_rules_pass_g_4_15")
+	_expect(plan.get("surface_kit_pass", "") == "G-4.16", "starter_plan_surface_kit_pass_g_4_16")
 	_expect(int(plan.get("layout_rule_count", 0)) == NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size(), "starter_plan_g415_layout_rule_count")
 	_expect(float(plan.get("visual_acceptance_score_target", 0.0)) >= 8.5, "starter_plan_g415_visual_acceptance_target")
 	_expect(int(plan.get("active_g413b_infill_count", 0)) >= 3, "starter_plan_active_g413b_infill_count")
@@ -433,6 +472,8 @@ func _validate_starter_harbor_plan() -> void:
 		_expect(plan_active_infill.has(building_id), "starter_plan_active_infill_" + building_id)
 	_expect(String(plan.get("collision_model", "")).find("collision_footprint") >= 0, "starter_plan_collision_model_mentions_collision_footprint")
 	_expect(plan.get("clean_review_default", false) == true, "starter_plan_clean_review_default")
+	_expect(plan.get("newport_visual_cohesion_gate", false) == true, "starter_plan_newport_visual_cohesion_gate")
+	_expect(String(plan.get("review_screenshot_mode", "")).find("F4") >= 0, "starter_plan_review_screenshot_mode")
 	_expect(plan_districts.size() >= 4, "starter_plan_district_structure")
 	_expect(plan_loop.has("commercial_rear_road"), "starter_plan_includes_commercial_rear_road")
 	_expect(plan_loop.has("mercantile_counting_house_rear_road"), "starter_plan_includes_mercantile_counting_rear_road")
@@ -926,6 +967,7 @@ func _print_report() -> void:
 		print("plannedLots=", NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS)
 		print("missingAssets=", NEWPORT_TOWN.missing_asset_manifest())
 		print("routeDebugProbes=", NEWPORT_TOWN.route_debug_probes())
+		print("surfaceKitPass=", NEWPORT_TOWN.starter_district_plan().get("surface_kit_pass", ""))
 	print("reachabilityTargets=", NEWPORT_TOWN.reachability_targets())
 	print("failureCount=", failures.size())
 	print("failures=", failures)

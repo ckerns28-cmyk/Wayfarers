@@ -9,6 +9,7 @@ EXPORT_SCRIPT="$PROJECT_ROOT/tools/export_web.sh"
 WEB_BUILD_DIR="$PROJECT_ROOT/web_build"
 ARTIFACT_DIR="$PROJECT_ROOT/artifacts"
 ZIP_PATH="$ARTIFACT_DIR/wayfarers-tale-godot-web.zip"
+BUILD_INFO="$PROJECT_ROOT/scripts/BuildInfo.gd"
 
 fail() {
     echo "FAIL: $*" >&2
@@ -62,9 +63,19 @@ fi
 
 file_count="$(printf "%s\n" "$zip_entries" | sed '/^$/d' | wc -l | tr -d ' ')"
 zip_size="$(du -h "$ZIP_PATH" | awk '{print $1}')"
+build_phase="$(awk -F'"' '/BUILD_PHASE/ {print $2; exit}' "$BUILD_INFO")"
+build_label="$(awk -F'"' '/BUILD_LABEL/ {print $2; exit}' "$BUILD_INFO")"
+version_slug="$(
+    printf "%s %s\n" "$build_phase" "$build_label" \
+        | tr '[:upper:]' '[:lower:]' \
+        | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//; s/-godot-g-[0-9]+-[0-9]+//'
+)"
+VERSIONED_ZIP_PATH="$ARTIFACT_DIR/wayfarers-tale-godot-$version_slug.zip"
+cp -p "$ZIP_PATH" "$VERSIONED_ZIP_PATH"
 
 echo
 echo "ZIP path: $ZIP_PATH"
+echo "Versioned ZIP path: $VERSIONED_ZIP_PATH"
 echo "File count: $file_count"
 echo "Total size: $zip_size"
 echo

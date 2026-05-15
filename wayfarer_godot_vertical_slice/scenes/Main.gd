@@ -15,6 +15,7 @@ const GAMEPLAY_KEYCODES := [
 	KEY_RIGHT,
 	KEY_E,
 	KEY_B,
+	KEY_F4,
 ]
 
 @onready var world: Node2D = $World
@@ -24,6 +25,7 @@ const GAMEPLAY_KEYCODES := [
 var _atlas_cache: Dictionary = {}
 var _debug_overlay_enabled := false
 var _seating_debug_enabled := false
+var _review_screenshot_mode := false
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -38,6 +40,8 @@ func _ready() -> void:
 	_place_buildings()
 	_set_debug_overlay(false)
 	_set_building_seating_overlay(false)
+	if _should_start_in_review_screenshot_mode():
+		set_review_screenshot_mode(true)
 	player.dialogue_triggered.connect(hud.show_dialogue)
 
 func _input(event: InputEvent) -> void:
@@ -67,6 +71,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 
+	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F4:
+		set_review_screenshot_mode(not _review_screenshot_mode)
+		get_viewport().set_input_as_handled()
+		return
+
 	if GAMEPLAY_KEYCODES.has(key_event.keycode):
 		get_viewport().set_input_as_handled()
 
@@ -75,6 +84,24 @@ func set_debug_overlay(enabled: bool) -> void:
 
 func set_building_seating_overlay(enabled: bool) -> void:
 	_set_building_seating_overlay(enabled)
+
+func set_review_screenshot_mode(enabled: bool) -> void:
+	_review_screenshot_mode = enabled
+	if enabled:
+		_set_debug_overlay(false)
+		_set_building_seating_overlay(false)
+	if hud and hud.has_method("set_review_screenshot_mode"):
+		hud.set_review_screenshot_mode(enabled)
+
+func is_review_screenshot_mode() -> bool:
+	return _review_screenshot_mode
+
+func _should_start_in_review_screenshot_mode() -> bool:
+	for arg in OS.get_cmdline_args():
+		var normalized := String(arg).to_lower()
+		if normalized == BUILD_INFO.REVIEW_SCREENSHOT_FLAG or normalized == "--screenshot-mode" or normalized.find("review_no_hud=1") >= 0:
+			return true
+	return false
 
 func _set_debug_overlay(enabled: bool) -> void:
 	var effective_enabled := enabled and BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED

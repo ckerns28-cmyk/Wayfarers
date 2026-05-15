@@ -26,6 +26,12 @@ visual/input/review-label change must be exported and packaged with
 uploaded manually to itch for browser review. Butler automation remains
 deferred for the manual ZIP review pass.
 
+G-4.16 packaging note: `tools/package_itch_web.sh` also creates a versioned ZIP
+beside the stable upload path, for example
+`wayfarers-tale-godot-g-4-16-newport-art-cohesion-reset.zip`, so Finder shows a
+clearly current upload candidate. Press `F4` in the build, or launch with
+`--review-no-hud`, for clean no-HUD screenshot review.
+
 The HUD shows visible review identity so a screenshot can prove which ZIP is
 live. For G-4.9.6 the expected label is:
 
