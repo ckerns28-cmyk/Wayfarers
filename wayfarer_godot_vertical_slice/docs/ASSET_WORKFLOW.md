@@ -10,9 +10,9 @@ Phase 35.13R production/reference route.
 Tracked Godot asset folders:
 
 - `assets/buildings/`: current building atlas PNGs used by the vertical slice.
-- `art_pipeline/newport/`: G-4.17 source refs, generated contact sheets,
-  manifests, generated atlases, reports, and scripts for Newport terrain/prop
-  production.
+- `art_pipeline/newport/`: G-4.18 source refs, generated assets/contact sheets,
+  manifests, generated atlases, Blender support scripts, reports, and
+  Python/Pillow scripts for Newport terrain/prop production.
 - `scenes/`: scene files plus scene scripts and stable `.gd.uid` metadata.
 - `scripts/`: shared Godot-side metadata helpers such as `BuildInfo.gd`.
 
@@ -66,14 +66,17 @@ Current compatibility rule:
 - Newport production-pipeline outputs live in `art_pipeline/newport/` while the
   pipeline is being established. Any generated/imported asset used in the
   review build must have a manifest entry with source, ownership/license,
-  placeholder/final state, and review eligibility.
+  provenance status, placeholder/final state, and review eligibility.
+- No asset enters the player-facing review build unless it passes both Newport
+  Visual Cohesion and Asset Provenance gates.
 - New atlas families should prefer `assets/atlases/<domain>/`.
 - New original art should go in `assets/source/<domain>/`.
 - New committed reference screenshots should go in `assets/references/<phase>/`.
 - Local screenshots made during browser/export review stay in `artifacts/` and
   are ignored.
-- The Web export preset excludes `artifacts/**`, `web_build/**`, and generated
-  ZIP files so local review evidence does not get packed into `index.pck`.
+- The Web export preset excludes `artifacts/**`, `web_build/**`, generated ZIP
+  files, and `art_pipeline/newport/source_refs/**` so local review evidence and
+  historical source-reference pixels do not get packed into `index.pck`.
 
 Sprite and atlas metadata lives in:
 
@@ -104,6 +107,7 @@ Do not export these files into browser builds:
 - `artifacts/**`
 - `web_build/**`
 - `*.zip`
+- `art_pipeline/newport/source_refs/**`
 
 Texture import expectations for the current atlas PNGs:
 
@@ -149,8 +153,9 @@ Naming conventions:
 3. Let Godot regenerate stable `.import` metadata, then commit it with the
    asset.
 4. Document atlas regions and anchor assumptions.
-5. Add or update the Newport manifest entry, including source, license/
-   ownership, placeholder/final flag, and review eligibility.
+5. Add or update the Newport manifest entry, including source, exact crop path
+   and crop rectangle when copied pixels are used, license/ownership,
+   provenance status, placeholder/final flag, and review eligibility.
 6. Run `bash wayfarer_godot_vertical_slice/tools/validate_asset_hygiene.sh`.
 7. Run `bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh`.
 8. Upload `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip`

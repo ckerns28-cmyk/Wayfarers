@@ -8,10 +8,15 @@ interactables must match this standard before they are accepted into the review
 build.
 
 G-4.16 made the high-detail Newport building sprites the art standard for the
-whole town. G-4.17 turns that rule into a repeatable asset-pipeline gate. Any
-new asset, prop, terrain tile, character, NPC, monster, equipment item, VFX
-element, or UI-world object must pass this standard before it is accepted into
-a player-facing review build.
+whole town. G-4.17 turned that rule into a repeatable asset-pipeline gate.
+G-4.18 adds the matching legal/source gate.
+
+No asset enters the player-facing review build unless it passes both Newport
+Visual Cohesion and Asset Provenance gates.
+
+Any new asset, prop, terrain tile, character, NPC, monster, equipment item,
+VFX element, or UI-world object must pass this standard before it is accepted
+into a player-facing review build.
 
 Target pixel density / apparent detail:
 
@@ -138,3 +143,26 @@ The current player is still a temporary scale/debug avatar. Player sprite
 sheets need a dedicated art pipeline pass, and NPCs, monsters, equipment,
 armor, weapons, and combat VFX cannot be introduced until character style
 rules are defined.
+
+## G-4.18 Asset Provenance Gate
+
+G-4.18 makes `art_pipeline/newport/manifests/newport_asset_manifest.json` the
+canonical review manifest. Review-facing hero assets must document:
+
+- asset id and atlas region
+- generated piece path and creation script
+- material category and intended scale
+- exact project-owned crop path and crop rectangle when source pixels are used
+- whether any project-owned Wayfarer source pixels are copied
+- whether any third-party, web-scraped, marketplace/sample, ripped, or mystery
+  source pixels are present
+- license/ownership status and review eligibility
+
+G-4.18 allowed sources are deterministic generated Pillow output, local
+hand-authored output, documented local Blender procedural support components,
+and exact crops from project-owned in-repo Newport building sprites. The old
+G-4.17 prior prop-sheet crop path is not eligible for normal review.
+
+The player remains temporary scale/debug art. G-4.19 or soon after must begin
+the player/NPC sprite-style foundation, and no NPC, monster, combat, or
+equipment system should enter normal review until character style is solved.

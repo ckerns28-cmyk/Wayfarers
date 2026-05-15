@@ -1305,6 +1305,52 @@ Validation gates:
   style/asset manifests, atlas file, asset source ownership/license, and
   review-eligible manifest flags.
 
+## G-4.18: Newport Proprietary Asset Factory + Style Unification
+
+Status: implemented for local validation, export/package, and browser review.
+
+G-4.18 locks legal/source safety and uses the Newport building sprites as the
+art authority for a more coherent hero commercial strip. This pass is not
+gameplay. It replaces the weaker G-4.17 review-facing prop/ground assumptions
+with a project-owned asset factory, a canonical provenance manifest, and a
+street/dock/prop restyle that better belongs to the same coastal-colonial art
+family as the buildings.
+
+Permanent rule:
+
+- No asset enters the player-facing review build unless it passes both Newport
+  Visual Cohesion and Asset Provenance gates.
+
+Implemented:
+
+- HUD identity: `Godot G-4.18 Newport Proprietary Asset Factory + Style Unification`.
+- Branch: `codex/g-4-18-newport-proprietary-asset-factory-style-unification`.
+- Canonical manifest: `wayfarer_godot_vertical_slice/art_pipeline/newport/manifests/newport_asset_manifest.json`.
+- Provenance audit: `wayfarer_godot_vertical_slice/art_pipeline/newport/reports/G417_G418_ASSET_PROVENANCE_AUDIT.md`.
+- Project-owned Newport asset factory in
+  `art_pipeline/newport/scripts/generate_newport_asset_factory.py`, with
+  deterministic Pillow output, documented Newport building crops, and local
+  Blender 5.1 procedural support components where listed.
+- G-4.17 prior prop-sheet crops are removed from normal review output.
+- Hero street patch now uses multiple cobble/curb/grass/dirt transition pieces
+  with ragged edges and contact shadows instead of one obvious rectangle.
+- Hero props are rescaled and restyled as Newport building-derived/generated
+  clusters with contact shadows.
+- Dock pieces use finer plank rhythm, weathered variation, dark waterline
+  contact, post shadows, and irregular pier edges.
+- Player mismatch is explicitly deferred: the current player remains temporary
+  scale/debug art, and G-4.19 or soon after must begin the player/NPC sprite
+  foundation before NPC, monster, combat, or equipment review.
+
+Validation gates:
+
+- Validator expects the G-4.18 build label and G-4.18 hero atlas API.
+- Validator confirms canonical and compatibility manifests, provenance audit,
+  generated proof sheet, generated atlas pieces, Blender support script, and
+  review-eligible provenance fields.
+- Python provenance validation rejects third-party, web-scraped, mystery, and
+  prior prop-sheet source pixels.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to

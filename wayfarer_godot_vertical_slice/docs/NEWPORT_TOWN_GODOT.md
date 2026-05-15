@@ -1400,3 +1400,45 @@ Screenshot review:
   Every future visual pass should capture normal full harbor, no-HUD full
   harbor, hero street atlas close-up, dock/harbor close-up, and debug overlay
   proof before calling the pass visually accepted.
+
+## G-4.18 Newport Proprietary Asset Factory + Style Unification
+
+G-4.18 locks the legal/source side of the Newport art pipeline and restyles
+the G-4.17 hero strip so it reads less like a pasted patch.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.18 Newport Proprietary Asset Factory + Style Unification
+Phase: G-4.18 | Review host: itch
+Branch: codex/g-4-18-newport-proprietary-asset-factory-style-unification
+```
+
+Permanent gate:
+
+- No asset enters the player-facing review build unless it passes both Newport
+  Visual Cohesion and Asset Provenance gates.
+
+Factory/provenance outputs:
+
+- `art_pipeline/newport/scripts/generate_newport_asset_factory.py`
+- `art_pipeline/newport/scripts/validate_newport_asset_provenance.py`
+- `art_pipeline/newport/blender/render_newport_components.py`
+- `art_pipeline/newport/manifests/newport_asset_manifest.json`
+- `art_pipeline/newport/reports/G417_G418_ASSET_PROVENANCE_AUDIT.md`
+- `art_pipeline/newport/generated_contact_sheets/newport_g418_provenance_safe_hero_asset_proof.png`
+
+Review intent:
+
+- The central commercial row uses multiple atlas pieces for cobble, curb,
+  broken sidewalk edge, grass/cobble feathering, dirt wear, building contact
+  shadow, and dock transition so the street no longer has one hard rectangular
+  boundary.
+- Hero prop clusters are project-owned generated/composited output with exact
+  Newport crop documentation where source pixels are used.
+- Dock/harbor pieces use finer plank rhythm, dark waterline contact, post
+  shadows, and weathered Newport material.
+- The current player remains temporary scale/debug art. G-4.19 or soon after
+  must begin the player/NPC sprite-style foundation, and no NPC, monster,
+  combat, or equipment system should enter normal review until character style
+  is solved.

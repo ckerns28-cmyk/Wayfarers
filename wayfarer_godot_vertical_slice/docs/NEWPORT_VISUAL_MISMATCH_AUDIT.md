@@ -69,8 +69,8 @@ placement.
   shading, material detail, muted Newport colors, and contact shadows.
 - The prior project prop sheet
   `wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png`
-  is now copied into `art_pipeline/newport/source_refs/` with its manifest and
-  used as a project-owned source reference for the hero prop clusters.
+  was audited during G-4.17 and is retained only as historical source context.
+  It is not eligible for G-4.18 normal review output.
 - Follow-up browser review removed source-background rectangles from the wharf
   and shop prop clusters so atlas props stay transparent and seated by contact
   shadows rather than looking like pasted crop boxes.
@@ -91,3 +91,26 @@ Known blocker:
 - The broader dock/wharf system still needs a dedicated atlas pass to
   synchronize the dockhouse sprite plank angles, harbor wharf surfaces, pier
   lips, and waterline contact treatment across the whole map.
+
+## G-4.18 Provenance And Style Unification
+
+- The hero atlas source policy is now locked in
+  `art_pipeline/newport/manifests/newport_asset_manifest.json`.
+- Review-facing hero assets are deterministic project-owned generated output,
+  documented local Blender support components, and exact project-owned Newport
+  building crop composites where listed. No third-party game sprites, ripped
+  assets, marketplace/demo/sample assets, mystery assets, web-scraped art, or
+  copied prior prop-sheet pixels are allowed.
+- The central street proof now breaks the prior hard rectangular read with
+  multiple cobble patches, ragged grass/cobble feathering, curb/stoop strips,
+  building-base contact shadow, dirt wear, and a dock transition layer.
+- Hero props now use Newport building crop detail and muted generated support
+  pieces instead of the earlier low-detail placeholder shapes.
+- Dock pieces now use finer plank rhythm, reduced black grid outlining, dark
+  waterline contact, post-shadow strips, and weathered project-owned wharf
+  material.
+- Permanent rule: No asset enters the player-facing review build unless it
+  passes both Newport Visual Cohesion and Asset Provenance gates.
+- The player remains temporary scale/debug art. G-4.19 or soon after must
+  begin the player/NPC sprite-style foundation, and no NPC, monster, combat, or
+  equipment system should enter normal review until character style is solved.
