@@ -1250,6 +1250,61 @@ Validation gates:
 - Validator confirms the surface kit material manifest, no-HUD screenshot mode,
   clean review default, and the G-4.16 `surface_kit_pass` plan marker.
 
+## G-4.17: Newport Asset Pipeline + Hero Street Atlas Proof
+
+Status: implemented for local validation, export/package, and browser review.
+
+G-4.17 starts the scalable Newport art pipeline. It does not try to repaint the
+whole town. Instead, it uses the existing building sprites as measurable style
+references, creates a manifest-backed atlas workflow, and proves the approach
+on one central commercial-row section.
+
+Permanent roadmap principle:
+
+- The building sprites define the visual standard. Future terrain, props,
+  characters, NPCs, monsters, equipment, UI-world objects, VFX, interiors, and
+  interactables must match this standard before they are accepted into the
+  review build.
+
+Implemented:
+
+- HUD identity: `Godot G-4.17 Newport Asset Pipeline + Hero Street Atlas`.
+- Branch: `codex/g-4-17-newport-asset-pipeline-hero-street-atlas`.
+- Newport pipeline structure under `wayfarer_godot_vertical_slice/art_pipeline/newport/`.
+- Python/Pillow style extraction from in-repo building sprites, producing a
+  markdown report, palette contact sheet, and JSON style values manifest.
+- Newport terrain/prop manifest schema and hero street asset manifest with
+  source, ownership/license, atlas region, scale, collision, y-sort, contact
+  shadow, visual cohesion, placeholder/final, and review eligibility fields.
+- Project-owned generated hero atlas at
+  `art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png`.
+- Central commercial-row proof uses atlas road, curb/sidewalk/stoop,
+  building-base shadow, dirt/wear, grass-edge, dock/market transition, and
+  prop-cluster pieces.
+- Weak procedural props in the hero proof rectangle are skipped and replaced by
+  atlas clusters with muted Newport palette, dark edge treatment, material
+  detail, contact shadow, and door/window/player scale discipline.
+- The G-4.16 procedural surface kit remains as fallback outside the hero proof.
+- Screenshot review path is documented in
+  `art_pipeline/newport/reports/G417_SCREENSHOT_REVIEW_PATH.md`.
+
+Known blocker:
+
+- The current player is still a temporary scale/debug avatar. A dedicated
+  player sprite-sheet pipeline pass is required before player art is accepted.
+  NPCs and monsters cannot be introduced until character style rules are
+  defined. Equipment, armor, weapons, and combat VFX must match the future
+  player/NPC sprite detail.
+
+Validation gates:
+
+- Validator expects the G-4.17 build label.
+- Validator confirms the G-4.16 fallback surface-kit API and the G-4.17 hero
+  atlas material API.
+- Validator confirms pipeline folders, generated reports/contact sheets,
+  style/asset manifests, atlas file, asset source ownership/license, and
+  review-eligible manifest flags.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to

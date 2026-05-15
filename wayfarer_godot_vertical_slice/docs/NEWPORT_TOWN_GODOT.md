@@ -1336,3 +1336,67 @@ Packaging:
 - It also writes a versioned ZIP, for example
   `artifacts/wayfarers-tale-godot-g-4-16-newport-art-cohesion-reset.zip`, so
   the newest itch upload candidate is obvious in Finder.
+
+## G-4.17 Newport Asset Pipeline + Hero Street Atlas Proof
+
+G-4.17 starts the Newport asset-production pipeline and proves it on one
+central commercial-row section instead of trying to repaint the whole starter
+harbor at once.
+
+The expected visible review identity is:
+
+```text
+Build label: Godot G-4.17 Newport Asset Pipeline + Hero Street Atlas
+Phase: G-4.17 | Review host: itch
+Branch: codex/g-4-17-newport-asset-pipeline-hero-street-atlas
+```
+
+Pipeline outputs:
+
+- `art_pipeline/newport/source_refs/`
+- `art_pipeline/newport/generated_contact_sheets/`
+- `art_pipeline/newport/manifests/`
+- `art_pipeline/newport/atlases/`
+- `art_pipeline/newport/reports/`
+- `art_pipeline/newport/scripts/`
+
+The style extraction script reads only in-repo Newport building sprites and
+generates a markdown report, palette/contact sheet, and JSON style manifest.
+The hero atlas generator creates project-owned bitmap atlas pieces and a
+manifest that records source, ownership/license, region, scale, collision,
+y-sort, contact shadow, visual cohesion, placeholder/final status, and review
+eligibility.
+
+Hero proof:
+
+- The central commercial row in front of the mercantile, counting house, and
+  chandlery uses atlas-based cobbled road, curb/sidewalk/stoop, contact-shadow
+  base, dirt/wear transitions, grass edge, and dock/market transition pieces.
+- Weak procedural prop placements in the proof rectangle are skipped and
+  replaced with atlas crate/barrel/table and fence/sign/market clusters.
+- Outside the proof rectangle, the G-4.16 procedural surface kit remains as the
+  fallback until later atlas passes replace more of the town.
+- Normal review mode keeps debug/object rectangles off. `F3`, `B`, and `F4`
+  keep their G-4.16 behavior.
+
+Permanent visual rule:
+
+- The building sprites define the visual standard. Future terrain, props,
+  characters, NPCs, monsters, equipment, UI-world objects, VFX, interiors, and
+  interactables must match this standard before they are accepted into the
+  review build.
+
+Known blocker:
+
+- The player is still a temporary scale/debug avatar. Player sprite sheets
+  require a dedicated pipeline pass; NPCs and monsters wait until character
+  style rules exist; equipment, armor, weapons, and combat VFX must match the
+  eventual player/NPC sprite detail.
+
+Screenshot review:
+
+- Required paths and capture order live in
+  `art_pipeline/newport/reports/G417_SCREENSHOT_REVIEW_PATH.md`.
+  Every future visual pass should capture normal full harbor, no-HUD full
+  harbor, hero street atlas close-up, dock/harbor close-up, and debug overlay
+  proof before calling the pass visually accepted.

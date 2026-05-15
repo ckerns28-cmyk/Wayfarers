@@ -16,8 +16,91 @@ fail() {
     exit 1
 }
 
-command -v zip >/dev/null 2>&1 || fail "zip is required."
-command -v zipinfo >/dev/null 2>&1 || fail "zipinfo is required."
+find_python_bin() {
+    is_working_python() {
+        local candidate="$1"
+        [ -n "$candidate" ] || return 1
+        "$candidate" -c 'import sys, zipfile' >/dev/null 2>&1
+    }
+
+    if [ -n "${PYTHON:-}" ] && [ -x "$PYTHON" ] && is_working_python "$PYTHON"; then
+        printf "%s\n" "$PYTHON"
+        return 0
+    fi
+
+    local windows_python="$HOME/AppData/Local/Programs/Python/Python313/python.exe"
+    if [ -x "$windows_python" ] && is_working_python "$windows_python"; then
+        printf "%s\n" "$windows_python"
+        return 0
+    fi
+
+    if command -v python3 >/dev/null 2>&1; then
+        local python3_bin
+        python3_bin="$(command -v python3)"
+        if is_working_python "$python3_bin"; then
+            printf "%s\n" "$python3_bin"
+            return 0
+        fi
+    fi
+
+    if command -v python >/dev/null 2>&1; then
+        local python_bin
+        python_bin="$(command -v python)"
+        if is_working_python "$python_bin"; then
+            printf "%s\n" "$python_bin"
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+PYTHON_BIN="$(find_python_bin || true)"
+
+create_zip() {
+    local zip_path="$1"
+    local file_list="$2"
+
+    if command -v zip >/dev/null 2>&1; then
+        zip -X -q "$zip_path" -@ < "$file_list"
+        return 0
+    fi
+
+    [ -n "$PYTHON_BIN" ] || fail "zip is required when Python is unavailable."
+    "$PYTHON_BIN" - "$zip_path" "$file_list" <<'PY'
+import sys
+import zipfile
+
+zip_path = sys.argv[1]
+file_list = sys.argv[2]
+
+with open(file_list, "r", encoding="utf-8") as handle:
+    entries = [line.strip() for line in handle if line.strip()]
+
+with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+    for entry in entries:
+        archive.write(entry, entry)
+PY
+}
+
+list_zip_entries() {
+    local zip_path="$1"
+
+    if command -v zipinfo >/dev/null 2>&1; then
+        zipinfo -1 "$zip_path"
+        return 0
+    fi
+
+    [ -n "$PYTHON_BIN" ] || fail "zipinfo is required when Python is unavailable."
+    "$PYTHON_BIN" - "$zip_path" <<'PY'
+import sys
+import zipfile
+
+with zipfile.ZipFile(sys.argv[1], "r") as archive:
+    for name in archive.namelist():
+        print(name)
+PY
+}
 
 "$EXPORT_SCRIPT"
 
@@ -44,10 +127,10 @@ trap 'rm -f "$tmp_file_list"' EXIT
         ! -name "._*" \
         | sed 's#^\./##' \
         | LC_ALL=C sort > "$tmp_file_list"
-    zip -X -q "$ZIP_PATH" -@ < "$tmp_file_list"
+    create_zip "$ZIP_PATH" "$tmp_file_list"
 )
 
-zip_entries="$(zipinfo -1 "$ZIP_PATH")"
+zip_entries="$(list_zip_entries "$ZIP_PATH")"
 
 if printf "%s\n" "$zip_entries" | grep -qx "index.html"; then
     echo "PASS: index.html is at ZIP root."

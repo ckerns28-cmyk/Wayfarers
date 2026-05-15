@@ -7,6 +7,8 @@ const TILE := NEWPORT_TOWN.TILE
 const MAP_W := NEWPORT_TOWN.MAP_TILES.x
 const MAP_H := NEWPORT_TOWN.MAP_TILES.y
 const NEWPORT_SURFACE_KIT_VERSION := "G-4.16"
+const NEWPORT_HERO_ATLAS_VERSION := "G-4.17"
+const NEWPORT_HERO_ATLAS_PATH := "res://art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -17,8 +19,38 @@ const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"building_base_shadow",
 	"service_lane",
 ]
+const NEWPORT_HERO_ATLAS_MATERIALS := [
+	"commercial_cobble_long_a",
+	"curb_sidewalk_stoop_strip",
+	"building_contact_shadow_strip",
+	"dirt_wear_transition",
+	"grass_edge_north",
+	"dock_market_transition",
+	"crate_barrel_table_cluster",
+	"fence_sign_market_cluster",
+	"small_crate_barrel_cluster",
+	"market_sign_cluster",
+]
+const NEWPORT_HERO_ATLAS_REGIONS := {
+	"commercial_cobble_long_a": Rect2(0, 0, 256, 96),
+	"curb_sidewalk_stoop_strip": Rect2(0, 96, 256, 64),
+	"building_contact_shadow_strip": Rect2(0, 160, 256, 48),
+	"dirt_wear_transition": Rect2(0, 208, 256, 64),
+	"grass_edge_north": Rect2(0, 272, 256, 64),
+	"dock_market_transition": Rect2(0, 336, 256, 64),
+	"crate_barrel_table_cluster": Rect2(256, 0, 128, 112),
+	"fence_sign_market_cluster": Rect2(384, 0, 128, 112),
+	"small_crate_barrel_cluster": Rect2(256, 112, 128, 96),
+	"market_sign_cluster": Rect2(384, 112, 128, 96),
+}
+const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(460, 518, 610, 184)
+
+var _newport_hero_atlas: Texture2D
 
 func _ready() -> void:
+	_newport_hero_atlas = ResourceLoader.load(NEWPORT_HERO_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_hero_atlas == null:
+		push_error("Failed to load Newport hero atlas: " + NEWPORT_HERO_ATLAS_PATH)
 	queue_redraw()
 
 func newport_surface_kit_version() -> String:
@@ -26,6 +58,12 @@ func newport_surface_kit_version() -> String:
 
 func newport_surface_kit_materials() -> Array:
 	return NEWPORT_SURFACE_KIT_MATERIALS.duplicate()
+
+func newport_hero_atlas_version() -> String:
+	return NEWPORT_HERO_ATLAS_VERSION
+
+func newport_hero_atlas_materials() -> Array:
+	return NEWPORT_HERO_ATLAS_MATERIALS.duplicate()
 
 func _draw() -> void:
 	match layer_id:
@@ -40,6 +78,17 @@ func _draw() -> void:
 
 func _tile_rect(x: int, y: int, w: int = 1, h: int = 1) -> Rect2:
 	return Rect2(x * TILE, y * TILE, w * TILE, h * TILE)
+
+func _draw_hero_atlas_piece(region_id: String, dest: Rect2, alpha := 1.0) -> void:
+	if _newport_hero_atlas == null:
+		return
+	if not NEWPORT_HERO_ATLAS_REGIONS.has(region_id):
+		push_error("Unknown Newport hero atlas region: " + region_id)
+		return
+	draw_texture_rect_region(_newport_hero_atlas, dest, NEWPORT_HERO_ATLAS_REGIONS[region_id], Color(1, 1, 1, alpha), false, true)
+
+func _is_g417_hero_prop_placeholder(pos: Vector2) -> bool:
+	return G417_HERO_PROP_REPLACEMENT_RECT.has_point(pos)
 
 func _draw_tiled_rect(rect: Rect2i, base: Color, alt: Color, line := Color(0, 0, 0, 0.035)) -> void:
 	for y in range(rect.position.y, rect.position.y + rect.size.y):
@@ -500,9 +549,21 @@ func _draw_g410_street_plan() -> void:
 	draw_line(Vector2(248, 696), Vector2(1338, 696), Color(0.04, 0.04, 0.03, 0.32), 2.0)
 	for p in [Vector2(284, 696), Vector2(392, 696), Vector2(548, 696), Vector2(692, 696), Vector2(824, 696), Vector2(1008, 696), Vector2(1180, 696), Vector2(1318, 696)]:
 		_draw_post(p)
+	_draw_g417_hero_street_atlas_proof()
 	for p in [Vector2(332, 580), Vector2(520, 582), Vector2(746, 578), Vector2(930, 584), Vector2(1136, 582), Vector2(662, 420), Vector2(1094, 504), Vector2(390, 506), Vector2(1250, 580)]:
 		draw_circle(p, 4, Color("#2f251b"))
 		draw_circle(p + Vector2(0, -6), 3, Color("#d8b56f"))
+
+func _draw_g417_hero_street_atlas_proof() -> void:
+	if _newport_hero_atlas == null:
+		return
+	_draw_hero_atlas_piece("grass_edge_north", Rect2(500, 500, 492, 48), 0.96)
+	_draw_hero_atlas_piece("building_contact_shadow_strip", Rect2(498, 534, 500, 34), 0.94)
+	_draw_hero_atlas_piece("curb_sidewalk_stoop_strip", Rect2(492, 548, 520, 46), 1.0)
+	_draw_hero_atlas_piece("dirt_wear_transition", Rect2(506, 574, 480, 34), 0.68)
+	_draw_hero_atlas_piece("commercial_cobble_long_a", Rect2(486, 586, 530, 82), 1.0)
+	_draw_hero_atlas_piece("dirt_wear_transition", Rect2(520, 646, 456, 30), 0.56)
+	_draw_hero_atlas_piece("dock_market_transition", Rect2(612, 668, 322, 42), 0.88)
 
 func _draw_g410_wharf_water() -> void:
 	_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, 282), 1.0)
@@ -560,60 +621,90 @@ func _draw_g410_wharf_water() -> void:
 
 func _draw_g410_props() -> void:
 	for pos in [Vector2(250, 386), Vector2(334, 582), Vector2(506, 586), Vector2(604, 582), Vector2(812, 388), Vector2(986, 386), Vector2(1062, 584), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:
+		if _is_g417_hero_prop_placeholder(pos):
+			continue
 		_draw_contact_shadow(pos + Vector2(14, 11), Vector2(20, 7), 0.15)
 		_draw_crate_stack(pos)
 	for pos in [Vector2(286, 394), Vector2(348, 584), Vector2(774, 584), Vector2(850, 390), Vector2(938, 584), Vector2(1182, 392), Vector2(1058, 668), Vector2(418, 728), Vector2(1160, 728), Vector2(254, 410), Vector2(1222, 418)]:
+		if _is_g417_hero_prop_placeholder(pos):
+			continue
 		_draw_contact_shadow(pos + Vector2(8, 6), Vector2(17, 6), 0.16)
 		_draw_barrels(pos, 3)
 	for pos in [Vector2(298, 408), Vector2(616, 586), Vector2(930, 586), Vector2(552, 688), Vector2(872, 684), Vector2(1256, 408), Vector2(1070, 746), Vector2(664, 694), Vector2(904, 586), Vector2(1286, 812)]:
+		if _is_g417_hero_prop_placeholder(pos):
+			continue
 		_draw_contact_shadow(pos + Vector2(3, 5), Vector2(15, 5), 0.13)
 		_draw_rope_coil(pos)
 	for pos in [Vector2(476, 592), Vector2(526, 592), Vector2(1052, 592), Vector2(1194, 682)]:
+		if _is_g417_hero_prop_placeholder(pos):
+			continue
 		_draw_contact_shadow(pos + Vector2(10, 9), Vector2(17, 6), 0.13)
 		_draw_sack_stack(pos)
 	for pos in [Vector2(252, 432), Vector2(290, 432), Vector2(326, 432)]:
 		_draw_hoop_stack(pos)
-	_draw_market_table(Vector2(706, 656))
-	_draw_market_table(Vector2(800, 650))
-	_draw_market_table(Vector2(1174, 660))
-	_draw_fish_rack(Vector2(396, 690))
-	_draw_fish_rack(Vector2(1136, 690))
-	_draw_fish_rack(Vector2(1228, 684))
-	_draw_net_bundle(Vector2(316, 712))
-	_draw_net_bundle(Vector2(1004, 714))
-	_draw_net_bundle(Vector2(754, 718))
-	_draw_net_bundle(Vector2(816, 716))
+	for pos in [Vector2(706, 656), Vector2(800, 650), Vector2(1174, 660)]:
+		if not _is_g417_hero_prop_placeholder(pos):
+			_draw_market_table(pos)
+	for pos in [Vector2(396, 690), Vector2(1136, 690), Vector2(1228, 684)]:
+		if not _is_g417_hero_prop_placeholder(pos):
+			_draw_fish_rack(pos)
+	for pos in [Vector2(316, 712), Vector2(1004, 714), Vector2(754, 718), Vector2(816, 716)]:
+		if not _is_g417_hero_prop_placeholder(pos):
+			_draw_net_bundle(pos)
 	_draw_rowboat(Vector2(410, 884))
 	_draw_rowboat(Vector2(792, 900))
 	_draw_rowboat(Vector2(1120, 888))
 	_draw_rowboat(Vector2(1370, 868))
-	_draw_sign_post(Vector2(300, 536), Color("#9d4e38"))
-	_draw_sign_post(Vector2(506, 536), Color("#4f6d48"))
-	_draw_sign_post(Vector2(770, 536), Color("#7a7047"))
-	_draw_sign_post(Vector2(820, 390), Color("#4f6275"))
-	_draw_sign_post(Vector2(920, 536), Color("#90703d"))
-	_draw_sign_post(Vector2(1092, 536), Color("#7e6240"))
-	_draw_sign_post(Vector2(1218, 392), Color("#6c5c43"))
-	_draw_sign_post(Vector2(1246, 536), Color("#8c6a3f"))
+	for sign_config in [
+		{"pos": Vector2(300, 536), "color": Color("#9d4e38")},
+		{"pos": Vector2(506, 536), "color": Color("#4f6d48")},
+		{"pos": Vector2(770, 536), "color": Color("#7a7047")},
+		{"pos": Vector2(820, 390), "color": Color("#4f6275")},
+		{"pos": Vector2(920, 536), "color": Color("#90703d")},
+		{"pos": Vector2(1092, 536), "color": Color("#7e6240")},
+		{"pos": Vector2(1218, 392), "color": Color("#6c5c43")},
+		{"pos": Vector2(1246, 536), "color": Color("#8c6a3f")},
+	]:
+		var sign_pos: Vector2 = sign_config["pos"]
+		if not _is_g417_hero_prop_placeholder(sign_pos):
+			_draw_sign_post(sign_pos, sign_config["color"])
 	for pos in [Vector2(300, 520), Vector2(510, 520), Vector2(770, 520), Vector2(920, 520), Vector2(1088, 520), Vector2(820, 374), Vector2(1218, 376)]:
+		if _is_g417_hero_prop_placeholder(pos):
+			continue
 		_draw_lantern(pos)
 	_draw_net_drying_line(Vector2(1118, 350), Vector2(1238, 330))
 	_draw_net_drying_line(Vector2(220, 356), Vector2(320, 338))
 	_draw_net_drying_line(Vector2(1164, 398), Vector2(1258, 384))
-	_draw_fence_line(Vector2(210, 410), Vector2(330, 410), Color("#d9c89c"))
-	_draw_fence_line(Vector2(196, 380), Vector2(310, 380), Color("#d9c89c"))
-	_draw_fence_line(Vector2(828, 374), Vector2(966, 374), Color("#d9c89c"))
-	_draw_fence_line(Vector2(1118, 382), Vector2(1262, 382), Color("#d9c89c"))
-	_draw_fence_line(Vector2(1000, 410), Vector2(1090, 410), Color("#d9c89c"))
-	_draw_fence_line(Vector2(406, 442), Vector2(530, 442), Color("#cdbb86"))
-	_draw_woodpile(Vector2(396, 462))
-	_draw_woodpile(Vector2(278, 420))
-	_draw_woodpile(Vector2(534, 592))
+	for fence_config in [
+		{"a": Vector2(210, 410), "b": Vector2(330, 410), "color": Color("#d9c89c")},
+		{"a": Vector2(196, 380), "b": Vector2(310, 380), "color": Color("#d9c89c")},
+		{"a": Vector2(828, 374), "b": Vector2(966, 374), "color": Color("#d9c89c")},
+		{"a": Vector2(1118, 382), "b": Vector2(1262, 382), "color": Color("#d9c89c")},
+		{"a": Vector2(1000, 410), "b": Vector2(1090, 410), "color": Color("#d9c89c")},
+		{"a": Vector2(406, 442), "b": Vector2(530, 442), "color": Color("#cdbb86")},
+	]:
+		var fence_a: Vector2 = fence_config["a"]
+		var fence_b: Vector2 = fence_config["b"]
+		if not _is_g417_hero_prop_placeholder(fence_a) and not _is_g417_hero_prop_placeholder(fence_b):
+			_draw_fence_line(fence_a, fence_b, fence_config["color"])
+	for pos in [Vector2(396, 462), Vector2(278, 420), Vector2(534, 592)]:
+		if not _is_g417_hero_prop_placeholder(pos):
+			_draw_woodpile(pos)
 	for pos in [Vector2(134, 438), Vector2(1452, 430), Vector2(1320, 332), Vector2(150, 612), Vector2(1368, 642), Vector2(584, 356), Vector2(1018, 356), Vector2(1190, 326)]:
 		draw_circle(pos, 13, Color("#2f5d35"))
 		draw_circle(pos + Vector2(-8, -8), 8, Color("#3d7042"))
 	for bench in [Vector2(792, 404), Vector2(952, 404), Vector2(1178, 410), Vector2(342, 596)]:
-		_draw_bench(bench)
+		if not _is_g417_hero_prop_placeholder(bench):
+			_draw_bench(bench)
+	_draw_g417_hero_prop_clusters()
+
+func _draw_g417_hero_prop_clusters() -> void:
+	if _newport_hero_atlas == null:
+		return
+	_draw_hero_atlas_piece("crate_barrel_table_cluster", Rect2(512, 594, 154, 134), 1.0)
+	_draw_hero_atlas_piece("small_crate_barrel_cluster", Rect2(666, 610, 128, 96), 0.98)
+	_draw_hero_atlas_piece("fence_sign_market_cluster", Rect2(804, 584, 154, 134), 1.0)
+	_draw_hero_atlas_piece("market_sign_cluster", Rect2(928, 552, 128, 96), 0.96)
 
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)

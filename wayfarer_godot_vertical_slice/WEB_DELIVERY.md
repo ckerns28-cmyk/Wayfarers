@@ -26,11 +26,18 @@ visual/input/review-label change must be exported and packaged with
 uploaded manually to itch for browser review. Butler automation remains
 deferred for the manual ZIP review pass.
 
-G-4.16 packaging note: `tools/package_itch_web.sh` also creates a versioned ZIP
+G-4.17 packaging note: `tools/package_itch_web.sh` also creates a versioned ZIP
 beside the stable upload path, for example
-`wayfarers-tale-godot-g-4-16-newport-art-cohesion-reset.zip`, so Finder shows a
+`wayfarers-tale-godot-g-4-17-newport-asset-pipeline-hero-street-atlas.zip`, so Finder shows a
 clearly current upload candidate. Press `F4` in the build, or launch with
 `--review-no-hud`, for clean no-HUD screenshot review.
+
+For local mini PC screenshot review, serve the exported build with the same
+headers used by the browser-review host:
+
+```sh
+python wayfarer_godot_vertical_slice/tools/serve_web_build.py --directory wayfarer_godot_vertical_slice/web_build --port 8765
+```
 
 The HUD shows visible review identity so a screenshot can prove which ZIP is
 live. For G-4.9.6 the expected label is:
@@ -217,6 +224,19 @@ The listing must include `index.html` with no `web_build/` prefix.
 11. For G-4.9.6, optionally press `B` to inspect the proof-street seating
     overlay, then press `B` again before taking normal review screenshots.
 12. Capture browser console errors and a screenshot.
+
+G-4.17 screenshot set:
+
+- `artifacts/screenshots/g417/normal_full_harbor.png`
+- `artifacts/screenshots/g417/no_hud_full_harbor.png`
+- `artifacts/screenshots/g417/hero_street_atlas_closeup.png`
+- `artifacts/screenshots/g417/dock_harbor_closeup.png`
+- `artifacts/screenshots/g417/debug_overlay_proof.png`
+
+The hero street atlas close-up is the visual acceptance image for G-4.17. It
+must show the central commercial row using atlas-based road, curb/stoop,
+building-base shadow, edge transitions, and prop clusters beside the existing
+building sprites.
 
 Current review checklist:
 
