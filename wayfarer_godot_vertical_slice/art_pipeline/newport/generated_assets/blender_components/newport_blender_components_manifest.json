@@ -1,0 +1,34 @@
+{
+  "schema_id": "wayfarer.newport.blender_components.v1",
+  "generated_at": "2026-05-15T19:23:16.616979+00:00",
+  "tool": "Blender 5.1",
+  "ownership": "project-owned locally generated procedural mesh renders",
+  "third_party_pixels": false,
+  "components": [
+    {
+      "component_id": "market_table",
+      "file": "art_pipeline/newport/generated_assets/blender_components/market_table.png",
+      "source": "Blender 5.1 procedural mesh render created locally for Wayfarer G-4.18"
+    },
+    {
+      "component_id": "fence_segment",
+      "file": "art_pipeline/newport/generated_assets/blender_components/fence_segment.png",
+      "source": "Blender 5.1 procedural mesh render created locally for Wayfarer G-4.18"
+    },
+    {
+      "component_id": "crate_stack",
+      "file": "art_pipeline/newport/generated_assets/blender_components/crate_stack.png",
+      "source": "Blender 5.1 procedural mesh render created locally for Wayfarer G-4.18"
+    },
+    {
+      "component_id": "barrel",
+      "file": "art_pipeline/newport/generated_assets/blender_components/barrel.png",
+      "source": "Blender 5.1 procedural mesh render created locally for Wayfarer G-4.18"
+    },
+    {
+      "component_id": "rope_coil",
+      "file": "art_pipeline/newport/generated_assets/blender_components/rope_coil.png",
+      "source": "Blender 5.1 procedural mesh render created locally for Wayfarer G-4.18"
+    }
+  ]
+}

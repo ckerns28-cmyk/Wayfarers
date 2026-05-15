@@ -15,7 +15,7 @@ const EDRIN_SPAWN := Vector2(-800, -800)
 const G414A_STREET_WALL_CURB_DATUM_Y := 17.77
 const G415_VISUAL_ACCEPTANCE_SCORE_TARGET := 8.5
 const G416_SURFACE_KIT_PASS := "G-4.16"
-const G417_ASSET_PIPELINE_PASS := "G-4.17"
+const G418_ASSET_FACTORY_PASS := "G-4.18"
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
@@ -682,14 +682,16 @@ static func starter_district_plan() -> Dictionary:
 		"density_pass": "G-4.13B",
 		"layout_rules_pass": "G-4.15",
 		"surface_kit_pass": G416_SURFACE_KIT_PASS,
-		"asset_pipeline_pass": G417_ASSET_PIPELINE_PASS,
-		"hero_street_atlas_proof": "central commercial row uses manifest-backed atlas pieces; G-4.16 surfaces remain fallback outside the proof",
+		"asset_pipeline_pass": G418_ASSET_FACTORY_PASS,
+		"hero_street_atlas_proof": "central commercial row uses provenance-safe G-4.18 generated atlas pieces; G-4.16 surfaces remain fallback outside the proof",
 		"layout_rule_count": g415_layout_rules().size(),
 		"visual_acceptance_score_target": G415_VISUAL_ACCEPTANCE_SCORE_TARGET,
 		"collision_model": "visual_bounds and lot_bounds are review/planning data; collision_footprint is the only blocking building body.",
 		"clean_review_default": true,
 		"surface_cohesion_gate": true,
 		"newport_visual_cohesion_gate": true,
+		"asset_provenance_gate": true,
+		"player_style_deferred_note": "current player is temporary scale/debug art; G-4.19 or soon after must define player/NPC sprite style before NPC, monster, combat, or equipment review",
 		"review_screenshot_mode": "F4 or --review-no-hud",
 		"districts": [
 			"harborfront_commercial",

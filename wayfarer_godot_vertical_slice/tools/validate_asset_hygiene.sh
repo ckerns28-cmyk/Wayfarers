@@ -60,10 +60,10 @@ else
     fail "package script should exclude AppleDouble sidecars"
 fi
 
-if grep -Fq 'exclude_filter="artifacts/**,web_build/**,*.zip"' "$PROJECT_ROOT/export_presets.cfg"; then
-    pass "export preset excludes generated folders"
+if grep -Fq 'exclude_filter="artifacts/**,web_build/**,*.zip,art_pipeline/newport/source_refs/**"' "$PROJECT_ROOT/export_presets.cfg"; then
+    pass "export preset excludes generated folders and historical source refs"
 else
-    fail "export preset should exclude artifacts/**, web_build/**, and generated ZIPs"
+    fail "export preset should exclude artifacts/**, web_build/**, generated ZIPs, and Newport source_refs"
 fi
 
 while IFS= read -r asset_path; do

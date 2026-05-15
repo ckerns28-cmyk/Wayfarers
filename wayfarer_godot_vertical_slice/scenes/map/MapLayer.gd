@@ -7,7 +7,7 @@ const TILE := NEWPORT_TOWN.TILE
 const MAP_W := NEWPORT_TOWN.MAP_TILES.x
 const MAP_H := NEWPORT_TOWN.MAP_TILES.y
 const NEWPORT_SURFACE_KIT_VERSION := "G-4.16"
-const NEWPORT_HERO_ATLAS_VERSION := "G-4.17"
+const NEWPORT_HERO_ATLAS_VERSION := "G-4.18"
 const NEWPORT_HERO_ATLAS_PATH := "res://art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
@@ -21,12 +21,18 @@ const NEWPORT_SURFACE_KIT_MATERIALS := [
 ]
 const NEWPORT_HERO_ATLAS_MATERIALS := [
 	"commercial_cobble_long_a",
+	"commercial_cobble_patch_b",
+	"commercial_cobble_patch_c",
 	"curb_sidewalk_stoop_strip",
+	"curb_sidewalk_broken_edge",
 	"building_contact_shadow_strip",
 	"dirt_wear_transition",
 	"grass_edge_north",
+	"grass_cobble_feather",
 	"dock_market_transition",
 	"dock_pier_vertical",
+	"dock_edge_feather",
+	"pier_shadow_post_strip",
 	"crate_barrel_table_cluster",
 	"fence_sign_market_cluster",
 	"small_crate_barrel_cluster",
@@ -36,18 +42,24 @@ const NEWPORT_HERO_ATLAS_MATERIALS := [
 ]
 const NEWPORT_HERO_ATLAS_REGIONS := {
 	"commercial_cobble_long_a": Rect2(0, 0, 320, 96),
-	"curb_sidewalk_stoop_strip": Rect2(0, 96, 320, 72),
-	"building_contact_shadow_strip": Rect2(0, 168, 320, 48),
-	"dirt_wear_transition": Rect2(0, 216, 320, 64),
-	"grass_edge_north": Rect2(0, 280, 320, 64),
-	"dock_market_transition": Rect2(0, 344, 320, 96),
-	"dock_pier_vertical": Rect2(0, 448, 96, 224),
-	"crate_barrel_table_cluster": Rect2(336, 0, 184, 136),
-	"fence_sign_market_cluster": Rect2(536, 0, 184, 136),
-	"small_crate_barrel_cluster": Rect2(336, 152, 160, 112),
-	"market_sign_cluster": Rect2(536, 152, 160, 112),
-	"wharf_crate_pile_cluster": Rect2(336, 288, 220, 146),
-	"chandlery_base_cluster": Rect2(536, 288, 220, 146),
+	"commercial_cobble_patch_b": Rect2(0, 104, 220, 72),
+	"commercial_cobble_patch_c": Rect2(0, 184, 180, 64),
+	"curb_sidewalk_stoop_strip": Rect2(0, 256, 320, 72),
+	"curb_sidewalk_broken_edge": Rect2(0, 336, 320, 56),
+	"building_contact_shadow_strip": Rect2(0, 400, 320, 48),
+	"dirt_wear_transition": Rect2(0, 456, 320, 64),
+	"grass_edge_north": Rect2(0, 528, 320, 64),
+	"grass_cobble_feather": Rect2(0, 600, 320, 56),
+	"dock_market_transition": Rect2(0, 664, 320, 96),
+	"dock_pier_vertical": Rect2(336, 0, 96, 224),
+	"dock_edge_feather": Rect2(448, 0, 320, 64),
+	"pier_shadow_post_strip": Rect2(448, 72, 224, 56),
+	"crate_barrel_table_cluster": Rect2(448, 144, 184, 136),
+	"fence_sign_market_cluster": Rect2(648, 144, 184, 136),
+	"small_crate_barrel_cluster": Rect2(448, 296, 160, 112),
+	"market_sign_cluster": Rect2(624, 296, 160, 112),
+	"wharf_crate_pile_cluster": Rect2(448, 424, 220, 146),
+	"chandlery_base_cluster": Rect2(684, 424, 220, 146),
 }
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
@@ -580,23 +592,50 @@ func _draw_g410_street_plan() -> void:
 func _draw_g417_hero_street_atlas_proof() -> void:
 	if _newport_hero_atlas == null:
 		return
-	_draw_hero_atlas_tiled("grass_edge_north", Rect2(244, 500, 906, 54), 1.0, 1.0)
-	_draw_hero_atlas_tiled("building_contact_shadow_strip", Rect2(236, 530, 920, 42), 1.0, 1.0)
-	_draw_hero_atlas_tiled("curb_sidewalk_stoop_strip", Rect2(236, 548, 920, 62), 1.0, 1.0)
-	_draw_hero_atlas_tiled("commercial_cobble_long_a", Rect2(236, 604, 920, 76), 1.0, 1.0)
-	_draw_hero_atlas_tiled("dirt_wear_transition", Rect2(242, 660, 896, 34), 0.92, 1.0)
+	_draw_hero_atlas_piece("grass_edge_north", Rect2(268, 504, 262, 38), 0.26)
+	_draw_hero_atlas_piece("grass_edge_north", Rect2(622, 498, 316, 42), 0.22)
+	_draw_hero_atlas_piece("grass_edge_north", Rect2(964, 506, 226, 36), 0.18)
+	_draw_hero_atlas_piece("grass_cobble_feather", Rect2(248, 530, 286, 40), 0.24)
+	_draw_hero_atlas_piece("grass_cobble_feather", Rect2(612, 526, 320, 38), 0.22)
+	_draw_hero_atlas_piece("grass_cobble_feather", Rect2(930, 532, 274, 36), 0.18)
+	_draw_hero_atlas_tiled("building_contact_shadow_strip", Rect2(242, 536, 906, 30), 0.42, 1.0)
+	_draw_hero_atlas_piece("curb_sidewalk_stoop_strip", Rect2(266, 552, 286, 42), 0.32)
+	_draw_hero_atlas_piece("curb_sidewalk_stoop_strip", Rect2(574, 548, 304, 44), 0.30)
+	_draw_hero_atlas_piece("curb_sidewalk_stoop_strip", Rect2(902, 554, 246, 40), 0.24)
+	_draw_hero_atlas_piece("curb_sidewalk_broken_edge", Rect2(324, 586, 246, 28), 0.28)
+	_draw_hero_atlas_piece("curb_sidewalk_broken_edge", Rect2(704, 590, 284, 28), 0.24)
+	_draw_hero_atlas_piece("commercial_cobble_long_a", Rect2(300, 610, 268, 46), 0.30)
+	_draw_hero_atlas_piece("commercial_cobble_patch_b", Rect2(486, 630, 214, 52), 0.30)
+	_draw_hero_atlas_piece("commercial_cobble_patch_c", Rect2(618, 602, 178, 48), 0.24)
+	_draw_hero_atlas_piece("commercial_cobble_long_a", Rect2(776, 614, 286, 46), 0.24)
+	_draw_hero_atlas_piece("commercial_cobble_patch_b", Rect2(958, 632, 196, 48), 0.20)
+	_draw_hero_atlas_piece("dirt_wear_transition", Rect2(278, 654, 296, 34), 0.28)
+	_draw_hero_atlas_piece("dirt_wear_transition", Rect2(602, 660, 316, 32), 0.24)
+	_draw_hero_atlas_piece("dirt_wear_transition", Rect2(918, 656, 240, 30), 0.20)
+	_draw_hero_atlas_piece("grass_cobble_feather", Rect2(304, 676, 260, 28), 0.16)
+	_draw_hero_atlas_piece("grass_cobble_feather", Rect2(728, 674, 310, 28), 0.14)
 
 func _draw_g417_hero_wharf_atlas_proof() -> void:
 	if _newport_hero_atlas == null:
 		return
-	draw_rect(Rect2(248, 686, 884, 172), Color("#1b120b"), true)
-	_draw_hero_atlas_tiled("dock_market_transition", Rect2(252, 690, 874, 84), 1.0, 1.0)
-	_draw_hero_atlas_tiled("dock_market_transition", Rect2(252, 770, 874, 84), 0.96, 1.0)
-	_draw_hero_atlas_tiled("dock_pier_vertical", Rect2(382, 718, 92, 142), 1.0, 1.0)
-	_draw_hero_atlas_tiled("dock_pier_vertical", Rect2(724, 712, 92, 148), 1.0, 1.0)
-	draw_line(Vector2(252, 690), Vector2(1126, 690), Color("#d6bd7d", 0.44), 1.4)
-	draw_line(Vector2(252, 770), Vector2(1126, 770), Color("#0f0a06", 0.72), 2.0)
-	draw_line(Vector2(252, 854), Vector2(1126, 854), Color("#0f0a06", 0.72), 2.0)
+	_draw_hero_atlas_piece("dock_edge_feather", Rect2(266, 684, 318, 34), 0.24)
+	_draw_hero_atlas_piece("dock_edge_feather", Rect2(594, 686, 302, 32), 0.22)
+	_draw_hero_atlas_piece("dock_edge_feather", Rect2(906, 684, 228, 32), 0.18)
+	_draw_hero_atlas_piece("dock_market_transition", Rect2(284, 708, 286, 54), 0.26)
+	_draw_hero_atlas_piece("dock_market_transition", Rect2(616, 714, 294, 52), 0.22)
+	_draw_hero_atlas_piece("dock_market_transition", Rect2(902, 710, 220, 50), 0.18)
+	_draw_hero_atlas_piece("pier_shadow_post_strip", Rect2(278, 696, 224, 46), 0.30)
+	_draw_hero_atlas_piece("pier_shadow_post_strip", Rect2(666, 696, 224, 46), 0.26)
+	_draw_hero_atlas_piece("pier_shadow_post_strip", Rect2(934, 698, 184, 44), 0.20)
+	_draw_hero_atlas_piece("dock_market_transition", Rect2(328, 774, 274, 48), 0.22)
+	_draw_hero_atlas_piece("dock_market_transition", Rect2(718, 778, 270, 48), 0.18)
+	_draw_hero_atlas_piece("dock_edge_feather", Rect2(304, 834, 292, 30), 0.18)
+	_draw_hero_atlas_piece("dock_edge_feather", Rect2(722, 834, 300, 30), 0.16)
+	_draw_hero_atlas_piece("dock_pier_vertical", Rect2(392, 730, 58, 122), 0.32)
+	_draw_hero_atlas_piece("dock_pier_vertical", Rect2(734, 724, 58, 128), 0.30)
+	draw_line(Vector2(252, 690), Vector2(1126, 690), Color("#d6bd7d", 0.20), 1.0)
+	draw_line(Vector2(252, 770), Vector2(1126, 770), Color("#0f0a06", 0.34), 1.4)
+	draw_line(Vector2(252, 854), Vector2(1126, 854), Color("#0f0a06", 0.38), 1.4)
 
 func _draw_g410_wharf_water() -> void:
 	_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, 282), 1.0)
@@ -735,12 +774,12 @@ func _draw_g410_props() -> void:
 func _draw_g417_hero_prop_clusters() -> void:
 	if _newport_hero_atlas == null:
 		return
-	_draw_hero_atlas_piece("crate_barrel_table_cluster", Rect2(486, 610, 128, 95), 1.0)
-	_draw_hero_atlas_piece("small_crate_barrel_cluster", Rect2(642, 626, 104, 73), 1.0)
-	_draw_hero_atlas_piece("fence_sign_market_cluster", Rect2(850, 604, 128, 95), 1.0)
-	_draw_hero_atlas_piece("chandlery_base_cluster", Rect2(948, 578, 143, 95), 1.0)
-	_draw_hero_atlas_piece("wharf_crate_pile_cluster", Rect2(538, 698, 150, 100), 1.0)
-	_draw_hero_atlas_piece("market_sign_cluster", Rect2(778, 688, 104, 73), 1.0)
+	_draw_hero_atlas_piece("crate_barrel_table_cluster", Rect2(494, 614, 118, 87), 0.94)
+	_draw_hero_atlas_piece("small_crate_barrel_cluster", Rect2(648, 628, 92, 64), 0.92)
+	_draw_hero_atlas_piece("fence_sign_market_cluster", Rect2(862, 610, 118, 87), 0.92)
+	_draw_hero_atlas_piece("chandlery_base_cluster", Rect2(966, 586, 128, 85), 0.92)
+	_draw_hero_atlas_piece("wharf_crate_pile_cluster", Rect2(552, 708, 132, 88), 0.92)
+	_draw_hero_atlas_piece("market_sign_cluster", Rect2(790, 700, 92, 64), 0.88)
 
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)
@@ -1189,35 +1228,35 @@ func _draw_newport_service_lane_rect(rect: Rect2, alpha := 0.40) -> void:
 			draw_circle(Vector2(x + 5.0, y + 4.0), 1.5, Color(0.10, 0.07, 0.04, alpha * 0.45))
 
 func _draw_newport_dock_planks(rect: Rect2, weather_count := 24) -> void:
-	draw_rect(rect.grow(4.0), Color(0.02, 0.025, 0.018, 0.24), true)
-	draw_rect(rect, Color("#7a6749"), true)
+	draw_rect(rect.grow(4.0), Color(0.02, 0.025, 0.018, 0.18), true)
+	draw_rect(rect, Color("#6f5940"), true)
 	var along_x := rect.size.x >= rect.size.y
 	if along_x:
 		var plank_index := 0
-		for y in range(int(rect.position.y), int(rect.end.y), 11):
-			var plank_h := 10.0 + float(plank_index % 2)
+		for y in range(int(rect.position.y), int(rect.end.y), 8):
+			var plank_h := 7.0 + float(plank_index % 3)
 			var row := Rect2(rect.position.x, float(y), rect.size.x, minf(plank_h, rect.end.y - float(y)))
-			var shade := Color("#806b4d").lerp(Color("#5e4c36"), float(plank_index % 5) / 8.0)
+			var shade := Color("#7a5f40").lerp(Color("#55402c"), float(plank_index % 6) / 10.0)
 			draw_rect(row, shade, true)
-			draw_line(Vector2(row.position.x + 4.0, row.position.y), Vector2(row.end.x - 6.0, row.position.y - 1.0), Color("#c5a66b", 0.13), 1.0)
-			draw_line(Vector2(row.position.x + 3.0, row.end.y - 1.0), Vector2(row.end.x - 5.0, row.end.y - 2.0), Color(0.03, 0.025, 0.018, 0.22), 1.0)
+			draw_line(Vector2(row.position.x + 4.0, row.position.y), Vector2(row.end.x - 6.0, row.position.y - 1.0), Color("#c5a66b", 0.10), 1.0)
+			draw_line(Vector2(row.position.x + 3.0, row.end.y - 1.0), Vector2(row.end.x - 5.0, row.end.y - 2.0), Color(0.03, 0.025, 0.018, 0.13), 1.0)
 			plank_index += 1
-		for x in range(int(rect.position.x) + 18, int(rect.end.x), 44):
-			draw_line(Vector2(x, rect.position.y + 3.0), Vector2(x - 3.0, rect.end.y - 4.0), Color(0.03, 0.025, 0.018, 0.16), 1.0)
+		for x in range(int(rect.position.x) + 18, int(rect.end.x), 52):
+			draw_line(Vector2(x, rect.position.y + 3.0), Vector2(x - 3.0, rect.end.y - 4.0), Color(0.03, 0.025, 0.018, 0.11), 1.0)
 	else:
 		var plank_index := 0
-		for x in range(int(rect.position.x), int(rect.end.x), 11):
-			var plank_w := 10.0 + float(plank_index % 2)
+		for x in range(int(rect.position.x), int(rect.end.x), 8):
+			var plank_w := 7.0 + float(plank_index % 3)
 			var col := Rect2(float(x), rect.position.y, minf(plank_w, rect.end.x - float(x)), rect.size.y)
-			var shade := Color("#806548").lerp(Color("#594330"), float(plank_index % 5) / 8.0)
+			var shade := Color("#785d3e").lerp(Color("#513c29"), float(plank_index % 6) / 10.0)
 			draw_rect(col, shade, true)
-			draw_line(Vector2(col.position.x, col.position.y + 4.0), Vector2(col.position.x - 1.0, col.end.y - 6.0), Color("#c5a66b", 0.12), 1.0)
-			draw_line(Vector2(col.end.x - 1.0, col.position.y + 3.0), Vector2(col.end.x - 2.0, col.end.y - 5.0), Color(0.03, 0.025, 0.018, 0.22), 1.0)
+			draw_line(Vector2(col.position.x, col.position.y + 4.0), Vector2(col.position.x - 1.0, col.end.y - 6.0), Color("#c5a66b", 0.09), 1.0)
+			draw_line(Vector2(col.end.x - 1.0, col.position.y + 3.0), Vector2(col.end.x - 2.0, col.end.y - 5.0), Color(0.03, 0.025, 0.018, 0.13), 1.0)
 			plank_index += 1
-		for y in range(int(rect.position.y) + 20, int(rect.end.y), 42):
-			draw_line(Vector2(rect.position.x + 3.0, y), Vector2(rect.end.x - 4.0, y - 2.0), Color(0.03, 0.025, 0.018, 0.16), 1.0)
+		for y in range(int(rect.position.y) + 20, int(rect.end.y), 52):
+			draw_line(Vector2(rect.position.x + 3.0, y), Vector2(rect.end.x - 4.0, y - 2.0), Color(0.03, 0.025, 0.018, 0.11), 1.0)
 	_draw_plank_weathering(rect, weather_count)
-	draw_rect(rect, Color(0.0, 0.0, 0.0, 0.20), false, 1.0)
+	draw_rect(rect, Color(0.0, 0.0, 0.0, 0.10), false, 1.0)
 
 func _draw_newport_water_rect(rect: Rect2, alpha := 1.0) -> void:
 	_draw_soft_rect(rect, Color("#2e7183"), Color("#1d5267"), alpha, 36)

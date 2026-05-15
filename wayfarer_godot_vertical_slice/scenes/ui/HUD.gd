@@ -50,6 +50,7 @@ func _apply_build_identity() -> void:
 	branch_label.text = "Branch: " + branch
 	zone_label.text = "Newport Starter Harbor"
 	stats_label.text = "Level 1  HP 52/52"
+	objective_label.text = BUILD_INFO.PLAYER_STYLE_ROADMAP_NOTE
 
 func toggle_review_metadata() -> void:
 	if _review_screenshot_mode:
