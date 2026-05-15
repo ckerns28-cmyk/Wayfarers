@@ -21,6 +21,9 @@
     "created_by",
     "ownership",
     "license",
+    "material_sources",
+    "prior_project_prop_sources",
+    "source_manifest",
     "notes"
   ],
   "allowed_visual_cohesion_status": [

@@ -173,7 +173,7 @@ func _validate_g417_asset_pipeline(map: Node) -> void:
 			_expect(String(layer.call("newport_hero_atlas_version")) == "G-4.17", "g417_hero_atlas_version_" + layer_name)
 		if layer and layer.has_method("newport_hero_atlas_materials"):
 			var materials: Array = layer.call("newport_hero_atlas_materials")
-			for material in ["commercial_cobble_long_a", "curb_sidewalk_stoop_strip", "building_contact_shadow_strip", "dirt_wear_transition", "grass_edge_north", "dock_market_transition", "crate_barrel_table_cluster", "fence_sign_market_cluster"]:
+			for material in ["commercial_cobble_long_a", "curb_sidewalk_stoop_strip", "building_contact_shadow_strip", "dirt_wear_transition", "grass_edge_north", "dock_market_transition", "dock_pier_vertical", "crate_barrel_table_cluster", "fence_sign_market_cluster", "wharf_crate_pile_cluster", "chandlery_base_cluster"]:
 				_expect(materials.has(material), "g417_hero_atlas_material_" + material + "_" + layer_name)
 
 	var manifest := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_hero_street_assets.json")
@@ -195,6 +195,8 @@ func _validate_g417_asset_pipeline(map: Node) -> void:
 		var source: Dictionary = asset.get("source", {})
 		_expect(String(source.get("ownership", "")) == "project-owned", "g417_asset_source_owned_" + String(asset.get("asset_id", "unknown")))
 		_expect(String(source.get("license", "")).find("no external scraped art") >= 0, "g417_asset_source_license_" + String(asset.get("asset_id", "unknown")))
+		_expect(source.has("material_sources"), "g417_asset_source_material_refs_" + String(asset.get("asset_id", "unknown")))
+		_expect(source.has("prior_project_prop_sources"), "g417_asset_source_prior_prop_refs_" + String(asset.get("asset_id", "unknown")))
 	_expect(review_ready_assets >= 8, "g417_asset_manifest_review_ready_assets")
 
 func _load_json_dictionary(path: String) -> Dictionary:

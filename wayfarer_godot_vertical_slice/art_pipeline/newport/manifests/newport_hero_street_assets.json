@@ -1,6 +1,6 @@
 {
   "schema_id": "wayfarer.newport.asset_manifest.v1",
-  "generated_at": "2026-05-15T13:27:35.739904+00:00",
+  "generated_at": "2026-05-15T17:18:43.525022+00:00",
   "atlas": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
   "assets": [
     {
@@ -8,271 +8,969 @@
       "material_category": "commercial street/cobble",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "counting_house_base",
+            "file": "assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png",
+            "crop": [
+              78,
+              244,
+              380,
+              333
+            ],
+            "usage": "stone step scale, muted gray siding, base shadow language"
+          },
+          {
+            "source_crop_id": "tavern_base",
+            "file": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
+            "crop": [
+              38,
+              332,
+              428,
+              430
+            ],
+            "usage": "porch plank highlights, railing thickness, dark base contact"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "stone_patch_a",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              101,
+              922,
+              190,
+              968
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "stone_patch_b",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              221,
+              922,
+              293,
+              989
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
         "x": 0,
         "y": 0,
-        "w": 256,
+        "w": 320,
         "h": 96
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "none; decorative/grounding only",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "curb_sidewalk_stoop_strip",
       "material_category": "curb/sidewalk/stoop",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "tavern_base",
+            "file": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
+            "crop": [
+              38,
+              332,
+              428,
+              430
+            ],
+            "usage": "porch plank highlights, railing thickness, dark base contact"
+          },
+          {
+            "source_crop_id": "mercantile_base",
+            "file": "assets/sprites/buildings/isolated/mercantile_shop_isolated.png",
+            "crop": [
+              54,
+              294,
+              344,
+              418
+            ],
+            "usage": "stoop/awning shadow, crate scale, door-adjacent prop scale"
+          },
+          {
+            "source_crop_id": "counting_house_base",
+            "file": "assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png",
+            "crop": [
+              78,
+              244,
+              380,
+              333
+            ],
+            "usage": "stone step scale, muted gray siding, base shadow language"
+          }
+        ],
+        "prior_project_prop_sources": [],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
         "x": 0,
         "y": 96,
-        "w": 256,
-        "h": 64
+        "w": 320,
+        "h": 72
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "none; decorative/grounding only",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "building_contact_shadow_strip",
       "material_category": "building contact-shadow/base",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "counting_house_base",
+            "file": "assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png",
+            "crop": [
+              78,
+              244,
+              380,
+              333
+            ],
+            "usage": "stone step scale, muted gray siding, base shadow language"
+          },
+          {
+            "source_crop_id": "chandlery_base",
+            "file": "assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png",
+            "crop": [
+              46,
+              255,
+              404,
+              366
+            ],
+            "usage": "shop-base prop density, rope curves, barrel color, brass highlights"
+          }
+        ],
+        "prior_project_prop_sources": [],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
         "x": 0,
-        "y": 160,
-        "w": 256,
+        "y": 168,
+        "w": 320,
         "h": 48
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "none; decorative/grounding only",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "dirt_wear_transition",
       "material_category": "dirt/wear transition",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "mercantile_base",
+            "file": "assets/sprites/buildings/isolated/mercantile_shop_isolated.png",
+            "crop": [
+              54,
+              294,
+              344,
+              418
+            ],
+            "usage": "stoop/awning shadow, crate scale, door-adjacent prop scale"
+          }
+        ],
+        "prior_project_prop_sources": [],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
         "x": 0,
-        "y": 208,
-        "w": 256,
+        "y": 216,
+        "w": 320,
         "h": 64
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "none; decorative/grounding only",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "grass_edge_north",
       "material_category": "grass edge",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "tavern_base",
+            "file": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
+            "crop": [
+              38,
+              332,
+              428,
+              430
+            ],
+            "usage": "porch plank highlights, railing thickness, dark base contact"
+          }
+        ],
+        "prior_project_prop_sources": [],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
         "x": 0,
-        "y": 272,
-        "w": 256,
+        "y": 280,
+        "w": 320,
         "h": 64
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "none; decorative/grounding only",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "dock_market_transition",
       "material_category": "dock/market transition",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "dockside_wharf",
+            "file": "assets/sprites/buildings/isolated/newport_dockside_storehouse_isolated.png",
+            "crop": [
+              58,
+              284,
+              364,
+              382
+            ],
+            "usage": "front-facing dock planks, post spacing, ladder shadows, water contact"
+          },
+          {
+            "source_crop_id": "boathouse_wharf",
+            "file": "assets/sprites/buildings/isolated/newport_wharf_boathouse_large_isolated.png",
+            "crop": [
+              66,
+              270,
+              476,
+              350
+            ],
+            "usage": "wharf board rhythm, pier posts, crates, stone-to-dock scale"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "dock_long",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              230,
+              513,
+              453,
+              634
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "dock_square",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              497,
+              513,
+              671,
+              634
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
         "x": 0,
-        "y": 336,
-        "w": 256,
-        "h": 64
+        "y": 344,
+        "w": 320,
+        "h": 96
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "none; decorative/grounding only",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
+    },
+    {
+      "asset_id": "dock_pier_vertical",
+      "material_category": "dock/pier transition",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_derived_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "material_sources": [
+          {
+            "source_crop_id": "dockside_wharf",
+            "file": "assets/sprites/buildings/isolated/newport_dockside_storehouse_isolated.png",
+            "crop": [
+              58,
+              284,
+              364,
+              382
+            ],
+            "usage": "front-facing dock planks, post spacing, ladder shadows, water contact"
+          },
+          {
+            "source_crop_id": "boathouse_wharf",
+            "file": "assets/sprites/buildings/isolated/newport_wharf_boathouse_large_isolated.png",
+            "crop": [
+              66,
+              270,
+              476,
+              350
+            ],
+            "usage": "wharf board rhythm, pier posts, crates, stone-to-dock scale"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "dock_square",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              497,
+              513,
+              671,
+              634
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
+      },
+      "atlas_region": {
+        "x": 0,
+        "y": 448,
+        "w": 96,
+        "h": 224
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
+      "collision_behavior": "none; decorative/grounding only",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "crate_barrel_table_cluster",
       "material_category": "crate/barrel/table prop cluster",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "chandlery_base",
+            "file": "assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png",
+            "crop": [
+              46,
+              255,
+              404,
+              366
+            ],
+            "usage": "shop-base prop density, rope curves, barrel color, brass highlights"
+          },
+          {
+            "source_crop_id": "mercantile_base",
+            "file": "assets/sprites/buildings/isolated/mercantile_shop_isolated.png",
+            "crop": [
+              54,
+              294,
+              344,
+              418
+            ],
+            "usage": "stoop/awning shadow, crate scale, door-adjacent prop scale"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "fish_table",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              39,
+              653,
+              262,
+              772
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "basket_table",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              299,
+              640,
+              436,
+              770
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "barrel_open",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              202,
+              53,
+              281,
+              151
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "rope_coil",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              1104,
+              558,
+              1190,
+              617
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
-        "x": 256,
+        "x": 336,
         "y": 0,
-        "w": 128,
-        "h": 112
+        "w": 184,
+        "h": 136
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "fence_sign_market_cluster",
       "material_category": "fence/sign/market object cluster",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "tavern_base",
+            "file": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
+            "crop": [
+              38,
+              332,
+              428,
+              430
+            ],
+            "usage": "porch plank highlights, railing thickness, dark base contact"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "fence_gate",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              724,
+              369,
+              927,
+              471
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "hanging_ship_sign",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              687,
+              200,
+              814,
+              345
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "crate_single",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              473,
+              77,
+              553,
+              151
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
-        "x": 384,
+        "x": 536,
         "y": 0,
-        "w": 128,
-        "h": 112
+        "w": 184,
+        "h": 136
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "small_crate_barrel_cluster",
       "material_category": "crate/barrel prop cluster",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "boathouse_crates",
+            "file": "assets/sprites/buildings/isolated/newport_wharf_boathouse_large_isolated.png",
+            "crop": [
+              313,
+              252,
+              472,
+              346
+            ],
+            "usage": "crate/barrel outline density and stack proportions"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "crate_stack",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              711,
+              28,
+              859,
+              157
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "barrel_large",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              28,
+              37,
+              99,
+              146
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "sacks",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              1014,
+              54,
+              1143,
+              153
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "rope_coil",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              1104,
+              558,
+              1190,
+              617
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
-        "x": 256,
-        "y": 112,
-        "w": 128,
-        "h": 96
+        "x": 336,
+        "y": 152,
+        "w": 160,
+        "h": 112
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     },
     {
       "asset_id": "market_sign_cluster",
       "material_category": "fence/sign/market object cluster",
       "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
       "source": {
-        "type": "project_owned_generated_bitmap",
+        "type": "project_owned_derived_bitmap",
         "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
         "ownership": "project-owned",
         "license": "Wayfarer project asset; no external scraped art",
-        "notes": "Generated from Newport building style measurements and Newport Visual Cohesion Rules."
+        "material_sources": [
+          {
+            "source_crop_id": "tavern_base",
+            "file": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
+            "crop": [
+              38,
+              332,
+              428,
+              430
+            ],
+            "usage": "porch plank highlights, railing thickness, dark base contact"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "fence_gate",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              724,
+              369,
+              927,
+              471
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "hanging_ship_sign",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              687,
+              200,
+              814,
+              345
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "crate_single",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              473,
+              77,
+              553,
+              151
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
       },
       "atlas_region": {
-        "x": 384,
-        "y": 112,
-        "w": 128,
-        "h": 96
+        "x": 536,
+        "y": 152,
+        "w": 160,
+        "h": 112
       },
-      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel in the hero proof, with props held below door height.",
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
       "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
-      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building bands but remain non-interactive",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
       "contact_shadow_required": true,
       "visual_cohesion_status": "g417_review_candidate",
       "placeholder": false,
       "final": false,
       "review_eligible": true,
-      "review_notes": "Meets G-4.17 hero proof rules: muted Newport palette, dark-side shading/outline, material detail, contact shadow, and building-scale relationship."
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
+    },
+    {
+      "asset_id": "wharf_crate_pile_cluster",
+      "material_category": "crate/barrel/rope wharf cluster",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_derived_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "material_sources": [
+          {
+            "source_crop_id": "boathouse_crates",
+            "file": "assets/sprites/buildings/isolated/newport_wharf_boathouse_large_isolated.png",
+            "crop": [
+              313,
+              252,
+              472,
+              346
+            ],
+            "usage": "crate/barrel outline density and stack proportions"
+          },
+          {
+            "source_crop_id": "dockside_wharf",
+            "file": "assets/sprites/buildings/isolated/newport_dockside_storehouse_isolated.png",
+            "crop": [
+              58,
+              284,
+              364,
+              382
+            ],
+            "usage": "front-facing dock planks, post spacing, ladder shadows, water contact"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "crate_stack",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              711,
+              28,
+              859,
+              157
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "woodpile",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              845,
+              663,
+              974,
+              765
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "barrel_large",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              28,
+              37,
+              99,
+              146
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "rope_coil",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              1104,
+              558,
+              1190,
+              617
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
+      },
+      "atlas_region": {
+        "x": 336,
+        "y": 288,
+        "w": 220,
+        "h": 146
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
+      "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
+    },
+    {
+      "asset_id": "chandlery_base_cluster",
+      "material_category": "shop-base prop cluster",
+      "source_file": "art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
+      "source": {
+        "type": "project_owned_derived_bitmap",
+        "created_by": "art_pipeline/newport/scripts/generate_hero_street_atlas.py",
+        "ownership": "project-owned",
+        "license": "Wayfarer project asset; no external scraped art",
+        "material_sources": [
+          {
+            "source_crop_id": "chandlery_base",
+            "file": "assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png",
+            "crop": [
+              46,
+              255,
+              404,
+              366
+            ],
+            "usage": "shop-base prop density, rope curves, barrel color, brass highlights"
+          }
+        ],
+        "prior_project_prop_sources": [
+          {
+            "source_crop_id": "notice_board",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              840,
+              188,
+              986,
+              346
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "vegetable_crate",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              695,
+              665,
+              829,
+              768
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "barrel_large",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              28,
+              37,
+              99,
+              146
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          },
+          {
+            "source_crop_id": "black_lantern",
+            "file": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1_transparent.png",
+            "original_file": "wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png",
+            "crop": [
+              896,
+              1123,
+              945,
+              1221
+            ],
+            "usage": "prior project project-owned prop sprite incorporated as Newport source reference"
+          }
+        ],
+        "source_manifest": "art_pipeline/newport/source_refs/hearthvale_props_atlas_v1.manifest.json",
+        "notes": "Generated from in-repository Newport building sprite material crops, project-owned prior prop sprite crops, and deterministic mark-making; no web or third-party art inputs."
+      },
+      "atlas_region": {
+        "x": 536,
+        "y": 288,
+        "w": 220,
+        "h": 146
+      },
+      "intended_scale": "1 atlas pixel maps to approximately 1 world pixel; source crop scale is anchored to Newport doors, stoops, barrels, and wharf posts.",
+      "collision_behavior": "decorative blocker only if a future collision rect is authored separately",
+      "y_sort_behavior": "drawn on map layer below buildings; props are seated in front-of-building or wharf bands but remain non-interactive",
+      "contact_shadow_required": true,
+      "visual_cohesion_status": "g417_review_candidate",
+      "placeholder": false,
+      "final": false,
+      "review_eligible": true,
+      "review_notes": "Derived from the building sprite material standard: dark outlines, dense internal texture, muted Newport palette, contact shadows, and door/window scale references."
     }
   ],
+  "source_policy": "Building sprites define the visual standard; atlas assets must name the project-owned source crops they derive from.",
   "review_gate": "Assets with placeholder=false and review_eligible=true must satisfy NEWPORT_ART_BIBLE.md."
 }

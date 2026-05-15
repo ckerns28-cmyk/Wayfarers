@@ -67,6 +67,13 @@ placement.
 - Weak central procedural props in the proof rectangle are skipped and replaced
   with generated atlas prop clusters that include dark outlines or dark-side
   shading, material detail, muted Newport colors, and contact shadows.
+- The prior project prop sheet
+  `wayfarer_v7_github_ready/worker/assets/wayfarer/props/hearthvale_props_atlas_v1_transparent.png`
+  is now copied into `art_pipeline/newport/source_refs/` with its manifest and
+  used as a project-owned source reference for the hero prop clusters.
+- Follow-up browser review removed source-background rectangles from the wharf
+  and shop prop clusters so atlas props stay transparent and seated by contact
+  shadows rather than looking like pasted crop boxes.
 - The atlas is project-owned generated art. Source, ownership/license,
   placeholder/final flags, atlas regions, scale, collision behavior, y-sort
   behavior, contact-shadow requirements, cohesion status, and review
@@ -81,3 +88,6 @@ Known blocker:
   NPCs and monsters should not be introduced until character style rules are
   defined, and equipment, armor, weapons, and combat VFX must match the future
   player/NPC sprite detail.
+- The broader dock/wharf system still needs a dedicated atlas pass to
+  synchronize the dockhouse sprite plank angles, harbor wharf surfaces, pier
+  lips, and waterline contact treatment across the whole map.
