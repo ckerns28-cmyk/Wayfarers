@@ -12,7 +12,12 @@ PROJECT_ROOT = SCRIPT_PATH.parents[3]
 PIPELINE_ROOT = PROJECT_ROOT / "art_pipeline" / "newport"
 MANIFEST_PATH = PIPELINE_ROOT / "manifests" / "newport_asset_manifest.json"
 LEGACY_MANIFEST_PATH = PIPELINE_ROOT / "manifests" / "newport_hero_street_assets.json"
+BUILDING_PROVENANCE_PATH = PIPELINE_ROOT / "manifests" / "newport_building_sprite_provenance.json"
 AUDIT_PATH = PIPELINE_ROOT / "reports" / "G417_G418_ASSET_PROVENANCE_AUDIT.md"
+BUILDING_AUDIT_PATH = PIPELINE_ROOT / "reports" / "G418A_BUILDING_SPRITE_PROVENANCE_AUDIT.md"
+BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
+TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
+ISOLATED_BUILDING_DIR = PROJECT_ROOT / "assets" / "sprites" / "buildings" / "isolated"
 
 
 def fail(message: str, failures: list[str]) -> None:
@@ -22,6 +27,10 @@ def fail(message: str, failures: list[str]) -> None:
 
 def pass_check(message: str) -> None:
     print(f"PASS: {message}")
+
+
+def warn(message: str) -> None:
+    print(f"WARN: {message}")
 
 
 def load_json(path: Path, failures: list[str]) -> dict:
@@ -38,6 +47,13 @@ def load_json(path: Path, failures: list[str]) -> dict:
         return {}
     pass_check(f"loaded {path.relative_to(PROJECT_ROOT)}")
     return parsed
+
+
+def read_text(path: Path, failures: list[str]) -> str:
+    if not path.exists():
+        fail(f"missing text file: {path}", failures)
+        return ""
+    return path.read_text(encoding="utf-8")
 
 
 def path_exists(rel_path: str, failures: list[str]) -> None:
@@ -168,6 +184,121 @@ def validate_manifest(manifest: dict, failures: list[str]) -> None:
         pass_check("all review-facing assets pass provenance gate")
 
 
+def _extract_quoted_list(source: str, const_name: str) -> list[str]:
+    marker = f"const {const_name} := ["
+    start = source.find(marker)
+    if start < 0:
+        return []
+    start = source.find("[", start)
+    end = source.find("]", start)
+    if end < 0:
+        return []
+    block = source[start:end]
+    return [part.split('"', 2)[1] for part in block.splitlines() if '"' in part]
+
+
+def _extract_building_sprite_ids(source: str) -> dict[str, str]:
+    mapping: dict[str, str] = {}
+    current_building_id = ""
+    for line in source.splitlines():
+        stripped = line.strip()
+        if stripped.startswith('"b_') and stripped.endswith(":"):
+            current_building_id = stripped.strip('":')
+            continue
+        if current_building_id and "return _definition(building_id," in stripped:
+            parts = stripped.split('"')
+            if len(parts) >= 4:
+                mapping[current_building_id] = parts[3]
+            current_building_id = ""
+    return mapping
+
+
+def validate_building_sprite_provenance(failures: list[str]) -> None:
+    manifest = load_json(BUILDING_PROVENANCE_PATH, failures)
+    if not manifest:
+        return
+    if manifest.get("schema_id") != "wayfarer.newport.building_sprite_provenance.v1":
+        fail("building provenance manifest schema_id must be wayfarer.newport.building_sprite_provenance.v1", failures)
+    else:
+        pass_check("building provenance manifest schema id")
+
+    assets = manifest.get("assets", [])
+    if not isinstance(assets, list):
+        fail("building provenance manifest assets must be a list", failures)
+        return
+    by_id = {str(asset.get("asset_id", "")): asset for asset in assets if isinstance(asset, dict)}
+    by_filename = {str(asset.get("filename", "")): asset for asset in assets if isinstance(asset, dict)}
+    pass_check(f"building provenance entries: {len(by_id)}")
+
+    required_fields = [
+        "asset_id",
+        "filename",
+        "source_type",
+        "created_by",
+        "source_tool",
+        "source_prompt_or_script_path",
+        "source_commit",
+        "license",
+        "ownership",
+        "third_party_reference_used",
+        "reverse_search_status",
+        "commercial_use_status",
+        "review_eligible",
+        "notes",
+    ]
+    for asset_id, asset in by_id.items():
+        for field in required_fields:
+            if field not in asset:
+                fail(f"{asset_id} missing building provenance field {field}", failures)
+        status = str(asset.get("commercial_use_status", "")).lower()
+        if status not in {"green", "yellow", "red", "unknown"}:
+            fail(f"{asset_id} commercial_use_status must be green, yellow, red, or unknown", failures)
+        if status in {"red", "unknown"} and asset.get("review_eligible") is True:
+            fail(f"{asset_id} is {status} but still review_eligible", failures)
+        if status == "yellow":
+            warn(f"{asset_id} is temporary review art only; not final/commercial eligible")
+            if asset.get("final_commercial_eligible") is not False:
+                fail(f"{asset_id} yellow status must set final_commercial_eligible=false", failures)
+        filename = str(asset.get("filename", ""))
+        if filename.endswith(".png") and not filename.startswith("assets/buildings/"):
+            path_exists(str(asset.get("path", f"assets/sprites/buildings/isolated/{filename}")), failures)
+
+    isolated_files = sorted(path.name for path in ISOLATED_BUILDING_DIR.glob("*.png"))
+    for filename in isolated_files:
+        if filename not in by_filename:
+            fail(f"isolated building sprite lacks provenance entry: {filename}", failures)
+    if isolated_files:
+        pass_check(f"isolated building sprites inventoried: {len(isolated_files)}")
+
+    catalog = read_text(BUILDING_CATALOG_PATH, failures)
+    blueprint = read_text(TOWN_BLUEPRINT_PATH, failures)
+    active_building_ids = _extract_quoted_list(blueprint, "STARTER_HARBOR_BUILDING_IDS")
+    building_to_sprite = _extract_building_sprite_ids(catalog)
+    missing_active: list[str] = []
+    for building_id in active_building_ids:
+        sprite_id = building_to_sprite.get(building_id, "")
+        if not sprite_id or sprite_id not in by_id:
+            missing_active.append(f"{building_id}:{sprite_id or 'unknown'}")
+    if missing_active:
+        fail("active normal-review building sprites missing provenance: " + ", ".join(missing_active), failures)
+    else:
+        pass_check(f"active normal-review building sprites have provenance: {len(active_building_ids)}")
+
+    if BUILDING_AUDIT_PATH.exists():
+        audit = BUILDING_AUDIT_PATH.read_text(encoding="utf-8")
+        for required_text in [
+            "Building Sprite Provenance Gate",
+            "newport_chandlery_outfitter_front_isolated.png",
+            "Reverse Search",
+            "Replacement Queue",
+        ]:
+            if required_text not in audit:
+                fail(f"building audit report missing section/text: {required_text}", failures)
+        pass_check("building provenance audit report present")
+    else:
+        fail(f"missing building provenance audit report: {BUILDING_AUDIT_PATH}", failures)
+
+
 def main() -> int:
     failures: list[str] = []
     manifest = load_json(MANIFEST_PATH, failures)
@@ -188,6 +319,7 @@ def main() -> int:
 
     if manifest:
         validate_manifest(manifest, failures)
+    validate_building_sprite_provenance(failures)
 
     if failures:
         print(f"Newport provenance validation: FAIL ({len(failures)} issue(s))")

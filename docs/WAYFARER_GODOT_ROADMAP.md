@@ -1351,6 +1351,43 @@ Validation gates:
 - Python provenance validation rejects third-party, web-scraped, mystery, and
   prior prop-sheet source pixels.
 
+## G-4.18A: Newport Building Sprite Provenance Audit
+
+Status: implemented as an audit/gate pass. No new building art expansion should
+resume until yellow building sprites are either source-cleared or replaced.
+
+G-4.18A audits the upstream building sprites that G-4.17/G-4.18 used as visual
+authority and crop sources. The pass adds a dedicated building provenance
+manifest, documents reverse/similarity search results, and keeps uncertain
+sprites out of final/commercial classification.
+
+Permanent Building Sprite Provenance Gate:
+
+- Every active normal-review building sprite must have an entry in
+  `wayfarer_godot_vertical_slice/art_pipeline/newport/manifests/newport_building_sprite_provenance.json`.
+- Green status requires project-owned, generated-for-Wayfarer, properly
+  licensed, or otherwise commercially usable source proof.
+- Yellow status is temporary review art only and cannot become final/commercial
+  art without source-chain evidence or replacement.
+- Red or unknown status is not review eligible.
+- No ripped game sprite, unlicensed marketplace pack, mystery PNG, or
+  undocumented third-party-derived art may enter final Wayfarer art.
+
+Implemented:
+
+- Building provenance manifest:
+  `wayfarer_godot_vertical_slice/art_pipeline/newport/manifests/newport_building_sprite_provenance.json`.
+- Building provenance report:
+  `wayfarer_godot_vertical_slice/art_pipeline/newport/reports/G418A_BUILDING_SPRITE_PROVENANCE_AUDIT.md`.
+- Specific chandlery/outfitter audit for
+  `newport_chandlery_outfitter_front_isolated.png`.
+- Validator coverage in
+  `art_pipeline/newport/scripts/validate_newport_asset_provenance.py` so active
+  normal-review building sprites require provenance entries.
+- All current building sprites are yellow, not green, because upstream atlas
+  source files have no in-repo prompt, PSD/layer source, generation log, or
+  explicit commercial license record.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
