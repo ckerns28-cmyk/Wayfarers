@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.20B", "build_phase_g_4_20b")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.20B Newport Town Identity Atelier Wave", "build_label_g_4_20b")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.21A", "build_phase_g_4_21a")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.21A Newport Core Building Atelier Rebuild Wave 1", "build_label_g_4_21a")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -402,15 +402,18 @@ func _validate_g418_asset_factory(map: Node) -> void:
 	_validate_g419b_visual_production_registry()
 	_validate_g420a_environmental_believability_wave(map)
 	_validate_g420b_town_identity_wave(map)
+	_validate_g421a_core_building_rebuild_wave(map)
 
 func _validate_g419b_visual_production_registry() -> void:
 	var registry := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_visual_production_registry.json")
 	_expect(not registry.is_empty(), "g419b_visual_registry_json")
 	_expect(String(registry.get("schema_id", "")) == "wayfarer.newport.visual_production_registry.v1", "g419b_visual_registry_schema")
-	_expect(String(registry.get("phase", "")) == "G-4.20B", "g420b_visual_registry_phase")
+	_expect(String(registry.get("phase", "")) == "G-4.21A", "g421a_visual_registry_phase")
 	_expect(String(registry.get("north_star", "")).find("starting town/village") >= 0, "g419b_visual_registry_north_star")
 	var registry_policy := String(registry.get("policy", "")).to_lower()
-	_expect(registry_policy.find("town identity") >= 0, "g420b_visual_registry_town_identity_policy")
+	_expect(registry_policy.find("core building atelier rebuild") >= 0, "g421a_visual_registry_core_building_policy")
+	_expect(registry_policy.find("tavern/inn is the required hero centerpiece asset") >= 0, "g421a_visual_registry_tavern_hero_policy")
+	_expect(registry_policy.find("two front/back bridged twin-stack chimney sets") >= 0, "g421a_visual_registry_twin_stack_policy")
 
 	var statuses: Array = registry.get("status_taxonomy", [])
 	for status in ["APPROVED_FINAL", "APPROVED_TEMPORARY", "NEEDS_REWORK", "REBUILD_REQUIRED", "REBUILD_REQUIRED_CENTERPIECE", "DEPRECATED_DO_NOT_USE", "PROVENANCE_UNKNOWN"]:
@@ -509,18 +512,30 @@ func _validate_g419b_visual_production_registry() -> void:
 		"atelier_wayfinding_street_lamp_post_01",
 		"atelier_civic_town_notice_board_01",
 		"atelier_shopfront_display_crates_slate_01",
+		"atelier_newport_tavern_inn_hero_01",
+		"atelier_newport_mercantile_store_01",
+		"atelier_newport_wharf_warehouse_01",
+		"atelier_newport_harbor_cottage_gabled_01",
+		"atelier_newport_harbor_cottage_dormer_01",
+		"atelier_newport_cooperage_workshop_01",
 		"player_placeholder_drawn"
 	]:
 		_expect(by_id.has(required_id), "g419b_visual_registry_required_entry_" + required_id)
 
+	if by_id.has("atelier_newport_tavern_inn_hero_01"):
+		var tavern: Dictionary = by_id["atelier_newport_tavern_inn_hero_01"]
+		_expect(String(tavern.get("rebuild_status", "")) == "APPROVED_TEMPORARY", "g421a_tavern_rebuild_status")
+		_expect(bool(tavern.get("centerpiece_hero_rebuild_asset", false)) == true, "g421a_tavern_centerpiece_hero_asset")
+		var usage: Dictionary = tavern.get("current_usage", {})
+		_expect(bool(usage.get("normal_review", false)) == true, "g421a_tavern_normal_review")
+		var qa: Dictionary = tavern.get("building_qa", {})
+		for key in ["brick_construction", "two_sets_large_twin_stack_chimneys", "hero_centerpiece", "hotel_viking_inspired_not_direct_copy", "clear_entrance"]:
+			_expect(bool(qa.get(key, false)) == true, "g421a_tavern_qa_" + key)
 	if by_id.has("inn_tavern_v1"):
-		var tavern: Dictionary = by_id["inn_tavern_v1"]
-		_expect(String(tavern.get("rebuild_status", "")) == "REBUILD_REQUIRED_CENTERPIECE", "g419b_tavern_centerpiece_rebuild_status")
-		var audit: Dictionary = tavern.get("building_audit", {})
-		var direction := String(audit.get("future_direction", ""))
-		_expect(direction.find("Hotel Viking") >= 0, "g419b_tavern_hotel_viking_direction")
-		_expect(direction.find("twin-stack chimneys") >= 0, "g419b_tavern_twin_stack_chimneys")
-		_expect(direction.find("brick construction") >= 0, "g419b_tavern_brick_direction")
+		var old_tavern: Dictionary = by_id["inn_tavern_v1"]
+		var old_usage: Dictionary = old_tavern.get("current_usage", {})
+		_expect(String(old_tavern.get("rebuild_status", "")) == "DEPRECATED_DO_NOT_USE", "g421a_old_tavern_deprecated")
+		_expect(bool(old_usage.get("normal_review", true)) == false, "g421a_old_tavern_not_normal_review")
 
 func _validate_g420a_environmental_believability_wave(map: Node) -> void:
 	var wave := _load_json_dictionary("res://art_pipeline/newport_atelier/manifests/newport_atelier_environmental_believability_manifest.json")
@@ -717,6 +732,156 @@ func _validate_g420b_town_identity_wave(map: Node) -> void:
 					_expect(purpose.find("tavern") < 0, "g420b_maplayer_no_tavern_patch_" + asset_id)
 					var dest: Rect2 = placement.get("dest", Rect2())
 					_expect(dest.size.x > 0.0 and dest.size.y > 0.0, "g420b_maplayer_placement_has_dest_" + asset_id)
+
+func _validate_g421a_core_building_rebuild_wave(_map: Node) -> void:
+	var wave := _load_json_dictionary("res://art_pipeline/newport_atelier/manifests/newport_atelier_core_building_rebuild_wave_1_manifest.json")
+	_expect(not wave.is_empty(), "g421a_core_building_wave_manifest_json")
+	_expect(String(wave.get("schema_id", "")) == "wayfarer.newport_atelier.g421a.core_building_rebuild_wave_1.v1", "g421a_core_building_wave_schema")
+	_expect(String(wave.get("phase", "")) == "G-4.21A", "g421a_core_building_wave_phase")
+	_expect(String(wave.get("wave_id", "")) == "wave_4_building_rebuild_or_enhancement", "g421a_core_building_wave_id")
+	_expect(float(wave.get("visual_quality_gate", 0.0)) >= 8.5, "g421a_core_building_wave_8_5_gate")
+	var placement_policy := String(wave.get("placement_policy", "")).to_lower()
+	_expect(placement_policy.find("controlled proof subset") >= 0, "g421a_core_building_wave_controlled_subset")
+	_expect(placement_policy.find("do not over-place") >= 0, "g421a_core_building_wave_no_overplace")
+	_expect(placement_policy.find("block navigation") >= 0, "g421a_core_building_wave_no_navigation_blocking")
+	var tavern_direction := String(wave.get("tavern_inn_hero_direction", ""))
+	_expect(tavern_direction.find("brick construction") >= 0, "g421a_tavern_direction_brick")
+	_expect(tavern_direction.find("front/back") >= 0 and tavern_direction.find("twin-stack") >= 0, "g421a_tavern_direction_twin_stacks")
+	_expect(tavern_direction.find("Hotel Viking") >= 0 and tavern_direction.find("without direct copy") >= 0, "g421a_tavern_direction_not_copy")
+
+	var expected_asset_ids := [
+		"atelier_newport_tavern_inn_hero_01",
+		"atelier_newport_mercantile_store_01",
+		"atelier_newport_wharf_warehouse_01",
+		"atelier_newport_harbor_cottage_gabled_01",
+		"atelier_newport_harbor_cottage_dormer_01",
+		"atelier_newport_cooperage_workshop_01",
+	]
+	var expected_building_assets := {
+		"b_inn_tavern": "atelier_newport_tavern_inn_hero_01",
+		"b_mercantile": "atelier_newport_mercantile_store_01",
+		"b_dock_warehouse": "atelier_newport_wharf_warehouse_01",
+		"b_res_small": "atelier_newport_harbor_cottage_gabled_01",
+		"b_boarding_house": "atelier_newport_harbor_cottage_dormer_01",
+		"b_cooperage_shed": "atelier_newport_cooperage_workshop_01",
+	}
+
+	var packs: Array = wave.get("packs", [])
+	_expect(packs.size() == 1, "g421a_core_building_wave_pack_count")
+	var wave_assets: Array = wave.get("assets", [])
+	_expect(wave_assets.size() == 6, "g421a_core_building_wave_asset_count")
+	var wave_seen: Array[String] = []
+	for raw_wave_asset in wave_assets:
+		if raw_wave_asset is Dictionary:
+			wave_seen.append(String(raw_wave_asset.get("asset_id", "")))
+	for expected_id in expected_asset_ids:
+		_expect(wave_seen.has(expected_id), "g421a_core_building_wave_asset_" + expected_id)
+
+	for raw_pack in packs:
+		if not raw_pack is Dictionary:
+			failures.append("g421a_core_building_pack_not_dictionary")
+			continue
+		var pack: Dictionary = raw_pack
+		var pack_id := String(pack.get("pack_id", ""))
+		_expect(pack_id == "core_building_rebuild_wave_1", "g421a_core_building_pack_id")
+		for path_key in ["manifest", "source_image", "generation_prompt", "atlas", "contact_sheet", "validation_report", "provenance_report"]:
+			var rel_path := String(pack.get(path_key, ""))
+			_expect(rel_path != "" and FileAccess.file_exists("res://" + rel_path), "g421a_core_building_pack_path_" + path_key)
+			if rel_path.ends_with(".png"):
+				_expect(FileAccess.file_exists("res://" + rel_path + ".import"), "g421a_core_building_pack_import_" + path_key)
+				_expect(ResourceLoader.load("res://" + rel_path, "Texture2D") != null, "g421a_core_building_pack_loads_" + path_key)
+		var pack_manifest := _load_json_dictionary("res://" + String(pack.get("manifest", "")))
+		_expect(not pack_manifest.is_empty(), "g421a_core_building_pack_manifest_json")
+		_expect(String(pack_manifest.get("schema_id", "")) == "wayfarer.newport_atelier.g421a.core_building_rebuild_wave_1.manifest.v1", "g421a_core_building_pack_schema")
+		_expect(String(pack_manifest.get("phase", "")) == "G-4.21A", "g421a_core_building_pack_phase")
+		_expect(String(pack_manifest.get("pack_id", "")) == "core_building_rebuild_wave_1", "g421a_core_building_pack_id_match")
+		_expect(String(pack_manifest.get("tavern_inn_hero_direction", "")).find("brick construction") >= 0, "g421a_core_building_pack_tavern_brick")
+		for path_key in ["atlas", "source_image", "generation_prompt", "contact_sheet", "provenance_report", "validation_report"]:
+			var rel_manifest_path := String(pack_manifest.get(path_key, ""))
+			_expect(FileAccess.file_exists("res://" + rel_manifest_path), "g421a_core_building_manifest_path_" + path_key)
+			if rel_manifest_path.ends_with(".png"):
+				_expect(FileAccess.file_exists("res://" + rel_manifest_path + ".import"), "g421a_core_building_manifest_import_" + path_key)
+				_expect(ResourceLoader.load("res://" + rel_manifest_path, "Texture2D") != null, "g421a_core_building_manifest_loads_" + path_key)
+		var qa_report := _load_json_dictionary("res://" + String(pack.get("validation_report", "")))
+		_expect(not qa_report.is_empty(), "g421a_core_building_qa_json")
+		_expect(String(qa_report.get("phase", "")) == "G-4.21A", "g421a_core_building_qa_phase")
+		_expect(String(qa_report.get("status", "")) == "PASS", "g421a_core_building_qa_pass")
+		var checks: Array = qa_report.get("checks", [])
+		for required_check in [
+			"transparent sprites have no magenta background",
+			"transparent sprites have no magenta halo on alpha edges",
+			"sprites retain clean transparent crop padding",
+			"sprites are not cut off at object edges",
+			"building transparent bounds metadata is recorded",
+			"base/foundation grounding is visible and usable",
+			"entrance is readable",
+			"pivot/base anchor is sensible",
+			"building does not visually float",
+			"chimneys and rooflines are not cut off",
+			"Tavern/Inn QA confirms brick construction",
+			"Tavern/Inn QA confirms two sets of large twin-stack chimneys",
+			"Tavern/Inn QA confirms front/back bridged chimney-pair arrangement",
+			"Tavern/Inn QA confirms centerpiece hero landmark status",
+			"Tavern/Inn QA confirms Hotel Viking inspiration without direct copy",
+		]:
+			_expect(checks.has(required_check), "g421a_core_building_qa_check_" + required_check.replace("/", "_").replace(" ", "_"))
+
+		var assets: Array = pack_manifest.get("assets", [])
+		_expect(assets.size() == 6, "g421a_core_building_pack_asset_count")
+		var seen_asset_ids: Array[String] = []
+		for raw_asset in assets:
+			if not raw_asset is Dictionary:
+				failures.append("g421a_core_building_asset_not_dictionary")
+				continue
+			var asset: Dictionary = raw_asset
+			var asset_id := String(asset.get("asset_id", "unknown"))
+			seen_asset_ids.append(asset_id)
+			for key in ["asset_id", "asset_type", "source_identity", "category", "path", "atlas", "atlas_region", "sprite_size", "building_id", "replaces_asset_id", "pivot", "grounding", "recommended_game_scale", "building_draw_width", "visual_quality_rating", "visual_quality_gate", "source_type", "generation_prompt", "source_image", "extraction_script", "input_sources", "provenance_status", "origin_classification", "commercial_use_status", "review_eligible", "normal_review_eligible", "lab_only", "final_commercial_candidate", "final_commercial_eligible", "source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels", "extraction_qa", "building_qa", "gameplay_role", "controlled_proof_placement", "sha256", "notes"]:
+				_expect(asset.has(key), "g421a_core_building_asset_field_" + asset_id + "_" + key)
+			_expect(expected_asset_ids.has(asset_id), "g421a_core_building_expected_asset_" + asset_id)
+			_expect(expected_building_assets.get(String(asset.get("building_id", "")), "") == asset_id, "g421a_core_building_asset_building_mapping_" + asset_id)
+			_expect(String(asset.get("source_type", "")) == "codex_assisted_original_building_sheet_with_local_chroma_extraction", "g421a_core_building_source_type_" + asset_id)
+			_expect(String(asset.get("provenance_status", "")) == "ai_assisted_green_origin_candidate_pending_license_review", "g421a_core_building_provenance_" + asset_id)
+			_expect(String(asset.get("origin_classification", "")) == "green_origin_candidate_pending_license_review", "g421a_core_building_origin_" + asset_id)
+			_expect(String(asset.get("commercial_use_status", "")) == "green_origin_candidate_pending_license_review", "g421a_core_building_commercial_" + asset_id)
+			_expect(float(asset.get("visual_quality_rating", 0.0)) >= 8.5, "g421a_core_building_visual_rating_" + asset_id)
+			_expect(bool(asset.get("review_eligible", false)) == true, "g421a_core_building_review_eligible_" + asset_id)
+			_expect(bool(asset.get("normal_review_eligible", false)) == true, "g421a_core_building_normal_review_eligible_" + asset_id)
+			_expect(bool(asset.get("lab_only", true)) == false, "g421a_core_building_not_lab_only_" + asset_id)
+			_expect(bool(asset.get("final_commercial_candidate", true)) == false, "g421a_core_building_not_final_candidate_" + asset_id)
+			_expect(bool(asset.get("final_commercial_eligible", true)) == false, "g421a_core_building_not_final_eligible_" + asset_id)
+			_expect(bool(asset.get("source_pixels_from_yellow_uncertain_assets", true)) == false, "g421a_core_building_no_yellow_pixels_" + asset_id)
+			_expect(bool(asset.get("source_pixels_from_third_party_material", true)) == false, "g421a_core_building_no_third_party_pixels_" + asset_id)
+			_expect(bool(asset.get("web_scraped_source_pixels", true)) == false, "g421a_core_building_no_web_pixels_" + asset_id)
+			var asset_path := String(asset.get("path", ""))
+			_expect(FileAccess.file_exists("res://" + asset_path), "g421a_core_building_asset_path_" + asset_id)
+			_expect(FileAccess.file_exists("res://" + asset_path + ".import"), "g421a_core_building_asset_import_" + asset_id)
+			_expect(ResourceLoader.load("res://" + asset_path, "Texture2D") != null, "g421a_core_building_asset_loads_" + asset_id)
+			var qa: Dictionary = asset.get("extraction_qa", {})
+			_expect(String(qa.get("status", "")) == "PASS", "g421a_core_building_asset_qa_pass_" + asset_id)
+			_expect(int(qa.get("magenta_pixels_remaining", -1)) == 0, "g421a_core_building_no_magenta_" + asset_id)
+			_expect(int(qa.get("magenta_halo_pixels", -1)) == 0, "g421a_core_building_no_magenta_halo_" + asset_id)
+			_expect(qa.get("cutoff_edges", ["unknown"]) == [], "g421a_core_building_no_cutoff_edges_" + asset_id)
+			_expect(bool(qa.get("readable", false)) == true, "g421a_core_building_readable_" + asset_id)
+			_expect(qa.has("alpha_bbox"), "g421a_core_building_transparent_bounds_" + asset_id)
+			var placement: Dictionary = asset.get("controlled_proof_placement", {})
+			_expect(bool(placement.get("placed", false)) == true, "g421a_core_building_controlled_placement_" + asset_id)
+			if asset_id == "atelier_newport_tavern_inn_hero_01":
+				var building_qa: Dictionary = asset.get("building_qa", {})
+				for qa_key in ["brick_construction", "two_sets_large_twin_stack_chimneys", "front_back_bridged_chimney_pairs", "hero_centerpiece", "hotel_viking_inspired_not_direct_copy", "clear_entrance", "strong_foundation_grounding", "visually_outranks_ordinary_buildings"]:
+					_expect(bool(building_qa.get(qa_key, false)) == true, "g421a_tavern_building_qa_" + qa_key)
+		for expected_id in expected_asset_ids:
+			_expect(seen_asset_ids.has(expected_id), "g421a_core_building_manifest_uses_" + expected_id)
+
+	for building_id in expected_building_assets.keys():
+		var definition := BUILDING_CATALOG.building_definition(String(building_id))
+		var expected_sprite := String(expected_building_assets[building_id])
+		_expect(String(definition.get("sprite_id", "")) == expected_sprite, "g421a_building_catalog_sprite_" + String(building_id))
+		_expect(String(definition.get("texture_path", "")).begins_with("res://art_pipeline/newport_atelier/generated/"), "g421a_building_catalog_texture_root_" + String(building_id))
+		_expect(float(definition.get("visual_scale", 0.0)) > 0.0, "g421a_building_catalog_visual_scale_" + String(building_id))
+	var tavern_def := BUILDING_CATALOG.building_definition("b_inn_tavern")
+	var mercantile_def := BUILDING_CATALOG.building_definition("b_mercantile")
+	_expect(float(tavern_def.get("visual_scale", 0.0)) > float(mercantile_def.get("visual_scale", 0.0)), "g421a_tavern_visually_outranks_mercantile")
 
 func _validate_g418b_green_origin_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json")
@@ -1311,7 +1476,7 @@ func _validate_starter_harbor_plan() -> void:
 			for key in ["building_id", "display_name", "role", "building_type", "access_rule", "interior_scene", "owner_id", "is_enterable", "interaction_enabled", "interaction_label", "locked_message", "unavailable_message", "texture_path", "sprite_region", "sprite_source_size", "visual_scale", "scale", "visual_bounds", "lot_bounds", "collision_footprint", "interaction_zone", "foot_anchor", "visual_base_anchor", "collision_shape", "collision_rect", "interaction_size", "interaction_offset", "interaction_zone_placeholder", "frontage_offset", "door_offset", "door_anchor", "ground_contact_rect", "y_sort_anchor", "shadow_size", "projection_details", "district_role", "district_placement_tags", "notes"]:
 				_expect(definition.has(key), String(config["id"]) + "_definition_has_" + key)
 			var texture_path: String = definition.get("texture_path", "")
-			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/"), String(config["id"]) + "_uses_project_building_sprite")
+			_expect(texture_path.begins_with("res://assets/sprites/buildings/isolated/") or texture_path.begins_with("res://assets/buildings/") or texture_path.begins_with("res://art_pipeline/newport_atelier/generated/"), String(config["id"]) + "_uses_project_building_sprite")
 			var tags: Array = definition.get("district_placement_tags", [])
 			_expect(not tags.is_empty(), String(config["id"]) + "_has_district_placement_tags")
 			if String(config["id"]) == "b_clerk_townhouse":
@@ -1345,11 +1510,13 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("dock_clutter_atelier_pack_pass", "") == "G-4.19A", "starter_plan_dock_clutter_atelier_pack_pass_g_4_19a")
 	_expect(plan.get("environmental_believability_wave_pass", "") == "G-4.20A", "starter_plan_environmental_believability_wave_pass_g_4_20a")
 	_expect(plan.get("town_identity_wave_pass", "") == "G-4.20B", "starter_plan_town_identity_wave_pass_g_4_20b")
+	_expect(plan.get("core_building_atelier_rebuild_pass", "") == "G-4.21A", "starter_plan_core_building_atelier_rebuild_pass_g_4_21a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("atelier cargo") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("G-4.19A") >= 0, "starter_plan_hero_street_atlas_proof")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20A") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20b")
+	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.21A") >= 0, "starter_plan_hero_street_atlas_proof_g_4_21a")
 	var tavern_lock := String(plan.get("tavern_inn_centerpiece_lock", ""))
-	_expect(tavern_lock.find("REBUILD_REQUIRED_CENTERPIECE") >= 0 and tavern_lock.find("Hotel Viking") >= 0, "starter_plan_tavern_centerpiece_lock_g_4_20b")
+	_expect(tavern_lock.find("G-4.21A") >= 0 and tavern_lock.find("Hotel Viking") >= 0 and tavern_lock.find("two sets") >= 0, "starter_plan_tavern_centerpiece_lock_g_4_21a")
 	_expect(plan.get("green_origin_pipeline_pass", "") == "G-4.18B", "starter_plan_green_origin_pipeline_pass")
 	_expect(String(plan.get("yellow_review_art_policy", "")).find("yellow pixels cannot source final-commercial green assets") >= 0, "starter_plan_yellow_review_art_policy")
 	_expect(int(plan.get("layout_rule_count", 0)) == NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size(), "starter_plan_g415_layout_rule_count")

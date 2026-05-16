@@ -36,6 +36,8 @@ ATELIER_G420A_WAVE_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier
 ATELIER_G420A_WAVE_REPORT_PATH = ATELIER_ROOT / "reports" / "G420A_NEWPORT_ENVIRONMENTAL_BELIEVABILITY_ATELIER_WAVE.md"
 ATELIER_G420B_WAVE_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_town_identity_manifest.json"
 ATELIER_G420B_WAVE_REPORT_PATH = ATELIER_ROOT / "reports" / "G420B_NEWPORT_TOWN_IDENTITY_ATELIER_WAVE.md"
+ATELIER_G421A_WAVE_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_core_building_rebuild_wave_1_manifest.json"
+ATELIER_G421A_WAVE_REPORT_PATH = ATELIER_ROOT / "reports" / "G421A_NEWPORT_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 MAP_LAYER_PATH = PROJECT_ROOT / "scenes" / "map" / "MapLayer.gd"
@@ -73,6 +75,24 @@ ATELIER_G420B_PACK_IDS = {
     "civic_market_identity",
     "shopfront_support_accents",
 }
+ATELIER_G421A_PACK_IDS = {"core_building_rebuild_wave_1"}
+G421A_REQUIRED_BUILDING_ASSETS = {
+    "atelier_newport_tavern_inn_hero_01",
+    "atelier_newport_mercantile_store_01",
+    "atelier_newport_wharf_warehouse_01",
+    "atelier_newport_harbor_cottage_gabled_01",
+    "atelier_newport_harbor_cottage_dormer_01",
+    "atelier_newport_cooperage_workshop_01",
+}
+G421A_BUILDING_ID_TO_ASSET = {
+    "b_inn_tavern": "atelier_newport_tavern_inn_hero_01",
+    "b_mercantile": "atelier_newport_mercantile_store_01",
+    "b_dock_warehouse": "atelier_newport_wharf_warehouse_01",
+    "b_res_small": "atelier_newport_harbor_cottage_gabled_01",
+    "b_boarding_house": "atelier_newport_harbor_cottage_dormer_01",
+    "b_cooperage_shed": "atelier_newport_cooperage_workshop_01",
+}
+G421A_TAVERN_ASSET_ID = "atelier_newport_tavern_inn_hero_01"
 GREEN_ORIGIN_FORBIDDEN_INPUTS = [
     "assets/sprites/buildings/isolated",
     "assets/buildings",
@@ -478,6 +498,12 @@ def validate_building_sprite_provenance(failures: list[str]) -> None:
         sprite_id = building_to_sprite.get(building_id, "")
         if not sprite_id or sprite_id not in by_id:
             missing_active.append(f"{building_id}:{sprite_id or 'unknown'}")
+            continue
+        entry = by_id[sprite_id]
+        if entry.get("active_normal_review") is not True:
+            fail(f"active building sprite is not marked active_normal_review: {building_id}:{sprite_id}", failures)
+        if entry.get("final_commercial_eligible") is not False:
+            fail(f"active building sprite must not bypass final commercial review: {building_id}:{sprite_id}", failures)
     if missing_active:
         fail("active normal-review building sprites missing provenance: " + ", ".join(missing_active), failures)
     else:
@@ -1676,6 +1702,300 @@ def validate_g420b_town_identity_wave(failures: list[str]) -> None:
         fail(f"missing G-4.20B town identity wave report: {ATELIER_G420B_WAVE_REPORT_PATH}", failures)
 
 
+def validate_g421a_core_building_rebuild_wave(failures: list[str]) -> None:
+    wave = load_json(ATELIER_G421A_WAVE_MANIFEST_PATH, failures)
+    if not wave:
+        return
+    if wave.get("schema_id") != "wayfarer.newport_atelier.g421a.core_building_rebuild_wave_1.v1":
+        fail("G-4.21A core building rebuild wave manifest schema mismatch", failures)
+    else:
+        pass_check("G-4.21A core building rebuild wave manifest schema id")
+    if wave.get("phase") != "G-4.21A":
+        fail("G-4.21A core building rebuild wave manifest phase must be G-4.21A", failures)
+    if wave.get("wave_id") != "wave_4_building_rebuild_or_enhancement":
+        fail("G-4.21A core building rebuild wave must identify wave_4_building_rebuild_or_enhancement", failures)
+    if float(wave.get("visual_quality_gate", 0.0)) < 8.5:
+        fail("G-4.21A core building rebuild wave must preserve the 8.5 visual gate", failures)
+    placement_policy = str(wave.get("placement_policy", "")).lower()
+    for required_text in ["controlled proof subset", "do not over-place", "block navigation", "old unverified buildings"]:
+        if required_text not in placement_policy:
+            fail(f"G-4.21A placement policy missing: {required_text}", failures)
+    tavern_direction = str(wave.get("tavern_inn_hero_direction", ""))
+    for required_text in ["brick construction", "front/back", "twin-stack", "Hotel Viking", "without direct copy", "hero asset"]:
+        if required_text not in tavern_direction:
+            fail(f"G-4.21A Tavern/Inn direction missing: {required_text}", failures)
+
+    packs = wave.get("packs", [])
+    if not isinstance(packs, list):
+        fail("G-4.21A core building rebuild wave packs must be a list", failures)
+        return
+    pack_ids = {str(pack.get("pack_id", "")) for pack in packs if isinstance(pack, dict)}
+    if pack_ids != ATELIER_G421A_PACK_IDS:
+        fail(f"G-4.21A core building rebuild wave pack ids mismatch: {sorted(pack_ids)}", failures)
+    if len(packs) != 1:
+        fail("G-4.21A core building rebuild wave must contain exactly one Wave 1 pack", failures)
+
+    wave_assets = wave.get("assets", [])
+    if not isinstance(wave_assets, list) or len(wave_assets) != 6:
+        fail("G-4.21A core building rebuild wave must contain exactly six registered building assets", failures)
+    else:
+        pass_check("G-4.21A core building rebuild wave asset count: 6")
+    wave_asset_ids = {str(asset.get("asset_id", "")) for asset in wave_assets if isinstance(asset, dict)}
+    if wave_asset_ids != G421A_REQUIRED_BUILDING_ASSETS:
+        fail(f"G-4.21A core building rebuild wave asset ids mismatch: {sorted(wave_asset_ids)}", failures)
+
+    required_pack_fields = [
+        "manifest",
+        "source_image",
+        "generation_prompt",
+        "atlas",
+        "contact_sheet",
+        "validation_report",
+        "provenance_report",
+        "asset_ids",
+    ]
+    required_asset_fields = [
+        "asset_id",
+        "asset_type",
+        "source_identity",
+        "category",
+        "path",
+        "atlas",
+        "atlas_region",
+        "sprite_size",
+        "building_id",
+        "display_name",
+        "replaces_asset_id",
+        "pivot",
+        "grounding",
+        "recommended_game_scale",
+        "building_draw_width",
+        "visual_quality_rating",
+        "visual_quality_gate",
+        "visual_quality_status",
+        "source_type",
+        "created_by",
+        "generation_prompt",
+        "source_image",
+        "extraction_script",
+        "input_sources",
+        "license",
+        "ownership",
+        "provenance_status",
+        "origin_classification",
+        "commercial_use_status",
+        "review_eligible",
+        "normal_review_eligible",
+        "lab_only",
+        "final_commercial_candidate",
+        "final_commercial_eligible",
+        "source_pixels_from_yellow_uncertain_assets",
+        "source_pixels_from_third_party_material",
+        "web_scraped_source_pixels",
+        "ai_generated",
+        "human_selected",
+        "chroma_key_removed",
+        "extraction_qa",
+        "building_qa",
+        "gameplay_role",
+        "controlled_proof_placement",
+        "sha256",
+        "notes",
+    ]
+    seen_asset_ids: set[str] = set()
+    for raw_pack in packs:
+        if not isinstance(raw_pack, dict):
+            fail("G-4.21A core building rebuild wave pack entry is not an object", failures)
+            continue
+        pack_id = str(raw_pack.get("pack_id", ""))
+        for field in required_pack_fields:
+            if field not in raw_pack:
+                fail(f"{pack_id} missing wave pack field {field}", failures)
+            elif field != "asset_ids":
+                path_exists(str(raw_pack.get(field, "")), failures)
+        if set(raw_pack.get("asset_ids", [])) != G421A_REQUIRED_BUILDING_ASSETS:
+            fail(f"{pack_id} asset_ids must match the required G-4.21A building set", failures)
+        pack_manifest = load_json(PROJECT_ROOT / str(raw_pack.get("manifest", "")), failures)
+        qa_report = load_json(PROJECT_ROOT / str(raw_pack.get("validation_report", "")), failures)
+        if not pack_manifest:
+            continue
+        if pack_manifest.get("schema_id") != "wayfarer.newport_atelier.g421a.core_building_rebuild_wave_1.manifest.v1":
+            fail(f"{pack_id} manifest schema mismatch", failures)
+        if pack_manifest.get("phase") != "G-4.21A":
+            fail(f"{pack_id} manifest phase must be G-4.21A", failures)
+        if pack_manifest.get("pack_id") != pack_id:
+            fail(f"{pack_id} manifest pack_id mismatch", failures)
+        for field in [
+            "atlas",
+            "source_image",
+            "generation_prompt",
+            "generated_asset_root",
+            "contact_sheet",
+            "provenance_report",
+            "validation_report",
+        ]:
+            path_exists(str(pack_manifest.get(field, "")), failures)
+        if "brick construction" not in str(pack_manifest.get("tavern_inn_hero_direction", "")):
+            fail(f"{pack_id} manifest must record Tavern/Inn brick hero direction", failures)
+        if qa_report:
+            if qa_report.get("schema_id") != "wayfarer.newport_atelier.extraction_qa.v1":
+                fail(f"{pack_id} QA report schema mismatch", failures)
+            if qa_report.get("phase") != "G-4.21A":
+                fail(f"{pack_id} QA report phase must be G-4.21A", failures)
+            if qa_report.get("status") != "PASS":
+                fail(f"{pack_id} QA report must be PASS", failures)
+            for required_check in [
+                "transparent sprites have no magenta background",
+                "transparent sprites have no magenta halo on alpha edges",
+                "sprites retain clean transparent crop padding",
+                "sprites are not cut off at object edges",
+                "building transparent bounds metadata is recorded",
+                "base/foundation grounding is visible and usable",
+                "entrance is readable",
+                "pivot/base anchor is sensible",
+                "building does not visually float",
+                "chimneys and rooflines are not cut off",
+                "Tavern/Inn QA confirms brick construction",
+                "Tavern/Inn QA confirms two sets of large twin-stack chimneys",
+                "Tavern/Inn QA confirms front/back bridged chimney-pair arrangement",
+                "Tavern/Inn QA confirms centerpiece hero landmark status",
+                "Tavern/Inn QA confirms Hotel Viking inspiration without direct copy",
+            ]:
+                if required_check not in qa_report.get("checks", []):
+                    fail(f"{pack_id} QA report missing check: {required_check}", failures)
+        assets = pack_manifest.get("assets", [])
+        if not isinstance(assets, list) or len(assets) != 6:
+            fail(f"{pack_id} manifest must contain exactly six building assets", failures)
+            continue
+        for asset in assets:
+            if not isinstance(asset, dict):
+                fail(f"{pack_id} asset entry is not an object", failures)
+                continue
+            asset_id = str(asset.get("asset_id", ""))
+            if asset_id in seen_asset_ids:
+                fail(f"duplicate G-4.21A core building asset id: {asset_id}", failures)
+            seen_asset_ids.add(asset_id)
+            for field in required_asset_fields:
+                if field not in asset:
+                    fail(f"{asset_id or 'unknown'} missing G-4.21A asset field {field}", failures)
+            if asset_id not in G421A_REQUIRED_BUILDING_ASSETS:
+                fail(f"unexpected G-4.21A core building asset id: {asset_id}", failures)
+            if G421A_BUILDING_ID_TO_ASSET.get(str(asset.get("building_id", ""))) != asset_id:
+                fail(f"{asset_id} building_id does not match required proof placement", failures)
+            if asset.get("source_type") != "codex_assisted_original_building_sheet_with_local_chroma_extraction":
+                fail(f"{asset_id} source_type must be Codex-assisted original sheet plus local chroma extraction", failures)
+            if asset.get("provenance_status") != "ai_assisted_green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} provenance status must remain pending AI-assisted green-origin", failures)
+            if asset.get("origin_classification") != "green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} origin classification must remain pending license review", failures)
+            if asset.get("commercial_use_status") != "green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} commercial use status must remain pending license review", failures)
+            if asset.get("review_eligible") is not True or asset.get("normal_review_eligible") is not True:
+                fail(f"{asset_id} must be review-eligible for the G-4.21A wave", failures)
+            if asset.get("lab_only") is not False:
+                fail(f"{asset_id} must not be lab-only after G-4.21A proof placement", failures)
+            if asset.get("final_commercial_candidate") is not False or asset.get("final_commercial_eligible") is not False:
+                fail(f"{asset_id} must not be final-commercial promoted", failures)
+            for bool_field in ["source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+                if asset.get(bool_field) is not False:
+                    fail(f"{asset_id} must set {bool_field}=false", failures)
+            if asset.get("ai_generated") is not True or asset.get("human_selected") is not True:
+                fail(f"{asset_id} must declare ai_generated and human_selected", failures)
+            if asset.get("chroma_key_removed") is not True:
+                fail(f"{asset_id} must declare chroma_key_removed", failures)
+            if float(asset.get("visual_quality_rating", 0.0)) < 8.5:
+                fail(f"{asset_id} visual quality rating is below 8.5", failures)
+            placement = asset.get("controlled_proof_placement", {})
+            if not isinstance(placement, dict) or placement.get("placed") is not True:
+                fail(f"{asset_id} controlled proof placement must be recorded", failures)
+            asset_rel_path = str(asset.get("path", ""))
+            path_exists(asset_rel_path, failures)
+            asset_path = PROJECT_ROOT / asset_rel_path
+            if asset_path.exists():
+                metrics = image_alpha_metrics(asset_path)
+                qa = asset.get("extraction_qa", {})
+                if metrics.get("magenta_pixels_remaining") != 0:
+                    fail(f"{asset_id} has magenta background pixels remaining", failures)
+                if metrics.get("magenta_halo_pixels") != 0:
+                    fail(f"{asset_id} has magenta halo pixels", failures)
+                if metrics.get("cutoff_edges"):
+                    fail(f"{asset_id} crop padding/cutoff failed: {metrics.get('cutoff_edges')}", failures)
+                if metrics.get("readable") is not True:
+                    fail(f"{asset_id} alpha footprint is not visually readable", failures)
+                for metric_key in ["magenta_pixels_remaining", "magenta_halo_pixels", "cutoff_edges", "readable"]:
+                    if qa.get(metric_key) != metrics.get(metric_key):
+                        fail(f"{asset_id} manifest QA metric {metric_key} does not match image inspection", failures)
+                if "alpha_bbox" not in qa or qa.get("alpha_bbox") != metrics.get("alpha_bbox"):
+                    fail(f"{asset_id} missing or mismatched transparent bounds metadata", failures)
+            for path_field in ["generation_prompt", "source_image", "extraction_script", "atlas"]:
+                path_exists(str(asset.get(path_field, "")), failures)
+            if str(asset.get("atlas", "")) != str(pack_manifest.get("atlas", "")):
+                fail(f"{asset_id} atlas path does not match pack manifest atlas", failures)
+            pack_source_images = pack_manifest.get("source_images", {})
+            expected_source = ""
+            if isinstance(pack_source_images, dict):
+                expected_source = str(pack_source_images.get(asset_id, ""))
+            if expected_source and str(asset.get("source_image", "")) != expected_source:
+                fail(f"{asset_id} source image path does not match pack manifest source_images entry", failures)
+            elif not expected_source and str(asset.get("source_image", "")) != str(pack_manifest.get("source_image", "")):
+                fail(f"{asset_id} source image path does not match pack manifest source image", failures)
+            if str(asset.get("generation_prompt", "")) != str(pack_manifest.get("generation_prompt", "")):
+                fail(f"{asset_id} prompt path does not match pack manifest prompt", failures)
+            for raw_source in asset.get("input_sources", []):
+                if not isinstance(raw_source, dict):
+                    fail(f"{asset_id} input source is not an object", failures)
+                    continue
+                if str(raw_source.get("commercial_status", "")) not in {"green_origin_candidate_pending_license_review", "green_origin_candidate", "documentation_only"}:
+                    fail(f"{asset_id} input source has unsupported commercial status", failures)
+                if "path" in raw_source:
+                    path_exists(str(raw_source["path"]), failures)
+            if asset_id == G421A_TAVERN_ASSET_ID:
+                qa = asset.get("building_qa", {})
+                if not isinstance(qa, dict):
+                    fail("G-4.21A Tavern/Inn building_qa must be an object", failures)
+                    qa = {}
+                for required_key in [
+                    "brick_construction",
+                    "two_sets_large_twin_stack_chimneys",
+                    "front_back_bridged_chimney_pairs",
+                    "hero_centerpiece",
+                    "hotel_viking_inspired_not_direct_copy",
+                    "clear_entrance",
+                    "strong_foundation_grounding",
+                    "visually_outranks_ordinary_buildings",
+                ]:
+                    if qa.get(required_key) is not True:
+                        fail(f"G-4.21A Tavern/Inn QA must confirm {required_key}", failures)
+
+    if seen_asset_ids == G421A_REQUIRED_BUILDING_ASSETS:
+        pass_check("G-4.21A core building rebuild wave contains all six required building assets")
+    else:
+        fail(f"G-4.21A core building rebuild wave unique asset ids mismatch: {sorted(seen_asset_ids)}", failures)
+
+    catalog = read_text(BUILDING_CATALOG_PATH, failures)
+    building_to_sprite = _extract_building_sprite_ids(catalog)
+    for building_id, asset_id in G421A_BUILDING_ID_TO_ASSET.items():
+        if building_to_sprite.get(building_id) != asset_id:
+            fail(f"BuildingCatalog does not wire {building_id} to {asset_id}", failures)
+
+    if ATELIER_G421A_WAVE_REPORT_PATH.exists():
+        report = ATELIER_G421A_WAVE_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in [
+            "core building atelier rebuild",
+            "coherent starting-town architectural set",
+            "Tavern/Inn is the required hero asset",
+            "brick construction",
+            "two front/back bridged twin-stack chimney sets",
+            "Hotel Viking-inspired",
+            "Old/unverified buildings are not automatically final",
+        ]:
+            if required_text not in report:
+                fail(f"G-4.21A core building wave report missing text: {required_text}", failures)
+        pass_check("G-4.21A core building rebuild wave report present")
+    else:
+        fail(f"missing G-4.21A core building wave report: {ATELIER_G421A_WAVE_REPORT_PATH}", failures)
+
+
 def validate_visual_production_registry(failures: list[str]) -> None:
     registry = load_json(VISUAL_REGISTRY_PATH, failures)
     if not registry:
@@ -1684,13 +2004,16 @@ def validate_visual_production_registry(failures: list[str]) -> None:
         fail("visual production registry schema_id must be wayfarer.newport.visual_production_registry.v1", failures)
     else:
         pass_check("visual production registry schema id")
-    if registry.get("phase") != "G-4.20B":
-        fail("visual production registry phase must be G-4.20B", failures)
+    if registry.get("phase") != "G-4.21A":
+        fail("visual production registry phase must be G-4.21A", failures)
     if "starting town/village" not in str(registry.get("north_star", "")):
         fail("visual production registry must restore the Newport starting town/village North Star", failures)
     registry_policy = str(registry.get("policy", ""))
-    if "Town Identity atelier wave" not in registry_policy and "town identity" not in registry_policy:
-        fail("visual production registry must record the G-4.20B town identity atelier wave policy", failures)
+    if "core building atelier rebuild" not in registry_policy or "Tavern/Inn is the required hero centerpiece asset" not in registry_policy:
+        fail("visual production registry must record the G-4.21A core building atelier rebuild policy", failures)
+    for required_text in ["brick construction", "two front/back bridged twin-stack chimney sets", "Hotel Viking-inspired", "coherent starting-town architectural set"]:
+        if required_text not in registry_policy:
+            fail(f"visual production registry G-4.21A policy missing: {required_text}", failures)
 
     statuses = registry.get("status_taxonomy", [])
     if not isinstance(statuses, list):
@@ -1826,6 +2149,14 @@ def validate_visual_production_registry(failures: list[str]) -> None:
             continue
         if sprite_id not in by_id:
             fail(f"active building sprite missing from visual production registry: {building_id}:{sprite_id}", failures)
+            continue
+        entry = by_id[sprite_id]
+        deprecated = bool(entry.get("deprecated_visual_target", False)) or entry.get("rebuild_status") == "DEPRECATED_DO_NOT_USE"
+        if deprecated:
+            fail(f"active building sprite is deprecated in visual production registry: {building_id}:{sprite_id}", failures)
+        usage = entry.get("current_usage", {})
+        if not isinstance(usage, dict) or usage.get("normal_review") is not True:
+            fail(f"active building sprite must be normal-review in visual production registry: {building_id}:{sprite_id}", failures)
 
     for const_name in [
         "NEWPORT_HERO_ATLAS_MATERIALS",
@@ -1855,14 +2186,39 @@ def validate_visual_production_registry(failures: list[str]) -> None:
         if referenced_in_map_layer and not (isinstance(usage, dict) and usage.get("lab_only") is True and usage.get("normal_review") is False):
             fail(f"MapLayer references deprecated visual target outside lab-only scope: {asset_id}", failures)
 
-    tavern = by_id.get("inn_tavern_v1", {})
-    if tavern.get("rebuild_status") != "REBUILD_REQUIRED_CENTERPIECE":
-        fail("Newport Tavern/Inn must be marked REBUILD_REQUIRED_CENTERPIECE", failures)
-    tavern_audit = tavern.get("building_audit", {}) if isinstance(tavern, dict) else {}
-    direction = str(tavern_audit.get("future_direction", "")) if isinstance(tavern_audit, dict) else ""
-    for required_text in ["brick construction", "twin-stack chimneys", "Hotel Viking", "major player landmark"]:
-        if required_text not in direction:
-            fail(f"Tavern/Inn centerpiece direction missing: {required_text}", failures)
+    tavern = by_id.get(G421A_TAVERN_ASSET_ID, {})
+    if not tavern:
+        fail("G-4.21A Tavern/Inn hero asset missing from visual production registry", failures)
+    if tavern.get("centerpiece_hero_rebuild_asset") is not True:
+        fail("G-4.21A Tavern/Inn must be marked as centerpiece_hero_rebuild_asset", failures)
+    if tavern.get("category") != "BUILDING":
+        fail("G-4.21A Tavern/Inn must be registered as BUILDING", failures)
+    if tavern.get("rebuild_status") != "APPROVED_TEMPORARY":
+        fail("G-4.21A Tavern/Inn rebuild status must be APPROVED_TEMPORARY pending final policy", failures)
+    tavern_usage = tavern.get("current_usage", {}) if isinstance(tavern, dict) else {}
+    if not isinstance(tavern_usage, dict) or tavern_usage.get("normal_review") is not True:
+        fail("G-4.21A Tavern/Inn hero asset must be active for normal review", failures)
+    tavern_qa = tavern.get("building_qa", {}) if isinstance(tavern, dict) else {}
+    if not isinstance(tavern_qa, dict):
+        fail("G-4.21A Tavern/Inn registry entry must include building_qa", failures)
+        tavern_qa = {}
+    for required_key in [
+        "brick_construction",
+        "two_sets_large_twin_stack_chimneys",
+        "front_back_bridged_chimney_pairs",
+        "hero_centerpiece",
+        "hotel_viking_inspired_not_direct_copy",
+        "clear_entrance",
+    ]:
+        if tavern_qa.get(required_key) is not True:
+            fail(f"G-4.21A Tavern/Inn registry QA missing {required_key}", failures)
+    old_tavern = by_id.get("inn_tavern_v1", {})
+    if isinstance(old_tavern, dict) and old_tavern:
+        old_usage = old_tavern.get("current_usage", {})
+        if old_tavern.get("rebuild_status") != "DEPRECATED_DO_NOT_USE":
+            fail("old inn_tavern_v1 must be deprecated after G-4.21A replacement", failures)
+        if isinstance(old_usage, dict) and old_usage.get("normal_review") is True:
+            fail("old inn_tavern_v1 must not remain normal-review after G-4.21A replacement", failures)
 
     if VISUAL_PRODUCTION_AUDIT_PATH.exists():
         report = VISUAL_PRODUCTION_AUDIT_PATH.read_text(encoding="utf-8")
@@ -1907,6 +2263,7 @@ def main() -> int:
     validate_atelier_dock_clutter_manifest(failures)
     validate_g420a_environmental_believability_wave(failures)
     validate_g420b_town_identity_wave(failures)
+    validate_g421a_core_building_rebuild_wave(failures)
     validate_visual_production_registry(failures)
 
     if failures:

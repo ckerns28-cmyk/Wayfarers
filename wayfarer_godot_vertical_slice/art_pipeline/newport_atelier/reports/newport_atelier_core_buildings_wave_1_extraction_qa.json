@@ -1,0 +1,288 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.21A",
+  "pack": "core_building_rebuild_wave_1",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10",
+    "building transparent bounds metadata is recorded",
+    "base/foundation grounding is visible and usable",
+    "entrance is readable",
+    "building scale is compatible with player roads props and layout",
+    "pivot/base anchor is sensible",
+    "building does not visually float",
+    "chimneys and rooflines are not cut off",
+    "Tavern/Inn QA confirms brick construction",
+    "Tavern/Inn QA confirms two sets of large twin-stack chimneys",
+    "Tavern/Inn QA confirms front/back bridged chimney-pair arrangement",
+    "Tavern/Inn QA confirms centerpiece hero landmark status",
+    "Tavern/Inn QA confirms Hotel Viking inspiration without direct copy"
+  ],
+  "assets": {
+    "atelier_newport_tavern_inn_hero_01": {
+      "size": {
+        "w": 1475,
+        "h": 959
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 28,
+        "w": 1419,
+        "h": 903
+      },
+      "alpha_pixels": 872026,
+      "opaque_pixels": 872026,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 28,
+        "right": 28,
+        "bottom": 28
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "brick coastal landmark inn with two front/back bridged twin-stack chimney sets",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "building_checks": {
+        "hero_centerpiece": true,
+        "brick_construction": true,
+        "two_sets_large_twin_stack_chimneys": true,
+        "front_back_bridged_chimney_pairs": true,
+        "hotel_viking_inspired_not_direct_copy": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true,
+        "warm_windows": true,
+        "visually_outranks_ordinary_buildings": true
+      },
+      "pivot_base_anchor": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "transparent_bounds_metadata_recorded": true,
+      "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+      "status": "PASS"
+    },
+    "atelier_newport_mercantile_store_01": {
+      "size": {
+        "w": 1310,
+        "h": 875
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 28,
+        "w": 1254,
+        "h": 819
+      },
+      "alpha_pixels": 788026,
+      "opaque_pixels": 788026,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 28,
+        "right": 28,
+        "bottom": 28
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "coastal trade mercantile with readable shopfront",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "building_checks": {
+        "hero_centerpiece": false,
+        "clear_shopfront": true,
+        "sign_awning_compatible": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true,
+        "does_not_compete_with_tavern": true
+      },
+      "pivot_base_anchor": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "transparent_bounds_metadata_recorded": true,
+      "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+      "status": "PASS"
+    },
+    "atelier_newport_wharf_warehouse_01": {
+      "size": {
+        "w": 1505,
+        "h": 853
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 28,
+        "w": 1449,
+        "h": 797
+      },
+      "alpha_pixels": 891410,
+      "opaque_pixels": 891410,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 28,
+        "right": 28,
+        "bottom": 28
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "working harbor warehouse and dock office",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "building_checks": {
+        "working_harbor_economy": true,
+        "large_utility_structure": true,
+        "weathered_material_mix": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "pivot_base_anchor": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "transparent_bounds_metadata_recorded": true,
+      "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+      "status": "PASS"
+    },
+    "atelier_newport_harbor_cottage_gabled_01": {
+      "size": {
+        "w": 1209,
+        "h": 901
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 28,
+        "w": 1153,
+        "h": 845
+      },
+      "alpha_pixels": 718898,
+      "opaque_pixels": 718898,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 28,
+        "right": 28,
+        "bottom": 28
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "quiet gabled harbor cottage",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "building_checks": {
+        "residence_variant": true,
+        "visually_quieter_than_tavern": true,
+        "non_generic_medieval_hut": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "pivot_base_anchor": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "transparent_bounds_metadata_recorded": true,
+      "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+      "status": "PASS"
+    },
+    "atelier_newport_harbor_cottage_dormer_01": {
+      "size": {
+        "w": 1089,
+        "h": 884
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 28,
+        "w": 1033,
+        "h": 828
+      },
+      "alpha_pixels": 614447,
+      "opaque_pixels": 614447,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 28,
+        "right": 28,
+        "bottom": 28
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "dormered coastal boarding cottage",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "building_checks": {
+        "residence_variant": true,
+        "visually_quieter_than_tavern": true,
+        "non_generic_medieval_hut": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "pivot_base_anchor": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "transparent_bounds_metadata_recorded": true,
+      "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+      "status": "PASS"
+    },
+    "atelier_newport_cooperage_workshop_01": {
+      "size": {
+        "w": 1454,
+        "h": 913
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 28,
+        "w": 1398,
+        "h": 857
+      },
+      "alpha_pixels": 793108,
+      "opaque_pixels": 793108,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 28,
+        "right": 28,
+        "bottom": 28
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "cooperage workshop and service-lane building",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "building_checks": {
+        "service_building": true,
+        "useful_grounded_workshop": true,
+        "fits_service_lane_or_market_edge": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "pivot_base_anchor": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "transparent_bounds_metadata_recorded": true,
+      "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+      "status": "PASS"
+    }
+  }
+}

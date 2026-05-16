@@ -1,10 +1,10 @@
 {
   "schema_id": "wayfarer.newport.visual_production_registry.v1",
-  "phase": "G-4.20B",
+  "phase": "G-4.21A",
   "generated_at": "2026-05-16",
   "registry_role": "Newport visual production registry and core asset trust audit.",
   "north_star": "Newport is the starting town/village for Wayfarer: a believable, enjoyable, navigable opening location with coastal identity, readable harbor/market/civic/residential organization, emotional invitation to explore, gameplay readiness, and visual consistency with the G-4.18D/G-4.19A atelier standard.",
-  "policy": "G-4.20B is the Town Identity atelier wave. It adds controlled signage, lamps, wayfinding, civic/market markers, and shopfront support assets while preserving the G-4.20A environmental believability wave, pending AI license policy, and Tavern/Inn centerpiece rebuild lock.",
+  "policy": "G-4.21A begins the Newport core building atelier rebuild. The Tavern/Inn is the required hero centerpiece asset: brick construction, two front/back bridged twin-stack chimney sets, Hotel Viking-inspired coastal landmark presence without direct copy, warm windows, clear entrance, strong foundation, social hub, quest anchor, and player landmark. Buildings are being rebuilt as a coherent starting-town architectural set for believable playable Newport, not asset accumulation. Old/unverified buildings are not automatically final.",
   "status_taxonomy": [
     "APPROVED_FINAL",
     "APPROVED_TEMPORARY",
@@ -65,7 +65,7 @@
     {
       "wave_id": "wave_4_building_rebuild_or_enhancement",
       "title": "Building rebuild or enhancement",
-      "status": "blocked_until_identity_and_environmental_glue_or_audit_forces_rebuild",
+      "status": "in_progress_g421a_core_building_atelier_rebuild_wave_1",
       "atelier_required": true,
       "scope": [
         "centerpiece Tavern/Inn rebuild",
@@ -74,12 +74,14 @@
         "working-wharf buildings",
         "residential/support buildings"
       ],
-      "acceptance_note": "Start only after the current yellow building set is accepted as temporary and rebuild priorities are locked."
+      "acceptance_note": "G-4.21A starts the Newport core building atelier rebuild with a controlled proof subset: hero brick Tavern/Inn, Mercantile, Wharf Warehouse, two cottage variants, and Cooperage workshop.",
+      "accepted_pack_count": 1,
+      "accepted_asset_count": 6
     },
     {
       "wave_id": "wave_5_character_npc_standard",
       "title": "Character/NPC standard",
-      "status": "blocked_until_town_identity_context_is_stronger",
+      "status": "blocked_until_core_building_architecture_and_town_context_are_stronger",
       "atelier_required": true,
       "scope": [
         "player sprite standard",
@@ -98,17 +100,14 @@
       "path": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
       "source_provenance_status": "temporary_review_yellow",
       "current_usage": {
-        "normal_review": true,
+        "normal_review": false,
         "lab_only": false,
-        "runtime_target": "BuildingCatalog sprite_id inn_tavern_v1, building_id b_inn_tavern",
-        "building_ids": [
-          "b_inn_tavern"
-        ],
-        "usage_notes": "Active harborfront commercial anchor and public enterable tavern placeholder."
+        "runtime_target": "No active runtime target after G-4.21A controlled building proof replacement",
+        "usage_notes": "Old yellow temporary Tavern/Inn crop replaced in the proof subset by the G-4.21A brick hero inn. Keep file for history only; do not use as final or current visual target."
       },
-      "visual_quality_status": "NEEDS_REWORK",
+      "visual_quality_status": "DEPRECATED_DO_NOT_USE",
       "gameplay_role": "Major player landmark, social hub, quest anchor, and harborfront arrival memory point.",
-      "rebuild_status": "REBUILD_REQUIRED_CENTERPIECE",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
       "building_audit": {
         "provenance_confidence": "LOW_YELLOW",
         "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
@@ -117,7 +116,9 @@
         "town_role": "tavern_inn_centerpiece",
         "future_direction": "REBUILD_REQUIRED - CENTERPIECE: brick construction; two sets of large twin-stack chimneys; inspired by the grand coastal hotel presence of Hotel Viking; larger, warmer, and more memorable than ordinary town buildings; major player landmark, social hub, and quest anchor; historic coastal inn with old brick, warm windows, heavy fireplaces, maritime town prestige, and fantasy charm."
       },
-      "notes": "The current asset is a temporary yellow crop and does not clearly support the locked brick Hotel Viking-inspired centerpiece direction."
+      "notes": "The current asset is a temporary yellow crop and does not clearly support the locked brick Hotel Viking-inspired centerpiece direction. Old yellow temporary Tavern/Inn crop replaced in the proof subset by the G-4.21A brick hero inn. Keep file for history only; do not use as final or current visual target. Old yellow temporary Tavern/Inn crop replaced in the proof subset by the G-4.21A brick hero inn. Keep file for history only; do not use as final or current visual target. Old yellow temporary Tavern/Inn crop replaced in the proof subset by the G-4.21A brick hero inn. Keep file for history only; do not use as final or current visual target. Old yellow temporary Tavern/Inn crop replaced in the proof subset by the G-4.21A brick hero inn. Keep file for history only; do not use as final or current visual target. Old yellow temporary Tavern/Inn crop replaced in the proof subset by the G-4.21A brick hero inn. Keep file for history only; do not use as final or current visual target. Old yellow temporary Tavern/Inn crop replaced in the proof subset by the G-4.21A brick hero inn. Keep file for history only; do not use as final or current visual target.",
+      "deprecated_visual_target": true,
+      "replaced_by_g421a_asset": "atelier_newport_tavern_inn_hero_01"
     },
     {
       "asset_id": "mercantile_shop",
@@ -126,17 +127,14 @@
       "path": "assets/sprites/buildings/isolated/mercantile_shop_isolated.png",
       "source_provenance_status": "temporary_review_yellow",
       "current_usage": {
-        "normal_review": true,
+        "normal_review": false,
         "lab_only": false,
-        "runtime_target": "BuildingCatalog sprite_id mercantile_shop, building_id b_mercantile",
-        "building_ids": [
-          "b_mercantile"
-        ],
-        "usage_notes": "Active public shop anchor on the harborfront commercial row."
+        "runtime_target": "No active runtime target after G-4.21A controlled building proof replacement",
+        "usage_notes": "Old yellow temporary Mercantile crop replaced in the proof subset by the G-4.21A coastal mercantile rebuild candidate."
       },
-      "visual_quality_status": "APPROVED_TEMPORARY",
+      "visual_quality_status": "DEPRECATED_DO_NOT_USE",
       "gameplay_role": "General goods/shop anchor and player-facing commercial navigation target.",
-      "rebuild_status": "REBUILD_REQUIRED",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
       "building_audit": {
         "provenance_confidence": "LOW_YELLOW",
         "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
@@ -144,7 +142,9 @@
         "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
         "town_role": "harborfront_commercial_shop"
       },
-      "notes": "Keep for playability and composition review; rebuild or source-clear before final trust."
+      "notes": "Keep for playability and composition review; rebuild or source-clear before final trust. Old yellow temporary Mercantile crop replaced in the proof subset by the G-4.21A coastal mercantile rebuild candidate. Old yellow temporary Mercantile crop replaced in the proof subset by the G-4.21A coastal mercantile rebuild candidate. Old yellow temporary Mercantile crop replaced in the proof subset by the G-4.21A coastal mercantile rebuild candidate. Old yellow temporary Mercantile crop replaced in the proof subset by the G-4.21A coastal mercantile rebuild candidate. Old yellow temporary Mercantile crop replaced in the proof subset by the G-4.21A coastal mercantile rebuild candidate. Old yellow temporary Mercantile crop replaced in the proof subset by the G-4.21A coastal mercantile rebuild candidate.",
+      "deprecated_visual_target": true,
+      "replaced_by_g421a_asset": "atelier_newport_mercantile_store_01"
     },
     {
       "asset_id": "newport_counting_house_civic_exchange",
@@ -315,17 +315,14 @@
       "path": "assets/sprites/buildings/isolated/newport_dockside_storehouse_isolated.png",
       "source_provenance_status": "temporary_review_yellow",
       "current_usage": {
-        "normal_review": true,
+        "normal_review": false,
         "lab_only": false,
-        "runtime_target": "BuildingCatalog sprite_id newport_dockside_storehouse, building_id b_dock_warehouse",
-        "building_ids": [
-          "b_dock_warehouse"
-        ],
-        "usage_notes": "Active dock warehouse/service building."
+        "runtime_target": "No active runtime target after G-4.21A controlled building proof replacement",
+        "usage_notes": "Old yellow temporary dock warehouse crop replaced in the proof subset by the G-4.21A wharf warehouse rebuild candidate."
       },
-      "visual_quality_status": "APPROVED_TEMPORARY",
+      "visual_quality_status": "DEPRECATED_DO_NOT_USE",
       "gameplay_role": "Working-wharf density, locked warehouse, harbor economy.",
-      "rebuild_status": "REBUILD_REQUIRED",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
       "building_audit": {
         "provenance_confidence": "LOW_YELLOW",
         "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
@@ -333,7 +330,9 @@
         "grounding_quality": "usable_with_harbor_integrated_lot",
         "town_role": "dock_warehouse"
       },
-      "notes": "Keep temporarily; rebuild with wharf architecture wave."
+      "notes": "Keep temporarily; rebuild with wharf architecture wave. Old yellow temporary dock warehouse crop replaced in the proof subset by the G-4.21A wharf warehouse rebuild candidate. Old yellow temporary dock warehouse crop replaced in the proof subset by the G-4.21A wharf warehouse rebuild candidate. Old yellow temporary dock warehouse crop replaced in the proof subset by the G-4.21A wharf warehouse rebuild candidate. Old yellow temporary dock warehouse crop replaced in the proof subset by the G-4.21A wharf warehouse rebuild candidate. Old yellow temporary dock warehouse crop replaced in the proof subset by the G-4.21A wharf warehouse rebuild candidate. Old yellow temporary dock warehouse crop replaced in the proof subset by the G-4.21A wharf warehouse rebuild candidate.",
+      "deprecated_visual_target": true,
+      "replaced_by_g421a_asset": "atelier_newport_wharf_warehouse_01"
     },
     {
       "asset_id": "newport_custom_house_civic_front",
@@ -369,17 +368,14 @@
       "path": "assets/sprites/buildings/isolated/residence_small_isolated.png",
       "source_provenance_status": "temporary_review_yellow",
       "current_usage": {
-        "normal_review": true,
+        "normal_review": false,
         "lab_only": false,
-        "runtime_target": "BuildingCatalog sprite_id residence_small, building_id b_res_small",
-        "building_ids": [
-          "b_res_small"
-        ],
-        "usage_notes": "Active inland residential/civic small home."
+        "runtime_target": "No active runtime target after G-4.21A controlled building proof replacement",
+        "usage_notes": "Old yellow temporary cottage crop replaced in the proof subset by the G-4.21A harbor cottage rebuild candidate."
       },
-      "visual_quality_status": "APPROVED_TEMPORARY",
+      "visual_quality_status": "DEPRECATED_DO_NOT_USE",
       "gameplay_role": "Residential warmth and private-home boundary.",
-      "rebuild_status": "REBUILD_REQUIRED",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
       "building_audit": {
         "provenance_confidence": "LOW_YELLOW",
         "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
@@ -387,7 +383,9 @@
         "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
         "town_role": "residential_home"
       },
-      "notes": "Temporary small-home read; future residential family should include variants."
+      "notes": "Temporary small-home read; future residential family should include variants. Old yellow temporary cottage crop replaced in the proof subset by the G-4.21A harbor cottage rebuild candidate. Old yellow temporary cottage crop replaced in the proof subset by the G-4.21A harbor cottage rebuild candidate. Old yellow temporary cottage crop replaced in the proof subset by the G-4.21A harbor cottage rebuild candidate. Old yellow temporary cottage crop replaced in the proof subset by the G-4.21A harbor cottage rebuild candidate. Old yellow temporary cottage crop replaced in the proof subset by the G-4.21A harbor cottage rebuild candidate. Old yellow temporary cottage crop replaced in the proof subset by the G-4.21A harbor cottage rebuild candidate.",
+      "deprecated_visual_target": true,
+      "replaced_by_g421a_asset": "atelier_newport_harbor_cottage_gabled_01"
     },
     {
       "asset_id": "newport_large_front_residence",
@@ -423,17 +421,14 @@
       "path": "assets/sprites/buildings/isolated/newport_modest_clapboard_residence_a_isolated.png",
       "source_provenance_status": "temporary_review_yellow",
       "current_usage": {
-        "normal_review": true,
+        "normal_review": false,
         "lab_only": false,
-        "runtime_target": "BuildingCatalog sprite_id newport_modest_clapboard_residence_a, building_id b_boarding_house",
-        "building_ids": [
-          "b_boarding_house"
-        ],
-        "usage_notes": "Active support-lane boarding house."
+        "runtime_target": "No active runtime target after G-4.21A controlled building proof replacement",
+        "usage_notes": "Old yellow temporary boarding-house crop replaced in the proof subset by the G-4.21A dormered cottage rebuild candidate."
       },
-      "visual_quality_status": "APPROVED_TEMPORARY",
+      "visual_quality_status": "DEPRECATED_DO_NOT_USE",
       "gameplay_role": "Worker/resident lodging and support-lane identity.",
-      "rebuild_status": "REBUILD_REQUIRED",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
       "building_audit": {
         "provenance_confidence": "LOW_YELLOW",
         "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
@@ -441,7 +436,9 @@
         "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
         "town_role": "boarding_house"
       },
-      "notes": "Temporary support-lane housing."
+      "notes": "Temporary support-lane housing. Old yellow temporary boarding-house crop replaced in the proof subset by the G-4.21A dormered cottage rebuild candidate. Old yellow temporary boarding-house crop replaced in the proof subset by the G-4.21A dormered cottage rebuild candidate. Old yellow temporary boarding-house crop replaced in the proof subset by the G-4.21A dormered cottage rebuild candidate. Old yellow temporary boarding-house crop replaced in the proof subset by the G-4.21A dormered cottage rebuild candidate. Old yellow temporary boarding-house crop replaced in the proof subset by the G-4.21A dormered cottage rebuild candidate. Old yellow temporary boarding-house crop replaced in the proof subset by the G-4.21A dormered cottage rebuild candidate.",
+      "deprecated_visual_target": true,
+      "replaced_by_g421a_asset": "atelier_newport_harbor_cottage_dormer_01"
     },
     {
       "asset_id": "service_dependency_shed",
@@ -450,17 +447,14 @@
       "path": "assets/sprites/buildings/isolated/service_dependency_shed_isolated.png",
       "source_provenance_status": "temporary_review_yellow",
       "current_usage": {
-        "normal_review": true,
+        "normal_review": false,
         "lab_only": false,
-        "runtime_target": "BuildingCatalog sprite_id service_dependency_shed, building_id b_cooperage_shed",
-        "building_ids": [
-          "b_cooperage_shed"
-        ],
-        "usage_notes": "Active support/dock service shed."
+        "runtime_target": "No active runtime target after G-4.21A controlled building proof replacement",
+        "usage_notes": "Old yellow temporary service shed crop replaced in the proof subset by the G-4.21A cooperage workshop rebuild candidate."
       },
-      "visual_quality_status": "APPROVED_TEMPORARY",
+      "visual_quality_status": "DEPRECATED_DO_NOT_USE",
       "gameplay_role": "Cooperage/barrel-shop support and working-town texture.",
-      "rebuild_status": "REBUILD_REQUIRED",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
       "building_audit": {
         "provenance_confidence": "LOW_YELLOW",
         "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
@@ -468,7 +462,9 @@
         "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
         "town_role": "support_lane_service"
       },
-      "notes": "Temporary substitute; role should get a dedicated cooperage read."
+      "notes": "Temporary substitute; role should get a dedicated cooperage read. Old yellow temporary service shed crop replaced in the proof subset by the G-4.21A cooperage workshop rebuild candidate. Old yellow temporary service shed crop replaced in the proof subset by the G-4.21A cooperage workshop rebuild candidate. Old yellow temporary service shed crop replaced in the proof subset by the G-4.21A cooperage workshop rebuild candidate. Old yellow temporary service shed crop replaced in the proof subset by the G-4.21A cooperage workshop rebuild candidate. Old yellow temporary service shed crop replaced in the proof subset by the G-4.21A cooperage workshop rebuild candidate. Old yellow temporary service shed crop replaced in the proof subset by the G-4.21A cooperage workshop rebuild candidate.",
+      "deprecated_visual_target": true,
+      "replaced_by_g421a_asset": "atelier_newport_cooperage_workshop_01"
     },
     {
       "asset_id": "newport_narrow_merchant_townhouse_a",
@@ -3420,6 +3416,311 @@
       "final_commercial_candidate": false,
       "final_commercial_eligible": false,
       "notes": "Basket, parcel, and fabric display cluster. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_newport_tavern_inn_hero_01",
+      "name": "Brick Coastal Landmark Inn With Two Front/Back Bridged Twin-Stack Chimney Sets",
+      "category": "BUILDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_tavern_inn_hero_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id atelier_newport_tavern_inn_hero_01, building_id b_inn_tavern",
+        "building_id": "b_inn_tavern",
+        "controlled_g421a_proof_subset": true,
+        "usage_notes": "Controlled in-world proof placement; final collision/navigation remains later, but vertical-slice reachability and ground-footprint validation must pass."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Major player landmark, social hub, quest anchor, and opening-town memory point.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_core_buildings_wave_1_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_core_buildings_wave_1_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_core_buildings_wave_1_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G421A_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md"
+      },
+      "visual_quality_rating": 9.3,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "building_audit": {
+        "provenance_confidence": "GREEN_ORIGIN_CANDIDATE_PENDING_LICENSE_POLICY",
+        "atelier_consistency": "G421A_CORE_BUILDING_ATELIER_STANDARD",
+        "scale_perspective_fit": "controlled_proof_subset_validated_against_player_roads_props_and_existing_layout",
+        "grounding_quality": "visible_foundation_and_sensible_base_anchor_pending_final_navigation_pass",
+        "town_role": "centerpiece_tavern_inn_hero_building",
+        "future_direction": "Required G-4.21A hero asset. Brick construction, two front/back bridged twin-stack chimney sets, warm windows, clear entrance, and Hotel Viking-inspired coastal landmark presence without direct copying."
+      },
+      "centerpiece_hero_rebuild_asset": true,
+      "building_rebuild_wave": "G-4.21A",
+      "replaces_asset_id": "inn_tavern_v1",
+      "building_qa": {
+        "hero_centerpiece": true,
+        "brick_construction": true,
+        "two_sets_large_twin_stack_chimneys": true,
+        "front_back_bridged_chimney_pairs": true,
+        "hotel_viking_inspired_not_direct_copy": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true,
+        "warm_windows": true,
+        "visually_outranks_ordinary_buildings": true
+      },
+      "notes": "Required G-4.21A hero asset. Brick construction, two front/back bridged twin-stack chimney sets, warm windows, clear entrance, and Hotel Viking-inspired coastal landmark presence without direct copying. AI-assisted green-origin candidate pending final license policy approval; active for normal review as a G-4.21A building rebuild proof target, not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_newport_mercantile_store_01",
+      "name": "Coastal Trade Mercantile With Readable Shopfront",
+      "category": "BUILDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_mercantile_store_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id atelier_newport_mercantile_store_01, building_id b_mercantile",
+        "building_id": "b_mercantile",
+        "controlled_g421a_proof_subset": true,
+        "usage_notes": "Controlled in-world proof placement; final collision/navigation remains later, but vertical-slice reachability and ground-footprint validation must pass."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Market-spine commerce anchor with practical general-store identity and readable entrance.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_core_buildings_wave_1_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_core_buildings_wave_1_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_core_buildings_wave_1_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G421A_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "building_audit": {
+        "provenance_confidence": "GREEN_ORIGIN_CANDIDATE_PENDING_LICENSE_POLICY",
+        "atelier_consistency": "G421A_CORE_BUILDING_ATELIER_STANDARD",
+        "scale_perspective_fit": "controlled_proof_subset_validated_against_player_roads_props_and_existing_layout",
+        "grounding_quality": "visible_foundation_and_sensible_base_anchor_pending_final_navigation_pass",
+        "town_role": "mercantile_general_store_building",
+        "future_direction": "Non-centerpiece commercial building with awning/sign compatibility and muted Newport trade identity."
+      },
+      "centerpiece_hero_rebuild_asset": false,
+      "building_rebuild_wave": "G-4.21A",
+      "replaces_asset_id": "mercantile_shop",
+      "building_qa": {
+        "hero_centerpiece": false,
+        "clear_shopfront": true,
+        "sign_awning_compatible": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true,
+        "does_not_compete_with_tavern": true
+      },
+      "notes": "Non-centerpiece commercial building with awning/sign compatibility and muted Newport trade identity. AI-assisted green-origin candidate pending final license policy approval; active for normal review as a G-4.21A building rebuild proof target, not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_newport_wharf_warehouse_01",
+      "name": "Working Harbor Warehouse And Dock Office",
+      "category": "BUILDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_wharf_warehouse_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id atelier_newport_wharf_warehouse_01, building_id b_dock_warehouse",
+        "building_id": "b_dock_warehouse",
+        "controlled_g421a_proof_subset": true,
+        "usage_notes": "Controlled in-world proof placement; final collision/navigation remains later, but vertical-slice reachability and ground-footprint validation must pass."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Working-wharf economy anchor for cargo, rope, fish baskets, crates, and dock service activity.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_core_buildings_wave_1_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_core_buildings_wave_1_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_core_buildings_wave_1_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G421A_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "building_audit": {
+        "provenance_confidence": "GREEN_ORIGIN_CANDIDATE_PENDING_LICENSE_POLICY",
+        "atelier_consistency": "G421A_CORE_BUILDING_ATELIER_STANDARD",
+        "scale_perspective_fit": "controlled_proof_subset_validated_against_player_roads_props_and_existing_layout",
+        "grounding_quality": "visible_foundation_and_sensible_base_anchor_pending_final_navigation_pass",
+        "town_role": "wharf_warehouse_dock_office_building",
+        "future_direction": "Weathered wood, brick, stone, and cargo-door language for the dock economy."
+      },
+      "centerpiece_hero_rebuild_asset": false,
+      "building_rebuild_wave": "G-4.21A",
+      "replaces_asset_id": "newport_dockside_storehouse",
+      "building_qa": {
+        "working_harbor_economy": true,
+        "large_utility_structure": true,
+        "weathered_material_mix": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "notes": "Weathered wood, brick, stone, and cargo-door language for the dock economy. AI-assisted green-origin candidate pending final license policy approval; active for normal review as a G-4.21A building rebuild proof target, not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_newport_harbor_cottage_gabled_01",
+      "name": "Quiet Gabled Harbor Cottage",
+      "category": "BUILDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_harbor_cottage_gabled_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id atelier_newport_harbor_cottage_gabled_01, building_id b_res_small",
+        "building_id": "b_res_small",
+        "controlled_g421a_proof_subset": true,
+        "usage_notes": "Controlled in-world proof placement; final collision/navigation remains later, but vertical-slice reachability and ground-footprint validation must pass."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Small residential-street variant for believable homes without generic medieval hut language.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_core_buildings_wave_1_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_core_buildings_wave_1_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_core_buildings_wave_1_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G421A_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "building_audit": {
+        "provenance_confidence": "GREEN_ORIGIN_CANDIDATE_PENDING_LICENSE_POLICY",
+        "atelier_consistency": "G421A_CORE_BUILDING_ATELIER_STANDARD",
+        "scale_perspective_fit": "controlled_proof_subset_validated_against_player_roads_props_and_existing_layout",
+        "grounding_quality": "visible_foundation_and_sensible_base_anchor_pending_final_navigation_pass",
+        "town_role": "small_residence_cottage_variant",
+        "future_direction": "Quiet clapboard cottage with readable door, stone foundation, and coastal trim."
+      },
+      "centerpiece_hero_rebuild_asset": false,
+      "building_rebuild_wave": "G-4.21A",
+      "replaces_asset_id": "residence_small",
+      "building_qa": {
+        "residence_variant": true,
+        "visually_quieter_than_tavern": true,
+        "non_generic_medieval_hut": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "notes": "Quiet clapboard cottage with readable door, stone foundation, and coastal trim. AI-assisted green-origin candidate pending final license policy approval; active for normal review as a G-4.21A building rebuild proof target, not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_newport_harbor_cottage_dormer_01",
+      "name": "Dormered Coastal Boarding Cottage",
+      "category": "BUILDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_harbor_cottage_dormer_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id atelier_newport_harbor_cottage_dormer_01, building_id b_boarding_house",
+        "building_id": "b_boarding_house",
+        "controlled_g421a_proof_subset": true,
+        "usage_notes": "Controlled in-world proof placement; final collision/navigation remains later, but vertical-slice reachability and ground-footprint validation must pass."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Second quiet residence variant for residential and support-lane diversity.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_core_buildings_wave_1_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_core_buildings_wave_1_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_core_buildings_wave_1_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G421A_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "building_audit": {
+        "provenance_confidence": "GREEN_ORIGIN_CANDIDATE_PENDING_LICENSE_POLICY",
+        "atelier_consistency": "G421A_CORE_BUILDING_ATELIER_STANDARD",
+        "scale_perspective_fit": "controlled_proof_subset_validated_against_player_roads_props_and_existing_layout",
+        "grounding_quality": "visible_foundation_and_sensible_base_anchor_pending_final_navigation_pass",
+        "town_role": "small_residence_cottage_variant",
+        "future_direction": "Distinct cottage silhouette with dormer, salt-worn siding, and modest residential scale."
+      },
+      "centerpiece_hero_rebuild_asset": false,
+      "building_rebuild_wave": "G-4.21A",
+      "replaces_asset_id": "newport_modest_clapboard_residence_a",
+      "building_qa": {
+        "residence_variant": true,
+        "visually_quieter_than_tavern": true,
+        "non_generic_medieval_hut": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "notes": "Distinct cottage silhouette with dormer, salt-worn siding, and modest residential scale. AI-assisted green-origin candidate pending final license policy approval; active for normal review as a G-4.21A building rebuild proof target, not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_newport_cooperage_workshop_01",
+      "name": "Cooperage Workshop And Service-Lane Building",
+      "category": "BUILDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_cooperage_workshop_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id atelier_newport_cooperage_workshop_01, building_id b_cooperage_shed",
+        "building_id": "b_cooperage_shed",
+        "controlled_g421a_proof_subset": true,
+        "usage_notes": "Controlled in-world proof placement; final collision/navigation remains later, but vertical-slice reachability and ground-footprint validation must pass."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Grounded service-lane workshop supporting barrel repair, carpentry, and future town-life gameplay.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_core_buildings_wave_1_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_core_buildings_wave_1_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_core_buildings_wave_1_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G421A_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "building_audit": {
+        "provenance_confidence": "GREEN_ORIGIN_CANDIDATE_PENDING_LICENSE_POLICY",
+        "atelier_consistency": "G421A_CORE_BUILDING_ATELIER_STANDARD",
+        "scale_perspective_fit": "controlled_proof_subset_validated_against_player_roads_props_and_existing_layout",
+        "grounding_quality": "visible_foundation_and_sensible_base_anchor_pending_final_navigation_pass",
+        "town_role": "workshop_cooperage_service_building",
+        "future_direction": "Useful service building with workshop door, lean-to, barrel hoops, and restrained dock-adjacent utility."
+      },
+      "centerpiece_hero_rebuild_asset": false,
+      "building_rebuild_wave": "G-4.21A",
+      "replaces_asset_id": "service_dependency_shed",
+      "building_qa": {
+        "service_building": true,
+        "useful_grounded_workshop": true,
+        "fits_service_lane_or_market_edge": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "notes": "Useful service building with workshop door, lean-to, barrel hoops, and restrained dock-adjacent utility. AI-assisted green-origin candidate pending final license policy approval; active for normal review as a G-4.21A building rebuild proof target, not final-commercial promoted."
     }
   ]
 }

@@ -1,0 +1,955 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g421a.core_building_rebuild_wave_1.manifest.v1",
+  "phase": "G-4.21A",
+  "pack_id": "core_building_rebuild_wave_1",
+  "title": "Core Building Atelier Rebuild Wave 1",
+  "generated_at": "2026-05-16T23:50:33.802807+00:00",
+  "visual_standard": "Newport core building atelier rebuild wave meeting or exceeding the G-4.18D/G-4.19A/G-4.20A/G-4.20B atelier standard with an 8.5/10 minimum visual gate.",
+  "source_policy": "AI-assisted original building art is allowed here only with recorded prompt/source image/extraction script and no yellow Newport building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+  "source_images": {
+    "atelier_newport_tavern_inn_hero_01": "art_pipeline/newport_atelier/source_generated/g421a_tavern_inn_hero_source_imagegen.png",
+    "atelier_newport_mercantile_store_01": "art_pipeline/newport_atelier/source_generated/g421a_mercantile_store_source_imagegen.png",
+    "atelier_newport_wharf_warehouse_01": "art_pipeline/newport_atelier/source_generated/g421a_wharf_warehouse_source_imagegen.png",
+    "atelier_newport_harbor_cottage_gabled_01": "art_pipeline/newport_atelier/source_generated/g421a_harbor_cottage_gabled_source_imagegen.png",
+    "atelier_newport_harbor_cottage_dormer_01": "art_pipeline/newport_atelier/source_generated/g421a_harbor_cottage_dormer_source_imagegen.png",
+    "atelier_newport_cooperage_workshop_01": "art_pipeline/newport_atelier/source_generated/g421a_cooperage_workshop_source_imagegen.png"
+  },
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_core_buildings_wave_1_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G421A_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_core_buildings_wave_1_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D cargo pipeline lock, G-4.19A dock clutter rollout, G-4.20A environmental believability, and G-4.20B town identity waves",
+  "future_pack_pattern": "prompt/source -> chroma extraction -> transparent sprites -> atlas/contact sheet -> manifest/provenance report -> controlled Godot proof placement -> validation",
+  "rollout_pack_role": "G-4.21A first Newport core building atelier rebuild wave",
+  "placement_policy": "Controlled proof subset only: Tavern/Inn landmark, Mercantile market spine, Wharf Warehouse near dock economy, two residence variants in residential/support areas, and Cooperage workshop in service lane. Do not over-place, block navigation, hide paths, or treat old unverified buildings as final.",
+  "old_building_policy": "Old building image files are retained. Replaced yellow building entries are marked deprecated or rebuild-required in registries and are not final visual targets.",
+  "tavern_inn_hero_direction": "Required hero asset: brick construction, two front/back bridged twin-stack chimney sets, Hotel Viking-inspired coastal landmark presence without direct copy, warm windows, clear entrance, strong base/foundation grounding, social hub, quest anchor, and player landmark.",
+  "assets": [
+    {
+      "asset_id": "atelier_newport_tavern_inn_hero_01",
+      "asset_type": "centerpiece_tavern_inn_hero_building",
+      "source_identity": "brick coastal landmark inn with two front/back bridged twin-stack chimney sets",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_tavern_inn_hero_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 0,
+        "w": 1475,
+        "h": 959
+      },
+      "sprite_size": {
+        "w": 1475,
+        "h": 959
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "building_id": "b_inn_tavern",
+      "display_name": "Inn & Tavern",
+      "replaces_asset_id": "inn_tavern_v1",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "sprite bottom transparent padding sits below visible foundation; BuildingCatalog source_foot_anchor pins visible base to the world foot point",
+        "base_foundation_visible": true,
+        "does_not_float": true
+      },
+      "recommended_game_scale": 0.152,
+      "building_draw_width": 224.0,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "codex_assisted_original_building_sheet_with_local_chroma_extraction",
+      "created_by": "Codex-assisted image generation with local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g421a_tavern_inn_hero_source_imagegen.png",
+      "pack_source_sheet": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+      "input_sources": [
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "codex_assisted_original_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_tavern_inn_hero_source_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no yellow building pixels, third-party sprite sheets, marketplace packs, web images, or ripped game art were supplied as source input. Final-commercial promotion still requires project policy approval for generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 1475,
+          "h": 959
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 28,
+          "w": 1419,
+          "h": 903
+        },
+        "alpha_pixels": 872026,
+        "opaque_pixels": 872026,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 28,
+          "right": 28,
+          "bottom": 28
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "brick coastal landmark inn with two front/back bridged twin-stack chimney sets",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.3,
+        "visual_quality_gate": 8.5,
+        "building_checks": {
+          "hero_centerpiece": true,
+          "brick_construction": true,
+          "two_sets_large_twin_stack_chimneys": true,
+          "front_back_bridged_chimney_pairs": true,
+          "hotel_viking_inspired_not_direct_copy": true,
+          "clear_entrance": true,
+          "strong_foundation_grounding": true,
+          "warm_windows": true,
+          "visually_outranks_ordinary_buildings": true
+        },
+        "pivot_base_anchor": {
+          "x": 0.5,
+          "y": 0.96
+        },
+        "transparent_bounds_metadata_recorded": true,
+        "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+        "status": "PASS"
+      },
+      "building_qa": {
+        "hero_centerpiece": true,
+        "brick_construction": true,
+        "two_sets_large_twin_stack_chimneys": true,
+        "front_back_bridged_chimney_pairs": true,
+        "hotel_viking_inspired_not_direct_copy": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true,
+        "warm_windows": true,
+        "visually_outranks_ordinary_buildings": true
+      },
+      "gameplay_role": "Major player landmark, social hub, quest anchor, and opening-town memory point.",
+      "controlled_proof_placement": {
+        "placed": true,
+        "target": "BuildingCatalog sprite_id atelier_newport_tavern_inn_hero_01, building_id b_inn_tavern",
+        "collision_navigation_finalized": false,
+        "collision_navigation_validation": "vertical slice validator checks tight ground footprints and reachability; final collision/nav authoring remains later."
+      },
+      "sha256": "e43955d449a30a38ad03c0047993341bceae52106a15e0925682557011a7c001",
+      "notes": "Required G-4.21A hero asset. Brick construction, two front/back bridged twin-stack chimney sets, warm windows, clear entrance, and Hotel Viking-inspired coastal landmark presence without direct copying."
+    },
+    {
+      "asset_id": "atelier_newport_mercantile_store_01",
+      "asset_type": "mercantile_general_store_building",
+      "source_identity": "coastal trade mercantile with readable shopfront",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_mercantile_store_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 1507,
+        "y": 0,
+        "w": 1310,
+        "h": 875
+      },
+      "sprite_size": {
+        "w": 1310,
+        "h": 875
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "building_id": "b_mercantile",
+      "display_name": "Mercantile",
+      "replaces_asset_id": "mercantile_shop",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "sprite bottom transparent padding sits below visible foundation; BuildingCatalog source_foot_anchor pins visible base to the world foot point",
+        "base_foundation_visible": true,
+        "does_not_float": true
+      },
+      "recommended_game_scale": 0.082,
+      "building_draw_width": 108.0,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "codex_assisted_original_building_sheet_with_local_chroma_extraction",
+      "created_by": "Codex-assisted image generation with local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g421a_mercantile_store_source_imagegen.png",
+      "pack_source_sheet": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+      "input_sources": [
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "codex_assisted_original_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_mercantile_store_source_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no yellow building pixels, third-party sprite sheets, marketplace packs, web images, or ripped game art were supplied as source input. Final-commercial promotion still requires project policy approval for generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 1310,
+          "h": 875
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 28,
+          "w": 1254,
+          "h": 819
+        },
+        "alpha_pixels": 788026,
+        "opaque_pixels": 788026,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 28,
+          "right": 28,
+          "bottom": 28
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "coastal trade mercantile with readable shopfront",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "building_checks": {
+          "hero_centerpiece": false,
+          "clear_shopfront": true,
+          "sign_awning_compatible": true,
+          "clear_entrance": true,
+          "strong_foundation_grounding": true,
+          "does_not_compete_with_tavern": true
+        },
+        "pivot_base_anchor": {
+          "x": 0.5,
+          "y": 0.96
+        },
+        "transparent_bounds_metadata_recorded": true,
+        "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+        "status": "PASS"
+      },
+      "building_qa": {
+        "hero_centerpiece": false,
+        "clear_shopfront": true,
+        "sign_awning_compatible": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true,
+        "does_not_compete_with_tavern": true
+      },
+      "gameplay_role": "Market-spine commerce anchor with practical general-store identity and readable entrance.",
+      "controlled_proof_placement": {
+        "placed": true,
+        "target": "BuildingCatalog sprite_id atelier_newport_mercantile_store_01, building_id b_mercantile",
+        "collision_navigation_finalized": false,
+        "collision_navigation_validation": "vertical slice validator checks tight ground footprints and reachability; final collision/nav authoring remains later."
+      },
+      "sha256": "ad23e916ea3319516ab7054c4985636a01a67b75cb3ca075208a1366fe6b4eed",
+      "notes": "Non-centerpiece commercial building with awning/sign compatibility and muted Newport trade identity."
+    },
+    {
+      "asset_id": "atelier_newport_wharf_warehouse_01",
+      "asset_type": "wharf_warehouse_dock_office_building",
+      "source_identity": "working harbor warehouse and dock office",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_wharf_warehouse_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 991,
+        "w": 1505,
+        "h": 853
+      },
+      "sprite_size": {
+        "w": 1505,
+        "h": 853
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "building_id": "b_dock_warehouse",
+      "display_name": "Dock Warehouse",
+      "replaces_asset_id": "newport_dockside_storehouse",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "sprite bottom transparent padding sits below visible foundation; BuildingCatalog source_foot_anchor pins visible base to the world foot point",
+        "base_foundation_visible": true,
+        "does_not_float": true
+      },
+      "recommended_game_scale": 0.149,
+      "building_draw_width": 224.0,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "codex_assisted_original_building_sheet_with_local_chroma_extraction",
+      "created_by": "Codex-assisted image generation with local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g421a_wharf_warehouse_source_imagegen.png",
+      "pack_source_sheet": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+      "input_sources": [
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "codex_assisted_original_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_wharf_warehouse_source_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no yellow building pixels, third-party sprite sheets, marketplace packs, web images, or ripped game art were supplied as source input. Final-commercial promotion still requires project policy approval for generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 1505,
+          "h": 853
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 28,
+          "w": 1449,
+          "h": 797
+        },
+        "alpha_pixels": 891410,
+        "opaque_pixels": 891410,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 28,
+          "right": 28,
+          "bottom": 28
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "working harbor warehouse and dock office",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "building_checks": {
+          "working_harbor_economy": true,
+          "large_utility_structure": true,
+          "weathered_material_mix": true,
+          "clear_entrance": true,
+          "strong_foundation_grounding": true
+        },
+        "pivot_base_anchor": {
+          "x": 0.5,
+          "y": 0.96
+        },
+        "transparent_bounds_metadata_recorded": true,
+        "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+        "status": "PASS"
+      },
+      "building_qa": {
+        "working_harbor_economy": true,
+        "large_utility_structure": true,
+        "weathered_material_mix": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "gameplay_role": "Working-wharf economy anchor for cargo, rope, fish baskets, crates, and dock service activity.",
+      "controlled_proof_placement": {
+        "placed": true,
+        "target": "BuildingCatalog sprite_id atelier_newport_wharf_warehouse_01, building_id b_dock_warehouse",
+        "collision_navigation_finalized": false,
+        "collision_navigation_validation": "vertical slice validator checks tight ground footprints and reachability; final collision/nav authoring remains later."
+      },
+      "sha256": "62c7e8ae679bcbae3e9383c1d518cc97e95becc238c695abeda63b7887906af4",
+      "notes": "Weathered wood, brick, stone, and cargo-door language for the dock economy."
+    },
+    {
+      "asset_id": "atelier_newport_harbor_cottage_gabled_01",
+      "asset_type": "small_residence_cottage_variant",
+      "source_identity": "quiet gabled harbor cottage",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_harbor_cottage_gabled_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 1537,
+        "y": 991,
+        "w": 1209,
+        "h": 901
+      },
+      "sprite_size": {
+        "w": 1209,
+        "h": 901
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "building_id": "b_res_small",
+      "display_name": "Harbor Cottage",
+      "replaces_asset_id": "residence_small",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "sprite bottom transparent padding sits below visible foundation; BuildingCatalog source_foot_anchor pins visible base to the world foot point",
+        "base_foundation_visible": true,
+        "does_not_float": true
+      },
+      "recommended_game_scale": 0.114,
+      "building_draw_width": 138.0,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "codex_assisted_original_building_sheet_with_local_chroma_extraction",
+      "created_by": "Codex-assisted image generation with local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g421a_harbor_cottage_gabled_source_imagegen.png",
+      "pack_source_sheet": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+      "input_sources": [
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "codex_assisted_original_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_harbor_cottage_gabled_source_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no yellow building pixels, third-party sprite sheets, marketplace packs, web images, or ripped game art were supplied as source input. Final-commercial promotion still requires project policy approval for generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 1209,
+          "h": 901
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 28,
+          "w": 1153,
+          "h": 845
+        },
+        "alpha_pixels": 718898,
+        "opaque_pixels": 718898,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 28,
+          "right": 28,
+          "bottom": 28
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "quiet gabled harbor cottage",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "building_checks": {
+          "residence_variant": true,
+          "visually_quieter_than_tavern": true,
+          "non_generic_medieval_hut": true,
+          "clear_entrance": true,
+          "strong_foundation_grounding": true
+        },
+        "pivot_base_anchor": {
+          "x": 0.5,
+          "y": 0.96
+        },
+        "transparent_bounds_metadata_recorded": true,
+        "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+        "status": "PASS"
+      },
+      "building_qa": {
+        "residence_variant": true,
+        "visually_quieter_than_tavern": true,
+        "non_generic_medieval_hut": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "gameplay_role": "Small residential-street variant for believable homes without generic medieval hut language.",
+      "controlled_proof_placement": {
+        "placed": true,
+        "target": "BuildingCatalog sprite_id atelier_newport_harbor_cottage_gabled_01, building_id b_res_small",
+        "collision_navigation_finalized": false,
+        "collision_navigation_validation": "vertical slice validator checks tight ground footprints and reachability; final collision/nav authoring remains later."
+      },
+      "sha256": "e3dec0163a4814692e2d8ed9315a7b76fcfdfde1a1a551067ef7f910fc221654",
+      "notes": "Quiet clapboard cottage with readable door, stone foundation, and coastal trim."
+    },
+    {
+      "asset_id": "atelier_newport_harbor_cottage_dormer_01",
+      "asset_type": "small_residence_cottage_variant",
+      "source_identity": "dormered coastal boarding cottage",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_harbor_cottage_dormer_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 1924,
+        "w": 1089,
+        "h": 884
+      },
+      "sprite_size": {
+        "w": 1089,
+        "h": 884
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "building_id": "b_boarding_house",
+      "display_name": "Boarding House",
+      "replaces_asset_id": "newport_modest_clapboard_residence_a",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "sprite bottom transparent padding sits below visible foundation; BuildingCatalog source_foot_anchor pins visible base to the world foot point",
+        "base_foundation_visible": true,
+        "does_not_float": true
+      },
+      "recommended_game_scale": 0.121,
+      "building_draw_width": 132.0,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "codex_assisted_original_building_sheet_with_local_chroma_extraction",
+      "created_by": "Codex-assisted image generation with local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g421a_harbor_cottage_dormer_source_imagegen.png",
+      "pack_source_sheet": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+      "input_sources": [
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "codex_assisted_original_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_harbor_cottage_dormer_source_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no yellow building pixels, third-party sprite sheets, marketplace packs, web images, or ripped game art were supplied as source input. Final-commercial promotion still requires project policy approval for generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 1089,
+          "h": 884
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 28,
+          "w": 1033,
+          "h": 828
+        },
+        "alpha_pixels": 614447,
+        "opaque_pixels": 614447,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 28,
+          "right": 28,
+          "bottom": 28
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "dormered coastal boarding cottage",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "building_checks": {
+          "residence_variant": true,
+          "visually_quieter_than_tavern": true,
+          "non_generic_medieval_hut": true,
+          "clear_entrance": true,
+          "strong_foundation_grounding": true
+        },
+        "pivot_base_anchor": {
+          "x": 0.5,
+          "y": 0.96
+        },
+        "transparent_bounds_metadata_recorded": true,
+        "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+        "status": "PASS"
+      },
+      "building_qa": {
+        "residence_variant": true,
+        "visually_quieter_than_tavern": true,
+        "non_generic_medieval_hut": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "gameplay_role": "Second quiet residence variant for residential and support-lane diversity.",
+      "controlled_proof_placement": {
+        "placed": true,
+        "target": "BuildingCatalog sprite_id atelier_newport_harbor_cottage_dormer_01, building_id b_boarding_house",
+        "collision_navigation_finalized": false,
+        "collision_navigation_validation": "vertical slice validator checks tight ground footprints and reachability; final collision/nav authoring remains later."
+      },
+      "sha256": "d3572f927c08ec27b8c2138166c9e015a0712ba40189efe9307ba99229a12ecb",
+      "notes": "Distinct cottage silhouette with dormer, salt-worn siding, and modest residential scale."
+    },
+    {
+      "asset_id": "atelier_newport_cooperage_workshop_01",
+      "asset_type": "workshop_cooperage_service_building",
+      "source_identity": "cooperage workshop and service-lane building",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_cooperage_workshop_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 1121,
+        "y": 1924,
+        "w": 1454,
+        "h": 913
+      },
+      "sprite_size": {
+        "w": 1454,
+        "h": 913
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "building_id": "b_cooperage_shed",
+      "display_name": "Cooperage Shed",
+      "replaces_asset_id": "service_dependency_shed",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "sprite bottom transparent padding sits below visible foundation; BuildingCatalog source_foot_anchor pins visible base to the world foot point",
+        "base_foundation_visible": true,
+        "does_not_float": true
+      },
+      "recommended_game_scale": 0.091,
+      "building_draw_width": 132.0,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "codex_assisted_original_building_sheet_with_local_chroma_extraction",
+      "created_by": "Codex-assisted image generation with local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g421a_cooperage_workshop_source_imagegen.png",
+      "pack_source_sheet": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g421a_core_building_assets.py",
+      "input_sources": [
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "codex_assisted_original_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g421a_cooperage_workshop_source_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no yellow building pixels, third-party sprite sheets, marketplace packs, web images, or ripped game art were supplied as source input. Final-commercial promotion still requires project policy approval for generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 1454,
+          "h": 913
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 28,
+          "w": 1398,
+          "h": 857
+        },
+        "alpha_pixels": 793108,
+        "opaque_pixels": 793108,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 28,
+          "right": 28,
+          "bottom": 28
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "cooperage workshop and service-lane building",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "building_checks": {
+          "service_building": true,
+          "useful_grounded_workshop": true,
+          "fits_service_lane_or_market_edge": true,
+          "clear_entrance": true,
+          "strong_foundation_grounding": true
+        },
+        "pivot_base_anchor": {
+          "x": 0.5,
+          "y": 0.96
+        },
+        "transparent_bounds_metadata_recorded": true,
+        "scale_context": "Checked against active player/building scale through BuildingCatalog draw_width and vertical-slice validation.",
+        "status": "PASS"
+      },
+      "building_qa": {
+        "service_building": true,
+        "useful_grounded_workshop": true,
+        "fits_service_lane_or_market_edge": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      },
+      "gameplay_role": "Grounded service-lane workshop supporting barrel repair, carpentry, and future town-life gameplay.",
+      "controlled_proof_placement": {
+        "placed": true,
+        "target": "BuildingCatalog sprite_id atelier_newport_cooperage_workshop_01, building_id b_cooperage_shed",
+        "collision_navigation_finalized": false,
+        "collision_navigation_validation": "vertical slice validator checks tight ground footprints and reachability; final collision/nav authoring remains later."
+      },
+      "sha256": "5b6ca2e0e603c3e2a4831af14aae4f80d38770bb3add76f2e907fbd65e2ac562",
+      "notes": "Useful service building with workshop door, lean-to, barrel hoops, and restrained dock-adjacent utility."
+    }
+  ]
+}
