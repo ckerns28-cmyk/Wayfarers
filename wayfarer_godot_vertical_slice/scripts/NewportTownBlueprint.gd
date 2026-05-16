@@ -18,6 +18,7 @@ const G416_SURFACE_KIT_PASS := "G-4.16"
 const G418_ASSET_FACTORY_PASS := "G-4.18B"
 const G418C_GREEN_ORIGIN_QUARANTINE_PASS := "G-4.18C"
 const G418D_ATELIER_CARGO_PASS := "G-4.18D"
+const G419A_DOCK_CLUTTER_ATELIER_PASS := "G-4.19A"
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
@@ -687,7 +688,8 @@ static func starter_district_plan() -> Dictionary:
 		"asset_pipeline_pass": G418_ASSET_FACTORY_PASS,
 		"green_origin_quarantine_pass": G418C_GREEN_ORIGIN_QUARANTINE_PASS,
 		"atelier_cargo_pipeline_pass": G418D_ATELIER_CARGO_PASS,
-		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
+		"dock_clutter_atelier_pack_pass": G419A_DOCK_CLUTTER_ATELIER_PASS,
+		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
 		"yellow_review_art_policy": "temporary yellow review art may support prototype composition, scale, and gameplay only; yellow pixels cannot source final-commercial green assets",
@@ -698,7 +700,7 @@ static func starter_district_plan() -> Dictionary:
 		"surface_cohesion_gate": true,
 		"newport_visual_cohesion_gate": true,
 		"asset_provenance_gate": true,
-		"player_style_deferred_note": "current player is temporary scale/debug art; G-4.19 or soon after must define player/NPC sprite style before NPC, monster, combat, or equipment review",
+		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.19A dock clutter, a dedicated player/NPC sprite style pass is still required before NPC, monster, combat, or equipment review",
 		"review_screenshot_mode": "F4 or --review-no-hud",
 		"districts": [
 			"harborfront_commercial",
@@ -830,7 +832,7 @@ static func missing_asset_manifest() -> Array:
 		"small home variants",
 		"dock shack",
 		"carts",
-		"additional dock clutter atelier variants beyond locked cargo pack",
+		"additional dock clutter atelier variants beyond the G-4.19A first rollout pack",
 		"sign variants",
 		"fencing variants",
 		"lantern variants",

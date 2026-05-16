@@ -1529,7 +1529,7 @@ Locked reusable pattern:
 
 Next recommended rollout order after this lock:
 
-- Dock clutter expansion.
+- Dock clutter expansion, implemented first as G-4.19A.
 - Terrain edge dressing.
 - Signs/lamps/posts.
 - Market goods/carts.
@@ -1551,6 +1551,32 @@ Acceptance:
   AI-assisted generated artwork.
 - Future city-wide rollout proceeds through themed atelier packs only after
   this lock passes validation.
+
+## G-4.19A: Newport Dock Clutter Atelier Pack
+
+Status: implemented as the first city rollout pack from the G-4.18D atelier
+standard.
+
+G-4.19A creates the Newport dock/wharf clutter pack without redesigning the
+pipeline: saved exact prompt, saved source sheet, local extraction script,
+transparent sprites, atlas, contact sheet, manifest, provenance report,
+extraction QA, Godot placement, and validation.
+
+The pack includes bollards, mooring hardware, fishing net, sacks/fish baskets,
+anchor, dock repair planks, dock lantern, and shoreline debris candidates. The
+in-world proof places only a controlled subset around wharf, cargo, market
+edge, harbor edge, and service path clusters so the port gains atmosphere
+without visual noise or navigation confusion.
+
+Acceptance:
+
+- All assets remain `ai_assisted_green_origin_candidate_pending_license_review`.
+- No source pixel path uses yellow/uncertain assets, web images, marketplace
+  packs, or third-party sprites.
+- Extracted sprites have transparent bounds with no magenta background, no
+  magenta halo, no cut-off edges, and readable silhouettes.
+- Godot placement respects scale, grounding, pivot, depth/overlap, and the
+  no-over-scatter policy.
 
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
