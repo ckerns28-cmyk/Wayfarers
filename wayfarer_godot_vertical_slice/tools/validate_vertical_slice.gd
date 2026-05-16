@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18D.1", "build_phase_g_4_18d_1")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18D.1 Bakeoff Verdict Correction", "build_label_g_4_18d_1")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18D.2", "build_phase_g_4_18d_2")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18D.2 Art Production Capability Gate", "build_label_g_4_18d_2")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -196,12 +196,23 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport_green_origin/contact_sheets/g418d1_candidate_comparison_strip.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_isolated_proof.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_in_world_comparison_frame.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d2_isolated_asset_proof.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d2_before_after_production.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d2_in_world_comparison_frame.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_rough_base.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_prepared.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d2_rope_crate_barrel_silhouette.svg",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d2_rope_crate_barrel_paint_plan.json",
 		"res://art_pipeline/newport_green_origin/reports/G418B_GREEN_ORIGIN_ASSET_FACTORY.md",
 		"res://art_pipeline/newport_green_origin/reports/G418C_GREEN_ORIGIN_VISUAL_RETROSPECTIVE.md",
 		"res://art_pipeline/newport_green_origin/reports/G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md",
 		"res://art_pipeline/newport_green_origin/reports/G418D1_BAKEOFF_VERDICT_CORRECTION_MANUAL_PAINTOVER.md",
+		"res://art_pipeline/newport_green_origin/reports/G418D2_ART_PRODUCTION_CAPABILITY_GATE.md",
 		"res://tools/capture_g418c_review_screenshots.mjs",
 		"res://tools/capture_g418d_review_screenshots.mjs",
+		"res://tools/capture_g418d2_review_screenshots.mjs",
 	]:
 		_expect(FileAccess.file_exists(file_path), "g418_pipeline_file_" + file_path.get_file())
 
@@ -320,10 +331,11 @@ func _validate_g418d_green_origin_bakeoff_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_method_bakeoff_manifest.json")
 	_expect(not manifest.is_empty(), "g418d_bakeoff_manifest_json")
 	_expect(String(manifest.get("schema_id", "")) == "wayfarer.newport_green_origin.method_bakeoff.v1", "g418d_bakeoff_manifest_schema")
-	_expect(String(manifest.get("phase", "")) == "G-4.18D.1", "g418d1_bakeoff_manifest_phase")
-	_expect(manifest.has("recommended_method_for_g418e") and manifest.get("recommended_method_for_g418e") == null, "g418d1_bakeoff_no_recommendation")
-	_expect(String(manifest.get("normal_review_policy", "")).find("No G-4.18D or G-4.18D.1 bakeoff candidate is normal-review eligible") >= 0, "g418d1_bakeoff_normal_review_blocked")
-	_expect(String(manifest.get("visual_quality_gate", "")).find("8.5") >= 0, "g418d1_visual_pass_gate_8_5")
+	_expect(String(manifest.get("phase", "")) == "G-4.18D.2", "g418d2_manifest_phase")
+	_expect(manifest.has("recommended_method_for_g418e") and manifest.get("recommended_method_for_g418e") == null, "g418d2_no_recommendation")
+	_expect(String(manifest.get("normal_review_policy", "")).find("No G-4.18D, G-4.18D.1, or G-4.18D.2 experimental/capability asset is normal-review eligible") >= 0, "g418d2_normal_review_blocked")
+	var gate_text := String(manifest.get("visual_quality_gate", ""))
+	_expect(gate_text.find("8.5") >= 0 and gate_text.find("7.5") >= 0, "g418d2_visual_gates_declared")
 	var candidates: Array = manifest.get("candidates", [])
 	_expect(candidates.size() == 6, "g418d1_bakeoff_candidate_count")
 	var pass_count := 0
@@ -352,6 +364,37 @@ func _validate_g418d_green_origin_bakeoff_manifest() -> void:
 			_expect(float(candidate.get("visual_rating", 0.0)) < 8.5, "g418d1_non_pass_below_gate_" + candidate_id)
 			_expect(bool(candidate.get("final_commercial_candidate", true)) == false, "g418d1_non_pass_not_final_candidate_" + candidate_id)
 	_expect(pass_count == 0, "g418d1_bakeoff_zero_pass")
+	var capability: Dictionary = {}
+	var raw_capability = manifest.get("art_production_capability_gate", {})
+	if raw_capability is Dictionary:
+		capability = raw_capability
+	_expect(not capability.is_empty(), "g418d2_capability_gate_present")
+	if not capability.is_empty():
+		var asset_id := String(capability.get("asset_id", "unknown"))
+		for key in ["phase", "asset_id", "sample_path", "rough_base_path", "prepared_path", "isolated_proof_path", "before_after_path", "in_world_comparison_path", "provenance_status", "origin_classification", "commercial_use_status", "visual_quality_status", "visual_rating", "visual_pass_gate", "capability_verdict", "review_eligible", "normal_review_eligible", "lab_only", "final_commercial_candidate", "final_commercial_eligible", "input_sources", "source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+			_expect(capability.has(key), "g418d2_capability_field_" + asset_id + "_" + key)
+		for path_key in ["sample_path", "rough_base_path", "prepared_path", "isolated_proof_path", "before_after_path", "in_world_comparison_path"]:
+			_expect(FileAccess.file_exists("res://" + String(capability.get(path_key, ""))), "g418d2_capability_path_" + path_key)
+		_expect(String(capability.get("phase", "")) == "G-4.18D.2", "g418d2_capability_phase")
+		_expect(String(capability.get("provenance_status", "")) == "green_origin_candidate", "g418d2_capability_provenance")
+		_expect(String(capability.get("origin_classification", "")) == "green_origin_candidate", "g418d2_capability_origin")
+		_expect(String(capability.get("commercial_use_status", "")) == "green_origin_candidate", "g418d2_capability_commercial_status")
+		_expect(bool(capability.get("review_eligible", true)) == false, "g418d2_capability_review_blocked")
+		_expect(bool(capability.get("normal_review_eligible", true)) == false, "g418d2_capability_normal_review_blocked")
+		_expect(bool(capability.get("lab_only", false)) == true, "g418d2_capability_lab_only")
+		_expect(bool(capability.get("final_commercial_eligible", true)) == false, "g418d2_capability_not_final_eligible")
+		_expect(bool(capability.get("source_pixels_from_yellow_uncertain_assets", true)) == false, "g418d2_capability_no_yellow_pixels")
+		_expect(bool(capability.get("source_pixels_from_third_party_material", true)) == false, "g418d2_capability_no_third_party_pixels")
+		_expect(bool(capability.get("web_scraped_source_pixels", true)) == false, "g418d2_capability_no_web_pixels")
+		var capability_rating := float(capability.get("visual_rating", 0.0))
+		var capability_gate := float(capability.get("visual_pass_gate", 0.0))
+		var capability_verdict := String(capability.get("capability_verdict", ""))
+		_expect(capability_gate >= 7.5, "g418d2_capability_gate_7_5")
+		if capability_verdict == "PASS":
+			_expect(capability_rating >= 7.5, "g418d2_capability_pass_requires_7_5")
+		else:
+			_expect(capability_rating < 7.5, "g418d2_capability_non_pass_below_gate")
+			_expect(bool(capability.get("final_commercial_candidate", true)) == false, "g418d2_capability_non_pass_not_final_candidate")
 
 func _validate_g418c_green_origin_lab_quarantine(main: Node, map: Node, hud: CanvasLayer) -> void:
 	_expect(main.has_method("set_green_origin_lab_mode"), "g418c_lab_main_set_api")

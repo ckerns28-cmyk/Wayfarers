@@ -1,0 +1,47 @@
+{
+  "phase": "G-4.18D.2",
+  "asset_id": "g418d2_rope_crate_barrel_cluster",
+  "visual_pass_gate": 7.5,
+  "visual_rating": 7.4,
+  "capability_verdict": "DEFER",
+  "tool_logs": {
+    "inkscape": "",
+    "krita": "Fontconfig error: Cannot load default config file: No such file: (null) Fontconfig error: Cannot load default config file: No such file: (null)",
+    "gimp": "Non-native shell detected, GIMP may behave unexpectedly on Unix shells in Windows. batch command executed successfully C:\\Users\\Chris\\AppData\\Local\\Programs\\GIMP 3\\lib\\gimp\\3.0\\plug-ins\\script-fu\\script-fu.exe: fatal error: GIMP crashed (script-fu.exe:19096): LibGimp-WARNING **: 07:11:08.686: script-fu.exe: gimp_flush(): error: Invalid argument"
+  },
+  "samples": {
+    "rough_base": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_rough_base.png",
+      "sha256": "ffac03b309a967da65a9b10952d9ac6186cc39a23e1a423d6df5f775be6808da",
+      "alpha": {
+        "bbox": {
+          "x": 12,
+          "y": 34,
+          "w": 140,
+          "h": 68
+        },
+        "opaque_pixel_count": 7097,
+        "alpha_coverage": 0.4032
+      },
+      "contrast_stddev": 48.8
+    },
+    "final_asset": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png",
+      "sha256": "beb1a2a31091fd4816b1ff593d444f27387abc9e45a4febe4f40e6fe9486e429",
+      "alpha": {
+        "bbox": {
+          "x": 8,
+          "y": 32,
+          "w": 144,
+          "h": 71
+        },
+        "opaque_pixel_count": 7747,
+        "alpha_coverage": 0.4402
+      },
+      "contrast_stddev": 44.02,
+      "palette_distance_to_wharf_reference": 24.15,
+      "palette_distance_to_chandlery_reference": 19.6
+    }
+  },
+  "visual_judgment": "Improved material handling and silhouette over the rough base, but below the 7.5 tiny-prop PASS gate; lab-only quarantine remains correct."
+}

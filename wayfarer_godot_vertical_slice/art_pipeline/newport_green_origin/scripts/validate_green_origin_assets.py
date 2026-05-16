@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the G-4.18B/G-4.18C green-origin Newport asset manifest."""
+"""Validate the G-4.18B-G-4.18D.2 green-origin Newport asset manifests."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ MANIFEST_PATH = PIPELINE_ROOT / "manifests" / "green_origin_asset_manifest.json"
 BAKEOFF_MANIFEST_PATH = PIPELINE_ROOT / "manifests" / "green_origin_method_bakeoff_manifest.json"
 REPORT_PATH = PIPELINE_ROOT / "reports" / "G418B_GREEN_ORIGIN_ASSET_FACTORY.md"
 BAKEOFF_REPORT_PATH = PIPELINE_ROOT / "reports" / "G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md"
+CAPABILITY_REPORT_PATH = PIPELINE_ROOT / "reports" / "G418D2_ART_PRODUCTION_CAPABILITY_GATE.md"
 FORBIDDEN_INPUT_FRAGMENTS = [
     "assets/sprites/buildings/isolated",
     "assets/buildings",
@@ -212,31 +213,32 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
     if manifest.get("schema_id") != "wayfarer.newport_green_origin.method_bakeoff.v1":
         fail("bakeoff manifest schema_id must be wayfarer.newport_green_origin.method_bakeoff.v1", failures)
     else:
-        pass_check("G-4.18D bakeoff manifest schema id")
-    if manifest.get("phase") != "G-4.18D.1":
-        fail("bakeoff manifest phase must be G-4.18D.1", failures)
-    if "No G-4.18D or G-4.18D.1 bakeoff candidate is normal-review eligible" not in str(manifest.get("normal_review_policy", "")):
+        pass_check("G-4.18D bakeoff/capability manifest schema id")
+    if manifest.get("phase") != "G-4.18D.2":
+        fail("bakeoff manifest phase must be G-4.18D.2", failures)
+    if "No G-4.18D, G-4.18D.1, or G-4.18D.2 experimental/capability asset is normal-review eligible" not in str(manifest.get("normal_review_policy", "")):
         fail("bakeoff manifest must block candidates from normal review", failures)
     if manifest.get("recommended_method_for_g418e") is not None:
-        fail("G-4.18D.1 bakeoff manifest must not recommend a promotion method", failures)
-    if "8.5" not in str(manifest.get("visual_quality_gate", "")):
-        fail("G-4.18D.1 bakeoff manifest must declare the 8.5 PASS visual gate", failures)
+        fail("G-4.18D.2 manifest must not recommend a promotion method", failures)
+    gate_text = str(manifest.get("visual_quality_gate", ""))
+    if "8.5" not in gate_text or "7.5" not in gate_text:
+        fail("G-4.18D.2 manifest must declare the 8.5 bakeoff and 7.5 capability visual gates", failures)
 
     for contact_sheet in manifest.get("contact_sheets", []):
         path_exists(str(contact_sheet), failures)
 
     candidates = manifest.get("candidates", [])
     if not isinstance(candidates, list) or len(candidates) != 6:
-        fail("G-4.18D.1 bakeoff manifest must contain 5 corrected methods plus M01B", failures)
+        fail("G-4.18D.2 manifest must retain 5 corrected methods plus M01B", failures)
         return
-    pass_check("G-4.18D.1 bakeoff candidate count: 6")
+    pass_check("G-4.18D.2 retained bakeoff candidate count: 6")
 
     recommendations = {str(candidate.get("recommendation", "")) for candidate in candidates if isinstance(candidate, dict)}
     for required in {"DEFER", "FAIL"}:
         if required not in recommendations:
             fail(f"bakeoff recommendations missing {required}", failures)
     if "PASS" in recommendations:
-        fail("G-4.18D.1 must not keep any PASS recommendation below the 8.5 visual gate", failures)
+        fail("G-4.18D.2 must not keep any bakeoff PASS recommendation below the 8.5 visual gate", failures)
 
     pass_count = 0
     for candidate in candidates:
@@ -249,7 +251,7 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
                 fail(f"{candidate_id} missing bakeoff field {field}", failures)
         path_exists(str(candidate.get("sample_path", "")), failures)
         if candidate.get("phase") != "G-4.18D.1":
-            fail(f"{candidate_id} phase must be G-4.18D.1", failures)
+            fail(f"{candidate_id} retained bakeoff phase must remain G-4.18D.1", failures)
         if candidate.get("provenance_status") != "green_origin_candidate":
             fail(f"{candidate_id} provenance_status must be green_origin_candidate", failures)
         if candidate.get("origin_classification") != "green_origin_candidate":
@@ -314,7 +316,97 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
                 path_exists(str(raw_source["path"]), failures)
 
     if pass_count != 0:
-        fail("G-4.18D.1 bakeoff must identify zero PASS candidates", failures)
+        fail("G-4.18D.2 retained bakeoff must identify zero PASS candidates", failures)
+
+    capability = manifest.get("art_production_capability_gate", {})
+    if not isinstance(capability, dict) or not capability:
+        fail("G-4.18D.2 manifest must include one art_production_capability_gate object", failures)
+    else:
+        required_capability_fields = [
+            "phase",
+            "asset_id",
+            "asset_name",
+            "sample_path",
+            "rough_base_path",
+            "prepared_path",
+            "isolated_proof_path",
+            "before_after_path",
+            "in_world_comparison_path",
+            "source_file",
+            "provenance_status",
+            "origin_classification",
+            "commercial_use_status",
+            "visual_quality_status",
+            "visual_rating",
+            "visual_pass_gate",
+            "capability_verdict",
+            "review_eligible",
+            "normal_review_eligible",
+            "lab_only",
+            "final_commercial_candidate",
+            "final_commercial_eligible",
+            "input_sources",
+            "source_pixels_from_yellow_uncertain_assets",
+            "source_pixels_from_third_party_material",
+            "web_scraped_source_pixels",
+            "ownership",
+            "license",
+            "sha256",
+            "capability_answer",
+        ]
+        asset_id = str(capability.get("asset_id", "unknown"))
+        for field in required_capability_fields:
+            if field not in capability:
+                fail(f"{asset_id} missing capability field {field}", failures)
+        if capability.get("phase") != "G-4.18D.2":
+            fail(f"{asset_id} phase must be G-4.18D.2", failures)
+        for path_field in ["sample_path", "rough_base_path", "prepared_path", "isolated_proof_path", "before_after_path", "in_world_comparison_path", "source_file"]:
+            path_exists(str(capability.get(path_field, "")), failures)
+        if capability.get("provenance_status") != "green_origin_candidate":
+            fail(f"{asset_id} provenance_status must be green_origin_candidate", failures)
+        if capability.get("origin_classification") != "green_origin_candidate":
+            fail(f"{asset_id} origin_classification must be green_origin_candidate", failures)
+        if capability.get("commercial_use_status") != "green_origin_candidate":
+            fail(f"{asset_id} commercial_use_status must be green_origin_candidate", failures)
+        if capability.get("review_eligible") is not False:
+            fail(f"{asset_id} review_eligible must be false for the capability gate", failures)
+        if capability.get("normal_review_eligible") is not False:
+            fail(f"{asset_id} normal_review_eligible must be false for the capability gate", failures)
+        if capability.get("lab_only") is not True:
+            fail(f"{asset_id} lab_only must be true for the capability gate", failures)
+        if capability.get("final_commercial_eligible") is not False:
+            fail(f"{asset_id} final_commercial_eligible must be false", failures)
+        if capability.get("source_pixels_from_yellow_uncertain_assets") is not False:
+            fail(f"{asset_id} uses yellow/uncertain source pixels", failures)
+        if capability.get("source_pixels_from_third_party_material") is not False:
+            fail(f"{asset_id} uses third-party source pixels", failures)
+        if capability.get("web_scraped_source_pixels") is not False:
+            fail(f"{asset_id} uses web-scraped source pixels", failures)
+        visual_rating = float(capability.get("visual_rating", 0.0))
+        visual_gate = float(capability.get("visual_pass_gate", 0.0))
+        verdict = str(capability.get("capability_verdict", ""))
+        if visual_gate < 7.5:
+            fail(f"{asset_id} visual_pass_gate must be at least 7.5", failures)
+        if visual_rating < 7.5 and verdict == "PASS":
+            fail(f"{asset_id} cannot PASS below the 7.5 visual gate", failures)
+        if visual_rating < 7.5 and capability.get("final_commercial_candidate") is not False:
+            fail(f"{asset_id} cannot be final_commercial_candidate below the 7.5 visual gate", failures)
+        if verdict == "DEFER" and "defer" not in str(capability.get("visual_quality_status", "")):
+            fail(f"{asset_id} DEFER verdict must record defer visual status", failures)
+        if verdict not in ["PASS", "DEFER", "FAIL"]:
+            fail(f"{asset_id} capability_verdict must be PASS, DEFER, or FAIL", failures)
+        for raw_source in capability.get("input_sources", []):
+            if not isinstance(raw_source, dict):
+                fail(f"{asset_id} capability input source is not object", failures)
+                continue
+            source_text = json.dumps(raw_source, sort_keys=True).lower()
+            for forbidden in FORBIDDEN_INPUT_FRAGMENTS:
+                if forbidden.lower() in source_text:
+                    fail(f"{asset_id} forbidden capability input source reference: {forbidden}", failures)
+            if raw_source.get("source_pixels_used") is not False:
+                fail(f"{asset_id} capability input source must not use source pixels", failures)
+            if "path" in raw_source:
+                path_exists(str(raw_source["path"]), failures)
 
     if BAKEOFF_REPORT_PATH.exists():
         report = BAKEOFF_REPORT_PATH.read_text(encoding="utf-8")
@@ -328,6 +420,21 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
         pass_check("G-4.18D bakeoff report present")
     else:
         fail(f"missing G-4.18D bakeoff report: {BAKEOFF_REPORT_PATH}", failures)
+
+    if CAPABILITY_REPORT_PATH.exists():
+        report = CAPABILITY_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in [
+            "G-4.18D.2 produced one green-origin rope coil",
+            "Was the failure due to tool access?",
+            "Was the failure due to art-direction execution?",
+            "Was the failure due to Codex not being able to perform finished-art production?",
+            "DEFER",
+        ]:
+            if required_text not in report:
+                fail(f"G-4.18D.2 capability report missing text: {required_text}", failures)
+        pass_check("G-4.18D.2 capability report present")
+    else:
+        fail(f"missing G-4.18D.2 capability report: {CAPABILITY_REPORT_PATH}", failures)
 
 
 def main() -> int:
