@@ -1,0 +1,1998 @@
+{
+  "schema_id": "wayfarer.newport_green_origin.pixel_layer_source.v3",
+  "phase": "G-4.18D.3",
+  "asset_id": "g418d3_dockside_rope_crate_barrel_cluster",
+  "canvas_px": [
+    96,
+    64
+  ],
+  "render_policy": "4x painterly layer geometry baked to final 1x; separate prop studies are generated before the cluster is judged.",
+  "source_policy": "Project-owned pixel-layer source. Existing Newport/chandlery/wharf art is used only as visible style standard; no source pixels are copied, cropped, pasted, traced, sampled, or AI-generated into the new sprite.",
+  "object_readability_strategy": [
+    "crate is built as a separate 3/4 wooden box with top plane, side plane, X brace, plank seams, nails, and chipped corners",
+    "barrel is built as a separate small upright cask with top ellipse, bulged staves, dull hoops, and shaded lower rim",
+    "rope is built as a separate foreground coil with nested ellipses, central hole, loose tail, fiber ticks, and individual contact shadow"
+  ],
+  "layer_order": [
+    "cast_shadow",
+    "contact_shadow",
+    "silhouette_blockout",
+    "dark_outline",
+    "wood_base",
+    "rope_base",
+    "barrel_base",
+    "metal_bands",
+    "highlights",
+    "chips_scratches",
+    "grime"
+  ],
+  "layers": {
+    "cast_shadow": {
+      "purpose": "Low broad shadow tying three independent props to one dock plane.",
+      "ops": [
+        {
+          "op": "ellipse",
+          "fill": "soft_shadow",
+          "xy": [
+            4,
+            49,
+            94,
+            63
+          ]
+        },
+        {
+          "op": "ellipse",
+          "fill": "cast_shadow",
+          "xy": [
+            6,
+            51,
+            48,
+            60
+          ]
+        },
+        {
+          "op": "ellipse",
+          "fill": "cast_shadow",
+          "xy": [
+            44,
+            51,
+            73,
+            61
+          ]
+        },
+        {
+          "op": "ellipse",
+          "fill": "cast_shadow",
+          "xy": [
+            62,
+            51,
+            96,
+            62
+          ]
+        }
+      ]
+    },
+    "contact_shadow": {
+      "purpose": "Separate occlusion pads so crate, barrel, and rope are grounded rather than pasted on.",
+      "ops": [
+        {
+          "op": "ellipse",
+          "fill": "contact_shadow",
+          "xy": [
+            7,
+            52,
+            42,
+            58
+          ]
+        },
+        {
+          "op": "ellipse",
+          "fill": "contact_shadow",
+          "xy": [
+            48,
+            53,
+            70,
+            60
+          ]
+        },
+        {
+          "op": "ellipse",
+          "fill": "contact_shadow",
+          "xy": [
+            64,
+            53,
+            94,
+            61
+          ]
+        },
+        {
+          "op": "line",
+          "fill": "deep_outline",
+          "points": [
+            [
+              9,
+              55
+            ],
+            [
+              39,
+              55
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "deep_outline",
+          "points": [
+            [
+              51,
+              57
+            ],
+            [
+              67,
+              57
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "deep_outline",
+          "points": [
+            [
+              67,
+              58
+            ],
+            [
+              91,
+              58
+            ]
+          ],
+          "width": 0.55
+        }
+      ]
+    },
+    "silhouette_blockout": {
+      "purpose": "Readable object-first massing: crate left, barrel middle, rope coil foreground-right.",
+      "ops": [
+        {
+          "op": "polygon",
+          "fill": "blockout_crate",
+          "points": [
+            [
+              8,
+              31
+            ],
+            [
+              18,
+              24
+            ],
+            [
+              46,
+              24
+            ],
+            [
+              46,
+              47
+            ],
+            [
+              39,
+              54
+            ],
+            [
+              8,
+              54
+            ]
+          ]
+        },
+        {
+          "op": "polygon",
+          "fill": "wood_dark",
+          "points": [
+            [
+              39,
+              31
+            ],
+            [
+              46,
+              24
+            ],
+            [
+              46,
+              47
+            ],
+            [
+              39,
+              54
+            ]
+          ]
+        },
+        {
+          "op": "polygon",
+          "fill": "blockout_barrel",
+          "points": [
+            [
+              50,
+              28
+            ],
+            [
+              68,
+              28
+            ],
+            [
+              71,
+              47
+            ],
+            [
+              66,
+              56
+            ],
+            [
+              53,
+              57
+            ],
+            [
+              48,
+              50
+            ],
+            [
+              48,
+              36
+            ]
+          ]
+        },
+        {
+          "op": "ellipse",
+          "fill": "blockout_barrel",
+          "xy": [
+            49,
+            23,
+            69,
+            33
+          ]
+        },
+        {
+          "op": "arc",
+          "fill": "blockout_rope",
+          "xy": [
+            64,
+            42,
+            94,
+            59
+          ],
+          "start": 0,
+          "end": 360,
+          "width": 3.4
+        },
+        {
+          "op": "arc",
+          "fill": "blockout_rope",
+          "xy": [
+            72,
+            47,
+            86,
+            55
+          ],
+          "start": 0,
+          "end": 360,
+          "width": 1.9
+        },
+        {
+          "op": "arc",
+          "fill": "blockout_rope",
+          "xy": [
+            55,
+            43,
+            78,
+            56
+          ],
+          "start": 206,
+          "end": 360,
+          "width": 2.4
+        }
+      ]
+    },
+    "wood_base": {
+      "purpose": "Weathered crate: top, side, front planks, X-brace, nails, broken rim.",
+      "ops": [
+        {
+          "op": "polygon",
+          "fill": "wood_mid",
+          "points": [
+            [
+              8,
+              31
+            ],
+            [
+              39,
+              31
+            ],
+            [
+              39,
+              54
+            ],
+            [
+              8,
+              54
+            ]
+          ]
+        },
+        {
+          "op": "polygon",
+          "fill": "wood_light",
+          "points": [
+            [
+              8,
+              31
+            ],
+            [
+              18,
+              24
+            ],
+            [
+              46,
+              24
+            ],
+            [
+              39,
+              31
+            ]
+          ]
+        },
+        {
+          "op": "polygon",
+          "fill": "wood_dark",
+          "points": [
+            [
+              39,
+              31
+            ],
+            [
+              46,
+              24
+            ],
+            [
+              46,
+              47
+            ],
+            [
+              39,
+              54
+            ]
+          ]
+        },
+        {
+          "op": "line",
+          "fill": "wood_deep",
+          "points": [
+            [
+              10,
+              37
+            ],
+            [
+              38,
+              37
+            ]
+          ],
+          "width": 0.75
+        },
+        {
+          "op": "line",
+          "fill": "wood_deep",
+          "points": [
+            [
+              10,
+              45
+            ],
+            [
+              38,
+              45
+            ]
+          ],
+          "width": 0.75
+        },
+        {
+          "op": "line",
+          "fill": "wood_cool_shadow",
+          "points": [
+            [
+              18,
+              32
+            ],
+            [
+              18,
+              53
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "wood_cool_shadow",
+          "points": [
+            [
+              29,
+              32
+            ],
+            [
+              29,
+              54
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "wood_deep",
+          "points": [
+            [
+              12,
+              35
+            ],
+            [
+              36,
+              51
+            ]
+          ],
+          "width": 1.3
+        },
+        {
+          "op": "line",
+          "fill": "wood_deep",
+          "points": [
+            [
+              36,
+              35
+            ],
+            [
+              12,
+              51
+            ]
+          ],
+          "width": 1.3
+        },
+        {
+          "op": "line",
+          "fill": "wood_light",
+          "points": [
+            [
+              13,
+              34
+            ],
+            [
+              36,
+              49
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "wood_light",
+          "points": [
+            [
+              35,
+              34
+            ],
+            [
+              13,
+              49
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "wood_sun",
+          "points": [
+            [
+              12,
+              30
+            ],
+            [
+              37,
+              29
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "wood_sun",
+          "points": [
+            [
+              19,
+              25
+            ],
+            [
+              43,
+              25
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "pixels",
+          "fill": "chip_dark",
+          "points": [
+            [
+              9,
+              32
+            ],
+            [
+              14,
+              51
+            ],
+            [
+              21,
+              37
+            ],
+            [
+              31,
+              31
+            ],
+            [
+              40,
+              35
+            ],
+            [
+              45,
+              43
+            ],
+            [
+              22,
+              52
+            ],
+            [
+              37,
+              29
+            ],
+            [
+              29,
+              27
+            ],
+            [
+              42,
+              46
+            ]
+          ]
+        },
+        {
+          "op": "pixels",
+          "fill": "wood_light",
+          "points": [
+            [
+              12,
+              39
+            ],
+            [
+              21,
+              37
+            ],
+            [
+              35,
+              49
+            ],
+            [
+              45,
+              43
+            ],
+            [
+              34,
+              38
+            ],
+            [
+              29,
+              27
+            ]
+          ]
+        }
+      ]
+    },
+    "barrel_base": {
+      "purpose": "Small cask: clear top ellipse, bulged sides, staves, warm left face, dark right face.",
+      "ops": [
+        {
+          "op": "ellipse",
+          "fill": "barrel_dark",
+          "xy": [
+            49,
+            23,
+            69,
+            33
+          ]
+        },
+        {
+          "op": "polygon",
+          "fill": "barrel_mid",
+          "points": [
+            [
+              50,
+              29
+            ],
+            [
+              68,
+              29
+            ],
+            [
+              71,
+              46
+            ],
+            [
+              67,
+              54
+            ],
+            [
+              62,
+              57
+            ],
+            [
+              53,
+              57
+            ],
+            [
+              48,
+              50
+            ],
+            [
+              48,
+              36
+            ]
+          ]
+        },
+        {
+          "op": "polygon",
+          "fill": "barrel_warm",
+          "points": [
+            [
+              51,
+              29
+            ],
+            [
+              60,
+              29
+            ],
+            [
+              60,
+              56
+            ],
+            [
+              53,
+              56
+            ],
+            [
+              49,
+              49
+            ],
+            [
+              49,
+              36
+            ]
+          ]
+        },
+        {
+          "op": "polygon",
+          "fill": "barrel_dark",
+          "points": [
+            [
+              63,
+              29
+            ],
+            [
+              69,
+              30
+            ],
+            [
+              70,
+              47
+            ],
+            [
+              66,
+              55
+            ],
+            [
+              63,
+              56
+            ]
+          ]
+        },
+        {
+          "op": "ellipse_outline",
+          "fill": "barrel_light",
+          "xy": [
+            50,
+            24,
+            68,
+            32
+          ],
+          "width": 0.95
+        },
+        {
+          "op": "arc",
+          "fill": "barrel_dark",
+          "xy": [
+            49,
+            48,
+            69,
+            58
+          ],
+          "start": 0,
+          "end": 180,
+          "width": 0.95
+        },
+        {
+          "op": "line",
+          "fill": "barrel_dark",
+          "points": [
+            [
+              53,
+              31
+            ],
+            [
+              52,
+              53
+            ]
+          ],
+          "width": 0.6
+        },
+        {
+          "op": "line",
+          "fill": "barrel_dark",
+          "points": [
+            [
+              59,
+              30
+            ],
+            [
+              59,
+              56
+            ]
+          ],
+          "width": 0.65
+        },
+        {
+          "op": "line",
+          "fill": "barrel_dark",
+          "points": [
+            [
+              65,
+              31
+            ],
+            [
+              67,
+              52
+            ]
+          ],
+          "width": 0.6
+        },
+        {
+          "op": "line",
+          "fill": "barrel_light",
+          "points": [
+            [
+              54,
+              27
+            ],
+            [
+              64,
+              27
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "pixels",
+          "fill": "chip_dark",
+          "points": [
+            [
+              51,
+              31
+            ],
+            [
+              66,
+              33
+            ],
+            [
+              63,
+              41
+            ],
+            [
+              58,
+              54
+            ],
+            [
+              54,
+              35
+            ]
+          ]
+        },
+        {
+          "op": "pixels",
+          "fill": "barrel_light",
+          "points": [
+            [
+              55,
+              29
+            ],
+            [
+              56,
+              38
+            ],
+            [
+              58,
+              54
+            ],
+            [
+              61,
+              45
+            ]
+          ]
+        }
+      ]
+    },
+    "metal_bands": {
+      "purpose": "Dull colonial iron hoops visibly wrapping the small barrel.",
+      "ops": [
+        {
+          "op": "line",
+          "fill": "metal_dark",
+          "points": [
+            [
+              49,
+              36
+            ],
+            [
+              70,
+              36
+            ]
+          ],
+          "width": 1.15
+        },
+        {
+          "op": "line",
+          "fill": "metal_mid",
+          "points": [
+            [
+              50,
+              37
+            ],
+            [
+              69,
+              37
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "metal_dark",
+          "points": [
+            [
+              49,
+              47
+            ],
+            [
+              70,
+              47
+            ]
+          ],
+          "width": 1.15
+        },
+        {
+          "op": "line",
+          "fill": "metal_mid",
+          "points": [
+            [
+              50,
+              48
+            ],
+            [
+              69,
+              48
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "pixels",
+          "fill": "metal_light",
+          "points": [
+            [
+              52,
+              36
+            ],
+            [
+              59,
+              37
+            ],
+            [
+              66,
+              36
+            ],
+            [
+              51,
+              47
+            ],
+            [
+              61,
+              48
+            ],
+            [
+              68,
+              47
+            ]
+          ]
+        }
+      ]
+    },
+    "rope_base": {
+      "purpose": "Foreground rope coil, central hole, loose tail, and alternating fiber ticks.",
+      "ops": [
+        {
+          "op": "arc",
+          "fill": "rope_shadow",
+          "xy": [
+            63,
+            42,
+            95,
+            60
+          ],
+          "start": 0,
+          "end": 360,
+          "width": 3.2
+        },
+        {
+          "op": "arc",
+          "fill": "rope_mid",
+          "xy": [
+            65,
+            43,
+            93,
+            58
+          ],
+          "start": 0,
+          "end": 360,
+          "width": 2.5
+        },
+        {
+          "op": "arc",
+          "fill": "rope_light",
+          "xy": [
+            69,
+            45,
+            89,
+            56
+          ],
+          "start": 0,
+          "end": 360,
+          "width": 1.7
+        },
+        {
+          "op": "arc",
+          "fill": "rope_dark",
+          "xy": [
+            74,
+            48,
+            84,
+            54
+          ],
+          "start": 0,
+          "end": 360,
+          "width": 1.2
+        },
+        {
+          "op": "arc",
+          "fill": "rope_mid",
+          "xy": [
+            56,
+            43,
+            80,
+            56
+          ],
+          "start": 202,
+          "end": 360,
+          "width": 2.2
+        },
+        {
+          "op": "arc",
+          "fill": "rope_dark",
+          "xy": [
+            55,
+            46,
+            78,
+            58
+          ],
+          "start": 210,
+          "end": 354,
+          "width": 0.85
+        },
+        {
+          "op": "line",
+          "fill": "rope_sun",
+          "points": [
+            [
+              62,
+              46
+            ],
+            [
+              70,
+              45
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "rope_sun",
+          "points": [
+            [
+              70,
+              44
+            ],
+            [
+              86,
+              46
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "pixels",
+          "fill": "rope_sun",
+          "points": [
+            [
+              94,
+              52
+            ],
+            [
+              92,
+              55
+            ],
+            [
+              87,
+              57
+            ],
+            [
+              80,
+              58
+            ],
+            [
+              74,
+              58
+            ],
+            [
+              68,
+              56
+            ],
+            [
+              65,
+              53
+            ],
+            [
+              64,
+              50
+            ],
+            [
+              66,
+              47
+            ],
+            [
+              71,
+              45
+            ],
+            [
+              77,
+              44
+            ],
+            [
+              84,
+              44
+            ],
+            [
+              89,
+              46
+            ],
+            [
+              93,
+              49
+            ],
+            [
+              86,
+              52
+            ],
+            [
+              83,
+              54
+            ],
+            [
+              78,
+              55
+            ],
+            [
+              73,
+              54
+            ],
+            [
+              71,
+              52
+            ],
+            [
+              72,
+              49
+            ],
+            [
+              76,
+              47
+            ],
+            [
+              81,
+              47
+            ],
+            [
+              85,
+              48
+            ]
+          ]
+        },
+        {
+          "op": "pixels",
+          "fill": "rope_dark",
+          "points": [
+            [
+              93,
+              53
+            ],
+            [
+              89,
+              56
+            ],
+            [
+              84,
+              58
+            ],
+            [
+              77,
+              58
+            ],
+            [
+              71,
+              57
+            ],
+            [
+              66,
+              55
+            ],
+            [
+              64,
+              52
+            ],
+            [
+              65,
+              49
+            ],
+            [
+              68,
+              46
+            ],
+            [
+              74,
+              44
+            ],
+            [
+              80,
+              44
+            ],
+            [
+              87,
+              45
+            ],
+            [
+              92,
+              47
+            ],
+            [
+              94,
+              50
+            ],
+            [
+              85,
+              54
+            ],
+            [
+              81,
+              55
+            ],
+            [
+              76,
+              55
+            ],
+            [
+              72,
+              53
+            ],
+            [
+              71,
+              50
+            ],
+            [
+              73,
+              48
+            ],
+            [
+              78,
+              47
+            ],
+            [
+              83,
+              48
+            ],
+            [
+              86,
+              50
+            ]
+          ]
+        }
+      ]
+    },
+    "dark_outline": {
+      "purpose": "Final painterly contour and occlusion marks after the individual materials are readable.",
+      "ops": [
+        {
+          "op": "line",
+          "fill": "outline",
+          "points": [
+            [
+              8,
+              31
+            ],
+            [
+              18,
+              24
+            ],
+            [
+              46,
+              24
+            ],
+            [
+              46,
+              47
+            ],
+            [
+              39,
+              54
+            ],
+            [
+              8,
+              54
+            ],
+            [
+              8,
+              31
+            ]
+          ],
+          "width": 0.85
+        },
+        {
+          "op": "line",
+          "fill": "outline",
+          "points": [
+            [
+              8,
+              31
+            ],
+            [
+              39,
+              31
+            ],
+            [
+              46,
+              24
+            ]
+          ],
+          "width": 0.65
+        },
+        {
+          "op": "line",
+          "fill": "deep_outline",
+          "points": [
+            [
+              39,
+              31
+            ],
+            [
+              39,
+              54
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "ellipse_outline",
+          "fill": "outline",
+          "xy": [
+            49,
+            23,
+            69,
+            33
+          ],
+          "width": 0.8
+        },
+        {
+          "op": "line",
+          "fill": "outline",
+          "points": [
+            [
+              50,
+              29
+            ],
+            [
+              48,
+              36
+            ],
+            [
+              48,
+              50
+            ],
+            [
+              53,
+              57
+            ],
+            [
+              63,
+              57
+            ],
+            [
+              67,
+              55
+            ],
+            [
+              71,
+              47
+            ],
+            [
+              68,
+              29
+            ]
+          ],
+          "width": 0.85
+        },
+        {
+          "op": "ellipse_outline",
+          "fill": "outline",
+          "xy": [
+            63,
+            42,
+            95,
+            60
+          ],
+          "width": 0.75
+        },
+        {
+          "op": "ellipse_outline",
+          "fill": "deep_outline",
+          "xy": [
+            74,
+            48,
+            84,
+            54
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "arc",
+          "fill": "outline",
+          "xy": [
+            55,
+            43,
+            80,
+            57
+          ],
+          "start": 202,
+          "end": 360,
+          "width": 0.65
+        }
+      ]
+    },
+    "highlights": {
+      "purpose": "Small warm top-left catches: not symbolic sparkle, just material separation.",
+      "ops": [
+        {
+          "op": "pixels",
+          "fill": "chalk_highlight",
+          "points": [
+            [
+              12,
+              30
+            ],
+            [
+              20,
+              25
+            ],
+            [
+              28,
+              25
+            ],
+            [
+              36,
+              25
+            ]
+          ]
+        },
+        {
+          "op": "pixels",
+          "fill": "wood_sun",
+          "points": [
+            [
+              14,
+              35
+            ],
+            [
+              24,
+              36
+            ],
+            [
+              35,
+              34
+            ]
+          ]
+        },
+        {
+          "op": "pixels",
+          "fill": "barrel_light",
+          "points": [
+            [
+              52,
+              27
+            ],
+            [
+              58,
+              25
+            ],
+            [
+              64,
+              27
+            ],
+            [
+              53,
+              33
+            ],
+            [
+              62,
+              35
+            ]
+          ]
+        },
+        {
+          "op": "pixels",
+          "fill": "rope_sun",
+          "points": [
+            [
+              68,
+              47
+            ],
+            [
+              73,
+              45
+            ],
+            [
+              80,
+              44
+            ],
+            [
+              87,
+              46
+            ],
+            [
+              72,
+              52
+            ],
+            [
+              83,
+              53
+            ]
+          ]
+        },
+        {
+          "op": "line",
+          "fill": "wood_sun",
+          "points": [
+            [
+              11,
+              33
+            ],
+            [
+              23,
+              33
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "barrel_light",
+          "points": [
+            [
+              52,
+              31
+            ],
+            [
+              58,
+              30
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "arc",
+          "fill": "rope_sun",
+          "xy": [
+            67,
+            44,
+            91,
+            57
+          ],
+          "start": 200,
+          "end": 322,
+          "width": 0.55
+        }
+      ]
+    },
+    "chips_scratches": {
+      "purpose": "Hand-placed chips and surface scars, kept sparse enough to preserve object readability.",
+      "ops": [
+        {
+          "op": "pixels",
+          "fill": "chip_dark",
+          "points": [
+            [
+              9,
+              32
+            ],
+            [
+              12,
+              39
+            ],
+            [
+              14,
+              51
+            ],
+            [
+              18,
+              25
+            ],
+            [
+              21,
+              37
+            ],
+            [
+              26,
+              45
+            ],
+            [
+              31,
+              31
+            ],
+            [
+              35,
+              49
+            ],
+            [
+              40,
+              35
+            ],
+            [
+              44,
+              26
+            ],
+            [
+              45,
+              43
+            ],
+            [
+              11,
+              47
+            ],
+            [
+              22,
+              52
+            ],
+            [
+              34,
+              38
+            ],
+            [
+              37,
+              29
+            ],
+            [
+              16,
+              43
+            ],
+            [
+              29,
+              27
+            ],
+            [
+              33,
+              53
+            ],
+            [
+              42,
+              46
+            ],
+            [
+              51,
+              31
+            ],
+            [
+              61,
+              30
+            ],
+            [
+              50,
+              41
+            ],
+            [
+              63,
+              41
+            ],
+            [
+              52,
+              52
+            ],
+            [
+              64,
+              52
+            ],
+            [
+              54,
+              35
+            ],
+            [
+              66,
+              55
+            ]
+          ]
+        },
+        {
+          "op": "pixels",
+          "fill": "wood_light",
+          "points": [
+            [
+              10,
+              38
+            ],
+            [
+              19,
+              41
+            ],
+            [
+              28,
+              48
+            ],
+            [
+              36,
+              42
+            ],
+            [
+              42,
+              29
+            ],
+            [
+              45,
+              43
+            ]
+          ]
+        },
+        {
+          "op": "line",
+          "fill": "grime",
+          "points": [
+            [
+              11,
+              53
+            ],
+            [
+              38,
+              53
+            ]
+          ],
+          "width": 0.55
+        },
+        {
+          "op": "line",
+          "fill": "grime",
+          "points": [
+            [
+              50,
+              55
+            ],
+            [
+              67,
+              55
+            ]
+          ],
+          "width": 0.55
+        }
+      ]
+    },
+    "grime": {
+      "purpose": "Harbor dirt on lower edges plus green-brown aging marks that tie the props to the dock.",
+      "ops": [
+        {
+          "op": "pixels",
+          "fill": "grime",
+          "points": [
+            [
+              7,
+              55
+            ],
+            [
+              13,
+              56
+            ],
+            [
+              22,
+              55
+            ],
+            [
+              31,
+              56
+            ],
+            [
+              39,
+              55
+            ],
+            [
+              47,
+              56
+            ],
+            [
+              55,
+              57
+            ],
+            [
+              63,
+              56
+            ],
+            [
+              72,
+              58
+            ],
+            [
+              82,
+              58
+            ],
+            [
+              92,
+              57
+            ],
+            [
+              12,
+              52
+            ],
+            [
+              38,
+              52
+            ],
+            [
+              49,
+              53
+            ],
+            [
+              65,
+              54
+            ],
+            [
+              88,
+              55
+            ],
+            [
+              13,
+              50
+            ],
+            [
+              19,
+              56
+            ],
+            [
+              83,
+              46
+            ],
+            [
+              76,
+              52
+            ],
+            [
+              12,
+              58
+            ],
+            [
+              73,
+              48
+            ],
+            [
+              41,
+              54
+            ],
+            [
+              89,
+              44
+            ],
+            [
+              16,
+              50
+            ],
+            [
+              83,
+              56
+            ],
+            [
+              66,
+              46
+            ],
+            [
+              52,
+              52
+            ],
+            [
+              25,
+              58
+            ],
+            [
+              39,
+              48
+            ],
+            [
+              44,
+              54
+            ],
+            [
+              69,
+              44
+            ],
+            [
+              32,
+              50
+            ],
+            [
+              88,
+              56
+            ],
+            [
+              32,
+              46
+            ],
+            [
+              19,
+              52
+            ]
+          ]
+        },
+        {
+          "op": "pixels",
+          "fill": "green_grime",
+          "points": [
+            [
+              7,
+              55
+            ],
+            [
+              39,
+              55
+            ],
+            [
+              72,
+              58
+            ],
+            [
+              38,
+              52
+            ],
+            [
+              13,
+              50
+            ],
+            [
+              12,
+              58
+            ],
+            [
+              16,
+              50
+            ],
+            [
+              25,
+              58
+            ],
+            [
+              32,
+              50
+            ]
+          ]
+        },
+        {
+          "op": "line",
+          "fill": "grime",
+          "points": [
+            [
+              8,
+              54
+            ],
+            [
+              39,
+              54
+            ]
+          ],
+          "width": 0.9
+        },
+        {
+          "op": "line",
+          "fill": "grime",
+          "points": [
+            [
+              49,
+              56
+            ],
+            [
+              67,
+              56
+            ]
+          ],
+          "width": 0.8
+        },
+        {
+          "op": "arc",
+          "fill": "grime",
+          "xy": [
+            65,
+            49,
+            93,
+            60
+          ],
+          "start": 20,
+          "end": 168,
+          "width": 0.65
+        }
+      ]
+    }
+  },
+  "passes": {
+    "pass_01_blockout": [
+      "cast_shadow",
+      "contact_shadow",
+      "silhouette_blockout",
+      "dark_outline"
+    ],
+    "pass_02_material_detail": [
+      "cast_shadow",
+      "contact_shadow",
+      "silhouette_blockout",
+      "wood_base",
+      "barrel_base",
+      "metal_bands",
+      "rope_base",
+      "dark_outline"
+    ],
+    "pass_03_polish_shadow_grounding": [
+      "cast_shadow",
+      "contact_shadow",
+      "silhouette_blockout",
+      "wood_base",
+      "barrel_base",
+      "metal_bands",
+      "rope_base",
+      "dark_outline",
+      "highlights",
+      "chips_scratches",
+      "grime"
+    ]
+  },
+  "visual_judgment": {
+    "rating": 7.1,
+    "pass_gate": 7.5,
+    "verdict": "DEFER",
+    "status": "visual_defer_readable_prop_studies_but_not_chandlery_standard",
+    "rationale": "This third approach drops the 8-bit token/one-blob model and proves clearer crate, barrel, and rope studies before assembly. It is more readable, but still deferred below the chandlery-quality bar until human art review accepts it."
+  }
+}

@@ -7,7 +7,7 @@ const STATUS_MAX_WIDTH := 304.0
 const STATUS_EXPANDED_MAX_WIDTH := 348.0
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
-const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png"
+const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/contact_sheets/g418d3_pixel_sprite_atelier_board.png"
 
 @onready var status_panel: PanelContainer = $Panel
 @onready var build_label: Label = $Panel/MarginContainer/VBoxContainer/BuildLabel
