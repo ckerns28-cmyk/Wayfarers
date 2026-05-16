@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18D.2", "build_phase_g_4_18d_2")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18D.2 Art Production Capability Gate", "build_label_g_4_18d_2")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18D.3", "build_phase_g_4_18d_3")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18D.3 Pixel Sprite Atelier", "build_label_g_4_18d_3")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -200,19 +200,48 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport_green_origin/contact_sheets/g418d2_before_after_production.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/g418d2_in_world_comparison_frame.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d3_isolated_sprite_1x.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d3_enlarged_grid_8x.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d3_before_after_pixel_atelier.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d3_palette_sheet.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d3_lab_in_world_comparison.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d3_standard_comparison_chandlery_wharf.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d3_pixel_sprite_atelier_board.png",
 		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png",
 		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_rough_base.png",
 		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_prepared.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_pass01_blockout.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_pass02_material_detail.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_pass03_polish_shadow_grounding.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_dockside_rope_crate_barrel_krita_raw.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_dockside_rope_crate_barrel_cluster.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_dockside_rope_crate_barrel_sprite_sheet.png",
 		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d2_rope_crate_barrel_silhouette.svg",
 		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d2_rope_crate_barrel_paint_plan.json",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_rope_crate_barrel_pixel_layers.json",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/01_cast_shadow.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/02_contact_shadow.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/03_silhouette_blockout.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/04_dark_outline.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/05_wood_base.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/06_rope_base.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/07_barrel_base.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/08_metal_bands.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/09_highlights.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/10_chips_scratches.png",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d3_pixel_layers/11_grime.png",
 		"res://art_pipeline/newport_green_origin/reports/G418B_GREEN_ORIGIN_ASSET_FACTORY.md",
 		"res://art_pipeline/newport_green_origin/reports/G418C_GREEN_ORIGIN_VISUAL_RETROSPECTIVE.md",
 		"res://art_pipeline/newport_green_origin/reports/G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md",
 		"res://art_pipeline/newport_green_origin/reports/G418D1_BAKEOFF_VERDICT_CORRECTION_MANUAL_PAINTOVER.md",
 		"res://art_pipeline/newport_green_origin/reports/G418D2_ART_PRODUCTION_CAPABILITY_GATE.md",
+		"res://art_pipeline/newport_green_origin/reports/G418D3_PIXEL_BY_PIXEL_SPRITE_ATELIER.md",
+		"res://art_pipeline/newport_green_origin/method_bakeoff/reports/g418d3_pixel_sprite_image_inspection.json",
+		"res://art_pipeline/newport_green_origin/scripts/generate_g418d3_pixel_sprite_atelier.py",
 		"res://tools/capture_g418c_review_screenshots.mjs",
 		"res://tools/capture_g418d_review_screenshots.mjs",
 		"res://tools/capture_g418d2_review_screenshots.mjs",
+		"res://tools/capture_g418d3_review_screenshots.mjs",
 	]:
 		_expect(FileAccess.file_exists(file_path), "g418_pipeline_file_" + file_path.get_file())
 
@@ -331,9 +360,9 @@ func _validate_g418d_green_origin_bakeoff_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_method_bakeoff_manifest.json")
 	_expect(not manifest.is_empty(), "g418d_bakeoff_manifest_json")
 	_expect(String(manifest.get("schema_id", "")) == "wayfarer.newport_green_origin.method_bakeoff.v1", "g418d_bakeoff_manifest_schema")
-	_expect(String(manifest.get("phase", "")) == "G-4.18D.2", "g418d2_manifest_phase")
+	_expect(String(manifest.get("phase", "")) == "G-4.18D.3", "g418d3_manifest_phase")
 	_expect(manifest.has("recommended_method_for_g418e") and manifest.get("recommended_method_for_g418e") == null, "g418d2_no_recommendation")
-	_expect(String(manifest.get("normal_review_policy", "")).find("No G-4.18D, G-4.18D.1, or G-4.18D.2 experimental/capability asset is normal-review eligible") >= 0, "g418d2_normal_review_blocked")
+	_expect(String(manifest.get("normal_review_policy", "")).find("G-4.18D.3") >= 0, "g418d3_normal_review_policy_declared")
 	var gate_text := String(manifest.get("visual_quality_gate", ""))
 	_expect(gate_text.find("8.5") >= 0 and gate_text.find("7.5") >= 0, "g418d2_visual_gates_declared")
 	var candidates: Array = manifest.get("candidates", [])
@@ -395,6 +424,41 @@ func _validate_g418d_green_origin_bakeoff_manifest() -> void:
 		else:
 			_expect(capability_rating < 7.5, "g418d2_capability_non_pass_below_gate")
 			_expect(bool(capability.get("final_commercial_candidate", true)) == false, "g418d2_capability_non_pass_not_final_candidate")
+	var atelier: Dictionary = {}
+	var raw_atelier = manifest.get("pixel_sprite_atelier_proof", {})
+	if raw_atelier is Dictionary:
+		atelier = raw_atelier
+	_expect(not atelier.is_empty(), "g418d3_pixel_atelier_present")
+	if not atelier.is_empty():
+		var atelier_id := String(atelier.get("asset_id", "unknown"))
+		for key in ["phase", "asset_id", "sample_path", "pass_01_blockout_path", "pass_02_material_detail_path", "pass_03_polish_shadow_grounding_path", "krita_projection_path", "sprite_sheet_path", "isolated_1x_path", "grid_8x_path", "before_after_path", "palette_sheet_path", "in_world_comparison_path", "standard_comparison_path", "atelier_board_path", "source_file", "required_layers", "provenance_status", "origin_classification", "commercial_use_status", "visual_quality_status", "visual_rating", "visual_pass_gate", "capability_verdict", "review_eligible", "normal_review_eligible", "lab_only", "final_commercial_candidate", "final_commercial_eligible", "input_sources", "source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+			_expect(atelier.has(key), "g418d3_atelier_field_" + atelier_id + "_" + key)
+		for path_key in ["sample_path", "pass_01_blockout_path", "pass_02_material_detail_path", "pass_03_polish_shadow_grounding_path", "krita_projection_path", "sprite_sheet_path", "isolated_1x_path", "grid_8x_path", "before_after_path", "palette_sheet_path", "in_world_comparison_path", "standard_comparison_path", "atelier_board_path", "source_file"]:
+			_expect(FileAccess.file_exists("res://" + String(atelier.get(path_key, ""))), "g418d3_atelier_path_" + path_key)
+		_expect(String(atelier.get("phase", "")) == "G-4.18D.3", "g418d3_atelier_phase")
+		_expect(String(atelier.get("provenance_status", "")) == "green_origin_candidate", "g418d3_atelier_provenance")
+		_expect(String(atelier.get("origin_classification", "")) == "green_origin_candidate", "g418d3_atelier_origin")
+		_expect(String(atelier.get("commercial_use_status", "")) == "green_origin_candidate", "g418d3_atelier_commercial_status")
+		_expect(bool(atelier.get("review_eligible", true)) == false, "g418d3_atelier_review_blocked")
+		_expect(bool(atelier.get("normal_review_eligible", true)) == false, "g418d3_atelier_normal_review_blocked")
+		_expect(bool(atelier.get("lab_only", false)) == true, "g418d3_atelier_lab_only")
+		_expect(bool(atelier.get("final_commercial_eligible", true)) == false, "g418d3_atelier_not_final_eligible")
+		_expect(bool(atelier.get("source_pixels_from_yellow_uncertain_assets", true)) == false, "g418d3_atelier_no_yellow_pixels")
+		_expect(bool(atelier.get("source_pixels_from_third_party_material", true)) == false, "g418d3_atelier_no_third_party_pixels")
+		_expect(bool(atelier.get("web_scraped_source_pixels", true)) == false, "g418d3_atelier_no_web_pixels")
+		var required_layers: Array = atelier.get("required_layers", [])
+		for layer_name in ["silhouette_blockout", "dark_outline", "wood_base", "rope_base", "barrel_base", "metal_bands", "highlights", "chips_scratches", "grime", "cast_shadow", "contact_shadow"]:
+			_expect(required_layers.has(layer_name), "g418d3_atelier_layer_" + layer_name)
+		var atelier_rating := float(atelier.get("visual_rating", 0.0))
+		var atelier_gate := float(atelier.get("visual_pass_gate", 0.0))
+		var atelier_verdict := String(atelier.get("capability_verdict", ""))
+		_expect(atelier_gate >= 7.5, "g418d3_atelier_gate_7_5")
+		if atelier_verdict == "PASS":
+			_expect(atelier_rating >= 7.5, "g418d3_atelier_pass_requires_7_5")
+			_expect(bool(atelier.get("final_commercial_candidate", false)) == true, "g418d3_atelier_pass_candidate_flag")
+		else:
+			_expect(atelier_rating < 7.5, "g418d3_atelier_non_pass_below_gate")
+			_expect(bool(atelier.get("final_commercial_candidate", true)) == false, "g418d3_atelier_non_pass_not_final_candidate")
 
 func _validate_g418c_green_origin_lab_quarantine(main: Node, map: Node, hud: CanvasLayer) -> void:
 	_expect(main.has_method("set_green_origin_lab_mode"), "g418c_lab_main_set_api")

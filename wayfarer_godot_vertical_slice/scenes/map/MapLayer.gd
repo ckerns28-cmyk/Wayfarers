@@ -12,7 +12,7 @@ const NEWPORT_HERO_ATLAS_PATH := "res://art_pipeline/newport/atlases/newport_her
 const NEWPORT_GREEN_ORIGIN_VERSION := "G-4.18B"
 const NEWPORT_GREEN_ORIGIN_ATLAS_PATH := "res://art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png"
 const G418D1_M01B_PROOF_PATH := "res://art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_proof.png"
-const G418D2_CAPABILITY_ASSET_PATH := "res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png"
+const G418D3_PIXEL_ATELIER_ASSET_PATH := "res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_dockside_rope_crate_barrel_cluster.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -86,7 +86,7 @@ const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 var _newport_hero_atlas: Texture2D
 var _newport_green_origin_atlas: Texture2D
 var _g418d1_m01b_proof: Texture2D
-var _g418d2_capability_asset: Texture2D
+var _g418d3_pixel_atelier_asset: Texture2D
 var _green_origin_lab_enabled := false
 
 func _ready() -> void:
@@ -99,9 +99,9 @@ func _ready() -> void:
 	_g418d1_m01b_proof = ResourceLoader.load(G418D1_M01B_PROOF_PATH, "Texture2D") as Texture2D
 	if _g418d1_m01b_proof == null:
 		push_warning("Failed to load G-4.18D.1 M01B lab proof: " + G418D1_M01B_PROOF_PATH)
-	_g418d2_capability_asset = ResourceLoader.load(G418D2_CAPABILITY_ASSET_PATH, "Texture2D") as Texture2D
-	if _g418d2_capability_asset == null:
-		push_warning("Failed to load G-4.18D.2 capability asset: " + G418D2_CAPABILITY_ASSET_PATH)
+	_g418d3_pixel_atelier_asset = ResourceLoader.load(G418D3_PIXEL_ATELIER_ASSET_PATH, "Texture2D") as Texture2D
+	if _g418d3_pixel_atelier_asset == null:
+		push_warning("Failed to load G-4.18D.3 pixel atelier asset: " + G418D3_PIXEL_ATELIER_ASSET_PATH)
 	queue_redraw()
 
 func newport_surface_kit_version() -> String:
@@ -702,10 +702,12 @@ func _draw_g418c_green_origin_lab_proof() -> void:
 	_draw_green_origin_piece("green_dock_plank_patch", Rect2(1076, 800, 144, 48), 0.92)
 	_draw_green_origin_piece("green_pier_post_pair", Rect2(1018, 714, 74, 62), 0.95)
 	_draw_green_origin_piece("green_rope_coil_small", Rect2(1188, 770, 54, 38), 0.98)
-	if _g418d2_capability_asset != null:
-		draw_texture_rect(_g418d2_capability_asset, Rect2(1036, 592, 160, 110), false, Color(1, 1, 1, 0.98))
-		_draw_label("D2 DEFER - lab-only capability proof", Vector2(1038, 704), 11, Color("#f0cf7d"))
-	_draw_lab_badge(Vector2(1008, 724))
+
+func _draw_g418d3_pixel_atelier_lab_sprite() -> void:
+	if not _green_origin_lab_enabled:
+		return
+	if _g418d3_pixel_atelier_asset != null:
+		draw_texture_rect(_g418d3_pixel_atelier_asset, Rect2(1114, 594, 96, 64), false, Color(1, 1, 1, 1.0))
 
 func _draw_lab_badge(pos: Vector2) -> void:
 	var rect := Rect2(pos, Vector2(316, 54))
@@ -848,6 +850,7 @@ func _draw_g410_props() -> void:
 		if not _is_g417_hero_prop_placeholder(bench):
 			_draw_bench(bench)
 	_draw_g417_hero_prop_clusters()
+	_draw_g418d3_pixel_atelier_lab_sprite()
 
 func _draw_g417_hero_prop_clusters() -> void:
 	if _newport_hero_atlas == null:

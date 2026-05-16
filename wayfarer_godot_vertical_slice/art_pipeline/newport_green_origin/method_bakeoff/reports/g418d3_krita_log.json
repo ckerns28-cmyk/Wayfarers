@@ -1,0 +1,19 @@
+{
+  "tool": "Krita CLI",
+  "input": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_pass03_polish_shadow_grounding.png",
+  "output": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d3_dockside_rope_crate_barrel_krita_raw.png",
+  "operations": [
+    "opened the pass 03 pixel-layer composite",
+    "inspected/exported the 1x hard-pixel projection without resampling",
+    "confirmed the refinement layer decisions are encoded before final cleanup"
+  ],
+  "actual_sprite_changes_before_krita_projection": [
+    "tightened missing-corner outline pixels around the crate",
+    "added rope fiber ticks and catchlights",
+    "added barrel hoop bands and dull metal highlights",
+    "added lower grime pixels and contact shadow spans"
+  ],
+  "isolated_profile_root": "artifacts/tool_profiles/g418d3",
+  "stdout": "",
+  "stderr": "Fontconfig error: Cannot load default config file: No such file: (null)\nFontconfig error: Cannot load default config file: No such file: (null)\n"
+}

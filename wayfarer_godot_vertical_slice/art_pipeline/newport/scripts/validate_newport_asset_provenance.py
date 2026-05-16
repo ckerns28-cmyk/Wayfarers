@@ -21,6 +21,7 @@ GREEN_ORIGIN_BAKEOFF_MANIFEST_PATH = GREEN_ORIGIN_ROOT / "manifests" / "green_or
 GREEN_ORIGIN_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418B_GREEN_ORIGIN_ASSET_FACTORY.md"
 GREEN_ORIGIN_BAKEOFF_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md"
 GREEN_ORIGIN_CAPABILITY_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418D2_ART_PRODUCTION_CAPABILITY_GATE.md"
+GREEN_ORIGIN_PIXEL_ATELIER_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418D3_PIXEL_BY_PIXEL_SPRITE_ATELIER.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 ISOLATED_BUILDING_DIR = PROJECT_ROOT / "assets" / "sprites" / "buildings" / "isolated"
@@ -496,14 +497,14 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
         fail("green-origin bakeoff manifest schema_id must be wayfarer.newport_green_origin.method_bakeoff.v1", failures)
     else:
         pass_check("green-origin bakeoff manifest schema id")
-    if manifest.get("phase") != "G-4.18D.2":
-        fail("green-origin bakeoff manifest phase must be G-4.18D.2", failures)
+    if manifest.get("phase") != "G-4.18D.3":
+        fail("green-origin bakeoff manifest phase must be G-4.18D.3", failures)
     if manifest.get("recommended_method_for_g418e") is not None:
-        fail("green-origin bakeoff/capability manifest must not recommend a promotion method in G-4.18D.2", failures)
-    if "No G-4.18D, G-4.18D.1, or G-4.18D.2 experimental/capability asset is normal-review eligible" not in str(manifest.get("normal_review_policy", "")):
-        fail("green-origin bakeoff manifest must explicitly block normal review", failures)
+        fail("green-origin bakeoff/capability manifest must not recommend a promotion method in G-4.18D.3", failures)
+    if "G-4.18D.3" not in str(manifest.get("normal_review_policy", "")):
+        fail("green-origin bakeoff manifest must explicitly block G-4.18D.3 normal review", failures)
     gate_text = str(manifest.get("visual_quality_gate", ""))
-    if "8.5" not in gate_text or "7.5" not in gate_text:
+    if "8.5" not in gate_text or "7.5" not in gate_text or "G-4.18D.3" not in gate_text:
         fail("green-origin bakeoff manifest must declare the 8.5 bakeoff and 7.5 capability visual PASS gates", failures)
     for contact_sheet in manifest.get("contact_sheets", []):
         path_exists(str(contact_sheet), failures)
@@ -613,7 +614,7 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
             if "path" in raw_source:
                 path_exists(str(raw_source["path"]), failures)
     if pass_count != 0:
-        fail("green-origin retained bakeoff must have zero PASS recommendations in G-4.18D.2", failures)
+        fail("green-origin retained bakeoff must have zero PASS recommendations in G-4.18D.3", failures)
 
     capability = manifest.get("art_production_capability_gate", {})
     if not isinstance(capability, dict) or not capability:
@@ -704,6 +705,137 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
             if "path" in raw_source:
                 path_exists(str(raw_source["path"]), failures)
 
+    atelier = manifest.get("pixel_sprite_atelier_proof", {})
+    if not isinstance(atelier, dict) or not atelier:
+        fail("green-origin manifest must include one G-4.18D.3 pixel_sprite_atelier_proof object", failures)
+    else:
+        asset_id = str(atelier.get("asset_id", "unknown"))
+        required_atelier_fields = [
+            "phase",
+            "asset_id",
+            "sample_path",
+            "pass_01_blockout_path",
+            "pass_02_material_detail_path",
+            "pass_03_polish_shadow_grounding_path",
+            "krita_projection_path",
+            "sprite_sheet_path",
+            "isolated_1x_path",
+            "grid_8x_path",
+            "before_after_path",
+            "palette_sheet_path",
+            "in_world_comparison_path",
+            "standard_comparison_path",
+            "atelier_board_path",
+            "source_file",
+            "required_layers",
+            "provenance_status",
+            "origin_classification",
+            "commercial_use_status",
+            "visual_quality_status",
+            "visual_rating",
+            "visual_pass_gate",
+            "capability_verdict",
+            "review_eligible",
+            "normal_review_eligible",
+            "lab_only",
+            "final_commercial_candidate",
+            "final_commercial_eligible",
+            "input_sources",
+            "source_pixels_from_yellow_uncertain_assets",
+            "source_pixels_from_third_party_material",
+            "web_scraped_source_pixels",
+            "ownership",
+            "license",
+            "sha256",
+            "capability_answer",
+        ]
+        for field in required_atelier_fields:
+            if field not in atelier:
+                fail(f"{asset_id} missing pixel atelier field {field}", failures)
+        if atelier.get("phase") != "G-4.18D.3":
+            fail(f"{asset_id} pixel atelier phase must be G-4.18D.3", failures)
+        for path_field in [
+            "sample_path",
+            "pass_01_blockout_path",
+            "pass_02_material_detail_path",
+            "pass_03_polish_shadow_grounding_path",
+            "krita_projection_path",
+            "sprite_sheet_path",
+            "isolated_1x_path",
+            "grid_8x_path",
+            "before_after_path",
+            "palette_sheet_path",
+            "in_world_comparison_path",
+            "standard_comparison_path",
+            "atelier_board_path",
+            "source_file",
+        ]:
+            path_exists(str(atelier.get(path_field, "")), failures)
+        for required_layer in [
+            "silhouette_blockout",
+            "dark_outline",
+            "wood_base",
+            "rope_base",
+            "barrel_base",
+            "metal_bands",
+            "highlights",
+            "chips_scratches",
+            "grime",
+            "cast_shadow",
+            "contact_shadow",
+        ]:
+            if required_layer not in atelier.get("required_layers", []):
+                fail(f"{asset_id} missing pixel atelier layer {required_layer}", failures)
+        if atelier.get("provenance_status") != "green_origin_candidate":
+            fail(f"{asset_id} pixel atelier provenance_status must be green_origin_candidate", failures)
+        if atelier.get("origin_classification") != "green_origin_candidate":
+            fail(f"{asset_id} pixel atelier origin_classification must be green_origin_candidate", failures)
+        if atelier.get("commercial_use_status") != "green_origin_candidate":
+            fail(f"{asset_id} pixel atelier commercial_use_status must be green_origin_candidate", failures)
+        if atelier.get("review_eligible") is not False:
+            fail(f"{asset_id} pixel atelier review_eligible must remain false before human promotion", failures)
+        if atelier.get("normal_review_eligible") is not False:
+            fail(f"{asset_id} pixel atelier normal_review_eligible must remain false before human promotion", failures)
+        if atelier.get("lab_only") is not True:
+            fail(f"{asset_id} pixel atelier lab_only must remain true while lab-staged", failures)
+        if atelier.get("source_pixels_from_yellow_uncertain_assets") is not False:
+            fail(f"{asset_id} pixel atelier uses yellow/uncertain source pixels", failures)
+        if atelier.get("source_pixels_from_third_party_material") is not False:
+            fail(f"{asset_id} pixel atelier uses third-party source pixels", failures)
+        if atelier.get("web_scraped_source_pixels") is not False:
+            fail(f"{asset_id} pixel atelier uses web-scraped source pixels", failures)
+        visual_rating = float(atelier.get("visual_rating", 0.0))
+        visual_gate = float(atelier.get("visual_pass_gate", 0.0))
+        verdict = str(atelier.get("capability_verdict", ""))
+        if visual_gate < 7.5:
+            fail(f"{asset_id} pixel atelier visual_pass_gate must be at least 7.5", failures)
+        if verdict == "PASS":
+            if visual_rating < 7.5:
+                fail(f"{asset_id} pixel atelier PASS must meet the 7.5 visual gate", failures)
+            if atelier.get("final_commercial_candidate") is not True:
+                fail(f"{asset_id} pixel atelier PASS should be a future commercial candidate", failures)
+        elif verdict in ["DEFER", "FAIL"]:
+            if visual_rating >= 7.5:
+                fail(f"{asset_id} pixel atelier non-PASS should stay below the 7.5 visual gate", failures)
+            if atelier.get("final_commercial_candidate") is not False:
+                fail(f"{asset_id} pixel atelier non-PASS cannot be final_commercial_candidate", failures)
+        else:
+            fail(f"{asset_id} pixel atelier capability_verdict must be PASS, DEFER, or FAIL", failures)
+        if atelier.get("final_commercial_eligible") is not False:
+            fail(f"{asset_id} pixel atelier final_commercial_eligible must remain false before human promotion", failures)
+        for raw_source in atelier.get("input_sources", []):
+            if not isinstance(raw_source, dict):
+                fail(f"{asset_id} pixel atelier input source is not object", failures)
+                continue
+            source_text = json.dumps(raw_source, sort_keys=True).lower()
+            for forbidden in GREEN_ORIGIN_FORBIDDEN_INPUTS:
+                if forbidden.lower() in source_text:
+                    fail(f"{asset_id} forbidden pixel atelier input source: {forbidden}", failures)
+            if raw_source.get("source_pixels_used") is not False:
+                fail(f"{asset_id} pixel atelier input source uses source pixels", failures)
+            if "path" in raw_source:
+                path_exists(str(raw_source["path"]), failures)
+
     if GREEN_ORIGIN_BAKEOFF_REPORT_PATH.exists():
         report = GREEN_ORIGIN_BAKEOFF_REPORT_PATH.read_text(encoding="utf-8")
         for required_text in [
@@ -731,6 +863,22 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
         pass_check("green-origin capability report present")
     else:
         fail(f"missing green-origin capability report: {GREEN_ORIGIN_CAPABILITY_REPORT_PATH}", failures)
+
+    if GREEN_ORIGIN_PIXEL_ATELIER_REPORT_PATH.exists():
+        report = GREEN_ORIGIN_PIXEL_ATELIER_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in [
+            "G-4.18D.3 produced one green-origin",
+            "Pixel-Layer Source",
+            "Krita CLI",
+            "GIMP",
+            "DEFER",
+            "chandlery-standard comparison",
+        ]:
+            if required_text not in report:
+                fail(f"green-origin pixel atelier report missing text: {required_text}", failures)
+        pass_check("green-origin pixel atelier report present")
+    else:
+        fail(f"missing green-origin pixel atelier report: {GREEN_ORIGIN_PIXEL_ATELIER_REPORT_PATH}", failures)
 
 
 def main() -> int:
