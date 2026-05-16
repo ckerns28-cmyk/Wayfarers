@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.19A", "build_phase_g_4_19a")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.19A Newport Dock Clutter Atelier Pack", "build_label_g_4_19a")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.19B", "build_phase_g_4_19b")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.19B Newport Visual Production Audit", "build_label_g_4_19b")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -399,6 +399,117 @@ func _validate_g418_asset_factory(map: Node) -> void:
 	_validate_g418d_green_origin_bakeoff_manifest()
 	_validate_g418d_atelier_cargo_manifest()
 	_validate_g419a_atelier_dock_clutter_manifest()
+	_validate_g419b_visual_production_registry()
+
+func _validate_g419b_visual_production_registry() -> void:
+	var registry := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_visual_production_registry.json")
+	_expect(not registry.is_empty(), "g419b_visual_registry_json")
+	_expect(String(registry.get("schema_id", "")) == "wayfarer.newport.visual_production_registry.v1", "g419b_visual_registry_schema")
+	_expect(String(registry.get("phase", "")) == "G-4.19B", "g419b_visual_registry_phase")
+	_expect(String(registry.get("north_star", "")).find("starting town/village") >= 0, "g419b_visual_registry_north_star")
+	_expect(String(registry.get("policy", "")).find("does not create new sprite sheets") >= 0, "g419b_visual_registry_no_new_sheets_policy")
+
+	var statuses: Array = registry.get("status_taxonomy", [])
+	for status in ["APPROVED_FINAL", "APPROVED_TEMPORARY", "NEEDS_REWORK", "REBUILD_REQUIRED", "REBUILD_REQUIRED_CENTERPIECE", "DEPRECATED_DO_NOT_USE", "PROVENANCE_UNKNOWN"]:
+		_expect(statuses.has(status), "g419b_visual_registry_status_" + status)
+
+	var waves: Array = registry.get("production_wave_plan", [])
+	_expect(waves.size() >= 5, "g419b_visual_registry_wave_count")
+	var expected_waves := ["wave_1_environmental_believability", "wave_2_town_identity", "wave_3_economy_life", "wave_4_building_rebuild_or_enhancement", "wave_5_character_npc_standard"]
+	var seen_waves: Array[String] = []
+	for raw_wave in waves:
+		if not raw_wave is Dictionary:
+			failures.append("g419b_visual_registry_wave_not_dictionary")
+			continue
+		var wave: Dictionary = raw_wave
+		var wave_id := String(wave.get("wave_id", ""))
+		seen_waves.append(wave_id)
+		var scope: Array = wave.get("scope", [])
+		_expect(bool(wave.get("atelier_required", false)) == true, "g419b_visual_registry_wave_atelier_required_" + wave_id)
+		_expect(wave.has("scope") and scope.size() >= 3, "g419b_visual_registry_wave_scope_" + wave_id)
+	for wave_id in expected_waves:
+		_expect(seen_waves.has(wave_id), "g419b_visual_registry_has_" + wave_id)
+
+	var entries: Array = registry.get("asset_entries", [])
+	_expect(entries.size() >= 60, "g419b_visual_registry_entry_count")
+	var by_id := {}
+	var required_entry_fields := ["asset_id", "name", "category", "path", "source_provenance_status", "current_usage", "visual_quality_status", "gameplay_role", "rebuild_status", "notes"]
+	var map_source := FileAccess.get_file_as_string("res://scenes/map/MapLayer.gd")
+	for raw_entry in entries:
+		if not raw_entry is Dictionary:
+			failures.append("g419b_visual_registry_entry_not_dictionary")
+			continue
+		var entry: Dictionary = raw_entry
+		var asset_id := String(entry.get("asset_id", "unknown"))
+		by_id[asset_id] = entry
+		for key in required_entry_fields:
+			_expect(entry.has(key), "g419b_visual_registry_field_" + asset_id + "_" + key)
+		_expect(asset_id != "" and asset_id != "unknown", "g419b_visual_registry_asset_id_" + asset_id)
+		_expect(statuses.has(String(entry.get("visual_quality_status", ""))), "g419b_visual_registry_visual_status_" + asset_id)
+		_expect(statuses.has(String(entry.get("rebuild_status", ""))), "g419b_visual_registry_rebuild_status_" + asset_id)
+		_expect(String(entry.get("category", "")) != "", "g419b_visual_registry_category_" + asset_id)
+		_expect(String(entry.get("source_provenance_status", "")) != "", "g419b_visual_registry_provenance_" + asset_id)
+		var rel_path := String(entry.get("path", ""))
+		_expect(rel_path != "", "g419b_visual_registry_path_" + asset_id)
+		if rel_path != "" and not rel_path.begins_with("external:"):
+			_expect(FileAccess.file_exists("res://" + rel_path), "g419b_visual_registry_path_exists_" + asset_id)
+		var usage: Dictionary = entry.get("current_usage", {})
+		_expect(usage.has("normal_review") and usage.has("lab_only") and usage.has("runtime_target"), "g419b_visual_registry_usage_shape_" + asset_id)
+		var normal_review := bool(usage.get("normal_review", false))
+		var lab_only := bool(usage.get("lab_only", false))
+		var is_deprecated := bool(entry.get("deprecated_visual_target", false)) or String(entry.get("rebuild_status", "")) == "DEPRECATED_DO_NOT_USE"
+		if String(entry.get("visual_quality_status", "")) == "APPROVED_FINAL" or String(entry.get("rebuild_status", "")) == "APPROVED_FINAL":
+			var provenance := String(entry.get("source_provenance_status", ""))
+			_expect(provenance == "final_commercial_green", "g419b_visual_registry_final_requires_final_provenance_" + asset_id)
+		if is_deprecated:
+			_expect(not normal_review, "g419b_visual_registry_deprecated_not_normal_" + asset_id)
+			var referenced_in_map := map_source.find(asset_id) >= 0 or (rel_path != "" and map_source.find(rel_path) >= 0)
+			if referenced_in_map:
+				_expect(lab_only, "g419b_visual_registry_deprecated_maplayer_lab_only_" + asset_id)
+		if asset_id.begins_with("atelier_"):
+			var artifacts: Dictionary = entry.get("atelier_artifacts", {})
+			for artifact_key in ["manifest", "source_image", "generation_prompt", "extraction_script", "atlas", "contact_sheet", "validation_report", "provenance_report"]:
+				_expect(artifacts.has(artifact_key), "g419b_visual_registry_atelier_artifact_" + asset_id + "_" + artifact_key)
+				var artifact_path := String(artifacts.get(artifact_key, ""))
+				_expect(artifact_path != "" and FileAccess.file_exists("res://" + artifact_path), "g419b_visual_registry_atelier_artifact_exists_" + asset_id + "_" + artifact_key)
+
+	for required_id in [
+		"inn_tavern_v1",
+		"mercantile_shop",
+		"newport_counting_house_civic_exchange",
+		"newport_chandlery_outfitter_front",
+		"newport_shopfront_awning",
+		"newport_market_shed_stalls",
+		"newport_dockside_storehouse_long",
+		"newport_wharf_boathouse_large",
+		"newport_dockside_storehouse",
+		"newport_custom_house_civic_front",
+		"residence_small",
+		"newport_large_front_residence",
+		"newport_modest_clapboard_residence_a",
+		"service_dependency_shed",
+		"newport_narrow_merchant_townhouse_a",
+		"newport_formal_townhouse_block_a",
+		"newport_waterfront_shop_house",
+		"commercial_cobble_long_a",
+		"curb_sidewalk_stoop_strip",
+		"dock_edge_feather",
+		"atelier_newport_crate_01",
+		"atelier_wharf_cargo_cluster_01",
+		"atelier_dock_bollards_01",
+		"atelier_dock_lantern_01",
+		"player_placeholder_drawn"
+	]:
+		_expect(by_id.has(required_id), "g419b_visual_registry_required_entry_" + required_id)
+
+	if by_id.has("inn_tavern_v1"):
+		var tavern: Dictionary = by_id["inn_tavern_v1"]
+		_expect(String(tavern.get("rebuild_status", "")) == "REBUILD_REQUIRED_CENTERPIECE", "g419b_tavern_centerpiece_rebuild_status")
+		var audit: Dictionary = tavern.get("building_audit", {})
+		var direction := String(audit.get("future_direction", ""))
+		_expect(direction.find("Hotel Viking") >= 0, "g419b_tavern_hotel_viking_direction")
+		_expect(direction.find("twin-stack chimneys") >= 0, "g419b_tavern_twin_stack_chimneys")
+		_expect(direction.find("brick construction") >= 0, "g419b_tavern_brick_direction")
 
 func _validate_g418b_green_origin_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json")
@@ -1536,6 +1647,7 @@ func _print_report() -> void:
 		print("assetPipelinePass=", NEWPORT_TOWN.starter_district_plan().get("asset_pipeline_pass", ""))
 		print("atelierCargoPipelinePass=", NEWPORT_TOWN.starter_district_plan().get("atelier_cargo_pipeline_pass", ""))
 		print("dockClutterAtelierPackPass=", NEWPORT_TOWN.starter_district_plan().get("dock_clutter_atelier_pack_pass", ""))
+		print("visualProductionAuditPass=", NEWPORT_TOWN.starter_district_plan().get("visual_production_audit_pass", ""))
 	print("reachabilityTargets=", NEWPORT_TOWN.reachability_targets())
 	print("failureCount=", failures.size())
 	print("failures=", failures)

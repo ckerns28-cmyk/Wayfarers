@@ -1483,16 +1483,23 @@ Next visual foundation phases:
   anchor, repair planks, lantern, and shoreline debris candidates. The proof
   uses only a controlled subset around wharf, market, harbor-edge, and service
   path clusters.
+- G-4.19B creates the Newport visual production registry and core asset audit.
+  Newport is now tracked as a believable playable starting town, not an asset
+  accumulation exercise. Current buildings remain temporary yellow review art
+  until rebuilt or source-cleared, future production moves through mass
+  atelier waves, and the Tavern/Inn is locked as a future brick centerpiece
+  rebuild inspired by Hotel Viking's grand coastal presence.
 - G-4.18E creates one green-origin hero-quality asset family.
 - G-4.19 establishes player visual identity.
 - G-4.20 redesigns the HUD/UI with intentional fantasy/MMORPG styling.
 - G-4.21 composes the origin city hero street/dock slice.
 - G-4.22 reviews the full 8.0+ visual foundation exit gate.
 
-Future city-wide prop rollout should continue only through themed atelier packs
-after the cargo lock passes: G-4.19A dock clutter expansion first, then terrain
-edge dressing, signs/lamps/posts, market goods/carts, shopfront props, then
-NPC/player standards.
+Future city-wide rollout should continue through production waves rather than
+one-off sheets: environmental believability first, town identity second,
+economy/life third, building rebuild/enhancement fourth, and character/NPC
+standards fifth. Each wave must follow the G-4.18D/G-4.19A atelier pattern
+before normal-review placement.
 
 G-5 must not be recommended until G-4.22 accepts the screenshot-supported 8.0+
 origin city foundation.

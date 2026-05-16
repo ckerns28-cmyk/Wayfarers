@@ -1,0 +1,1437 @@
+{
+  "schema_id": "wayfarer.newport.visual_production_registry.v1",
+  "phase": "G-4.19B",
+  "generated_at": "2026-05-16",
+  "registry_role": "Newport visual production registry and core asset trust audit.",
+  "north_star": "Newport is the starting town/village for Wayfarer: a believable, enjoyable, navigable opening location with coastal identity, readable harbor/market/civic/residential organization, emotional invitation to explore, gameplay readiness, and visual consistency with the G-4.18D/G-4.19A atelier standard.",
+  "policy": "This pass creates production structure and audit readiness only. It does not create new sprite sheets, rebuild buildings, redesign the game, or promote old/unverified assets to final by default.",
+  "status_taxonomy": [
+    "APPROVED_FINAL",
+    "APPROVED_TEMPORARY",
+    "NEEDS_REWORK",
+    "REBUILD_REQUIRED",
+    "REBUILD_REQUIRED_CENTERPIECE",
+    "DEPRECATED_DO_NOT_USE",
+    "PROVENANCE_UNKNOWN"
+  ],
+  "production_wave_plan": [
+    {
+      "wave_id": "wave_1_environmental_believability",
+      "title": "Environmental believability",
+      "status": "planned",
+      "atelier_required": true,
+      "scope": [
+        "terrain edge dressing",
+        "cobble/path transitions",
+        "shoreline dressing",
+        "road borders",
+        "mud/grass/stone blend pieces"
+      ],
+      "acceptance_note": "Replace broad procedural fallback reads with grounded, atelier-quality transition families before expanding more decorative props."
+    },
+    {
+      "wave_id": "wave_2_town_identity",
+      "title": "Town identity",
+      "status": "planned",
+      "atelier_required": true,
+      "scope": [
+        "signs",
+        "lamps",
+        "posts",
+        "notice boards",
+        "banners",
+        "civic markers"
+      ],
+      "acceptance_note": "Improve navigation and district identity without over-scattering props."
+    },
+    {
+      "wave_id": "wave_3_economy_life",
+      "title": "Economy/life",
+      "status": "planned",
+      "atelier_required": true,
+      "scope": [
+        "market carts",
+        "crates of goods",
+        "shopfront props",
+        "merchant tables",
+        "baskets/barrels/sacks variants"
+      ],
+      "acceptance_note": "Build on the G-4.18D cargo lock and G-4.19A dock clutter pack with enough variants for a lived-in harbor/market loop."
+    },
+    {
+      "wave_id": "wave_4_building_rebuild_or_enhancement",
+      "title": "Building rebuild or enhancement",
+      "status": "blocked_until_building_audit_decisions_are_accepted",
+      "atelier_required": true,
+      "scope": [
+        "centerpiece Tavern/Inn rebuild",
+        "harborfront commercial anchors",
+        "civic/customs anchors",
+        "working-wharf buildings",
+        "residential/support buildings"
+      ],
+      "acceptance_note": "Start only after the current yellow building set is accepted as temporary and rebuild priorities are locked."
+    },
+    {
+      "wave_id": "wave_5_character_npc_standard",
+      "title": "Character/NPC standard",
+      "status": "blocked_until_environment_context_is_stronger",
+      "atelier_required": true,
+      "scope": [
+        "player sprite standard",
+        "NPC sprite standard",
+        "scale and perspective lock",
+        "equipment readability preparation"
+      ],
+      "acceptance_note": "Begin only after Newport has enough environmental context for characters to be judged in place."
+    }
+  ],
+  "asset_entries": [
+    {
+      "asset_id": "inn_tavern_v1",
+      "name": "Newport Tavern/Inn current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/inn_tavern_v1_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id inn_tavern_v1, building_id b_inn_tavern",
+        "building_ids": [
+          "b_inn_tavern"
+        ],
+        "usage_notes": "Active harborfront commercial anchor and public enterable tavern placeholder."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Major player landmark, social hub, quest anchor, and harborfront arrival memory point.",
+      "rebuild_status": "REBUILD_REQUIRED_CENTERPIECE",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "usable_for_current_layout_but_not_centerpiece_scale",
+        "grounding_quality": "usable_via_current_anchor_and_collision_contract",
+        "town_role": "tavern_inn_centerpiece",
+        "future_direction": "REBUILD_REQUIRED - CENTERPIECE: brick construction; two sets of large twin-stack chimneys; inspired by the grand coastal hotel presence of Hotel Viking; larger, warmer, and more memorable than ordinary town buildings; major player landmark, social hub, and quest anchor; historic coastal inn with old brick, warm windows, heavy fireplaces, maritime town prestige, and fantasy charm."
+      },
+      "notes": "The current asset is a temporary yellow crop and does not clearly support the locked brick Hotel Viking-inspired centerpiece direction."
+    },
+    {
+      "asset_id": "mercantile_shop",
+      "name": "Harbor Mercantile current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/mercantile_shop_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id mercantile_shop, building_id b_mercantile",
+        "building_ids": [
+          "b_mercantile"
+        ],
+        "usage_notes": "Active public shop anchor on the harborfront commercial row."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "General goods/shop anchor and player-facing commercial navigation target.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "harborfront_commercial_shop"
+      },
+      "notes": "Keep for playability and composition review; rebuild or source-clear before final trust."
+    },
+    {
+      "asset_id": "newport_counting_house_civic_exchange",
+      "name": "Counting House/Civic Exchange current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_counting_house_civic_exchange_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_counting_house_civic_exchange, building_id b_counting_house",
+        "building_ids": [
+          "b_counting_house"
+        ],
+        "usage_notes": "Active public civic/economy anchor on the harborfront row."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Trade administration, customs paperwork, civic/economy waypoint.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "harborfront_civic_exchange"
+      },
+      "notes": "Good current role read, but source chain and final style remain untrusted."
+    },
+    {
+      "asset_id": "newport_chandlery_outfitter_front",
+      "name": "Chandlery/Outfitter current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_chandlery_outfitter_front_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_chandlery_outfitter_front, building_id b_chandlery_front",
+        "building_ids": [
+          "b_chandlery_front"
+        ],
+        "usage_notes": "Active public working-harbor storefront."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Rope, sail, outfitter, and harbor-service shop marker.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "working_harbor_shop"
+      },
+      "notes": "Role is strong for Newport identity; final version needs trusted source and atelier-level material finish."
+    },
+    {
+      "asset_id": "newport_shopfront_awning",
+      "name": "Shop House current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_shopfront_awning_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_shopfront_awning, building_id b_shop_house",
+        "building_ids": [
+          "b_shop_house"
+        ],
+        "usage_notes": "Active public storefront/future shop anchor."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Commercial row density and future merchant hook.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "harborfront_shop"
+      },
+      "notes": "Temporary until commercial-row style and source trust are rebuilt."
+    },
+    {
+      "asset_id": "newport_market_shed_stalls",
+      "name": "Market Shed current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_market_shed_stalls_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_market_shed_stalls, building_id b_market_shed",
+        "building_ids": [
+          "b_market_shed"
+        ],
+        "usage_notes": "Active market/fish stall building on commercial/wharf edge."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Market economy, fish trade, and harbor-life signal.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "market_anchor"
+      },
+      "notes": "Should be revisited with Wave 3 economy/life props before any final market read."
+    },
+    {
+      "asset_id": "newport_dockside_storehouse_long",
+      "name": "Long Dock Storehouse current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_dockside_storehouse_long_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_dockside_storehouse_long, building_id b_dock_storehouse",
+        "building_ids": [
+          "b_dock_storehouse"
+        ],
+        "usage_notes": "Active waterline warehouse/storehouse."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Working-wharf storage and waterline navigation mass.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_with_harbor_integrated_lot",
+        "town_role": "working_wharf_warehouse"
+      },
+      "notes": "Keep as temporary wharf mass; final pass needs trusted waterline warehouse art."
+    },
+    {
+      "asset_id": "newport_wharf_boathouse_large",
+      "name": "Wharf Boathouse current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_wharf_boathouse_large_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_wharf_boathouse_large, building_id b_wharf_boathouse",
+        "building_ids": [
+          "b_wharf_boathouse"
+        ],
+        "usage_notes": "Active wharf service/boathouse anchor."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Boat service, harbor work, and waterline landmark.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_with_harbor_integrated_lot",
+        "town_role": "working_wharf_boathouse"
+      },
+      "notes": "Important district anchor but not final-source trusted."
+    },
+    {
+      "asset_id": "newport_dockside_storehouse",
+      "name": "Dock Warehouse current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_dockside_storehouse_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_dockside_storehouse, building_id b_dock_warehouse",
+        "building_ids": [
+          "b_dock_warehouse"
+        ],
+        "usage_notes": "Active dock warehouse/service building."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Working-wharf density, locked warehouse, harbor economy.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_with_harbor_integrated_lot",
+        "town_role": "dock_warehouse"
+      },
+      "notes": "Keep temporarily; rebuild with wharf architecture wave."
+    },
+    {
+      "asset_id": "newport_custom_house_civic_front",
+      "name": "Custom House current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_custom_house_civic_front_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_custom_house_civic_front, building_id b_custom_house",
+        "building_ids": [
+          "b_custom_house"
+        ],
+        "usage_notes": "Active starter civic/admin anchor."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Customs administration, civic district identity, future inspection/dialogue anchor.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "civic_admin_anchor"
+      },
+      "notes": "Good role assignment, but source trust remains temporary."
+    },
+    {
+      "asset_id": "residence_small",
+      "name": "Harbor Cottage current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/residence_small_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id residence_small, building_id b_res_small",
+        "building_ids": [
+          "b_res_small"
+        ],
+        "usage_notes": "Active inland residential/civic small home."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Residential warmth and private-home boundary.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "residential_home"
+      },
+      "notes": "Temporary small-home read; future residential family should include variants."
+    },
+    {
+      "asset_id": "newport_large_front_residence",
+      "name": "Harbor Residence current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_large_front_residence_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_large_front_residence, building_id b_large_residence",
+        "building_ids": [
+          "b_large_residence"
+        ],
+        "usage_notes": "Active higher-status inland residence."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Residential/civic prestige, upper-town contrast.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "civic_residence"
+      },
+      "notes": "Temporary until residential/civic prestige architecture is rebuilt or source-cleared."
+    },
+    {
+      "asset_id": "newport_modest_clapboard_residence_a",
+      "name": "Boarding House current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/newport_modest_clapboard_residence_a_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_modest_clapboard_residence_a, building_id b_boarding_house",
+        "building_ids": [
+          "b_boarding_house"
+        ],
+        "usage_notes": "Active support-lane boarding house."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Worker/resident lodging and support-lane identity.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "boarding_house"
+      },
+      "notes": "Temporary support-lane housing."
+    },
+    {
+      "asset_id": "service_dependency_shed",
+      "name": "Cooperage Shed current temporary crop",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/service_dependency_shed_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id service_dependency_shed, building_id b_cooperage_shed",
+        "building_ids": [
+          "b_cooperage_shed"
+        ],
+        "usage_notes": "Active support/dock service shed."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Cooperage/barrel-shop support and working-town texture.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13A_and_G-4.15",
+        "town_role": "support_lane_service"
+      },
+      "notes": "Temporary substitute; role should get a dedicated cooperage read."
+    },
+    {
+      "asset_id": "newport_narrow_merchant_townhouse_a",
+      "name": "Printer Rowhouse atlas crop",
+      "category": "BUILDING",
+      "path": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_narrow_merchant_townhouse_a, building_id b_printer_rowhouse",
+        "building_ids": [
+          "b_printer_rowhouse"
+        ],
+        "usage_notes": "Active narrow street-wall infill east of the market shed."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Street-wall density, future printer/pamphlet story hook.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13B_reseat",
+        "town_role": "commercial_rowhouse_infill"
+      },
+      "notes": "Temporary atlas-region use, not final trusted building art."
+    },
+    {
+      "asset_id": "newport_formal_townhouse_block_a",
+      "name": "Clerk Townhouse atlas crop",
+      "category": "BUILDING",
+      "path": "assets/buildings/hearthvale_newport_structure_pack_v1_b.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_formal_townhouse_block_a, building_id b_clerk_townhouse",
+        "building_ids": [
+          "b_clerk_townhouse"
+        ],
+        "usage_notes": "Active tavern-to-mercantile street-wall infill."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Clerk lodging, rowhouse density, customs/social hook.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13B_reseat",
+        "town_role": "formal_rowhouse_infill"
+      },
+      "notes": "Temporary atlas-region use; rebuild/source-clear before final."
+    },
+    {
+      "asset_id": "newport_waterfront_shop_house",
+      "name": "Dockworker Rowhouse atlas crop",
+      "category": "BUILDING",
+      "path": "assets/buildings/hearthvale_newport_structure_pack_v1_a.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "BuildingCatalog sprite_id newport_waterfront_shop_house, building_id b_dockworker_rowhouse",
+        "building_ids": [
+          "b_dockworker_rowhouse"
+        ],
+        "usage_notes": "Active support-lane lodging infill."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Dockworker lodging and working-town residential life.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "currently_usable",
+        "grounding_quality": "usable_after_G-4.13B_reseat",
+        "town_role": "support_lane_rowhouse"
+      },
+      "notes": "Temporary atlas-region use; final residential rowhouse family remains open."
+    },
+    {
+      "asset_id": "village_hall_meeting_house",
+      "name": "Meeting House/Chapel deferred building",
+      "category": "BUILDING",
+      "path": "assets/sprites/buildings/isolated/village_hall_meeting_house_isolated.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": false,
+        "runtime_target": "Available in BuildingCatalog but not in STARTER_HARBOR_BUILDING_IDS",
+        "building_ids": [
+          "b_village_hall"
+        ],
+        "usage_notes": "Deferred; not the starter civic anchor."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Deferred chapel/meeting-house candidate.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "building_audit": {
+        "provenance_confidence": "LOW_YELLOW",
+        "atelier_consistency": "TEMPORARY_NOT_ATELIER_STANDARD",
+        "scale_perspective_fit": "deferred",
+        "grounding_quality": "not_currently_tested_in_active_starter_layout",
+        "town_role": "deferred_chapel"
+      },
+      "notes": "Do not promote back into starter civic role without a later district decision."
+    },
+    {
+      "asset_id": "commercial_cobble_long_a",
+      "name": "Commercial cobble long strip",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_long_a.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active central commercial-row cobble proof."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Readable main-street movement surface.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 should replace or promote terrain/path families through atelier discipline."
+    },
+    {
+      "asset_id": "commercial_cobble_patch_b",
+      "name": "Commercial cobble patch B",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_patch_b.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active cobble variation in commercial row."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Road material variation.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Temporary yellow terrain proof."
+    },
+    {
+      "asset_id": "commercial_cobble_patch_c",
+      "name": "Commercial cobble patch C",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/commercial_cobble_patch_c.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active cobble variation in commercial row."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Road material variation.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Temporary yellow terrain proof."
+    },
+    {
+      "asset_id": "curb_sidewalk_stoop_strip",
+      "name": "Curb/sidewalk/stoop strip",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/curb_sidewalk_stoop_strip.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active storefront threshold and curb read."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Door/road readability and building grounding.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 priority because threshold readability supports navigation."
+    },
+    {
+      "asset_id": "curb_sidewalk_broken_edge",
+      "name": "Broken curb/sidewalk edge",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/curb_sidewalk_broken_edge.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active transition detail around commercial-row curbs."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Road border and threshold believability.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 priority."
+    },
+    {
+      "asset_id": "building_contact_shadow_strip",
+      "name": "Building contact shadow strip",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/building_contact_shadow_strip.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active base contact support for building row."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Building grounding and pasted-feel reduction.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Must be rebuilt/promoted alongside final building wave."
+    },
+    {
+      "asset_id": "dirt_wear_transition",
+      "name": "Dirt wear transition",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/dirt_wear_transition.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active road/yard wear blend."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Movement-path blending and environmental wear.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 priority."
+    },
+    {
+      "asset_id": "grass_edge_north",
+      "name": "Grass edge north",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/grass_edge_north.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active grass-to-street edge proof."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Soft district edge and road-border readability.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 priority."
+    },
+    {
+      "asset_id": "grass_cobble_feather",
+      "name": "Grass/cobble feather",
+      "category": "TERRAIN_PATH",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/grass_cobble_feather.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active grass/cobble blend proof."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Terrain transition readability.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 priority."
+    },
+    {
+      "asset_id": "dock_market_transition",
+      "name": "Dock/market transition",
+      "category": "SHORELINE_HARBOR",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/dock_market_transition.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active wharf-to-market transition proof."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Harbor/market district transition.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 shoreline/wharf transition candidate."
+    },
+    {
+      "asset_id": "dock_pier_vertical",
+      "name": "Vertical dock/pier strip",
+      "category": "SHORELINE_HARBOR",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/dock_pier_vertical.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active pier detail proof."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Wharf navigation and waterline structure.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 shoreline/dock candidate."
+    },
+    {
+      "asset_id": "dock_edge_feather",
+      "name": "Dock edge feather",
+      "category": "SHORELINE_HARBOR",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/dock_edge_feather.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active dock/water edge proof."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Waterline readability and harbor believability.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 shoreline priority."
+    },
+    {
+      "asset_id": "pier_shadow_post_strip",
+      "name": "Pier shadow/post strip",
+      "category": "SHORELINE_HARBOR",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/pier_shadow_post_strip.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS",
+        "usage_notes": "Active pier grounding proof."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Pier contact, depth, and wharf edge weight.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 1 shoreline candidate."
+    },
+    {
+      "asset_id": "crate_barrel_table_cluster",
+      "name": "Crate/barrel/table hero cluster",
+      "category": "MARKET_SHOPFRONT_PROP",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/crate_barrel_table_cluster.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS; currently superseded by G-4.18D cargo in the replacement rectangle",
+        "usage_notes": "Available temporary yellow prop cluster, not a final cargo target."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Legacy market/cargo placeholder.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "G-4.18D cargo is the quality target instead."
+    },
+    {
+      "asset_id": "fence_sign_market_cluster",
+      "name": "Fence/sign/market hero cluster",
+      "category": "SIGN_LAMP_POST",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/fence_sign_market_cluster.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer _draw_g418_hero_non_cargo_prop_clusters",
+        "usage_notes": "Active temporary sign/fence/market dressing."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Town identity and storefront dressing.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 2 should replace signs/lamps/posts through atelier packs."
+    },
+    {
+      "asset_id": "small_crate_barrel_cluster",
+      "name": "Small crate/barrel hero cluster",
+      "category": "CARGO_PROP",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/small_crate_barrel_cluster.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS; not current cargo target",
+        "usage_notes": "Legacy temporary yellow cargo cluster."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Legacy cargo placeholder.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Superseded by atelier cargo quality target."
+    },
+    {
+      "asset_id": "market_sign_cluster",
+      "name": "Market sign hero cluster",
+      "category": "SIGN_LAMP_POST",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/market_sign_cluster.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer _draw_g418_hero_non_cargo_prop_clusters",
+        "usage_notes": "Active temporary market sign/identity dressing."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Market identity and navigation cue.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 2 town identity candidate."
+    },
+    {
+      "asset_id": "wharf_crate_pile_cluster",
+      "name": "Wharf crate pile hero cluster",
+      "category": "CARGO_PROP",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/wharf_crate_pile_cluster.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS; not current cargo target",
+        "usage_notes": "Legacy temporary yellow wharf cargo pile."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Legacy wharf cargo placeholder.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Superseded by G-4.18D atelier cargo."
+    },
+    {
+      "asset_id": "chandlery_base_cluster",
+      "name": "Chandlery base hero cluster",
+      "category": "MARKET_SHOPFRONT_PROP",
+      "path": "art_pipeline/newport/generated_assets/hero_strip/chandlery_base_cluster.png",
+      "source_provenance_status": "temporary_review_yellow",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_HERO_ATLAS_MATERIALS; not actively placed in the current proof",
+        "usage_notes": "Legacy temporary yellow shopfront base cluster."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Shopfront support placeholder.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 3 should replace shopfront props through atelier packs."
+    },
+    {
+      "asset_id": "atelier_newport_crate_01",
+      "name": "Atelier Newport crate",
+      "category": "CARGO_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_crate_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_CARGO_PLACEMENTS",
+        "usage_notes": "Active commercial row cargo."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Commercial-front cargo and harbor economy.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cargo_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cargo_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cargo_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md"
+      },
+      "notes": "G-4.18D accepted visual quality target, pending final AI-assisted art license policy."
+    },
+    {
+      "asset_id": "atelier_newport_barrel_01",
+      "name": "Atelier Newport barrel",
+      "category": "CARGO_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_barrel_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_CARGO_PLACEMENTS",
+        "usage_notes": "Active commercial row cargo."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Coopered cargo and harbor economy.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cargo_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cargo_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cargo_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md"
+      },
+      "notes": "G-4.18D accepted visual quality target, pending final AI-assisted art license policy."
+    },
+    {
+      "asset_id": "atelier_newport_rope_coil_01",
+      "name": "Atelier Newport rope coil",
+      "category": "CARGO_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_rope_coil_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_CARGO_PLACEMENTS",
+        "usage_notes": "Active wharf rope accent."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Harbor service detail and wharf identity.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cargo_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cargo_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cargo_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md"
+      },
+      "notes": "G-4.18D accepted visual quality target, pending final AI-assisted art license policy."
+    },
+    {
+      "asset_id": "atelier_wharf_cargo_cluster_01",
+      "name": "Atelier wharf cargo cluster",
+      "category": "CARGO_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wharf_cargo_cluster_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_CARGO_PLACEMENTS",
+        "usage_notes": "Active wharf depth cluster."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Wharf depth, economy, and cargo density.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cargo_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cargo_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cargo_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md"
+      },
+      "notes": "G-4.18D accepted visual quality target, pending final AI-assisted art license policy."
+    },
+    {
+      "asset_id": "atelier_dock_bollards_01",
+      "name": "Atelier dock bollards",
+      "category": "DOCK_CLUTTER_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_dock_bollards_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS",
+        "usage_notes": "Active dock edge bollards."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Mooring edge readability and wharf identity.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_dock_clutter_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_dock_clutter_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_dock_clutter_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_dock_clutter_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+      },
+      "notes": "G-4.19A first follow-on atelier rollout pack."
+    },
+    {
+      "asset_id": "atelier_mooring_hardware_01",
+      "name": "Atelier mooring hardware",
+      "category": "DOCK_CLUTTER_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_mooring_hardware_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS",
+        "usage_notes": "Active mooring service path edge."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Dock service detail and harbor believability.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_dock_clutter_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_dock_clutter_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_dock_clutter_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_dock_clutter_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+      },
+      "notes": "G-4.19A first follow-on atelier rollout pack."
+    },
+    {
+      "asset_id": "atelier_fishing_net_bundle_01",
+      "name": "Atelier fishing net bundle",
+      "category": "DOCK_CLUTTER_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_fishing_net_bundle_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS",
+        "usage_notes": "Active wharf net cluster."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Fishing economy and dock life.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_dock_clutter_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_dock_clutter_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_dock_clutter_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_dock_clutter_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+      },
+      "notes": "G-4.19A first follow-on atelier rollout pack."
+    },
+    {
+      "asset_id": "atelier_sacks_fish_baskets_01",
+      "name": "Atelier sacks and fish baskets",
+      "category": "MARKET_SHOPFRONT_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sacks_fish_baskets_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS",
+        "usage_notes": "Active harbor market edge cluster."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Market/fishing goods and economy signal.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_dock_clutter_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_dock_clutter_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_dock_clutter_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_dock_clutter_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+      },
+      "notes": "G-4.19A first follow-on atelier rollout pack; bridge into Wave 3 economy/life."
+    },
+    {
+      "asset_id": "atelier_anchor_rope_01",
+      "name": "Atelier anchor and rope",
+      "category": "DOCK_CLUTTER_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_anchor_rope_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_DOCK_CLUTTER_MATERIALS",
+        "usage_notes": "Available in atlas/material list; not placed in the controlled G-4.19A subset."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Harbor mooring accent candidate.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_dock_clutter_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_dock_clutter_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_dock_clutter_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_dock_clutter_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+      },
+      "notes": "Keep available; placement requires a later no-over-scatter decision."
+    },
+    {
+      "asset_id": "atelier_dock_repair_planks_01",
+      "name": "Atelier dock repair planks",
+      "category": "DOCK_CLUTTER_PROP",
+      "path": "art_pipeline/newport_atelier/generated/atelier_dock_repair_planks_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS",
+        "usage_notes": "Active dock repair boards/service edge."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Wharf maintenance and grounded dock detail.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_dock_clutter_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_dock_clutter_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_dock_clutter_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_dock_clutter_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+      },
+      "notes": "G-4.19A first follow-on atelier rollout pack."
+    },
+    {
+      "asset_id": "atelier_dock_lantern_01",
+      "name": "Atelier dock lantern",
+      "category": "SIGN_LAMP_POST",
+      "path": "art_pipeline/newport_atelier/generated/atelier_dock_lantern_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS",
+        "usage_notes": "Active harbor-edge lantern marker."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Navigation marker, night-life implication, town warmth.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_dock_clutter_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_dock_clutter_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_dock_clutter_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_dock_clutter_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+      },
+      "notes": "Bridge asset for Wave 2 town identity."
+    },
+    {
+      "asset_id": "atelier_shoreline_debris_01",
+      "name": "Atelier shoreline debris",
+      "category": "SHORELINE_HARBOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shoreline_debris_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": false,
+        "runtime_target": "MapLayer NEWPORT_ATELIER_DOCK_CLUTTER_MATERIALS",
+        "usage_notes": "Available in atlas/material list; not placed in the controlled G-4.19A subset."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Shoreline believability candidate.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_dock_clutter_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g419a_atelier_dock_clutter_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_dock_clutter_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_dock_clutter_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_dock_clutter_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+      },
+      "notes": "Strong Wave 1 shoreline dressing candidate; do not over-scatter."
+    },
+    {
+      "asset_id": "green_dock_plank_strip",
+      "name": "Failed green-origin dock plank strip",
+      "category": "LAB_ONLY_PROOF",
+      "path": "art_pipeline/newport_green_origin/generated/green_dock_plank_strip.png",
+      "source_provenance_status": "green_origin_candidate",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": true,
+        "runtime_target": "MapLayer Green-Origin Lab only",
+        "usage_notes": "Hidden from normal review after G-4.18C."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Provenance/process evidence only.",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "deprecated_visual_target": true,
+      "notes": "Green-origin but visually failed; not a normal-review or final target."
+    },
+    {
+      "asset_id": "green_dock_plank_patch",
+      "name": "Failed green-origin dock plank patch",
+      "category": "LAB_ONLY_PROOF",
+      "path": "art_pipeline/newport_green_origin/generated/green_dock_plank_patch.png",
+      "source_provenance_status": "green_origin_candidate",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": true,
+        "runtime_target": "MapLayer Green-Origin Lab only",
+        "usage_notes": "Hidden from normal review after G-4.18C."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Provenance/process evidence only.",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "deprecated_visual_target": true,
+      "notes": "Green-origin but visually failed; not a normal-review or final target."
+    },
+    {
+      "asset_id": "green_dock_edge_shadow",
+      "name": "Failed green-origin dock edge shadow",
+      "category": "LAB_ONLY_PROOF",
+      "path": "art_pipeline/newport_green_origin/generated/green_dock_edge_shadow.png",
+      "source_provenance_status": "green_origin_candidate",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": true,
+        "runtime_target": "MapLayer Green-Origin Lab only",
+        "usage_notes": "Hidden from normal review after G-4.18C."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Provenance/process evidence only.",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "deprecated_visual_target": true,
+      "notes": "Green-origin but visually failed; not a normal-review or final target."
+    },
+    {
+      "asset_id": "green_pier_post_pair",
+      "name": "Failed green-origin pier post pair",
+      "category": "LAB_ONLY_PROOF",
+      "path": "art_pipeline/newport_green_origin/generated/green_pier_post_pair.png",
+      "source_provenance_status": "green_origin_candidate",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": true,
+        "runtime_target": "MapLayer Green-Origin Lab only",
+        "usage_notes": "Hidden from normal review after G-4.18C."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Provenance/process evidence only.",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "deprecated_visual_target": true,
+      "notes": "Green-origin but visually failed; not a normal-review or final target."
+    },
+    {
+      "asset_id": "green_rope_coil_small",
+      "name": "Failed green-origin rope coil",
+      "category": "LAB_ONLY_PROOF",
+      "path": "art_pipeline/newport_green_origin/generated/green_rope_coil_small.png",
+      "source_provenance_status": "green_origin_candidate",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": true,
+        "runtime_target": "MapLayer Green-Origin Lab only",
+        "usage_notes": "Hidden from normal review after G-4.18C."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Provenance/process evidence only.",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "deprecated_visual_target": true,
+      "notes": "Green-origin but visually failed; not a normal-review or final target."
+    },
+    {
+      "asset_id": "green_plank_contact_shadow",
+      "name": "Failed green-origin plank contact shadow",
+      "category": "LAB_ONLY_PROOF",
+      "path": "art_pipeline/newport_green_origin/generated/green_plank_contact_shadow.png",
+      "source_provenance_status": "green_origin_candidate",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": true,
+        "runtime_target": "MapLayer Green-Origin Lab only",
+        "usage_notes": "Hidden from normal review after G-4.18C."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Provenance/process evidence only.",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "deprecated_visual_target": true,
+      "notes": "Green-origin but visually failed; not a normal-review or final target."
+    },
+    {
+      "asset_id": "g418d2_rope_crate_barrel_cluster",
+      "name": "G-4.18D.2 capability cargo cluster",
+      "category": "LAB_ONLY_PROOF",
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png",
+      "source_provenance_status": "green_origin_candidate",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": true,
+        "runtime_target": "MapLayer Green-Origin Lab only",
+        "usage_notes": "Explicitly superseded by G-4.18D atelier cargo."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Capability evidence only.",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "deprecated_visual_target": true,
+      "notes": "May remain as labeled lab evidence; not a visual target."
+    },
+    {
+      "asset_id": "method_01b_manual_paintover_proof",
+      "name": "G-4.18D.1 M01B manual paintover proof",
+      "category": "LAB_ONLY_PROOF",
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_proof.png",
+      "source_provenance_status": "green_origin_candidate",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": true,
+        "runtime_target": "Loaded by MapLayer for lab/provenance context only",
+        "usage_notes": "Not drawn in normal review."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Method bakeoff evidence only.",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "deprecated_visual_target": true,
+      "notes": "M01B was downgraded to defer/raw material; not a visual target."
+    },
+    {
+      "asset_id": "maplayer_procedural_surface_kit_g416",
+      "name": "G-4.16 procedural surface fallback",
+      "category": "PROCEDURAL_FALLBACK",
+      "path": "scenes/map/MapLayer.gd",
+      "source_provenance_status": "project_code_procedural",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer procedural drawing helpers outside full atlas/atelier coverage",
+        "usage_notes": "Still supports playability and background continuity."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Keeps the starter town rendered and traversable while atelier terrain waves are planned.",
+      "rebuild_status": "NEEDS_REWORK",
+      "notes": "Not final art. Wave 1 should progressively replace this with atelier terrain/transition assets."
+    },
+    {
+      "asset_id": "maplayer_procedural_prop_fallbacks",
+      "name": "Procedural signs/lamps/posts/benches/fences/legacy props",
+      "category": "PROCEDURAL_FALLBACK",
+      "path": "scenes/map/MapLayer.gd",
+      "source_provenance_status": "project_code_procedural",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer _draw_g410_props fallback helpers",
+        "usage_notes": "Still visible outside the G-4.18D/G-4.19A controlled prop clusters."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Temporary life/identity dressing and navigation cues.",
+      "rebuild_status": "NEEDS_REWORK",
+      "notes": "Waves 2 and 3 should replace or reduce these fallbacks with atelier packs."
+    },
+    {
+      "asset_id": "player_placeholder_drawn",
+      "name": "Drawn player placeholder",
+      "category": "CHARACTER_PLACEHOLDER",
+      "path": "scenes/player/Player.gd",
+      "source_provenance_status": "project_code_procedural",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Player._draw",
+        "usage_notes": "Current player is temporary scale/debug art."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Movement, scale, and interaction placeholder.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 5 character/NPC standard must replace this after environment context is stronger."
+    },
+    {
+      "asset_id": "edrin_vale_placeholder_drawn",
+      "name": "Drawn Edrin Vale NPC placeholder",
+      "category": "CHARACTER_PLACEHOLDER",
+      "path": "scenes/npc/EdrinVale.gd",
+      "source_provenance_status": "project_code_procedural",
+      "current_usage": {
+        "normal_review": false,
+        "lab_only": false,
+        "runtime_target": "NPC disabled by NewportTownBlueprint.NPCS_ENABLED=false",
+        "usage_notes": "Not active in current starter-town review."
+      },
+      "visual_quality_status": "NEEDS_REWORK",
+      "gameplay_role": "Future NPC interaction placeholder.",
+      "rebuild_status": "REBUILD_REQUIRED",
+      "notes": "Wave 5 should define the character/NPC standard before NPC review returns."
+    }
+  ]
+}

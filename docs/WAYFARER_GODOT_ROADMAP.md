@@ -1578,6 +1578,68 @@ Acceptance:
 - Godot placement respects scale, grounding, pivot, depth/overlap, and the
   no-over-scatter policy.
 
+## G-4.19B: Newport Visual Production System & Core Asset Audit
+
+Status: implemented as a production registry, core asset audit, roadmap
+discipline pass, and validator expansion.
+
+G-4.19B stops the Newport visual pipeline from continuing as isolated
+single-sheet passes. Newport is the playable starting town/village for
+Wayfarer, so production now moves through mass atelier waves that support a
+believable coastal town, readable navigation, harbor/market/civic/residential
+organization, emotional invitation to explore, gameplay readiness, and
+consistency with the G-4.18D/G-4.19A atelier standard.
+
+This pass does not create new sprite sheets, rebuild buildings, redesign the
+game, or quick-patch visual assets. It creates the trust structure needed to
+scale production:
+
+- `art_pipeline/newport/manifests/newport_visual_production_registry.json`
+  classifies major Newport visual assets by category, path, provenance,
+  current usage, visual quality, gameplay role, and rebuild status.
+- `art_pipeline/newport/reports/G419B_NEWPORT_VISUAL_PRODUCTION_AUDIT.md`
+  records the core building audit, non-building audit, mass production waves,
+  and validator expectations.
+- Current buildings are useful temporary review/layout anchors, but they remain
+  `temporary_review_yellow` until rebuilt or source-cleared.
+- Old/unverified assets are not automatically final.
+- All future visual assets must follow the G-4.18D/G-4.19A atelier pipeline:
+  saved source/prompt, extraction script, transparent sprites, atlas/contact
+  sheet, manifest/provenance report, QA, Godot placement, and validation.
+
+Special building lock:
+
+- The Newport Tavern/Inn is a designated centerpiece, not a generic tavern.
+- The future rebuild direction is brick construction, two sets of large
+  twin-stack chimneys, Hotel Viking-inspired grand coastal hotel presence,
+  warm windows, heavy fireplaces, maritime prestige, and fantasy charm.
+- The current tavern crop is classified `REBUILD_REQUIRED_CENTERPIECE` and
+  remains only a temporary review placeholder.
+
+Production waves:
+
+- Wave 1: environmental believability - terrain edge dressing,
+  cobble/path transitions, shoreline dressing, road borders, and
+  mud/grass/stone blend pieces.
+- Wave 2: town identity - signs, lamps, posts, notice boards, banners, and
+  civic markers.
+- Wave 3: economy/life - market carts, crates of goods, shopfront props,
+  merchant tables, and baskets/barrels/sacks variants.
+- Wave 4: building rebuild or enhancement - only after audit decisions are
+  accepted, with the Tavern/Inn as an anchor rebuild.
+- Wave 5: character/NPC standard - only after the town environment has enough
+  visual context.
+
+Acceptance:
+
+- Registry entries have status, category, path, provenance/source status,
+  usage, gameplay role, and rebuild status.
+- Assets cannot be marked final without final provenance.
+- Deprecated visual targets cannot be used in normal/final MapLayer paths.
+- Atelier assets must keep source, prompt, extraction, atlas, contact sheet,
+  manifest, provenance report, and QA artifacts.
+- G-4.18D cargo and G-4.19A dock clutter remain visible and validated.
+
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
 Status: planned.
