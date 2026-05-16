@@ -1,15 +1,19 @@
 {
   "schema_id": "wayfarer.newport_green_origin.method_bakeoff.v1",
-  "phase": "G-4.18D.1",
+  "phase": "G-4.18D.2",
   "generated_at": "2026-05-16T00:00:00Z",
-  "normal_review_policy": "No G-4.18D or G-4.18D.1 bakeoff candidate is normal-review eligible. Failed and deferred art is lab-only.",
-  "visual_quality_gate": "PASS requires visual_rating >= 8.5 and screenshot acceptance. Green-origin provenance alone cannot produce PASS or promotion.",
+  "normal_review_policy": "No G-4.18D, G-4.18D.1, or G-4.18D.2 experimental/capability asset is normal-review eligible unless separately promoted after screenshot acceptance. Failed and deferred art is lab-only.",
+  "visual_quality_gate": "G-4.18D bakeoff PASS remains >= 8.5. G-4.18D.2 tiny environmental capability PASS requires visual_rating >= 7.5 and screenshot improvement. Provenance green alone cannot produce PASS or promotion.",
   "recommended_method_for_g418e": null,
   "contact_sheets": [
     "art_pipeline/newport_green_origin/contact_sheets/g418d1_corrected_bakeoff_board.png",
     "art_pipeline/newport_green_origin/contact_sheets/g418d1_candidate_comparison_strip.png",
     "art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_isolated_proof.png",
-    "art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_in_world_comparison_frame.png"
+    "art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_in_world_comparison_frame.png",
+    "art_pipeline/newport_green_origin/contact_sheets/g418d2_isolated_asset_proof.png",
+    "art_pipeline/newport_green_origin/contact_sheets/g418d2_before_after_production.png",
+    "art_pipeline/newport_green_origin/contact_sheets/g418d2_in_world_comparison_frame.png",
+    "art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png"
   ],
   "origin_taxonomy": [
     "temporary_review_yellow",
@@ -344,5 +348,75 @@
       "sha256": "43524e1d37520561f596c86bc4bad1934dd1ca9eedd418d2a3d4f788b068d687"
     }
   ],
-  "g418d1_verdict_correction": "G-4.18D produced no accepted visual candidate. M01 is downgraded from PASS to DEFER/raw material; M02-M05 are FAIL."
+  "g418d1_verdict_correction": "G-4.18D produced no accepted visual candidate. M01 is downgraded from PASS to DEFER/raw material; M02-M05 are FAIL.",
+  "art_production_capability_gate": {
+    "phase": "G-4.18D.2",
+    "asset_id": "g418d2_rope_crate_barrel_cluster",
+    "asset_name": "Rope coil + crate/barrel dockside cluster",
+    "asset_family": "tiny_dockside_environmental_prop_cluster",
+    "rough_base_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_rough_base.png",
+    "prepared_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_prepared.png",
+    "sample_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png",
+    "isolated_proof_path": "art_pipeline/newport_green_origin/contact_sheets/g418d2_isolated_asset_proof.png",
+    "before_after_path": "art_pipeline/newport_green_origin/contact_sheets/g418d2_before_after_production.png",
+    "in_world_comparison_path": "art_pipeline/newport_green_origin/contact_sheets/g418d2_in_world_comparison_frame.png",
+    "source_file": "art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d2_rope_crate_barrel_paint_plan.json",
+    "provenance_status": "green_origin_candidate",
+    "origin_classification": "green_origin_candidate",
+    "commercial_use_status": "green_origin_candidate",
+    "visual_quality_status": "visual_capability_defer_close_but_not_finished",
+    "visual_rating": 7.4,
+    "visual_pass_gate": 7.5,
+    "capability_verdict": "DEFER",
+    "review_eligible": false,
+    "normal_review_eligible": false,
+    "lab_only": true,
+    "final_commercial_candidate": false,
+    "final_commercial_eligible": false,
+    "lab_access_mode": "F6 or --show-green-origin-lab",
+    "input_sources": [
+      {
+        "type": "project_script",
+        "path": "art_pipeline/newport_green_origin/scripts/generate_g418d2_art_production_capability.py",
+        "source_pixels_used": false,
+        "commercial_status": "green_origin_candidate"
+      },
+      {
+        "type": "inkscape_authored_silhouette",
+        "path": "art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d2_rope_crate_barrel_silhouette.svg",
+        "source_pixels_used": false,
+        "commercial_status": "green_origin_candidate"
+      },
+      {
+        "type": "project_authored_paint_plan",
+        "path": "art_pipeline/newport_green_origin/method_bakeoff/source_authored/g418d2_rope_crate_barrel_paint_plan.json",
+        "source_pixels_used": false,
+        "commercial_status": "green_origin_candidate"
+      },
+      {
+        "type": "project_style_rules",
+        "path": "docs/NEWPORT_ART_BIBLE.md",
+        "source_pixels_used": false,
+        "commercial_status": "documentation_only"
+      },
+      {
+        "type": "project_authored_palette_tokens",
+        "path": "art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
+        "source_pixels_used": false,
+        "commercial_status": "green_origin_candidate"
+      }
+    ],
+    "source_pixels_from_yellow_uncertain_assets": false,
+    "source_pixels_from_third_party_material": false,
+    "web_scraped_source_pixels": false,
+    "ai_generated": false,
+    "deterministic_generated": false,
+    "hand_paintover": true,
+    "ownership": "project-owned",
+    "license": "Wayfarer project-owned green-origin G-4.18D.2 capability proof; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; lab review only because visual gate is not met.",
+    "sha256": "beb1a2a31091fd4816b1ff593d444f27387abc9e45a4febe4f40e6fe9486e429",
+    "tool_reliability_notes": "Inkscape and Pillow were reliable. Krita CLI projection was reliable; interactive Krita runner/script-runner remained unreliable. GIMP exported PNG cleanup but may require timeout handling after export.",
+    "capability_answer": "Codex can generate a better rough-to-polished prop prototype and integration proof, but this run did not prove finished commercial-safe sprite production without a stronger art source."
+  },
+  "g418d2_capability_gate": "One green-origin rope/crate/barrel cluster was attempted and judged below the 7.5 tiny-prop PASS gate; it remains lab-only."
 }

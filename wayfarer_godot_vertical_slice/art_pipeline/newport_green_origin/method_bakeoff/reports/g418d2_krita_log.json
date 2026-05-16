@@ -1,0 +1,13 @@
+{
+  "tool": "Krita CLI",
+  "input": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_prepared.png",
+  "output": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_krita_raw.png",
+  "operations": [
+    "opened prepared G-4.18D.2 hand-authored sprite source",
+    "exported projection to PNG for downstream cleanup"
+  ],
+  "runner_note": "Interactive kritarunner/script-runner remained unreliable on this mini PC after the D.1 resource-database/argument failures, so the reliable Krita CLI projection path was used.",
+  "isolated_profile_root": "artifacts/tool_profiles/g418d2",
+  "stdout": "",
+  "stderr": "Fontconfig error: Cannot load default config file: No such file: (null)\nFontconfig error: Cannot load default config file: No such file: (null)\n"
+}

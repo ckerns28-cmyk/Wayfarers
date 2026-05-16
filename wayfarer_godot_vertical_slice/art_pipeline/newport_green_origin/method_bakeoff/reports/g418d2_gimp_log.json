@@ -1,0 +1,15 @@
+{
+  "tool": "GIMP 3 python-fu-eval",
+  "input": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_krita_raw.png",
+  "output": "art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png",
+  "operations": [
+    "file-png-load",
+    "PNG alpha/transparency preservation",
+    "compression=9 re-export",
+    "metadata chunk removal: bkgd/off/phys/time disabled"
+  ],
+  "timed_out_after_export": true,
+  "isolated_profile_root": "artifacts/tool_profiles/g418d2",
+  "stdout": "",
+  "stderr": "Non-native shell detected, GIMP may behave unexpectedly on Unix shells in Windows.\nbatch command executed successfully\nC:\\Users\\Chris\\AppData\\Local\\Programs\\GIMP 3\\lib\\gimp\\3.0\\plug-ins\\script-fu\\script-fu.exe: fatal error: GIMP crashed\n\n(script-fu.exe:19096): LibGimp-WARNING **: 07:11:08.686: script-fu.exe: gimp_flush(): error: Invalid argument\n"
+}
