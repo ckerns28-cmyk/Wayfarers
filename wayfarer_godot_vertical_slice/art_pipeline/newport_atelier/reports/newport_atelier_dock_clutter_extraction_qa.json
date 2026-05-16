@@ -1,0 +1,233 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.19A",
+  "pack": "newport_dock_clutter",
+  "status": "PASS",
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids"
+  ],
+  "assets": {
+    "atelier_dock_bollards_01": {
+      "size": {
+        "w": 326,
+        "h": 337
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 310,
+        "h": 321
+      },
+      "alpha_pixels": 75279,
+      "opaque_pixels": 75279,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "top_left_weathered_bollard_pair",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_mooring_hardware_01": {
+      "size": {
+        "w": 344,
+        "h": 306
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 328,
+        "h": 290
+      },
+      "alpha_pixels": 53001,
+      "opaque_pixels": 53001,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "top_second_rope_post_cleats_and_ringbolts",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_fishing_net_bundle_01": {
+      "size": {
+        "w": 358,
+        "h": 326
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 342,
+        "h": 310
+      },
+      "alpha_pixels": 79504,
+      "opaque_pixels": 79504,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "top_third_folded_fishing_net_bundle",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_sacks_fish_baskets_01": {
+      "size": {
+        "w": 383,
+        "h": 326
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 367,
+        "h": 310
+      },
+      "alpha_pixels": 84161,
+      "opaque_pixels": 84161,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "top_right_burlap_sacks_and_woven_fish_baskets",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_anchor_rope_01": {
+      "size": {
+        "w": 305,
+        "h": 343
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 289,
+        "h": 327
+      },
+      "alpha_pixels": 36741,
+      "opaque_pixels": 36741,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "bottom_left_small_iron_anchor_with_rope",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_dock_repair_planks_01": {
+      "size": {
+        "w": 379,
+        "h": 277
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 363,
+        "h": 261
+      },
+      "alpha_pixels": 60306,
+      "opaque_pixels": 60306,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "bottom_second_stacked_dock_repair_planks",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_dock_lantern_01": {
+      "size": {
+        "w": 247,
+        "h": 360
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 231,
+        "h": 344
+      },
+      "alpha_pixels": 41442,
+      "opaque_pixels": 41442,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "bottom_third_compact_dock_lantern",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_shoreline_debris_01": {
+      "size": {
+        "w": 420,
+        "h": 271
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 404,
+        "h": 255
+      },
+      "alpha_pixels": 62023,
+      "opaque_pixels": 62023,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "bottom_right_driftwood_shells_seaweed_debris",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    }
+  }
+}

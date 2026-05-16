@@ -1478,6 +1478,11 @@ Next visual foundation phases:
   atlas/contact sheet, manifest/provenance report, Godot placement, and
   validation. The weak deterministic/procedural cargo cluster is no longer the
   visual target.
+- G-4.19A is the first themed city rollout pack built from that standard:
+  Newport dock clutter with bollards, mooring hardware, nets, sacks/baskets,
+  anchor, repair planks, lantern, and shoreline debris candidates. The proof
+  uses only a controlled subset around wharf, market, harbor-edge, and service
+  path clusters.
 - G-4.18E creates one green-origin hero-quality asset family.
 - G-4.19 establishes player visual identity.
 - G-4.20 redesigns the HUD/UI with intentional fantasy/MMORPG styling.
@@ -1485,9 +1490,9 @@ Next visual foundation phases:
 - G-4.22 reviews the full 8.0+ visual foundation exit gate.
 
 Future city-wide prop rollout should continue only through themed atelier packs
-after the cargo lock passes: dock clutter expansion, terrain edge dressing,
-signs/lamps/posts, market goods/carts, shopfront props, then NPC/player
-standards.
+after the cargo lock passes: G-4.19A dock clutter expansion first, then terrain
+edge dressing, signs/lamps/posts, market goods/carts, shopfront props, then
+NPC/player standards.
 
 G-5 must not be recommended until G-4.22 accepts the screenshot-supported 8.0+
 origin city foundation.

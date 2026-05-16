@@ -15,6 +15,8 @@ const G418D1_M01B_PROOF_PATH := "res://art_pipeline/newport_green_origin/method_
 const G418D2_CAPABILITY_ASSET_PATH := "res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png"
 const NEWPORT_ATELIER_CARGO_VERSION := "G-4.18D"
 const NEWPORT_ATELIER_CARGO_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png"
+const NEWPORT_ATELIER_DOCK_CLUTTER_VERSION := "G-4.19A"
+const NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -60,6 +62,16 @@ const NEWPORT_ATELIER_CARGO_MATERIALS := [
 	"atelier_newport_rope_coil_01",
 	"atelier_wharf_cargo_cluster_01",
 ]
+const NEWPORT_ATELIER_DOCK_CLUTTER_MATERIALS := [
+	"atelier_dock_bollards_01",
+	"atelier_mooring_hardware_01",
+	"atelier_fishing_net_bundle_01",
+	"atelier_sacks_fish_baskets_01",
+	"atelier_anchor_rope_01",
+	"atelier_dock_repair_planks_01",
+	"atelier_dock_lantern_01",
+	"atelier_shoreline_debris_01",
+]
 const NEWPORT_HERO_ATLAS_REGIONS := {
 	"commercial_cobble_long_a": Rect2(0, 0, 320, 96),
 	"commercial_cobble_patch_b": Rect2(0, 104, 220, 72),
@@ -95,6 +107,16 @@ const NEWPORT_ATELIER_CARGO_ATLAS_REGIONS := {
 	"atelier_newport_rope_coil_01": Rect2(76, 574, 610, 374),
 	"atelier_wharf_cargo_cluster_01": Rect2(710, 548, 758, 472),
 }
+const NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_REGIONS := {
+	"atelier_dock_bollards_01": Rect2(38, 112, 347, 358),
+	"atelier_mooring_hardware_01": Rect2(400, 140, 360, 350),
+	"atelier_fishing_net_bundle_01": Rect2(752, 120, 381, 370),
+	"atelier_sacks_fish_baskets_01": Rect2(1125, 120, 405, 370),
+	"atelier_anchor_rope_01": Rect2(35, 520, 325, 380),
+	"atelier_dock_repair_planks_01": Rect2(370, 560, 430, 340),
+	"atelier_dock_lantern_01": Rect2(780, 520, 300, 395),
+	"atelier_shoreline_debris_01": Rect2(1070, 560, 464, 360),
+}
 const NEWPORT_ATELIER_CARGO_PLACEMENTS := [
 	{
 		"asset_id": "atelier_newport_crate_01",
@@ -129,11 +151,62 @@ const NEWPORT_ATELIER_CARGO_PLACEMENTS := [
 		"purpose": "wharf_rope_accent",
 	},
 ]
+const NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS := [
+	{
+		"asset_id": "atelier_sacks_fish_baskets_01",
+		"dest": Rect2(708, 618, 77, 70),
+		"pivot": Vector2(0.5, 0.93),
+		"ground_y": 688.0,
+		"scale": 0.19,
+		"purpose": "harbor_market_edge_cluster",
+	},
+	{
+		"asset_id": "atelier_fishing_net_bundle_01",
+		"dest": Rect2(882, 694, 76, 74),
+		"pivot": Vector2(0.5, 0.92),
+		"ground_y": 768.0,
+		"scale": 0.20,
+		"purpose": "wharf_net_cluster_near_rope_lane",
+	},
+	{
+		"asset_id": "atelier_dock_bollards_01",
+		"dest": Rect2(948, 642, 66, 68),
+		"pivot": Vector2(0.5, 0.94),
+		"ground_y": 710.0,
+		"scale": 0.19,
+		"purpose": "dock_edge_bollards",
+	},
+	{
+		"asset_id": "atelier_mooring_hardware_01",
+		"dest": Rect2(1024, 704, 68, 66),
+		"pivot": Vector2(0.5, 0.93),
+		"ground_y": 770.0,
+		"scale": 0.19,
+		"purpose": "mooring_service_path_edge",
+	},
+	{
+		"asset_id": "atelier_dock_repair_planks_01",
+		"dest": Rect2(338, 696, 86, 68),
+		"pivot": Vector2(0.5, 0.93),
+		"ground_y": 764.0,
+		"scale": 0.20,
+		"purpose": "dock_repair_boards_service_edge",
+	},
+	{
+		"asset_id": "atelier_dock_lantern_01",
+		"dest": Rect2(1122, 630, 51, 67),
+		"pivot": Vector2(0.5, 0.95),
+		"ground_y": 697.0,
+		"scale": 0.17,
+		"purpose": "harbor_edge_lantern_marker",
+	},
+]
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
 var _newport_hero_atlas: Texture2D
 var _newport_green_origin_atlas: Texture2D
 var _newport_atelier_cargo_atlas: Texture2D
+var _newport_atelier_dock_clutter_atlas: Texture2D
 var _g418d1_m01b_proof: Texture2D
 var _g418d2_capability_asset: Texture2D
 var _green_origin_lab_enabled := false
@@ -148,6 +221,9 @@ func _ready() -> void:
 	_newport_atelier_cargo_atlas = ResourceLoader.load(NEWPORT_ATELIER_CARGO_ATLAS_PATH, "Texture2D") as Texture2D
 	if _newport_atelier_cargo_atlas == null:
 		push_error("Failed to load Newport atelier cargo atlas: " + NEWPORT_ATELIER_CARGO_ATLAS_PATH)
+	_newport_atelier_dock_clutter_atlas = ResourceLoader.load(NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_dock_clutter_atlas == null:
+		push_error("Failed to load Newport atelier dock clutter atlas: " + NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_PATH)
 	_g418d1_m01b_proof = ResourceLoader.load(G418D1_M01B_PROOF_PATH, "Texture2D") as Texture2D
 	if _g418d1_m01b_proof == null:
 		push_warning("Failed to load G-4.18D.1 M01B lab proof: " + G418D1_M01B_PROOF_PATH)
@@ -182,6 +258,15 @@ func newport_atelier_cargo_materials() -> Array:
 
 func newport_atelier_cargo_placements() -> Array:
 	return NEWPORT_ATELIER_CARGO_PLACEMENTS.duplicate(true)
+
+func newport_atelier_dock_clutter_version() -> String:
+	return NEWPORT_ATELIER_DOCK_CLUTTER_VERSION
+
+func newport_atelier_dock_clutter_materials() -> Array:
+	return NEWPORT_ATELIER_DOCK_CLUTTER_MATERIALS.duplicate()
+
+func newport_atelier_dock_clutter_placements() -> Array:
+	return NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS.duplicate(true)
 
 func set_green_origin_lab_mode(enabled: bool) -> void:
 	_green_origin_lab_enabled = enabled
@@ -253,6 +338,23 @@ func _draw_atelier_cargo_placement(placement: Dictionary) -> void:
 	var ground_y := float(placement.get("ground_y", dest.end.y))
 	_draw_contact_shadow(Vector2(dest.get_center().x, ground_y - 3.0), Vector2(dest.size.x * 0.34, max(5.0, dest.size.y * 0.075)), 0.16)
 	_draw_atelier_cargo_piece(asset_id, dest, 1.0)
+
+func _draw_atelier_dock_clutter_piece(region_id: String, dest: Rect2, alpha := 1.0) -> void:
+	if _newport_atelier_dock_clutter_atlas == null:
+		return
+	if not NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_REGIONS.has(region_id):
+		push_error("Unknown Newport atelier dock clutter atlas region: " + region_id)
+		return
+	draw_texture_rect_region(_newport_atelier_dock_clutter_atlas, dest, NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_REGIONS[region_id], Color(1, 1, 1, alpha), false, true)
+
+func _draw_atelier_dock_clutter_placement(placement: Dictionary) -> void:
+	var asset_id := String(placement.get("asset_id", ""))
+	var dest: Rect2 = placement.get("dest", Rect2())
+	if asset_id == "" or dest.size.x <= 0.0 or dest.size.y <= 0.0:
+		return
+	var ground_y := float(placement.get("ground_y", dest.end.y))
+	_draw_contact_shadow(Vector2(dest.get_center().x, ground_y - 3.0), Vector2(dest.size.x * 0.34, max(5.0, dest.size.y * 0.075)), 0.15)
+	_draw_atelier_dock_clutter_piece(asset_id, dest, 1.0)
 
 func _is_g417_hero_prop_placeholder(pos: Vector2) -> bool:
 	return G417_HERO_PROP_REPLACEMENT_RECT.has_point(pos)
@@ -927,6 +1029,7 @@ func _draw_g410_props() -> void:
 			_draw_bench(bench)
 	_draw_g418_hero_non_cargo_prop_clusters()
 	_draw_g418d_atelier_cargo_clusters()
+	_draw_g419a_atelier_dock_clutter_clusters()
 
 func _draw_g418_hero_non_cargo_prop_clusters() -> void:
 	if _newport_hero_atlas == null:
@@ -939,6 +1042,12 @@ func _draw_g418d_atelier_cargo_clusters() -> void:
 		return
 	for placement in NEWPORT_ATELIER_CARGO_PLACEMENTS:
 		_draw_atelier_cargo_placement(placement)
+
+func _draw_g419a_atelier_dock_clutter_clusters() -> void:
+	if _newport_atelier_dock_clutter_atlas == null:
+		return
+	for placement in NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS:
+		_draw_atelier_dock_clutter_placement(placement)
 
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)

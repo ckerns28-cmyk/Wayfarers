@@ -18,6 +18,7 @@ reference prototype.
 - The G-4.16 surface kit remains the fallback outside the hero area.
 - G-4.18 adds the proprietary Newport asset factory and restyles the central commercial-row atlas proof for street, curb/stoop, base shadow, grass edge, and dock transition.
 - G-4.18D locks the Newport atelier cargo sheet as the new prop quality bar; normal cargo placement now uses extracted transparent atelier sprites instead of the weak deterministic/procedural cargo cluster.
+- G-4.19A adds the first follow-on themed atelier rollout pack: Newport dock clutter, with saved prompt/source, extracted transparent sprites, atlas/contact sheet, manifest, provenance report, QA, and controlled wharf placement.
 - Green-origin art is required, but weak green-origin proof art must be
   quarantined from normal review if it lowers the screenshot bar.
 - NPCs are disabled for the current town-layout review pass.

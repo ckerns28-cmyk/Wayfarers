@@ -27,6 +27,9 @@ ATELIER_ROOT = PROJECT_ROOT / "art_pipeline" / "newport_atelier"
 ATELIER_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_cargo_manifest.json"
 ATELIER_QA_REPORT_PATH = ATELIER_ROOT / "reports" / "newport_atelier_cargo_extraction_qa.json"
 ATELIER_STANDARD_REPORT_PATH = ATELIER_ROOT / "reports" / "G418D_ATELIER_CARGO_STANDARD.md"
+ATELIER_DOCK_CLUTTER_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_dock_clutter_manifest.json"
+ATELIER_DOCK_CLUTTER_QA_REPORT_PATH = ATELIER_ROOT / "reports" / "newport_atelier_dock_clutter_extraction_qa.json"
+ATELIER_DOCK_CLUTTER_REPORT_PATH = ATELIER_ROOT / "reports" / "G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 ISOLATED_BUILDING_DIR = PROJECT_ROOT / "assets" / "sprites" / "buildings" / "isolated"
@@ -1009,6 +1012,203 @@ def validate_atelier_cargo_manifest(failures: list[str]) -> None:
         fail(f"missing atelier cargo standard report: {ATELIER_STANDARD_REPORT_PATH}", failures)
 
 
+def validate_atelier_dock_clutter_manifest(failures: list[str]) -> None:
+    manifest = load_json(ATELIER_DOCK_CLUTTER_MANIFEST_PATH, failures)
+    if not manifest:
+        return
+    if manifest.get("schema_id") != "wayfarer.newport_atelier.dock_clutter_manifest.v1":
+        fail("atelier dock clutter manifest schema_id must be wayfarer.newport_atelier.dock_clutter_manifest.v1", failures)
+    else:
+        pass_check("atelier dock clutter manifest schema id")
+    if manifest.get("phase") != "G-4.19A":
+        fail("atelier dock clutter manifest phase must be G-4.19A", failures)
+    if "G-4.18D" not in str(manifest.get("visual_standard", "")) or "10/10" not in str(manifest.get("visual_standard", "")):
+        fail("atelier dock clutter manifest must record the G-4.18D 10/10 visual standard", failures)
+    if manifest.get("pipeline_status") != "ai_assisted_green_origin_candidate_pending_final_license_policy_approval":
+        fail("atelier dock clutter pipeline_status must preserve pending license approval", failures)
+    if manifest.get("rollout_pack_role") != "first_city_rollout_pack_after_g418d_atelier_standard":
+        fail("atelier dock clutter manifest must identify G-4.19A as the first city rollout pack", failures)
+    if "no over-scatter" not in str(manifest.get("placement_policy", "")):
+        fail("atelier dock clutter placement_policy must forbid over-scatter", failures)
+    if "AI-assisted" not in str(manifest.get("source_policy", "")):
+        fail("atelier dock clutter source_policy must explicitly describe AI-assisted source handling", failures)
+    if "10/10 source sheet" not in str(manifest.get("future_pack_pattern", "")):
+        fail("atelier dock clutter future_pack_pattern must preserve the reusable pack structure", failures)
+
+    for field in [
+        "atlas",
+        "source_image",
+        "generation_prompt",
+        "generated_asset_root",
+        "contact_sheet",
+        "provenance_report",
+        "validation_report",
+    ]:
+        path_exists(str(manifest.get(field, "")), failures)
+    path_exists(str(manifest.get("generated_asset_root", "")), failures)
+
+    qa_report = load_json(ATELIER_DOCK_CLUTTER_QA_REPORT_PATH, failures)
+    if qa_report:
+        if qa_report.get("schema_id") != "wayfarer.newport_atelier.extraction_qa.v1":
+            fail("atelier dock clutter QA report schema mismatch", failures)
+        if qa_report.get("phase") != "G-4.19A":
+            fail("atelier dock clutter QA report phase must be G-4.19A", failures)
+        if qa_report.get("status") != "PASS":
+            fail("atelier dock clutter QA report must be PASS", failures)
+        for required_check in [
+            "transparent sprites have no magenta background",
+            "transparent sprites have no magenta halo on alpha edges",
+            "sprites retain clean transparent crop padding",
+            "sprites are not cut off at object edges",
+            "source sheet object identity maps to manifest asset ids",
+        ]:
+            if required_check not in qa_report.get("checks", []):
+                fail(f"atelier dock clutter QA report missing check: {required_check}", failures)
+
+    assets = manifest.get("assets", [])
+    if not isinstance(assets, list):
+        fail("atelier dock clutter manifest assets must be a list", failures)
+        return
+    expected_ids = {
+        "atelier_dock_bollards_01",
+        "atelier_mooring_hardware_01",
+        "atelier_fishing_net_bundle_01",
+        "atelier_sacks_fish_baskets_01",
+        "atelier_anchor_rope_01",
+        "atelier_dock_repair_planks_01",
+        "atelier_dock_lantern_01",
+        "atelier_shoreline_debris_01",
+    }
+    if len(assets) != len(expected_ids):
+        fail("atelier dock clutter manifest must contain exactly eight assets", failures)
+    seen_ids: set[str] = set()
+    required_fields = [
+        "asset_id",
+        "asset_type",
+        "source_identity",
+        "path",
+        "atlas",
+        "atlas_region",
+        "sprite_size",
+        "pivot",
+        "grounding",
+        "recommended_game_scale",
+        "source_type",
+        "created_by",
+        "generation_prompt",
+        "source_image",
+        "extraction_script",
+        "input_sources",
+        "license",
+        "ownership",
+        "provenance_status",
+        "origin_classification",
+        "commercial_use_status",
+        "review_eligible",
+        "normal_review_eligible",
+        "lab_only",
+        "final_commercial_candidate",
+        "final_commercial_eligible",
+        "source_pixels_from_yellow_uncertain_assets",
+        "source_pixels_from_third_party_material",
+        "web_scraped_source_pixels",
+        "ai_generated",
+        "human_selected",
+        "chroma_key_removed",
+        "extraction_qa",
+        "sha256",
+        "notes",
+    ]
+    for asset in assets:
+        if not isinstance(asset, dict):
+            fail("atelier dock clutter asset entry is not an object", failures)
+            continue
+        asset_id = str(asset.get("asset_id", ""))
+        seen_ids.add(asset_id)
+        for field in required_fields:
+            if field not in asset:
+                fail(f"{asset_id or 'unknown'} missing atelier dock clutter field {field}", failures)
+        if asset_id not in expected_ids:
+            fail(f"unexpected atelier dock clutter asset id: {asset_id}", failures)
+        if asset.get("source_type") != "ai_assisted_image_generation_with_local_chroma_extraction":
+            fail(f"{asset_id} source_type must be AI-assisted image generation plus local extraction", failures)
+        if asset.get("provenance_status") != "ai_assisted_green_origin_candidate_pending_license_review":
+            fail(f"{asset_id} provenance_status must remain AI-assisted pending license review", failures)
+        if asset.get("origin_classification") != "green_origin_candidate_pending_license_review":
+            fail(f"{asset_id} origin_classification must remain green_origin_candidate_pending_license_review", failures)
+        if asset.get("commercial_use_status") != "green_origin_candidate_pending_license_review":
+            fail(f"{asset_id} commercial_use_status must remain pending license review", failures)
+        if asset.get("review_eligible") is not True:
+            fail(f"{asset_id} must be review_eligible", failures)
+        if asset.get("normal_review_eligible") is not True:
+            fail(f"{asset_id} must be normal_review_eligible for this visual rollout pack", failures)
+        if asset.get("lab_only") is not False:
+            fail(f"{asset_id} must not be lab_only after G-4.19A placement", failures)
+        if asset.get("final_commercial_candidate") is not False:
+            fail(f"{asset_id} must not be marked final_commercial_candidate", failures)
+        if asset.get("final_commercial_eligible") is not False:
+            fail(f"{asset_id} must not be marked final_commercial_eligible", failures)
+        for bool_field in ["source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+            if asset.get(bool_field) is not False:
+                fail(f"{asset_id} must set {bool_field}=false", failures)
+        if asset.get("ai_generated") is not True or asset.get("human_selected") is not True:
+            fail(f"{asset_id} must declare ai_generated and human_selected", failures)
+        if asset.get("chroma_key_removed") is not True:
+            fail(f"{asset_id} must declare chroma_key_removed", failures)
+        asset_rel_path = str(asset.get("path", ""))
+        path_exists(asset_rel_path, failures)
+        asset_path = PROJECT_ROOT / asset_rel_path
+        if asset_path.exists():
+            metrics = image_alpha_metrics(asset_path)
+            qa = asset.get("extraction_qa", {})
+            if metrics.get("magenta_pixels_remaining") != 0:
+                fail(f"{asset_id} has magenta background pixels remaining", failures)
+            if metrics.get("magenta_halo_pixels") != 0:
+                fail(f"{asset_id} has magenta halo pixels", failures)
+            if metrics.get("cutoff_edges"):
+                fail(f"{asset_id} crop padding/cutoff failed: {metrics.get('cutoff_edges')}", failures)
+            if metrics.get("readable") is not True:
+                fail(f"{asset_id} alpha footprint is not visually readable", failures)
+            for metric_key in ["magenta_pixels_remaining", "magenta_halo_pixels", "cutoff_edges", "readable"]:
+                if qa.get(metric_key) != metrics.get(metric_key):
+                    fail(f"{asset_id} manifest QA metric {metric_key} does not match image inspection", failures)
+        for path_field in ["generation_prompt", "source_image", "extraction_script", "atlas"]:
+            path_exists(str(asset.get(path_field, "")), failures)
+        if str(asset.get("atlas", "")) != str(manifest.get("atlas", "")):
+            fail(f"{asset_id} atlas path does not match manifest atlas", failures)
+        if str(asset.get("source_image", "")) != str(manifest.get("source_image", "")):
+            fail(f"{asset_id} source image path does not match manifest source image", failures)
+        if str(asset.get("generation_prompt", "")) != str(manifest.get("generation_prompt", "")):
+            fail(f"{asset_id} prompt path does not match manifest prompt", failures)
+        for raw_source in asset.get("input_sources", []):
+            if not isinstance(raw_source, dict):
+                fail(f"{asset_id} input source is not an object", failures)
+                continue
+            if str(raw_source.get("commercial_status", "")) not in {"green_origin_candidate_pending_license_review", "green_origin_candidate", "documentation_only"}:
+                fail(f"{asset_id} input source has unsupported commercial status", failures)
+            if "path" in raw_source:
+                path_exists(str(raw_source["path"]), failures)
+    if seen_ids != expected_ids:
+        fail(f"atelier dock clutter manifest asset ids mismatch: {sorted(seen_ids)}", failures)
+    else:
+        pass_check("atelier dock clutter manifest contains all eight dock clutter assets")
+
+    if ATELIER_DOCK_CLUTTER_REPORT_PATH.exists():
+        report = ATELIER_DOCK_CLUTTER_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in [
+            "first Newport city rollout pack",
+            "G-4.18D atelier",
+            "ai_assisted_green_origin_candidate_pending_license_review",
+            "controlled subset",
+            "Reusable Production Pattern",
+        ]:
+            if required_text not in report:
+                fail(f"atelier dock clutter report missing text: {required_text}", failures)
+        pass_check("atelier dock clutter report present")
+    else:
+        fail(f"missing atelier dock clutter report: {ATELIER_DOCK_CLUTTER_REPORT_PATH}", failures)
+
+
 def main() -> int:
     failures: list[str] = []
     manifest = load_json(MANIFEST_PATH, failures)
@@ -1033,6 +1233,7 @@ def main() -> int:
     validate_green_origin_asset_manifest(failures)
     validate_green_origin_bakeoff_manifest(failures)
     validate_atelier_cargo_manifest(failures)
+    validate_atelier_dock_clutter_manifest(failures)
 
     if failures:
         print(f"Newport provenance validation: FAIL ({len(failures)} issue(s))")
