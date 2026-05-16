@@ -1,0 +1,980 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g420b.shopfront_support_accents.manifest.v1",
+  "phase": "G-4.20B",
+  "pack_id": "shopfront_support_accents",
+  "title": "Shopfront Support And Town-Color Accents",
+  "generated_at": "2026-05-16T22:08:05.626124+00:00",
+  "visual_standard": "Town Identity atelier wave meeting or exceeding the G-4.18D/G-4.19A/G-4.20A atelier standard with an 8.5/10 minimum visual gate.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D Newport atelier cargo pipeline lock, G-4.19A dock clutter rollout pack, and G-4.20A environmental believability wave",
+  "future_pack_pattern": "10/10 source sheet -> saved prompt/source -> extraction script -> transparent sprites -> atlas/contact sheet -> manifest/provenance report -> Godot placement -> validation",
+  "rollout_pack_role": "G-4.20B town identity wave for Newport signage, lamps, wayfinding, civic/market markers, and shopfront support assets",
+  "placement_policy": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final.",
+  "tavern_inn_lock": "The Tavern/Inn remains a future REBUILD_REQUIRED_CENTERPIECE item; temporary sign assets are allowed, but this pack does not rebuild, patch, or finalize the current Tavern/Inn building.",
+  "deprecated_visual_targets": [
+    "generic placeholder sign/lamp doodles where atelier identity pieces are now available",
+    "any use of unproven building art as final visual targets"
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_shopfront_canvas_awning_segment_01",
+      "asset_type": "folded_canvas_awning_segment",
+      "source_identity": "small folded canvas awning segment",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_canvas_awning_segment_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 276,
+        "y": 73,
+        "w": 370,
+        "h": 172
+      },
+      "sprite_size": {
+        "w": 406,
+        "h": 208
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.8
+      },
+      "grounding": {
+        "pivot_y": 0.8,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 406,
+          "h": 208
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 334,
+          "h": 136
+        },
+        "alpha_pixels": 36940,
+        "opaque_pixels": 36940,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "small folded canvas awning segment",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds controlled shopfront color without a building rebuild.",
+      "sha256": "c2a42bde39e2d16db1d48d515ff72366fea4b65c55e269a80364bddb5be7dda9",
+      "notes": "Red cream and blue folded awning segment."
+    },
+    {
+      "asset_id": "atelier_shopfront_display_crates_slate_01",
+      "asset_type": "display_crate_stack_with_slate",
+      "source_identity": "display crate stack with blank slate and cloth bundles",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_display_crates_slate_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 853,
+        "y": 32,
+        "w": 355,
+        "h": 228
+      },
+      "sprite_size": {
+        "w": 391,
+        "h": 264
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.17,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 391,
+          "h": 264
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 319,
+          "h": 192
+        },
+        "alpha_pixels": 49904,
+        "opaque_pixels": 49904,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "display crate stack with blank slate and cloth bundles",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Supports market-spine shopfront believability while keeping doorways clear.",
+      "sha256": "8ae49d6c8d4068aab9242b27b3d54e5f213ef4d1c80d53202bd5c0eaf2c22518",
+      "notes": "Display crates with cloth and blank chalk slate."
+    },
+    {
+      "asset_id": "atelier_shopfront_folded_cloth_bundle_01",
+      "asset_type": "folded_cloth_bundle",
+      "source_identity": "folded cloth merchant bundle",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_folded_cloth_bundle_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 294,
+        "y": 318,
+        "w": 340,
+        "h": 169
+      },
+      "sprite_size": {
+        "w": 376,
+        "h": 205
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 376,
+          "h": 205
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 304,
+          "h": 133
+        },
+        "alpha_pixels": 30515,
+        "opaque_pixels": 30515,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "folded cloth merchant bundle",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds merchant material texture at market frontage.",
+      "sha256": "47a42c6b3a96e1abf45293e74e4dd7aaca456bb7958b4a8d32386715b7fc8697",
+      "notes": "Roped folded cloth stack with coastal colors."
+    },
+    {
+      "asset_id": "atelier_shopfront_chalk_slate_board_01",
+      "asset_type": "portable_blank_chalk_slate",
+      "source_identity": "portable merchant chalk slate",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_chalk_slate_board_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 927,
+        "y": 282,
+        "w": 206,
+        "h": 224
+      },
+      "sprite_size": {
+        "w": 242,
+        "h": 260
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.13,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 242,
+          "h": 260
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 170,
+          "h": 188
+        },
+        "alpha_pixels": 25997,
+        "opaque_pixels": 25997,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "portable merchant chalk slate",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds shopfront identity without readable lettering.",
+      "sha256": "db5ae7675af4c3ad0bed9b10a6dae85b9e48cc84ffd43495528d54f7acffa650",
+      "notes": "Blank portable slate board."
+    },
+    {
+      "asset_id": "atelier_shopfront_hanging_basket_01",
+      "asset_type": "hanging_basket_window_box",
+      "source_identity": "hanging flower basket/window-box accent",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_hanging_basket_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 310,
+        "y": 550,
+        "w": 305,
+        "h": 171
+      },
+      "sprite_size": {
+        "w": 341,
+        "h": 207
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 341,
+          "h": 207
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 31,
+          "w": 269,
+          "h": 151
+        },
+        "alpha_pixels": 25797,
+        "opaque_pixels": 25797,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 31,
+          "right": 36,
+          "bottom": 25
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "hanging flower basket/window-box accent",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds memory and warmth to non-centerpiece shopfronts.",
+      "sha256": "246c35684c84ab76ded8f7e5ec46eb3e4d2c5c72bfc6d6ee1e0dcf191c473911",
+      "notes": "Flower basket with strong silhouette and warm color."
+    },
+    {
+      "asset_id": "atelier_shopfront_coastal_planter_01",
+      "asset_type": "coastal_herb_planter",
+      "source_identity": "small coastal planter with herbs",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_coastal_planter_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 894,
+        "y": 525,
+        "w": 269,
+        "h": 207
+      },
+      "sprite_size": {
+        "w": 305,
+        "h": 243
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 305,
+          "h": 243
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 233,
+          "h": 171
+        },
+        "alpha_pixels": 28058,
+        "opaque_pixels": 28058,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "small coastal planter with herbs",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds grounded town-color near civic and shop edges.",
+      "sha256": "a7ca209b2e7c0f6d58bf2a3cae3c3c86f80f09df60d27e4cad88c48df54dcdd3",
+      "notes": "Weathered herb planter with sea-green boards."
+    },
+    {
+      "asset_id": "atelier_shopfront_rope_pennant_rail_01",
+      "asset_type": "rope_rail_pennant_accent",
+      "source_identity": "rope rail accent with painted pennant ties",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_rope_pennant_rail_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 276,
+        "y": 768,
+        "w": 381,
+        "h": 186
+      },
+      "sprite_size": {
+        "w": 417,
+        "h": 222
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 417,
+          "h": 222
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 345,
+          "h": 150
+        },
+        "alpha_pixels": 19701,
+        "opaque_pixels": 19701,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "rope rail accent with painted pennant ties",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Defines market edges and wharf approach without hard blocking.",
+      "sha256": "6fbf9353c2d7690c0269c60676d5a4e128091199e2805ba78f3811132619a142",
+      "notes": "Low rope rail with muted pennants."
+    },
+    {
+      "asset_id": "atelier_shopfront_basket_parcel_display_01",
+      "asset_type": "basket_parcel_display_cluster",
+      "source_identity": "compact shopfront basket and parcel display cluster",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_basket_parcel_display_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 851,
+        "y": 739,
+        "w": 347,
+        "h": 249
+      },
+      "sprite_size": {
+        "w": 383,
+        "h": 285
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.17,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 383,
+          "h": 285
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 311,
+          "h": 213
+        },
+        "alpha_pixels": 46930,
+        "opaque_pixels": 46930,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "compact shopfront basket and parcel display cluster",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds compact market goods to shopfront support areas.",
+      "sha256": "b113daab177829e06871889e1e753767ef84cb881fc32784aa29e06c73b68ed2",
+      "notes": "Basket, parcel, and fabric display cluster."
+    }
+  ]
+}

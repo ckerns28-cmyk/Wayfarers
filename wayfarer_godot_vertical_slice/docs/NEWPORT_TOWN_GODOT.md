@@ -1494,6 +1494,10 @@ Next visual foundation phases:
   terrain edges, cobble/path transitions, shoreline dressing, harbor edge
   debris, building-grounding accents, and service-lane detail so the starting
   town feels grounded, navigable, and physically coherent.
+- G-4.20B is the Town Identity atelier wave. It adds signage, lamps,
+  wayfinding, civic/market markers, and shopfront support assets so Newport
+  becomes easier to read, remember, and navigate without rebuilding core
+  buildings.
 - G-4.18E creates one green-origin hero-quality asset family.
 - G-4.19 establishes player visual identity.
 - G-4.20 redesigns the HUD/UI with intentional fantasy/MMORPG styling.
@@ -1518,6 +1522,19 @@ this environmental glue unless the audit forces an earlier correction. The
 Tavern/Inn remains a future `REBUILD_REQUIRED_CENTERPIECE` with the documented
 brick, twin-stack chimney, Hotel Viking-inspired coastal landmark direction;
 G-4.20A does not patch it or treat it as final.
+
+G-4.20B completes the town identity wave with four locked atelier packs under
+`art_pipeline/newport_atelier/`: signs/shop markers, lamps/wayfinding,
+civic/market identity, and shopfront support accents. Each pack keeps the
+exact prompt, source generated sheet, transparent sprite extraction, atlas,
+contact sheet, manifest, QA, and provenance report. Placement stays controlled
+around market-spine readability, harbor/wharf wayfinding, civic identity
+points, shopfront believability, and player orientation. This is not a
+building rebuild pass; core buildings remain under audit status. The
+Tavern/Inn remains a future `REBUILD_REQUIRED_CENTERPIECE` with the documented
+brick, twin-stack chimney, Hotel Viking-inspired coastal landmark direction.
+G-4.20B may register temporary Tavern/Inn sign candidates, but it does not
+patch the current Tavern/Inn or treat it as final.
 
 G-5 must not be recommended until G-4.22 accepts the screenshot-supported 8.0+
 origin city foundation.

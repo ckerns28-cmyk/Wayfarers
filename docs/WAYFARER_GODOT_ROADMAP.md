@@ -1696,6 +1696,64 @@ Acceptance:
   final assets without provenance, deprecated final targets, magenta/halo
   extraction remnants, and missing/deprecated MapLayer references.
 
+## G-4.20B: Newport Town Identity Atelier Wave
+
+Status: implemented as the second controlled atelier production wave.
+
+G-4.20B adds signage, lamps, wayfinding, civic/market markers, and shopfront
+support assets so Newport reads as a believable playable starting town with
+stronger identity, orientation, and market-spine memory. It builds on the
+G-4.20A environmental believability pass instead of starting a parallel or
+stacked branch.
+
+The wave adds four themed atelier packs:
+
+- Signs and shop markers for mercantile, fishmonger, warehouse, inn/rooms,
+  harbor direction, bracket, plaque, and temporary Tavern/Inn sign candidates.
+- Lamps and wayfinding for street lamps, dock lantern posts, signposts,
+  bollard lanterns, harbor markers, rope-rail posts, pier lanterns, and coastal
+  waystones.
+- Civic and market identity for notice boards, market banners, harbor bulletin
+  boards, small flags, civic plaques, posting poles, pennant signs, and dock
+  rules boards.
+- Shopfront support accents for awnings, display crates, folded cloth, slates,
+  hanging baskets, planters, rope pennants, and basket/parcel displays.
+
+Production artifacts live under `art_pipeline/newport_atelier/` and include
+the exact prompts, source generated sheets, extracted transparent sprites,
+atlases, contact sheets, manifests, extraction QA, provenance reports, and the
+town identity wave manifest/report. New entries are registered in
+`art_pipeline/newport/manifests/newport_visual_production_registry.json` as
+AI-assisted green-origin candidates pending final license policy approval.
+
+Placement is controlled around the market spine, harbor/wharf wayfinding,
+civic identity points, shopfront believability, and player orientation. It
+must not block navigation, over-decorate, make signs visually noisy, or treat
+any current unverified building as final.
+
+This is not a building rebuild pass. Core buildings remain under their audit
+status, and the Tavern/Inn remains locked as a future
+`REBUILD_REQUIRED_CENTERPIECE`: brick construction, two sets of large
+twin-stack chimneys, Hotel Viking-inspired coastal landmark presence, warm
+social hub, quest anchor, and player landmark. G-4.20B may register temporary
+Tavern/Inn sign candidates, but it does not patch, finalize, or rebuild the
+Tavern/Inn.
+
+Acceptance:
+
+- Three to five town identity atelier sheets are produced under the locked
+  G-4.18D/G-4.19A pipeline; G-4.20B ships four.
+- Every pack has source sheet, saved prompt, transparent sprite extraction,
+  atlas, contact sheet, manifest, QA, and provenance report.
+- New assets are registered with source/provenance status, usage, visual
+  quality, gameplay role, rebuild/final status, and notes.
+- No magenta background or halo remains in extracted sprites.
+- Controlled in-world placement improves Newport's identity and navigation
+  while preserving G-4.20A environmental believability assets.
+- Validators fail clearly for missing wave artifacts, missing registry status,
+  final assets without provenance, deprecated final targets, magenta/halo
+  extraction remnants, and missing/deprecated MapLayer references.
+
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
 Status: planned.

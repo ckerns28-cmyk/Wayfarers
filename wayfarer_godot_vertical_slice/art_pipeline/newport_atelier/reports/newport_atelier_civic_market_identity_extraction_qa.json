@@ -1,0 +1,252 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.20B",
+  "pack": "civic_market_identity",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10",
+    "temporary Tavern/Inn sign candidate is not placed as a final building patch"
+  ],
+  "assets": {
+    "atelier_civic_town_notice_board_01": {
+      "size": {
+        "w": 359,
+        "h": 303
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 287,
+        "h": 231
+      },
+      "alpha_pixels": 46402,
+      "opaque_pixels": 46402,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "town notice board with blank postings",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_civic_market_banner_strand_01": {
+      "size": {
+        "w": 483,
+        "h": 214
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 411,
+        "h": 142
+      },
+      "alpha_pixels": 22619,
+      "opaque_pixels": 22619,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "market banner strand",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_civic_harbor_bulletin_board_01": {
+      "size": {
+        "w": 418,
+        "h": 274
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 346,
+        "h": 202
+      },
+      "alpha_pixels": 51304,
+      "opaque_pixels": 51304,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "harbor bulletin board with blank notices",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_civic_flag_cluster_01": {
+      "size": {
+        "w": 404,
+        "h": 245
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 332,
+        "h": 173
+      },
+      "alpha_pixels": 19262,
+      "opaque_pixels": 19262,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "small civic flag cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_civic_anchor_plaque_01": {
+      "size": {
+        "w": 287,
+        "h": 258
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 215,
+        "h": 186
+      },
+      "alpha_pixels": 33888,
+      "opaque_pixels": 33888,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "brass civic plaque with anchor star icon",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_civic_posting_pole_01": {
+      "size": {
+        "w": 163,
+        "h": 290
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 91,
+        "h": 218
+      },
+      "alpha_pixels": 13964,
+      "opaque_pixels": 13964,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "posting pole with tied notices and wax seals",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_civic_market_pennant_sign_01": {
+      "size": {
+        "w": 373,
+        "h": 250
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 301,
+        "h": 178
+      },
+      "alpha_pixels": 30663,
+      "opaque_pixels": 30663,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "market stall hanging pennant sign",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_civic_dock_rules_board_01": {
+      "size": {
+        "w": 345,
+        "h": 295
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 273,
+        "h": 223
+      },
+      "alpha_pixels": 51311,
+      "opaque_pixels": 51311,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "dock rules board with simple pictogram marks",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}

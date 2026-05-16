@@ -1,0 +1,980 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g420b.lamps_wayfinding.manifest.v1",
+  "phase": "G-4.20B",
+  "pack_id": "lamps_wayfinding",
+  "title": "Lamps Posts And Wayfinding",
+  "generated_at": "2026-05-16T22:07:54.552596+00:00",
+  "visual_standard": "Town Identity atelier wave meeting or exceeding the G-4.18D/G-4.19A/G-4.20A atelier standard with an 8.5/10 minimum visual gate.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D Newport atelier cargo pipeline lock, G-4.19A dock clutter rollout pack, and G-4.20A environmental believability wave",
+  "future_pack_pattern": "10/10 source sheet -> saved prompt/source -> extraction script -> transparent sprites -> atlas/contact sheet -> manifest/provenance report -> Godot placement -> validation",
+  "rollout_pack_role": "G-4.20B town identity wave for Newport signage, lamps, wayfinding, civic/market markers, and shopfront support assets",
+  "placement_policy": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise.",
+  "tavern_inn_lock": "The Tavern/Inn remains a future REBUILD_REQUIRED_CENTERPIECE item; temporary sign assets are allowed, but this pack does not rebuild, patch, or finalize the current Tavern/Inn building.",
+  "deprecated_visual_targets": [
+    "generic placeholder sign/lamp doodles where atelier identity pieces are now available",
+    "any use of unproven building art as final visual targets"
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_wayfinding_street_lamp_post_01",
+      "asset_type": "colonial_street_lamp_post",
+      "source_identity": "colonial street lamp post",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_street_lamp_post_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 440,
+        "y": 9,
+        "w": 120,
+        "h": 339
+      },
+      "sprite_size": {
+        "w": 156,
+        "h": 375
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.98
+      },
+      "grounding": {
+        "pivot_y": 0.98,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.14,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 156,
+          "h": 375
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 84,
+          "h": 303
+        },
+        "alpha_pixels": 12521,
+        "opaque_pixels": 12521,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "colonial street lamp post",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Frames the market spine and civic approach as intentional town space.",
+      "sha256": "dd63f39ac36c3410a6fae7fa132cb09b064354da0c66f41a45da4fa834a89bf0",
+      "notes": "Tall black iron lamp with contained warm glass glow."
+    },
+    {
+      "asset_id": "atelier_wayfinding_dock_lantern_post_01",
+      "asset_type": "dock_lantern_post",
+      "source_identity": "dock lantern post with rope wrap",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_dock_lantern_post_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 897,
+        "y": 23,
+        "w": 203,
+        "h": 309
+      },
+      "sprite_size": {
+        "w": 239,
+        "h": 345
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.98
+      },
+      "grounding": {
+        "pivot_y": 0.98,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 239,
+          "h": 345
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 167,
+          "h": 273
+        },
+        "alpha_pixels": 19445,
+        "opaque_pixels": 19445,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "dock lantern post with rope wrap",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Marks harbor routes with working-wharf lighting.",
+      "sha256": "c126eabc391bd50ae6093b9320c685d46b8c693d770ef03a318e7dbe21450655",
+      "notes": "Rope-wrapped post with suspended lantern."
+    },
+    {
+      "asset_id": "atelier_wayfinding_multi_arrow_signpost_01",
+      "asset_type": "blank_multi_arrow_signpost",
+      "source_identity": "blank multi-arrow signpost",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_multi_arrow_signpost_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 383,
+        "y": 340,
+        "w": 232,
+        "h": 246
+      },
+      "sprite_size": {
+        "w": 268,
+        "h": 282
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.98
+      },
+      "grounding": {
+        "pivot_y": 0.98,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.16,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 268,
+          "h": 282
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 196,
+          "h": 210
+        },
+        "alpha_pixels": 16554,
+        "opaque_pixels": 16554,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "blank multi-arrow signpost",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Improves player orientation at wharf-to-town splits without readable text.",
+      "sha256": "53831d0804f0667442e8297a3a0019fab1e355806b7b682288dd051b47f3017f",
+      "notes": "Weathered directional signpost with blank arrows."
+    },
+    {
+      "asset_id": "atelier_wayfinding_bollard_lantern_01",
+      "asset_type": "bollard_mounted_lantern",
+      "source_identity": "bollard-mounted lantern",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_bollard_lantern_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 915,
+        "y": 344,
+        "w": 142,
+        "h": 246
+      },
+      "sprite_size": {
+        "w": 178,
+        "h": 282
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.13,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 178,
+          "h": 282
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 106,
+          "h": 210
+        },
+        "alpha_pixels": 14678,
+        "opaque_pixels": 14678,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "bollard-mounted lantern",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds a low harbor marker where full posts would be too tall.",
+      "sha256": "84f1bcef02bff76e4ffe4e6fd4d19bca1820b7c77fd9b1dc6a0461a259828cc9",
+      "notes": "Brass lantern mounted on a stout bollard."
+    },
+    {
+      "asset_id": "atelier_wayfinding_harbor_road_marker_01",
+      "asset_type": "harbor_road_marker_stone",
+      "source_identity": "harbor road marker stone with arrow icon",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_harbor_road_marker_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 402,
+        "y": 579,
+        "w": 177,
+        "h": 196
+      },
+      "sprite_size": {
+        "w": 213,
+        "h": 232
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.13,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 213,
+          "h": 232
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 141,
+          "h": 160
+        },
+        "alpha_pixels": 14766,
+        "opaque_pixels": 14766,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "harbor road marker stone with arrow icon",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Gives the market road a grounded coastal wayfinding accent.",
+      "sha256": "0ee222b34c74b06fa7c73bc4d8d25e993ef66cf52580774d12ab2c69257a8085",
+      "notes": "Chipped stone marker with arrow pictogram."
+    },
+    {
+      "asset_id": "atelier_wayfinding_rope_rail_post_pair_01",
+      "asset_type": "rope_rail_post_pair",
+      "source_identity": "rope-rail post pair accent",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_rope_rail_post_pair_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 841,
+        "y": 587,
+        "w": 285,
+        "h": 196
+      },
+      "sprite_size": {
+        "w": 321,
+        "h": 232
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 321,
+          "h": 232
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 249,
+          "h": 160
+        },
+        "alpha_pixels": 16041,
+        "opaque_pixels": 16041,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "rope-rail post pair accent",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Defines dock edges without blocking movement.",
+      "sha256": "95b0b1f0e72b16d9c39782fecf3baefb3c1f90d8cd3b379b51bee074d05e9e32",
+      "notes": "Short rope rail with salt-worn posts."
+    },
+    {
+      "asset_id": "atelier_wayfinding_pier_lantern_stand_01",
+      "asset_type": "short_pier_lantern_stand",
+      "source_identity": "short pier lantern on crate-height stand",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_pier_lantern_stand_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 402,
+        "y": 762,
+        "w": 178,
+        "h": 249
+      },
+      "sprite_size": {
+        "w": 214,
+        "h": 285
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.13,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 214,
+          "h": 285
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 142,
+          "h": 213
+        },
+        "alpha_pixels": 18248,
+        "opaque_pixels": 18248,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 36,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "short pier lantern on crate-height stand",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds readable pier lighting at working-wharf scale.",
+      "sha256": "c824705e2855872c78de3b2ca5b3b34f48e9b3963b0dfe040df492d25fbdcfc9",
+      "notes": "Compact crate-height lantern stand."
+    },
+    {
+      "asset_id": "atelier_wayfinding_coastal_waystone_01",
+      "asset_type": "coastal_waystone",
+      "source_identity": "small coastal waystone with shell and anchor icon",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_coastal_waystone_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 878,
+        "y": 796,
+        "w": 176,
+        "h": 204
+      },
+      "sprite_size": {
+        "w": 212,
+        "h": 240
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "town identity sprite draws from its transparent bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.13,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 212,
+          "h": 240
+        },
+        "alpha_bbox": {
+          "x": 36,
+          "y": 36,
+          "w": 142,
+          "h": 168
+        },
+        "alpha_pixels": 15410,
+        "opaque_pixels": 15410,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 36,
+          "top": 36,
+          "right": 34,
+          "bottom": 36
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "small coastal waystone with shell and anchor icon",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Registers coastal civic identity in quieter corners.",
+      "sha256": "30f90e6cecae648f5bd476aec93cb2b3a18c062e5a5ba9241510b0989441fe95",
+      "notes": "Shell and anchor waystone without letters."
+    }
+  ]
+}

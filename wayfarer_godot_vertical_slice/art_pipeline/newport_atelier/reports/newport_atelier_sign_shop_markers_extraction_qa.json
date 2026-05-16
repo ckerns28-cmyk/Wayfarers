@@ -1,0 +1,252 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.20B",
+  "pack": "sign_shop_markers",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10",
+    "temporary Tavern/Inn sign candidate is not placed as a final building patch"
+  ],
+  "assets": {
+    "atelier_sign_tavern_inn_placeholder_01": {
+      "size": {
+        "w": 348,
+        "h": 304
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 276,
+        "h": 232
+      },
+      "alpha_pixels": 37353,
+      "opaque_pixels": 37353,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "temporary tavern/inn hanging sign placeholder",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_sign_mercantile_crate_marker_01": {
+      "size": {
+        "w": 350,
+        "h": 276
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 278,
+        "h": 204
+      },
+      "alpha_pixels": 34326,
+      "opaque_pixels": 34326,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "mercantile hanging sign with parcel icon",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_sign_fishmonger_icon_board_01": {
+      "size": {
+        "w": 347,
+        "h": 281
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 275,
+        "h": 209
+      },
+      "alpha_pixels": 36170,
+      "opaque_pixels": 36170,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "fishmonger sign with fish icon",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_sign_dock_warehouse_barrel_anchor_01": {
+      "size": {
+        "w": 337,
+        "h": 262
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 265,
+        "h": 208
+      },
+      "alpha_pixels": 33595,
+      "opaque_pixels": 33595,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 18
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "dock warehouse sign with barrel and anchor",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_sign_inn_rooms_key_board_01": {
+      "size": {
+        "w": 279,
+        "h": 228
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 207,
+        "h": 156
+      },
+      "alpha_pixels": 27035,
+      "opaque_pixels": 27035,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "inn rooms small key and bed board",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_sign_harbor_direction_arrows_01": {
+      "size": {
+        "w": 303,
+        "h": 264
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 18,
+        "w": 231,
+        "h": 210
+      },
+      "alpha_pixels": 24161,
+      "opaque_pixels": 24161,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 18,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "blank harbor directional arrow sign cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_sign_hanging_bracket_iron_01": {
+      "size": {
+        "w": 410,
+        "h": 297
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 338,
+        "h": 225
+      },
+      "alpha_pixels": 20114,
+      "opaque_pixels": 20114,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "ornate iron hanging sign bracket",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_sign_painted_shop_plaque_01": {
+      "size": {
+        "w": 298,
+        "h": 245
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 226,
+        "h": 173
+      },
+      "alpha_pixels": 32918,
+      "opaque_pixels": 32918,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "small painted shop plaque board",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}
