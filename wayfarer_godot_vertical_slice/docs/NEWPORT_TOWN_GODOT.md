@@ -1469,7 +1469,9 @@ enough.
 Next visual foundation phases:
 
 - G-4.18C quarantines weak green-origin proof while preserving provenance
-  infrastructure.
+  infrastructure. The failed G-4.18B proof is hidden from normal review and is
+  visible only through Green-Origin Lab mode (`F6` or
+  `--show-green-origin-lab`) with explicit `Not normal review art` labeling.
 - G-4.18D runs an art production method bakeoff.
 - G-4.18E creates one green-origin hero-quality asset family.
 - G-4.19 establishes player visual identity.

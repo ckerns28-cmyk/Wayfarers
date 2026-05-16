@@ -25,24 +25,27 @@ used as source pixels.
 
 The current yellow Newport building sprites remain temporary review art only.
 The G-4.17/G-4.18 crop-derived hero atlas remains temporary_review_yellow. This
-G-4.18B dock proof family is classified as `green_origin_candidate`, not yet
-`final_commercial_green`, because final art promotion should happen only after
-visual direction approval and any desired polish pass.
+G-4.18B dock proof family remains classified as `green_origin_candidate` for
+provenance, but G-4.18C marks it `visual_failed_g418b_proof`,
+`normal_review_eligible=false`, `lab_only=true`, and
+`final_commercial_candidate=false`. Final art promotion can happen only after
+both provenance approval and visual direction approval.
 
 ## Generated Assets
 
-- `green_dock_plank_strip`: `dock_plank_tile`, `green_origin_candidate`, final candidate `true`
-- `green_dock_plank_patch`: `dock_plank_tile`, `green_origin_candidate`, final candidate `true`
-- `green_dock_edge_shadow`: `contact_shadow_tile`, `green_origin_candidate`, final candidate `true`
-- `green_pier_post_pair`: `dock_post_prop`, `green_origin_candidate`, final candidate `true`
-- `green_rope_coil_small`: `rope_prop`, `green_origin_candidate`, final candidate `true`
-- `green_plank_contact_shadow`: `contact_shadow_tile`, `green_origin_candidate`, final candidate `true`
+- `green_dock_plank_strip`: `dock_plank_tile`, `green_origin_candidate`, visual `visual_failed_g418b_proof`, lab-only `true`
+- `green_dock_plank_patch`: `dock_plank_tile`, `green_origin_candidate`, visual `visual_failed_g418b_proof`, lab-only `true`
+- `green_dock_edge_shadow`: `contact_shadow_tile`, `green_origin_candidate`, visual `visual_failed_g418b_proof`, lab-only `true`
+- `green_pier_post_pair`: `dock_post_prop`, `green_origin_candidate`, visual `visual_failed_g418b_proof`, lab-only `true`
+- `green_rope_coil_small`: `rope_prop`, `green_origin_candidate`, visual `visual_failed_g418b_proof`, lab-only `true`
+- `green_plank_contact_shadow`: `contact_shadow_tile`, `green_origin_candidate`, visual `visual_failed_g418b_proof`, lab-only `true`
 
 ## Godot Proof Area
 
-`MapLayer.gd` loads the green-origin atlas and draws one limited dock proof area
-on the working wharf. Yellow buildings remain in the prototype as temporary
-review art; they are not source pixels for the green-origin dock assets.
+`MapLayer.gd` loads the green-origin atlas but draws the G-4.18B proof only in
+Green-Origin Lab mode (`F6` or `--show-green-origin-lab`). Yellow buildings
+remain in the prototype as temporary review art; they are not source pixels for
+the green-origin dock assets.
 
 ## Validation Expectations
 
@@ -50,5 +53,6 @@ review art; they are not source pixels for the green-origin dock assets.
 - `validate_newport_asset_provenance.py` must keep yellow assets out of final
   commercial classification.
 - The Godot vertical slice validator must see the G-4.18B green-origin atlas API.
-- Browser screenshots should include the full harbor, a green-origin dock
-  close-up, the contact sheet, and a provenance/debug proof.
+- Browser screenshots should include normal full harbor, no-HUD full harbor,
+  normal commercial row, the lab-only green-origin proof, and the contact
+  sheets.

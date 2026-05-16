@@ -246,15 +246,23 @@ def manifest_entry(asset_id: str, region: tuple[int, int, int, int], paths: dict
         "license": "Wayfarer project-owned deterministic generated bitmap; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; commercial project use allowed.",
         "ownership": "project-owned",
         "commercial_use_status": "green_origin_candidate",
-        "review_eligible": True,
-        "final_commercial_candidate": True,
+        "provenance_status": "green_origin_candidate",
+        "origin_classification": "green_origin_candidate",
+        "visual_quality_status": "visual_failed_g418b_proof",
+        "review_eligible": False,
+        "normal_review_eligible": False,
+        "lab_only": True,
+        "final_commercial_candidate": False,
+        "final_commercial_eligible": False,
+        "lab_access_mode": "F6 or --show-green-origin-lab",
         "source_pixels_from_yellow_uncertain_assets": False,
         "source_pixels_from_third_party_material": False,
         "web_scraped_source_pixels": False,
         "ai_generated": False,
         "deterministic_generated": True,
         "sha256": sha256(paths[asset_id]),
-        "notes": "Original Pillow mark-making from authored palettes and geometry rules. Yellow Newport building sprites were not opened, sampled, cropped, traced, or copied."
+        "visual_review_notes": "G-4.18C quarantine: source-safe proof asset reads too small, noisy, sticker-like, or off-scale in the player-facing scene. Preserve for provenance/lab inspection only.",
+        "notes": "Original Pillow mark-making from authored palettes and geometry rules. Yellow Newport building sprites were not opened, sampled, cropped, traced, or copied. G-4.18C quarantine: preserved as provenance proof, hidden from normal review until redesigned."
     }
 
 
@@ -273,7 +281,10 @@ def write_manifest(paths: dict[str, Path]) -> dict:
             "final_commercial_green",
             "red_unsafe"
         ],
-        "source_policy": "Green-origin assets may use only project scripts, authored parameters, and documented project-owned sources. Yellow/uncertain sprites are visual reference only and cannot be source pixels.",
+        "source_policy": "Green-origin assets may use only project scripts, authored parameters, and documented project-owned sources. Yellow/uncertain sprites are visual reference only and cannot be source pixels. G-4.18C adds visual gating: provenance green + visual failed = lab-only, not normal review or final-commercial candidate.",
+        "quarantine_phase": "G-4.18C",
+        "visual_quality_gate": "G-4.18C correction: green-origin provenance is necessary but not sufficient. This proof family is legally useful but visually failed and is lab-only.",
+        "lab_access_mode": "F6 or --show-green-origin-lab",
         "assets": assets
     }
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -345,7 +356,7 @@ def write_contact_sheets(paths: dict[str, Path], tokens: dict) -> None:
 def write_report(manifest: dict) -> None:
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     asset_lines = "\n".join(
-        f"- `{asset['asset_id']}`: `{asset['asset_type']}`, `{asset['commercial_use_status']}`, final candidate `{str(asset['final_commercial_candidate']).lower()}`"
+        f"- `{asset['asset_id']}`: `{asset['asset_type']}`, `{asset['commercial_use_status']}`, visual `{asset['visual_quality_status']}`, lab-only `{str(asset['lab_only']).lower()}`"
         for asset in manifest["assets"]
     )
     REPORT_PATH.write_text(
@@ -376,9 +387,11 @@ used as source pixels.
 
 The current yellow Newport building sprites remain temporary review art only.
 The G-4.17/G-4.18 crop-derived hero atlas remains temporary_review_yellow. This
-G-4.18B dock proof family is classified as `green_origin_candidate`, not yet
-`final_commercial_green`, because final art promotion should happen only after
-visual direction approval and any desired polish pass.
+G-4.18B dock proof family remains classified as `green_origin_candidate` for
+provenance, but G-4.18C marks it `visual_failed_g418b_proof`,
+`normal_review_eligible=false`, `lab_only=true`, and
+`final_commercial_candidate=false`. Final art promotion can happen only after
+both provenance approval and visual direction approval.
 
 ## Generated Assets
 
@@ -386,9 +399,10 @@ visual direction approval and any desired polish pass.
 
 ## Godot Proof Area
 
-`MapLayer.gd` loads the green-origin atlas and draws one limited dock proof area
-on the working wharf. Yellow buildings remain in the prototype as temporary
-review art; they are not source pixels for the green-origin dock assets.
+`MapLayer.gd` loads the green-origin atlas but draws the G-4.18B proof only in
+Green-Origin Lab mode (`F6` or `--show-green-origin-lab`). Yellow buildings
+remain in the prototype as temporary review art; they are not source pixels for
+the green-origin dock assets.
 
 ## Validation Expectations
 

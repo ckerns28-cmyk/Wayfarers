@@ -66,7 +66,42 @@ create_zip() {
         return 0
     fi
 
-    [ -n "$PYTHON_BIN" ] || fail "zip is required when Python is unavailable."
+    if [ -z "$PYTHON_BIN" ] && command -v powershell.exe >/dev/null 2>&1 && command -v cygpath >/dev/null 2>&1; then
+        powershell.exe -NoProfile -Command '& {
+            param($zipPath, $fileList, $root)
+
+            Add-Type -AssemblyName System.IO.Compression
+            Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+            if (Test-Path -LiteralPath $zipPath) {
+                Remove-Item -LiteralPath $zipPath -Force
+            }
+
+            $stream = [System.IO.File]::Open($zipPath, [System.IO.FileMode]::CreateNew)
+            $archive = [System.IO.Compression.ZipArchive]::new($stream, [System.IO.Compression.ZipArchiveMode]::Create)
+            try {
+                Get-Content -LiteralPath $fileList | ForEach-Object {
+                    $entry = $_.Trim()
+                    if ($entry.Length -gt 0) {
+                        $source = Join-Path $root $entry
+                        $archivePath = $entry.Replace("\", "/")
+                        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
+                            $archive,
+                            $source,
+                            $archivePath,
+                            [System.IO.Compression.CompressionLevel]::Optimal
+                        ) | Out-Null
+                    }
+                }
+            } finally {
+                $archive.Dispose()
+                $stream.Dispose()
+            }
+        }' "$(cygpath -w "$zip_path")" "$(cygpath -w "$file_list")" "$(cygpath -w "$PWD")"
+        return 0
+    fi
+
+    [ -n "$PYTHON_BIN" ] || fail "zip, Python, or PowerShell/.NET ZIP support is required."
     "$PYTHON_BIN" - "$zip_path" "$file_list" <<'PY'
 import sys
 import zipfile
@@ -91,7 +126,24 @@ list_zip_entries() {
         return 0
     fi
 
-    [ -n "$PYTHON_BIN" ] || fail "zipinfo is required when Python is unavailable."
+    if [ -z "$PYTHON_BIN" ] && command -v powershell.exe >/dev/null 2>&1 && command -v cygpath >/dev/null 2>&1; then
+        powershell.exe -NoProfile -Command '& {
+            param($zipPath)
+
+            Add-Type -AssemblyName System.IO.Compression
+            Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+            $archive = [System.IO.Compression.ZipFile]::OpenRead($zipPath)
+            try {
+                $archive.Entries | ForEach-Object { $_.FullName }
+            } finally {
+                $archive.Dispose()
+            }
+        }' "$(cygpath -w "$zip_path")"
+        return 0
+    fi
+
+    [ -n "$PYTHON_BIN" ] || fail "zipinfo, Python, or PowerShell/.NET ZIP support is required."
     "$PYTHON_BIN" - "$zip_path" <<'PY'
 import sys
 import zipfile

@@ -19,6 +19,17 @@ canonical Godot review reference.
 Hard rule: a validator pass is not an art pass. If screenshots do not look
 better, the pass is not accepted as visual progress.
 
+## G-4.18C Green-Origin Quarantine Checks
+
+- [ ] Normal review does not show the failed G-4.18B green-origin proof by default.
+- [ ] `F6` or `--show-green-origin-lab` exposes the proof only as Green-Origin Lab evidence.
+- [ ] Lab mode is labeled `Green-Origin Lab: ON` and `Not normal review art`.
+- [ ] The same dock area is captured in normal review and lab mode for comparison.
+- [ ] Provenance-green but visual-failed assets are `lab_only=true` and
+  `normal_review_eligible=false`.
+- [ ] Yellow temporary buildings remain clearly temporary and never
+  final-commercial green.
+
 ## Core readability checks
 - [ ] Player sprite remains readable on town grass, forest grass, roads, water-adjacent tiles, cave floor, and tollhouse floor.
 - [ ] NPC silhouettes are visually distinct from enemies without relying only on labels.

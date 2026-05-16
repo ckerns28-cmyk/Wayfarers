@@ -74,6 +74,13 @@ Current compatibility rule:
   if it lowers screenshot quality.
 - Yellow art is temporary review art only and must be clearly marked in
   manifests, review notes, and replacement queues.
+- Each asset must keep separate status fields for `provenance_status`,
+  `origin_classification`, `visual_quality_status`,
+  `normal_review_eligible`, `lab_only`, `final_commercial_candidate`, and
+  `final_commercial_eligible`.
+- Provenance green plus visual failure means `lab_only=true` and
+  `normal_review_eligible=false`; provenance yellow plus visual success means
+  temporary review only and `final_commercial_eligible=false`.
 - New atlas families should prefer `assets/atlases/<domain>/`.
 - New original art should go in `assets/source/<domain>/`.
 - New committed reference screenshots should go in `assets/references/<phase>/`.

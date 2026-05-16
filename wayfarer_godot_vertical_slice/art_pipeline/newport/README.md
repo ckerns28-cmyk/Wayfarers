@@ -35,6 +35,8 @@ eligibility recorded in `manifests/newport_asset_manifest.json`.
 Green-origin production is required for final art, but it is not automatically
 review-eligible. If a source-safe generated proof looks weaker in screenshots,
 it must be quarantined as pipeline evidence until the art method improves.
+G-4.18C records that split with `visual_quality_status`,
+`normal_review_eligible`, `lab_only`, and `final_commercial_eligible` fields.
 
 The G-4 exit bar is an 8.0+ origin city visual foundation: the Newport harbor
 town must feel authored, unified across buildings/streets/docks/props/player/

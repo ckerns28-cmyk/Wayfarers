@@ -32,11 +32,13 @@ or correct HUD build label is not visual acceptance by itself. If the normal,
 no-HUD, hero street/dock, and HUD screenshots do not look better, the pass is
 not accepted as visual progress.
 
-G-4.17 packaging note: `tools/package_itch_web.sh` also creates a versioned ZIP
+G-4.18C packaging note: `tools/package_itch_web.sh` also creates a versioned ZIP
 beside the stable upload path, for example
-`wayfarers-tale-godot-g-4-17-newport-asset-pipeline-hero-street-atlas.zip`, so Finder shows a
+`wayfarers-tale-godot-g-4-18c-green-origin-lab-quarantine.zip`, so Finder shows a
 clearly current upload candidate. Press `F4` in the build, or launch with
-`--review-no-hud`, for clean no-HUD screenshot review.
+`--review-no-hud`, for clean no-HUD screenshot review. Press `F6`, or launch
+with `--show-green-origin-lab`, only when capturing Green-Origin Lab proof; lab
+mode is labeled as not normal review art.
 
 For local mini PC screenshot review, serve the exported build with the same
 headers used by the browser-review host:
@@ -46,14 +48,17 @@ python wayfarer_godot_vertical_slice/tools/serve_web_build.py --directory wayfar
 ```
 
 The HUD shows visible review identity so a screenshot can prove which ZIP is
-live. For G-4.9.6 the expected label is:
+live. For G-4.18C the expected label is:
 
 ```text
-Build label: Godot G-4.9.6 Street Vignette Acceptance Gate
-Phase: G-4.9.6 | Review host: itch
+Build label: Godot G-4.18C Green-Origin Lab Quarantine
+Phase: G-4.18C | Review host: itch
 Channel: manual ZIP
-Branch: codex/g-4-9-6-street-vignette-acceptance-gate
+Branch: g-4-18c-quarantine-green-origin-proof-restore-review-baseline
 ```
+
+If Green-Origin Lab mode is enabled, the HUD or map badge must also show
+`Green-Origin Lab: ON` and `Not normal review art`.
 
 For G-4.9.6 the default HUD is compact so the street vignette is easier to review in a
 screenshot. Press `F2` during local or itch review to toggle the extended
