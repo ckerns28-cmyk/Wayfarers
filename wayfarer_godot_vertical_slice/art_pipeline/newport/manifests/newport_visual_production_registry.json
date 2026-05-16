@@ -1,10 +1,10 @@
 {
   "schema_id": "wayfarer.newport.visual_production_registry.v1",
-  "phase": "G-4.19B",
+  "phase": "G-4.20A",
   "generated_at": "2026-05-16",
   "registry_role": "Newport visual production registry and core asset trust audit.",
   "north_star": "Newport is the starting town/village for Wayfarer: a believable, enjoyable, navigable opening location with coastal identity, readable harbor/market/civic/residential organization, emotional invitation to explore, gameplay readiness, and visual consistency with the G-4.18D/G-4.19A atelier standard.",
-  "policy": "This pass creates production structure and audit readiness only. It does not create new sprite sheets, rebuild buildings, redesign the game, or promote old/unverified assets to final by default.",
+  "policy": "G-4.20A is the first mass atelier production wave. It adds controlled environmental believability sheets and placement while preserving the G-4.19B visual registry, audit discipline, pending AI license policy, and Tavern/Inn centerpiece rebuild lock.",
   "status_taxonomy": [
     "APPROVED_FINAL",
     "APPROVED_TEMPORARY",
@@ -18,7 +18,7 @@
     {
       "wave_id": "wave_1_environmental_believability",
       "title": "Environmental believability",
-      "status": "planned",
+      "status": "complete_g420a_first_mass_atelier_wave",
       "atelier_required": true,
       "scope": [
         "terrain edge dressing",
@@ -27,7 +27,9 @@
         "road borders",
         "mud/grass/stone blend pieces"
       ],
-      "acceptance_note": "Replace broad procedural fallback reads with grounded, atelier-quality transition families before expanding more decorative props."
+      "acceptance_note": "G-4.20A delivered the first mass environmental believability wave: terrain edges, cobble/path transitions, shoreline/harbor edge dressing, and building-grounding/service accents.",
+      "accepted_pack_count": 4,
+      "accepted_asset_count": 32
     },
     {
       "wave_id": "wave_2_town_identity",
@@ -61,7 +63,7 @@
     {
       "wave_id": "wave_4_building_rebuild_or_enhancement",
       "title": "Building rebuild or enhancement",
-      "status": "blocked_until_building_audit_decisions_are_accepted",
+      "status": "blocked_until_environmental_glue_or_audit_forces_rebuild",
       "atelier_required": true,
       "scope": [
         "centerpiece Tavern/Inn rebuild",
@@ -1432,6 +1434,998 @@
       "gameplay_role": "Future NPC interaction placeholder.",
       "rebuild_status": "REBUILD_REQUIRED",
       "notes": "Wave 5 should define the character/NPC standard before NPC review returns."
+    },
+    {
+      "asset_id": "atelier_terrain_grass_road_edge_north_01",
+      "name": "Grass-To-Road Feathered North Edge Strip",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_grass_road_edge_north_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Softens the north edge of the harborfront road without covering the walkable read.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low grass/cobble feather for the north side of road seams. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_terrain_grass_road_edge_south_01",
+      "name": "Grass-To-Road Feathered South Edge Strip",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_grass_road_edge_south_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Softens the south edge of road and wharf transitions.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low grass/cobble feather for the south side of road seams. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_terrain_mud_cobble_feather_01",
+      "name": "Mud-To-Cobble Feather Blend Strip",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_mud_cobble_feather_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Bridges muddy wharf shoulders into cobble without visual snapping.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Mud/cobble seam with weeds and damp stones. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_terrain_dirt_path_border_01",
+      "name": "Dirt Path Border With Tufts And Stones",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_dirt_path_border_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Defines dirt path edges while keeping paths readable.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Small stones, weeds, and dirt edge texture. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_terrain_worn_corner_blend_01",
+      "name": "Worn Road Corner Blend Piece",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_worn_corner_blend_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Makes road corners look walked-in instead of tile-cut.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Curved worn corner with compacted dirt and cobble chips. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_terrain_coastal_tuft_stone_cluster_01",
+      "name": "Low Coastal Grass Tufts, Stones, And Weeds Cluster",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_coastal_tuft_stone_cluster_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds small authored grounding at empty grass/road corners.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.8,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low grass and stone cluster for sparse seam accents. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_terrain_muddy_puddle_rut_01",
+      "name": "Shallow Muddy Puddle And Wagon-Rut Accent",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_muddy_puddle_rut_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Breaks up flat service-lane mud while staying nonblocking.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.8,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low puddle/rut accent with damp highlights. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_terrain_broken_grassy_shoulder_01",
+      "name": "Broken Grassy Road Shoulder Strip",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_broken_grassy_shoulder_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds natural shoulder texture to market-spine edges.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low broken shoulder strip with grass fingers and stones. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_path_market_cobble_long_01",
+      "name": "Long Worn Market-Spine Cobble Road Patch",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_market_cobble_long_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds authored wear to the main market walking surface.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Long low cobble patch with worn middle track. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_path_broken_cobble_patch_01",
+      "name": "Broken Cobble Patch With Missing Stones And Dirt",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_broken_cobble_patch_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Breaks up repeated cobble near the wharf-to-town seam.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Broken cobbles and dirt-filled gaps. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_path_dirt_worn_section_01",
+      "name": "Dirt-Worn Walking Path Section",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_dirt_worn_section_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Gives service-lane foot traffic a readable surface.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Worn earth path with small stone inclusions. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_path_road_shoulder_earth_01",
+      "name": "Road Shoulder Where Cobble Fades Into Earth",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_road_shoulder_earth_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Connects cobble roads to softer grass/mud shoulders.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Earth shoulder with loose stones and dust. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_path_curb_threshold_stones_01",
+      "name": "Curb And Doorstep Threshold Stone Strip",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_curb_threshold_stones_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Reinforces non-tavern building base approach points.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Threshold strip for doors and stoops. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_path_cobble_plank_seam_01",
+      "name": "Cobble-To-Wharf-Plank Seam Piece",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_cobble_plank_seam_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Clarifies wharf-to-town material transition.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Stone-to-plank seam with grime and plank ends. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_path_sunken_gutter_stones_01",
+      "name": "Sunken Gutter/Drain Stones With Grime",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_sunken_gutter_stones_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds low drainage detail beside market-spine edges.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Darkened gutter stones and damp grime. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_path_loose_paving_fragments_01",
+      "name": "Loose Stones And Paving Fragments Strip",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_loose_paving_fragments_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds low scatter at road shoulders without blocking movement.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.8,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low loose stones for edge dressing. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shore_seaweed_drift_line_01",
+      "name": "Seaweed Drift Line",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_seaweed_drift_line_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Marks the tide edge beside docks with low material detail.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low seaweed drift line with salt-wet texture. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shore_shell_pebble_cluster_01",
+      "name": "Shells And Pebble Cluster",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_shell_pebble_cluster_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds small coastal identity at shoreline edges.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Shells and pebbles with readable light accents. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shore_wet_rocks_sand_01",
+      "name": "Small Wet Rocks On Sand",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_wet_rocks_sand_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds shoreline grounding around waterline bends.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Wet stones with dark sand contact. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shore_driftwood_log_cluster_01",
+      "name": "Driftwood Log Cluster",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_driftwood_log_cluster_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds believable harbor edge debris without implying a blocked route.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Bleached driftwood with dark wet edges. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shore_wet_sand_mud_strip_01",
+      "name": "Wet Sand And Mud Accent Strip",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_wet_sand_mud_strip_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Softens shore-to-wharf edges and wet mud pockets.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low wet sand/mud strip with gloss accents. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shore_harbor_debris_slats_rope_01",
+      "name": "Broken Harbor Debris Slats With Rope Scrap",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_harbor_debris_slats_rope_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds working-harbor debris near wharf edges.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Small broken slats and rope scraps. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shore_tide_puddle_mud_edge_01",
+      "name": "Shallow Tide Puddle With Dark Mud Edge",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_tide_puddle_mud_edge_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Breaks up wet shoreline flats with readable low puddles.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.8,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Tide puddle and dark mud rim. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shore_eelgrass_reeds_cluster_01",
+      "name": "Eelgrass/Reeds Low Cluster",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_eelgrass_reeds_cluster_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds sparse coastal vegetation along shore seams.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low reeds and eelgrass for shoreline pockets. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_ground_doorstep_stones_01",
+      "name": "Doorstep Stones And Stoop Base Accent",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_doorstep_stones_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled non-centerpiece building-base and service-lane placement only; do not patch the Tavern/Inn or treat any building as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Supports non-tavern door reads without replacing building art.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Small doorstep stone accent for grounded entries. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_ground_foundation_shadow_strip_01",
+      "name": "Foundation Dirt And Soft Shadow Strip",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_foundation_shadow_strip_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled non-centerpiece building-base and service-lane placement only; do not patch the Tavern/Inn or treat any building as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds a low base-shadow strip where buildings meet ground.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Foundation dirt and shadow, not a building patch. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_ground_wall_weeds_stones_01",
+      "name": "Wall-Edge Weeds And Stones Low Strip",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_wall_weeds_stones_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled non-centerpiece building-base and service-lane placement only; do not patch the Tavern/Inn or treat any building as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Softens building bases with weeds and stones.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low weeds and stones for wall edges. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_ground_repair_boards_crate_scraps_01",
+      "name": "Leaning Repair Boards With Tiny Crate Scraps",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_repair_boards_crate_scraps_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled non-centerpiece building-base and service-lane placement only; do not patch the Tavern/Inn or treat any building as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds service-lane craft clutter without blocking the path.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Weathered repair boards and small crate scraps. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_ground_barrel_crate_cluster_01",
+      "name": "Small Barrel And Crate Grounding Cluster",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_barrel_crate_cluster_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled non-centerpiece building-base and service-lane placement only; do not patch the Tavern/Inn or treat any building as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds restrained building-base utility clutter.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Small barrel/crate base cluster. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_ground_wash_tub_buckets_01",
+      "name": "Wash Tub With Two Buckets",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_wash_tub_buckets_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20A environmental believability controlled subset",
+        "used_in_g420a_controlled_subset": true,
+        "usage_notes": "Controlled non-centerpiece building-base and service-lane placement only; do not patch the Tavern/Inn or treat any building as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Signals residential/service life in controlled side yards.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Wash tub and buckets for service-lane dressing. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_ground_low_fence_weeds_01",
+      "name": "Low Fence Segment With Weeds At Posts",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_low_fence_weeds_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled non-centerpiece building-base and service-lane placement only; do not patch the Tavern/Inn or treat any building as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Defines yards and service edges while staying visually low.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low fence segment with weeded posts. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_ground_firewood_chopping_block_01",
+      "name": "Stacked Firewood With Chopping Block",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_firewood_chopping_block_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20A atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420a_controlled_subset": false,
+        "usage_notes": "Controlled non-centerpiece building-base and service-lane placement only; do not patch the Tavern/Inn or treat any building as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds residential/service utility texture away from main paths.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Firewood stack and chopping block for side yards. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
     }
   ]
 }

@@ -1,0 +1,251 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.20A",
+  "pack": "terrain_edge_dressing",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10"
+  ],
+  "assets": {
+    "atelier_terrain_grass_road_edge_north_01": {
+      "size": {
+        "w": 786,
+        "h": 245
+      },
+      "alpha_bbox": {
+        "x": 30,
+        "y": 24,
+        "w": 728,
+        "h": 187
+      },
+      "alpha_pixels": 98023,
+      "opaque_pixels": 98023,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 30,
+        "top": 24,
+        "right": 28,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "grass-to-road feathered north edge strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_terrain_grass_road_edge_south_01": {
+      "size": {
+        "w": 746,
+        "h": 234
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 34,
+        "w": 687,
+        "h": 166
+      },
+      "alpha_pixels": 88651,
+      "opaque_pixels": 88651,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 34,
+        "right": 31,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "grass-to-road feathered south edge strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_terrain_mud_cobble_feather_01": {
+      "size": {
+        "w": 797,
+        "h": 217
+      },
+      "alpha_bbox": {
+        "x": 33,
+        "y": 30,
+        "w": 732,
+        "h": 153
+      },
+      "alpha_pixels": 91479,
+      "opaque_pixels": 91479,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 33,
+        "top": 30,
+        "right": 32,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "mud-to-cobble feather blend strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_terrain_dirt_path_border_01": {
+      "size": {
+        "w": 762,
+        "h": 189
+      },
+      "alpha_bbox": {
+        "x": 24,
+        "y": 34,
+        "w": 712,
+        "h": 121
+      },
+      "alpha_pixels": 42911,
+      "opaque_pixels": 42911,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 24,
+        "top": 34,
+        "right": 26,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "dirt path border with tufts and stones",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_terrain_worn_corner_blend_01": {
+      "size": {
+        "w": 501,
+        "h": 226
+      },
+      "alpha_bbox": {
+        "x": 32,
+        "y": 26,
+        "w": 444,
+        "h": 169
+      },
+      "alpha_pixels": 56722,
+      "opaque_pixels": 56722,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 32,
+        "top": 26,
+        "right": 25,
+        "bottom": 31
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "worn road corner blend piece",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_terrain_coastal_tuft_stone_cluster_01": {
+      "size": {
+        "w": 580,
+        "h": 207
+      },
+      "alpha_bbox": {
+        "x": 25,
+        "y": 25,
+        "w": 531,
+        "h": 148
+      },
+      "alpha_pixels": 36859,
+      "opaque_pixels": 36859,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 25,
+        "top": 25,
+        "right": 24,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "low coastal grass tufts, stones, and weeds cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_terrain_muddy_puddle_rut_01": {
+      "size": {
+        "w": 646,
+        "h": 214
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 33,
+        "w": 585,
+        "h": 147
+      },
+      "alpha_pixels": 66721,
+      "opaque_pixels": 66721,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 33,
+        "right": 33,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "shallow muddy puddle and wagon-rut accent",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_terrain_broken_grassy_shoulder_01": {
+      "size": {
+        "w": 765,
+        "h": 217
+      },
+      "alpha_bbox": {
+        "x": 31,
+        "y": 33,
+        "w": 710,
+        "h": 155
+      },
+      "alpha_pixels": 58203,
+      "opaque_pixels": 58203,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 31,
+        "top": 33,
+        "right": 24,
+        "bottom": 29
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "broken grassy road shoulder strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}

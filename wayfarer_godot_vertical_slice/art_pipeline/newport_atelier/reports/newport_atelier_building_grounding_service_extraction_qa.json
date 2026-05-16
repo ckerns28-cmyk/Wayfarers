@@ -1,0 +1,251 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.20A",
+  "pack": "building_grounding_service",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10"
+  ],
+  "assets": {
+    "atelier_ground_doorstep_stones_01": {
+      "size": {
+        "w": 527,
+        "h": 222
+      },
+      "alpha_bbox": {
+        "x": 21,
+        "y": 34,
+        "w": 481,
+        "h": 155
+      },
+      "alpha_pixels": 55719,
+      "opaque_pixels": 55719,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 21,
+        "top": 34,
+        "right": 25,
+        "bottom": 33
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "doorstep stones and stoop base accent",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_ground_foundation_shadow_strip_01": {
+      "size": {
+        "w": 620,
+        "h": 189
+      },
+      "alpha_bbox": {
+        "x": 31,
+        "y": 34,
+        "w": 562,
+        "h": 121
+      },
+      "alpha_pixels": 54815,
+      "opaque_pixels": 54815,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 31,
+        "top": 34,
+        "right": 27,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "foundation dirt and soft shadow strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_ground_wall_weeds_stones_01": {
+      "size": {
+        "w": 566,
+        "h": 222
+      },
+      "alpha_bbox": {
+        "x": 27,
+        "y": 34,
+        "w": 521,
+        "h": 154
+      },
+      "alpha_pixels": 38928,
+      "opaque_pixels": 38928,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 27,
+        "top": 34,
+        "right": 18,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "wall-edge weeds and stones low strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_ground_repair_boards_crate_scraps_01": {
+      "size": {
+        "w": 534,
+        "h": 270
+      },
+      "alpha_bbox": {
+        "x": 18,
+        "y": 34,
+        "w": 494,
+        "h": 205
+      },
+      "alpha_pixels": 53587,
+      "opaque_pixels": 53587,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 18,
+        "top": 34,
+        "right": 22,
+        "bottom": 31
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "leaning repair boards with tiny crate scraps",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_ground_barrel_crate_cluster_01": {
+      "size": {
+        "w": 500,
+        "h": 250
+      },
+      "alpha_bbox": {
+        "x": 19,
+        "y": 32,
+        "w": 460,
+        "h": 185
+      },
+      "alpha_pixels": 54717,
+      "opaque_pixels": 54717,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 19,
+        "top": 32,
+        "right": 21,
+        "bottom": 33
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "small barrel and crate grounding cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_ground_wash_tub_buckets_01": {
+      "size": {
+        "w": 480,
+        "h": 236
+      },
+      "alpha_bbox": {
+        "x": 18,
+        "y": 34,
+        "w": 441,
+        "h": 169
+      },
+      "alpha_pixels": 49292,
+      "opaque_pixels": 49292,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 18,
+        "top": 34,
+        "right": 21,
+        "bottom": 33
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "wash tub with two buckets",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_ground_low_fence_weeds_01": {
+      "size": {
+        "w": 585,
+        "h": 234
+      },
+      "alpha_bbox": {
+        "x": 30,
+        "y": 34,
+        "w": 528,
+        "h": 166
+      },
+      "alpha_pixels": 48906,
+      "opaque_pixels": 48906,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 30,
+        "top": 34,
+        "right": 27,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "low fence segment with weeds at posts",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_ground_firewood_chopping_block_01": {
+      "size": {
+        "w": 576,
+        "h": 258
+      },
+      "alpha_bbox": {
+        "x": 26,
+        "y": 30,
+        "w": 528,
+        "h": 196
+      },
+      "alpha_pixels": 70089,
+      "opaque_pixels": 70089,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 26,
+        "top": 30,
+        "right": 22,
+        "bottom": 32
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "stacked firewood with chopping block",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}

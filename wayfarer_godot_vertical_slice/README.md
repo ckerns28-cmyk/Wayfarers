@@ -20,6 +20,7 @@ reference prototype.
 - G-4.18D locks the Newport atelier cargo sheet as the new prop quality bar; normal cargo placement now uses extracted transparent atelier sprites instead of the weak deterministic/procedural cargo cluster.
 - G-4.19A adds the first follow-on themed atelier rollout pack: Newport dock clutter, with saved prompt/source, extracted transparent sprites, atlas/contact sheet, manifest, provenance report, QA, and controlled wharf placement.
 - G-4.19B adds the Newport visual production registry and core asset audit, shifting future work from isolated sheets to atelier production waves for a believable playable starting town.
+- G-4.20A is the first mass atelier production wave: Newport environmental believability, adding controlled terrain-edge, cobble/path, shoreline/harbor, and building-grounding assets while keeping building rebuilds and the Tavern/Inn centerpiece pass deferred.
 - Green-origin art is required, but weak green-origin proof art must be
   quarantined from normal review if it lowers the screenshot bar.
 - NPCs are disabled for the current town-layout review pass.
