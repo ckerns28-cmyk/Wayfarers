@@ -15,8 +15,10 @@ PIPELINE_ROOT = PROJECT_ROOT / "art_pipeline" / "newport"
 MANIFEST_PATH = PIPELINE_ROOT / "manifests" / "newport_asset_manifest.json"
 LEGACY_MANIFEST_PATH = PIPELINE_ROOT / "manifests" / "newport_hero_street_assets.json"
 BUILDING_PROVENANCE_PATH = PIPELINE_ROOT / "manifests" / "newport_building_sprite_provenance.json"
+VISUAL_REGISTRY_PATH = PIPELINE_ROOT / "manifests" / "newport_visual_production_registry.json"
 AUDIT_PATH = PIPELINE_ROOT / "reports" / "G417_G418_ASSET_PROVENANCE_AUDIT.md"
 BUILDING_AUDIT_PATH = PIPELINE_ROOT / "reports" / "G418A_BUILDING_SPRITE_PROVENANCE_AUDIT.md"
+VISUAL_PRODUCTION_AUDIT_PATH = PIPELINE_ROOT / "reports" / "G419B_NEWPORT_VISUAL_PRODUCTION_AUDIT.md"
 GREEN_ORIGIN_ROOT = PROJECT_ROOT / "art_pipeline" / "newport_green_origin"
 GREEN_ORIGIN_MANIFEST_PATH = GREEN_ORIGIN_ROOT / "manifests" / "green_origin_asset_manifest.json"
 GREEN_ORIGIN_BAKEOFF_MANIFEST_PATH = GREEN_ORIGIN_ROOT / "manifests" / "green_origin_method_bakeoff_manifest.json"
@@ -32,8 +34,29 @@ ATELIER_DOCK_CLUTTER_QA_REPORT_PATH = ATELIER_ROOT / "reports" / "newport_atelie
 ATELIER_DOCK_CLUTTER_REPORT_PATH = ATELIER_ROOT / "reports" / "G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
+MAP_LAYER_PATH = PROJECT_ROOT / "scenes" / "map" / "MapLayer.gd"
 ISOLATED_BUILDING_DIR = PROJECT_ROOT / "assets" / "sprites" / "buildings" / "isolated"
 ORIGIN_TAXONOMY = {"temporary_review_yellow", "green_origin_candidate", "final_commercial_green", "red_unsafe"}
+VISUAL_REGISTRY_STATUS_TAXONOMY = {
+    "APPROVED_FINAL",
+    "APPROVED_TEMPORARY",
+    "NEEDS_REWORK",
+    "REBUILD_REQUIRED",
+    "REBUILD_REQUIRED_CENTERPIECE",
+    "DEPRECATED_DO_NOT_USE",
+    "PROVENANCE_UNKNOWN",
+}
+FINAL_PROVENANCE_STATUSES = {"final_commercial_green", "approved_final_project_owned"}
+ATELIER_REQUIRED_ARTIFACT_FIELDS = [
+    "manifest",
+    "source_image",
+    "generation_prompt",
+    "extraction_script",
+    "atlas",
+    "contact_sheet",
+    "validation_report",
+    "provenance_report",
+]
 GREEN_ORIGIN_FORBIDDEN_INPUTS = [
     "assets/sprites/buildings/isolated",
     "assets/buildings",
@@ -1209,6 +1232,201 @@ def validate_atelier_dock_clutter_manifest(failures: list[str]) -> None:
         fail(f"missing atelier dock clutter report: {ATELIER_DOCK_CLUTTER_REPORT_PATH}", failures)
 
 
+def validate_visual_production_registry(failures: list[str]) -> None:
+    registry = load_json(VISUAL_REGISTRY_PATH, failures)
+    if not registry:
+        return
+    if registry.get("schema_id") != "wayfarer.newport.visual_production_registry.v1":
+        fail("visual production registry schema_id must be wayfarer.newport.visual_production_registry.v1", failures)
+    else:
+        pass_check("visual production registry schema id")
+    if registry.get("phase") != "G-4.19B":
+        fail("visual production registry phase must be G-4.19B", failures)
+    if "starting town/village" not in str(registry.get("north_star", "")):
+        fail("visual production registry must restore the Newport starting town/village North Star", failures)
+    if "does not create new sprite sheets" not in str(registry.get("policy", "")):
+        fail("visual production registry must record the no-new-sprite-sheets policy", failures)
+
+    statuses = registry.get("status_taxonomy", [])
+    if not isinstance(statuses, list):
+        fail("visual production registry status_taxonomy must be a list", failures)
+        statuses = []
+    for status in sorted(VISUAL_REGISTRY_STATUS_TAXONOMY):
+        if status not in statuses:
+            fail(f"visual production registry status taxonomy missing {status}", failures)
+
+    waves = registry.get("production_wave_plan", [])
+    if not isinstance(waves, list):
+        fail("visual production registry production_wave_plan must be a list", failures)
+        waves = []
+    expected_waves = [
+        "wave_1_environmental_believability",
+        "wave_2_town_identity",
+        "wave_3_economy_life",
+        "wave_4_building_rebuild_or_enhancement",
+        "wave_5_character_npc_standard",
+    ]
+    wave_by_id = {str(wave.get("wave_id", "")): wave for wave in waves if isinstance(wave, dict)}
+    for wave_id in expected_waves:
+        if wave_id not in wave_by_id:
+            fail(f"visual production registry missing production wave: {wave_id}", failures)
+            continue
+        wave = wave_by_id[wave_id]
+        if wave.get("atelier_required") is not True:
+            fail(f"{wave_id} must require the atelier pipeline", failures)
+        scope = wave.get("scope", [])
+        if not isinstance(scope, list) or len(scope) < 3:
+            fail(f"{wave_id} must include a production scope list", failures)
+    pass_check(f"visual production waves recorded: {len(wave_by_id)}")
+
+    entries = registry.get("asset_entries", [])
+    if not isinstance(entries, list):
+        fail("visual production registry asset_entries must be a list", failures)
+        return
+    if len(entries) < 60:
+        fail("visual production registry must classify the major Newport visual set", failures)
+    else:
+        pass_check(f"visual production registry entries: {len(entries)}")
+
+    required_entry_fields = [
+        "asset_id",
+        "name",
+        "category",
+        "path",
+        "source_provenance_status",
+        "current_usage",
+        "visual_quality_status",
+        "gameplay_role",
+        "rebuild_status",
+        "notes",
+    ]
+    by_id: dict[str, dict] = {}
+    for raw_entry in entries:
+        if not isinstance(raw_entry, dict):
+            fail("visual production registry entry is not an object", failures)
+            continue
+        asset_id = str(raw_entry.get("asset_id", ""))
+        if not asset_id:
+            fail("visual production registry entry missing asset_id", failures)
+            continue
+        if asset_id in by_id:
+            fail(f"duplicate visual production registry asset id: {asset_id}", failures)
+        by_id[asset_id] = raw_entry
+        for field in required_entry_fields:
+            if field not in raw_entry:
+                fail(f"{asset_id} missing visual registry field {field}", failures)
+        for status_field in ["visual_quality_status", "rebuild_status"]:
+            status = str(raw_entry.get(status_field, ""))
+            if status not in VISUAL_REGISTRY_STATUS_TAXONOMY:
+                fail(f"{asset_id} has unsupported {status_field}: {status}", failures)
+        rel_path = str(raw_entry.get("path", ""))
+        path_exists(rel_path, failures)
+        if not str(raw_entry.get("category", "")):
+            fail(f"{asset_id} missing visual registry category", failures)
+        if not str(raw_entry.get("source_provenance_status", "")):
+            fail(f"{asset_id} missing source/provenance status", failures)
+        usage = raw_entry.get("current_usage", {})
+        if not isinstance(usage, dict):
+            fail(f"{asset_id} current_usage must be an object", failures)
+            usage = {}
+        for usage_field in ["normal_review", "lab_only", "runtime_target"]:
+            if usage_field not in usage:
+                fail(f"{asset_id} current_usage missing {usage_field}", failures)
+
+        provenance = str(raw_entry.get("source_provenance_status", ""))
+        if raw_entry.get("visual_quality_status") == "APPROVED_FINAL" or raw_entry.get("rebuild_status") == "APPROVED_FINAL":
+            if provenance not in FINAL_PROVENANCE_STATUSES:
+                fail(f"{asset_id} is marked final without final provenance", failures)
+
+        deprecated = bool(raw_entry.get("deprecated_visual_target", False)) or raw_entry.get("rebuild_status") == "DEPRECATED_DO_NOT_USE"
+        if deprecated:
+            if usage.get("normal_review") is True or usage.get("final_path") is True:
+                fail(f"{asset_id} is deprecated but still marked for normal/final usage", failures)
+
+        if asset_id.startswith("atelier_"):
+            artifacts = raw_entry.get("atelier_artifacts", {})
+            if not isinstance(artifacts, dict):
+                fail(f"{asset_id} atelier_artifacts must be an object", failures)
+                artifacts = {}
+            for artifact_field in ATELIER_REQUIRED_ARTIFACT_FIELDS:
+                if artifact_field not in artifacts:
+                    fail(f"{asset_id} missing atelier artifact {artifact_field}", failures)
+                else:
+                    path_exists(str(artifacts.get(artifact_field, "")), failures)
+
+        if raw_entry.get("category") == "BUILDING" and usage.get("normal_review") is True:
+            audit = raw_entry.get("building_audit", {})
+            if not isinstance(audit, dict):
+                fail(f"{asset_id} active building entry missing building_audit object", failures)
+            else:
+                for audit_field in [
+                    "provenance_confidence",
+                    "atelier_consistency",
+                    "scale_perspective_fit",
+                    "grounding_quality",
+                    "town_role",
+                ]:
+                    if audit_field not in audit:
+                        fail(f"{asset_id} building audit missing {audit_field}", failures)
+
+    catalog = read_text(BUILDING_CATALOG_PATH, failures)
+    blueprint = read_text(TOWN_BLUEPRINT_PATH, failures)
+    map_layer = read_text(MAP_LAYER_PATH, failures)
+    active_building_ids = _extract_quoted_list(blueprint, "STARTER_HARBOR_BUILDING_IDS")
+    building_to_sprite = _extract_building_sprite_ids(catalog)
+    for building_id in active_building_ids:
+        sprite_id = building_to_sprite.get(building_id, "")
+        if not sprite_id:
+            fail(f"active building has no sprite id for visual registry cross-check: {building_id}", failures)
+            continue
+        if sprite_id not in by_id:
+            fail(f"active building sprite missing from visual production registry: {building_id}:{sprite_id}", failures)
+
+    for const_name in [
+        "NEWPORT_HERO_ATLAS_MATERIALS",
+        "NEWPORT_GREEN_ORIGIN_MATERIALS",
+        "NEWPORT_ATELIER_CARGO_MATERIALS",
+        "NEWPORT_ATELIER_DOCK_CLUTTER_MATERIALS",
+    ]:
+        for asset_id in _extract_quoted_list(map_layer, const_name):
+            if asset_id not in by_id:
+                fail(f"MapLayer material missing from visual production registry: {const_name}:{asset_id}", failures)
+
+    for asset_id, entry in by_id.items():
+        deprecated = bool(entry.get("deprecated_visual_target", False)) or entry.get("rebuild_status") == "DEPRECATED_DO_NOT_USE"
+        if not deprecated:
+            continue
+        usage = entry.get("current_usage", {})
+        rel_path = str(entry.get("path", ""))
+        referenced_in_map_layer = asset_id in map_layer or (rel_path and rel_path in map_layer)
+        if referenced_in_map_layer and not (isinstance(usage, dict) and usage.get("lab_only") is True and usage.get("normal_review") is False):
+            fail(f"MapLayer references deprecated visual target outside lab-only scope: {asset_id}", failures)
+
+    tavern = by_id.get("inn_tavern_v1", {})
+    if tavern.get("rebuild_status") != "REBUILD_REQUIRED_CENTERPIECE":
+        fail("Newport Tavern/Inn must be marked REBUILD_REQUIRED_CENTERPIECE", failures)
+    tavern_audit = tavern.get("building_audit", {}) if isinstance(tavern, dict) else {}
+    direction = str(tavern_audit.get("future_direction", "")) if isinstance(tavern_audit, dict) else ""
+    for required_text in ["brick construction", "twin-stack chimneys", "Hotel Viking", "major player landmark"]:
+        if required_text not in direction:
+            fail(f"Tavern/Inn centerpiece direction missing: {required_text}", failures)
+
+    if VISUAL_PRODUCTION_AUDIT_PATH.exists():
+        report = VISUAL_PRODUCTION_AUDIT_PATH.read_text(encoding="utf-8")
+        for required_text in [
+            "North Star",
+            "REBUILD_REQUIRED_CENTERPIECE",
+            "Wave 1 - Environmental believability",
+            "Wave 5 - Character/NPC standard",
+            "No current Newport visual asset is promoted to `APPROVED_FINAL`",
+        ]:
+            if required_text not in report:
+                fail(f"G-4.19B visual production audit missing text: {required_text}", failures)
+        pass_check("G-4.19B visual production audit report present")
+    else:
+        fail(f"missing visual production audit report: {VISUAL_PRODUCTION_AUDIT_PATH}", failures)
+
+
 def main() -> int:
     failures: list[str] = []
     manifest = load_json(MANIFEST_PATH, failures)
@@ -1234,6 +1452,7 @@ def main() -> int:
     validate_green_origin_bakeoff_manifest(failures)
     validate_atelier_cargo_manifest(failures)
     validate_atelier_dock_clutter_manifest(failures)
+    validate_visual_production_registry(failures)
 
     if failures:
         print(f"Newport provenance validation: FAIL ({len(failures)} issue(s))")
