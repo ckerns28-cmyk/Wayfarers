@@ -17,7 +17,9 @@ AUDIT_PATH = PIPELINE_ROOT / "reports" / "G417_G418_ASSET_PROVENANCE_AUDIT.md"
 BUILDING_AUDIT_PATH = PIPELINE_ROOT / "reports" / "G418A_BUILDING_SPRITE_PROVENANCE_AUDIT.md"
 GREEN_ORIGIN_ROOT = PROJECT_ROOT / "art_pipeline" / "newport_green_origin"
 GREEN_ORIGIN_MANIFEST_PATH = GREEN_ORIGIN_ROOT / "manifests" / "green_origin_asset_manifest.json"
+GREEN_ORIGIN_BAKEOFF_MANIFEST_PATH = GREEN_ORIGIN_ROOT / "manifests" / "green_origin_method_bakeoff_manifest.json"
 GREEN_ORIGIN_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418B_GREEN_ORIGIN_ASSET_FACTORY.md"
+GREEN_ORIGIN_BAKEOFF_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 ISOLATED_BUILDING_DIR = PROJECT_ROOT / "assets" / "sprites" / "buildings" / "isolated"
@@ -485,6 +487,101 @@ def validate_green_origin_asset_manifest(failures: list[str]) -> None:
         fail(f"missing green-origin report: {GREEN_ORIGIN_REPORT_PATH}", failures)
 
 
+def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
+    manifest = load_json(GREEN_ORIGIN_BAKEOFF_MANIFEST_PATH, failures)
+    if not manifest:
+        return
+    if manifest.get("schema_id") != "wayfarer.newport_green_origin.method_bakeoff.v1":
+        fail("green-origin bakeoff manifest schema_id must be wayfarer.newport_green_origin.method_bakeoff.v1", failures)
+    else:
+        pass_check("green-origin bakeoff manifest schema id")
+    if manifest.get("phase") != "G-4.18D":
+        fail("green-origin bakeoff manifest phase must be G-4.18D", failures)
+    if manifest.get("recommended_method_for_g418e") != "method_01_generated_base_pixel_cleanup":
+        fail("green-origin bakeoff must recommend method_01_generated_base_pixel_cleanup", failures)
+    if "normal-review eligible" not in str(manifest.get("normal_review_policy", "")):
+        fail("green-origin bakeoff manifest must explicitly block normal review", failures)
+    for contact_sheet in manifest.get("contact_sheets", []):
+        path_exists(str(contact_sheet), failures)
+
+    candidates = manifest.get("candidates", [])
+    if not isinstance(candidates, list) or len(candidates) != 5:
+        fail("green-origin bakeoff must contain exactly 5 candidates", failures)
+        return
+    pass_check("green-origin bakeoff candidate entries: 5")
+
+    pass_count = 0
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            fail("green-origin bakeoff candidate is not an object", failures)
+            continue
+        candidate_id = str(candidate.get("candidate_id", "unknown"))
+        for field in [
+            "candidate_id",
+            "method_name",
+            "sample_path",
+            "provenance_status",
+            "origin_classification",
+            "visual_quality_status",
+            "review_eligible",
+            "normal_review_eligible",
+            "lab_only",
+            "final_commercial_candidate",
+            "final_commercial_eligible",
+            "recommendation",
+            "input_sources",
+            "source_pixels_from_yellow_uncertain_assets",
+            "source_pixels_from_third_party_material",
+            "web_scraped_source_pixels",
+        ]:
+            if field not in candidate:
+                fail(f"{candidate_id} missing bakeoff field {field}", failures)
+        path_exists(str(candidate.get("sample_path", "")), failures)
+        if candidate.get("provenance_status") != "green_origin_candidate":
+            fail(f"{candidate_id} bakeoff provenance_status must be green_origin_candidate", failures)
+        if candidate.get("origin_classification") != "green_origin_candidate":
+            fail(f"{candidate_id} bakeoff origin_classification must be green_origin_candidate", failures)
+        if candidate.get("review_eligible") is not False:
+            fail(f"{candidate_id} bakeoff review_eligible must be false", failures)
+        if candidate.get("normal_review_eligible") is not False:
+            fail(f"{candidate_id} bakeoff normal_review_eligible must be false", failures)
+        if candidate.get("lab_only") is not True:
+            fail(f"{candidate_id} bakeoff lab_only must be true", failures)
+        if candidate.get("final_commercial_eligible") is not False:
+            fail(f"{candidate_id} bakeoff final_commercial_eligible must be false", failures)
+        if candidate.get("source_pixels_from_yellow_uncertain_assets") is not False:
+            fail(f"{candidate_id} bakeoff uses yellow/uncertain source pixels", failures)
+        if candidate.get("source_pixels_from_third_party_material") is not False:
+            fail(f"{candidate_id} bakeoff uses third-party source pixels", failures)
+        if candidate.get("web_scraped_source_pixels") is not False:
+            fail(f"{candidate_id} bakeoff uses web-scraped source pixels", failures)
+        if candidate.get("recommendation") == "PASS":
+            pass_count += 1
+        for raw_source in candidate.get("input_sources", []):
+            if not isinstance(raw_source, dict):
+                fail(f"{candidate_id} bakeoff input source is not object", failures)
+                continue
+            source_text = json.dumps(raw_source, sort_keys=True).lower()
+            for forbidden in GREEN_ORIGIN_FORBIDDEN_INPUTS:
+                if forbidden.lower() in source_text:
+                    fail(f"{candidate_id} forbidden bakeoff input source: {forbidden}", failures)
+            if raw_source.get("source_pixels_used") is not False:
+                fail(f"{candidate_id} bakeoff input source uses source pixels", failures)
+            if "path" in raw_source:
+                path_exists(str(raw_source["path"]), failures)
+    if pass_count != 1:
+        fail("green-origin bakeoff must have exactly one PASS recommendation", failures)
+
+    if GREEN_ORIGIN_BAKEOFF_REPORT_PATH.exists():
+        report = GREEN_ORIGIN_BAKEOFF_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in ["Tools Used", "Candidate Comparison", "Recommendation For G-4.18E"]:
+            if required_text not in report:
+                fail(f"green-origin bakeoff report missing text: {required_text}", failures)
+        pass_check("green-origin bakeoff report present")
+    else:
+        fail(f"missing green-origin bakeoff report: {GREEN_ORIGIN_BAKEOFF_REPORT_PATH}", failures)
+
+
 def main() -> int:
     failures: list[str] = []
     manifest = load_json(MANIFEST_PATH, failures)
@@ -507,6 +604,7 @@ def main() -> int:
         validate_manifest(manifest, failures)
     validate_building_sprite_provenance(failures)
     validate_green_origin_asset_manifest(failures)
+    validate_green_origin_bakeoff_manifest(failures)
 
     if failures:
         print(f"Newport provenance validation: FAIL ({len(failures)} issue(s))")

@@ -7,6 +7,7 @@ const STATUS_MAX_WIDTH := 304.0
 const STATUS_EXPANDED_MAX_WIDTH := 348.0
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
+const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/contact_sheets/g418d_method_bakeoff_board.png"
 
 @onready var status_panel: PanelContainer = $Panel
 @onready var build_label: Label = $Panel/MarginContainer/VBoxContainer/BuildLabel
@@ -19,6 +20,8 @@ const DIALOGUE_MIN_WIDTH := 340.0
 @onready var stats_label: Label = $Panel/MarginContainer/VBoxContainer/Stats
 @onready var dialogue_panel: PanelContainer = $DialoguePanel
 @onready var dialogue_label: Label = $DialoguePanel/MarginContainer/DialogueLabel
+@onready var bakeoff_panel: PanelContainer = $BakeoffPanel
+@onready var bakeoff_board: TextureRect = $BakeoffPanel/MarginContainer/BakeoffBoard
 
 var _metadata_expanded := false
 var _review_screenshot_mode := false
@@ -27,6 +30,7 @@ var _green_origin_lab_enabled := false
 func _ready() -> void:
 	_apply_panel_styles()
 	_apply_build_identity()
+	_load_bakeoff_board()
 	_apply_metadata_visibility()
 	dialogue_panel.visible = false
 	_apply_layout()
@@ -65,12 +69,14 @@ func toggle_review_metadata() -> void:
 func set_review_screenshot_mode(enabled: bool) -> void:
 	_review_screenshot_mode = enabled
 	status_panel.visible = not enabled
+	bakeoff_panel.visible = (not enabled) and _green_origin_lab_enabled
 	dialogue_panel.visible = false
 	_apply_layout()
 
 func set_green_origin_lab_mode(enabled: bool) -> void:
 	_green_origin_lab_enabled = enabled
 	green_origin_lab_label.visible = enabled
+	bakeoff_panel.visible = enabled and not _review_screenshot_mode
 	_apply_layout()
 
 func toggle_review_screenshot_mode() -> void:
@@ -78,6 +84,7 @@ func toggle_review_screenshot_mode() -> void:
 
 func _apply_metadata_visibility() -> void:
 	green_origin_lab_label.visible = _green_origin_lab_enabled
+	bakeoff_panel.visible = _green_origin_lab_enabled and not _review_screenshot_mode
 	channel_label.visible = _metadata_expanded
 	branch_label.visible = _metadata_expanded
 	objective_label.visible = _metadata_expanded
@@ -102,6 +109,16 @@ func _apply_panel_styles() -> void:
 	dialogue_style.corner_radius_bottom_left = 4
 	dialogue_style.corner_radius_bottom_right = 4
 	dialogue_panel.add_theme_stylebox_override("panel", dialogue_style)
+
+	var bakeoff_style := StyleBoxFlat.new()
+	bakeoff_style.bg_color = Color(0.055, 0.07, 0.055, 0.88)
+	bakeoff_style.border_color = Color("#d8c06a", 0.72)
+	bakeoff_style.set_border_width_all(2)
+	bakeoff_style.corner_radius_top_left = 4
+	bakeoff_style.corner_radius_top_right = 4
+	bakeoff_style.corner_radius_bottom_left = 4
+	bakeoff_style.corner_radius_bottom_right = 4
+	bakeoff_panel.add_theme_stylebox_override("panel", bakeoff_style)
 
 func _apply_layout() -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
@@ -128,3 +145,17 @@ func _apply_layout() -> void:
 	dialogue_panel.offset_top = max(status_panel.offset_bottom + 16.0, dialogue_bottom - dialogue_height)
 	dialogue_panel.offset_right = dialogue_left + dialogue_width
 	dialogue_panel.offset_bottom = dialogue_bottom
+
+	var bakeoff_left: float = max(status_panel.offset_right + 14.0, 270.0)
+	var bakeoff_width: float = min(1080.0, max(760.0, viewport_size.x - bakeoff_left - HUD_MARGIN))
+	bakeoff_panel.offset_left = bakeoff_left
+	bakeoff_panel.offset_top = HUD_MARGIN
+	bakeoff_panel.offset_right = min(viewport_size.x - HUD_MARGIN, bakeoff_panel.offset_left + bakeoff_width)
+	bakeoff_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, bakeoff_panel.offset_top + 440.0)
+
+func _load_bakeoff_board() -> void:
+	var texture := ResourceLoader.load(G418D_BAKEOFF_BOARD_PATH, "Texture2D") as Texture2D
+	if texture == null:
+		push_warning("G-4.18D bakeoff board texture missing: " + G418D_BAKEOFF_BOARD_PATH)
+		return
+	bakeoff_board.texture = texture
