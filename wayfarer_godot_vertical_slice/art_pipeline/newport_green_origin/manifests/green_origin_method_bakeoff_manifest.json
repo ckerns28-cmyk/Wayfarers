@@ -1,13 +1,15 @@
 {
   "schema_id": "wayfarer.newport_green_origin.method_bakeoff.v1",
-  "phase": "G-4.18D",
+  "phase": "G-4.18D.1",
   "generated_at": "2026-05-16T00:00:00Z",
-  "normal_review_policy": "No G-4.18D bakeoff candidate is normal-review eligible. The G-4.18C visual baseline remains the player-facing review build.",
-  "visual_quality_gate": "Green-origin is necessary but not sufficient. G-4.18D candidates are evidence for method selection and stay lab-only unless a later phase accepts visual quality from screenshots.",
-  "recommended_method_for_g418e": "method_01_generated_base_pixel_cleanup",
+  "normal_review_policy": "No G-4.18D or G-4.18D.1 bakeoff candidate is normal-review eligible. Failed and deferred art is lab-only.",
+  "visual_quality_gate": "PASS requires visual_rating >= 8.5 and screenshot acceptance. Green-origin provenance alone cannot produce PASS or promotion.",
+  "recommended_method_for_g418e": null,
   "contact_sheets": [
-    "art_pipeline/newport_green_origin/contact_sheets/g418d_method_bakeoff_board.png",
-    "art_pipeline/newport_green_origin/contact_sheets/g418d_candidate_comparison_strip.png"
+    "art_pipeline/newport_green_origin/contact_sheets/g418d1_corrected_bakeoff_board.png",
+    "art_pipeline/newport_green_origin/contact_sheets/g418d1_candidate_comparison_strip.png",
+    "art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_isolated_proof.png",
+    "art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_in_world_comparison_frame.png"
   ],
   "origin_taxonomy": [
     "temporary_review_yellow",
@@ -22,21 +24,21 @@
       "asset_family": "dockside_wharf_clutter_and_surface_integration",
       "sample_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01_generated_base_pixel_cleanup.png",
       "sample_type": "deterministic_python_pillow_cleanup_proxy",
-      "phase": "G-4.18D",
+      "phase": "G-4.18D.1",
       "provenance_status": "green_origin_candidate",
       "origin_classification": "green_origin_candidate",
       "commercial_use_status": "green_origin_candidate",
-      "visual_quality_status": "visual_method_pass_candidate",
+      "visual_quality_status": "visual_method_defer_raw_material_only",
       "visual_rating": 7.2,
       "review_eligible": false,
       "normal_review_eligible": false,
       "lab_only": true,
-      "final_commercial_candidate": true,
+      "final_commercial_candidate": false,
       "final_commercial_eligible": false,
       "lab_access_mode": "F6 or --show-green-origin-lab",
-      "recommendation": "PASS",
-      "production_scalability_notes": "Best path for G-4.18E if the scripted base is followed by real Krita/GIMP paint cleanup, contact grounding, and palette harmonization.",
-      "risk_notes": "Requires human paint time and art-direction review; the generated base alone is not enough.",
+      "recommendation": "DEFER",
+      "production_scalability_notes": "Raw material only. The G-4.18D board showed the least-bad substrate, not accepted art.",
+      "risk_notes": "Flat, pasted-on, and under-polished beside Newport building sprites; must not be promoted without a true manual paintover and screenshot review.",
       "input_sources": [
         {
           "type": "project_script",
@@ -64,7 +66,9 @@
       "deterministic_generated": true,
       "ownership": "project-owned",
       "license": "Wayfarer project-owned green-origin bakeoff sample; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; lab review only until visual acceptance.",
-      "sha256": "593dbd8b7ac144220ee26c3bc04e63920752d292d50f9838d3764833a8f82d09"
+      "sha256": "593dbd8b7ac144220ee26c3bc04e63920752d292d50f9838d3764833a8f82d09",
+      "visual_pass_gate": 8.5,
+      "gate_result": "blocked_below_visual_pass_gate"
     },
     {
       "candidate_id": "method_02_procedural_primitive_assembly",
@@ -72,11 +76,11 @@
       "asset_family": "dockside_wharf_clutter_and_surface_integration",
       "sample_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_02_procedural_primitive_assembly.png",
       "sample_type": "deterministic_python_pillow_primitives",
-      "phase": "G-4.18D",
+      "phase": "G-4.18D.1",
       "provenance_status": "green_origin_candidate",
       "origin_classification": "green_origin_candidate",
       "commercial_use_status": "green_origin_candidate",
-      "visual_quality_status": "visual_method_defer",
+      "visual_quality_status": "visual_method_fail_for_final_art",
       "visual_rating": 5.8,
       "review_eligible": false,
       "normal_review_eligible": false,
@@ -84,9 +88,9 @@
       "final_commercial_candidate": false,
       "final_commercial_eligible": false,
       "lab_access_mode": "F6 or --show-green-origin-lab",
-      "recommendation": "DEFER",
-      "production_scalability_notes": "Useful for fast variants, collision masks, and blocking prop families once a hand-finished target exists.",
-      "risk_notes": "Reads too modular without a paintover pass and can quickly become sticker-like clutter.",
+      "recommendation": "FAIL",
+      "production_scalability_notes": "Primitive assembly can block out shapes but does not currently produce acceptable Newport wharf art.",
+      "risk_notes": "Too modular, flat, and sticker-like; failed the 8.5 visual gate.",
       "input_sources": [
         {
           "type": "project_script",
@@ -114,7 +118,9 @@
       "deterministic_generated": true,
       "ownership": "project-owned",
       "license": "Wayfarer project-owned green-origin bakeoff sample; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; lab review only until visual acceptance.",
-      "sha256": "a8e7a2f4abea4864a90ad11c7b4b1a7a2c09d2d8c2d766e2e8dfd536750df234"
+      "sha256": "a8e7a2f4abea4864a90ad11c7b4b1a7a2c09d2d8c2d766e2e8dfd536750df234",
+      "visual_pass_gate": 8.5,
+      "gate_result": "blocked_below_visual_pass_gate"
     },
     {
       "candidate_id": "method_03_reference_board_guided_generation",
@@ -122,11 +128,11 @@
       "asset_family": "dockside_wharf_clutter_and_surface_integration",
       "sample_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_03_reference_board_guided.png",
       "sample_type": "inkscape_vector_silhouette_export_plus_pillow_shading",
-      "phase": "G-4.18D",
+      "phase": "G-4.18D.1",
       "provenance_status": "green_origin_candidate",
       "origin_classification": "green_origin_candidate",
       "commercial_use_status": "green_origin_candidate",
-      "visual_quality_status": "visual_method_defer",
+      "visual_quality_status": "visual_method_fail_for_final_art",
       "visual_rating": 6.1,
       "review_eligible": false,
       "normal_review_eligible": false,
@@ -134,9 +140,9 @@
       "final_commercial_candidate": false,
       "final_commercial_eligible": false,
       "lab_access_mode": "F6 or --show-green-origin-lab",
-      "recommendation": "DEFER",
-      "production_scalability_notes": "Strong for silhouette, signage, trim, and scale discipline; needs painterly raster cleanup for final harbor props.",
-      "risk_notes": "Vector-clean edges clash with current building sprites unless deliberately dirtied and shaded.",
+      "recommendation": "FAIL",
+      "production_scalability_notes": "Useful for clean silhouette sub-parts only, not accepted final art.",
+      "risk_notes": "Vector-clean edges and simple forms clash with current painterly building sprites; failed the 8.5 visual gate.",
       "input_sources": [
         {
           "type": "project_script",
@@ -164,7 +170,9 @@
       "deterministic_generated": true,
       "ownership": "project-owned",
       "license": "Wayfarer project-owned green-origin bakeoff sample; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; lab review only until visual acceptance.",
-      "sha256": "16ef440c0657c704986b9cd51cb695461d3fd2a7c9d659094b00d0fc581480ce"
+      "sha256": "16ef440c0657c704986b9cd51cb695461d3fd2a7c9d659094b00d0fc581480ce",
+      "visual_pass_gate": 8.5,
+      "gate_result": "blocked_below_visual_pass_gate"
     },
     {
       "candidate_id": "method_04_internal_green_kitbash",
@@ -172,11 +180,11 @@
       "asset_family": "dockside_wharf_clutter_and_surface_integration",
       "sample_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_04_internal_green_kitbash.png",
       "sample_type": "deterministic_python_pillow_internal_parts_only",
-      "phase": "G-4.18D",
+      "phase": "G-4.18D.1",
       "provenance_status": "green_origin_candidate",
       "origin_classification": "green_origin_candidate",
       "commercial_use_status": "green_origin_candidate",
-      "visual_quality_status": "visual_method_defer",
+      "visual_quality_status": "visual_method_fail_for_final_art",
       "visual_rating": 6.4,
       "review_eligible": false,
       "normal_review_eligible": false,
@@ -184,9 +192,9 @@
       "final_commercial_candidate": false,
       "final_commercial_eligible": false,
       "lab_access_mode": "F6 or --show-green-origin-lab",
-      "recommendation": "DEFER",
-      "production_scalability_notes": "Promising for prop sets after a better base vocabulary exists because every component remains green-origin.",
-      "risk_notes": "Can inherit every weakness of the primitive parts; needs manual composition and grounding checks.",
+      "recommendation": "FAIL",
+      "production_scalability_notes": "Can remain a lab idea after stronger internal parts exist.",
+      "risk_notes": "Inherits weak primitive vocabulary and remains too collage-like; failed the 8.5 visual gate.",
       "input_sources": [
         {
           "type": "project_script",
@@ -214,7 +222,9 @@
       "deterministic_generated": true,
       "ownership": "project-owned",
       "license": "Wayfarer project-owned green-origin bakeoff sample; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; lab review only until visual acceptance.",
-      "sha256": "32796ba3ebfaf39785adff9d467c791455c06410fe55c2dc123bd4489957d445"
+      "sha256": "32796ba3ebfaf39785adff9d467c791455c06410fe55c2dc123bd4489957d445",
+      "visual_pass_gate": 8.5,
+      "gate_result": "blocked_below_visual_pass_gate"
     },
     {
       "candidate_id": "method_05_godot_authored_dressing_shapes",
@@ -222,7 +232,7 @@
       "asset_family": "dockside_wharf_clutter_and_surface_integration",
       "sample_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_05_godot_authored_dressing_shapes.png",
       "sample_type": "godot_style_drawn_shape_mockup_in_pillow",
-      "phase": "G-4.18D",
+      "phase": "G-4.18D.1",
       "provenance_status": "green_origin_candidate",
       "origin_classification": "green_origin_candidate",
       "commercial_use_status": "green_origin_candidate",
@@ -235,8 +245,8 @@
       "final_commercial_eligible": false,
       "lab_access_mode": "F6 or --show-green-origin-lab",
       "recommendation": "FAIL",
-      "production_scalability_notes": "Good for temporary scene grounding and debug proof, not for final commercial sprite families.",
-      "risk_notes": "It remains too procedural and flat beside high-detail Newport building art.",
+      "production_scalability_notes": "Only acceptable for debug/blockout dressing, not art production.",
+      "risk_notes": "Flat shape mockup; failed the 8.5 visual gate.",
       "input_sources": [
         {
           "type": "project_script",
@@ -264,7 +274,75 @@
       "deterministic_generated": true,
       "ownership": "project-owned",
       "license": "Wayfarer project-owned green-origin bakeoff sample; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; lab review only until visual acceptance.",
-      "sha256": "72a75e96112d371947394f7b1d8c47848b3a4567b462d4869824c1d14af63bdb"
+      "sha256": "72a75e96112d371947394f7b1d8c47848b3a4567b462d4869824c1d14af63bdb",
+      "visual_pass_gate": 8.5,
+      "gate_result": "blocked_below_visual_pass_gate"
+    },
+    {
+      "candidate_id": "method_01b_manual_paintover_proof",
+      "method_name": "M01 raw substrate with Krita/GIMP/Inkscape manual paintover proof",
+      "asset_family": "dockside_wharf_clutter_and_surface_integration",
+      "sample_path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_proof.png",
+      "sample_type": "manual_paintover_prepared_png_krita_cli_projection_plus_gimp_cleanup",
+      "phase": "G-4.18D.1",
+      "provenance_status": "green_origin_candidate",
+      "origin_classification": "green_origin_candidate",
+      "commercial_use_status": "green_origin_candidate",
+      "visual_quality_status": "visual_method_defer_manual_paintover_proof",
+      "visual_rating": 7.8,
+      "visual_pass_gate": 8.5,
+      "gate_result": "blocked_below_visual_pass_gate",
+      "review_eligible": false,
+      "normal_review_eligible": false,
+      "lab_only": true,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "lab_access_mode": "F6 or --show-green-origin-lab",
+      "recommendation": "DEFER",
+      "production_scalability_notes": "Manual paintover materially improves contact shadows, rope/net readability, grime, and palette harmony, but the screenshot comparison still does not reach current Newport building quality.",
+      "risk_notes": "Still partially constrained by M01's flat substrate and should not seed normal review or final-commercial promotion.",
+      "input_sources": [
+        {
+          "type": "raw_substrate",
+          "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01_generated_base_pixel_cleanup.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "krita_cli_projection_export",
+          "path": "art_pipeline/newport_green_origin/scripts/generate_g418d1_manual_paintover.py",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "inkscape_authored_overlay",
+          "path": "art_pipeline/newport_green_origin/method_bakeoff/source_authored/method_01b_manual_paintover_overlays.svg",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_authored_parameters",
+          "path": "art_pipeline/newport_green_origin/method_bakeoff/source_authored/method_01b_manual_paintover_plan.json",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": false,
+      "deterministic_generated": false,
+      "hand_paintover": true,
+      "ownership": "project-owned",
+      "license": "Wayfarer project-owned green-origin M01B manual paintover proof; no third-party, marketplace, web-scraped, ripped, or yellow-source pixels; lab review only because visual gate is not met.",
+      "sha256": "43524e1d37520561f596c86bc4bad1934dd1ca9eedd418d2a3d4f788b068d687"
     }
-  ]
+  ],
+  "g418d1_verdict_correction": "G-4.18D produced no accepted visual candidate. M01 is downgraded from PASS to DEFER/raw material; M02-M05 are FAIL."
 }

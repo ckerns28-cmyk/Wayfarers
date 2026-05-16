@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18D", "build_phase_g_4_18d")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18D Green-Origin Method Bakeoff", "build_label_g_4_18d")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18D.1", "build_phase_g_4_18d_1")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18D.1 Bakeoff Verdict Correction", "build_label_g_4_18d_1")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -192,9 +192,14 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport_green_origin/contact_sheets/green_origin_palette_shadow_sheet.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/g418d_method_bakeoff_board.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/g418d_candidate_comparison_strip.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d1_corrected_bakeoff_board.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d1_candidate_comparison_strip.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_isolated_proof.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d1_m01b_in_world_comparison_frame.png",
 		"res://art_pipeline/newport_green_origin/reports/G418B_GREEN_ORIGIN_ASSET_FACTORY.md",
 		"res://art_pipeline/newport_green_origin/reports/G418C_GREEN_ORIGIN_VISUAL_RETROSPECTIVE.md",
 		"res://art_pipeline/newport_green_origin/reports/G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md",
+		"res://art_pipeline/newport_green_origin/reports/G418D1_BAKEOFF_VERDICT_CORRECTION_MANUAL_PAINTOVER.md",
 		"res://tools/capture_g418c_review_screenshots.mjs",
 		"res://tools/capture_g418d_review_screenshots.mjs",
 	]:
@@ -315,11 +320,12 @@ func _validate_g418d_green_origin_bakeoff_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_method_bakeoff_manifest.json")
 	_expect(not manifest.is_empty(), "g418d_bakeoff_manifest_json")
 	_expect(String(manifest.get("schema_id", "")) == "wayfarer.newport_green_origin.method_bakeoff.v1", "g418d_bakeoff_manifest_schema")
-	_expect(String(manifest.get("phase", "")) == "G-4.18D", "g418d_bakeoff_manifest_phase")
-	_expect(String(manifest.get("recommended_method_for_g418e", "")) == "method_01_generated_base_pixel_cleanup", "g418d_bakeoff_recommendation")
-	_expect(String(manifest.get("normal_review_policy", "")).find("No G-4.18D bakeoff candidate is normal-review eligible") >= 0, "g418d_bakeoff_normal_review_blocked")
+	_expect(String(manifest.get("phase", "")) == "G-4.18D.1", "g418d1_bakeoff_manifest_phase")
+	_expect(manifest.has("recommended_method_for_g418e") and manifest.get("recommended_method_for_g418e") == null, "g418d1_bakeoff_no_recommendation")
+	_expect(String(manifest.get("normal_review_policy", "")).find("No G-4.18D or G-4.18D.1 bakeoff candidate is normal-review eligible") >= 0, "g418d1_bakeoff_normal_review_blocked")
+	_expect(String(manifest.get("visual_quality_gate", "")).find("8.5") >= 0, "g418d1_visual_pass_gate_8_5")
 	var candidates: Array = manifest.get("candidates", [])
-	_expect(candidates.size() == 5, "g418d_bakeoff_candidate_count")
+	_expect(candidates.size() == 6, "g418d1_bakeoff_candidate_count")
 	var pass_count := 0
 	for raw_candidate in candidates:
 		if not raw_candidate is Dictionary:
@@ -327,7 +333,7 @@ func _validate_g418d_green_origin_bakeoff_manifest() -> void:
 			continue
 		var candidate: Dictionary = raw_candidate
 		var candidate_id := String(candidate.get("candidate_id", "unknown"))
-		for key in ["candidate_id", "method_name", "sample_path", "provenance_status", "origin_classification", "visual_quality_status", "review_eligible", "normal_review_eligible", "lab_only", "final_commercial_candidate", "final_commercial_eligible", "recommendation", "input_sources", "source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+		for key in ["candidate_id", "method_name", "sample_path", "provenance_status", "origin_classification", "visual_quality_status", "visual_rating", "visual_pass_gate", "review_eligible", "normal_review_eligible", "lab_only", "final_commercial_candidate", "final_commercial_eligible", "recommendation", "input_sources", "source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
 			_expect(candidate.has(key), "g418d_bakeoff_field_" + candidate_id + "_" + key)
 		_expect(FileAccess.file_exists("res://" + String(candidate.get("sample_path", ""))), "g418d_bakeoff_sample_" + candidate_id)
 		_expect(String(candidate.get("provenance_status", "")) == "green_origin_candidate", "g418d_bakeoff_provenance_" + candidate_id)
@@ -341,8 +347,11 @@ func _validate_g418d_green_origin_bakeoff_manifest() -> void:
 		_expect(bool(candidate.get("web_scraped_source_pixels", true)) == false, "g418d_bakeoff_no_web_pixels_" + candidate_id)
 		if String(candidate.get("recommendation", "")) == "PASS":
 			pass_count += 1
-			_expect(candidate_id == "method_01_generated_base_pixel_cleanup", "g418d_bakeoff_pass_is_method_01")
-	_expect(pass_count == 1, "g418d_bakeoff_exactly_one_pass")
+			_expect(float(candidate.get("visual_rating", 0.0)) >= 8.5, "g418d1_pass_requires_8_5_" + candidate_id)
+		else:
+			_expect(float(candidate.get("visual_rating", 0.0)) < 8.5, "g418d1_non_pass_below_gate_" + candidate_id)
+			_expect(bool(candidate.get("final_commercial_candidate", true)) == false, "g418d1_non_pass_not_final_candidate_" + candidate_id)
+	_expect(pass_count == 0, "g418d1_bakeoff_zero_pass")
 
 func _validate_g418c_green_origin_lab_quarantine(main: Node, map: Node, hud: CanvasLayer) -> void:
 	_expect(main.has_method("set_green_origin_lab_mode"), "g418c_lab_main_set_api")

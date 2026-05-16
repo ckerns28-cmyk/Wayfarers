@@ -7,11 +7,11 @@ import { fileURLToPath } from "node:url";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = process.argv[2]
   ? path.resolve(process.argv[2])
-  : path.join(projectRoot, "artifacts", "screenshots", "g418d");
+  : path.join(projectRoot, "artifacts", "screenshots", "g418d1");
 const reviewUrl = process.argv[3] || "http://127.0.0.1:8765/index.html";
 const chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-const debuggingPort = Number(process.env.G418D_CHROME_DEBUG_PORT || 9337);
-const chromeProfile = path.join(projectRoot, "artifacts", `chrome-g418d-profile-${Date.now()}`);
+const debuggingPort = Number(process.env.G418D1_CHROME_DEBUG_PORT || 9337);
+const chromeProfile = path.join(projectRoot, "artifacts", `chrome-g418d1-profile-${Date.now()}`);
 
 fs.mkdirSync(outDir, { recursive: true });
 
@@ -139,8 +139,10 @@ async function screenshot(cdp, name, clip = null) {
 function copyBakeoffImages() {
   const proofRoot = path.join(projectRoot, "art_pipeline", "newport_green_origin", "contact_sheets");
   for (const name of [
-    "g418d_method_bakeoff_board.png",
-    "g418d_candidate_comparison_strip.png",
+    "g418d1_corrected_bakeoff_board.png",
+    "g418d1_candidate_comparison_strip.png",
+    "g418d1_m01b_isolated_proof.png",
+    "g418d1_m01b_in_world_comparison_frame.png",
   ]) {
     fs.copyFileSync(path.join(proofRoot, name), path.join(outDir, name));
   }
@@ -185,25 +187,26 @@ try {
   await sleep(500);
   await pressKey(cdp, "F6", 117);
   await sleep(900);
-  await screenshot(cdp, "green_origin_lab_bakeoff_full.png");
-  await screenshot(cdp, "candidate_comparison_bakeoff_board.png", { x: 295, y: 0, width: 1090, height: 470 });
-  await screenshot(cdp, "green_origin_lab_dock_proof_closeup.png", { x: 700, y: 430, width: 650, height: 350 });
+  await screenshot(cdp, "green_origin_lab_corrected_verdicts_full.png");
+  await screenshot(cdp, "corrected_bakeoff_board.png", { x: 260, y: 0, width: 1120, height: 500 });
+  await screenshot(cdp, "m01b_lab_in_world_comparison_closeup.png", { x: 500, y: 380, width: 860, height: 460 });
 
   copyBakeoffImages();
   fs.writeFileSync(
-    path.join(outDir, "g418d_bakeoff_review_notes.txt"),
+    path.join(outDir, "g418d1_bakeoff_review_notes.txt"),
     [
-      "G-4.18D screenshot review packet",
+      "G-4.18D.1 screenshot review packet",
       "",
-      "normal_review_full_harbor.png proves the player-facing G-4.18C baseline remains clean except for G-4.18D build metadata.",
+      "normal_review_full_harbor.png proves the player-facing baseline remains clean except for G-4.18D.1 build metadata.",
       "normal_review_no_hud_full_harbor.png proves F4 no-HUD mode still works.",
-      "green_origin_lab_bakeoff_full.png proves the bakeoff appears only in Green-Origin Lab mode.",
-      "candidate_comparison_bakeoff_board.png shows all five production methods side by side and labeled lab-only.",
+      "green_origin_lab_corrected_verdicts_full.png proves the corrected bakeoff appears only in Green-Origin Lab mode.",
+      "corrected_bakeoff_board.png shows M01 no longer PASS and no candidate below 8.5 promoted.",
+      "m01b_lab_in_world_comparison_closeup.png shows M01B evaluated in-world beside current Newport wharf art at actual scale.",
       "normal_review_dock_without_bakeoff_art.png proves experimental bakeoff art is not drawn in the default harbor.",
     ].join("\n"),
     "utf8",
   );
-  console.log(`Wrote G-4.18D browser review screenshots to ${outDir}`);
+  console.log(`Wrote G-4.18D.1 browser review screenshots to ${outDir}`);
 } finally {
   if (cdp) {
     cdp.close();

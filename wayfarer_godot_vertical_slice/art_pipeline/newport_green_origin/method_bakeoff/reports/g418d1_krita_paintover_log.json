@@ -1,0 +1,12 @@
+{
+  "tool": "Krita CLI",
+  "input": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_prepared.png",
+  "output": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_krita_raw.png",
+  "operations": [
+    "opened prepared M01B manual paintover source",
+    "exported Krita projection to PNG"
+  ],
+  "runner_note": "kritarunner produced argument/resource-database failures, createDocument/createNode crashed, and openDocument fallback timed out on this mini PC, so the reliable Krita CLI export path was used for the proof artifact.",
+  "stdout": "",
+  "stderr": "Fontconfig error: Cannot load default config file: No such file: (null)\nFontconfig error: Cannot load default config file: No such file: (null)\n"
+}
