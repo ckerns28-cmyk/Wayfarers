@@ -31,3 +31,13 @@ Visual Cohesion and Asset Provenance gates.
 Any atlas or prop used by the review build must have source,
 ownership/license, placeholder/final state, provenance status, and review
 eligibility recorded in `manifests/newport_asset_manifest.json`.
+
+Green-origin production is required for final art, but it is not automatically
+review-eligible. If a source-safe generated proof looks weaker in screenshots,
+it must be quarantined as pipeline evidence until the art method improves.
+
+The G-4 exit bar is an 8.0+ origin city visual foundation: the Newport harbor
+town must feel authored, unified across buildings/streets/docks/props/player/
+HUD, free of dominant debug/placeholders in normal review, and supported by
+normal, no-HUD, hero slice, HUD/UI, yellow-art, and green-origin evidence
+screenshots.

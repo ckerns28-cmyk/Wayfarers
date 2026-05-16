@@ -13,8 +13,12 @@ reference prototype.
 - Seventeen active starter-harbor building objects across civic, residential, commercial, support, and dock bands.
 - Each building is a Godot object with sprite, parcel rule, foot/y-sort anchor, collision shape, door anchor, and interaction/frontage area.
 - Newport Visual Cohesion and Asset Provenance gates now guard surfaces, props, player/NPC/monster art, equipment, VFX, and UI-world objects before review acceptance.
+- G-4 cannot exit until the origin city reaches an 8.0+ visual foundation in
+  screenshot review; see `docs/G4_VISUAL_FOUNDATION_CHARTER.md`.
 - The G-4.16 surface kit remains the fallback outside the hero area.
 - G-4.18 adds the proprietary Newport asset factory and restyles the central commercial-row atlas proof for street, curb/stoop, base shadow, grass edge, dock transition, and hero prop clusters.
+- Green-origin art is required, but weak green-origin proof art must be
+  quarantined from normal review if it lowers the screenshot bar.
 - NPCs are disabled for the current town-layout review pass.
 - Minimal HUD with build identity, review host, and interaction/dialogue feedback.
 
@@ -38,6 +42,9 @@ Run the scene-contract check from this folder:
 ```sh
 godot --headless --path . --script res://tools/validate_vertical_slice.gd
 ```
+
+Validation is not visual acceptance. A G-4 pass is accepted as visual progress
+only when the screenshot packet shows a better authored Newport origin city.
 
 Current G-4.18 review captures should be stored in `artifacts/screenshots/g418/`:
 

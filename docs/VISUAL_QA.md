@@ -1,5 +1,24 @@
 # Wayfarer Visual QA Checklist (Phase 32)
 
+## Godot G-4 Visual Foundation Charter
+
+Wayfarer cannot exit G-4 until the Newport origin city reaches an 8.0+ visual
+foundation in screenshot review. Use
+`wayfarer_godot_vertical_slice/docs/G4_VISUAL_FOUNDATION_CHARTER.md` as the
+canonical Godot review reference.
+
+- [ ] Town feels authored, not assembled.
+- [ ] Buildings, streets, docks, props, player, and HUD belong to one art direction.
+- [ ] No player-facing debug rectangles or placeholder stickers dominate the scene.
+- [ ] At least one hero street/dock slice looks like the real game.
+- [ ] HUD/UI has intentional fantasy/MMORPG styling.
+- [ ] Yellow temporary art is clearly marked as temporary.
+- [ ] Green-origin art production is proven.
+- [ ] Screenshot review supports an 8.0+ rating.
+
+Hard rule: a validator pass is not an art pass. If screenshots do not look
+better, the pass is not accepted as visual progress.
+
 ## Core readability checks
 - [ ] Player sprite remains readable on town grass, forest grass, roads, water-adjacent tiles, cave floor, and tollhouse floor.
 - [ ] NPC silhouettes are visually distinct from enemies without relying only on labels.

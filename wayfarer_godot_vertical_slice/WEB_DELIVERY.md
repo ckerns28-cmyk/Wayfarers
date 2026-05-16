@@ -26,6 +26,12 @@ visual/input/review-label change must be exported and packaged with
 uploaded manually to itch for browser review. Butler automation remains
 deferred for the manual ZIP review pass.
 
+G-4 exit review rule: Wayfarer cannot exit G-4 until the origin city reaches
+an 8.0+ visual foundation in screenshot review. A fresh ZIP, passing validator,
+or correct HUD build label is not visual acceptance by itself. If the normal,
+no-HUD, hero street/dock, and HUD screenshots do not look better, the pass is
+not accepted as visual progress.
+
 G-4.17 packaging note: `tools/package_itch_web.sh` also creates a versioned ZIP
 beside the stable upload path, for example
 `wayfarers-tale-godot-g-4-17-newport-asset-pipeline-hero-street-atlas.zip`, so Finder shows a
@@ -245,6 +251,11 @@ Current review checklist:
 3. User uploads `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip` to itch.
 4. User hard-refreshes the itch page.
 5. User confirms the HUD shows the expected phase/build label for the branch.
+6. Reviewer captures normal HUD, no-HUD, hero street/dock, HUD/UI, and debug
+   proof screenshots as required by
+   `art_pipeline/newport/reports/G417_SCREENSHOT_REVIEW_PATH.md`.
+7. Reviewer assigns visual progress only when screenshots support the pass
+   claim; validator success alone is not enough.
 
 ### Artifact-assisted mode
 
