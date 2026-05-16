@@ -1,0 +1,251 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.20A",
+  "pack": "shoreline_harbor_edge",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10"
+  ],
+  "assets": {
+    "atelier_shore_seaweed_drift_line_01": {
+      "size": {
+        "w": 684,
+        "h": 220
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 31,
+        "w": 624,
+        "h": 155
+      },
+      "alpha_pixels": 67581,
+      "opaque_pixels": 67581,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 31,
+        "right": 32,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "seaweed drift line",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shore_shell_pebble_cluster_01": {
+      "size": {
+        "w": 678,
+        "h": 211
+      },
+      "alpha_bbox": {
+        "x": 22,
+        "y": 34,
+        "w": 632,
+        "h": 146
+      },
+      "alpha_pixels": 57511,
+      "opaque_pixels": 57511,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 22,
+        "top": 34,
+        "right": 24,
+        "bottom": 31
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "shells and pebble cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shore_wet_rocks_sand_01": {
+      "size": {
+        "w": 672,
+        "h": 238
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 33,
+        "w": 617,
+        "h": 172
+      },
+      "alpha_pixels": 64812,
+      "opaque_pixels": 64812,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 33,
+        "right": 27,
+        "bottom": 33
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "small wet rocks on sand",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shore_driftwood_log_cluster_01": {
+      "size": {
+        "w": 715,
+        "h": 238
+      },
+      "alpha_bbox": {
+        "x": 27,
+        "y": 29,
+        "w": 665,
+        "h": 177
+      },
+      "alpha_pixels": 67392,
+      "opaque_pixels": 67392,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 27,
+        "top": 29,
+        "right": 23,
+        "bottom": 32
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "driftwood log cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shore_wet_sand_mud_strip_01": {
+      "size": {
+        "w": 658,
+        "h": 194
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 34,
+        "w": 606,
+        "h": 126
+      },
+      "alpha_pixels": 53830,
+      "opaque_pixels": 53830,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 34,
+        "right": 24,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "wet sand and mud accent strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shore_harbor_debris_slats_rope_01": {
+      "size": {
+        "w": 685,
+        "h": 219
+      },
+      "alpha_bbox": {
+        "x": 29,
+        "y": 27,
+        "w": 638,
+        "h": 161
+      },
+      "alpha_pixels": 62343,
+      "opaque_pixels": 62343,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 29,
+        "top": 27,
+        "right": 18,
+        "bottom": 31
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "broken harbor debris slats with rope scrap",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shore_tide_puddle_mud_edge_01": {
+      "size": {
+        "w": 644,
+        "h": 222
+      },
+      "alpha_bbox": {
+        "x": 22,
+        "y": 34,
+        "w": 600,
+        "h": 157
+      },
+      "alpha_pixels": 64172,
+      "opaque_pixels": 64172,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 22,
+        "top": 34,
+        "right": 22,
+        "bottom": 31
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "shallow tide puddle with dark mud edge",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shore_eelgrass_reeds_cluster_01": {
+      "size": {
+        "w": 654,
+        "h": 228
+      },
+      "alpha_bbox": {
+        "x": 27,
+        "y": 25,
+        "w": 601,
+        "h": 169
+      },
+      "alpha_pixels": 57461,
+      "opaque_pixels": 57461,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 27,
+        "top": 25,
+        "right": 26,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "eelgrass/reeds low cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}

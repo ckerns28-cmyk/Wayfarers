@@ -20,6 +20,7 @@ const G418C_GREEN_ORIGIN_QUARANTINE_PASS := "G-4.18C"
 const G418D_ATELIER_CARGO_PASS := "G-4.18D"
 const G419A_DOCK_CLUTTER_ATELIER_PASS := "G-4.19A"
 const G419B_VISUAL_PRODUCTION_AUDIT_PASS := "G-4.19B"
+const G420A_ENVIRONMENTAL_BELIEVABILITY_PASS := "G-4.20A"
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
@@ -691,7 +692,8 @@ static func starter_district_plan() -> Dictionary:
 		"atelier_cargo_pipeline_pass": G418D_ATELIER_CARGO_PASS,
 		"dock_clutter_atelier_pack_pass": G419A_DOCK_CLUTTER_ATELIER_PASS,
 		"visual_production_audit_pass": G419B_VISUAL_PRODUCTION_AUDIT_PASS,
-		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
+		"environmental_believability_wave_pass": G420A_ENVIRONMENTAL_BELIEVABILITY_PASS,
+		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
 		"yellow_review_art_policy": "temporary yellow review art may support prototype composition, scale, and gameplay only; yellow pixels cannot source final-commercial green assets",
@@ -702,7 +704,8 @@ static func starter_district_plan() -> Dictionary:
 		"surface_cohesion_gate": true,
 		"newport_visual_cohesion_gate": true,
 		"asset_provenance_gate": true,
-		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.19B production-wave planning, player/NPC sprite style waits until the town environment has enough visual context",
+		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.20A environmental glue, player/NPC sprite style still waits until the town environment has enough visual context",
+		"tavern_inn_centerpiece_lock": "current Tavern/Inn remains REBUILD_REQUIRED_CENTERPIECE for a future brick Hotel Viking-inspired twin-stack chimney rebuild; G-4.20A does not patch it",
 		"review_screenshot_mode": "F4 or --review-no-hud",
 		"districts": [
 			"harborfront_commercial",

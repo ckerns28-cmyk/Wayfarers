@@ -32,6 +32,8 @@ ATELIER_STANDARD_REPORT_PATH = ATELIER_ROOT / "reports" / "G418D_ATELIER_CARGO_S
 ATELIER_DOCK_CLUTTER_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_dock_clutter_manifest.json"
 ATELIER_DOCK_CLUTTER_QA_REPORT_PATH = ATELIER_ROOT / "reports" / "newport_atelier_dock_clutter_extraction_qa.json"
 ATELIER_DOCK_CLUTTER_REPORT_PATH = ATELIER_ROOT / "reports" / "G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md"
+ATELIER_G420A_WAVE_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_environmental_believability_manifest.json"
+ATELIER_G420A_WAVE_REPORT_PATH = ATELIER_ROOT / "reports" / "G420A_NEWPORT_ENVIRONMENTAL_BELIEVABILITY_ATELIER_WAVE.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 MAP_LAYER_PATH = PROJECT_ROOT / "scenes" / "map" / "MapLayer.gd"
@@ -57,6 +59,12 @@ ATELIER_REQUIRED_ARTIFACT_FIELDS = [
     "validation_report",
     "provenance_report",
 ]
+ATELIER_G420A_PACK_IDS = {
+    "terrain_edge_dressing",
+    "cobble_path_transition",
+    "shoreline_harbor_edge",
+    "building_grounding_service",
+}
 GREEN_ORIGIN_FORBIDDEN_INPUTS = [
     "assets/sprites/buildings/isolated",
     "assets/buildings",
@@ -1232,6 +1240,226 @@ def validate_atelier_dock_clutter_manifest(failures: list[str]) -> None:
         fail(f"missing atelier dock clutter report: {ATELIER_DOCK_CLUTTER_REPORT_PATH}", failures)
 
 
+def validate_g420a_environmental_believability_wave(failures: list[str]) -> None:
+    wave = load_json(ATELIER_G420A_WAVE_MANIFEST_PATH, failures)
+    if not wave:
+        return
+    if wave.get("schema_id") != "wayfarer.newport_atelier.g420a.environmental_believability_wave.v1":
+        fail("G-4.20A environmental wave manifest schema mismatch", failures)
+    else:
+        pass_check("G-4.20A environmental wave manifest schema id")
+    if wave.get("phase") != "G-4.20A":
+        fail("G-4.20A environmental wave manifest phase must be G-4.20A", failures)
+    if wave.get("wave_id") != "wave_1_environmental_believability":
+        fail("G-4.20A environmental wave must identify wave_1_environmental_believability", failures)
+    if float(wave.get("visual_quality_gate", 0.0)) < 8.5:
+        fail("G-4.20A environmental wave must preserve the 8.5 visual gate", failures)
+    if "no over-scatter" not in str(wave.get("placement_policy", "")):
+        fail("G-4.20A environmental wave placement policy must forbid over-scatter", failures)
+    if "REBUILD_REQUIRED_CENTERPIECE" not in str(wave.get("tavern_inn_lock", "")):
+        fail("G-4.20A environmental wave must preserve Tavern/Inn centerpiece lock", failures)
+
+    packs = wave.get("packs", [])
+    if not isinstance(packs, list):
+        fail("G-4.20A environmental wave packs must be a list", failures)
+        return
+    pack_ids = {str(pack.get("pack_id", "")) for pack in packs if isinstance(pack, dict)}
+    if pack_ids != ATELIER_G420A_PACK_IDS:
+        fail(f"G-4.20A environmental wave pack ids mismatch: {sorted(pack_ids)}", failures)
+    if len(packs) < 3 or len(packs) > 5:
+        fail("G-4.20A environmental wave must contain 3-5 themed atelier sheets", failures)
+
+    wave_assets = wave.get("assets", [])
+    if not isinstance(wave_assets, list) or len(wave_assets) != 32:
+        fail("G-4.20A environmental wave must contain exactly 32 registered extracted assets", failures)
+    else:
+        pass_check("G-4.20A environmental wave asset count: 32")
+
+    required_pack_fields = [
+        "manifest",
+        "source_image",
+        "generation_prompt",
+        "atlas",
+        "contact_sheet",
+        "validation_report",
+        "provenance_report",
+        "asset_ids",
+    ]
+    required_asset_fields = [
+        "asset_id",
+        "asset_type",
+        "source_identity",
+        "category",
+        "path",
+        "atlas",
+        "atlas_region",
+        "sprite_size",
+        "pivot",
+        "grounding",
+        "recommended_game_scale",
+        "visual_quality_rating",
+        "visual_quality_gate",
+        "visual_quality_status",
+        "source_type",
+        "created_by",
+        "generation_prompt",
+        "source_image",
+        "extraction_script",
+        "input_sources",
+        "license",
+        "ownership",
+        "provenance_status",
+        "origin_classification",
+        "commercial_use_status",
+        "review_eligible",
+        "normal_review_eligible",
+        "lab_only",
+        "final_commercial_candidate",
+        "final_commercial_eligible",
+        "source_pixels_from_yellow_uncertain_assets",
+        "source_pixels_from_third_party_material",
+        "web_scraped_source_pixels",
+        "ai_generated",
+        "human_selected",
+        "chroma_key_removed",
+        "extraction_qa",
+        "gameplay_role",
+        "sha256",
+        "notes",
+    ]
+    seen_asset_ids: set[str] = set()
+    for raw_pack in packs:
+        if not isinstance(raw_pack, dict):
+            fail("G-4.20A environmental wave pack entry is not an object", failures)
+            continue
+        pack_id = str(raw_pack.get("pack_id", ""))
+        for field in required_pack_fields:
+            if field not in raw_pack:
+                fail(f"{pack_id} missing wave pack field {field}", failures)
+            else:
+                value = raw_pack.get(field)
+                if field != "asset_ids":
+                    path_exists(str(value), failures)
+        manifest = load_json(PROJECT_ROOT / str(raw_pack.get("manifest", "")), failures)
+        qa_report = load_json(PROJECT_ROOT / str(raw_pack.get("validation_report", "")), failures)
+        if not manifest:
+            continue
+        if manifest.get("phase") != "G-4.20A":
+            fail(f"{pack_id} manifest phase must be G-4.20A", failures)
+        if manifest.get("pack_id") != pack_id:
+            fail(f"{pack_id} manifest pack_id mismatch", failures)
+        if "8.5/10" not in str(manifest.get("visual_standard", "")):
+            fail(f"{pack_id} manifest must record the 8.5/10 visual gate", failures)
+        for field in [
+            "atlas",
+            "source_image",
+            "generation_prompt",
+            "generated_asset_root",
+            "contact_sheet",
+            "provenance_report",
+            "validation_report",
+        ]:
+            path_exists(str(manifest.get(field, "")), failures)
+        if qa_report:
+            if qa_report.get("schema_id") != "wayfarer.newport_atelier.extraction_qa.v1":
+                fail(f"{pack_id} QA report schema mismatch", failures)
+            if qa_report.get("phase") != "G-4.20A":
+                fail(f"{pack_id} QA report phase must be G-4.20A", failures)
+            if qa_report.get("status") != "PASS":
+                fail(f"{pack_id} QA report must be PASS", failures)
+            for required_check in [
+                "transparent sprites have no magenta background",
+                "transparent sprites have no magenta halo on alpha edges",
+                "sprites retain clean transparent crop padding",
+                "sprites are not cut off at object edges",
+                "source sheet object identity maps to manifest asset ids",
+                "visual quality rating meets or exceeds 8.5/10",
+            ]:
+                if required_check not in qa_report.get("checks", []):
+                    fail(f"{pack_id} QA report missing check: {required_check}", failures)
+        assets = manifest.get("assets", [])
+        if not isinstance(assets, list) or len(assets) != 8:
+            fail(f"{pack_id} manifest must contain exactly eight assets", failures)
+            continue
+        for asset in assets:
+            if not isinstance(asset, dict):
+                fail(f"{pack_id} asset entry is not an object", failures)
+                continue
+            asset_id = str(asset.get("asset_id", ""))
+            if asset_id in seen_asset_ids:
+                fail(f"duplicate G-4.20A environmental asset id: {asset_id}", failures)
+            seen_asset_ids.add(asset_id)
+            for field in required_asset_fields:
+                if field not in asset:
+                    fail(f"{asset_id or 'unknown'} missing G-4.20A asset field {field}", failures)
+            if asset.get("source_type") != "ai_assisted_image_generation_with_local_chroma_extraction":
+                fail(f"{asset_id} source_type must be AI-assisted image generation plus local extraction", failures)
+            if asset.get("provenance_status") != "ai_assisted_green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} provenance status must remain pending AI-assisted green-origin", failures)
+            if asset.get("origin_classification") != "green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} origin classification must remain pending license review", failures)
+            if asset.get("commercial_use_status") != "green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} commercial use status must remain pending license review", failures)
+            if asset.get("review_eligible") is not True or asset.get("normal_review_eligible") is not True:
+                fail(f"{asset_id} must be review-eligible for the G-4.20A wave", failures)
+            if asset.get("lab_only") is not False:
+                fail(f"{asset_id} must not be lab-only after G-4.20A acceptance", failures)
+            if asset.get("final_commercial_candidate") is not False or asset.get("final_commercial_eligible") is not False:
+                fail(f"{asset_id} must not be final-commercial promoted", failures)
+            for bool_field in ["source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+                if asset.get(bool_field) is not False:
+                    fail(f"{asset_id} must set {bool_field}=false", failures)
+            if float(asset.get("visual_quality_rating", 0.0)) < 8.5:
+                fail(f"{asset_id} visual quality rating is below 8.5", failures)
+            asset_rel_path = str(asset.get("path", ""))
+            path_exists(asset_rel_path, failures)
+            asset_path = PROJECT_ROOT / asset_rel_path
+            if asset_path.exists():
+                metrics = image_alpha_metrics(asset_path)
+                qa = asset.get("extraction_qa", {})
+                if metrics.get("magenta_pixels_remaining") != 0:
+                    fail(f"{asset_id} has magenta background pixels remaining", failures)
+                if metrics.get("magenta_halo_pixels") != 0:
+                    fail(f"{asset_id} has magenta halo pixels", failures)
+                if metrics.get("cutoff_edges"):
+                    fail(f"{asset_id} crop padding/cutoff failed: {metrics.get('cutoff_edges')}", failures)
+                if metrics.get("readable") is not True:
+                    fail(f"{asset_id} alpha footprint is not visually readable", failures)
+                for metric_key in ["magenta_pixels_remaining", "magenta_halo_pixels", "cutoff_edges", "readable"]:
+                    if qa.get(metric_key) != metrics.get(metric_key):
+                        fail(f"{asset_id} manifest QA metric {metric_key} does not match image inspection", failures)
+            for path_field in ["generation_prompt", "source_image", "extraction_script", "atlas"]:
+                path_exists(str(asset.get(path_field, "")), failures)
+            for raw_source in asset.get("input_sources", []):
+                if not isinstance(raw_source, dict):
+                    fail(f"{asset_id} input source is not an object", failures)
+                    continue
+                if str(raw_source.get("commercial_status", "")) not in {"green_origin_candidate_pending_license_review", "green_origin_candidate", "documentation_only"}:
+                    fail(f"{asset_id} input source has unsupported commercial status", failures)
+                if "path" in raw_source:
+                    path_exists(str(raw_source["path"]), failures)
+
+    if len(seen_asset_ids) == 32:
+        pass_check("G-4.20A environmental wave contains 32 unique assets")
+    else:
+        fail(f"G-4.20A environmental wave unique asset count mismatch: {len(seen_asset_ids)}", failures)
+
+    if ATELIER_G420A_WAVE_REPORT_PATH.exists():
+        report = ATELIER_G420A_WAVE_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in [
+            "first mass atelier production wave",
+            "environmental believability",
+            "Tavern/Inn remains",
+            "REBUILD_REQUIRED_CENTERPIECE",
+            "blocked from final commercial promotion",
+        ]:
+            if required_text not in report:
+                fail(f"G-4.20A environmental wave report missing text: {required_text}", failures)
+        pass_check("G-4.20A environmental wave report present")
+    else:
+        fail(f"missing G-4.20A environmental wave report: {ATELIER_G420A_WAVE_REPORT_PATH}", failures)
+
+
 def validate_visual_production_registry(failures: list[str]) -> None:
     registry = load_json(VISUAL_REGISTRY_PATH, failures)
     if not registry:
@@ -1240,12 +1468,12 @@ def validate_visual_production_registry(failures: list[str]) -> None:
         fail("visual production registry schema_id must be wayfarer.newport.visual_production_registry.v1", failures)
     else:
         pass_check("visual production registry schema id")
-    if registry.get("phase") != "G-4.19B":
-        fail("visual production registry phase must be G-4.19B", failures)
+    if registry.get("phase") != "G-4.20A":
+        fail("visual production registry phase must be G-4.20A", failures)
     if "starting town/village" not in str(registry.get("north_star", "")):
         fail("visual production registry must restore the Newport starting town/village North Star", failures)
-    if "does not create new sprite sheets" not in str(registry.get("policy", "")):
-        fail("visual production registry must record the no-new-sprite-sheets policy", failures)
+    if "first mass atelier production wave" not in str(registry.get("policy", "")):
+        fail("visual production registry must record the G-4.20A first mass atelier production wave policy", failures)
 
     statuses = registry.get("status_taxonomy", [])
     if not isinstance(statuses, list):
@@ -1387,6 +1615,10 @@ def validate_visual_production_registry(failures: list[str]) -> None:
         "NEWPORT_GREEN_ORIGIN_MATERIALS",
         "NEWPORT_ATELIER_CARGO_MATERIALS",
         "NEWPORT_ATELIER_DOCK_CLUTTER_MATERIALS",
+        "NEWPORT_ATELIER_TERRAIN_EDGE_MATERIALS",
+        "NEWPORT_ATELIER_COBBLE_PATH_MATERIALS",
+        "NEWPORT_ATELIER_SHORELINE_MATERIALS",
+        "NEWPORT_ATELIER_BUILDING_GROUNDING_MATERIALS",
     ]:
         for asset_id in _extract_quoted_list(map_layer, const_name):
             if asset_id not in by_id:
@@ -1452,6 +1684,7 @@ def main() -> int:
     validate_green_origin_bakeoff_manifest(failures)
     validate_atelier_cargo_manifest(failures)
     validate_atelier_dock_clutter_manifest(failures)
+    validate_g420a_environmental_believability_wave(failures)
     validate_visual_production_registry(failures)
 
     if failures:

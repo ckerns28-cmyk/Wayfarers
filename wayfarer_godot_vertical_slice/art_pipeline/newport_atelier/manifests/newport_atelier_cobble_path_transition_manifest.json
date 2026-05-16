@@ -1,0 +1,980 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g420a.cobble_path_transition.manifest.v1",
+  "phase": "G-4.20A",
+  "pack_id": "cobble_path_transition",
+  "title": "Cobble And Path Transition Set",
+  "generated_at": "2026-05-16T21:03:32.724283+00:00",
+  "visual_standard": "First mass atelier environmental believability production wave, meeting or exceeding the G-4.18D/G-4.19A atelier standard with an 8.5/10 minimum visual gate.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D Newport atelier cargo pipeline lock and G-4.19A dock clutter rollout pack",
+  "future_pack_pattern": "10/10 source sheet -> saved prompt/source -> extraction script -> transparent sprites -> atlas/contact sheet -> manifest/provenance report -> Godot placement -> validation",
+  "rollout_pack_role": "G-4.20A first mass atelier production wave for Newport environmental believability",
+  "placement_policy": "Controlled market-spine and wharf-to-town walking-surface placement only; do not obscure routes or door thresholds.",
+  "tavern_inn_lock": "The Tavern/Inn remains a future REBUILD_REQUIRED_CENTERPIECE item and is not patched by this pack.",
+  "deprecated_visual_targets": [
+    "G-4.18B weak deterministic/procedural cargo proof",
+    "broad procedural fallback road/shore reads where atelier pieces are now available"
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_path_market_cobble_long_01",
+      "asset_type": "market_spine_cobble_patch",
+      "source_identity": "long worn market-spine cobble road patch",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_market_cobble_long_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 99,
+        "y": 96,
+        "w": 637,
+        "h": 182
+      },
+      "sprite_size": {
+        "w": 673,
+        "h": 218
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.22,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 673,
+          "h": 218
+        },
+        "alpha_bbox": {
+          "x": 25,
+          "y": 29,
+          "w": 618,
+          "h": 157
+        },
+        "alpha_pixels": 75988,
+        "opaque_pixels": 75988,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 25,
+          "top": 29,
+          "right": 30,
+          "bottom": 32
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "long worn market-spine cobble road patch",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds authored wear to the main market walking surface.",
+      "sha256": "cbd2de3880e333c0b054c7f1029394c273292f9e3feb5b5e6583c0984a5f4d87",
+      "notes": "Long low cobble patch with worn middle track."
+    },
+    {
+      "asset_id": "atelier_path_broken_cobble_patch_01",
+      "asset_type": "broken_cobble_patch",
+      "source_identity": "broken cobble patch with missing stones and dirt",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_broken_cobble_patch_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 845,
+        "y": 105,
+        "w": 583,
+        "h": 173
+      },
+      "sprite_size": {
+        "w": 619,
+        "h": 209
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.2,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 619,
+          "h": 209
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 34,
+          "w": 560,
+          "h": 141
+        },
+        "alpha_pixels": 61945,
+        "opaque_pixels": 61945,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 34,
+          "right": 31,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "broken cobble patch with missing stones and dirt",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Breaks up repeated cobble near the wharf-to-town seam.",
+      "sha256": "975f08e9f77326ce16fd9125b527348b61b009ca11721ecc9d1216288e1212cf",
+      "notes": "Broken cobbles and dirt-filled gaps."
+    },
+    {
+      "asset_id": "atelier_path_dirt_worn_section_01",
+      "asset_type": "dirt_worn_path_section",
+      "source_identity": "dirt-worn walking path section",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_dirt_worn_section_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 113,
+        "y": 349,
+        "w": 606,
+        "h": 162
+      },
+      "sprite_size": {
+        "w": 642,
+        "h": 198
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.21,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 642,
+          "h": 198
+        },
+        "alpha_bbox": {
+          "x": 20,
+          "y": 34,
+          "w": 598,
+          "h": 130
+        },
+        "alpha_pixels": 59504,
+        "opaque_pixels": 59504,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 20,
+          "top": 34,
+          "right": 24,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "dirt-worn walking path section",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Gives service-lane foot traffic a readable surface.",
+      "sha256": "a06143e389155e332726e7a9a74304f8fe21af0b65b0cd89bace6735dcac2465",
+      "notes": "Worn earth path with small stone inclusions."
+    },
+    {
+      "asset_id": "atelier_path_road_shoulder_earth_01",
+      "asset_type": "road_shoulder_earth_piece",
+      "source_identity": "road shoulder where cobble fades into earth",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_road_shoulder_earth_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 823,
+        "y": 347,
+        "w": 614,
+        "h": 164
+      },
+      "sprite_size": {
+        "w": 650,
+        "h": 200
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.21,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 650,
+          "h": 200
+        },
+        "alpha_bbox": {
+          "x": 31,
+          "y": 32,
+          "w": 601,
+          "h": 139
+        },
+        "alpha_pixels": 59609,
+        "opaque_pixels": 59609,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 31,
+          "top": 32,
+          "right": 18,
+          "bottom": 29
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "road shoulder where cobble fades into earth",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Connects cobble roads to softer grass/mud shoulders.",
+      "sha256": "67e911700e1edf40a34210baf34cc96935de68e0c2ddf2b2410fa4719c75f0ae",
+      "notes": "Earth shoulder with loose stones and dust."
+    },
+    {
+      "asset_id": "atelier_path_curb_threshold_stones_01",
+      "asset_type": "curb_threshold_stone_strip",
+      "source_identity": "curb and doorstep threshold stone strip",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_curb_threshold_stones_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 108,
+        "y": 571,
+        "w": 613,
+        "h": 159
+      },
+      "sprite_size": {
+        "w": 649,
+        "h": 195
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "grounding": {
+        "pivot_y": 0.86,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.19,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 649,
+          "h": 195
+        },
+        "alpha_bbox": {
+          "x": 30,
+          "y": 34,
+          "w": 593,
+          "h": 128
+        },
+        "alpha_pixels": 66680,
+        "opaque_pixels": 66680,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 30,
+          "top": 34,
+          "right": 26,
+          "bottom": 33
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "curb and doorstep threshold stone strip",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Reinforces non-tavern building base approach points.",
+      "sha256": "fced085f5c48eea456fa944e724078c97f64ef5b158793b050ee8685b54479a8",
+      "notes": "Threshold strip for doors and stoops."
+    },
+    {
+      "asset_id": "atelier_path_cobble_plank_seam_01",
+      "asset_type": "cobble_to_plank_seam_piece",
+      "source_identity": "cobble-to-wharf-plank seam piece",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_cobble_plank_seam_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 823,
+        "y": 577,
+        "w": 618,
+        "h": 148
+      },
+      "sprite_size": {
+        "w": 654,
+        "h": 184
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.21,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 654,
+          "h": 184
+        },
+        "alpha_bbox": {
+          "x": 29,
+          "y": 34,
+          "w": 599,
+          "h": 116
+        },
+        "alpha_pixels": 56028,
+        "opaque_pixels": 56028,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 29,
+          "top": 34,
+          "right": 26,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "cobble-to-wharf-plank seam piece",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Clarifies wharf-to-town material transition.",
+      "sha256": "72fe4a39e83d16ed53eb83dace42549e2d401e533ab313318cc7c189c8582a25",
+      "notes": "Stone-to-plank seam with grime and plank ends."
+    },
+    {
+      "asset_id": "atelier_path_sunken_gutter_stones_01",
+      "asset_type": "sunken_gutter_drain_stones",
+      "source_identity": "sunken gutter/drain stones with grime",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_sunken_gutter_stones_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 105,
+        "y": 797,
+        "w": 618,
+        "h": 136
+      },
+      "sprite_size": {
+        "w": 654,
+        "h": 172
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "grounding": {
+        "pivot_y": 0.86,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.19,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 654,
+          "h": 172
+        },
+        "alpha_bbox": {
+          "x": 24,
+          "y": 34,
+          "w": 609,
+          "h": 106
+        },
+        "alpha_pixels": 55604,
+        "opaque_pixels": 55604,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 24,
+          "top": 34,
+          "right": 21,
+          "bottom": 32
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "sunken gutter/drain stones with grime",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds low drainage detail beside market-spine edges.",
+      "sha256": "8e0b81e2ffeb359855c31a99eb59499f6ced56a7962498802dd19d0c2bf881a7",
+      "notes": "Darkened gutter stones and damp grime."
+    },
+    {
+      "asset_id": "atelier_path_loose_paving_fragments_01",
+      "asset_type": "loose_paving_fragment_strip",
+      "source_identity": "loose stones and paving fragments strip",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_loose_paving_fragments_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 810,
+        "y": 818,
+        "w": 621,
+        "h": 111
+      },
+      "sprite_size": {
+        "w": 657,
+        "h": 147
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "grounding": {
+        "pivot_y": 0.86,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 657,
+          "h": 147
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 34,
+          "w": 608,
+          "h": 79
+        },
+        "alpha_pixels": 29489,
+        "opaque_pixels": 29489,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 34,
+          "right": 21,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "loose stones and paving fragments strip",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.8,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds low scatter at road shoulders without blocking movement.",
+      "sha256": "acda5a6ecf0c802132edbc3661480dc42b17168ff7db0e862c2a539f239a7749",
+      "notes": "Low loose stones for edge dressing."
+    }
+  ]
+}

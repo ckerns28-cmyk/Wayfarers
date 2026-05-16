@@ -1,0 +1,251 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.20A",
+  "pack": "cobble_path_transition",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10"
+  ],
+  "assets": {
+    "atelier_path_market_cobble_long_01": {
+      "size": {
+        "w": 673,
+        "h": 218
+      },
+      "alpha_bbox": {
+        "x": 25,
+        "y": 29,
+        "w": 618,
+        "h": 157
+      },
+      "alpha_pixels": 75988,
+      "opaque_pixels": 75988,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 25,
+        "top": 29,
+        "right": 30,
+        "bottom": 32
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "long worn market-spine cobble road patch",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_path_broken_cobble_patch_01": {
+      "size": {
+        "w": 619,
+        "h": 209
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 34,
+        "w": 560,
+        "h": 141
+      },
+      "alpha_pixels": 61945,
+      "opaque_pixels": 61945,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 34,
+        "right": 31,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "broken cobble patch with missing stones and dirt",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_path_dirt_worn_section_01": {
+      "size": {
+        "w": 642,
+        "h": 198
+      },
+      "alpha_bbox": {
+        "x": 20,
+        "y": 34,
+        "w": 598,
+        "h": 130
+      },
+      "alpha_pixels": 59504,
+      "opaque_pixels": 59504,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 20,
+        "top": 34,
+        "right": 24,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "dirt-worn walking path section",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_path_road_shoulder_earth_01": {
+      "size": {
+        "w": 650,
+        "h": 200
+      },
+      "alpha_bbox": {
+        "x": 31,
+        "y": 32,
+        "w": 601,
+        "h": 139
+      },
+      "alpha_pixels": 59609,
+      "opaque_pixels": 59609,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 31,
+        "top": 32,
+        "right": 18,
+        "bottom": 29
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "road shoulder where cobble fades into earth",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_path_curb_threshold_stones_01": {
+      "size": {
+        "w": 649,
+        "h": 195
+      },
+      "alpha_bbox": {
+        "x": 30,
+        "y": 34,
+        "w": 593,
+        "h": 128
+      },
+      "alpha_pixels": 66680,
+      "opaque_pixels": 66680,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 30,
+        "top": 34,
+        "right": 26,
+        "bottom": 33
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "curb and doorstep threshold stone strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_path_cobble_plank_seam_01": {
+      "size": {
+        "w": 654,
+        "h": 184
+      },
+      "alpha_bbox": {
+        "x": 29,
+        "y": 34,
+        "w": 599,
+        "h": 116
+      },
+      "alpha_pixels": 56028,
+      "opaque_pixels": 56028,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 29,
+        "top": 34,
+        "right": 26,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "cobble-to-wharf-plank seam piece",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_path_sunken_gutter_stones_01": {
+      "size": {
+        "w": 654,
+        "h": 172
+      },
+      "alpha_bbox": {
+        "x": 24,
+        "y": 34,
+        "w": 609,
+        "h": 106
+      },
+      "alpha_pixels": 55604,
+      "opaque_pixels": 55604,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 24,
+        "top": 34,
+        "right": 21,
+        "bottom": 32
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "sunken gutter/drain stones with grime",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_path_loose_paving_fragments_01": {
+      "size": {
+        "w": 657,
+        "h": 147
+      },
+      "alpha_bbox": {
+        "x": 28,
+        "y": 34,
+        "w": 608,
+        "h": 79
+      },
+      "alpha_pixels": 29489,
+      "opaque_pixels": 29489,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 28,
+        "top": 34,
+        "right": 21,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "loose stones and paving fragments strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}

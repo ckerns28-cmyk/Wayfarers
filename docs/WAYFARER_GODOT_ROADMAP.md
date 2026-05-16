@@ -1640,6 +1640,62 @@ Acceptance:
   manifest, provenance report, and QA artifacts.
 - G-4.18D cargo and G-4.19A dock clutter remain visible and validated.
 
+## G-4.20A: Newport Environmental Believability Atelier Wave
+
+Status: implemented as the first mass atelier production wave.
+
+G-4.20A moves Newport from isolated prop packs to controlled environmental
+believability production. This wave exists to make the playable starting town
+feel grounded, navigable, and physically coherent before larger identity,
+economy, building, or character passes begin.
+
+The wave adds four themed atelier packs:
+
+- Terrain edge dressing for grass-to-road, mud-to-cobble, dirt borders, worn
+  corners, tufts, stones, weeds, and puddles.
+- Cobble/path transitions for market-spine walking surfaces, broken cobble,
+  dirt-worn patches, road shoulders, and plank/cobble seams.
+- Shoreline/harbor edge dressing for seaweed, shells, wet rocks, driftwood,
+  wet sand/mud, tide puddles, eelgrass, and harbor debris.
+- Building grounding and service-lane accents for doorstep stones,
+  foundation shadows, wall weeds, repair boards, barrels/crates, wash tubs,
+  low fencing, and firewood.
+
+Production artifacts live under `art_pipeline/newport_atelier/` and include
+the exact prompts, source generated sheets, extracted transparent sprites,
+atlases, contact sheets, manifests, extraction QA, provenance reports, and the
+wave manifest/report. New entries are registered in
+`art_pipeline/newport/manifests/newport_visual_production_registry.json` as
+AI-assisted green-origin candidates pending final license policy approval.
+
+Placement is deliberately controlled. The normal scene uses a subset around
+wharf-to-town transitions, road/grass edges, dock/shoreline edges, market
+spine grounding, and non-centerpiece building bases. It must not over-scatter,
+block navigation, cover important entrances, hide path readability, or use
+clutter to mask broken composition.
+
+Building rebuild comes after this environmental glue unless the audit forces
+an earlier correction. The Tavern/Inn remains locked as a future
+`REBUILD_REQUIRED_CENTERPIECE`: brick construction, two sets of large
+twin-stack chimneys, Hotel Viking-inspired coastal landmark presence, warm
+social hub, quest anchor, and player landmark. G-4.20A does not patch or treat
+the current tavern as final.
+
+Acceptance:
+
+- Three to five environmental atelier sheets are produced under the locked
+  G-4.18D/G-4.19A pipeline; G-4.20A ships four.
+- Every pack has source sheet, saved prompt, transparent sprite extraction,
+  atlas, contact sheet, manifest, QA, and provenance report.
+- New assets are registered with source/provenance status, usage, visual
+  quality, gameplay role, rebuild/final status, and notes.
+- No magenta background or halo remains in extracted sprites.
+- Controlled in-world placement improves Newport's believability and
+  navigation while preserving G-4.18D cargo and G-4.19A dock clutter.
+- Validators fail clearly for missing wave artifacts, missing registry status,
+  final assets without provenance, deprecated final targets, magenta/halo
+  extraction remnants, and missing/deprecated MapLayer references.
+
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
 Status: planned.

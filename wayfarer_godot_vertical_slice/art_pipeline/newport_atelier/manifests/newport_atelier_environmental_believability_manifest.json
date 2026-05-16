@@ -1,0 +1,617 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g420a.environmental_believability_wave.v1",
+  "phase": "G-4.20A",
+  "generated_at": "2026-05-16T21:03:51.267241+00:00",
+  "title": "Newport Environmental Believability Atelier Wave",
+  "wave_id": "wave_1_environmental_believability",
+  "role": "First mass atelier production wave moving Newport from isolated prop sheets to environmental believability production.",
+  "visual_quality_gate": 8.5,
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "source_policy": "AI-assisted green-origin candidates pending final license policy approval; no yellow building pixels, third-party sprites, marketplace packs, web-scraped images, or ripped game art were supplied as source input.",
+  "placement_policy": "Controlled subset only at wharf-to-town transitions, road/grass edges, dock/shoreline edges, market-spine grounding, and non-centerpiece building bases; no over-scatter and no navigation blocking.",
+  "tavern_inn_lock": "The Tavern/Inn remains a future REBUILD_REQUIRED_CENTERPIECE rebuild; G-4.20A does not rebuild or patch it.",
+  "packs": [
+    {
+      "pack_id": "terrain_edge_dressing",
+      "title": "Terrain Edge Dressing",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_terrain_grass_road_edge_north_01",
+        "atelier_terrain_grass_road_edge_south_01",
+        "atelier_terrain_mud_cobble_feather_01",
+        "atelier_terrain_dirt_path_border_01",
+        "atelier_terrain_worn_corner_blend_01",
+        "atelier_terrain_coastal_tuft_stone_cluster_01",
+        "atelier_terrain_muddy_puddle_rut_01",
+        "atelier_terrain_broken_grassy_shoulder_01"
+      ]
+    },
+    {
+      "pack_id": "cobble_path_transition",
+      "title": "Cobble And Path Transition Set",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_path_market_cobble_long_01",
+        "atelier_path_broken_cobble_patch_01",
+        "atelier_path_dirt_worn_section_01",
+        "atelier_path_road_shoulder_earth_01",
+        "atelier_path_curb_threshold_stones_01",
+        "atelier_path_cobble_plank_seam_01",
+        "atelier_path_sunken_gutter_stones_01",
+        "atelier_path_loose_paving_fragments_01"
+      ]
+    },
+    {
+      "pack_id": "shoreline_harbor_edge",
+      "title": "Shoreline And Harbor Edge Dressing",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_shore_seaweed_drift_line_01",
+        "atelier_shore_shell_pebble_cluster_01",
+        "atelier_shore_wet_rocks_sand_01",
+        "atelier_shore_driftwood_log_cluster_01",
+        "atelier_shore_wet_sand_mud_strip_01",
+        "atelier_shore_harbor_debris_slats_rope_01",
+        "atelier_shore_tide_puddle_mud_edge_01",
+        "atelier_shore_eelgrass_reeds_cluster_01"
+      ]
+    },
+    {
+      "pack_id": "building_grounding_service",
+      "title": "Building Grounding And Service-Lane Accents",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_building_grounding_service_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_building_grounding_service_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_building_grounding_service_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_building_grounding_service_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G420A_BUILDING_GROUNDING_SERVICE_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_ground_doorstep_stones_01",
+        "atelier_ground_foundation_shadow_strip_01",
+        "atelier_ground_wall_weeds_stones_01",
+        "atelier_ground_repair_boards_crate_scraps_01",
+        "atelier_ground_barrel_crate_cluster_01",
+        "atelier_ground_wash_tub_buckets_01",
+        "atelier_ground_low_fence_weeds_01",
+        "atelier_ground_firewood_chopping_block_01"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_terrain_grass_road_edge_north_01",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_grass_road_edge_north_01.png",
+      "pack_id": "terrain_edge_dressing",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 85,
+        "y": 61,
+        "w": 750,
+        "h": 209
+      }
+    },
+    {
+      "asset_id": "atelier_terrain_grass_road_edge_south_01",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_grass_road_edge_south_01.png",
+      "pack_id": "terrain_edge_dressing",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 916,
+        "y": 72,
+        "w": 710,
+        "h": 198
+      }
+    },
+    {
+      "asset_id": "atelier_terrain_mud_cobble_feather_01",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_mud_cobble_feather_01.png",
+      "pack_id": "terrain_edge_dressing",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 80,
+        "y": 297,
+        "w": 761,
+        "h": 181
+      }
+    },
+    {
+      "asset_id": "atelier_terrain_dirt_path_border_01",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_dirt_path_border_01.png",
+      "pack_id": "terrain_edge_dressing",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 913,
+        "y": 316,
+        "w": 726,
+        "h": 153
+      }
+    },
+    {
+      "asset_id": "atelier_terrain_worn_corner_blend_01",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_worn_corner_blend_01.png",
+      "pack_id": "terrain_edge_dressing",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 214,
+        "y": 502,
+        "w": 465,
+        "h": 190
+      }
+    },
+    {
+      "asset_id": "atelier_terrain_coastal_tuft_stone_cluster_01",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_coastal_tuft_stone_cluster_01.png",
+      "pack_id": "terrain_edge_dressing",
+      "visual_quality_rating": 8.8,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 956,
+        "y": 502,
+        "w": 544,
+        "h": 171
+      }
+    },
+    {
+      "asset_id": "atelier_terrain_muddy_puddle_rut_01",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_muddy_puddle_rut_01.png",
+      "pack_id": "terrain_edge_dressing",
+      "visual_quality_rating": 8.8,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 138,
+        "y": 704,
+        "w": 610,
+        "h": 178
+      }
+    },
+    {
+      "asset_id": "atelier_terrain_broken_grassy_shoulder_01",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_broken_grassy_shoulder_01.png",
+      "pack_id": "terrain_edge_dressing",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 905,
+        "y": 704,
+        "w": 729,
+        "h": 181
+      }
+    },
+    {
+      "asset_id": "atelier_path_market_cobble_long_01",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_market_cobble_long_01.png",
+      "pack_id": "cobble_path_transition",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 99,
+        "y": 96,
+        "w": 637,
+        "h": 182
+      }
+    },
+    {
+      "asset_id": "atelier_path_broken_cobble_patch_01",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_broken_cobble_patch_01.png",
+      "pack_id": "cobble_path_transition",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 845,
+        "y": 105,
+        "w": 583,
+        "h": 173
+      }
+    },
+    {
+      "asset_id": "atelier_path_dirt_worn_section_01",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_dirt_worn_section_01.png",
+      "pack_id": "cobble_path_transition",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 113,
+        "y": 349,
+        "w": 606,
+        "h": 162
+      }
+    },
+    {
+      "asset_id": "atelier_path_road_shoulder_earth_01",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_road_shoulder_earth_01.png",
+      "pack_id": "cobble_path_transition",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 823,
+        "y": 347,
+        "w": 614,
+        "h": 164
+      }
+    },
+    {
+      "asset_id": "atelier_path_curb_threshold_stones_01",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_curb_threshold_stones_01.png",
+      "pack_id": "cobble_path_transition",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 108,
+        "y": 571,
+        "w": 613,
+        "h": 159
+      }
+    },
+    {
+      "asset_id": "atelier_path_cobble_plank_seam_01",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_cobble_plank_seam_01.png",
+      "pack_id": "cobble_path_transition",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 823,
+        "y": 577,
+        "w": 618,
+        "h": 148
+      }
+    },
+    {
+      "asset_id": "atelier_path_sunken_gutter_stones_01",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_sunken_gutter_stones_01.png",
+      "pack_id": "cobble_path_transition",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 105,
+        "y": 797,
+        "w": 618,
+        "h": 136
+      }
+    },
+    {
+      "asset_id": "atelier_path_loose_paving_fragments_01",
+      "category": "ENVIRONMENT_PATH_TRANSITION",
+      "path": "art_pipeline/newport_atelier/generated/atelier_path_loose_paving_fragments_01.png",
+      "pack_id": "cobble_path_transition",
+      "visual_quality_rating": 8.8,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+      "atlas_region": {
+        "x": 810,
+        "y": 818,
+        "w": 621,
+        "h": 111
+      }
+    },
+    {
+      "asset_id": "atelier_shore_seaweed_drift_line_01",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_seaweed_drift_line_01.png",
+      "pack_id": "shoreline_harbor_edge",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 68,
+        "y": 88,
+        "w": 648,
+        "h": 184
+      }
+    },
+    {
+      "asset_id": "atelier_shore_shell_pebble_cluster_01",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_shell_pebble_cluster_01.png",
+      "pack_id": "shoreline_harbor_edge",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 795,
+        "y": 100,
+        "w": 642,
+        "h": 175
+      }
+    },
+    {
+      "asset_id": "atelier_shore_wet_rocks_sand_01",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_wet_rocks_sand_01.png",
+      "pack_id": "shoreline_harbor_edge",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 71,
+        "y": 308,
+        "w": 636,
+        "h": 202
+      }
+    },
+    {
+      "asset_id": "atelier_shore_driftwood_log_cluster_01",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_driftwood_log_cluster_01.png",
+      "pack_id": "shoreline_harbor_edge",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 784,
+        "y": 308,
+        "w": 679,
+        "h": 202
+      }
+    },
+    {
+      "asset_id": "atelier_shore_wet_sand_mud_strip_01",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_wet_sand_mud_strip_01.png",
+      "pack_id": "shoreline_harbor_edge",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 69,
+        "y": 560,
+        "w": 622,
+        "h": 158
+      }
+    },
+    {
+      "asset_id": "atelier_shore_harbor_debris_slats_rope_01",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_harbor_debris_slats_rope_01.png",
+      "pack_id": "shoreline_harbor_edge",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 785,
+        "y": 540,
+        "w": 649,
+        "h": 183
+      }
+    },
+    {
+      "asset_id": "atelier_shore_tide_puddle_mud_edge_01",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_tide_puddle_mud_edge_01.png",
+      "pack_id": "shoreline_harbor_edge",
+      "visual_quality_rating": 8.8,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 78,
+        "y": 767,
+        "w": 608,
+        "h": 186
+      }
+    },
+    {
+      "asset_id": "atelier_shore_eelgrass_reeds_cluster_01",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_eelgrass_reeds_cluster_01.png",
+      "pack_id": "shoreline_harbor_edge",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 802,
+        "y": 761,
+        "w": 618,
+        "h": 192
+      }
+    },
+    {
+      "asset_id": "atelier_ground_doorstep_stones_01",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_doorstep_stones_01.png",
+      "pack_id": "building_grounding_service",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "atlas_region": {
+        "x": 187,
+        "y": 76,
+        "w": 491,
+        "h": 186
+      }
+    },
+    {
+      "asset_id": "atelier_ground_foundation_shadow_strip_01",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_foundation_shadow_strip_01.png",
+      "pack_id": "building_grounding_service",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "atlas_region": {
+        "x": 795,
+        "y": 100,
+        "w": 584,
+        "h": 153
+      }
+    },
+    {
+      "asset_id": "atelier_ground_wall_weeds_stones_01",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_wall_weeds_stones_01.png",
+      "pack_id": "building_grounding_service",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "atlas_region": {
+        "x": 164,
+        "y": 293,
+        "w": 530,
+        "h": 186
+      }
+    },
+    {
+      "asset_id": "atelier_ground_repair_boards_crate_scraps_01",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_repair_boards_crate_scraps_01.png",
+      "pack_id": "building_grounding_service",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "atlas_region": {
+        "x": 824,
+        "y": 262,
+        "w": 498,
+        "h": 234
+      }
+    },
+    {
+      "asset_id": "atelier_ground_barrel_crate_cluster_01",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_barrel_crate_cluster_01.png",
+      "pack_id": "building_grounding_service",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "atlas_region": {
+        "x": 170,
+        "y": 498,
+        "w": 464,
+        "h": 214
+      }
+    },
+    {
+      "asset_id": "atelier_ground_wash_tub_buckets_01",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_wash_tub_buckets_01.png",
+      "pack_id": "building_grounding_service",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "atlas_region": {
+        "x": 839,
+        "y": 512,
+        "w": 444,
+        "h": 200
+      }
+    },
+    {
+      "asset_id": "atelier_ground_low_fence_weeds_01",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_low_fence_weeds_01.png",
+      "pack_id": "building_grounding_service",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "atlas_region": {
+        "x": 142,
+        "y": 741,
+        "w": 549,
+        "h": 198
+      }
+    },
+    {
+      "asset_id": "atelier_ground_firewood_chopping_block_01",
+      "category": "ENVIRONMENT_BUILDING_GROUNDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_ground_firewood_chopping_block_01.png",
+      "pack_id": "building_grounding_service",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+      "atlas_region": {
+        "x": 813,
+        "y": 732,
+        "w": 540,
+        "h": 222
+      }
+    }
+  ]
+}

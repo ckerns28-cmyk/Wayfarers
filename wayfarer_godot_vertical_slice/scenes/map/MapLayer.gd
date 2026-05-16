@@ -17,6 +17,11 @@ const NEWPORT_ATELIER_CARGO_VERSION := "G-4.18D"
 const NEWPORT_ATELIER_CARGO_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png"
 const NEWPORT_ATELIER_DOCK_CLUTTER_VERSION := "G-4.19A"
 const NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_dock_clutter_v1.png"
+const NEWPORT_ENVIRONMENTAL_BELIEVABILITY_VERSION := "G-4.20A"
+const NEWPORT_ATELIER_TERRAIN_EDGE_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png"
+const NEWPORT_ATELIER_COBBLE_PATH_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png"
+const NEWPORT_ATELIER_SHORELINE_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png"
+const NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -72,6 +77,46 @@ const NEWPORT_ATELIER_DOCK_CLUTTER_MATERIALS := [
 	"atelier_dock_lantern_01",
 	"atelier_shoreline_debris_01",
 ]
+const NEWPORT_ATELIER_TERRAIN_EDGE_MATERIALS := [
+	"atelier_terrain_grass_road_edge_north_01",
+	"atelier_terrain_grass_road_edge_south_01",
+	"atelier_terrain_mud_cobble_feather_01",
+	"atelier_terrain_dirt_path_border_01",
+	"atelier_terrain_worn_corner_blend_01",
+	"atelier_terrain_coastal_tuft_stone_cluster_01",
+	"atelier_terrain_muddy_puddle_rut_01",
+	"atelier_terrain_broken_grassy_shoulder_01",
+]
+const NEWPORT_ATELIER_COBBLE_PATH_MATERIALS := [
+	"atelier_path_market_cobble_long_01",
+	"atelier_path_broken_cobble_patch_01",
+	"atelier_path_dirt_worn_section_01",
+	"atelier_path_road_shoulder_earth_01",
+	"atelier_path_curb_threshold_stones_01",
+	"atelier_path_cobble_plank_seam_01",
+	"atelier_path_sunken_gutter_stones_01",
+	"atelier_path_loose_paving_fragments_01",
+]
+const NEWPORT_ATELIER_SHORELINE_MATERIALS := [
+	"atelier_shore_seaweed_drift_line_01",
+	"atelier_shore_shell_pebble_cluster_01",
+	"atelier_shore_wet_rocks_sand_01",
+	"atelier_shore_driftwood_log_cluster_01",
+	"atelier_shore_wet_sand_mud_strip_01",
+	"atelier_shore_harbor_debris_slats_rope_01",
+	"atelier_shore_tide_puddle_mud_edge_01",
+	"atelier_shore_eelgrass_reeds_cluster_01",
+]
+const NEWPORT_ATELIER_BUILDING_GROUNDING_MATERIALS := [
+	"atelier_ground_doorstep_stones_01",
+	"atelier_ground_foundation_shadow_strip_01",
+	"atelier_ground_wall_weeds_stones_01",
+	"atelier_ground_repair_boards_crate_scraps_01",
+	"atelier_ground_barrel_crate_cluster_01",
+	"atelier_ground_wash_tub_buckets_01",
+	"atelier_ground_low_fence_weeds_01",
+	"atelier_ground_firewood_chopping_block_01",
+]
 const NEWPORT_HERO_ATLAS_REGIONS := {
 	"commercial_cobble_long_a": Rect2(0, 0, 320, 96),
 	"commercial_cobble_patch_b": Rect2(0, 104, 220, 72),
@@ -116,6 +161,46 @@ const NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_REGIONS := {
 	"atelier_dock_repair_planks_01": Rect2(370, 560, 430, 340),
 	"atelier_dock_lantern_01": Rect2(780, 520, 300, 395),
 	"atelier_shoreline_debris_01": Rect2(1070, 560, 464, 360),
+}
+const NEWPORT_ATELIER_TERRAIN_EDGE_ATLAS_REGIONS := {
+	"atelier_terrain_grass_road_edge_north_01": Rect2(85, 61, 750, 209),
+	"atelier_terrain_grass_road_edge_south_01": Rect2(916, 72, 710, 198),
+	"atelier_terrain_mud_cobble_feather_01": Rect2(80, 297, 761, 181),
+	"atelier_terrain_dirt_path_border_01": Rect2(913, 316, 726, 153),
+	"atelier_terrain_worn_corner_blend_01": Rect2(214, 502, 465, 190),
+	"atelier_terrain_coastal_tuft_stone_cluster_01": Rect2(956, 502, 544, 171),
+	"atelier_terrain_muddy_puddle_rut_01": Rect2(138, 704, 610, 178),
+	"atelier_terrain_broken_grassy_shoulder_01": Rect2(905, 704, 729, 181),
+}
+const NEWPORT_ATELIER_COBBLE_PATH_ATLAS_REGIONS := {
+	"atelier_path_market_cobble_long_01": Rect2(99, 96, 637, 182),
+	"atelier_path_broken_cobble_patch_01": Rect2(845, 105, 583, 173),
+	"atelier_path_dirt_worn_section_01": Rect2(113, 349, 606, 162),
+	"atelier_path_road_shoulder_earth_01": Rect2(823, 347, 614, 164),
+	"atelier_path_curb_threshold_stones_01": Rect2(108, 571, 613, 159),
+	"atelier_path_cobble_plank_seam_01": Rect2(823, 577, 618, 148),
+	"atelier_path_sunken_gutter_stones_01": Rect2(105, 797, 618, 136),
+	"atelier_path_loose_paving_fragments_01": Rect2(810, 818, 621, 111),
+}
+const NEWPORT_ATELIER_SHORELINE_ATLAS_REGIONS := {
+	"atelier_shore_seaweed_drift_line_01": Rect2(68, 88, 648, 184),
+	"atelier_shore_shell_pebble_cluster_01": Rect2(795, 100, 642, 175),
+	"atelier_shore_wet_rocks_sand_01": Rect2(71, 308, 636, 202),
+	"atelier_shore_driftwood_log_cluster_01": Rect2(784, 308, 679, 202),
+	"atelier_shore_wet_sand_mud_strip_01": Rect2(69, 560, 622, 158),
+	"atelier_shore_harbor_debris_slats_rope_01": Rect2(785, 540, 649, 183),
+	"atelier_shore_tide_puddle_mud_edge_01": Rect2(78, 767, 608, 186),
+	"atelier_shore_eelgrass_reeds_cluster_01": Rect2(802, 761, 618, 192),
+}
+const NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_REGIONS := {
+	"atelier_ground_doorstep_stones_01": Rect2(187, 76, 491, 186),
+	"atelier_ground_foundation_shadow_strip_01": Rect2(795, 100, 584, 153),
+	"atelier_ground_wall_weeds_stones_01": Rect2(164, 293, 530, 186),
+	"atelier_ground_repair_boards_crate_scraps_01": Rect2(824, 262, 498, 234),
+	"atelier_ground_barrel_crate_cluster_01": Rect2(170, 498, 464, 214),
+	"atelier_ground_wash_tub_buckets_01": Rect2(839, 512, 444, 200),
+	"atelier_ground_low_fence_weeds_01": Rect2(142, 741, 549, 198),
+	"atelier_ground_firewood_chopping_block_01": Rect2(813, 732, 540, 222),
 }
 const NEWPORT_ATELIER_CARGO_PLACEMENTS := [
 	{
@@ -201,12 +286,132 @@ const NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS := [
 		"purpose": "harbor_edge_lantern_marker",
 	},
 ]
+const NEWPORT_G420A_TERRAIN_EDGE_PLACEMENTS := [
+	{
+		"asset_id": "atelier_terrain_grass_road_edge_north_01",
+		"dest": Rect2(238, 526, 360, 64),
+		"purpose": "market_spine_north_grass_road_edge",
+		"alpha": 0.86,
+	},
+	{
+		"asset_id": "atelier_terrain_grass_road_edge_north_01",
+		"dest": Rect2(894, 530, 318, 58),
+		"purpose": "east_market_spine_north_grass_road_edge",
+		"alpha": 0.80,
+	},
+	{
+		"asset_id": "atelier_terrain_mud_cobble_feather_01",
+		"dest": Rect2(246, 668, 380, 72),
+		"purpose": "west_wharf_to_town_mud_cobble_feather",
+		"alpha": 0.84,
+	},
+	{
+		"asset_id": "atelier_terrain_broken_grassy_shoulder_01",
+		"dest": Rect2(900, 644, 360, 58),
+		"purpose": "east_road_shoulder_breakup",
+		"alpha": 0.78,
+	},
+]
+const NEWPORT_G420A_COBBLE_PATH_PLACEMENTS := [
+	{
+		"asset_id": "atelier_path_market_cobble_long_01",
+		"dest": Rect2(532, 570, 286, 62),
+		"purpose": "market_spine_walking_surface_breakup",
+		"alpha": 0.80,
+	},
+	{
+		"asset_id": "atelier_path_broken_cobble_patch_01",
+		"dest": Rect2(1000, 590, 226, 54),
+		"purpose": "east_market_spine_broken_cobble",
+		"alpha": 0.76,
+	},
+	{
+		"asset_id": "atelier_path_cobble_plank_seam_01",
+		"dest": Rect2(618, 684, 316, 52),
+		"purpose": "wharf_to_town_cobble_plank_seam",
+		"alpha": 0.84,
+	},
+	{
+		"asset_id": "atelier_path_curb_threshold_stones_01",
+		"dest": Rect2(492, 544, 156, 42),
+		"purpose": "mercantile_non_centerpiece_threshold_grounding",
+		"alpha": 0.84,
+	},
+	{
+		"asset_id": "atelier_path_curb_threshold_stones_01",
+		"dest": Rect2(742, 544, 164, 42),
+		"purpose": "counting_house_chandlery_threshold_grounding",
+		"alpha": 0.78,
+	},
+]
+const NEWPORT_G420A_SHORELINE_PLACEMENTS := [
+	{
+		"asset_id": "atelier_shore_seaweed_drift_line_01",
+		"dest": Rect2(300, 704, 220, 42),
+		"purpose": "west_wharf_tide_edge_seaweed",
+		"alpha": 0.88,
+	},
+	{
+		"asset_id": "atelier_shore_wet_rocks_sand_01",
+		"dest": Rect2(850, 704, 190, 52),
+		"purpose": "central_dock_shoreline_rocks",
+		"alpha": 0.82,
+	},
+	{
+		"asset_id": "atelier_shore_driftwood_log_cluster_01",
+		"dest": Rect2(1132, 714, 190, 56),
+		"purpose": "east_shoreline_driftwood",
+		"alpha": 0.82,
+	},
+	{
+		"asset_id": "atelier_shore_harbor_debris_slats_rope_01",
+		"dest": Rect2(1012, 812, 150, 44),
+		"purpose": "east_pier_low_harbor_debris",
+		"alpha": 0.78,
+	},
+]
+const NEWPORT_G420A_BUILDING_GROUNDING_PLACEMENTS := [
+	{
+		"asset_id": "atelier_ground_foundation_shadow_strip_01",
+		"dest": Rect2(448, 542, 230, 48),
+		"purpose": "mercantile_row_non_centerpiece_foundation_grounding",
+		"alpha": 0.72,
+	},
+	{
+		"asset_id": "atelier_ground_foundation_shadow_strip_01",
+		"dest": Rect2(720, 542, 260, 48),
+		"purpose": "counting_chandlery_non_centerpiece_foundation_grounding",
+		"alpha": 0.68,
+	},
+	{
+		"asset_id": "atelier_ground_doorstep_stones_01",
+		"dest": Rect2(516, 558, 96, 36),
+		"purpose": "mercantile_doorstep_read_without_blocking",
+		"alpha": 0.88,
+	},
+	{
+		"asset_id": "atelier_ground_wall_weeds_stones_01",
+		"dest": Rect2(1074, 548, 170, 44),
+		"purpose": "shop_market_base_weeds",
+		"alpha": 0.70,
+	},
+	{
+		"asset_id": "atelier_ground_wash_tub_buckets_01",
+		"dest": Rect2(1168, 424, 84, 40),
+		"purpose": "support_lane_residential_life_accent",
+		"alpha": 0.92,
+	},
+]
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
 var _newport_hero_atlas: Texture2D
 var _newport_green_origin_atlas: Texture2D
 var _newport_atelier_cargo_atlas: Texture2D
 var _newport_atelier_dock_clutter_atlas: Texture2D
+var _newport_atelier_terrain_edge_atlas: Texture2D
+var _newport_atelier_cobble_path_atlas: Texture2D
+var _newport_atelier_shoreline_atlas: Texture2D
+var _newport_atelier_building_grounding_atlas: Texture2D
 var _g418d1_m01b_proof: Texture2D
 var _g418d2_capability_asset: Texture2D
 var _green_origin_lab_enabled := false
@@ -224,6 +429,18 @@ func _ready() -> void:
 	_newport_atelier_dock_clutter_atlas = ResourceLoader.load(NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_PATH, "Texture2D") as Texture2D
 	if _newport_atelier_dock_clutter_atlas == null:
 		push_error("Failed to load Newport atelier dock clutter atlas: " + NEWPORT_ATELIER_DOCK_CLUTTER_ATLAS_PATH)
+	_newport_atelier_terrain_edge_atlas = ResourceLoader.load(NEWPORT_ATELIER_TERRAIN_EDGE_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_terrain_edge_atlas == null:
+		push_error("Failed to load Newport atelier terrain edge atlas: " + NEWPORT_ATELIER_TERRAIN_EDGE_ATLAS_PATH)
+	_newport_atelier_cobble_path_atlas = ResourceLoader.load(NEWPORT_ATELIER_COBBLE_PATH_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_cobble_path_atlas == null:
+		push_error("Failed to load Newport atelier cobble path atlas: " + NEWPORT_ATELIER_COBBLE_PATH_ATLAS_PATH)
+	_newport_atelier_shoreline_atlas = ResourceLoader.load(NEWPORT_ATELIER_SHORELINE_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_shoreline_atlas == null:
+		push_error("Failed to load Newport atelier shoreline atlas: " + NEWPORT_ATELIER_SHORELINE_ATLAS_PATH)
+	_newport_atelier_building_grounding_atlas = ResourceLoader.load(NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_building_grounding_atlas == null:
+		push_error("Failed to load Newport atelier building grounding atlas: " + NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_PATH)
 	_g418d1_m01b_proof = ResourceLoader.load(G418D1_M01B_PROOF_PATH, "Texture2D") as Texture2D
 	if _g418d1_m01b_proof == null:
 		push_warning("Failed to load G-4.18D.1 M01B lab proof: " + G418D1_M01B_PROOF_PATH)
@@ -267,6 +484,25 @@ func newport_atelier_dock_clutter_materials() -> Array:
 
 func newport_atelier_dock_clutter_placements() -> Array:
 	return NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS.duplicate(true)
+
+func newport_environmental_believability_version() -> String:
+	return NEWPORT_ENVIRONMENTAL_BELIEVABILITY_VERSION
+
+func newport_environmental_believability_materials() -> Array:
+	var materials: Array = []
+	materials.append_array(NEWPORT_ATELIER_TERRAIN_EDGE_MATERIALS)
+	materials.append_array(NEWPORT_ATELIER_COBBLE_PATH_MATERIALS)
+	materials.append_array(NEWPORT_ATELIER_SHORELINE_MATERIALS)
+	materials.append_array(NEWPORT_ATELIER_BUILDING_GROUNDING_MATERIALS)
+	return materials
+
+func newport_environmental_believability_placements() -> Array:
+	var placements: Array = []
+	placements.append_array(NEWPORT_G420A_TERRAIN_EDGE_PLACEMENTS)
+	placements.append_array(NEWPORT_G420A_COBBLE_PATH_PLACEMENTS)
+	placements.append_array(NEWPORT_G420A_SHORELINE_PLACEMENTS)
+	placements.append_array(NEWPORT_G420A_BUILDING_GROUNDING_PLACEMENTS)
+	return placements.duplicate(true)
 
 func set_green_origin_lab_mode(enabled: bool) -> void:
 	_green_origin_lab_enabled = enabled
@@ -355,6 +591,24 @@ func _draw_atelier_dock_clutter_placement(placement: Dictionary) -> void:
 	var ground_y := float(placement.get("ground_y", dest.end.y))
 	_draw_contact_shadow(Vector2(dest.get_center().x, ground_y - 3.0), Vector2(dest.size.x * 0.34, max(5.0, dest.size.y * 0.075)), 0.15)
 	_draw_atelier_dock_clutter_piece(asset_id, dest, 1.0)
+
+func _draw_environmental_atelier_piece(atlas: Texture2D, regions: Dictionary, region_id: String, dest: Rect2, alpha := 1.0) -> void:
+	if atlas == null:
+		return
+	if not regions.has(region_id):
+		push_error("Unknown Newport environmental atelier region: " + region_id)
+		return
+	draw_texture_rect_region(atlas, dest, regions[region_id], Color(1, 1, 1, alpha), false, true)
+
+func _draw_environmental_atelier_placement(atlas: Texture2D, regions: Dictionary, placement: Dictionary) -> void:
+	var asset_id := String(placement.get("asset_id", ""))
+	var dest: Rect2 = placement.get("dest", Rect2())
+	if asset_id == "" or dest.size.x <= 0.0 or dest.size.y <= 0.0:
+		return
+	var alpha := float(placement.get("alpha", 1.0))
+	if bool(placement.get("contact_shadow", false)):
+		_draw_contact_shadow(Vector2(dest.get_center().x, dest.end.y - 2.0), Vector2(dest.size.x * 0.28, max(4.0, dest.size.y * 0.07)), 0.12)
+	_draw_environmental_atelier_piece(atlas, regions, asset_id, dest, alpha)
 
 func _is_g417_hero_prop_placeholder(pos: Vector2) -> bool:
 	return G417_HERO_PROP_REPLACEMENT_RECT.has_point(pos)
@@ -819,6 +1073,7 @@ func _draw_g410_street_plan() -> void:
 	for p in [Vector2(284, 696), Vector2(392, 696), Vector2(548, 696), Vector2(692, 696), Vector2(824, 696), Vector2(1008, 696), Vector2(1180, 696), Vector2(1318, 696)]:
 		_draw_post(p)
 	_draw_g417_hero_street_atlas_proof()
+	_draw_g420a_terrain_and_path_transitions()
 	for p in [Vector2(332, 580), Vector2(520, 582), Vector2(746, 578), Vector2(930, 584), Vector2(1136, 582), Vector2(662, 420), Vector2(1094, 504), Vector2(390, 506), Vector2(1250, 580)]:
 		draw_circle(p, 4, Color("#2f251b"))
 		draw_circle(p + Vector2(0, -6), 3, Color("#d8b56f"))
@@ -948,6 +1203,7 @@ func _draw_g410_wharf_water() -> void:
 		var y := 776.0 + float((i * 41) % 220)
 		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
 	_draw_g417_hero_wharf_atlas_proof()
+	_draw_g420a_shoreline_edges()
 	_draw_g418c_green_origin_lab_proof()
 
 func _draw_g410_props() -> void:
@@ -1030,6 +1286,7 @@ func _draw_g410_props() -> void:
 	_draw_g418_hero_non_cargo_prop_clusters()
 	_draw_g418d_atelier_cargo_clusters()
 	_draw_g419a_atelier_dock_clutter_clusters()
+	_draw_g420a_building_grounding_accents()
 
 func _draw_g418_hero_non_cargo_prop_clusters() -> void:
 	if _newport_hero_atlas == null:
@@ -1048,6 +1305,20 @@ func _draw_g419a_atelier_dock_clutter_clusters() -> void:
 		return
 	for placement in NEWPORT_ATELIER_DOCK_CLUTTER_PLACEMENTS:
 		_draw_atelier_dock_clutter_placement(placement)
+
+func _draw_g420a_terrain_and_path_transitions() -> void:
+	for placement in NEWPORT_G420A_TERRAIN_EDGE_PLACEMENTS:
+		_draw_environmental_atelier_placement(_newport_atelier_terrain_edge_atlas, NEWPORT_ATELIER_TERRAIN_EDGE_ATLAS_REGIONS, placement)
+	for placement in NEWPORT_G420A_COBBLE_PATH_PLACEMENTS:
+		_draw_environmental_atelier_placement(_newport_atelier_cobble_path_atlas, NEWPORT_ATELIER_COBBLE_PATH_ATLAS_REGIONS, placement)
+
+func _draw_g420a_shoreline_edges() -> void:
+	for placement in NEWPORT_G420A_SHORELINE_PLACEMENTS:
+		_draw_environmental_atelier_placement(_newport_atelier_shoreline_atlas, NEWPORT_ATELIER_SHORELINE_ATLAS_REGIONS, placement)
+
+func _draw_g420a_building_grounding_accents() -> void:
+	for placement in NEWPORT_G420A_BUILDING_GROUNDING_PLACEMENTS:
+		_draw_environmental_atelier_placement(_newport_atelier_building_grounding_atlas, NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_REGIONS, placement)
 
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)

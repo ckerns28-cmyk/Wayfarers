@@ -1,0 +1,980 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g420a.terrain_edge_dressing.manifest.v1",
+  "phase": "G-4.20A",
+  "pack_id": "terrain_edge_dressing",
+  "title": "Terrain Edge Dressing",
+  "generated_at": "2026-05-16T21:03:23.753700+00:00",
+  "visual_standard": "First mass atelier environmental believability production wave, meeting or exceeding the G-4.18D/G-4.19A atelier standard with an 8.5/10 minimum visual gate.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D Newport atelier cargo pipeline lock and G-4.19A dock clutter rollout pack",
+  "future_pack_pattern": "10/10 source sheet -> saved prompt/source -> extraction script -> transparent sprites -> atlas/contact sheet -> manifest/provenance report -> Godot placement -> validation",
+  "rollout_pack_role": "G-4.20A first mass atelier production wave for Newport environmental believability",
+  "placement_policy": "Controlled road/grass edge placement only; use at wharf-to-town seams and road shoulders without hiding path readability.",
+  "tavern_inn_lock": "The Tavern/Inn remains a future REBUILD_REQUIRED_CENTERPIECE item and is not patched by this pack.",
+  "deprecated_visual_targets": [
+    "G-4.18B weak deterministic/procedural cargo proof",
+    "broad procedural fallback road/shore reads where atelier pieces are now available"
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_terrain_grass_road_edge_north_01",
+      "asset_type": "grass_to_road_north_edge_strip",
+      "source_identity": "grass-to-road feathered north edge strip",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_grass_road_edge_north_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 85,
+        "y": 61,
+        "w": 750,
+        "h": 209
+      },
+      "sprite_size": {
+        "w": 786,
+        "h": 245
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.82
+      },
+      "grounding": {
+        "pivot_y": 0.82,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.23,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 786,
+          "h": 245
+        },
+        "alpha_bbox": {
+          "x": 30,
+          "y": 24,
+          "w": 728,
+          "h": 187
+        },
+        "alpha_pixels": 98023,
+        "opaque_pixels": 98023,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 30,
+          "top": 24,
+          "right": 28,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "grass-to-road feathered north edge strip",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Softens the north edge of the harborfront road without covering the walkable read.",
+      "sha256": "dc5a73a649e15e62d39b2063587a0279d506aca68744acc2b1095aa403467ddd",
+      "notes": "Low grass/cobble feather for the north side of road seams."
+    },
+    {
+      "asset_id": "atelier_terrain_grass_road_edge_south_01",
+      "asset_type": "grass_to_road_south_edge_strip",
+      "source_identity": "grass-to-road feathered south edge strip",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_grass_road_edge_south_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 916,
+        "y": 72,
+        "w": 710,
+        "h": 198
+      },
+      "sprite_size": {
+        "w": 746,
+        "h": 234
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.82
+      },
+      "grounding": {
+        "pivot_y": 0.82,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.23,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 746,
+          "h": 234
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 34,
+          "w": 687,
+          "h": 166
+        },
+        "alpha_pixels": 88651,
+        "opaque_pixels": 88651,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 34,
+          "right": 31,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "grass-to-road feathered south edge strip",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Softens the south edge of road and wharf transitions.",
+      "sha256": "e5362d60cb91c463f165b146f4ed758e13cb20ecbe99dd21f18ae63a4951bf4c",
+      "notes": "Low grass/cobble feather for the south side of road seams."
+    },
+    {
+      "asset_id": "atelier_terrain_mud_cobble_feather_01",
+      "asset_type": "mud_to_cobble_feather_strip",
+      "source_identity": "mud-to-cobble feather blend strip",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_mud_cobble_feather_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 80,
+        "y": 297,
+        "w": 761,
+        "h": 181
+      },
+      "sprite_size": {
+        "w": 797,
+        "h": 217
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.23,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 797,
+          "h": 217
+        },
+        "alpha_bbox": {
+          "x": 33,
+          "y": 30,
+          "w": 732,
+          "h": 153
+        },
+        "alpha_pixels": 91479,
+        "opaque_pixels": 91479,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 33,
+          "top": 30,
+          "right": 32,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "mud-to-cobble feather blend strip",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Bridges muddy wharf shoulders into cobble without visual snapping.",
+      "sha256": "5f4872cc4463f717af9fea56787edfa627f5af2bb154b28c9a0a9dc5054d6756",
+      "notes": "Mud/cobble seam with weeds and damp stones."
+    },
+    {
+      "asset_id": "atelier_terrain_dirt_path_border_01",
+      "asset_type": "dirt_path_border_strip",
+      "source_identity": "dirt path border with tufts and stones",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_dirt_path_border_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 913,
+        "y": 316,
+        "w": 726,
+        "h": 153
+      },
+      "sprite_size": {
+        "w": 762,
+        "h": 189
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.22,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 762,
+          "h": 189
+        },
+        "alpha_bbox": {
+          "x": 24,
+          "y": 34,
+          "w": 712,
+          "h": 121
+        },
+        "alpha_pixels": 42911,
+        "opaque_pixels": 42911,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 24,
+          "top": 34,
+          "right": 26,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "dirt path border with tufts and stones",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Defines dirt path edges while keeping paths readable.",
+      "sha256": "be44aa20c53d867938cd9e1a3f5e334718f085163d843a5b1b497be29ce877e9",
+      "notes": "Small stones, weeds, and dirt edge texture."
+    },
+    {
+      "asset_id": "atelier_terrain_worn_corner_blend_01",
+      "asset_type": "worn_road_corner_blend",
+      "source_identity": "worn road corner blend piece",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_worn_corner_blend_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 214,
+        "y": 502,
+        "w": 465,
+        "h": 190
+      },
+      "sprite_size": {
+        "w": 501,
+        "h": 226
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.2,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 501,
+          "h": 226
+        },
+        "alpha_bbox": {
+          "x": 32,
+          "y": 26,
+          "w": 444,
+          "h": 169
+        },
+        "alpha_pixels": 56722,
+        "opaque_pixels": 56722,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 32,
+          "top": 26,
+          "right": 25,
+          "bottom": 31
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "worn road corner blend piece",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Makes road corners look walked-in instead of tile-cut.",
+      "sha256": "a8364ae593a5fd3710cafbf1fa7ffcea32d528f2e992fa44a20ffc8bc4013731",
+      "notes": "Curved worn corner with compacted dirt and cobble chips."
+    },
+    {
+      "asset_id": "atelier_terrain_coastal_tuft_stone_cluster_01",
+      "asset_type": "coastal_tuft_stone_cluster",
+      "source_identity": "low coastal grass tufts, stones, and weeds cluster",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_coastal_tuft_stone_cluster_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 956,
+        "y": 502,
+        "w": 544,
+        "h": 171
+      },
+      "sprite_size": {
+        "w": 580,
+        "h": 207
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "grounding": {
+        "pivot_y": 0.9,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 580,
+          "h": 207
+        },
+        "alpha_bbox": {
+          "x": 25,
+          "y": 25,
+          "w": 531,
+          "h": 148
+        },
+        "alpha_pixels": 36859,
+        "opaque_pixels": 36859,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 25,
+          "top": 25,
+          "right": 24,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "low coastal grass tufts, stones, and weeds cluster",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.8,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds small authored grounding at empty grass/road corners.",
+      "sha256": "9bbd09965bab82454c0f8fa4a71e4f86122f07407951462903d1d80c257bce7d",
+      "notes": "Low grass and stone cluster for sparse seam accents."
+    },
+    {
+      "asset_id": "atelier_terrain_muddy_puddle_rut_01",
+      "asset_type": "muddy_puddle_wagon_rut",
+      "source_identity": "shallow muddy puddle and wagon-rut accent",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_muddy_puddle_rut_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 138,
+        "y": 704,
+        "w": 610,
+        "h": 178
+      },
+      "sprite_size": {
+        "w": 646,
+        "h": 214
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "grounding": {
+        "pivot_y": 0.86,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.19,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 646,
+          "h": 214
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 33,
+          "w": 585,
+          "h": 147
+        },
+        "alpha_pixels": 66721,
+        "opaque_pixels": 66721,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 33,
+          "right": 33,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "shallow muddy puddle and wagon-rut accent",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.8,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Breaks up flat service-lane mud while staying nonblocking.",
+      "sha256": "bad6f9bb7fec9f82a7299d837306d17d9fac4998574754de5b2276dff449b56d",
+      "notes": "Low puddle/rut accent with damp highlights."
+    },
+    {
+      "asset_id": "atelier_terrain_broken_grassy_shoulder_01",
+      "asset_type": "broken_grassy_road_shoulder",
+      "source_identity": "broken grassy road shoulder strip",
+      "category": "ENVIRONMENT_TERRAIN_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_terrain_broken_grassy_shoulder_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+      "atlas_region": {
+        "x": 905,
+        "y": 704,
+        "w": 729,
+        "h": 181
+      },
+      "sprite_size": {
+        "w": 765,
+        "h": 217
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.22,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 765,
+          "h": 217
+        },
+        "alpha_bbox": {
+          "x": 31,
+          "y": 33,
+          "w": 710,
+          "h": 155
+        },
+        "alpha_pixels": 58203,
+        "opaque_pixels": 58203,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 31,
+          "top": 33,
+          "right": 24,
+          "bottom": 29
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "broken grassy road shoulder strip",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds natural shoulder texture to market-spine edges.",
+      "sha256": "2a01fe90cf7bf02daff7ea367de761194b1c756c93d8b0167536919591f4e979",
+      "notes": "Low broken shoulder strip with grass fingers and stones."
+    }
+  ]
+}

@@ -1,0 +1,438 @@
+{
+  "terrain_edge_dressing": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_terrain_edge_dressing_v1.png",
+    "assets": {
+      "atelier_terrain_grass_road_edge_north_01": {
+        "region": {
+          "x": 85,
+          "y": 61,
+          "w": 750,
+          "h": 209
+        },
+        "sprite_size": {
+          "w": 786,
+          "h": 245
+        },
+        "recommended_game_scale": 0.23
+      },
+      "atelier_terrain_grass_road_edge_south_01": {
+        "region": {
+          "x": 916,
+          "y": 72,
+          "w": 710,
+          "h": 198
+        },
+        "sprite_size": {
+          "w": 746,
+          "h": 234
+        },
+        "recommended_game_scale": 0.23
+      },
+      "atelier_terrain_mud_cobble_feather_01": {
+        "region": {
+          "x": 80,
+          "y": 297,
+          "w": 761,
+          "h": 181
+        },
+        "sprite_size": {
+          "w": 797,
+          "h": 217
+        },
+        "recommended_game_scale": 0.23
+      },
+      "atelier_terrain_dirt_path_border_01": {
+        "region": {
+          "x": 913,
+          "y": 316,
+          "w": 726,
+          "h": 153
+        },
+        "sprite_size": {
+          "w": 762,
+          "h": 189
+        },
+        "recommended_game_scale": 0.22
+      },
+      "atelier_terrain_worn_corner_blend_01": {
+        "region": {
+          "x": 214,
+          "y": 502,
+          "w": 465,
+          "h": 190
+        },
+        "sprite_size": {
+          "w": 501,
+          "h": 226
+        },
+        "recommended_game_scale": 0.2
+      },
+      "atelier_terrain_coastal_tuft_stone_cluster_01": {
+        "region": {
+          "x": 956,
+          "y": 502,
+          "w": 544,
+          "h": 171
+        },
+        "sprite_size": {
+          "w": 580,
+          "h": 207
+        },
+        "recommended_game_scale": 0.18
+      },
+      "atelier_terrain_muddy_puddle_rut_01": {
+        "region": {
+          "x": 138,
+          "y": 704,
+          "w": 610,
+          "h": 178
+        },
+        "sprite_size": {
+          "w": 646,
+          "h": 214
+        },
+        "recommended_game_scale": 0.19
+      },
+      "atelier_terrain_broken_grassy_shoulder_01": {
+        "region": {
+          "x": 905,
+          "y": 704,
+          "w": 729,
+          "h": 181
+        },
+        "sprite_size": {
+          "w": 765,
+          "h": 217
+        },
+        "recommended_game_scale": 0.22
+      }
+    }
+  },
+  "cobble_path_transition": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png",
+    "assets": {
+      "atelier_path_market_cobble_long_01": {
+        "region": {
+          "x": 99,
+          "y": 96,
+          "w": 637,
+          "h": 182
+        },
+        "sprite_size": {
+          "w": 673,
+          "h": 218
+        },
+        "recommended_game_scale": 0.22
+      },
+      "atelier_path_broken_cobble_patch_01": {
+        "region": {
+          "x": 845,
+          "y": 105,
+          "w": 583,
+          "h": 173
+        },
+        "sprite_size": {
+          "w": 619,
+          "h": 209
+        },
+        "recommended_game_scale": 0.2
+      },
+      "atelier_path_dirt_worn_section_01": {
+        "region": {
+          "x": 113,
+          "y": 349,
+          "w": 606,
+          "h": 162
+        },
+        "sprite_size": {
+          "w": 642,
+          "h": 198
+        },
+        "recommended_game_scale": 0.21
+      },
+      "atelier_path_road_shoulder_earth_01": {
+        "region": {
+          "x": 823,
+          "y": 347,
+          "w": 614,
+          "h": 164
+        },
+        "sprite_size": {
+          "w": 650,
+          "h": 200
+        },
+        "recommended_game_scale": 0.21
+      },
+      "atelier_path_curb_threshold_stones_01": {
+        "region": {
+          "x": 108,
+          "y": 571,
+          "w": 613,
+          "h": 159
+        },
+        "sprite_size": {
+          "w": 649,
+          "h": 195
+        },
+        "recommended_game_scale": 0.19
+      },
+      "atelier_path_cobble_plank_seam_01": {
+        "region": {
+          "x": 823,
+          "y": 577,
+          "w": 618,
+          "h": 148
+        },
+        "sprite_size": {
+          "w": 654,
+          "h": 184
+        },
+        "recommended_game_scale": 0.21
+      },
+      "atelier_path_sunken_gutter_stones_01": {
+        "region": {
+          "x": 105,
+          "y": 797,
+          "w": 618,
+          "h": 136
+        },
+        "sprite_size": {
+          "w": 654,
+          "h": 172
+        },
+        "recommended_game_scale": 0.19
+      },
+      "atelier_path_loose_paving_fragments_01": {
+        "region": {
+          "x": 810,
+          "y": 818,
+          "w": 621,
+          "h": 111
+        },
+        "sprite_size": {
+          "w": 657,
+          "h": 147
+        },
+        "recommended_game_scale": 0.18
+      }
+    }
+  },
+  "shoreline_harbor_edge": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+    "assets": {
+      "atelier_shore_seaweed_drift_line_01": {
+        "region": {
+          "x": 68,
+          "y": 88,
+          "w": 648,
+          "h": 184
+        },
+        "sprite_size": {
+          "w": 684,
+          "h": 220
+        },
+        "recommended_game_scale": 0.19
+      },
+      "atelier_shore_shell_pebble_cluster_01": {
+        "region": {
+          "x": 795,
+          "y": 100,
+          "w": 642,
+          "h": 175
+        },
+        "sprite_size": {
+          "w": 678,
+          "h": 211
+        },
+        "recommended_game_scale": 0.17
+      },
+      "atelier_shore_wet_rocks_sand_01": {
+        "region": {
+          "x": 71,
+          "y": 308,
+          "w": 636,
+          "h": 202
+        },
+        "sprite_size": {
+          "w": 672,
+          "h": 238
+        },
+        "recommended_game_scale": 0.18
+      },
+      "atelier_shore_driftwood_log_cluster_01": {
+        "region": {
+          "x": 784,
+          "y": 308,
+          "w": 679,
+          "h": 202
+        },
+        "sprite_size": {
+          "w": 715,
+          "h": 238
+        },
+        "recommended_game_scale": 0.19
+      },
+      "atelier_shore_wet_sand_mud_strip_01": {
+        "region": {
+          "x": 69,
+          "y": 560,
+          "w": 622,
+          "h": 158
+        },
+        "sprite_size": {
+          "w": 658,
+          "h": 194
+        },
+        "recommended_game_scale": 0.21
+      },
+      "atelier_shore_harbor_debris_slats_rope_01": {
+        "region": {
+          "x": 785,
+          "y": 540,
+          "w": 649,
+          "h": 183
+        },
+        "sprite_size": {
+          "w": 685,
+          "h": 219
+        },
+        "recommended_game_scale": 0.18
+      },
+      "atelier_shore_tide_puddle_mud_edge_01": {
+        "region": {
+          "x": 78,
+          "y": 767,
+          "w": 608,
+          "h": 186
+        },
+        "sprite_size": {
+          "w": 644,
+          "h": 222
+        },
+        "recommended_game_scale": 0.19
+      },
+      "atelier_shore_eelgrass_reeds_cluster_01": {
+        "region": {
+          "x": 802,
+          "y": 761,
+          "w": 618,
+          "h": 192
+        },
+        "sprite_size": {
+          "w": 654,
+          "h": 228
+        },
+        "recommended_game_scale": 0.18
+      }
+    }
+  },
+  "building_grounding_service": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png",
+    "assets": {
+      "atelier_ground_doorstep_stones_01": {
+        "region": {
+          "x": 187,
+          "y": 76,
+          "w": 491,
+          "h": 186
+        },
+        "sprite_size": {
+          "w": 527,
+          "h": 222
+        },
+        "recommended_game_scale": 0.17
+      },
+      "atelier_ground_foundation_shadow_strip_01": {
+        "region": {
+          "x": 795,
+          "y": 100,
+          "w": 584,
+          "h": 153
+        },
+        "sprite_size": {
+          "w": 620,
+          "h": 189
+        },
+        "recommended_game_scale": 0.22
+      },
+      "atelier_ground_wall_weeds_stones_01": {
+        "region": {
+          "x": 164,
+          "y": 293,
+          "w": 530,
+          "h": 186
+        },
+        "sprite_size": {
+          "w": 566,
+          "h": 222
+        },
+        "recommended_game_scale": 0.2
+      },
+      "atelier_ground_repair_boards_crate_scraps_01": {
+        "region": {
+          "x": 824,
+          "y": 262,
+          "w": 498,
+          "h": 234
+        },
+        "sprite_size": {
+          "w": 534,
+          "h": 270
+        },
+        "recommended_game_scale": 0.17
+      },
+      "atelier_ground_barrel_crate_cluster_01": {
+        "region": {
+          "x": 170,
+          "y": 498,
+          "w": 464,
+          "h": 214
+        },
+        "sprite_size": {
+          "w": 500,
+          "h": 250
+        },
+        "recommended_game_scale": 0.16
+      },
+      "atelier_ground_wash_tub_buckets_01": {
+        "region": {
+          "x": 839,
+          "y": 512,
+          "w": 444,
+          "h": 200
+        },
+        "sprite_size": {
+          "w": 480,
+          "h": 236
+        },
+        "recommended_game_scale": 0.16
+      },
+      "atelier_ground_low_fence_weeds_01": {
+        "region": {
+          "x": 142,
+          "y": 741,
+          "w": 549,
+          "h": 198
+        },
+        "sprite_size": {
+          "w": 585,
+          "h": 234
+        },
+        "recommended_game_scale": 0.18
+      },
+      "atelier_ground_firewood_chopping_block_01": {
+        "region": {
+          "x": 813,
+          "y": 732,
+          "w": 540,
+          "h": 222
+        },
+        "sprite_size": {
+          "w": 576,
+          "h": 258
+        },
+        "recommended_game_scale": 0.16
+      }
+    }
+  }
+}

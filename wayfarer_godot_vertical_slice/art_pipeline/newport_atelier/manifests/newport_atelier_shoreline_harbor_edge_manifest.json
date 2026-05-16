@@ -1,0 +1,980 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g420a.shoreline_harbor_edge.manifest.v1",
+  "phase": "G-4.20A",
+  "pack_id": "shoreline_harbor_edge",
+  "title": "Shoreline And Harbor Edge Dressing",
+  "generated_at": "2026-05-16T21:03:41.989171+00:00",
+  "visual_standard": "First mass atelier environmental believability production wave, meeting or exceeding the G-4.18D/G-4.19A atelier standard with an 8.5/10 minimum visual gate.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D Newport atelier cargo pipeline lock and G-4.19A dock clutter rollout pack",
+  "future_pack_pattern": "10/10 source sheet -> saved prompt/source -> extraction script -> transparent sprites -> atlas/contact sheet -> manifest/provenance report -> Godot placement -> validation",
+  "rollout_pack_role": "G-4.20A first mass atelier production wave for Newport environmental believability",
+  "placement_policy": "Controlled shoreline and dock-edge placement only; keep low debris subordinate and never hide dock route reads.",
+  "tavern_inn_lock": "The Tavern/Inn remains a future REBUILD_REQUIRED_CENTERPIECE item and is not patched by this pack.",
+  "deprecated_visual_targets": [
+    "G-4.18B weak deterministic/procedural cargo proof",
+    "broad procedural fallback road/shore reads where atelier pieces are now available"
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_shore_seaweed_drift_line_01",
+      "asset_type": "seaweed_drift_line",
+      "source_identity": "seaweed drift line",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_seaweed_drift_line_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 68,
+        "y": 88,
+        "w": 648,
+        "h": 184
+      },
+      "sprite_size": {
+        "w": 684,
+        "h": 220
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "grounding": {
+        "pivot_y": 0.86,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.19,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 684,
+          "h": 220
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 31,
+          "w": 624,
+          "h": 155
+        },
+        "alpha_pixels": 67581,
+        "opaque_pixels": 67581,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 31,
+          "right": 32,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "seaweed drift line",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Marks the tide edge beside docks with low material detail.",
+      "sha256": "fd97fe41b5061af7ae07c490a2d8e8f331fd2e48d468a68ab62211a9ebb183e1",
+      "notes": "Low seaweed drift line with salt-wet texture."
+    },
+    {
+      "asset_id": "atelier_shore_shell_pebble_cluster_01",
+      "asset_type": "shell_pebble_cluster",
+      "source_identity": "shells and pebble cluster",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_shell_pebble_cluster_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 795,
+        "y": 100,
+        "w": 642,
+        "h": 175
+      },
+      "sprite_size": {
+        "w": 678,
+        "h": 211
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.88
+      },
+      "grounding": {
+        "pivot_y": 0.88,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.17,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 678,
+          "h": 211
+        },
+        "alpha_bbox": {
+          "x": 22,
+          "y": 34,
+          "w": 632,
+          "h": 146
+        },
+        "alpha_pixels": 57511,
+        "opaque_pixels": 57511,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 22,
+          "top": 34,
+          "right": 24,
+          "bottom": 31
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "shells and pebble cluster",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds small coastal identity at shoreline edges.",
+      "sha256": "5b58bf6f922b033216b2fad5776d96f9553f80ebccb021645c9ce7f821c0450f",
+      "notes": "Shells and pebbles with readable light accents."
+    },
+    {
+      "asset_id": "atelier_shore_wet_rocks_sand_01",
+      "asset_type": "wet_rocks_on_sand",
+      "source_identity": "small wet rocks on sand",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_wet_rocks_sand_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 71,
+        "y": 308,
+        "w": 636,
+        "h": 202
+      },
+      "sprite_size": {
+        "w": 672,
+        "h": 238
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.88
+      },
+      "grounding": {
+        "pivot_y": 0.88,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 672,
+          "h": 238
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 33,
+          "w": 617,
+          "h": 172
+        },
+        "alpha_pixels": 64812,
+        "opaque_pixels": 64812,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 33,
+          "right": 27,
+          "bottom": 33
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "small wet rocks on sand",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds shoreline grounding around waterline bends.",
+      "sha256": "ffd745d534236c530ee724c0dc01c98e7d9e009760d4312d641b5ca22e64cf9d",
+      "notes": "Wet stones with dark sand contact."
+    },
+    {
+      "asset_id": "atelier_shore_driftwood_log_cluster_01",
+      "asset_type": "driftwood_log_cluster",
+      "source_identity": "driftwood log cluster",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_driftwood_log_cluster_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 784,
+        "y": 308,
+        "w": 679,
+        "h": 202
+      },
+      "sprite_size": {
+        "w": 715,
+        "h": 238
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "grounding": {
+        "pivot_y": 0.9,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.19,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 715,
+          "h": 238
+        },
+        "alpha_bbox": {
+          "x": 27,
+          "y": 29,
+          "w": 665,
+          "h": 177
+        },
+        "alpha_pixels": 67392,
+        "opaque_pixels": 67392,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 27,
+          "top": 29,
+          "right": 23,
+          "bottom": 32
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "driftwood log cluster",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds believable harbor edge debris without implying a blocked route.",
+      "sha256": "497fe132ebc4234a046ef8c2b45d8691bf6f2cbf211af39e1528f59ee5413aec",
+      "notes": "Bleached driftwood with dark wet edges."
+    },
+    {
+      "asset_id": "atelier_shore_wet_sand_mud_strip_01",
+      "asset_type": "wet_sand_mud_strip",
+      "source_identity": "wet sand and mud accent strip",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_wet_sand_mud_strip_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 69,
+        "y": 560,
+        "w": 622,
+        "h": 158
+      },
+      "sprite_size": {
+        "w": 658,
+        "h": 194
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.84
+      },
+      "grounding": {
+        "pivot_y": 0.84,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.21,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 658,
+          "h": 194
+        },
+        "alpha_bbox": {
+          "x": 28,
+          "y": 34,
+          "w": 606,
+          "h": 126
+        },
+        "alpha_pixels": 53830,
+        "opaque_pixels": 53830,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 28,
+          "top": 34,
+          "right": 24,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "wet sand and mud accent strip",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Softens shore-to-wharf edges and wet mud pockets.",
+      "sha256": "f9dbcf7a35cae1fadad3bc9376a3e09feab05fc65a46ed35b722aff62171ae7a",
+      "notes": "Low wet sand/mud strip with gloss accents."
+    },
+    {
+      "asset_id": "atelier_shore_harbor_debris_slats_rope_01",
+      "asset_type": "broken_harbor_slats_rope_scrap",
+      "source_identity": "broken harbor debris slats with rope scrap",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_harbor_debris_slats_rope_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 785,
+        "y": 540,
+        "w": 649,
+        "h": 183
+      },
+      "sprite_size": {
+        "w": 685,
+        "h": 219
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "grounding": {
+        "pivot_y": 0.9,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 685,
+          "h": 219
+        },
+        "alpha_bbox": {
+          "x": 29,
+          "y": 27,
+          "w": 638,
+          "h": 161
+        },
+        "alpha_pixels": 62343,
+        "opaque_pixels": 62343,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 29,
+          "top": 27,
+          "right": 18,
+          "bottom": 31
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "broken harbor debris slats with rope scrap",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds working-harbor debris near wharf edges.",
+      "sha256": "5a012e7c2f581ccc69315bcdc171e9c24a650e7f3f9a2a23bae672ccd12b5850",
+      "notes": "Small broken slats and rope scraps."
+    },
+    {
+      "asset_id": "atelier_shore_tide_puddle_mud_edge_01",
+      "asset_type": "tide_puddle_mud_edge",
+      "source_identity": "shallow tide puddle with dark mud edge",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_tide_puddle_mud_edge_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 78,
+        "y": 767,
+        "w": 608,
+        "h": 186
+      },
+      "sprite_size": {
+        "w": 644,
+        "h": 222
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "grounding": {
+        "pivot_y": 0.86,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.19,
+      "visual_quality_rating": 8.8,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 644,
+          "h": 222
+        },
+        "alpha_bbox": {
+          "x": 22,
+          "y": 34,
+          "w": 600,
+          "h": 157
+        },
+        "alpha_pixels": 64172,
+        "opaque_pixels": 64172,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 22,
+          "top": 34,
+          "right": 22,
+          "bottom": 31
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "shallow tide puddle with dark mud edge",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.8,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Breaks up wet shoreline flats with readable low puddles.",
+      "sha256": "5a621b195171b1f4b9e2c62c442aac841d505b552c8bb2cb6318d06be82183d1",
+      "notes": "Tide puddle and dark mud rim."
+    },
+    {
+      "asset_id": "atelier_shore_eelgrass_reeds_cluster_01",
+      "asset_type": "eelgrass_reeds_low_cluster",
+      "source_identity": "eelgrass/reeds low cluster",
+      "category": "ENVIRONMENT_SHORELINE_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shore_eelgrass_reeds_cluster_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png",
+      "atlas_region": {
+        "x": 802,
+        "y": 761,
+        "w": 618,
+        "h": 192
+      },
+      "sprite_size": {
+        "w": 654,
+        "h": 228
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "grounding": {
+        "pivot_y": 0.9,
+        "expected_contact": "low environmental sprite sits inside transparent bounds; draw destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420a_environmental_believability_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 654,
+          "h": 228
+        },
+        "alpha_bbox": {
+          "x": 27,
+          "y": 25,
+          "w": 601,
+          "h": 169
+        },
+        "alpha_pixels": 57461,
+        "opaque_pixels": 57461,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 27,
+          "top": 25,
+          "right": 26,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "eelgrass/reeds low cluster",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 8.9,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds sparse coastal vegetation along shore seams.",
+      "sha256": "eb64992e55bfc15f382d67e9b8def3a7a6de378a6d315bc3d589654f5bca4bbf",
+      "notes": "Low reeds and eelgrass for shoreline pockets."
+    }
+  ]
+}
