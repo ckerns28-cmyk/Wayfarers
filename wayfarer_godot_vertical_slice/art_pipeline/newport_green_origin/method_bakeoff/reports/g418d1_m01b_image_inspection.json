@@ -1,0 +1,45 @@
+{
+  "phase": "G-4.18D.1",
+  "visual_pass_gate": 8.5,
+  "m01b_verdict": "DEFER",
+  "tool_logs": {
+    "inkscape": "",
+    "krita": "Fontconfig error: Cannot load default config file: No such file: (null) Fontconfig error: Cannot load default config file: No such file: (null)",
+    "gimp": "Non-native shell detected, GIMP may behave unexpectedly on Unix shells in Windows. batch command executed successfully C:\\Users\\Chris\\AppData\\Local\\Programs\\GIMP 3\\lib\\gimp\\3.0\\plug-ins\\script-fu\\script-fu.exe: fatal error: GIMP crashed (script-fu.exe:2564): LibGimp-WARNING **: 00:45:31.343: script-fu.exe: gimp_flush(): error: Invalid argument"
+  },
+  "samples": {
+    "m01_raw_substrate": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01_generated_base_pixel_cleanup.png",
+      "sha256": "593dbd8b7ac144220ee26c3bc04e63920752d292d50f9838d3764833a8f82d09",
+      "alpha": {
+        "bbox": {
+          "x": 18,
+          "y": 48,
+          "w": 285,
+          "h": 100
+        },
+        "opaque_pixel_count": 27185,
+        "alpha_coverage": 0.5664
+      },
+      "contrast_stddev": 56.99
+    },
+    "m01b_manual_paintover_proof": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_proof.png",
+      "sha256": "43524e1d37520561f596c86bc4bad1934dd1ca9eedd418d2a3d4f788b068d687",
+      "alpha": {
+        "bbox": {
+          "x": 14,
+          "y": 36,
+          "w": 294,
+          "h": 112
+        },
+        "opaque_pixel_count": 29295,
+        "alpha_coverage": 0.6103
+      },
+      "contrast_stddev": 51.09,
+      "palette_distance_to_wharf_reference": 17.88,
+      "palette_distance_to_chandlery_reference": 43.01
+    }
+  },
+  "visual_judgment": "M01B improves the raw M01 substrate but remains below the 8.5 screenshot acceptance bar; lab-only quarantine is preserved."
+}

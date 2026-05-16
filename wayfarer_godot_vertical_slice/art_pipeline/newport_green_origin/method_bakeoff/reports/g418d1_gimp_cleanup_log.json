@@ -1,0 +1,14 @@
+{
+  "tool": "GIMP 3 python-fu-eval",
+  "input": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_krita_raw.png",
+  "output": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_proof.png",
+  "operations": [
+    "file-png-load",
+    "PNG alpha/transparency preservation",
+    "compression=9 re-export",
+    "metadata chunk removal: bkgd/off/phys/time disabled"
+  ],
+  "timed_out_after_export": true,
+  "stdout": "",
+  "stderr": "Non-native shell detected, GIMP may behave unexpectedly on Unix shells in Windows.\nbatch command executed successfully\nC:\\Users\\Chris\\AppData\\Local\\Programs\\GIMP 3\\lib\\gimp\\3.0\\plug-ins\\script-fu\\script-fu.exe: fatal error: GIMP crashed\n\n(script-fu.exe:2564): LibGimp-WARNING **: 00:45:31.343: script-fu.exe: gimp_flush(): error: Invalid argument\n"
+}

@@ -495,22 +495,30 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
         fail("green-origin bakeoff manifest schema_id must be wayfarer.newport_green_origin.method_bakeoff.v1", failures)
     else:
         pass_check("green-origin bakeoff manifest schema id")
-    if manifest.get("phase") != "G-4.18D":
-        fail("green-origin bakeoff manifest phase must be G-4.18D", failures)
-    if manifest.get("recommended_method_for_g418e") != "method_01_generated_base_pixel_cleanup":
-        fail("green-origin bakeoff must recommend method_01_generated_base_pixel_cleanup", failures)
-    if "normal-review eligible" not in str(manifest.get("normal_review_policy", "")):
+    if manifest.get("phase") != "G-4.18D.1":
+        fail("green-origin bakeoff manifest phase must be G-4.18D.1", failures)
+    if manifest.get("recommended_method_for_g418e") is not None:
+        fail("green-origin bakeoff must not recommend a promotion method in G-4.18D.1", failures)
+    if "No G-4.18D or G-4.18D.1 bakeoff candidate is normal-review eligible" not in str(manifest.get("normal_review_policy", "")):
         fail("green-origin bakeoff manifest must explicitly block normal review", failures)
+    if "8.5" not in str(manifest.get("visual_quality_gate", "")):
+        fail("green-origin bakeoff manifest must declare the 8.5 visual PASS gate", failures)
     for contact_sheet in manifest.get("contact_sheets", []):
         path_exists(str(contact_sheet), failures)
 
     candidates = manifest.get("candidates", [])
-    if not isinstance(candidates, list) or len(candidates) != 5:
-        fail("green-origin bakeoff must contain exactly 5 candidates", failures)
+    if not isinstance(candidates, list) or len(candidates) != 6:
+        fail("green-origin bakeoff must contain the 5 corrected G-4.18D candidates plus M01B", failures)
         return
-    pass_check("green-origin bakeoff candidate entries: 5")
+    pass_check("green-origin bakeoff candidate entries: 6")
 
     pass_count = 0
+    recommendations = {str(candidate.get("recommendation", "")) for candidate in candidates if isinstance(candidate, dict)}
+    if "PASS" in recommendations:
+        fail("green-origin bakeoff must not keep any PASS recommendation below the 8.5 visual gate", failures)
+    for required in ["DEFER", "FAIL"]:
+        if required not in recommendations:
+            fail(f"green-origin bakeoff recommendations missing {required}", failures)
     for candidate in candidates:
         if not isinstance(candidate, dict):
             fail("green-origin bakeoff candidate is not an object", failures)
@@ -520,9 +528,13 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
             "candidate_id",
             "method_name",
             "sample_path",
+            "phase",
             "provenance_status",
             "origin_classification",
+            "commercial_use_status",
             "visual_quality_status",
+            "visual_rating",
+            "visual_pass_gate",
             "review_eligible",
             "normal_review_eligible",
             "lab_only",
@@ -537,10 +549,14 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
             if field not in candidate:
                 fail(f"{candidate_id} missing bakeoff field {field}", failures)
         path_exists(str(candidate.get("sample_path", "")), failures)
+        if candidate.get("phase") != "G-4.18D.1":
+            fail(f"{candidate_id} bakeoff phase must be G-4.18D.1", failures)
         if candidate.get("provenance_status") != "green_origin_candidate":
             fail(f"{candidate_id} bakeoff provenance_status must be green_origin_candidate", failures)
         if candidate.get("origin_classification") != "green_origin_candidate":
             fail(f"{candidate_id} bakeoff origin_classification must be green_origin_candidate", failures)
+        if candidate.get("commercial_use_status") != "green_origin_candidate":
+            fail(f"{candidate_id} bakeoff commercial_use_status must be green_origin_candidate", failures)
         if candidate.get("review_eligible") is not False:
             fail(f"{candidate_id} bakeoff review_eligible must be false", failures)
         if candidate.get("normal_review_eligible") is not False:
@@ -555,8 +571,25 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
             fail(f"{candidate_id} bakeoff uses third-party source pixels", failures)
         if candidate.get("web_scraped_source_pixels") is not False:
             fail(f"{candidate_id} bakeoff uses web-scraped source pixels", failures)
-        if candidate.get("recommendation") == "PASS":
+        visual_rating = float(candidate.get("visual_rating", 0.0))
+        visual_gate = float(candidate.get("visual_pass_gate", 0.0))
+        if visual_gate < 8.5:
+            fail(f"{candidate_id} bakeoff visual_pass_gate must be at least 8.5", failures)
+        if visual_rating < 8.5 and candidate.get("recommendation") == "PASS":
+            fail(f"{candidate_id} bakeoff cannot be PASS below the 8.5 visual gate", failures)
+        if visual_rating < 8.5 and candidate.get("final_commercial_candidate") is not False:
+            fail(f"{candidate_id} bakeoff cannot be final_commercial_candidate below the 8.5 visual gate", failures)
+        recommendation = str(candidate.get("recommendation", ""))
+        if recommendation == "PASS":
             pass_count += 1
+        elif recommendation == "DEFER":
+            if "defer" not in str(candidate.get("visual_quality_status", "")):
+                fail(f"{candidate_id} DEFER candidate must record defer visual status", failures)
+        elif recommendation == "FAIL":
+            if "fail" not in str(candidate.get("visual_quality_status", "")):
+                fail(f"{candidate_id} FAIL candidate must record visual failure", failures)
+        else:
+            fail(f"{candidate_id} bakeoff recommendation must be PASS, DEFER, or FAIL", failures)
         for raw_source in candidate.get("input_sources", []):
             if not isinstance(raw_source, dict):
                 fail(f"{candidate_id} bakeoff input source is not object", failures)
@@ -565,16 +598,28 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
             for forbidden in GREEN_ORIGIN_FORBIDDEN_INPUTS:
                 if forbidden.lower() in source_text:
                     fail(f"{candidate_id} forbidden bakeoff input source: {forbidden}", failures)
-            if raw_source.get("source_pixels_used") is not False:
-                fail(f"{candidate_id} bakeoff input source uses source pixels", failures)
+            source_uses_pixels = raw_source.get("source_pixels_used")
+            source_path = str(raw_source.get("path", ""))
+            if source_uses_pixels is not False:
+                allowed_m01b_substrate = (
+                    candidate_id == "method_01b_manual_paintover_proof"
+                    and source_uses_pixels is True
+                    and source_path.endswith("method_01_generated_base_pixel_cleanup.png")
+                )
+                if not allowed_m01b_substrate:
+                    fail(f"{candidate_id} bakeoff input source uses source pixels: {source_path or 'unknown'}", failures)
             if "path" in raw_source:
                 path_exists(str(raw_source["path"]), failures)
-    if pass_count != 1:
-        fail("green-origin bakeoff must have exactly one PASS recommendation", failures)
+    if pass_count != 0:
+        fail("green-origin bakeoff must have zero PASS recommendations in G-4.18D.1", failures)
 
     if GREEN_ORIGIN_BAKEOFF_REPORT_PATH.exists():
         report = GREEN_ORIGIN_BAKEOFF_REPORT_PATH.read_text(encoding="utf-8")
-        for required_text in ["Tools Used", "Candidate Comparison", "Recommendation For G-4.18E"]:
+        for required_text in [
+            "North Star Relevance",
+            "G-4.18D produced no accepted visual candidate",
+            "M01 is downgraded",
+        ]:
             if required_text not in report:
                 fail(f"green-origin bakeoff report missing text: {required_text}", failures)
         pass_check("green-origin bakeoff report present")

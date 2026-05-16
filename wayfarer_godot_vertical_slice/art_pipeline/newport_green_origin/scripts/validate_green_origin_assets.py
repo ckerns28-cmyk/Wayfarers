@@ -59,6 +59,7 @@ REQUIRED_BAKEOFF_FIELDS = [
     "commercial_use_status",
     "visual_quality_status",
     "visual_rating",
+    "visual_pass_gate",
     "review_eligible",
     "normal_review_eligible",
     "lab_only",
@@ -212,26 +213,30 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
         fail("bakeoff manifest schema_id must be wayfarer.newport_green_origin.method_bakeoff.v1", failures)
     else:
         pass_check("G-4.18D bakeoff manifest schema id")
-    if manifest.get("phase") != "G-4.18D":
-        fail("bakeoff manifest phase must be G-4.18D", failures)
-    if "No G-4.18D bakeoff candidate is normal-review eligible" not in str(manifest.get("normal_review_policy", "")):
+    if manifest.get("phase") != "G-4.18D.1":
+        fail("bakeoff manifest phase must be G-4.18D.1", failures)
+    if "No G-4.18D or G-4.18D.1 bakeoff candidate is normal-review eligible" not in str(manifest.get("normal_review_policy", "")):
         fail("bakeoff manifest must block candidates from normal review", failures)
-    if manifest.get("recommended_method_for_g418e") != "method_01_generated_base_pixel_cleanup":
-        fail("bakeoff manifest must recommend method_01_generated_base_pixel_cleanup for G-4.18E", failures)
+    if manifest.get("recommended_method_for_g418e") is not None:
+        fail("G-4.18D.1 bakeoff manifest must not recommend a promotion method", failures)
+    if "8.5" not in str(manifest.get("visual_quality_gate", "")):
+        fail("G-4.18D.1 bakeoff manifest must declare the 8.5 PASS visual gate", failures)
 
     for contact_sheet in manifest.get("contact_sheets", []):
         path_exists(str(contact_sheet), failures)
 
     candidates = manifest.get("candidates", [])
-    if not isinstance(candidates, list) or len(candidates) != 5:
-        fail("bakeoff manifest must contain exactly 5 candidate methods", failures)
+    if not isinstance(candidates, list) or len(candidates) != 6:
+        fail("G-4.18D.1 bakeoff manifest must contain 5 corrected methods plus M01B", failures)
         return
-    pass_check("G-4.18D bakeoff candidate count: 5")
+    pass_check("G-4.18D.1 bakeoff candidate count: 6")
 
     recommendations = {str(candidate.get("recommendation", "")) for candidate in candidates if isinstance(candidate, dict)}
-    for required in {"PASS", "DEFER", "FAIL"}:
+    for required in {"DEFER", "FAIL"}:
         if required not in recommendations:
             fail(f"bakeoff recommendations missing {required}", failures)
+    if "PASS" in recommendations:
+        fail("G-4.18D.1 must not keep any PASS recommendation below the 8.5 visual gate", failures)
 
     pass_count = 0
     for candidate in candidates:
@@ -243,8 +248,8 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
             if field not in candidate:
                 fail(f"{candidate_id} missing bakeoff field {field}", failures)
         path_exists(str(candidate.get("sample_path", "")), failures)
-        if candidate.get("phase") != "G-4.18D":
-            fail(f"{candidate_id} phase must be G-4.18D", failures)
+        if candidate.get("phase") != "G-4.18D.1":
+            fail(f"{candidate_id} phase must be G-4.18D.1", failures)
         if candidate.get("provenance_status") != "green_origin_candidate":
             fail(f"{candidate_id} provenance_status must be green_origin_candidate", failures)
         if candidate.get("origin_classification") != "green_origin_candidate":
@@ -259,6 +264,14 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
             fail(f"{candidate_id} lab_only must be true for bakeoff candidates", failures)
         if candidate.get("final_commercial_eligible") is not False:
             fail(f"{candidate_id} final_commercial_eligible must be false before later screenshot acceptance", failures)
+        visual_rating = float(candidate.get("visual_rating", 0.0))
+        visual_gate = float(candidate.get("visual_pass_gate", 0.0))
+        if visual_gate < 8.5:
+            fail(f"{candidate_id} visual_pass_gate must be at least 8.5", failures)
+        if visual_rating < 8.5 and candidate.get("recommendation") == "PASS":
+            fail(f"{candidate_id} cannot be PASS below the 8.5 visual gate", failures)
+        if visual_rating < 8.5 and candidate.get("final_commercial_candidate") is not False:
+            fail(f"{candidate_id} cannot be final_commercial_candidate below the 8.5 visual gate", failures)
         if candidate.get("source_pixels_from_yellow_uncertain_assets") is not False:
             fail(f"{candidate_id} uses yellow/uncertain source pixels", failures)
         if candidate.get("source_pixels_from_third_party_material") is not False:
@@ -268,13 +281,11 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
         recommendation = str(candidate.get("recommendation", ""))
         if recommendation == "PASS":
             pass_count += 1
-            if candidate.get("candidate_id") != manifest.get("recommended_method_for_g418e"):
-                fail(f"{candidate_id} is PASS but is not the recommended G-4.18E method", failures)
-            if candidate.get("visual_quality_status") != "visual_method_pass_candidate":
-                fail(f"{candidate_id} PASS candidate must set visual_method_pass_candidate", failures)
+            if visual_rating < 8.5:
+                fail(f"{candidate_id} PASS candidate must meet the 8.5 visual gate", failures)
         elif recommendation == "DEFER":
-            if candidate.get("visual_quality_status") != "visual_method_defer":
-                fail(f"{candidate_id} DEFER candidate must set visual_method_defer", failures)
+            if "defer" not in str(candidate.get("visual_quality_status", "")):
+                fail(f"{candidate_id} DEFER candidate must record defer visual status", failures)
         elif recommendation == "FAIL":
             if "fail" not in str(candidate.get("visual_quality_status", "")):
                 fail(f"{candidate_id} FAIL candidate must record visual failure", failures)
@@ -289,20 +300,28 @@ def validate_bakeoff_manifest(manifest: dict, failures: list[str]) -> None:
             for forbidden in FORBIDDEN_INPUT_FRAGMENTS:
                 if forbidden.lower() in source_text:
                     fail(f"{candidate_id} forbidden input source reference: {forbidden}", failures)
-            if raw_source.get("source_pixels_used") is not False:
-                fail(f"{candidate_id} input source must not use source pixels: {raw_source.get('path', 'unknown')}", failures)
+            source_uses_pixels = raw_source.get("source_pixels_used")
+            source_path = str(raw_source.get("path", ""))
+            if source_uses_pixels is not False:
+                allowed_m01b_substrate = (
+                    candidate_id == "method_01b_manual_paintover_proof"
+                    and source_uses_pixels is True
+                    and source_path.endswith("method_01_generated_base_pixel_cleanup.png")
+                )
+                if not allowed_m01b_substrate:
+                    fail(f"{candidate_id} input source must not use source pixels: {source_path or 'unknown'}", failures)
             if "path" in raw_source:
                 path_exists(str(raw_source["path"]), failures)
 
-    if pass_count != 1:
-        fail("bakeoff must identify exactly one PASS method for G-4.18E", failures)
+    if pass_count != 0:
+        fail("G-4.18D.1 bakeoff must identify zero PASS candidates", failures)
 
     if BAKEOFF_REPORT_PATH.exists():
         report = BAKEOFF_REPORT_PATH.read_text(encoding="utf-8")
         for required_text in [
             "North Star Relevance",
-            "Recommendation For G-4.18E",
-            "G-4.18D does not advance normal review art",
+            "G-4.18D produced no accepted visual candidate",
+            "M01 is downgraded",
         ]:
             if required_text not in report:
                 fail(f"bakeoff report missing text: {required_text}", failures)
