@@ -97,7 +97,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "mercantile_shop",
@@ -141,7 +146,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_chandlery_outfitter_front",
@@ -185,7 +195,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_counting_house_civic_exchange",
@@ -229,7 +244,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_custom_house_civic_front",
@@ -273,7 +293,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_dockside_storehouse",
@@ -317,7 +342,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_dockside_storehouse_long",
@@ -361,7 +391,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_large_front_residence",
@@ -405,7 +440,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_market_shed_stalls",
@@ -449,7 +489,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_modest_clapboard_residence_a",
@@ -493,7 +538,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_shopfront_awning",
@@ -537,7 +587,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_wharf_boathouse_large",
@@ -581,7 +636,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "residence_small",
@@ -625,7 +685,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "service_dependency_shed",
@@ -669,7 +734,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "village_hall_meeting_house",
@@ -713,7 +783,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "visual_review_pending",
+      "normal_review_eligible": false,
+      "lab_only": false
     },
     {
       "asset_id": "newport_narrow_merchant_townhouse_a",
@@ -757,7 +832,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_formal_townhouse_block_a",
@@ -801,7 +881,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     },
     {
       "asset_id": "newport_waterfront_shop_house",
@@ -845,7 +930,12 @@
       "provenance_classification": "temporary_review_yellow",
       "final_commercial_candidate": false,
       "source_pixel_policy": "Temporary yellow review art only; cannot be used as source pixels for green final art without source proof.",
-      "green_origin_source_allowed": false
+      "green_origin_source_allowed": false,
+      "provenance_status": "temporary_review_yellow",
+      "origin_classification": "temporary_review_yellow",
+      "visual_quality_status": "temporary_review_visual_accepted",
+      "normal_review_eligible": true,
+      "lab_only": false
     }
   ],
   "origin_taxonomy": [
@@ -854,5 +944,6 @@
     "final_commercial_green",
     "red_unsafe"
   ],
-  "g418b_policy": "Current Newport building sprites are temporary_review_yellow visual reference only. Their pixels cannot source green-origin or final-commercial assets unless source proof changes their classification."
+  "g418b_policy": "Current Newport building sprites are temporary_review_yellow visual reference only. Their pixels cannot source green-origin or final-commercial assets unless source proof changes their classification.",
+  "visual_quality_gate": "Yellow temporary building sprites may remain in normal review only because they are the best current visual baseline; they are not final-commercial green."
 }

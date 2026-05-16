@@ -1475,20 +1475,29 @@ Permanent correction:
 
 ## G-4.18C: Quarantine Weak Green-Origin Proof
 
-Status: next corrective gate.
+Status: implemented as the G-4.18C review baseline correction.
 
 G-4.18C removes weak green-origin proof art from normal review while preserving
 the provenance infrastructure learned from G-4.18B.
+
+Green-origin is necessary but not sufficient. An asset can be legally clean and
+still visually rejected. The G-4.18B proof family remains provenance-green, but
+it is `visual_failed_g418b_proof`, `lab_only=true`, and
+`normal_review_eligible=false` until a later art method improves it.
 
 Acceptance:
 
 - Weak green-origin proof assets are quarantined from normal player-facing
   review output.
+- Green-Origin Lab mode (`F6` or `--show-green-origin-lab`) exposes the proof
+  only as labeled lab/provenance evidence.
 - Provenance scripts, manifests, audit notes, and contact sheets remain
   available as production infrastructure.
 - Review docs explain that the proof failed visually even if it improved legal
   hygiene.
 - Normal screenshots do not regress by showing weaker legal-clean placeholders.
+- `G418C_GREEN_ORIGIN_VISUAL_RETROSPECTIVE.md` records the visual failure and
+  required next production-method bakeoff.
 
 ## G-4.18D: Art Production Method Bakeoff
 

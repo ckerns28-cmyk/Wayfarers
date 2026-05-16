@@ -16,6 +16,7 @@ const GAMEPLAY_KEYCODES := [
 	KEY_E,
 	KEY_B,
 	KEY_F4,
+	KEY_F6,
 ]
 
 @onready var world: Node2D = $World
@@ -26,6 +27,7 @@ var _atlas_cache: Dictionary = {}
 var _debug_overlay_enabled := false
 var _seating_debug_enabled := false
 var _review_screenshot_mode := false
+var _green_origin_lab_enabled := false
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -40,6 +42,7 @@ func _ready() -> void:
 	_place_buildings()
 	_set_debug_overlay(false)
 	_set_building_seating_overlay(false)
+	set_green_origin_lab_mode(_should_start_in_green_origin_lab_mode())
 	if _should_start_in_review_screenshot_mode():
 		set_review_screenshot_mode(true)
 	player.dialogue_triggered.connect(hud.show_dialogue)
@@ -76,6 +79,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 
+	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F6:
+		set_green_origin_lab_mode(not _green_origin_lab_enabled)
+		get_viewport().set_input_as_handled()
+		return
+
 	if GAMEPLAY_KEYCODES.has(key_event.keycode):
 		get_viewport().set_input_as_handled()
 
@@ -96,10 +104,30 @@ func set_review_screenshot_mode(enabled: bool) -> void:
 func is_review_screenshot_mode() -> bool:
 	return _review_screenshot_mode
 
+func set_green_origin_lab_mode(enabled: bool) -> void:
+	_green_origin_lab_enabled = enabled
+	var town_map := world.get_node_or_null("TownMap")
+	if town_map:
+		for layer in town_map.get_children():
+			if layer.has_method("set_green_origin_lab_mode"):
+				layer.set_green_origin_lab_mode(enabled)
+	if hud and hud.has_method("set_green_origin_lab_mode"):
+		hud.set_green_origin_lab_mode(enabled)
+
+func is_green_origin_lab_mode() -> bool:
+	return _green_origin_lab_enabled
+
 func _should_start_in_review_screenshot_mode() -> bool:
 	for arg in OS.get_cmdline_args():
 		var normalized := String(arg).to_lower()
 		if normalized == BUILD_INFO.REVIEW_SCREENSHOT_FLAG or normalized == "--screenshot-mode" or normalized.find("review_no_hud=1") >= 0:
+			return true
+	return false
+
+func _should_start_in_green_origin_lab_mode() -> bool:
+	for arg in OS.get_cmdline_args():
+		var normalized := String(arg).to_lower()
+		if normalized == BUILD_INFO.GREEN_ORIGIN_LAB_FLAG or normalized.find("show_green_origin_lab=1") >= 0:
 			return true
 	return false
 

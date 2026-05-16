@@ -83,6 +83,7 @@ const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
 var _newport_hero_atlas: Texture2D
 var _newport_green_origin_atlas: Texture2D
+var _green_origin_lab_enabled := false
 
 func _ready() -> void:
 	_newport_hero_atlas = ResourceLoader.load(NEWPORT_HERO_ATLAS_PATH, "Texture2D") as Texture2D
@@ -110,6 +111,13 @@ func newport_green_origin_version() -> String:
 
 func newport_green_origin_materials() -> Array:
 	return NEWPORT_GREEN_ORIGIN_MATERIALS.duplicate()
+
+func set_green_origin_lab_mode(enabled: bool) -> void:
+	_green_origin_lab_enabled = enabled
+	queue_redraw()
+
+func is_green_origin_lab_mode() -> bool:
+	return _green_origin_lab_enabled
 
 func _draw() -> void:
 	match layer_id:
@@ -673,7 +681,9 @@ func _draw_g417_hero_wharf_atlas_proof() -> void:
 	draw_line(Vector2(252, 770), Vector2(1126, 770), Color("#0f0a06", 0.34), 1.4)
 	draw_line(Vector2(252, 854), Vector2(1126, 854), Color("#0f0a06", 0.38), 1.4)
 
-func _draw_g418b_green_origin_dock_proof() -> void:
+func _draw_g418c_green_origin_lab_proof() -> void:
+	if not _green_origin_lab_enabled:
+		return
 	if _newport_green_origin_atlas == null:
 		return
 	_draw_green_origin_piece("green_plank_contact_shadow", Rect2(1010, 772, 178, 32), 0.82)
@@ -682,6 +692,14 @@ func _draw_g418b_green_origin_dock_proof() -> void:
 	_draw_green_origin_piece("green_dock_plank_patch", Rect2(1076, 800, 144, 48), 0.92)
 	_draw_green_origin_piece("green_pier_post_pair", Rect2(1018, 714, 74, 62), 0.95)
 	_draw_green_origin_piece("green_rope_coil_small", Rect2(1188, 770, 54, 38), 0.98)
+	_draw_lab_badge(Vector2(1008, 700))
+
+func _draw_lab_badge(pos: Vector2) -> void:
+	var rect := Rect2(pos, Vector2(316, 54))
+	draw_rect(rect, Color(0.055, 0.075, 0.06, 0.82), true)
+	draw_rect(rect, Color("#d8c06a", 0.72), false, 1.4)
+	_draw_label("Green-Origin Lab: ON", pos + Vector2(12, 20), 13, Color("#f1df91"))
+	_draw_label("Not normal review art", pos + Vector2(12, 40), 11, Color("#f0b1a3"))
 
 func _draw_g410_wharf_water() -> void:
 	_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, 282), 1.0)
@@ -737,7 +755,7 @@ func _draw_g410_wharf_water() -> void:
 		var y := 776.0 + float((i * 41) % 220)
 		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
 	_draw_g417_hero_wharf_atlas_proof()
-	_draw_g418b_green_origin_dock_proof()
+	_draw_g418c_green_origin_lab_proof()
 
 func _draw_g410_props() -> void:
 	for pos in [Vector2(250, 386), Vector2(334, 582), Vector2(506, 586), Vector2(604, 582), Vector2(812, 388), Vector2(986, 386), Vector2(1062, 584), Vector2(1234, 392), Vector2(368, 666), Vector2(1024, 666), Vector2(742, 742), Vector2(1102, 748), Vector2(1268, 672)]:

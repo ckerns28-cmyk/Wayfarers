@@ -38,6 +38,10 @@ Permanent review rule:
 - Green-origin art is required for final production, but green-origin alone is
   not enough; weak source-safe art must be quarantined from normal review if it
   lowers the scene quality.
+- G-4.18C separates provenance from visual acceptance: green-origin plus visual
+  failure is lab-only, yellow plus visual success is temporary review only, and
+  only green-origin plus visual success can become a future final-commercial
+  candidate.
 - Every visual change should be judged against long-term MMORPG viability,
   Newport 1700s fantasy theme, visual cohesion, legal provenance, player
   immersion, and roadmap sequencing.
@@ -230,3 +234,12 @@ review just because it is legally cleaner.
 Green-origin is a production requirement, not an automatic art-direction pass.
 Any green-origin candidate that looks weaker than the yellow temporary review
 art must be quarantined as pipeline evidence until it is redesigned or replaced.
+
+## G-4.18C Green-Origin Lab Quarantine
+
+The failed G-4.18B proof pieces are no longer normal review art. They remain
+available only through Green-Origin Lab mode (`F6` or
+`--show-green-origin-lab`) with explicit labeling. Normal screenshots should use
+the best current Newport baseline, even when that baseline still includes
+yellow temporary buildings, because weak legal-clean art must not degrade the
+player-facing scene.

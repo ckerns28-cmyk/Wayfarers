@@ -24,7 +24,11 @@
     "origin_classification",
     "commercial_use_status",
     "final_commercial_candidate",
-    "source_pixels_from_yellow_uncertain_assets"
+    "source_pixels_from_yellow_uncertain_assets",
+    "visual_quality_status",
+    "normal_review_eligible",
+    "lab_only",
+    "final_commercial_eligible"
   ],
   "source_fields": [
     "type",
@@ -81,7 +85,20 @@
     "uncertain_source": "review_eligible=false",
     "yellow_uncertain_newport_crops": "allowed only for temporary_review_yellow prototype review art and never as source pixels for green final art",
     "green_origin_assets": "allowed when generated from project scripts, authored parameters, and documented green/project-owned sources only",
-    "deterministic_generated_assets": "allowed when creation script, generated piece path, source inputs, and commercial status are documented"
+    "deterministic_generated_assets": "allowed when creation script, generated piece path, source inputs, and commercial status are documented",
+    "visual_failed": "blocked from normal review unless explicitly shown in lab/debug mode",
+    "provenance_green_visual_failed": "lab_only=true, normal_review_eligible=false, final_commercial_candidate=false",
+    "provenance_yellow_visual_good": "temporary review only, final_commercial_eligible=false",
+    "provenance_green_visual_good": "possible future final-commercial candidate after visual review",
+    "unknown_source": "blocked from final-commercial"
   },
-  "hard_rule": "If placeholder is false and review_eligible is true, the asset must satisfy the Newport Visual Cohesion Rules and Asset Provenance gate: muted palette, dark outline or dark-side shading, internal material detail, contact shadow where seated, scale compatibility with building doors/windows/player, exact source documentation, no unsafe third-party or mystery pixels, and no silent promotion from temporary_review_yellow to green."
+  "hard_rule": "If an asset is visually failed, it is blocked from normal review unless lab_only=true and a lab/debug mode is explicitly active. If an asset is provenance yellow, it may support temporary review only and cannot become final-commercial green.",
+  "visual_quality_gate": "Green-origin is necessary but not sufficient. An asset can be legally clean and still visually rejected.",
+  "allowed_visual_quality_status": [
+    "temporary_review_visual_accepted",
+    "visual_failed_g418b_proof",
+    "visual_review_pending",
+    "visual_accepted",
+    "blocked"
+  ]
 }

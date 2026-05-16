@@ -54,11 +54,12 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18B", "build_phase_g_4_18b")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18B Green-Origin Newport Art Factory", "build_label_g_4_18b")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18C", "build_phase_g_4_18c")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18C Green-Origin Lab Quarantine", "build_label_g_4_18c")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
+	_expect(BUILD_INFO.GREEN_ORIGIN_LAB_FLAG == "--show-green-origin-lab", "green_origin_lab_flag_declared")
 	_expect(world != null and world.y_sort_enabled, "world_y_sort_enabled")
 	_expect(player != null, "player_exists")
 	_expect(hud != null, "hud_exists")
@@ -84,6 +85,7 @@ func _validate_scene(main: Node) -> void:
 			_expect(map.get_node_or_null(layer_name) != null, "map_layer_" + layer_name)
 		_validate_g416_surface_kit(map)
 		_validate_g418_asset_factory(map)
+		_validate_g418c_green_origin_lab_quarantine(main, map, hud)
 		var collision_layer := map.get_node_or_null("CollisionNavigationLayer")
 		var minimum_collision_bodies := 3 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (20 if (NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else 40)
 		_expect(collision_layer != null and collision_layer.get_child_count() > minimum_collision_bodies, "collision_navigation_bodies")
@@ -186,6 +188,8 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport_green_origin/contact_sheets/green_origin_asset_contact_sheet.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/green_origin_palette_shadow_sheet.png",
 		"res://art_pipeline/newport_green_origin/reports/G418B_GREEN_ORIGIN_ASSET_FACTORY.md",
+		"res://art_pipeline/newport_green_origin/reports/G418C_GREEN_ORIGIN_VISUAL_RETROSPECTIVE.md",
+		"res://tools/capture_g418c_review_screenshots.mjs",
 	]:
 		_expect(FileAccess.file_exists(file_path), "g418_pipeline_file_" + file_path.get_file())
 
@@ -223,15 +227,19 @@ func _validate_g418_asset_factory(map: Node) -> void:
 			failures.append("g418_asset_manifest_asset_not_dictionary")
 			continue
 		var asset: Dictionary = raw_asset
-		for key in ["asset_id", "material_category", "source_file", "generated_piece_file", "atlas_region", "intended_scale", "collision_behavior", "y_sort_behavior", "contact_shadow_required", "visual_cohesion_status", "provenance_status", "placeholder", "final", "review_eligible", "license_ownership_status", "source_pixels_from_project_owned_wayfarer_assets", "source_pixels_from_third_party_material", "origin_classification", "commercial_use_status", "final_commercial_candidate", "source_pixels_from_yellow_uncertain_assets"]:
+		for key in ["asset_id", "material_category", "source_file", "generated_piece_file", "atlas_region", "intended_scale", "collision_behavior", "y_sort_behavior", "contact_shadow_required", "visual_cohesion_status", "visual_quality_status", "provenance_status", "placeholder", "final", "review_eligible", "normal_review_eligible", "lab_only", "license_ownership_status", "source_pixels_from_project_owned_wayfarer_assets", "source_pixels_from_third_party_material", "origin_classification", "commercial_use_status", "final_commercial_candidate", "final_commercial_eligible", "source_pixels_from_yellow_uncertain_assets"]:
 			_expect(asset.has(key), "g418_asset_manifest_field_" + String(asset.get("asset_id", "unknown")) + "_" + key)
 		if bool(asset.get("review_eligible", false)) and not bool(asset.get("placeholder", true)):
 			review_ready_assets += 1
 			_expect(String(asset.get("visual_cohesion_status", "")) == "g418_review_candidate", "g418_review_asset_visual_status_" + String(asset.get("asset_id", "unknown")))
+			_expect(String(asset.get("visual_quality_status", "")) == "temporary_review_visual_accepted", "g418_review_asset_visual_quality_" + String(asset.get("asset_id", "unknown")))
 			_expect(String(asset.get("provenance_status", "")) == "temporary_review_yellow", "g418_review_asset_provenance_status_" + String(asset.get("asset_id", "unknown")))
 			_expect(String(asset.get("origin_classification", "")) == "temporary_review_yellow", "g418_review_asset_origin_classification_" + String(asset.get("asset_id", "unknown")))
 			_expect(String(asset.get("commercial_use_status", "")) == "temporary_review_yellow", "g418_review_asset_commercial_status_" + String(asset.get("asset_id", "unknown")))
+			_expect(bool(asset.get("normal_review_eligible", false)) == true, "g418_review_asset_normal_review_eligible_" + String(asset.get("asset_id", "unknown")))
+			_expect(bool(asset.get("lab_only", true)) == false, "g418_review_asset_not_lab_only_" + String(asset.get("asset_id", "unknown")))
 			_expect(bool(asset.get("final_commercial_candidate", true)) == false, "g418_review_asset_not_final_commercial_" + String(asset.get("asset_id", "unknown")))
+			_expect(bool(asset.get("final_commercial_eligible", true)) == false, "g418_review_asset_final_commercial_blocked_" + String(asset.get("asset_id", "unknown")))
 			_expect(bool(asset.get("source_pixels_from_yellow_uncertain_assets", false)) == true, "g418_review_asset_yellow_source_declared_" + String(asset.get("asset_id", "unknown")))
 			_expect(bool(asset.get("contact_shadow_required", false)), "g418_review_asset_contact_shadow_" + String(asset.get("asset_id", "unknown")))
 			_expect(bool(asset.get("source_pixels_from_third_party_material", true)) == false, "g418_review_asset_no_third_party_source_pixels_" + String(asset.get("asset_id", "unknown")))
@@ -271,13 +279,19 @@ func _validate_g418b_green_origin_manifest() -> void:
 			continue
 		var asset: Dictionary = raw_asset
 		var asset_id := String(asset.get("asset_id", "unknown"))
-		for key in ["asset_id", "asset_type", "source_type", "generation_script", "input_sources", "license", "ownership", "commercial_use_status", "review_eligible", "final_commercial_candidate", "notes"]:
+		for key in ["asset_id", "asset_type", "source_type", "generation_script", "input_sources", "license", "ownership", "commercial_use_status", "provenance_status", "origin_classification", "visual_quality_status", "review_eligible", "normal_review_eligible", "lab_only", "final_commercial_candidate", "final_commercial_eligible", "notes"]:
 			_expect(asset.has(key), "g418b_green_origin_field_" + asset_id + "_" + key)
 		_expect(String(asset.get("source_type", "")) == "deterministic_python_pillow", "g418b_green_origin_source_type_" + asset_id)
 		_expect(String(asset.get("ownership", "")) == "project-owned", "g418b_green_origin_owned_" + asset_id)
 		_expect(String(asset.get("commercial_use_status", "")) == "green_origin_candidate" or String(asset.get("commercial_use_status", "")) == "final_commercial_green", "g418b_green_origin_status_" + asset_id)
-		_expect(bool(asset.get("review_eligible", false)) == true, "g418b_green_origin_review_eligible_" + asset_id)
-		_expect(bool(asset.get("final_commercial_candidate", false)) == true, "g418b_green_origin_final_candidate_" + asset_id)
+		_expect(String(asset.get("provenance_status", "")) == "green_origin_candidate", "g418b_green_origin_provenance_" + asset_id)
+		_expect(String(asset.get("origin_classification", "")) == "green_origin_candidate", "g418b_green_origin_classification_" + asset_id)
+		_expect(String(asset.get("visual_quality_status", "")) == "visual_failed_g418b_proof", "g418c_green_origin_visual_failed_" + asset_id)
+		_expect(bool(asset.get("review_eligible", true)) == false, "g418c_green_origin_review_ineligible_" + asset_id)
+		_expect(bool(asset.get("normal_review_eligible", true)) == false, "g418c_green_origin_normal_review_ineligible_" + asset_id)
+		_expect(bool(asset.get("lab_only", false)) == true, "g418c_green_origin_lab_only_" + asset_id)
+		_expect(bool(asset.get("final_commercial_candidate", true)) == false, "g418c_green_origin_not_final_candidate_" + asset_id)
+		_expect(bool(asset.get("final_commercial_eligible", true)) == false, "g418c_green_origin_not_final_eligible_" + asset_id)
 		_expect(bool(asset.get("source_pixels_from_yellow_uncertain_assets", true)) == false, "g418b_green_origin_no_yellow_pixels_" + asset_id)
 		_expect(bool(asset.get("source_pixels_from_third_party_material", true)) == false, "g418b_green_origin_no_third_party_pixels_" + asset_id)
 		_expect(bool(asset.get("web_scraped_source_pixels", true)) == false, "g418b_green_origin_no_web_pixels_" + asset_id)
@@ -288,6 +302,29 @@ func _validate_g418b_green_origin_manifest() -> void:
 				for forbidden in ["assets/sprites/buildings/isolated", "assets/buildings", "hearthvale", "yellow", "uncertain", "marketplace", "web-scraped", "ripped"]:
 					_expect(source_text.find(forbidden) < 0, "g418b_green_origin_input_not_" + forbidden.replace("/", "_").replace("-", "_") + "_" + asset_id)
 				_expect(bool(source.get("source_pixels_used", true)) == false, "g418b_green_origin_input_no_source_pixels_" + asset_id)
+
+func _validate_g418c_green_origin_lab_quarantine(main: Node, map: Node, hud: CanvasLayer) -> void:
+	_expect(main.has_method("set_green_origin_lab_mode"), "g418c_lab_main_set_api")
+	_expect(main.has_method("is_green_origin_lab_mode"), "g418c_lab_main_query_api")
+	_expect(hud != null and hud.has_method("set_green_origin_lab_mode"), "g418c_lab_hud_api")
+
+	var lab_capable_layers := 0
+	for layer_name in ["GroundGrassLayer", "WharfWaterLayer", "RoadsPlazaLayer", "DecorativePropsLayer"]:
+		var layer := map.get_node_or_null(layer_name)
+		_expect(layer != null and layer.has_method("set_green_origin_lab_mode"), "g418c_lab_layer_set_api_" + layer_name)
+		_expect(layer != null and layer.has_method("is_green_origin_lab_mode"), "g418c_lab_layer_query_api_" + layer_name)
+		if layer and layer.has_method("is_green_origin_lab_mode"):
+			lab_capable_layers += 1
+			_expect(not bool(layer.call("is_green_origin_lab_mode")), "g418c_lab_layer_default_off_" + layer_name)
+	_expect(lab_capable_layers == 4, "g418c_lab_all_map_layers_capable")
+	_expect(not bool(main.call("is_green_origin_lab_mode")), "g418c_lab_default_off_main")
+	if main.has_method("set_green_origin_lab_mode"):
+		main.call("set_green_origin_lab_mode", true)
+		_expect(bool(main.call("is_green_origin_lab_mode")), "g418c_lab_can_enable_main")
+		var wharf := map.get_node_or_null("WharfWaterLayer")
+		_expect(wharf != null and bool(wharf.call("is_green_origin_lab_mode")), "g418c_lab_enables_wharf_layer")
+		main.call("set_green_origin_lab_mode", false)
+		_expect(not bool(main.call("is_green_origin_lab_mode")), "g418c_lab_can_disable_main")
 
 func _load_json_dictionary(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):

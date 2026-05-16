@@ -11,6 +11,7 @@ const DIALOGUE_MIN_WIDTH := 340.0
 @onready var status_panel: PanelContainer = $Panel
 @onready var build_label: Label = $Panel/MarginContainer/VBoxContainer/BuildLabel
 @onready var phase_host_label: Label = $Panel/MarginContainer/VBoxContainer/PhaseHost
+@onready var green_origin_lab_label: Label = $Panel/MarginContainer/VBoxContainer/GreenOriginLab
 @onready var channel_label: Label = $Panel/MarginContainer/VBoxContainer/Channel
 @onready var branch_label: Label = $Panel/MarginContainer/VBoxContainer/Branch
 @onready var objective_label: Label = $Panel/MarginContainer/VBoxContainer/Objective
@@ -21,6 +22,7 @@ const DIALOGUE_MIN_WIDTH := 340.0
 
 var _metadata_expanded := false
 var _review_screenshot_mode := false
+var _green_origin_lab_enabled := false
 
 func _ready() -> void:
 	_apply_panel_styles()
@@ -43,6 +45,7 @@ func show_dialogue(text: String) -> void:
 func _apply_build_identity() -> void:
 	build_label.text = "Build label: " + BUILD_INFO.BUILD_LABEL
 	phase_host_label.text = "Phase: %s | Review host: %s" % [BUILD_INFO.BUILD_PHASE, BUILD_INFO.REVIEW_HOST]
+	green_origin_lab_label.text = BUILD_INFO.GREEN_ORIGIN_LAB_LABEL
 	channel_label.text = "Channel: " + BUILD_INFO.REVIEW_CHANNEL
 	var branch := BUILD_INFO.SOURCE_BRANCH.replace("codex/", "")
 	if branch.length() > 34:
@@ -65,10 +68,16 @@ func set_review_screenshot_mode(enabled: bool) -> void:
 	dialogue_panel.visible = false
 	_apply_layout()
 
+func set_green_origin_lab_mode(enabled: bool) -> void:
+	_green_origin_lab_enabled = enabled
+	green_origin_lab_label.visible = enabled
+	_apply_layout()
+
 func toggle_review_screenshot_mode() -> void:
 	set_review_screenshot_mode(not _review_screenshot_mode)
 
 func _apply_metadata_visibility() -> void:
+	green_origin_lab_label.visible = _green_origin_lab_enabled
 	channel_label.visible = _metadata_expanded
 	branch_label.visible = _metadata_expanded
 	objective_label.visible = _metadata_expanded
@@ -107,6 +116,8 @@ func _apply_layout() -> void:
 	status_panel.offset_top = HUD_MARGIN
 	status_panel.offset_right = HUD_MARGIN + status_width
 	var status_height := 180.0 if _metadata_expanded else 108.0
+	if _green_origin_lab_enabled:
+		status_height += 34.0
 	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + status_height)
 
 	var dialogue_width: float = min(DIALOGUE_MAX_WIDTH, max(DIALOGUE_MIN_WIDTH, viewport_size.x - HUD_MARGIN * 2.0))

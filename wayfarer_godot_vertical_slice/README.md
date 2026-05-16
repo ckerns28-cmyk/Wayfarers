@@ -27,6 +27,7 @@ reference prototype.
 - Move: WASD or arrow keys
 - Interact: E
 - Toggle no-HUD screenshot review mode: F4
+- Toggle Green-Origin Lab proof mode: F6
 - Toggle full debug overlay (visual bounds / lot bounds / collision footprint / interaction / anchors): F3
 - Toggle building seating overlay only: B
 - Toggle HUD review metadata: F2

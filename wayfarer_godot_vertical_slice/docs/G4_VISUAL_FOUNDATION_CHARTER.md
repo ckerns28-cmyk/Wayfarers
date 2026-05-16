@@ -46,12 +46,30 @@ Green-origin art is required for final production, but green-origin alone is
 not enough. Weak generated proof art must not remain in normal review just
 because it is legally cleaner.
 
+## Green-Origin Visual Quality Gate
+
+Green-origin is necessary but not sufficient. An asset can be legally clean and
+still visually rejected.
+
+Every review asset must keep provenance separate from visual acceptance:
+
+- provenance green + visual failed = lab-only, not normal review
+- provenance yellow + visual good = temporary review only, not final-commercial
+- provenance green + visual good = possible future final-commercial candidate
+- unknown source = blocked from final-commercial
+- visual failed = blocked from normal review unless explicitly shown in
+  lab/debug mode
+
 ## Immediate G-4.18B Correction
 
 G-4.18B proved the green-origin/provenance pipeline but failed the visual bar.
 The weak generated proof should be preserved as production evidence, then
 quarantined from normal review. It is not visual progress until screenshots
 show that the result improves the Newport origin city.
+
+G-4.18C implements the quarantine with Green-Origin Lab mode (`F6` or
+`--show-green-origin-lab`). The lab mode is provenance/debug evidence only and
+must be labeled as not normal review art.
 
 ## Production Role Expectation
 
@@ -86,5 +104,7 @@ G-4.22 must include:
 - HUD/UI screenshot
 - yellow temporary art inventory
 - green-origin production proof
+- green-origin lab proof when a failed proof family is being preserved for
+  provenance review
 - debug-overlay proof for contracts, kept out of normal player-facing review
 - written 8.0+ rating rationale based on screenshots

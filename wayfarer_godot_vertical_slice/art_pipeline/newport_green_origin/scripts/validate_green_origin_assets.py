@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the G-4.18B green-origin Newport asset manifest."""
+"""Validate the G-4.18B/G-4.18C green-origin Newport asset manifest."""
 
 from __future__ import annotations
 
@@ -35,8 +35,14 @@ REQUIRED_ASSET_FIELDS = [
     "license",
     "ownership",
     "commercial_use_status",
+    "provenance_status",
+    "origin_classification",
+    "visual_quality_status",
     "review_eligible",
+    "normal_review_eligible",
+    "lab_only",
     "final_commercial_candidate",
+    "final_commercial_eligible",
     "notes",
 ]
 
@@ -79,6 +85,8 @@ def validate_manifest(manifest: dict, failures: list[str]) -> None:
         fail("green-origin manifest schema_id must be wayfarer.newport_green_origin.asset_manifest.v1", failures)
     else:
         pass_check("green-origin manifest schema id")
+    if "green-origin provenance is necessary but not sufficient" not in str(manifest.get("visual_quality_gate", "")).lower():
+        fail("green-origin manifest must record the G-4.18C visual quality gate", failures)
 
     taxonomy = manifest.get("origin_taxonomy", [])
     for required in ["temporary_review_yellow", "green_origin_candidate", "final_commercial_green", "red_unsafe"]:
@@ -122,10 +130,22 @@ def validate_manifest(manifest: dict, failures: list[str]) -> None:
         status = str(asset.get("commercial_use_status", ""))
         if status not in {"green_origin_candidate", "final_commercial_green"}:
             fail(f"{asset_id} commercial_use_status must be green_origin_candidate or final_commercial_green", failures)
-        if asset.get("final_commercial_candidate") is True and status not in {"green_origin_candidate", "final_commercial_green"}:
-            fail(f"{asset_id} final_commercial_candidate requires green status", failures)
-        if asset.get("review_eligible") is not True:
-            fail(f"{asset_id} must be review_eligible", failures)
+        if asset.get("provenance_status") != "green_origin_candidate":
+            fail(f"{asset_id} provenance_status must remain green_origin_candidate", failures)
+        if asset.get("origin_classification") != "green_origin_candidate":
+            fail(f"{asset_id} origin_classification must remain green_origin_candidate", failures)
+        if asset.get("visual_quality_status") != "visual_failed_g418b_proof":
+            fail(f"{asset_id} must be visually quarantined as visual_failed_g418b_proof", failures)
+        if asset.get("review_eligible") is not False:
+            fail(f"{asset_id} must be blocked from normal review after G-4.18C", failures)
+        if asset.get("normal_review_eligible") is not False:
+            fail(f"{asset_id} normal_review_eligible must be false after G-4.18C", failures)
+        if asset.get("lab_only") is not True:
+            fail(f"{asset_id} lab_only must be true after G-4.18C", failures)
+        if asset.get("final_commercial_candidate") is not False:
+            fail(f"{asset_id} final_commercial_candidate must be false while visually failed", failures)
+        if asset.get("final_commercial_eligible") is not False:
+            fail(f"{asset_id} final_commercial_eligible must be false while visually failed", failures)
         if asset.get("source_pixels_from_yellow_uncertain_assets") is not False:
             fail(f"{asset_id} uses yellow/uncertain source pixels", failures)
         if asset.get("source_pixels_from_third_party_material") is not False:
