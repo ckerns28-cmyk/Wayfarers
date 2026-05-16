@@ -11,6 +11,33 @@ Required captures for this and future Newport art passes:
 - `dock_harbor_closeup.png`: lower wharf/dock transition and harbor edge.
 - `debug_overlay_proof.png`: press `F3` for object contracts; press `B` only when seating overlay proof is specifically needed.
 
+## G-4 Visual Foundation Review Rule
+
+Wayfarer cannot exit G-4 until the origin city reaches an 8.0+ visual
+foundation in screenshot review.
+
+For G-4.22 and every visual pass leading into it, the review packet must show:
+
+- normal full-harbor HUD capture
+- no-HUD full-harbor capture
+- hero street/dock close-up that looks like the real game
+- HUD/UI capture proving intentional fantasy/MMORPG styling
+- yellow temporary art inventory or capture notes
+- green-origin production proof and source/provenance notes
+- debug-overlay proof showing contracts without treating debug visuals as
+  player-facing art
+
+Rating rules:
+
+- A validator pass is not an art pass.
+- If screenshots do not look better, the pass is not accepted as visual
+  progress.
+- Green-origin art is required for final production, but weak green-origin art
+  must be quarantined from normal review if it lowers the visual bar.
+- The 8.0+ rating must be argued from the screenshots: authored town read,
+  unified art direction, non-dominating placeholders, real-game hero slice,
+  fantasy/MMORPG HUD, yellow-art clarity, and proven green-origin method.
+
 Mini PC workflow:
 
 1. Run `tools/package_itch_web.sh` from the repo root or Godot slice.

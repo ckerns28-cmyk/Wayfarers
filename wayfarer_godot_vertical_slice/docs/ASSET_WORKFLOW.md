@@ -69,6 +69,11 @@ Current compatibility rule:
   provenance status, placeholder/final state, and review eligibility.
 - No asset enters the player-facing review build unless it passes both Newport
   Visual Cohesion and Asset Provenance gates.
+- Green-origin art is required for final production, but green-origin alone is
+  not enough. Weak source-safe proof art must be quarantined from normal review
+  if it lowers screenshot quality.
+- Yellow art is temporary review art only and must be clearly marked in
+  manifests, review notes, and replacement queues.
 - New atlas families should prefer `assets/atlases/<domain>/`.
 - New original art should go in `assets/source/<domain>/`.
 - New committed reference screenshots should go in `assets/references/<phase>/`.
@@ -162,6 +167,9 @@ Naming conventions:
    to itch manually.
 9. Hard-refresh `https://wayfarersguild.itch.io/wayfarers-tale` and confirm the
    on-screen build label before visual review.
+10. Capture the required screenshot packet and evaluate whether the pass
+    improves the origin city. A validator pass is not an art pass.
+11. Do not recommend G-5 until G-4.22 accepts the 8.0+ visual foundation gate.
 
 Cloudflare Pages remains deferred for the current stock export because
 `index.wasm` exceeds the 25 MB Direct Upload single-file limit.

@@ -372,6 +372,63 @@ Acceptance:
 - Existing JavaScript Worker remains the Phase 35.13R production/reference
   route.
 
+## G-4 Visual Foundation Charter: 8.0 Exit Gate
+
+Status: permanent G-4 rule.
+
+Wayfarer cannot exit G-4 until the origin city reaches an 8.0+ visual
+foundation in the player-facing review build.
+
+Canonical review reference:
+`wayfarer_godot_vertical_slice/docs/G4_VISUAL_FOUNDATION_CHARTER.md`.
+
+Wayfarer North Star:
+
+Wayfarer is being built toward a full MMORPG-scale fantasy world. The current
+Godot slice is the origin city: a Newport, Rhode Island-inspired 1700s harbor
+town that should feel like the player's first real home base in a much larger
+world. The long-term game includes quests, monsters, magic, equipment,
+exploration, progression, interiors, NPCs, player identity, and a
+revolutionary-political story backbone with fantasy layered underneath.
+
+Current focus:
+
+- Do not build those gameplay systems yet.
+- Make the origin city visually satisfying, stylistically unified,
+  commercially safe, and technically scalable.
+- Evaluate every change against long-term MMORPG viability, Newport 1700s
+  fantasy theme, visual cohesion, legal provenance, player immersion, and
+  roadmap sequencing.
+
+G-4 exit requirement:
+
+- Do not recommend moving to G-5 until the review build reaches an 8.0+
+  visual foundation.
+- A validator pass is not an art pass. If screenshots do not look better, the
+  pass is not accepted as visual progress.
+- Screenshot review must support the rating; automated validation only proves
+  contracts, provenance, and regressions.
+
+8.0+ visual foundation means:
+
+- The town feels authored, not assembled.
+- Buildings, streets, docks, props, player, and HUD belong to one art
+  direction.
+- No player-facing debug rectangles or placeholder stickers dominate the
+  scene.
+- At least one hero street/dock slice looks like the real game.
+- The HUD/UI has intentional fantasy/MMORPG styling.
+- Yellow temporary art is clearly marked as temporary.
+- Green-origin art production is proven.
+- Screenshot review supports the rating, not just automated validation.
+
+Permanent production role expectation:
+
+- The project should be reviewed as a master game programmer, art director,
+  systems designer, production lead, and scrum master would review it.
+- Do not merely satisfy validators; protect the game's long-term world scale,
+  production pipeline, source safety, player immersion, and phase order.
+
 ## G-4.1: Newport Starting Town Construction
 
 Status: current.
@@ -1390,6 +1447,8 @@ Implemented:
 
 ## G-4.18B: Green-Origin Newport Art Factory
 
+Status: provenance infrastructure accepted; visual result not accepted.
+
 Temporary yellow review art may be used to prototype composition, scale, and
 gameplay, but final-commercial Wayfarer art must come from green-origin assets
 with documented provenance. Yellow assets cannot be used as pixel sources for
@@ -1401,12 +1460,153 @@ project parameters, or documented project-owned/commercial-compatible sources.
 The current Newport buildings and crop-derived G-4.17/G-4.18 hero atlas remain
 `temporary_review_yellow`, not `final_commercial_green`.
 
+G-4.18B proved that the green-origin/provenance pipeline can produce
+source-safer assets, but it failed the visual bar. The weak generated proof
+must not remain in normal review just because it is legally cleaner.
+Green-origin is required, but green-origin alone is not enough.
+
+Permanent correction:
+
+- A source-safe asset is still rejected if it weakens the screenshot.
+- The weak proof may remain as pipeline evidence, bakeoff reference, or
+  quarantine material, but not as player-facing visual progress.
+- Future green-origin candidates must be judged against the same Newport
+  art-direction, immersion, and 8.0+ screenshot standard as yellow review art.
+
+## G-4.18C: Quarantine Weak Green-Origin Proof
+
+Status: next corrective gate.
+
+G-4.18C removes weak green-origin proof art from normal review while preserving
+the provenance infrastructure learned from G-4.18B.
+
+Acceptance:
+
+- Weak green-origin proof assets are quarantined from normal player-facing
+  review output.
+- Provenance scripts, manifests, audit notes, and contact sheets remain
+  available as production infrastructure.
+- Review docs explain that the proof failed visually even if it improved legal
+  hygiene.
+- Normal screenshots do not regress by showing weaker legal-clean placeholders.
+
+## G-4.18D: Art Production Method Bakeoff
+
+Status: planned.
+
+G-4.18D compares viable green-origin production methods before committing to a
+replacement path for buildings, streets, docks, props, player art, and UI.
+
+Bakeoff candidates may include:
+
+- Hand-authored pixel/paintover workflow.
+- AI-assisted generation with documented prompts, seeds, references, edits,
+  licenses, and human cleanup.
+- Blender/procedural render plus paintover.
+- Hybrid crop-derived style study followed by fully green-origin redraw.
+
+Acceptance:
+
+- Each candidate produces comparable source records, revision notes, and
+  screenshot/contact-sheet evidence.
+- Candidates are judged on visual quality, repeatability, editability, style
+  cohesion, legal clarity, and production speed.
+- No method wins only because it passes provenance; it must visibly improve
+  the game.
+
+## G-4.18E: Green-Origin Hero-Quality Asset Family
+
+Status: planned.
+
+G-4.18E creates one green-origin asset family that is good enough to be placed
+beside the current yellow buildings without lowering the scene quality.
+
+Acceptance:
+
+- The family is source-safe, documented, and repeatable.
+- It contains enough variants to prove production scale, not just a one-off
+  hero image.
+- It improves the hero street/dock screenshot compared with the quarantined
+  G-4.18B proof.
+- The manifest marks it green-origin and review-eligible only after visual
+  review confirms it belongs in the Newport fantasy-harbor art direction.
+
+## G-4.19: Player Visual Identity Foundation
+
+Status: planned.
+
+G-4.19 replaces the temporary scale/debug avatar direction with a player visual
+identity foundation that can support a long-term MMORPG character pipeline.
+
+Acceptance:
+
+- The player belongs with the Newport buildings, streets, docks, and props at
+  the active camera scale.
+- The design anticipates equipment, animation, class/fantasy identity, and
+  future multiplayer readability without building those systems yet.
+- Yellow or temporary character art is clearly labeled and cannot be mistaken
+  for final player identity.
+- Normal screenshots improve in both HUD and no-HUD modes.
+
+## G-4.20: HUD/UI Visual Redesign
+
+Status: planned.
+
+G-4.20 gives the player-facing HUD/UI intentional fantasy/MMORPG styling
+without adding gameplay systems.
+
+Acceptance:
+
+- HUD panels, labels, interaction prompts, review identity, and dialogue
+  surfaces feel like part of Wayfarer rather than debug or raw engine UI.
+- The HUD supports screenshots instead of covering the scene.
+- No-HUD and HUD captures both look appealing.
+- Review metadata remains available but does not dominate normal player-facing
+  presentation.
+
+## G-4.21: Origin City Hero Slice
+
+Status: planned.
+
+G-4.21 composes the strongest green-origin/yellow-clearly-marked assets,
+player foundation, HUD redesign, and Newport surface grammar into one
+hero-quality street/dock slice.
+
+Acceptance:
+
+- The slice feels like the real game, not a prototype board.
+- Streets, docks, buildings, props, player, HUD, and camera framing support a
+  single Newport 1700s fantasy home-base read.
+- Yellow temporary art is visible only when explicitly accepted as temporary
+  and documented.
+- Screenshots show the authored slice in normal, no-HUD, and close-up review.
+
+## G-4.22: 8.0 Visual Foundation Review Gate
+
+Status: planned G-4 exit gate.
+
+G-4.22 is the formal review gate for exiting G-4.
+
+Acceptance:
+
+- The origin city receives an 8.0+ visual foundation rating from screenshot
+  review, not just validator output.
+- The review packet includes normal HUD, no-HUD, hero street/dock, UI/HUD,
+  yellow-art inventory, green-origin production proof, and debug-overlay proof
+  captures.
+- The town feels authored rather than assembled.
+- Buildings, streets, docks, props, player, and HUD belong to one art
+  direction.
+- At least one hero street/dock slice looks like the real game.
+- Asset provenance rules are active; yellow art is clearly temporary; the
+  green-origin replacement method is proven.
+- Only after this gate is accepted may G-5 be recommended.
+
 ## G-5: Migration Architecture
 
 Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin only after
-G-4.10A passes the crop/anchor gate and the starter harbor walk is accepted on
-itch.
+G-4.22 accepts the 8.0+ origin city visual foundation review gate.
 
 ## G-6: Production Cutover Planning
 

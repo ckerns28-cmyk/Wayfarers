@@ -4,6 +4,22 @@ G-4.1 replaces the reduced Newport Harbor Test scene with a player-facing
 Newport-inspired starting port town in Godot. The JavaScript Worker remains the
 separate Phase 35.13R production/reference route.
 
+Permanent G-4 rule: Wayfarer cannot exit G-4 until the origin city reaches an
+8.0+ visual foundation in screenshot review. The Godot slice is the origin
+city for a future MMORPG-scale fantasy world, not only a renderer test. Current
+work should make the Newport 1700s fantasy harbor town visually satisfying,
+stylistically unified, commercially safe, and technically scalable without
+building quests, monsters, magic, equipment, interiors, NPCs, or progression
+systems yet.
+
+The 8.0+ exit gate requires an authored town read, unified buildings/streets/
+docks/props/player/HUD art direction, no dominant player-facing debug or
+placeholder stickers, at least one real-game-quality hero street/dock slice,
+intentional fantasy/MMORPG HUD styling, clearly marked yellow temporary art,
+proven green-origin production, and screenshot evidence. A validator pass is
+not an art pass; if screenshots do not look better, the pass is not accepted
+as visual progress.
+
 G-4.2 keeps the same building foundation and focuses on lived-in composition:
 street-level spawn framing, reduced test-grid readability, narrower walk
 surfaces, harbor clutter, shoreline detail, and small physical blockers that
@@ -1442,3 +1458,24 @@ Review intent:
   must begin the player/NPC sprite-style foundation, and no NPC, monster,
   combat, or equipment system should enter normal review until character style
   is solved.
+
+## G-4.18B Through G-4.22 Visual Foundation Sequence
+
+G-4.18B proved green-origin/provenance production but failed the visual bar.
+The weak generated proof must not remain in normal review just because it is
+legally cleaner. Green-origin is required, but green-origin alone is not
+enough.
+
+Next visual foundation phases:
+
+- G-4.18C quarantines weak green-origin proof while preserving provenance
+  infrastructure.
+- G-4.18D runs an art production method bakeoff.
+- G-4.18E creates one green-origin hero-quality asset family.
+- G-4.19 establishes player visual identity.
+- G-4.20 redesigns the HUD/UI with intentional fantasy/MMORPG styling.
+- G-4.21 composes the origin city hero street/dock slice.
+- G-4.22 reviews the full 8.0+ visual foundation exit gate.
+
+G-5 must not be recommended until G-4.22 accepts the screenshot-supported 8.0+
+origin city foundation.

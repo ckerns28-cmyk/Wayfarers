@@ -1,5 +1,47 @@
 # Newport Art Bible
 
+## G-4 Visual Foundation Charter
+
+Wayfarer cannot exit G-4 until the origin city reaches an 8.0+ visual
+foundation in the player-facing review build.
+
+Canonical charter: `G4_VISUAL_FOUNDATION_CHARTER.md`.
+
+Wayfarer is being built toward a full MMORPG-scale fantasy world. The current
+Godot slice is the origin city: a Newport, Rhode Island-inspired 1700s harbor
+town that should feel like the player's first real home base in a much larger
+world. The long-term game includes quests, monsters, magic, equipment,
+exploration, progression, interiors, NPCs, player identity, and a
+revolutionary-political story backbone with fantasy layered underneath.
+
+The current art-direction focus is not to build those gameplay systems yet.
+It is to make the origin city visually satisfying, stylistically unified,
+commercially safe, and technically scalable.
+
+An 8.0+ visual foundation means:
+
+- The town feels authored, not assembled.
+- Buildings, streets, docks, props, player, and HUD belong to one art
+  direction.
+- No player-facing debug rectangles or placeholder stickers dominate the
+  scene.
+- At least one hero street/dock slice looks like the real game.
+- The HUD/UI has intentional fantasy/MMORPG styling.
+- Yellow temporary art is clearly marked as temporary.
+- Green-origin art production is proven.
+- Screenshot review supports the rating, not just automated validation.
+
+Permanent review rule:
+
+- A validator pass is not an art pass. If screenshots do not look better, the
+  pass is not accepted as visual progress.
+- Green-origin art is required for final production, but green-origin alone is
+  not enough; weak source-safe art must be quarantined from normal review if it
+  lowers the scene quality.
+- Every visual change should be judged against long-term MMORPG viability,
+  Newport 1700s fantasy theme, visual cohesion, legal provenance, player
+  immersion, and roadmap sequencing.
+
 ## Newport Visual Cohesion Rules
 
 The building sprites define the visual standard. Future terrain, props,
@@ -178,3 +220,13 @@ even through a crop or texture transfer, it remains `temporary_review_yellow`.
 The player remains temporary scale/debug art. G-4.19 or soon after must begin
 the player/NPC sprite-style foundation, and no NPC, monster, combat, or
 equipment system should enter normal review until character style is solved.
+
+## G-4.18B Green-Origin Correction
+
+G-4.18B proved that green-origin/provenance production can be documented, but
+the weak generated proof failed the visual bar. It should not stay in normal
+review just because it is legally cleaner.
+
+Green-origin is a production requirement, not an automatic art-direction pass.
+Any green-origin candidate that looks weaker than the yellow temporary review
+art must be quarantined as pipeline evidence until it is redesigned or replaced.
