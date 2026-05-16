@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18C", "build_phase_g_4_18c")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18C Green-Origin Lab Quarantine", "build_label_g_4_18c")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18D", "build_phase_g_4_18d")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18D Green-Origin Method Bakeoff", "build_label_g_4_18d")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -156,6 +156,7 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport/scripts",
 		"res://art_pipeline/newport_green_origin/source_authored",
 		"res://art_pipeline/newport_green_origin/generated",
+		"res://art_pipeline/newport_green_origin/method_bakeoff",
 		"res://art_pipeline/newport_green_origin/contact_sheets",
 		"res://art_pipeline/newport_green_origin/atlases",
 		"res://art_pipeline/newport_green_origin/manifests",
@@ -182,14 +183,20 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport/atlases/newport_hero_street_atlas_v1.png",
 		"res://art_pipeline/newport_green_origin/source_authored/newport_green_origin_style_tokens.json",
 		"res://art_pipeline/newport_green_origin/scripts/generate_green_origin_assets.py",
+		"res://art_pipeline/newport_green_origin/scripts/generate_green_origin_method_bakeoff.py",
 		"res://art_pipeline/newport_green_origin/scripts/validate_green_origin_assets.py",
 		"res://art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json",
+		"res://art_pipeline/newport_green_origin/manifests/green_origin_method_bakeoff_manifest.json",
 		"res://art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/green_origin_asset_contact_sheet.png",
 		"res://art_pipeline/newport_green_origin/contact_sheets/green_origin_palette_shadow_sheet.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d_method_bakeoff_board.png",
+		"res://art_pipeline/newport_green_origin/contact_sheets/g418d_candidate_comparison_strip.png",
 		"res://art_pipeline/newport_green_origin/reports/G418B_GREEN_ORIGIN_ASSET_FACTORY.md",
 		"res://art_pipeline/newport_green_origin/reports/G418C_GREEN_ORIGIN_VISUAL_RETROSPECTIVE.md",
+		"res://art_pipeline/newport_green_origin/reports/G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md",
 		"res://tools/capture_g418c_review_screenshots.mjs",
+		"res://tools/capture_g418d_review_screenshots.mjs",
 	]:
 		_expect(FileAccess.file_exists(file_path), "g418_pipeline_file_" + file_path.get_file())
 
@@ -262,6 +269,7 @@ func _validate_g418_asset_factory(map: Node) -> void:
 				_expect(bool(crop.get("third_party_pixels", true)) == false, "g418_asset_crop_no_third_party_" + String(asset.get("asset_id", "unknown")) + "_" + String(crop.get("source_crop_id", "unknown")))
 	_expect(review_ready_assets >= 16, "g418_asset_manifest_review_ready_assets")
 	_validate_g418b_green_origin_manifest()
+	_validate_g418d_green_origin_bakeoff_manifest()
 
 func _validate_g418b_green_origin_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json")
@@ -303,6 +311,39 @@ func _validate_g418b_green_origin_manifest() -> void:
 					_expect(source_text.find(forbidden) < 0, "g418b_green_origin_input_not_" + forbidden.replace("/", "_").replace("-", "_") + "_" + asset_id)
 				_expect(bool(source.get("source_pixels_used", true)) == false, "g418b_green_origin_input_no_source_pixels_" + asset_id)
 
+func _validate_g418d_green_origin_bakeoff_manifest() -> void:
+	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_method_bakeoff_manifest.json")
+	_expect(not manifest.is_empty(), "g418d_bakeoff_manifest_json")
+	_expect(String(manifest.get("schema_id", "")) == "wayfarer.newport_green_origin.method_bakeoff.v1", "g418d_bakeoff_manifest_schema")
+	_expect(String(manifest.get("phase", "")) == "G-4.18D", "g418d_bakeoff_manifest_phase")
+	_expect(String(manifest.get("recommended_method_for_g418e", "")) == "method_01_generated_base_pixel_cleanup", "g418d_bakeoff_recommendation")
+	_expect(String(manifest.get("normal_review_policy", "")).find("No G-4.18D bakeoff candidate is normal-review eligible") >= 0, "g418d_bakeoff_normal_review_blocked")
+	var candidates: Array = manifest.get("candidates", [])
+	_expect(candidates.size() == 5, "g418d_bakeoff_candidate_count")
+	var pass_count := 0
+	for raw_candidate in candidates:
+		if not raw_candidate is Dictionary:
+			failures.append("g418d_bakeoff_candidate_not_dictionary")
+			continue
+		var candidate: Dictionary = raw_candidate
+		var candidate_id := String(candidate.get("candidate_id", "unknown"))
+		for key in ["candidate_id", "method_name", "sample_path", "provenance_status", "origin_classification", "visual_quality_status", "review_eligible", "normal_review_eligible", "lab_only", "final_commercial_candidate", "final_commercial_eligible", "recommendation", "input_sources", "source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+			_expect(candidate.has(key), "g418d_bakeoff_field_" + candidate_id + "_" + key)
+		_expect(FileAccess.file_exists("res://" + String(candidate.get("sample_path", ""))), "g418d_bakeoff_sample_" + candidate_id)
+		_expect(String(candidate.get("provenance_status", "")) == "green_origin_candidate", "g418d_bakeoff_provenance_" + candidate_id)
+		_expect(String(candidate.get("origin_classification", "")) == "green_origin_candidate", "g418d_bakeoff_origin_" + candidate_id)
+		_expect(bool(candidate.get("review_eligible", true)) == false, "g418d_bakeoff_review_blocked_" + candidate_id)
+		_expect(bool(candidate.get("normal_review_eligible", true)) == false, "g418d_bakeoff_normal_review_blocked_" + candidate_id)
+		_expect(bool(candidate.get("lab_only", false)) == true, "g418d_bakeoff_lab_only_" + candidate_id)
+		_expect(bool(candidate.get("final_commercial_eligible", true)) == false, "g418d_bakeoff_not_final_eligible_" + candidate_id)
+		_expect(bool(candidate.get("source_pixels_from_yellow_uncertain_assets", true)) == false, "g418d_bakeoff_no_yellow_pixels_" + candidate_id)
+		_expect(bool(candidate.get("source_pixels_from_third_party_material", true)) == false, "g418d_bakeoff_no_third_party_pixels_" + candidate_id)
+		_expect(bool(candidate.get("web_scraped_source_pixels", true)) == false, "g418d_bakeoff_no_web_pixels_" + candidate_id)
+		if String(candidate.get("recommendation", "")) == "PASS":
+			pass_count += 1
+			_expect(candidate_id == "method_01_generated_base_pixel_cleanup", "g418d_bakeoff_pass_is_method_01")
+	_expect(pass_count == 1, "g418d_bakeoff_exactly_one_pass")
+
 func _validate_g418c_green_origin_lab_quarantine(main: Node, map: Node, hud: CanvasLayer) -> void:
 	_expect(main.has_method("set_green_origin_lab_mode"), "g418c_lab_main_set_api")
 	_expect(main.has_method("is_green_origin_lab_mode"), "g418c_lab_main_query_api")
@@ -323,8 +364,13 @@ func _validate_g418c_green_origin_lab_quarantine(main: Node, map: Node, hud: Can
 		_expect(bool(main.call("is_green_origin_lab_mode")), "g418c_lab_can_enable_main")
 		var wharf := map.get_node_or_null("WharfWaterLayer")
 		_expect(wharf != null and bool(wharf.call("is_green_origin_lab_mode")), "g418c_lab_enables_wharf_layer")
+		var bakeoff_panel := hud.get_node_or_null("BakeoffPanel") if hud else null
+		_expect(bakeoff_panel != null and bakeoff_panel.visible, "g418d_lab_bakeoff_panel_visible")
+		var bakeoff_board := hud.get_node_or_null("BakeoffPanel/MarginContainer/BakeoffBoard") if hud else null
+		_expect(bakeoff_board != null and bakeoff_board.get("texture") != null, "g418d_lab_bakeoff_board_texture")
 		main.call("set_green_origin_lab_mode", false)
 		_expect(not bool(main.call("is_green_origin_lab_mode")), "g418c_lab_can_disable_main")
+		_expect(bakeoff_panel == null or not bakeoff_panel.visible, "g418d_lab_bakeoff_panel_hidden_after_disable")
 
 func _load_json_dictionary(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):

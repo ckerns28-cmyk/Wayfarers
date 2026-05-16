@@ -85,3 +85,21 @@ theme_override_constants/margin_bottom = 14
 theme_override_font_sizes/font_size = 20
 text = ""
 autowrap_mode = 3
+
+[node name="BakeoffPanel" type="PanelContainer" parent="."]
+visible = false
+offset_left = 270.0
+offset_top = 12.0
+offset_right = 1358.0
+offset_bottom = 452.0
+
+[node name="MarginContainer" type="MarginContainer" parent="BakeoffPanel"]
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="BakeoffBoard" type="TextureRect" parent="BakeoffPanel/MarginContainer"]
+custom_minimum_size = Vector2(1040, 420)
+expand_mode = 1
+stretch_mode = 5

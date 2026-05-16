@@ -1,0 +1,82 @@
+{
+  "phase": "G-4.18D",
+  "tool": "Python/Pillow alpha, crop, and contrast inspection",
+  "gimp_version_checked": "GNU Image Manipulation Program version 3.2.4",
+  "samples": {
+    "method_01_generated_base_pixel_cleanup": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_01_generated_base_pixel_cleanup.png",
+      "sha256": "593dbd8b7ac144220ee26c3bc04e63920752d292d50f9838d3764833a8f82d09",
+      "alpha": {
+        "bbox": {
+          "x": 18,
+          "y": 48,
+          "w": 285,
+          "h": 100
+        },
+        "opaque_pixel_count": 27185,
+        "alpha_coverage": 0.5664
+      },
+      "contrast_stddev": 56.99
+    },
+    "method_02_procedural_primitive_assembly": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_02_procedural_primitive_assembly.png",
+      "sha256": "a8e7a2f4abea4864a90ad11c7b4b1a7a2c09d2d8c2d766e2e8dfd536750df234",
+      "alpha": {
+        "bbox": {
+          "x": 28,
+          "y": 58,
+          "w": 261,
+          "h": 88
+        },
+        "opaque_pixel_count": 19801,
+        "alpha_coverage": 0.4125
+      },
+      "contrast_stddev": 44.28
+    },
+    "method_03_reference_board_guided_generation": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_03_reference_board_guided.png",
+      "sha256": "16ef440c0657c704986b9cd51cb695461d3fd2a7c9d659094b00d0fc581480ce",
+      "alpha": {
+        "bbox": {
+          "x": 28,
+          "y": 64,
+          "w": 266,
+          "h": 78
+        },
+        "opaque_pixel_count": 15987,
+        "alpha_coverage": 0.3331
+      },
+      "contrast_stddev": 94.85
+    },
+    "method_04_internal_green_kitbash": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_04_internal_green_kitbash.png",
+      "sha256": "32796ba3ebfaf39785adff9d467c791455c06410fe55c2dc123bd4489957d445",
+      "alpha": {
+        "bbox": {
+          "x": 24,
+          "y": 56,
+          "w": 273,
+          "h": 94
+        },
+        "opaque_pixel_count": 23044,
+        "alpha_coverage": 0.4801
+      },
+      "contrast_stddev": 47.63
+    },
+    "method_05_godot_authored_dressing_shapes": {
+      "path": "art_pipeline/newport_green_origin/method_bakeoff/generated/method_05_godot_authored_dressing_shapes.png",
+      "sha256": "72a75e96112d371947394f7b1d8c47848b3a4567b462d4869824c1d14af63bdb",
+      "alpha": {
+        "bbox": {
+          "x": 23,
+          "y": 75,
+          "w": 275,
+          "h": 51
+        },
+        "opaque_pixel_count": 13377,
+        "alpha_coverage": 0.2787
+      },
+      "contrast_stddev": 36.22
+    }
+  }
+}
