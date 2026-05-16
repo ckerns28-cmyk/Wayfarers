@@ -1,10 +1,10 @@
 {
   "schema_id": "wayfarer.newport.visual_production_registry.v1",
-  "phase": "G-4.20A",
+  "phase": "G-4.20B",
   "generated_at": "2026-05-16",
   "registry_role": "Newport visual production registry and core asset trust audit.",
   "north_star": "Newport is the starting town/village for Wayfarer: a believable, enjoyable, navigable opening location with coastal identity, readable harbor/market/civic/residential organization, emotional invitation to explore, gameplay readiness, and visual consistency with the G-4.18D/G-4.19A atelier standard.",
-  "policy": "G-4.20A is the first mass atelier production wave. It adds controlled environmental believability sheets and placement while preserving the G-4.19B visual registry, audit discipline, pending AI license policy, and Tavern/Inn centerpiece rebuild lock.",
+  "policy": "G-4.20B is the Town Identity atelier wave. It adds controlled signage, lamps, wayfinding, civic/market markers, and shopfront support assets while preserving the G-4.20A environmental believability wave, pending AI license policy, and Tavern/Inn centerpiece rebuild lock.",
   "status_taxonomy": [
     "APPROVED_FINAL",
     "APPROVED_TEMPORARY",
@@ -34,7 +34,7 @@
     {
       "wave_id": "wave_2_town_identity",
       "title": "Town identity",
-      "status": "planned",
+      "status": "complete_g420b_town_identity_atelier_wave",
       "atelier_required": true,
       "scope": [
         "signs",
@@ -44,7 +44,9 @@
         "banners",
         "civic markers"
       ],
-      "acceptance_note": "Improve navigation and district identity without over-scattering props."
+      "acceptance_note": "G-4.20B delivered the Town Identity atelier wave: signs/shop markers, lamps/posts/wayfinding, civic/market identity, and shopfront support/town-color accents.",
+      "accepted_pack_count": 4,
+      "accepted_asset_count": 32
     },
     {
       "wave_id": "wave_3_economy_life",
@@ -63,7 +65,7 @@
     {
       "wave_id": "wave_4_building_rebuild_or_enhancement",
       "title": "Building rebuild or enhancement",
-      "status": "blocked_until_environmental_glue_or_audit_forces_rebuild",
+      "status": "blocked_until_identity_and_environmental_glue_or_audit_forces_rebuild",
       "atelier_required": true,
       "scope": [
         "centerpiece Tavern/Inn rebuild",
@@ -77,7 +79,7 @@
     {
       "wave_id": "wave_5_character_npc_standard",
       "title": "Character/NPC standard",
-      "status": "blocked_until_environment_context_is_stronger",
+      "status": "blocked_until_town_identity_context_is_stronger",
       "atelier_required": true,
       "scope": [
         "player sprite standard",
@@ -2426,6 +2428,998 @@
       "final_commercial_candidate": false,
       "final_commercial_eligible": false,
       "notes": "Firewood stack and chopping block for side yards. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_sign_tavern_inn_placeholder_01",
+      "name": "Temporary Tavern/Inn Hanging Sign Placeholder",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_tavern_inn_placeholder_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled market-spine and harbor-facing shop identity placement only; no readable text, no over-decoration, no navigation blocking, and no Tavern/Inn building finalization."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Supplies a future-ready inn/tavern sign candidate without finalizing the current Tavern/Inn building.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Warm social-hub sign candidate; registered only until the future centerpiece rebuild. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_sign_mercantile_crate_marker_01",
+      "name": "Mercantile Hanging Sign With Parcel Icon",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_mercantile_crate_marker_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and harbor-facing shop identity placement only; no readable text, no over-decoration, no navigation blocking, and no Tavern/Inn building finalization."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Improves mercantile readability along the market spine.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Weathered green painted shop sign with parcel icon. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_sign_fishmonger_icon_board_01",
+      "name": "Fishmonger Sign With Fish Icon",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_fishmonger_icon_board_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and harbor-facing shop identity placement only; no readable text, no over-decoration, no navigation blocking, and no Tavern/Inn building finalization."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Marks the west fishmonger/harbor market identity without creating a building rebuild.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Blue fish sign with crisp coastal silhouette. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_sign_dock_warehouse_barrel_anchor_01",
+      "name": "Dock Warehouse Sign With Barrel And Anchor",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_dock_warehouse_barrel_anchor_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and harbor-facing shop identity placement only; no readable text, no over-decoration, no navigation blocking, and no Tavern/Inn building finalization."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Clarifies working-wharf storage identity.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Round warehouse marker with barrel and anchor icon. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_sign_inn_rooms_key_board_01",
+      "name": "Inn Rooms Small Key And Bed Board",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_inn_rooms_key_board_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled market-spine and harbor-facing shop identity placement only; no readable text, no over-decoration, no navigation blocking, and no Tavern/Inn building finalization."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Registered inn identity candidate for future non-final use.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Key and bed board; not placed on the current Tavern/Inn. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_sign_harbor_direction_arrows_01",
+      "name": "Blank Harbor Directional Arrow Sign Cluster",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_harbor_direction_arrows_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and harbor-facing shop identity placement only; no readable text, no over-decoration, no navigation blocking, and no Tavern/Inn building finalization."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Supports wharf-to-town orientation and route readability.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Blank painted arrows for player orientation. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_sign_hanging_bracket_iron_01",
+      "name": "Ornate Iron Hanging Sign Bracket",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_hanging_bracket_iron_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled market-spine and harbor-facing shop identity placement only; no readable text, no over-decoration, no navigation blocking, and no Tavern/Inn building finalization."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds reusable sign-support grammar to shopfronts.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Wrought iron bracket candidate for controlled shopfront support. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_sign_painted_shop_plaque_01",
+      "name": "Small Painted Shop Plaque Board",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_painted_shop_plaque_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled market-spine and harbor-facing shop identity placement only; no readable text, no over-decoration, no navigation blocking, and no Tavern/Inn building finalization."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds compact shopfront identity without noisy text.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Red coastal plaque with ship icon and chipped paint. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_wayfinding_street_lamp_post_01",
+      "name": "Colonial Street Lamp Post",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_street_lamp_post_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Frames the market spine and civic approach as intentional town space.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.2,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Tall black iron lamp with contained warm glass glow. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_wayfinding_dock_lantern_post_01",
+      "name": "Dock Lantern Post With Rope Wrap",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_dock_lantern_post_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Marks harbor routes with working-wharf lighting.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Rope-wrapped post with suspended lantern. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_wayfinding_multi_arrow_signpost_01",
+      "name": "Blank Multi-Arrow Signpost",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_multi_arrow_signpost_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Improves player orientation at wharf-to-town splits without readable text.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Weathered directional signpost with blank arrows. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_wayfinding_bollard_lantern_01",
+      "name": "Bollard-Mounted Lantern",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_bollard_lantern_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds a low harbor marker where full posts would be too tall.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Brass lantern mounted on a stout bollard. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_wayfinding_harbor_road_marker_01",
+      "name": "Harbor Road Marker Stone With Arrow Icon",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_harbor_road_marker_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Gives the market road a grounded coastal wayfinding accent.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Chipped stone marker with arrow pictogram. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_wayfinding_rope_rail_post_pair_01",
+      "name": "Rope-Rail Post Pair Accent",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_rope_rail_post_pair_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Defines dock edges without blocking movement.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Short rope rail with salt-worn posts. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_wayfinding_pier_lantern_stand_01",
+      "name": "Short Pier Lantern On Crate-Height Stand",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_pier_lantern_stand_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds readable pier lighting at working-wharf scale.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Compact crate-height lantern stand. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_wayfinding_coastal_waystone_01",
+      "name": "Small Coastal Waystone With Shell And Anchor Icon",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_coastal_waystone_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled wayfinding placement at market-spine, wharf, and civic approach points only; keep route tiles clear and avoid visual noise."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Registers coastal civic identity in quieter corners.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Shell and anchor waystone without letters. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_civic_town_notice_board_01",
+      "name": "Town Notice Board With Blank Postings",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_town_notice_board_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled civic green, market spine, and dock-rules placement only; all postings stay non-readable and routes remain clear."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Gives the civic green a playable public-information landmark.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Large blank notice board with weathered wood and parchment. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_civic_market_banner_strand_01",
+      "name": "Market Banner Strand",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_market_banner_strand_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled civic green, market spine, and dock-rules placement only; all postings stay non-readable and routes remain clear."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds controlled market color without crowding the street.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Muted coastal banner strand for market-spine identity. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_civic_harbor_bulletin_board_01",
+      "name": "Harbor Bulletin Board With Blank Notices",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_harbor_bulletin_board_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled civic green, market spine, and dock-rules placement only; all postings stay non-readable and routes remain clear."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Marks the working harbor notice point.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Wide harbor bulletin board with nautical trim. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_civic_flag_cluster_01",
+      "name": "Small Civic Flag Cluster",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_flag_cluster_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled civic green, market spine, and dock-rules placement only; all postings stay non-readable and routes remain clear."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds civic identity at the custom-house approach.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Short flag cluster with muted civic colors. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_civic_anchor_plaque_01",
+      "name": "Brass Civic Plaque With Anchor Star Icon",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_anchor_plaque_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled civic green, market spine, and dock-rules placement only; all postings stay non-readable and routes remain clear."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Supplies a civic marker candidate for future formal building support.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Brass anchor plaque on painted wood backing. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_civic_posting_pole_01",
+      "name": "Posting Pole With Tied Notices And Wax Seals",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_posting_pole_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled civic green, market spine, and dock-rules placement only; all postings stay non-readable and routes remain clear."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds readable public posting detail near market/civic paths.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Compact posting pole with blank notices. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_civic_market_pennant_sign_01",
+      "name": "Market Stall Hanging Pennant Sign",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_market_pennant_sign_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled civic green, market spine, and dock-rules placement only; all postings stay non-readable and routes remain clear."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds reusable market identity without text labels.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.8,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Blank cloth pennant sign for market support. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_civic_dock_rules_board_01",
+      "name": "Dock Rules Board With Simple Pictogram Marks",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_dock_rules_board_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled civic green, market spine, and dock-rules placement only; all postings stay non-readable and routes remain clear."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Clarifies harbor rules visually without readable text.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Pictogram dock board with no letters. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shopfront_canvas_awning_segment_01",
+      "name": "Small Folded Canvas Awning Segment",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_canvas_awning_segment_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds controlled shopfront color without a building rebuild.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Red cream and blue folded awning segment. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shopfront_display_crates_slate_01",
+      "name": "Display Crate Stack With Blank Slate And Cloth Bundles",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_display_crates_slate_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Supports market-spine shopfront believability while keeping doorways clear.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Display crates with cloth and blank chalk slate. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shopfront_folded_cloth_bundle_01",
+      "name": "Folded Cloth Merchant Bundle",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_folded_cloth_bundle_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds merchant material texture at market frontage.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Roped folded cloth stack with coastal colors. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shopfront_chalk_slate_board_01",
+      "name": "Portable Merchant Chalk Slate",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_chalk_slate_board_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds shopfront identity without readable lettering.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Blank portable slate board. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shopfront_hanging_basket_01",
+      "name": "Hanging Flower Basket/Window-Box Accent",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_hanging_basket_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds memory and warmth to non-centerpiece shopfronts.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Flower basket with strong silhouette and warm color. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shopfront_coastal_planter_01",
+      "name": "Small Coastal Planter With Herbs",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_coastal_planter_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds grounded town-color near civic and shop edges.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.0,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Weathered herb planter with sea-green boards. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shopfront_rope_pennant_rail_01",
+      "name": "Rope Rail Accent With Painted Pennant Ties",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_rope_pennant_rail_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "MapLayer G-4.20B town identity controlled subset",
+        "used_in_g420b_controlled_subset": true,
+        "usage_notes": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Defines market edges and wharf approach without hard blocking.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 8.9,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Low rope rail with muted pennants. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
+    },
+    {
+      "asset_id": "atelier_shopfront_basket_parcel_display_01",
+      "name": "Compact Shopfront Basket And Parcel Display Cluster",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_basket_parcel_display_01.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Registered G-4.20B atlas candidate; not placed in the controlled subset yet",
+        "used_in_g420b_controlled_subset": false,
+        "usage_notes": "Controlled shopfront and market support placement only; keep entrances readable, avoid clutter scatter, and do not use these props to treat unverified buildings as final."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Adds compact market goods to shopfront support areas.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "atelier_artifacts": {
+        "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+        "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+        "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+        "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g420b_town_identity_assets.py",
+        "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+        "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+        "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+        "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md"
+      },
+      "visual_quality_rating": 9.1,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "notes": "Basket, parcel, and fabric display cluster. AI-assisted green-origin candidate pending final license policy approval; not a building rebuild, not a Tavern/Inn patch, and not final-commercial promoted."
     }
   ]
 }

@@ -54,8 +54,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.20A", "build_phase_g_4_20a")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.20A Newport Environmental Believability Atelier Wave", "build_label_g_4_20a")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.20B", "build_phase_g_4_20b")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.20B Newport Town Identity Atelier Wave", "build_label_g_4_20b")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -401,14 +401,16 @@ func _validate_g418_asset_factory(map: Node) -> void:
 	_validate_g419a_atelier_dock_clutter_manifest()
 	_validate_g419b_visual_production_registry()
 	_validate_g420a_environmental_believability_wave(map)
+	_validate_g420b_town_identity_wave(map)
 
 func _validate_g419b_visual_production_registry() -> void:
 	var registry := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_visual_production_registry.json")
 	_expect(not registry.is_empty(), "g419b_visual_registry_json")
 	_expect(String(registry.get("schema_id", "")) == "wayfarer.newport.visual_production_registry.v1", "g419b_visual_registry_schema")
-	_expect(String(registry.get("phase", "")) == "G-4.20A", "g420a_visual_registry_phase")
+	_expect(String(registry.get("phase", "")) == "G-4.20B", "g420b_visual_registry_phase")
 	_expect(String(registry.get("north_star", "")).find("starting town/village") >= 0, "g419b_visual_registry_north_star")
-	_expect(String(registry.get("policy", "")).find("first mass atelier production wave") >= 0, "g420a_visual_registry_first_mass_wave_policy")
+	var registry_policy := String(registry.get("policy", "")).to_lower()
+	_expect(registry_policy.find("town identity") >= 0, "g420b_visual_registry_town_identity_policy")
 
 	var statuses: Array = registry.get("status_taxonomy", [])
 	for status in ["APPROVED_FINAL", "APPROVED_TEMPORARY", "NEEDS_REWORK", "REBUILD_REQUIRED", "REBUILD_REQUIRED_CENTERPIECE", "DEPRECATED_DO_NOT_USE", "PROVENANCE_UNKNOWN"]:
@@ -503,6 +505,10 @@ func _validate_g419b_visual_production_registry() -> void:
 		"atelier_path_market_cobble_long_01",
 		"atelier_shore_seaweed_drift_line_01",
 		"atelier_ground_foundation_shadow_strip_01",
+		"atelier_sign_mercantile_crate_marker_01",
+		"atelier_wayfinding_street_lamp_post_01",
+		"atelier_civic_town_notice_board_01",
+		"atelier_shopfront_display_crates_slate_01",
 		"player_placeholder_drawn"
 	]:
 		_expect(by_id.has(required_id), "g419b_visual_registry_required_entry_" + required_id)
@@ -611,6 +617,106 @@ func _validate_g420a_environmental_believability_wave(map: Node) -> void:
 					_expect(purpose.find("tavern") < 0, "g420a_maplayer_no_tavern_patch_" + String(placement.get("asset_id", "unknown")))
 					var dest: Rect2 = placement.get("dest", Rect2())
 					_expect(dest.size.x > 0.0 and dest.size.y > 0.0, "g420a_maplayer_placement_has_dest_" + String(placement.get("asset_id", "unknown")))
+
+func _validate_g420b_town_identity_wave(map: Node) -> void:
+	var wave := _load_json_dictionary("res://art_pipeline/newport_atelier/manifests/newport_atelier_town_identity_manifest.json")
+	_expect(not wave.is_empty(), "g420b_town_identity_wave_manifest_json")
+	_expect(String(wave.get("schema_id", "")) == "wayfarer.newport_atelier.g420b.town_identity_wave.v1", "g420b_town_identity_wave_schema")
+	_expect(String(wave.get("phase", "")) == "G-4.20B", "g420b_town_identity_wave_phase")
+	_expect(String(wave.get("wave_id", "")) == "wave_2_town_identity", "g420b_town_identity_wave_id")
+	_expect(float(wave.get("visual_quality_gate", 0.0)) >= 8.5, "g420b_town_identity_wave_8_5_gate")
+	var placement_policy := String(wave.get("placement_policy", ""))
+	_expect(placement_policy.find("no over-decoration") >= 0, "g420b_town_identity_wave_no_overdecoration")
+	_expect(placement_policy.find("no navigation blocking") >= 0, "g420b_town_identity_wave_no_navigation_blocking")
+	_expect(String(wave.get("tavern_inn_lock", "")).find("REBUILD_REQUIRED_CENTERPIECE") >= 0, "g420b_town_identity_wave_tavern_lock")
+
+	var packs: Array = wave.get("packs", [])
+	_expect(packs.size() == 4, "g420b_town_identity_wave_pack_count")
+	var wave_assets: Array = wave.get("assets", [])
+	_expect(wave_assets.size() == 32, "g420b_town_identity_wave_asset_count")
+	var expected_pack_ids := ["sign_shop_markers", "lamps_wayfinding", "civic_market_identity", "shopfront_support_accents"]
+	var seen_pack_ids: Array[String] = []
+	var seen_asset_ids: Array[String] = []
+	for raw_pack in packs:
+		if not raw_pack is Dictionary:
+			failures.append("g420b_town_identity_pack_not_dictionary")
+			continue
+		var pack: Dictionary = raw_pack
+		var pack_id := String(pack.get("pack_id", ""))
+		seen_pack_ids.append(pack_id)
+		for path_key in ["manifest", "source_image", "generation_prompt", "atlas", "contact_sheet", "validation_report", "provenance_report"]:
+			var rel_path := String(pack.get(path_key, ""))
+			_expect(rel_path != "" and FileAccess.file_exists("res://" + rel_path), "g420b_town_identity_pack_path_" + pack_id + "_" + path_key)
+			if rel_path.ends_with(".png"):
+				_expect(FileAccess.file_exists("res://" + rel_path + ".import"), "g420b_town_identity_pack_import_" + pack_id + "_" + path_key)
+				_expect(ResourceLoader.load("res://" + rel_path, "Texture2D") != null, "g420b_town_identity_pack_loads_" + pack_id + "_" + path_key)
+		var pack_manifest := _load_json_dictionary("res://" + String(pack.get("manifest", "")))
+		_expect(not pack_manifest.is_empty(), "g420b_town_identity_pack_manifest_json_" + pack_id)
+		_expect(String(pack_manifest.get("phase", "")) == "G-4.20B", "g420b_town_identity_pack_phase_" + pack_id)
+		_expect(String(pack_manifest.get("pack_id", "")) == pack_id, "g420b_town_identity_pack_id_match_" + pack_id)
+		_expect(String(pack_manifest.get("tavern_inn_lock", "")).find("REBUILD_REQUIRED_CENTERPIECE") >= 0, "g420b_town_identity_pack_tavern_lock_" + pack_id)
+		var qa_report := _load_json_dictionary("res://" + String(pack.get("validation_report", "")))
+		_expect(not qa_report.is_empty(), "g420b_town_identity_pack_qa_json_" + pack_id)
+		_expect(String(qa_report.get("phase", "")) == "G-4.20B", "g420b_town_identity_pack_qa_phase_" + pack_id)
+		_expect(String(qa_report.get("status", "")) == "PASS", "g420b_town_identity_pack_qa_pass_" + pack_id)
+		var assets: Array = pack_manifest.get("assets", [])
+		_expect(assets.size() == 8, "g420b_town_identity_pack_asset_count_" + pack_id)
+		for raw_asset in assets:
+			if not raw_asset is Dictionary:
+				failures.append("g420b_town_identity_asset_not_dictionary_" + pack_id)
+				continue
+			var asset: Dictionary = raw_asset
+			var asset_id := String(asset.get("asset_id", "unknown"))
+			seen_asset_ids.append(asset_id)
+			for key in ["asset_id", "asset_type", "source_identity", "category", "path", "atlas", "atlas_region", "sprite_size", "generation_prompt", "source_image", "extraction_script", "input_sources", "provenance_status", "origin_classification", "commercial_use_status", "visual_quality_rating", "visual_quality_gate", "gameplay_role", "extraction_qa", "sha256", "notes"]:
+				_expect(asset.has(key), "g420b_town_identity_asset_field_" + asset_id + "_" + key)
+			_expect(String(asset.get("source_type", "")) == "ai_assisted_image_generation_with_local_chroma_extraction", "g420b_town_identity_source_type_" + asset_id)
+			_expect(String(asset.get("provenance_status", "")) == "ai_assisted_green_origin_candidate_pending_license_review", "g420b_town_identity_provenance_" + asset_id)
+			_expect(String(asset.get("origin_classification", "")) == "green_origin_candidate_pending_license_review", "g420b_town_identity_origin_" + asset_id)
+			_expect(String(asset.get("commercial_use_status", "")) == "green_origin_candidate_pending_license_review", "g420b_town_identity_commercial_" + asset_id)
+			_expect(float(asset.get("visual_quality_rating", 0.0)) >= 8.5, "g420b_town_identity_visual_rating_" + asset_id)
+			_expect(bool(asset.get("review_eligible", false)) == true, "g420b_town_identity_review_eligible_" + asset_id)
+			_expect(bool(asset.get("normal_review_eligible", false)) == true, "g420b_town_identity_normal_review_eligible_" + asset_id)
+			_expect(bool(asset.get("lab_only", true)) == false, "g420b_town_identity_not_lab_only_" + asset_id)
+			_expect(bool(asset.get("final_commercial_candidate", true)) == false, "g420b_town_identity_not_final_candidate_" + asset_id)
+			_expect(bool(asset.get("final_commercial_eligible", true)) == false, "g420b_town_identity_not_final_eligible_" + asset_id)
+			_expect(bool(asset.get("source_pixels_from_yellow_uncertain_assets", true)) == false, "g420b_town_identity_no_yellow_pixels_" + asset_id)
+			_expect(bool(asset.get("source_pixels_from_third_party_material", true)) == false, "g420b_town_identity_no_third_party_pixels_" + asset_id)
+			_expect(bool(asset.get("web_scraped_source_pixels", true)) == false, "g420b_town_identity_no_web_pixels_" + asset_id)
+			var asset_path := String(asset.get("path", ""))
+			_expect(FileAccess.file_exists("res://" + asset_path), "g420b_town_identity_asset_path_" + asset_id)
+			_expect(FileAccess.file_exists("res://" + asset_path + ".import"), "g420b_town_identity_asset_import_" + asset_id)
+			_expect(ResourceLoader.load("res://" + asset_path, "Texture2D") != null, "g420b_town_identity_asset_loads_" + asset_id)
+			var qa: Dictionary = asset.get("extraction_qa", {})
+			_expect(String(qa.get("status", "")) == "PASS", "g420b_town_identity_asset_qa_pass_" + asset_id)
+			_expect(int(qa.get("magenta_pixels_remaining", -1)) == 0, "g420b_town_identity_no_magenta_" + asset_id)
+			_expect(int(qa.get("magenta_halo_pixels", -1)) == 0, "g420b_town_identity_no_magenta_halo_" + asset_id)
+			_expect(qa.get("cutoff_edges", ["unknown"]) == [], "g420b_town_identity_no_cutoff_edges_" + asset_id)
+			_expect(bool(qa.get("readable", false)) == true, "g420b_town_identity_readable_" + asset_id)
+	for pack_id in expected_pack_ids:
+		_expect(seen_pack_ids.has(pack_id), "g420b_town_identity_has_pack_" + pack_id)
+	_expect(seen_asset_ids.size() == 32, "g420b_town_identity_unique_asset_manifest_count")
+
+	if map:
+		var layer := map.get_node_or_null("DecorativePropsLayer")
+		_expect(layer != null and layer.has_method("newport_town_identity_version"), "g420b_maplayer_town_identity_api")
+		if layer and layer.has_method("newport_town_identity_version"):
+			_expect(String(layer.call("newport_town_identity_version")) == "G-4.20B", "g420b_maplayer_town_identity_version")
+			var materials: Array = layer.call("newport_town_identity_materials")
+			_expect(materials.size() == 32, "g420b_maplayer_town_identity_material_count")
+			for asset_id in ["atelier_sign_mercantile_crate_marker_01", "atelier_wayfinding_street_lamp_post_01", "atelier_civic_town_notice_board_01", "atelier_shopfront_display_crates_slate_01"]:
+				_expect(materials.has(asset_id), "g420b_maplayer_material_" + asset_id)
+			var placements: Array = layer.call("newport_town_identity_placements")
+			_expect(placements.size() >= 14 and placements.size() <= 24, "g420b_maplayer_controlled_subset_size")
+			for raw_placement in placements:
+				if raw_placement is Dictionary:
+					var placement: Dictionary = raw_placement
+					var asset_id := String(placement.get("asset_id", "unknown"))
+					var purpose := String(placement.get("purpose", "")).to_lower()
+					_expect(asset_id != "atelier_sign_tavern_inn_placeholder_01", "g420b_maplayer_temporary_tavern_sign_not_placed")
+					_expect(purpose.find("tavern") < 0, "g420b_maplayer_no_tavern_patch_" + asset_id)
+					var dest: Rect2 = placement.get("dest", Rect2())
+					_expect(dest.size.x > 0.0 and dest.size.y > 0.0, "g420b_maplayer_placement_has_dest_" + asset_id)
 
 func _validate_g418b_green_origin_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json")
@@ -1238,10 +1344,12 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("atelier_cargo_pipeline_pass", "") == "G-4.18D", "starter_plan_atelier_cargo_pipeline_pass_g_4_18d")
 	_expect(plan.get("dock_clutter_atelier_pack_pass", "") == "G-4.19A", "starter_plan_dock_clutter_atelier_pack_pass_g_4_19a")
 	_expect(plan.get("environmental_believability_wave_pass", "") == "G-4.20A", "starter_plan_environmental_believability_wave_pass_g_4_20a")
+	_expect(plan.get("town_identity_wave_pass", "") == "G-4.20B", "starter_plan_town_identity_wave_pass_g_4_20b")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("atelier cargo") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("G-4.19A") >= 0, "starter_plan_hero_street_atlas_proof")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20A") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20a")
+	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20b")
 	var tavern_lock := String(plan.get("tavern_inn_centerpiece_lock", ""))
-	_expect(tavern_lock.find("REBUILD_REQUIRED_CENTERPIECE") >= 0 and tavern_lock.find("Hotel Viking") >= 0, "starter_plan_tavern_centerpiece_lock_g_4_20a")
+	_expect(tavern_lock.find("REBUILD_REQUIRED_CENTERPIECE") >= 0 and tavern_lock.find("Hotel Viking") >= 0, "starter_plan_tavern_centerpiece_lock_g_4_20b")
 	_expect(plan.get("green_origin_pipeline_pass", "") == "G-4.18B", "starter_plan_green_origin_pipeline_pass")
 	_expect(String(plan.get("yellow_review_art_policy", "")).find("yellow pixels cannot source final-commercial green assets") >= 0, "starter_plan_yellow_review_art_policy")
 	_expect(int(plan.get("layout_rule_count", 0)) == NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size(), "starter_plan_g415_layout_rule_count")
@@ -1753,6 +1861,7 @@ func _print_report() -> void:
 		print("atelierCargoPipelinePass=", NEWPORT_TOWN.starter_district_plan().get("atelier_cargo_pipeline_pass", ""))
 		print("dockClutterAtelierPackPass=", NEWPORT_TOWN.starter_district_plan().get("dock_clutter_atelier_pack_pass", ""))
 		print("visualProductionAuditPass=", NEWPORT_TOWN.starter_district_plan().get("visual_production_audit_pass", ""))
+		print("townIdentityWavePass=", NEWPORT_TOWN.starter_district_plan().get("town_identity_wave_pass", ""))
 	print("reachabilityTargets=", NEWPORT_TOWN.reachability_targets())
 	print("failureCount=", failures.size())
 	print("failures=", failures)

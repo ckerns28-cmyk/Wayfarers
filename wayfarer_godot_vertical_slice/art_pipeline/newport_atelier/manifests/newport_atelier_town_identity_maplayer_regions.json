@@ -1,0 +1,438 @@
+{
+  "sign_shop_markers": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+    "assets": {
+      "atelier_sign_tavern_inn_placeholder_01": {
+        "region": {
+          "x": 329,
+          "y": 19,
+          "w": 312,
+          "h": 268
+        },
+        "sprite_size": {
+          "w": 348,
+          "h": 304
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_sign_mercantile_crate_marker_01": {
+        "region": {
+          "x": 905,
+          "y": 32,
+          "w": 314,
+          "h": 240
+        },
+        "sprite_size": {
+          "w": 350,
+          "h": 276
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_sign_fishmonger_icon_board_01": {
+        "region": {
+          "x": 329,
+          "y": 293,
+          "w": 311,
+          "h": 245
+        },
+        "sprite_size": {
+          "w": 347,
+          "h": 281
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_sign_dock_warehouse_barrel_anchor_01": {
+        "region": {
+          "x": 909,
+          "y": 290,
+          "w": 301,
+          "h": 226
+        },
+        "sprite_size": {
+          "w": 337,
+          "h": 262
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_sign_inn_rooms_key_board_01": {
+        "region": {
+          "x": 352,
+          "y": 546,
+          "w": 243,
+          "h": 192
+        },
+        "sprite_size": {
+          "w": 279,
+          "h": 228
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_sign_harbor_direction_arrows_01": {
+        "region": {
+          "x": 929,
+          "y": 542,
+          "w": 267,
+          "h": 228
+        },
+        "sprite_size": {
+          "w": 303,
+          "h": 264
+        },
+        "recommended_game_scale": 0.16
+      },
+      "atelier_sign_hanging_bracket_iron_01": {
+        "region": {
+          "x": 302,
+          "y": 737,
+          "w": 374,
+          "h": 261
+        },
+        "sprite_size": {
+          "w": 410,
+          "h": 297
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_sign_painted_shop_plaque_01": {
+        "region": {
+          "x": 924,
+          "y": 774,
+          "w": 262,
+          "h": 209
+        },
+        "sprite_size": {
+          "w": 298,
+          "h": 245
+        },
+        "recommended_game_scale": 0.14
+      }
+    }
+  },
+  "lamps_wayfinding": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+    "assets": {
+      "atelier_wayfinding_street_lamp_post_01": {
+        "region": {
+          "x": 440,
+          "y": 9,
+          "w": 120,
+          "h": 339
+        },
+        "sprite_size": {
+          "w": 156,
+          "h": 375
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_wayfinding_dock_lantern_post_01": {
+        "region": {
+          "x": 897,
+          "y": 23,
+          "w": 203,
+          "h": 309
+        },
+        "sprite_size": {
+          "w": 239,
+          "h": 345
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_wayfinding_multi_arrow_signpost_01": {
+        "region": {
+          "x": 383,
+          "y": 340,
+          "w": 232,
+          "h": 246
+        },
+        "sprite_size": {
+          "w": 268,
+          "h": 282
+        },
+        "recommended_game_scale": 0.16
+      },
+      "atelier_wayfinding_bollard_lantern_01": {
+        "region": {
+          "x": 915,
+          "y": 344,
+          "w": 142,
+          "h": 246
+        },
+        "sprite_size": {
+          "w": 178,
+          "h": 282
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_wayfinding_harbor_road_marker_01": {
+        "region": {
+          "x": 402,
+          "y": 579,
+          "w": 177,
+          "h": 196
+        },
+        "sprite_size": {
+          "w": 213,
+          "h": 232
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_wayfinding_rope_rail_post_pair_01": {
+        "region": {
+          "x": 841,
+          "y": 587,
+          "w": 285,
+          "h": 196
+        },
+        "sprite_size": {
+          "w": 321,
+          "h": 232
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_wayfinding_pier_lantern_stand_01": {
+        "region": {
+          "x": 402,
+          "y": 762,
+          "w": 178,
+          "h": 249
+        },
+        "sprite_size": {
+          "w": 214,
+          "h": 285
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_wayfinding_coastal_waystone_01": {
+        "region": {
+          "x": 878,
+          "y": 796,
+          "w": 176,
+          "h": 204
+        },
+        "sprite_size": {
+          "w": 212,
+          "h": 240
+        },
+        "recommended_game_scale": 0.13
+      }
+    }
+  },
+  "civic_market_identity": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+    "assets": {
+      "atelier_civic_town_notice_board_01": {
+        "region": {
+          "x": 300,
+          "y": 8,
+          "w": 323,
+          "h": 267
+        },
+        "sprite_size": {
+          "w": 359,
+          "h": 303
+        },
+        "recommended_game_scale": 0.17
+      },
+      "atelier_civic_market_banner_strand_01": {
+        "region": {
+          "x": 810,
+          "y": 58,
+          "w": 447,
+          "h": 178
+        },
+        "sprite_size": {
+          "w": 483,
+          "h": 214
+        },
+        "recommended_game_scale": 0.18
+      },
+      "atelier_civic_harbor_bulletin_board_01": {
+        "region": {
+          "x": 265,
+          "y": 283,
+          "w": 382,
+          "h": 238
+        },
+        "sprite_size": {
+          "w": 418,
+          "h": 274
+        },
+        "recommended_game_scale": 0.18
+      },
+      "atelier_civic_flag_cluster_01": {
+        "region": {
+          "x": 866,
+          "y": 292,
+          "w": 368,
+          "h": 209
+        },
+        "sprite_size": {
+          "w": 404,
+          "h": 245
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_civic_anchor_plaque_01": {
+        "region": {
+          "x": 331,
+          "y": 523,
+          "w": 251,
+          "h": 222
+        },
+        "sprite_size": {
+          "w": 287,
+          "h": 258
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_civic_posting_pole_01": {
+        "region": {
+          "x": 959,
+          "y": 510,
+          "w": 127,
+          "h": 254
+        },
+        "sprite_size": {
+          "w": 163,
+          "h": 290
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_civic_market_pennant_sign_01": {
+        "region": {
+          "x": 281,
+          "y": 761,
+          "w": 337,
+          "h": 214
+        },
+        "sprite_size": {
+          "w": 373,
+          "h": 250
+        },
+        "recommended_game_scale": 0.16
+      },
+      "atelier_civic_dock_rules_board_01": {
+        "region": {
+          "x": 861,
+          "y": 751,
+          "w": 309,
+          "h": 259
+        },
+        "sprite_size": {
+          "w": 345,
+          "h": 295
+        },
+        "recommended_game_scale": 0.16
+      }
+    }
+  },
+  "shopfront_support_accents": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+    "assets": {
+      "atelier_shopfront_canvas_awning_segment_01": {
+        "region": {
+          "x": 276,
+          "y": 73,
+          "w": 370,
+          "h": 172
+        },
+        "sprite_size": {
+          "w": 406,
+          "h": 208
+        },
+        "recommended_game_scale": 0.18
+      },
+      "atelier_shopfront_display_crates_slate_01": {
+        "region": {
+          "x": 853,
+          "y": 32,
+          "w": 355,
+          "h": 228
+        },
+        "sprite_size": {
+          "w": 391,
+          "h": 264
+        },
+        "recommended_game_scale": 0.17
+      },
+      "atelier_shopfront_folded_cloth_bundle_01": {
+        "region": {
+          "x": 294,
+          "y": 318,
+          "w": 340,
+          "h": 169
+        },
+        "sprite_size": {
+          "w": 376,
+          "h": 205
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_shopfront_chalk_slate_board_01": {
+        "region": {
+          "x": 927,
+          "y": 282,
+          "w": 206,
+          "h": 224
+        },
+        "sprite_size": {
+          "w": 242,
+          "h": 260
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_shopfront_hanging_basket_01": {
+        "region": {
+          "x": 310,
+          "y": 550,
+          "w": 305,
+          "h": 171
+        },
+        "sprite_size": {
+          "w": 341,
+          "h": 207
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_shopfront_coastal_planter_01": {
+        "region": {
+          "x": 894,
+          "y": 525,
+          "w": 269,
+          "h": 207
+        },
+        "sprite_size": {
+          "w": 305,
+          "h": 243
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_shopfront_rope_pennant_rail_01": {
+        "region": {
+          "x": 276,
+          "y": 768,
+          "w": 381,
+          "h": 186
+        },
+        "sprite_size": {
+          "w": 417,
+          "h": 222
+        },
+        "recommended_game_scale": 0.18
+      },
+      "atelier_shopfront_basket_parcel_display_01": {
+        "region": {
+          "x": 851,
+          "y": 739,
+          "w": 347,
+          "h": 249
+        },
+        "sprite_size": {
+          "w": 383,
+          "h": 285
+        },
+        "recommended_game_scale": 0.17
+      }
+    }
+  }
+}

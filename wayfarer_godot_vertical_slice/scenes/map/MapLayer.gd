@@ -22,6 +22,11 @@ const NEWPORT_ATELIER_TERRAIN_EDGE_ATLAS_PATH := "res://art_pipeline/newport_ate
 const NEWPORT_ATELIER_COBBLE_PATH_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_cobble_path_transition_v1.png"
 const NEWPORT_ATELIER_SHORELINE_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_shoreline_harbor_edge_v1.png"
 const NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_building_grounding_service_v1.png"
+const NEWPORT_TOWN_IDENTITY_VERSION := "G-4.20B"
+const NEWPORT_ATELIER_SIGN_SHOP_MARKERS_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png"
+const NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png"
+const NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png"
+const NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -117,6 +122,46 @@ const NEWPORT_ATELIER_BUILDING_GROUNDING_MATERIALS := [
 	"atelier_ground_low_fence_weeds_01",
 	"atelier_ground_firewood_chopping_block_01",
 ]
+const NEWPORT_ATELIER_SIGN_SHOP_MARKER_MATERIALS := [
+	"atelier_sign_tavern_inn_placeholder_01",
+	"atelier_sign_mercantile_crate_marker_01",
+	"atelier_sign_fishmonger_icon_board_01",
+	"atelier_sign_dock_warehouse_barrel_anchor_01",
+	"atelier_sign_inn_rooms_key_board_01",
+	"atelier_sign_harbor_direction_arrows_01",
+	"atelier_sign_hanging_bracket_iron_01",
+	"atelier_sign_painted_shop_plaque_01",
+]
+const NEWPORT_ATELIER_LAMPS_WAYFINDING_MATERIALS := [
+	"atelier_wayfinding_street_lamp_post_01",
+	"atelier_wayfinding_dock_lantern_post_01",
+	"atelier_wayfinding_multi_arrow_signpost_01",
+	"atelier_wayfinding_bollard_lantern_01",
+	"atelier_wayfinding_harbor_road_marker_01",
+	"atelier_wayfinding_rope_rail_post_pair_01",
+	"atelier_wayfinding_pier_lantern_stand_01",
+	"atelier_wayfinding_coastal_waystone_01",
+]
+const NEWPORT_ATELIER_CIVIC_MARKET_MATERIALS := [
+	"atelier_civic_town_notice_board_01",
+	"atelier_civic_market_banner_strand_01",
+	"atelier_civic_harbor_bulletin_board_01",
+	"atelier_civic_flag_cluster_01",
+	"atelier_civic_anchor_plaque_01",
+	"atelier_civic_posting_pole_01",
+	"atelier_civic_market_pennant_sign_01",
+	"atelier_civic_dock_rules_board_01",
+]
+const NEWPORT_ATELIER_SHOPFRONT_SUPPORT_MATERIALS := [
+	"atelier_shopfront_canvas_awning_segment_01",
+	"atelier_shopfront_display_crates_slate_01",
+	"atelier_shopfront_folded_cloth_bundle_01",
+	"atelier_shopfront_chalk_slate_board_01",
+	"atelier_shopfront_hanging_basket_01",
+	"atelier_shopfront_coastal_planter_01",
+	"atelier_shopfront_rope_pennant_rail_01",
+	"atelier_shopfront_basket_parcel_display_01",
+]
 const NEWPORT_HERO_ATLAS_REGIONS := {
 	"commercial_cobble_long_a": Rect2(0, 0, 320, 96),
 	"commercial_cobble_patch_b": Rect2(0, 104, 220, 72),
@@ -201,6 +246,46 @@ const NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_REGIONS := {
 	"atelier_ground_wash_tub_buckets_01": Rect2(839, 512, 444, 200),
 	"atelier_ground_low_fence_weeds_01": Rect2(142, 741, 549, 198),
 	"atelier_ground_firewood_chopping_block_01": Rect2(813, 732, 540, 222),
+}
+const NEWPORT_ATELIER_SIGN_SHOP_MARKERS_ATLAS_REGIONS := {
+	"atelier_sign_tavern_inn_placeholder_01": Rect2(329, 19, 312, 268),
+	"atelier_sign_mercantile_crate_marker_01": Rect2(905, 32, 314, 240),
+	"atelier_sign_fishmonger_icon_board_01": Rect2(329, 293, 311, 245),
+	"atelier_sign_dock_warehouse_barrel_anchor_01": Rect2(909, 290, 301, 226),
+	"atelier_sign_inn_rooms_key_board_01": Rect2(352, 546, 243, 192),
+	"atelier_sign_harbor_direction_arrows_01": Rect2(929, 542, 267, 228),
+	"atelier_sign_hanging_bracket_iron_01": Rect2(302, 737, 374, 261),
+	"atelier_sign_painted_shop_plaque_01": Rect2(924, 774, 262, 209),
+}
+const NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS := {
+	"atelier_wayfinding_street_lamp_post_01": Rect2(440, 9, 120, 339),
+	"atelier_wayfinding_dock_lantern_post_01": Rect2(897, 23, 203, 309),
+	"atelier_wayfinding_multi_arrow_signpost_01": Rect2(383, 340, 232, 246),
+	"atelier_wayfinding_bollard_lantern_01": Rect2(915, 344, 142, 246),
+	"atelier_wayfinding_harbor_road_marker_01": Rect2(402, 579, 177, 196),
+	"atelier_wayfinding_rope_rail_post_pair_01": Rect2(841, 587, 285, 196),
+	"atelier_wayfinding_pier_lantern_stand_01": Rect2(402, 762, 178, 249),
+	"atelier_wayfinding_coastal_waystone_01": Rect2(878, 796, 176, 204),
+}
+const NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS := {
+	"atelier_civic_town_notice_board_01": Rect2(300, 8, 323, 267),
+	"atelier_civic_market_banner_strand_01": Rect2(810, 58, 447, 178),
+	"atelier_civic_harbor_bulletin_board_01": Rect2(265, 283, 382, 238),
+	"atelier_civic_flag_cluster_01": Rect2(866, 292, 368, 209),
+	"atelier_civic_anchor_plaque_01": Rect2(331, 523, 251, 222),
+	"atelier_civic_posting_pole_01": Rect2(959, 510, 127, 254),
+	"atelier_civic_market_pennant_sign_01": Rect2(281, 761, 337, 214),
+	"atelier_civic_dock_rules_board_01": Rect2(861, 751, 309, 259),
+}
+const NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_REGIONS := {
+	"atelier_shopfront_canvas_awning_segment_01": Rect2(276, 73, 370, 172),
+	"atelier_shopfront_display_crates_slate_01": Rect2(853, 32, 355, 228),
+	"atelier_shopfront_folded_cloth_bundle_01": Rect2(294, 318, 340, 169),
+	"atelier_shopfront_chalk_slate_board_01": Rect2(927, 282, 206, 224),
+	"atelier_shopfront_hanging_basket_01": Rect2(310, 550, 305, 171),
+	"atelier_shopfront_coastal_planter_01": Rect2(894, 525, 269, 207),
+	"atelier_shopfront_rope_pennant_rail_01": Rect2(276, 768, 381, 186),
+	"atelier_shopfront_basket_parcel_display_01": Rect2(851, 739, 347, 249),
 }
 const NEWPORT_ATELIER_CARGO_PLACEMENTS := [
 	{
@@ -402,6 +487,35 @@ const NEWPORT_G420A_BUILDING_GROUNDING_PLACEMENTS := [
 		"alpha": 0.92,
 	},
 ]
+const NEWPORT_G420B_SIGN_SHOP_MARKER_PLACEMENTS := [
+	{"asset_id": "atelier_sign_mercantile_crate_marker_01", "dest": Rect2(514, 510, 66, 50), "purpose": "mercantile_market_spine_shop_marker", "alpha": 0.94, "contact_shadow": true},
+	{"asset_id": "atelier_sign_fishmonger_icon_board_01", "dest": Rect2(302, 598, 70, 56), "purpose": "west_fishmonger_planned_lot_identity_marker", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_sign_dock_warehouse_barrel_anchor_01", "dest": Rect2(456, 704, 64, 48), "purpose": "west_dock_warehouse_wayfinding_marker", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_sign_harbor_direction_arrows_01", "dest": Rect2(650, 622, 50, 43), "purpose": "wharf_to_market_direction_marker", "alpha": 0.96, "contact_shadow": true},
+	{"asset_id": "atelier_sign_hanging_bracket_iron_01", "dest": Rect2(932, 510, 58, 43), "purpose": "chandlery_shopfront_sign_support_read", "alpha": 0.86},
+]
+const NEWPORT_G420B_LAMPS_WAYFINDING_PLACEMENTS := [
+	{"asset_id": "atelier_wayfinding_street_lamp_post_01", "dest": Rect2(388, 498, 28, 79), "purpose": "west_market_spine_lamp_orientation", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_wayfinding_street_lamp_post_01", "dest": Rect2(1036, 498, 28, 79), "purpose": "east_market_spine_lamp_orientation", "alpha": 0.90, "contact_shadow": true},
+	{"asset_id": "atelier_wayfinding_dock_lantern_post_01", "dest": Rect2(934, 636, 45, 68), "purpose": "central_wharf_lantern_wayfinding", "alpha": 0.94, "contact_shadow": true},
+	{"asset_id": "atelier_wayfinding_multi_arrow_signpost_01", "dest": Rect2(1292, 596, 48, 50), "purpose": "east_market_to_harbor_direction_post", "alpha": 0.94, "contact_shadow": true},
+	{"asset_id": "atelier_wayfinding_bollard_lantern_01", "dest": Rect2(704, 650, 38, 52), "purpose": "wharf_apron_low_lantern_read", "alpha": 0.95, "contact_shadow": true},
+	{"asset_id": "atelier_wayfinding_harbor_road_marker_01", "dest": Rect2(840, 596, 36, 40), "purpose": "market_spine_road_marker_read", "alpha": 0.90, "contact_shadow": true},
+	{"asset_id": "atelier_wayfinding_pier_lantern_stand_01", "dest": Rect2(1170, 707, 40, 54), "purpose": "east_pier_lantern_memory_anchor", "alpha": 0.92, "contact_shadow": true},
+]
+const NEWPORT_G420B_CIVIC_MARKET_PLACEMENTS := [
+	{"asset_id": "atelier_civic_town_notice_board_01", "dest": Rect2(716, 370, 86, 72), "purpose": "civic_green_public_notice_landmark", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_civic_market_banner_strand_01", "dest": Rect2(1112, 548, 116, 42), "purpose": "market_spine_color_identity", "alpha": 0.84},
+	{"asset_id": "atelier_civic_flag_cluster_01", "dest": Rect2(890, 392, 58, 42), "purpose": "custom_house_civic_identity_flags", "alpha": 0.88, "contact_shadow": true},
+	{"asset_id": "atelier_civic_posting_pole_01", "dest": Rect2(980, 404, 32, 54), "purpose": "civic_to_market_posting_marker", "alpha": 0.90, "contact_shadow": true},
+	{"asset_id": "atelier_civic_dock_rules_board_01", "dest": Rect2(1230, 688, 74, 62), "purpose": "dock_rules_board_harbor_orientation", "alpha": 0.86, "contact_shadow": true},
+]
+const NEWPORT_G420B_SHOPFRONT_SUPPORT_PLACEMENTS := [
+	{"asset_id": "atelier_shopfront_display_crates_slate_01", "dest": Rect2(1070, 596, 76, 52), "purpose": "market_shopfront_display_read", "alpha": 0.94, "contact_shadow": true},
+	{"asset_id": "atelier_shopfront_chalk_slate_board_01", "dest": Rect2(897, 590, 34, 48), "purpose": "chandlery_front_blank_slate_marker", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_shopfront_hanging_basket_01", "dest": Rect2(760, 504, 48, 34), "purpose": "counting_house_shopfront_warmth_accent", "alpha": 0.86},
+	{"asset_id": "atelier_shopfront_rope_pennant_rail_01", "dest": Rect2(1180, 632, 94, 42), "purpose": "market_edge_low_pennant_boundary", "alpha": 0.88, "contact_shadow": true},
+]
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
 var _newport_hero_atlas: Texture2D
@@ -412,6 +526,10 @@ var _newport_atelier_terrain_edge_atlas: Texture2D
 var _newport_atelier_cobble_path_atlas: Texture2D
 var _newport_atelier_shoreline_atlas: Texture2D
 var _newport_atelier_building_grounding_atlas: Texture2D
+var _newport_atelier_sign_shop_markers_atlas: Texture2D
+var _newport_atelier_lamps_wayfinding_atlas: Texture2D
+var _newport_atelier_civic_market_atlas: Texture2D
+var _newport_atelier_shopfront_support_atlas: Texture2D
 var _g418d1_m01b_proof: Texture2D
 var _g418d2_capability_asset: Texture2D
 var _green_origin_lab_enabled := false
@@ -441,6 +559,18 @@ func _ready() -> void:
 	_newport_atelier_building_grounding_atlas = ResourceLoader.load(NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_PATH, "Texture2D") as Texture2D
 	if _newport_atelier_building_grounding_atlas == null:
 		push_error("Failed to load Newport atelier building grounding atlas: " + NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_PATH)
+	_newport_atelier_sign_shop_markers_atlas = ResourceLoader.load(NEWPORT_ATELIER_SIGN_SHOP_MARKERS_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_sign_shop_markers_atlas == null:
+		push_error("Failed to load Newport atelier sign/shop marker atlas: " + NEWPORT_ATELIER_SIGN_SHOP_MARKERS_ATLAS_PATH)
+	_newport_atelier_lamps_wayfinding_atlas = ResourceLoader.load(NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_lamps_wayfinding_atlas == null:
+		push_error("Failed to load Newport atelier lamps/wayfinding atlas: " + NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_PATH)
+	_newport_atelier_civic_market_atlas = ResourceLoader.load(NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_civic_market_atlas == null:
+		push_error("Failed to load Newport atelier civic/market atlas: " + NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_PATH)
+	_newport_atelier_shopfront_support_atlas = ResourceLoader.load(NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_shopfront_support_atlas == null:
+		push_error("Failed to load Newport atelier shopfront support atlas: " + NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_PATH)
 	_g418d1_m01b_proof = ResourceLoader.load(G418D1_M01B_PROOF_PATH, "Texture2D") as Texture2D
 	if _g418d1_m01b_proof == null:
 		push_warning("Failed to load G-4.18D.1 M01B lab proof: " + G418D1_M01B_PROOF_PATH)
@@ -502,6 +632,25 @@ func newport_environmental_believability_placements() -> Array:
 	placements.append_array(NEWPORT_G420A_COBBLE_PATH_PLACEMENTS)
 	placements.append_array(NEWPORT_G420A_SHORELINE_PLACEMENTS)
 	placements.append_array(NEWPORT_G420A_BUILDING_GROUNDING_PLACEMENTS)
+	return placements.duplicate(true)
+
+func newport_town_identity_version() -> String:
+	return NEWPORT_TOWN_IDENTITY_VERSION
+
+func newport_town_identity_materials() -> Array:
+	var materials: Array = []
+	materials.append_array(NEWPORT_ATELIER_SIGN_SHOP_MARKER_MATERIALS)
+	materials.append_array(NEWPORT_ATELIER_LAMPS_WAYFINDING_MATERIALS)
+	materials.append_array(NEWPORT_ATELIER_CIVIC_MARKET_MATERIALS)
+	materials.append_array(NEWPORT_ATELIER_SHOPFRONT_SUPPORT_MATERIALS)
+	return materials
+
+func newport_town_identity_placements() -> Array:
+	var placements: Array = []
+	placements.append_array(NEWPORT_G420B_SIGN_SHOP_MARKER_PLACEMENTS)
+	placements.append_array(NEWPORT_G420B_LAMPS_WAYFINDING_PLACEMENTS)
+	placements.append_array(NEWPORT_G420B_CIVIC_MARKET_PLACEMENTS)
+	placements.append_array(NEWPORT_G420B_SHOPFRONT_SUPPORT_PLACEMENTS)
 	return placements.duplicate(true)
 
 func set_green_origin_lab_mode(enabled: bool) -> void:
@@ -609,6 +758,24 @@ func _draw_environmental_atelier_placement(atlas: Texture2D, regions: Dictionary
 	if bool(placement.get("contact_shadow", false)):
 		_draw_contact_shadow(Vector2(dest.get_center().x, dest.end.y - 2.0), Vector2(dest.size.x * 0.28, max(4.0, dest.size.y * 0.07)), 0.12)
 	_draw_environmental_atelier_piece(atlas, regions, asset_id, dest, alpha)
+
+func _draw_town_identity_atelier_piece(atlas: Texture2D, regions: Dictionary, region_id: String, dest: Rect2, alpha := 1.0) -> void:
+	if atlas == null:
+		return
+	if not regions.has(region_id):
+		push_error("Unknown Newport town identity atelier region: " + region_id)
+		return
+	draw_texture_rect_region(atlas, dest, regions[region_id], Color(1, 1, 1, alpha), false, true)
+
+func _draw_town_identity_atelier_placement(atlas: Texture2D, regions: Dictionary, placement: Dictionary) -> void:
+	var asset_id := String(placement.get("asset_id", ""))
+	var dest: Rect2 = placement.get("dest", Rect2())
+	if asset_id == "" or dest.size.x <= 0.0 or dest.size.y <= 0.0:
+		return
+	var alpha := float(placement.get("alpha", 1.0))
+	if bool(placement.get("contact_shadow", false)):
+		_draw_contact_shadow(Vector2(dest.get_center().x, dest.end.y - 2.0), Vector2(dest.size.x * 0.30, max(4.0, dest.size.y * 0.075)), 0.13)
+	_draw_town_identity_atelier_piece(atlas, regions, asset_id, dest, alpha)
 
 func _is_g417_hero_prop_placeholder(pos: Vector2) -> bool:
 	return G417_HERO_PROP_REPLACEMENT_RECT.has_point(pos)
@@ -1287,6 +1454,7 @@ func _draw_g410_props() -> void:
 	_draw_g418d_atelier_cargo_clusters()
 	_draw_g419a_atelier_dock_clutter_clusters()
 	_draw_g420a_building_grounding_accents()
+	_draw_g420b_town_identity_accents()
 
 func _draw_g418_hero_non_cargo_prop_clusters() -> void:
 	if _newport_hero_atlas == null:
@@ -1319,6 +1487,16 @@ func _draw_g420a_shoreline_edges() -> void:
 func _draw_g420a_building_grounding_accents() -> void:
 	for placement in NEWPORT_G420A_BUILDING_GROUNDING_PLACEMENTS:
 		_draw_environmental_atelier_placement(_newport_atelier_building_grounding_atlas, NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_REGIONS, placement)
+
+func _draw_g420b_town_identity_accents() -> void:
+	for placement in NEWPORT_G420B_SIGN_SHOP_MARKER_PLACEMENTS:
+		_draw_town_identity_atelier_placement(_newport_atelier_sign_shop_markers_atlas, NEWPORT_ATELIER_SIGN_SHOP_MARKERS_ATLAS_REGIONS, placement)
+	for placement in NEWPORT_G420B_LAMPS_WAYFINDING_PLACEMENTS:
+		_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, placement)
+	for placement in NEWPORT_G420B_CIVIC_MARKET_PLACEMENTS:
+		_draw_town_identity_atelier_placement(_newport_atelier_civic_market_atlas, NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS, placement)
+	for placement in NEWPORT_G420B_SHOPFRONT_SUPPORT_PLACEMENTS:
+		_draw_town_identity_atelier_placement(_newport_atelier_shopfront_support_atlas, NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_REGIONS, placement)
 
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)

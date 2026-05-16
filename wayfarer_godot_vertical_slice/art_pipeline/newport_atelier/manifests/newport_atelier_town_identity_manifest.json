@@ -1,0 +1,617 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g420b.town_identity_wave.v1",
+  "phase": "G-4.20B",
+  "generated_at": "2026-05-16T22:08:05.869011+00:00",
+  "title": "Newport Town Identity Atelier Wave",
+  "wave_id": "wave_2_town_identity",
+  "role": "Town Identity atelier wave adding signage, lamps, wayfinding, civic and market markers, and shopfront support assets.",
+  "visual_quality_gate": 8.5,
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "source_policy": "AI-assisted green-origin candidates pending final license policy approval; no yellow building pixels, third-party sprites, marketplace packs, web-scraped images, or ripped game art were supplied as source input.",
+  "placement_policy": "Controlled subset only for market spine readability, harbor/wharf wayfinding, civic identity, shopfront believability, player orientation, and landmark memory; no over-decoration, no navigation blocking, no unreadable visual noise, and no finalization of unverified buildings.",
+  "tavern_inn_lock": "The Tavern/Inn remains a future REBUILD_REQUIRED_CENTERPIECE rebuild; G-4.20B may create temporary sign assets but does not rebuild, patch, or finalize it.",
+  "packs": [
+    {
+      "pack_id": "sign_shop_markers",
+      "title": "Signs And Shop Markers",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_sign_shop_markers_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_sign_shop_markers_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_sign_shop_markers_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_sign_shop_markers_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SIGN_SHOP_MARKERS_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_sign_tavern_inn_placeholder_01",
+        "atelier_sign_mercantile_crate_marker_01",
+        "atelier_sign_fishmonger_icon_board_01",
+        "atelier_sign_dock_warehouse_barrel_anchor_01",
+        "atelier_sign_inn_rooms_key_board_01",
+        "atelier_sign_harbor_direction_arrows_01",
+        "atelier_sign_hanging_bracket_iron_01",
+        "atelier_sign_painted_shop_plaque_01"
+      ]
+    },
+    {
+      "pack_id": "lamps_wayfinding",
+      "title": "Lamps Posts And Wayfinding",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_wayfinding_street_lamp_post_01",
+        "atelier_wayfinding_dock_lantern_post_01",
+        "atelier_wayfinding_multi_arrow_signpost_01",
+        "atelier_wayfinding_bollard_lantern_01",
+        "atelier_wayfinding_harbor_road_marker_01",
+        "atelier_wayfinding_rope_rail_post_pair_01",
+        "atelier_wayfinding_pier_lantern_stand_01",
+        "atelier_wayfinding_coastal_waystone_01"
+      ]
+    },
+    {
+      "pack_id": "civic_market_identity",
+      "title": "Civic And Market Identity",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_civic_town_notice_board_01",
+        "atelier_civic_market_banner_strand_01",
+        "atelier_civic_harbor_bulletin_board_01",
+        "atelier_civic_flag_cluster_01",
+        "atelier_civic_anchor_plaque_01",
+        "atelier_civic_posting_pole_01",
+        "atelier_civic_market_pennant_sign_01",
+        "atelier_civic_dock_rules_board_01"
+      ]
+    },
+    {
+      "pack_id": "shopfront_support_accents",
+      "title": "Shopfront Support And Town-Color Accents",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_shopfront_support_accents_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g420b_shopfront_support_accents_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_shopfront_support_accents_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_shopfront_support_accents_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G420B_SHOPFRONT_SUPPORT_ACCENTS_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_shopfront_canvas_awning_segment_01",
+        "atelier_shopfront_display_crates_slate_01",
+        "atelier_shopfront_folded_cloth_bundle_01",
+        "atelier_shopfront_chalk_slate_board_01",
+        "atelier_shopfront_hanging_basket_01",
+        "atelier_shopfront_coastal_planter_01",
+        "atelier_shopfront_rope_pennant_rail_01",
+        "atelier_shopfront_basket_parcel_display_01"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_sign_tavern_inn_placeholder_01",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_tavern_inn_placeholder_01.png",
+      "pack_id": "sign_shop_markers",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "atlas_region": {
+        "x": 329,
+        "y": 19,
+        "w": 312,
+        "h": 268
+      }
+    },
+    {
+      "asset_id": "atelier_sign_mercantile_crate_marker_01",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_mercantile_crate_marker_01.png",
+      "pack_id": "sign_shop_markers",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "atlas_region": {
+        "x": 905,
+        "y": 32,
+        "w": 314,
+        "h": 240
+      }
+    },
+    {
+      "asset_id": "atelier_sign_fishmonger_icon_board_01",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_fishmonger_icon_board_01.png",
+      "pack_id": "sign_shop_markers",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "atlas_region": {
+        "x": 329,
+        "y": 293,
+        "w": 311,
+        "h": 245
+      }
+    },
+    {
+      "asset_id": "atelier_sign_dock_warehouse_barrel_anchor_01",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_dock_warehouse_barrel_anchor_01.png",
+      "pack_id": "sign_shop_markers",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "atlas_region": {
+        "x": 909,
+        "y": 290,
+        "w": 301,
+        "h": 226
+      }
+    },
+    {
+      "asset_id": "atelier_sign_inn_rooms_key_board_01",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_inn_rooms_key_board_01.png",
+      "pack_id": "sign_shop_markers",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "atlas_region": {
+        "x": 352,
+        "y": 546,
+        "w": 243,
+        "h": 192
+      }
+    },
+    {
+      "asset_id": "atelier_sign_harbor_direction_arrows_01",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_harbor_direction_arrows_01.png",
+      "pack_id": "sign_shop_markers",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "atlas_region": {
+        "x": 929,
+        "y": 542,
+        "w": 267,
+        "h": 228
+      }
+    },
+    {
+      "asset_id": "atelier_sign_hanging_bracket_iron_01",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_hanging_bracket_iron_01.png",
+      "pack_id": "sign_shop_markers",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "atlas_region": {
+        "x": 302,
+        "y": 737,
+        "w": 374,
+        "h": 261
+      }
+    },
+    {
+      "asset_id": "atelier_sign_painted_shop_plaque_01",
+      "category": "TOWN_IDENTITY_SIGNAGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_sign_painted_shop_plaque_01.png",
+      "pack_id": "sign_shop_markers",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_sign_shop_markers_v1.png",
+      "atlas_region": {
+        "x": 924,
+        "y": 774,
+        "w": 262,
+        "h": 209
+      }
+    },
+    {
+      "asset_id": "atelier_wayfinding_street_lamp_post_01",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_street_lamp_post_01.png",
+      "pack_id": "lamps_wayfinding",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 440,
+        "y": 9,
+        "w": 120,
+        "h": 339
+      }
+    },
+    {
+      "asset_id": "atelier_wayfinding_dock_lantern_post_01",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_dock_lantern_post_01.png",
+      "pack_id": "lamps_wayfinding",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 897,
+        "y": 23,
+        "w": 203,
+        "h": 309
+      }
+    },
+    {
+      "asset_id": "atelier_wayfinding_multi_arrow_signpost_01",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_multi_arrow_signpost_01.png",
+      "pack_id": "lamps_wayfinding",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 383,
+        "y": 340,
+        "w": 232,
+        "h": 246
+      }
+    },
+    {
+      "asset_id": "atelier_wayfinding_bollard_lantern_01",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_bollard_lantern_01.png",
+      "pack_id": "lamps_wayfinding",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 915,
+        "y": 344,
+        "w": 142,
+        "h": 246
+      }
+    },
+    {
+      "asset_id": "atelier_wayfinding_harbor_road_marker_01",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_harbor_road_marker_01.png",
+      "pack_id": "lamps_wayfinding",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 402,
+        "y": 579,
+        "w": 177,
+        "h": 196
+      }
+    },
+    {
+      "asset_id": "atelier_wayfinding_rope_rail_post_pair_01",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_rope_rail_post_pair_01.png",
+      "pack_id": "lamps_wayfinding",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 841,
+        "y": 587,
+        "w": 285,
+        "h": 196
+      }
+    },
+    {
+      "asset_id": "atelier_wayfinding_pier_lantern_stand_01",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_pier_lantern_stand_01.png",
+      "pack_id": "lamps_wayfinding",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 402,
+        "y": 762,
+        "w": 178,
+        "h": 249
+      }
+    },
+    {
+      "asset_id": "atelier_wayfinding_coastal_waystone_01",
+      "category": "TOWN_IDENTITY_WAYFINDING",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wayfinding_coastal_waystone_01.png",
+      "pack_id": "lamps_wayfinding",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png",
+      "atlas_region": {
+        "x": 878,
+        "y": 796,
+        "w": 176,
+        "h": 204
+      }
+    },
+    {
+      "asset_id": "atelier_civic_town_notice_board_01",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_town_notice_board_01.png",
+      "pack_id": "civic_market_identity",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "atlas_region": {
+        "x": 300,
+        "y": 8,
+        "w": 323,
+        "h": 267
+      }
+    },
+    {
+      "asset_id": "atelier_civic_market_banner_strand_01",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_market_banner_strand_01.png",
+      "pack_id": "civic_market_identity",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "atlas_region": {
+        "x": 810,
+        "y": 58,
+        "w": 447,
+        "h": 178
+      }
+    },
+    {
+      "asset_id": "atelier_civic_harbor_bulletin_board_01",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_harbor_bulletin_board_01.png",
+      "pack_id": "civic_market_identity",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "atlas_region": {
+        "x": 265,
+        "y": 283,
+        "w": 382,
+        "h": 238
+      }
+    },
+    {
+      "asset_id": "atelier_civic_flag_cluster_01",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_flag_cluster_01.png",
+      "pack_id": "civic_market_identity",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "atlas_region": {
+        "x": 866,
+        "y": 292,
+        "w": 368,
+        "h": 209
+      }
+    },
+    {
+      "asset_id": "atelier_civic_anchor_plaque_01",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_anchor_plaque_01.png",
+      "pack_id": "civic_market_identity",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "atlas_region": {
+        "x": 331,
+        "y": 523,
+        "w": 251,
+        "h": 222
+      }
+    },
+    {
+      "asset_id": "atelier_civic_posting_pole_01",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_posting_pole_01.png",
+      "pack_id": "civic_market_identity",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "atlas_region": {
+        "x": 959,
+        "y": 510,
+        "w": 127,
+        "h": 254
+      }
+    },
+    {
+      "asset_id": "atelier_civic_market_pennant_sign_01",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_market_pennant_sign_01.png",
+      "pack_id": "civic_market_identity",
+      "visual_quality_rating": 8.8,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "atlas_region": {
+        "x": 281,
+        "y": 761,
+        "w": 337,
+        "h": 214
+      }
+    },
+    {
+      "asset_id": "atelier_civic_dock_rules_board_01",
+      "category": "TOWN_IDENTITY_CIVIC_MARKET",
+      "path": "art_pipeline/newport_atelier/generated/atelier_civic_dock_rules_board_01.png",
+      "pack_id": "civic_market_identity",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png",
+      "atlas_region": {
+        "x": 861,
+        "y": 751,
+        "w": 309,
+        "h": 259
+      }
+    },
+    {
+      "asset_id": "atelier_shopfront_canvas_awning_segment_01",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_canvas_awning_segment_01.png",
+      "pack_id": "shopfront_support_accents",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 276,
+        "y": 73,
+        "w": 370,
+        "h": 172
+      }
+    },
+    {
+      "asset_id": "atelier_shopfront_display_crates_slate_01",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_display_crates_slate_01.png",
+      "pack_id": "shopfront_support_accents",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 853,
+        "y": 32,
+        "w": 355,
+        "h": 228
+      }
+    },
+    {
+      "asset_id": "atelier_shopfront_folded_cloth_bundle_01",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_folded_cloth_bundle_01.png",
+      "pack_id": "shopfront_support_accents",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 294,
+        "y": 318,
+        "w": 340,
+        "h": 169
+      }
+    },
+    {
+      "asset_id": "atelier_shopfront_chalk_slate_board_01",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_chalk_slate_board_01.png",
+      "pack_id": "shopfront_support_accents",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 927,
+        "y": 282,
+        "w": 206,
+        "h": 224
+      }
+    },
+    {
+      "asset_id": "atelier_shopfront_hanging_basket_01",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_hanging_basket_01.png",
+      "pack_id": "shopfront_support_accents",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 310,
+        "y": 550,
+        "w": 305,
+        "h": 171
+      }
+    },
+    {
+      "asset_id": "atelier_shopfront_coastal_planter_01",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_coastal_planter_01.png",
+      "pack_id": "shopfront_support_accents",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 894,
+        "y": 525,
+        "w": 269,
+        "h": 207
+      }
+    },
+    {
+      "asset_id": "atelier_shopfront_rope_pennant_rail_01",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_rope_pennant_rail_01.png",
+      "pack_id": "shopfront_support_accents",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 276,
+        "y": 768,
+        "w": 381,
+        "h": 186
+      }
+    },
+    {
+      "asset_id": "atelier_shopfront_basket_parcel_display_01",
+      "category": "TOWN_IDENTITY_SHOPFRONT_SUPPORT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_shopfront_basket_parcel_display_01.png",
+      "pack_id": "shopfront_support_accents",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png",
+      "atlas_region": {
+        "x": 851,
+        "y": 739,
+        "w": 347,
+        "h": 249
+      }
+    }
+  ]
+}

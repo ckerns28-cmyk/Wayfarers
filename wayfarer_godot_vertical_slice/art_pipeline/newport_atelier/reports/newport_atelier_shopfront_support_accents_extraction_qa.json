@@ -1,0 +1,252 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.20B",
+  "pack": "shopfront_support_accents",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10",
+    "temporary Tavern/Inn sign candidate is not placed as a final building patch"
+  ],
+  "assets": {
+    "atelier_shopfront_canvas_awning_segment_01": {
+      "size": {
+        "w": 406,
+        "h": 208
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 334,
+        "h": 136
+      },
+      "alpha_pixels": 36940,
+      "opaque_pixels": 36940,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "small folded canvas awning segment",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shopfront_display_crates_slate_01": {
+      "size": {
+        "w": 391,
+        "h": 264
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 319,
+        "h": 192
+      },
+      "alpha_pixels": 49904,
+      "opaque_pixels": 49904,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "display crate stack with blank slate and cloth bundles",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shopfront_folded_cloth_bundle_01": {
+      "size": {
+        "w": 376,
+        "h": 205
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 304,
+        "h": 133
+      },
+      "alpha_pixels": 30515,
+      "opaque_pixels": 30515,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "folded cloth merchant bundle",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shopfront_chalk_slate_board_01": {
+      "size": {
+        "w": 242,
+        "h": 260
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 170,
+        "h": 188
+      },
+      "alpha_pixels": 25997,
+      "opaque_pixels": 25997,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "portable merchant chalk slate",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shopfront_hanging_basket_01": {
+      "size": {
+        "w": 341,
+        "h": 207
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 31,
+        "w": 269,
+        "h": 151
+      },
+      "alpha_pixels": 25797,
+      "opaque_pixels": 25797,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 31,
+        "right": 36,
+        "bottom": 25
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "hanging flower basket/window-box accent",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shopfront_coastal_planter_01": {
+      "size": {
+        "w": 305,
+        "h": 243
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 233,
+        "h": 171
+      },
+      "alpha_pixels": 28058,
+      "opaque_pixels": 28058,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "small coastal planter with herbs",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shopfront_rope_pennant_rail_01": {
+      "size": {
+        "w": 417,
+        "h": 222
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 345,
+        "h": 150
+      },
+      "alpha_pixels": 19701,
+      "opaque_pixels": 19701,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "rope rail accent with painted pennant ties",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 8.9,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_shopfront_basket_parcel_display_01": {
+      "size": {
+        "w": 383,
+        "h": 285
+      },
+      "alpha_bbox": {
+        "x": 36,
+        "y": 36,
+        "w": 311,
+        "h": 213
+      },
+      "alpha_pixels": 46930,
+      "opaque_pixels": 46930,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "compact shopfront basket and parcel display cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}
