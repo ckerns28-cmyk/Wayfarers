@@ -13,6 +13,8 @@ const NEWPORT_GREEN_ORIGIN_VERSION := "G-4.18B"
 const NEWPORT_GREEN_ORIGIN_ATLAS_PATH := "res://art_pipeline/newport_green_origin/atlases/newport_green_origin_dock_factory_v1.png"
 const G418D1_M01B_PROOF_PATH := "res://art_pipeline/newport_green_origin/method_bakeoff/generated/method_01b_manual_paintover_proof.png"
 const G418D2_CAPABILITY_ASSET_PATH := "res://art_pipeline/newport_green_origin/method_bakeoff/generated/g418d2_rope_crate_barrel_cluster.png"
+const NEWPORT_ATELIER_CARGO_VERSION := "G-4.18D"
+const NEWPORT_ATELIER_CARGO_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -52,6 +54,12 @@ const NEWPORT_GREEN_ORIGIN_MATERIALS := [
 	"green_rope_coil_small",
 	"green_plank_contact_shadow",
 ]
+const NEWPORT_ATELIER_CARGO_MATERIALS := [
+	"atelier_newport_crate_01",
+	"atelier_newport_barrel_01",
+	"atelier_newport_rope_coil_01",
+	"atelier_wharf_cargo_cluster_01",
+]
 const NEWPORT_HERO_ATLAS_REGIONS := {
 	"commercial_cobble_long_a": Rect2(0, 0, 320, 96),
 	"commercial_cobble_patch_b": Rect2(0, 104, 220, 72),
@@ -81,10 +89,51 @@ const NEWPORT_GREEN_ORIGIN_ATLAS_REGIONS := {
 	"green_rope_coil_small": Rect2(336, 104, 80, 56),
 	"green_plank_contact_shadow": Rect2(336, 172, 144, 36),
 }
+const NEWPORT_ATELIER_CARGO_ATLAS_REGIONS := {
+	"atelier_newport_crate_01": Rect2(80, 36, 575, 486),
+	"atelier_newport_barrel_01": Rect2(900, 38, 428, 488),
+	"atelier_newport_rope_coil_01": Rect2(76, 574, 610, 374),
+	"atelier_wharf_cargo_cluster_01": Rect2(710, 548, 758, 472),
+}
+const NEWPORT_ATELIER_CARGO_PLACEMENTS := [
+	{
+		"asset_id": "atelier_newport_crate_01",
+		"dest": Rect2(494, 608, 108, 91),
+		"pivot": Vector2(0.5, 0.94),
+		"ground_y": 699.0,
+		"scale": 0.20,
+		"purpose": "commercial_row_front_cargo",
+	},
+	{
+		"asset_id": "atelier_newport_barrel_01",
+		"dest": Rect2(632, 617, 62, 71),
+		"pivot": Vector2(0.5, 0.94),
+		"ground_y": 688.0,
+		"scale": 0.18,
+		"purpose": "commercial_row_front_cargo",
+	},
+	{
+		"asset_id": "atelier_wharf_cargo_cluster_01",
+		"dest": Rect2(536, 692, 190, 118),
+		"pivot": Vector2(0.5, 0.94),
+		"ground_y": 810.0,
+		"scale": 0.25,
+		"purpose": "wharf_depth_cluster",
+	},
+	{
+		"asset_id": "atelier_newport_rope_coil_01",
+		"dest": Rect2(780, 706, 96, 59),
+		"pivot": Vector2(0.5, 0.90),
+		"ground_y": 765.0,
+		"scale": 0.18,
+		"purpose": "wharf_rope_accent",
+	},
+]
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
 var _newport_hero_atlas: Texture2D
 var _newport_green_origin_atlas: Texture2D
+var _newport_atelier_cargo_atlas: Texture2D
 var _g418d1_m01b_proof: Texture2D
 var _g418d2_capability_asset: Texture2D
 var _green_origin_lab_enabled := false
@@ -96,6 +145,9 @@ func _ready() -> void:
 	_newport_green_origin_atlas = ResourceLoader.load(NEWPORT_GREEN_ORIGIN_ATLAS_PATH, "Texture2D") as Texture2D
 	if _newport_green_origin_atlas == null:
 		push_error("Failed to load Newport green-origin atlas: " + NEWPORT_GREEN_ORIGIN_ATLAS_PATH)
+	_newport_atelier_cargo_atlas = ResourceLoader.load(NEWPORT_ATELIER_CARGO_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_atelier_cargo_atlas == null:
+		push_error("Failed to load Newport atelier cargo atlas: " + NEWPORT_ATELIER_CARGO_ATLAS_PATH)
 	_g418d1_m01b_proof = ResourceLoader.load(G418D1_M01B_PROOF_PATH, "Texture2D") as Texture2D
 	if _g418d1_m01b_proof == null:
 		push_warning("Failed to load G-4.18D.1 M01B lab proof: " + G418D1_M01B_PROOF_PATH)
@@ -121,6 +173,15 @@ func newport_green_origin_version() -> String:
 
 func newport_green_origin_materials() -> Array:
 	return NEWPORT_GREEN_ORIGIN_MATERIALS.duplicate()
+
+func newport_atelier_cargo_version() -> String:
+	return NEWPORT_ATELIER_CARGO_VERSION
+
+func newport_atelier_cargo_materials() -> Array:
+	return NEWPORT_ATELIER_CARGO_MATERIALS.duplicate()
+
+func newport_atelier_cargo_placements() -> Array:
+	return NEWPORT_ATELIER_CARGO_PLACEMENTS.duplicate(true)
 
 func set_green_origin_lab_mode(enabled: bool) -> void:
 	_green_origin_lab_enabled = enabled
@@ -175,6 +236,23 @@ func _draw_green_origin_piece(region_id: String, dest: Rect2, alpha := 1.0) -> v
 		push_error("Unknown Newport green-origin atlas region: " + region_id)
 		return
 	draw_texture_rect_region(_newport_green_origin_atlas, dest, NEWPORT_GREEN_ORIGIN_ATLAS_REGIONS[region_id], Color(1, 1, 1, alpha), false, true)
+
+func _draw_atelier_cargo_piece(region_id: String, dest: Rect2, alpha := 1.0) -> void:
+	if _newport_atelier_cargo_atlas == null:
+		return
+	if not NEWPORT_ATELIER_CARGO_ATLAS_REGIONS.has(region_id):
+		push_error("Unknown Newport atelier cargo atlas region: " + region_id)
+		return
+	draw_texture_rect_region(_newport_atelier_cargo_atlas, dest, NEWPORT_ATELIER_CARGO_ATLAS_REGIONS[region_id], Color(1, 1, 1, alpha), false, true)
+
+func _draw_atelier_cargo_placement(placement: Dictionary) -> void:
+	var asset_id := String(placement.get("asset_id", ""))
+	var dest: Rect2 = placement.get("dest", Rect2())
+	if asset_id == "" or dest.size.x <= 0.0 or dest.size.y <= 0.0:
+		return
+	var ground_y := float(placement.get("ground_y", dest.end.y))
+	_draw_contact_shadow(Vector2(dest.get_center().x, ground_y - 3.0), Vector2(dest.size.x * 0.34, max(5.0, dest.size.y * 0.075)), 0.16)
+	_draw_atelier_cargo_piece(asset_id, dest, 1.0)
 
 func _is_g417_hero_prop_placeholder(pos: Vector2) -> bool:
 	return G417_HERO_PROP_REPLACEMENT_RECT.has_point(pos)
@@ -847,17 +925,20 @@ func _draw_g410_props() -> void:
 	for bench in [Vector2(792, 404), Vector2(952, 404), Vector2(1178, 410), Vector2(342, 596)]:
 		if not _is_g417_hero_prop_placeholder(bench):
 			_draw_bench(bench)
-	_draw_g417_hero_prop_clusters()
+	_draw_g418_hero_non_cargo_prop_clusters()
+	_draw_g418d_atelier_cargo_clusters()
 
-func _draw_g417_hero_prop_clusters() -> void:
+func _draw_g418_hero_non_cargo_prop_clusters() -> void:
 	if _newport_hero_atlas == null:
 		return
-	_draw_hero_atlas_piece("crate_barrel_table_cluster", Rect2(494, 614, 118, 87), 0.94)
-	_draw_hero_atlas_piece("small_crate_barrel_cluster", Rect2(648, 628, 92, 64), 0.92)
 	_draw_hero_atlas_piece("fence_sign_market_cluster", Rect2(862, 610, 118, 87), 0.92)
-	_draw_hero_atlas_piece("chandlery_base_cluster", Rect2(966, 586, 128, 85), 0.92)
-	_draw_hero_atlas_piece("wharf_crate_pile_cluster", Rect2(552, 708, 132, 88), 0.92)
 	_draw_hero_atlas_piece("market_sign_cluster", Rect2(790, 700, 92, 64), 0.88)
+
+func _draw_g418d_atelier_cargo_clusters() -> void:
+	if _newport_atelier_cargo_atlas == null:
+		return
+	for placement in NEWPORT_ATELIER_CARGO_PLACEMENTS:
+		_draw_atelier_cargo_placement(placement)
 
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)

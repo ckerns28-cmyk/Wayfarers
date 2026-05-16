@@ -1,0 +1,414 @@
+{
+  "schema_id": "wayfarer.newport_atelier.cargo_manifest.v1",
+  "phase": "G-4.18D",
+  "generated_at": "2026-05-16T18:07:59.224421+00:00",
+  "visual_standard": "Accepted 10/10 cargo prop style target for city-wide Newport sprite rollout.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_cargo_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_cargo_extraction_qa.json",
+  "pipeline_status": "locked_pending_final_license_policy_approval",
+  "deprecated_visual_targets": [
+    "G-4.18B weak deterministic/procedural cargo proof",
+    "G-4.18D.2 deferred rope/crate/barrel capability cluster"
+  ],
+  "future_pack_pattern": "10/10 source sheet -> saved prompt/source -> extraction script -> transparent sprites -> atlas/contact sheet -> manifest/provenance report -> Godot placement -> validation",
+  "recommended_rollout_order": [
+    "dock clutter expansion",
+    "terrain edge dressing",
+    "signs/lamps/posts",
+    "market goods/carts",
+    "shopfront props",
+    "NPC/player standards"
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_newport_crate_01",
+      "asset_type": "crate_prop",
+      "source_identity": "upper_left_wooden_shipping_crate",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_crate_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+      "atlas_region": {
+        "x": 80,
+        "y": 36,
+        "w": 575,
+        "h": 486
+      },
+      "sprite_size": {
+        "w": 495,
+        "h": 457
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "grounding": {
+        "pivot_y": 0.94,
+        "expected_contact": "bottom-shadow pixels sit inside transparent sprite bounds; draw destination bottom is the world grounding line"
+      },
+      "recommended_game_scale": 0.2,
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 495,
+          "h": 457
+        },
+        "alpha_bbox": {
+          "x": 8,
+          "y": 8,
+          "w": 479,
+          "h": 441
+        },
+        "alpha_pixels": 162196,
+        "opaque_pixels": 162196,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 8,
+          "top": 8,
+          "right": 8,
+          "bottom": 8
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "upper_left_wooden_shipping_crate",
+        "manifest_identity_match": true,
+        "status": "PASS"
+      },
+      "sha256": "aa59967d5481967007329806f7f6a942444ac6d92cb6b072ba440158622d276d",
+      "notes": "Hero-quality salt-worn 1700s Newport shipping crate: planks, brace work, iron plates, nail heads, and contact shadow."
+    },
+    {
+      "asset_id": "atelier_newport_barrel_01",
+      "asset_type": "barrel_prop",
+      "source_identity": "upper_right_coopered_barrel",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_barrel_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+      "atlas_region": {
+        "x": 900,
+        "y": 38,
+        "w": 428,
+        "h": 488
+      },
+      "sprite_size": {
+        "w": 301,
+        "h": 442
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "grounding": {
+        "pivot_y": 0.94,
+        "expected_contact": "bottom-shadow pixels sit inside transparent sprite bounds; draw destination bottom is the world grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 301,
+          "h": 442
+        },
+        "alpha_bbox": {
+          "x": 8,
+          "y": 8,
+          "w": 285,
+          "h": 426
+        },
+        "alpha_pixels": 103913,
+        "opaque_pixels": 103913,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 8,
+          "top": 8,
+          "right": 8,
+          "bottom": 8
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "upper_right_coopered_barrel",
+        "manifest_identity_match": true,
+        "status": "PASS"
+      },
+      "sha256": "4416fa901f174f24531b5e280c25eef5b4651d81d52bce47dddbb7f617a8c8a5",
+      "notes": "Hero-quality coopered barrel with iron hoops, stave curvature, rim detail, and weathered highlights."
+    },
+    {
+      "asset_id": "atelier_newport_rope_coil_01",
+      "asset_type": "rope_prop",
+      "source_identity": "lower_left_rope_coil",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_rope_coil_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+      "atlas_region": {
+        "x": 76,
+        "y": 574,
+        "w": 610,
+        "h": 374
+      },
+      "sprite_size": {
+        "w": 517,
+        "h": 298
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "grounding": {
+        "pivot_y": 0.9,
+        "expected_contact": "bottom-shadow pixels sit inside transparent sprite bounds; draw destination bottom is the world grounding line"
+      },
+      "recommended_game_scale": 0.18,
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 517,
+          "h": 298
+        },
+        "alpha_bbox": {
+          "x": 8,
+          "y": 8,
+          "w": 501,
+          "h": 282
+        },
+        "alpha_pixels": 94351,
+        "opaque_pixels": 94351,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 8,
+          "top": 8,
+          "right": 8,
+          "bottom": 8
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "lower_left_rope_coil",
+        "manifest_identity_match": true,
+        "status": "PASS"
+      },
+      "sha256": "c27b246d1e966fad5ace8be5aac42b47e095d90b9f769929f228af64bc0cecd9",
+      "notes": "Hero-quality rope coil with braided fiber structure, inner depth, frayed tail, and grounding shadow."
+    },
+    {
+      "asset_id": "atelier_wharf_cargo_cluster_01",
+      "asset_type": "crate_barrel_rope_prop_cluster",
+      "source_identity": "lower_right_composed_cargo_cluster",
+      "path": "art_pipeline/newport_atelier/generated/atelier_wharf_cargo_cluster_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+      "atlas_region": {
+        "x": 710,
+        "y": 548,
+        "w": 758,
+        "h": 472
+      },
+      "sprite_size": {
+        "w": 710,
+        "h": 424
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "grounding": {
+        "pivot_y": 0.94,
+        "expected_contact": "bottom-shadow pixels sit inside transparent sprite bounds; draw destination bottom is the world grounding line"
+      },
+      "recommended_game_scale": 0.25,
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was provided as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "extraction_qa": {
+        "size": {
+          "w": 710,
+          "h": 424
+        },
+        "alpha_bbox": {
+          "x": 8,
+          "y": 8,
+          "w": 694,
+          "h": 408
+        },
+        "alpha_pixels": 202905,
+        "opaque_pixels": 202905,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 8,
+          "top": 8,
+          "right": 8,
+          "bottom": 8
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "lower_right_composed_cargo_cluster",
+        "manifest_identity_match": true,
+        "status": "PASS"
+      },
+      "sha256": "59005d4d8a2e96389d8044c50919982262ee1e78af18b8b53e421196eafd9c86",
+      "notes": "Composed wharf cargo cluster showing the target sprite density for city-wide prop dressing."
+    }
+  ]
+}

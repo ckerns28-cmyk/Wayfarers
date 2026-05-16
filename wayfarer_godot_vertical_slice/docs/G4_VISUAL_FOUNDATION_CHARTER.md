@@ -83,11 +83,30 @@ systems designer, production lead, and scrum master would evaluate it:
 - player immersion
 - roadmap sequencing
 
+## G-4.18D Atelier Cargo Standard
+
+G-4.18D establishes the Newport atelier cargo sheet as the minimum prop quality
+bar for future Newport packs. The accepted crate, barrel, rope coil, and wharf
+cargo cluster define the target for readable silhouettes, rich weathered
+materials, authored pixel texture, natural overlap/depth, clean transparent
+extraction, consistent scale, sensible pivots, and grounded Godot placement.
+
+The prior deterministic/procedural cargo cluster is deprecated as a visual
+target. It may remain in reports or lab evidence, but it must not define future
+normal-review wharf proof quality.
+
+Reusable pattern: 10/10 source sheet -> saved prompt/source -> extraction
+script -> transparent sprites -> atlas/contact sheet -> manifest/provenance
+report -> Godot placement -> validation. Next rollout order is dock clutter,
+terrain edge dressing, signs/lamps/posts, market goods/carts, shopfront props,
+then NPC/player standards.
+
 ## Corrected Phase Sequence
 
 - G-4.18C: quarantine weak green-origin proof and preserve provenance
   infrastructure.
-- G-4.18D: run an art production method bakeoff.
+- G-4.18D: lock the Newport atelier cargo pipeline as the prop-production
+  standard.
 - G-4.18E: create one green-origin hero-quality asset family.
 - G-4.19: player visual identity foundation.
 - G-4.20: HUD/UI visual redesign.

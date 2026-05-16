@@ -17,6 +17,7 @@ const G415_VISUAL_ACCEPTANCE_SCORE_TARGET := 8.5
 const G416_SURFACE_KIT_PASS := "G-4.16"
 const G418_ASSET_FACTORY_PASS := "G-4.18B"
 const G418C_GREEN_ORIGIN_QUARANTINE_PASS := "G-4.18C"
+const G418D_ATELIER_CARGO_PASS := "G-4.18D"
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
@@ -685,7 +686,8 @@ static func starter_district_plan() -> Dictionary:
 		"surface_kit_pass": G416_SURFACE_KIT_PASS,
 		"asset_pipeline_pass": G418_ASSET_FACTORY_PASS,
 		"green_origin_quarantine_pass": G418C_GREEN_ORIGIN_QUARANTINE_PASS,
-		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
+		"atelier_cargo_pipeline_pass": G418D_ATELIER_CARGO_PASS,
+		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
 		"yellow_review_art_policy": "temporary yellow review art may support prototype composition, scale, and gameplay only; yellow pixels cannot source final-commercial green assets",
@@ -828,7 +830,7 @@ static func missing_asset_manifest() -> Array:
 		"small home variants",
 		"dock shack",
 		"carts",
-		"dedicated crate/barrel/rope prop sprites",
+		"additional dock clutter atelier variants beyond locked cargo pack",
 		"sign variants",
 		"fencing variants",
 		"lantern variants",

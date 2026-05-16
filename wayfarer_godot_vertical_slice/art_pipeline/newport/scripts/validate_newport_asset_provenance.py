@@ -6,6 +6,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from PIL import Image
+
 
 SCRIPT_PATH = Path(__file__).resolve()
 PROJECT_ROOT = SCRIPT_PATH.parents[3]
@@ -21,6 +23,10 @@ GREEN_ORIGIN_BAKEOFF_MANIFEST_PATH = GREEN_ORIGIN_ROOT / "manifests" / "green_or
 GREEN_ORIGIN_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418B_GREEN_ORIGIN_ASSET_FACTORY.md"
 GREEN_ORIGIN_BAKEOFF_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md"
 GREEN_ORIGIN_CAPABILITY_REPORT_PATH = GREEN_ORIGIN_ROOT / "reports" / "G418D2_ART_PRODUCTION_CAPABILITY_GATE.md"
+ATELIER_ROOT = PROJECT_ROOT / "art_pipeline" / "newport_atelier"
+ATELIER_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_cargo_manifest.json"
+ATELIER_QA_REPORT_PATH = ATELIER_ROOT / "reports" / "newport_atelier_cargo_extraction_qa.json"
+ATELIER_STANDARD_REPORT_PATH = ATELIER_ROOT / "reports" / "G418D_ATELIER_CARGO_STANDARD.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 ISOLATED_BUILDING_DIR = PROJECT_ROOT / "assets" / "sprites" / "buildings" / "isolated"
@@ -85,6 +91,76 @@ def path_exists(rel_path: str, failures: list[str]) -> None:
         pass_check(f"path exists: {rel_path}")
     else:
         fail(f"path missing: {rel_path}", failures)
+
+
+def _is_key_magenta(r: int, g: int, b: int, a: int) -> bool:
+    return a > 0 and r > 170 and b > 170 and g < 150 and abs(r - b) < 120
+
+
+def _is_magenta_halo(r: int, g: int, b: int, a: int) -> bool:
+    return a > 0 and r >= 120 and b >= 120 and g <= 115 and abs(r - b) <= 80 and min(r, b) - g >= 38
+
+
+def image_alpha_metrics(path: Path) -> dict:
+    image = Image.open(path).convert("RGBA")
+    bbox = image.getchannel("A").getbbox()
+    if bbox is None:
+        return {
+            "size": {"w": image.width, "h": image.height},
+            "alpha_bbox": None,
+            "alpha_pixels": 0,
+            "magenta_pixels_remaining": 0,
+            "magenta_halo_pixels": 0,
+            "crop_padding": {"left": 0, "top": 0, "right": 0, "bottom": 0},
+            "cutoff_edges": ["empty_alpha"],
+            "readable": False,
+        }
+
+    pixels = image.load()
+    alpha_pixels = 0
+    magenta_pixels = 0
+    halo_pixels = 0
+    for y in range(image.height):
+        for x in range(image.width):
+            r, g, b, a = pixels[x, y]
+            if a <= 0:
+                continue
+            alpha_pixels += 1
+            if _is_key_magenta(r, g, b, a):
+                magenta_pixels += 1
+            if not _is_magenta_halo(r, g, b, a):
+                continue
+            near_transparent = False
+            for ny in range(max(0, y - 1), min(image.height, y + 2)):
+                for nx in range(max(0, x - 1), min(image.width, x + 2)):
+                    if nx == x and ny == y:
+                        continue
+                    if pixels[nx, ny][3] <= 8:
+                        near_transparent = True
+                        break
+                if near_transparent:
+                    break
+            if near_transparent:
+                halo_pixels += 1
+
+    padding = {
+        "left": bbox[0],
+        "top": bbox[1],
+        "right": image.width - bbox[2],
+        "bottom": image.height - bbox[3],
+    }
+    bbox_w = bbox[2] - bbox[0]
+    bbox_h = bbox[3] - bbox[1]
+    return {
+        "size": {"w": image.width, "h": image.height},
+        "alpha_bbox": {"x": bbox[0], "y": bbox[1], "w": bbox_w, "h": bbox_h},
+        "alpha_pixels": alpha_pixels,
+        "magenta_pixels_remaining": magenta_pixels,
+        "magenta_halo_pixels": halo_pixels,
+        "crop_padding": padding,
+        "cutoff_edges": [side for side, value in padding.items() if value < 6],
+        "readable": alpha_pixels >= 1200 and bbox_w >= 48 and bbox_h >= 40,
+    }
 
 
 def validate_manifest(manifest: dict, failures: list[str]) -> None:
@@ -733,6 +809,206 @@ def validate_green_origin_bakeoff_manifest(failures: list[str]) -> None:
         fail(f"missing green-origin capability report: {GREEN_ORIGIN_CAPABILITY_REPORT_PATH}", failures)
 
 
+def validate_atelier_cargo_manifest(failures: list[str]) -> None:
+    manifest = load_json(ATELIER_MANIFEST_PATH, failures)
+    if not manifest:
+        return
+    if manifest.get("schema_id") != "wayfarer.newport_atelier.cargo_manifest.v1":
+        fail("atelier cargo manifest schema_id must be wayfarer.newport_atelier.cargo_manifest.v1", failures)
+    else:
+        pass_check("atelier cargo manifest schema id")
+    if manifest.get("phase") != "G-4.18D":
+        fail("atelier cargo manifest phase must be G-4.18D", failures)
+    if "10/10" not in str(manifest.get("visual_standard", "")):
+        fail("atelier cargo manifest must record the 10/10 visual standard", failures)
+    if manifest.get("pipeline_status") != "locked_pending_final_license_policy_approval":
+        fail("atelier cargo pipeline_status must preserve pending license approval", failures)
+    if "AI-assisted" not in str(manifest.get("source_policy", "")):
+        fail("atelier cargo source_policy must explicitly describe AI-assisted source handling", failures)
+    if "10/10 source sheet" not in str(manifest.get("future_pack_pattern", "")):
+        fail("atelier cargo future_pack_pattern must document the reusable pack structure", failures)
+
+    for field in [
+        "atlas",
+        "source_image",
+        "generation_prompt",
+        "generated_asset_root",
+        "contact_sheet",
+        "provenance_report",
+        "validation_report",
+    ]:
+        path_exists(str(manifest.get(field, "")), failures)
+    path_exists(str(manifest.get("generated_asset_root", "")), failures)
+
+    deprecated_targets = json.dumps(manifest.get("deprecated_visual_targets", [])).lower()
+    if "deterministic" not in deprecated_targets and "procedural" not in deprecated_targets:
+        fail("atelier cargo manifest must deprecate the weak deterministic/procedural cargo target", failures)
+    rollout = manifest.get("recommended_rollout_order", [])
+    for expected in [
+        "dock clutter expansion",
+        "terrain edge dressing",
+        "signs/lamps/posts",
+        "market goods/carts",
+        "shopfront props",
+        "NPC/player standards",
+    ]:
+        if expected not in rollout:
+            fail(f"atelier cargo rollout order missing {expected}", failures)
+
+    qa_report = load_json(ATELIER_QA_REPORT_PATH, failures)
+    if qa_report:
+        if qa_report.get("schema_id") != "wayfarer.newport_atelier.extraction_qa.v1":
+            fail("atelier cargo QA report schema mismatch", failures)
+        if qa_report.get("status") != "PASS":
+            fail("atelier cargo QA report must be PASS", failures)
+        for required_check in [
+            "transparent sprites have no magenta background",
+            "transparent sprites have no magenta halo on alpha edges",
+            "sprites retain clean transparent crop padding",
+            "sprites are not cut off at object edges",
+            "source sheet object identity maps to manifest asset ids",
+        ]:
+            if required_check not in qa_report.get("checks", []):
+                fail(f"atelier cargo QA report missing check: {required_check}", failures)
+
+    assets = manifest.get("assets", [])
+    if not isinstance(assets, list):
+        fail("atelier cargo manifest assets must be a list", failures)
+        return
+    expected_ids = {
+        "atelier_newport_crate_01",
+        "atelier_newport_barrel_01",
+        "atelier_newport_rope_coil_01",
+        "atelier_wharf_cargo_cluster_01",
+    }
+    seen_ids: set[str] = set()
+    required_fields = [
+        "asset_id",
+        "asset_type",
+        "source_identity",
+        "path",
+        "atlas",
+        "atlas_region",
+        "sprite_size",
+        "pivot",
+        "grounding",
+        "recommended_game_scale",
+        "source_type",
+        "created_by",
+        "generation_prompt",
+        "source_image",
+        "extraction_script",
+        "input_sources",
+        "license",
+        "ownership",
+        "provenance_status",
+        "origin_classification",
+        "commercial_use_status",
+        "review_eligible",
+        "normal_review_eligible",
+        "lab_only",
+        "final_commercial_candidate",
+        "final_commercial_eligible",
+        "source_pixels_from_yellow_uncertain_assets",
+        "source_pixels_from_third_party_material",
+        "web_scraped_source_pixels",
+        "ai_generated",
+        "human_selected",
+        "chroma_key_removed",
+        "extraction_qa",
+        "sha256",
+        "notes",
+    ]
+    for asset in assets:
+        if not isinstance(asset, dict):
+            fail("atelier cargo asset entry is not an object", failures)
+            continue
+        asset_id = str(asset.get("asset_id", ""))
+        seen_ids.add(asset_id)
+        for field in required_fields:
+            if field not in asset:
+                fail(f"{asset_id or 'unknown'} missing atelier cargo field {field}", failures)
+        if asset_id not in expected_ids:
+            fail(f"unexpected atelier cargo asset id: {asset_id}", failures)
+        if asset.get("source_type") != "ai_assisted_image_generation_with_local_chroma_extraction":
+            fail(f"{asset_id} source_type must be AI-assisted image generation plus local extraction", failures)
+        if asset.get("provenance_status") != "ai_assisted_green_origin_candidate_pending_license_review":
+            fail(f"{asset_id} provenance_status must remain AI-assisted pending license review", failures)
+        if asset.get("origin_classification") != "green_origin_candidate_pending_license_review":
+            fail(f"{asset_id} origin_classification must remain green_origin_candidate_pending_license_review", failures)
+        if asset.get("commercial_use_status") != "green_origin_candidate_pending_license_review":
+            fail(f"{asset_id} commercial_use_status must remain pending license review", failures)
+        if asset.get("review_eligible") is not True:
+            fail(f"{asset_id} must be review_eligible", failures)
+        if asset.get("normal_review_eligible") is not True:
+            fail(f"{asset_id} must be normal_review_eligible for this visual lock", failures)
+        if asset.get("lab_only") is not False:
+            fail(f"{asset_id} must not be lab_only after the cargo standard lock", failures)
+        if asset.get("final_commercial_candidate") is not False:
+            fail(f"{asset_id} must not be marked final_commercial_candidate", failures)
+        if asset.get("final_commercial_eligible") is not False:
+            fail(f"{asset_id} must not be marked final_commercial_eligible", failures)
+        for bool_field in ["source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+            if asset.get(bool_field) is not False:
+                fail(f"{asset_id} must set {bool_field}=false", failures)
+        if asset.get("ai_generated") is not True or asset.get("human_selected") is not True:
+            fail(f"{asset_id} must declare ai_generated and human_selected", failures)
+        if asset.get("chroma_key_removed") is not True:
+            fail(f"{asset_id} must declare chroma_key_removed", failures)
+        asset_rel_path = str(asset.get("path", ""))
+        path_exists(asset_rel_path, failures)
+        asset_path = PROJECT_ROOT / asset_rel_path
+        if asset_path.exists():
+            metrics = image_alpha_metrics(asset_path)
+            qa = asset.get("extraction_qa", {})
+            if metrics.get("magenta_pixels_remaining") != 0:
+                fail(f"{asset_id} has magenta background pixels remaining", failures)
+            if metrics.get("magenta_halo_pixels") != 0:
+                fail(f"{asset_id} has magenta halo pixels", failures)
+            if metrics.get("cutoff_edges"):
+                fail(f"{asset_id} crop padding/cutoff failed: {metrics.get('cutoff_edges')}", failures)
+            if metrics.get("readable") is not True:
+                fail(f"{asset_id} alpha footprint is not visually readable", failures)
+            for metric_key in ["magenta_pixels_remaining", "magenta_halo_pixels", "cutoff_edges", "readable"]:
+                if qa.get(metric_key) != metrics.get(metric_key):
+                    fail(f"{asset_id} manifest QA metric {metric_key} does not match image inspection", failures)
+        for path_field in ["generation_prompt", "source_image", "extraction_script", "atlas"]:
+            path_exists(str(asset.get(path_field, "")), failures)
+        if str(asset.get("atlas", "")) != str(manifest.get("atlas", "")):
+            fail(f"{asset_id} atlas path does not match manifest atlas", failures)
+        if str(asset.get("source_image", "")) != str(manifest.get("source_image", "")):
+            fail(f"{asset_id} source image path does not match manifest source image", failures)
+        if str(asset.get("generation_prompt", "")) != str(manifest.get("generation_prompt", "")):
+            fail(f"{asset_id} prompt path does not match manifest prompt", failures)
+        for raw_source in asset.get("input_sources", []):
+            if not isinstance(raw_source, dict):
+                fail(f"{asset_id} input source is not an object", failures)
+                continue
+            if str(raw_source.get("commercial_status", "")) not in {"green_origin_candidate_pending_license_review", "green_origin_candidate", "documentation_only"}:
+                fail(f"{asset_id} input source has unsupported commercial status", failures)
+            if "path" in raw_source:
+                path_exists(str(raw_source["path"]), failures)
+    if seen_ids != expected_ids:
+        fail(f"atelier cargo manifest asset ids mismatch: {sorted(seen_ids)}", failures)
+    else:
+        pass_check("atelier cargo manifest contains crate, barrel, rope, and cluster")
+
+    if ATELIER_STANDARD_REPORT_PATH.exists():
+        report = ATELIER_STANDARD_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in [
+            "accepted 10/10 cargo prop quality target",
+            "green_origin_candidate_pending_license_review",
+            "deprecated as visual targets",
+            "Reusable production pattern",
+            "Recommended rollout",
+        ]:
+            if required_text not in report:
+                fail(f"atelier cargo report missing text: {required_text}", failures)
+        pass_check("atelier cargo standard report present")
+    else:
+        fail(f"missing atelier cargo standard report: {ATELIER_STANDARD_REPORT_PATH}", failures)
+
+
 def main() -> int:
     failures: list[str] = []
     manifest = load_json(MANIFEST_PATH, failures)
@@ -756,6 +1032,7 @@ def main() -> int:
     validate_building_sprite_provenance(failures)
     validate_green_origin_asset_manifest(failures)
     validate_green_origin_bakeoff_manifest(failures)
+    validate_atelier_cargo_manifest(failures)
 
     if failures:
         print(f"Newport provenance validation: FAIL ({len(failures)} issue(s))")

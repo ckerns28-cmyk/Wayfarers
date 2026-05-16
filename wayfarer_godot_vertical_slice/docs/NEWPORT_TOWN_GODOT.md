@@ -465,8 +465,8 @@ Still remaining before NPC / quest work:
   validation across town entry, harborfront, dock side landings, and inland
   civic/support areas.
 - Dedicated fishmonger storefront, final cooperage art, blacksmith/smithy if
-  needed, more small-home variants, carts, and dedicated prop sprites remain
-  useful asset needs.
+  needed, more small-home variants, carts, and additional themed atelier prop
+  packs beyond the locked cargo standard remain useful asset needs.
 
 ## G-4.12B Surface Cohesion Gate
 
@@ -1236,7 +1236,8 @@ QA note:
 - Interaction repair: prompts are driven by the authored doorway interaction area instead of broad player radius alone, so they appear at the door/frontage and stay off in the middle of the street.
 - Presentation repair: commercial-row thresholds and cargo props were nudged to the street-side band so they no longer pierce the foundation/base reading.
 - Debug toggle: `F3` toggles the full QA overlay; `B` toggles building seating overlays. Both remain off on normal load.
-- Known visual issues: prop art is still drawn from simple procedural placeholders until a later prop-art integration pass.
+- Known visual issues: cargo now has the G-4.18D atelier standard lock, while
+  non-cargo prop families still need themed atelier packs.
 
 ## G-4.15 Village Layout Using Object Rules
 
@@ -1472,12 +1473,21 @@ Next visual foundation phases:
   infrastructure. The failed G-4.18B proof is hidden from normal review and is
   visible only through Green-Origin Lab mode (`F6` or
   `--show-green-origin-lab`) with explicit `Not normal review art` labeling.
-- G-4.18D runs an art production method bakeoff.
+- G-4.18D locks the Newport atelier cargo sheet as the reusable prop-production
+  standard: source sheet, saved prompt, extraction script, transparent sprites,
+  atlas/contact sheet, manifest/provenance report, Godot placement, and
+  validation. The weak deterministic/procedural cargo cluster is no longer the
+  visual target.
 - G-4.18E creates one green-origin hero-quality asset family.
 - G-4.19 establishes player visual identity.
 - G-4.20 redesigns the HUD/UI with intentional fantasy/MMORPG styling.
 - G-4.21 composes the origin city hero street/dock slice.
 - G-4.22 reviews the full 8.0+ visual foundation exit gate.
+
+Future city-wide prop rollout should continue only through themed atelier packs
+after the cargo lock passes: dock clutter expansion, terrain edge dressing,
+signs/lamps/posts, market goods/carts, shopfront props, then NPC/player
+standards.
 
 G-5 must not be recommended until G-4.22 accepts the screenshot-supported 8.0+
 origin city foundation.

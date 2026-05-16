@@ -1260,7 +1260,8 @@ Visual QA rubric:
 
 Remaining known visual issues:
 
-- Props are still procedural placeholders until the deferred prop-art pass.
+- Cargo props now have the G-4.18D atelier standard lock; remaining non-cargo
+  props still need themed atelier packs.
 - The road/ground textures remain procedural and will benefit from final
   painterly surface assets later.
 - No interiors are included yet; public doors continue to use the existing
@@ -1501,27 +1502,55 @@ Acceptance:
 
 ## G-4.18D: Art Production Method Bakeoff
 
-Status: planned.
+Status: implemented as the Newport atelier cargo pipeline lock.
 
-G-4.18D compares viable green-origin production methods before committing to a
-replacement path for buildings, streets, docks, props, player art, and UI.
+G-4.18D locks the Newport atelier cargo source sheet as the minimum prop
+quality bar for future Newport themed packs. The accepted sheet contains a
+wooden crate, coopered barrel, rope coil, and composed wharf cargo cluster with
+readable silhouettes, dense material detail, authored-looking pixel texture,
+believable wood/metal/rope weathering, natural overlap/depth, and game-ready
+3/4 perspective.
 
-Bakeoff candidates may include:
+The prior weak deterministic/procedural cargo cluster is deprecated as a
+visual target. It may remain as lab/provenance evidence, but future wharf proof
+work must judge cargo and prop dressing against the atelier sheet and its
+transparent extracted sprites.
 
-- Hand-authored pixel/paintover workflow.
-- AI-assisted generation with documented prompts, seeds, references, edits,
-  licenses, and human cleanup.
-- Blender/procedural render plus paintover.
-- Hybrid crop-derived style study followed by fully green-origin redraw.
+Locked reusable pattern:
+
+- 10/10 source sheet.
+- Saved prompt/source artifact.
+- Local extraction script.
+- Transparent sprites with clean bounds and no magenta background or halo.
+- Atlas, contact sheet, manifest, provenance report, and extraction QA report.
+- Godot placement using manifest-style asset IDs, consistent scale, pivot, and
+  grounding data.
+- Automated validation before any themed rollout continues.
+
+Next recommended rollout order after this lock:
+
+- Dock clutter expansion.
+- Terrain edge dressing.
+- Signs/lamps/posts.
+- Market goods/carts.
+- Shopfront props.
+- NPC/player standards.
 
 Acceptance:
 
-- Each candidate produces comparable source records, revision notes, and
-  screenshot/contact-sheet evidence.
-- Candidates are judged on visual quality, repeatability, editability, style
-  cohesion, legal clarity, and production speed.
-- No method wins only because it passes provenance; it must visibly improve
-  the game.
+- `art_pipeline/newport_atelier/` contains the source image, saved prompt,
+  extraction script, transparent sprites, atlas, contact sheet, manifest, and
+  reports.
+- Extraction QA fails on magenta background, magenta halo/fringe, poor crop
+  padding, cut-off edges, unreadable sprites, or source/manifest identity
+  mismatch.
+- Godot normal cargo placement uses the extracted atelier assets, not the old
+  weak cargo proof.
+- Assets remain `green_origin_candidate_pending_license_review`; they are not
+  final-commercial approved until the project license policy explicitly clears
+  AI-assisted generated artwork.
+- Future city-wide rollout proceeds through themed atelier packs only after
+  this lock passes validation.
 
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
