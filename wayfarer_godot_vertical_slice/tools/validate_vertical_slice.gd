@@ -162,6 +162,13 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport_green_origin/manifests",
 		"res://art_pipeline/newport_green_origin/reports",
 		"res://art_pipeline/newport_green_origin/scripts",
+		"res://art_pipeline/newport_atelier/source_generated",
+		"res://art_pipeline/newport_atelier/generated",
+		"res://art_pipeline/newport_atelier/contact_sheets",
+		"res://art_pipeline/newport_atelier/atlases",
+		"res://art_pipeline/newport_atelier/manifests",
+		"res://art_pipeline/newport_atelier/reports",
+		"res://art_pipeline/newport_atelier/scripts",
 	]:
 		_expect(DirAccess.dir_exists_absolute(dir_path), "g418_pipeline_dir_" + dir_path.get_file())
 
@@ -210,6 +217,25 @@ func _validate_g418_asset_factory(map: Node) -> void:
 		"res://art_pipeline/newport_green_origin/reports/G418D_GREEN_ORIGIN_METHOD_BAKEOFF.md",
 		"res://art_pipeline/newport_green_origin/reports/G418D1_BAKEOFF_VERDICT_CORRECTION_MANUAL_PAINTOVER.md",
 		"res://art_pipeline/newport_green_origin/reports/G418D2_ART_PRODUCTION_CAPABILITY_GATE.md",
+		"res://art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png",
+		"res://art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_sheet_imagegen.png.import",
+		"res://art_pipeline/newport_atelier/source_generated/g418d_atelier_cargo_prompt.txt",
+		"res://art_pipeline/newport_atelier/scripts/extract_atelier_cargo_assets.py",
+		"res://art_pipeline/newport_atelier/manifests/newport_atelier_cargo_manifest.json",
+		"res://art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png",
+		"res://art_pipeline/newport_atelier/atlases/newport_atelier_cargo_v1.png.import",
+		"res://art_pipeline/newport_atelier/contact_sheets/newport_atelier_cargo_contact_sheet.png",
+		"res://art_pipeline/newport_atelier/contact_sheets/newport_atelier_cargo_contact_sheet.png.import",
+		"res://art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+		"res://art_pipeline/newport_atelier/reports/newport_atelier_cargo_extraction_qa.json",
+		"res://art_pipeline/newport_atelier/generated/atelier_newport_crate_01.png",
+		"res://art_pipeline/newport_atelier/generated/atelier_newport_crate_01.png.import",
+		"res://art_pipeline/newport_atelier/generated/atelier_newport_barrel_01.png",
+		"res://art_pipeline/newport_atelier/generated/atelier_newport_barrel_01.png.import",
+		"res://art_pipeline/newport_atelier/generated/atelier_newport_rope_coil_01.png",
+		"res://art_pipeline/newport_atelier/generated/atelier_newport_rope_coil_01.png.import",
+		"res://art_pipeline/newport_atelier/generated/atelier_wharf_cargo_cluster_01.png",
+		"res://art_pipeline/newport_atelier/generated/atelier_wharf_cargo_cluster_01.png.import",
 		"res://tools/capture_g418c_review_screenshots.mjs",
 		"res://tools/capture_g418d_review_screenshots.mjs",
 		"res://tools/capture_g418d2_review_screenshots.mjs",
@@ -232,6 +258,34 @@ func _validate_g418_asset_factory(map: Node) -> void:
 			var green_materials: Array = layer.call("newport_green_origin_materials")
 			for material in ["green_dock_plank_strip", "green_dock_plank_patch", "green_dock_edge_shadow", "green_pier_post_pair", "green_rope_coil_small", "green_plank_contact_shadow"]:
 				_expect(green_materials.has(material), "g418b_green_origin_material_" + material + "_" + layer_name)
+		_expect(layer != null and layer.has_method("newport_atelier_cargo_version"), "g418d_atelier_cargo_api_" + layer_name)
+		if layer and layer.has_method("newport_atelier_cargo_version"):
+			_expect(String(layer.call("newport_atelier_cargo_version")) == "G-4.18D", "g418d_atelier_cargo_version_" + layer_name)
+		if layer and layer.has_method("newport_atelier_cargo_materials"):
+			var atelier_materials: Array = layer.call("newport_atelier_cargo_materials")
+			for material in ["atelier_newport_crate_01", "atelier_newport_barrel_01", "atelier_newport_rope_coil_01", "atelier_wharf_cargo_cluster_01"]:
+				_expect(atelier_materials.has(material), "g418d_atelier_cargo_material_" + material + "_" + layer_name)
+		if layer and layer.has_method("newport_atelier_cargo_placements"):
+			var placements: Array = layer.call("newport_atelier_cargo_placements")
+			_expect(placements.size() >= 4, "g418d_atelier_cargo_placement_count_" + layer_name)
+			var placement_ids: Array[String] = []
+			for raw_placement in placements:
+				if not raw_placement is Dictionary:
+					failures.append("g418d_atelier_cargo_placement_not_dictionary_" + layer_name)
+					continue
+				var placement: Dictionary = raw_placement
+				var placement_id := String(placement.get("asset_id", ""))
+				placement_ids.append(placement_id)
+				_expect(["atelier_newport_crate_01", "atelier_newport_barrel_01", "atelier_newport_rope_coil_01", "atelier_wharf_cargo_cluster_01"].has(placement_id), "g418d_atelier_cargo_placement_asset_" + placement_id + "_" + layer_name)
+				var dest: Rect2 = placement.get("dest", Rect2())
+				var pivot: Vector2 = placement.get("pivot", Vector2.ZERO)
+				var ground_y := float(placement.get("ground_y", 0.0))
+				_expect(dest.size.x > 48.0 and dest.size.y > 40.0, "g418d_atelier_cargo_placement_size_" + placement_id + "_" + layer_name)
+				_expect(abs(ground_y - dest.end.y) <= 1.0, "g418d_atelier_cargo_grounded_" + placement_id + "_" + layer_name)
+				_expect(pivot.x >= 0.35 and pivot.x <= 0.65 and pivot.y >= 0.85 and pivot.y <= 0.98, "g418d_atelier_cargo_pivot_" + placement_id + "_" + layer_name)
+				_expect(float(placement.get("scale", 0.0)) > 0.0 and float(placement.get("scale", 0.0)) <= 0.30, "g418d_atelier_cargo_scale_" + placement_id + "_" + layer_name)
+			for material in ["atelier_newport_crate_01", "atelier_newport_barrel_01", "atelier_newport_rope_coil_01", "atelier_wharf_cargo_cluster_01"]:
+				_expect(placement_ids.has(material), "g418d_atelier_cargo_placement_uses_" + material + "_" + layer_name)
 
 	var manifest := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_asset_manifest.json")
 	_expect(not manifest.is_empty(), "g418_asset_manifest_json")
@@ -286,6 +340,7 @@ func _validate_g418_asset_factory(map: Node) -> void:
 	_expect(review_ready_assets >= 16, "g418_asset_manifest_review_ready_assets")
 	_validate_g418b_green_origin_manifest()
 	_validate_g418d_green_origin_bakeoff_manifest()
+	_validate_g418d_atelier_cargo_manifest()
 
 func _validate_g418b_green_origin_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_asset_manifest.json")
@@ -326,6 +381,81 @@ func _validate_g418b_green_origin_manifest() -> void:
 				for forbidden in ["assets/sprites/buildings/isolated", "assets/buildings", "hearthvale", "yellow", "uncertain", "marketplace", "web-scraped", "ripped"]:
 					_expect(source_text.find(forbidden) < 0, "g418b_green_origin_input_not_" + forbidden.replace("/", "_").replace("-", "_") + "_" + asset_id)
 				_expect(bool(source.get("source_pixels_used", true)) == false, "g418b_green_origin_input_no_source_pixels_" + asset_id)
+
+func _validate_g418d_atelier_cargo_manifest() -> void:
+	var manifest := _load_json_dictionary("res://art_pipeline/newport_atelier/manifests/newport_atelier_cargo_manifest.json")
+	_expect(not manifest.is_empty(), "g418d_atelier_cargo_manifest_json")
+	_expect(String(manifest.get("schema_id", "")) == "wayfarer.newport_atelier.cargo_manifest.v1", "g418d_atelier_cargo_manifest_schema")
+	_expect(String(manifest.get("phase", "")) == "G-4.18D", "g418d_atelier_cargo_manifest_phase")
+	_expect(String(manifest.get("visual_standard", "")).find("10/10") >= 0, "g418d_atelier_cargo_visual_standard")
+	_expect(String(manifest.get("source_policy", "")).find("AI-assisted") >= 0, "g418d_atelier_cargo_ai_policy")
+	_expect(String(manifest.get("pipeline_status", "")) == "locked_pending_final_license_policy_approval", "g418d_atelier_cargo_pipeline_status")
+	for key in ["atlas", "source_image", "generation_prompt", "generated_asset_root", "contact_sheet", "source_policy", "provenance_report", "validation_report", "future_pack_pattern", "recommended_rollout_order", "deprecated_visual_targets"]:
+		_expect(manifest.has(key), "g418d_atelier_cargo_manifest_field_" + key)
+	for path_key in ["atlas", "source_image", "generation_prompt", "contact_sheet", "provenance_report", "validation_report"]:
+		var rel_path := String(manifest.get(path_key, ""))
+		_expect(FileAccess.file_exists("res://" + rel_path), "g418d_atelier_cargo_manifest_path_" + path_key)
+		if rel_path.ends_with(".png"):
+			_expect(FileAccess.file_exists("res://" + rel_path + ".import"), "g418d_atelier_cargo_import_file_" + path_key)
+			_expect(ResourceLoader.load("res://" + rel_path, "Texture2D") != null, "g418d_atelier_cargo_resource_load_" + path_key)
+	var deprecated_targets: Array = manifest.get("deprecated_visual_targets", [])
+	_expect(JSON.stringify(deprecated_targets).find("deterministic") >= 0 or JSON.stringify(deprecated_targets).find("procedural") >= 0, "g418d_atelier_cargo_deprecates_weak_cargo")
+	var rollout: Array = manifest.get("recommended_rollout_order", [])
+	for phase in ["dock clutter expansion", "terrain edge dressing", "signs/lamps/posts", "market goods/carts", "shopfront props", "NPC/player standards"]:
+		_expect(rollout.has(phase), "g418d_atelier_rollout_" + phase.replace("/", "_").replace(" ", "_"))
+
+	var qa_report := _load_json_dictionary("res://art_pipeline/newport_atelier/reports/newport_atelier_cargo_extraction_qa.json")
+	_expect(not qa_report.is_empty(), "g418d_atelier_cargo_qa_json")
+	_expect(String(qa_report.get("status", "")) == "PASS", "g418d_atelier_cargo_qa_pass")
+
+	var assets: Array = manifest.get("assets", [])
+	_expect(assets.size() >= 4, "g418d_atelier_cargo_asset_count")
+	var expected_ids := ["atelier_newport_crate_01", "atelier_newport_barrel_01", "atelier_newport_rope_coil_01", "atelier_wharf_cargo_cluster_01"]
+	var seen_ids: Array[String] = []
+	for raw_asset in assets:
+		if not raw_asset is Dictionary:
+			failures.append("g418d_atelier_cargo_asset_not_dictionary")
+			continue
+		var asset: Dictionary = raw_asset
+		var asset_id := String(asset.get("asset_id", "unknown"))
+		seen_ids.append(asset_id)
+		for key in ["asset_id", "asset_type", "source_identity", "path", "atlas", "atlas_region", "sprite_size", "pivot", "grounding", "recommended_game_scale", "source_type", "created_by", "generation_prompt", "source_image", "extraction_script", "input_sources", "license", "ownership", "provenance_status", "origin_classification", "commercial_use_status", "review_eligible", "normal_review_eligible", "lab_only", "final_commercial_candidate", "final_commercial_eligible", "source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels", "ai_generated", "human_selected", "chroma_key_removed", "extraction_qa", "sha256", "notes"]:
+			_expect(asset.has(key), "g418d_atelier_cargo_field_" + asset_id + "_" + key)
+		_expect(expected_ids.has(asset_id), "g418d_atelier_cargo_expected_asset_" + asset_id)
+		_expect(String(asset.get("source_type", "")) == "ai_assisted_image_generation_with_local_chroma_extraction", "g418d_atelier_cargo_source_type_" + asset_id)
+		_expect(String(asset.get("ownership", "")).find("project-owned") >= 0, "g418d_atelier_cargo_owned_" + asset_id)
+		_expect(String(asset.get("provenance_status", "")) == "ai_assisted_green_origin_candidate_pending_license_review", "g418d_atelier_cargo_provenance_" + asset_id)
+		_expect(String(asset.get("origin_classification", "")) == "green_origin_candidate_pending_license_review", "g418d_atelier_cargo_origin_" + asset_id)
+		_expect(String(asset.get("commercial_use_status", "")) == "green_origin_candidate_pending_license_review", "g418d_atelier_cargo_commercial_status_" + asset_id)
+		_expect(bool(asset.get("review_eligible", false)) == true, "g418d_atelier_cargo_review_eligible_" + asset_id)
+		_expect(bool(asset.get("normal_review_eligible", false)) == true, "g418d_atelier_cargo_normal_review_eligible_" + asset_id)
+		_expect(bool(asset.get("lab_only", true)) == false, "g418d_atelier_cargo_not_lab_only_" + asset_id)
+		_expect(bool(asset.get("final_commercial_candidate", true)) == false, "g418d_atelier_cargo_not_final_promoted_" + asset_id)
+		_expect(bool(asset.get("final_commercial_eligible", true)) == false, "g418d_atelier_cargo_not_final_eligible_" + asset_id)
+		_expect(bool(asset.get("ai_generated", false)) == true, "g418d_atelier_cargo_ai_declared_" + asset_id)
+		_expect(bool(asset.get("human_selected", false)) == true, "g418d_atelier_cargo_human_selected_" + asset_id)
+		_expect(bool(asset.get("chroma_key_removed", false)) == true, "g418d_atelier_cargo_chroma_removed_" + asset_id)
+		_expect(bool(asset.get("source_pixels_from_yellow_uncertain_assets", true)) == false, "g418d_atelier_cargo_no_yellow_pixels_" + asset_id)
+		_expect(bool(asset.get("source_pixels_from_third_party_material", true)) == false, "g418d_atelier_cargo_no_third_party_pixels_" + asset_id)
+		_expect(bool(asset.get("web_scraped_source_pixels", true)) == false, "g418d_atelier_cargo_no_web_pixels_" + asset_id)
+		var asset_path := String(asset.get("path", ""))
+		_expect(FileAccess.file_exists("res://" + asset_path), "g418d_atelier_cargo_path_exists_" + asset_id)
+		_expect(FileAccess.file_exists("res://" + asset_path + ".import"), "g418d_atelier_cargo_import_exists_" + asset_id)
+		_expect(ResourceLoader.load("res://" + asset_path, "Texture2D") != null, "g418d_atelier_cargo_import_loads_" + asset_id)
+		var qa: Dictionary = asset.get("extraction_qa", {})
+		_expect(String(qa.get("status", "")) == "PASS", "g418d_atelier_cargo_asset_qa_pass_" + asset_id)
+		_expect(int(qa.get("magenta_pixels_remaining", -1)) == 0, "g418d_atelier_cargo_no_magenta_" + asset_id)
+		_expect(int(qa.get("magenta_halo_pixels", -1)) == 0, "g418d_atelier_cargo_no_magenta_halo_" + asset_id)
+		_expect(qa.get("cutoff_edges", ["unknown"]) == [], "g418d_atelier_cargo_no_cutoff_edges_" + asset_id)
+		_expect(bool(qa.get("readable", false)) == true, "g418d_atelier_cargo_readable_" + asset_id)
+		_expect(bool(qa.get("manifest_identity_match", false)) == true, "g418d_atelier_cargo_identity_map_" + asset_id)
+		for raw_source in asset.get("input_sources", []):
+			if raw_source is Dictionary:
+				var source: Dictionary = raw_source
+				_expect(String(source.get("path", "")) != "", "g418d_atelier_cargo_input_path_" + asset_id)
+				_expect(String(source.get("commercial_status", "")).find("green_origin_candidate") >= 0 or String(source.get("commercial_status", "")) == "documentation_only", "g418d_atelier_cargo_input_status_" + asset_id)
+	for expected_id in expected_ids:
+		_expect(seen_ids.has(expected_id), "g418d_atelier_cargo_manifest_uses_" + expected_id)
 
 func _validate_g418d_green_origin_bakeoff_manifest() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/newport_green_origin/manifests/green_origin_method_bakeoff_manifest.json")
@@ -746,7 +876,7 @@ func _validate_starter_harbor_plan() -> void:
 				_expect(float(definition.get("visual_scale", 0.0)) >= 185.0, "shop_house_newport_storefront_scale")
 
 	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
-	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "dedicated crate/barrel/rope prop sprites", "sign variants", "fencing variants", "lantern variants", "Newport-detail player character sprite sheet", "Newport-detail NPC sprite sheets", "Newport-detail monster sprite sheets", "Newport-detail equipment, weapons, armor, and combat VFX", "chapel/church decision and final art if needed"]:
+	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "additional dock clutter atelier variants beyond locked cargo pack", "sign variants", "fencing variants", "lantern variants", "Newport-detail player character sprite sheet", "Newport-detail NPC sprite sheets", "Newport-detail monster sprite sheets", "Newport-detail equipment, weapons, armor, and combat VFX", "chapel/church decision and final art if needed"]:
 		_expect(manifest.has(needed), "missing_asset_manifest_" + needed.replace("/", "_").replace(" ", "_"))
 
 	var plan: Dictionary = NEWPORT_TOWN.starter_district_plan()
@@ -759,7 +889,8 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("layout_rules_pass", "") == "G-4.15", "starter_plan_layout_rules_pass_g_4_15")
 	_expect(plan.get("surface_kit_pass", "") == "G-4.16", "starter_plan_surface_kit_pass_g_4_16")
 	_expect(plan.get("asset_pipeline_pass", "") == "G-4.18B", "starter_plan_asset_pipeline_pass_g_4_18b")
-	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0, "starter_plan_hero_street_atlas_proof")
+	_expect(plan.get("atelier_cargo_pipeline_pass", "") == "G-4.18D", "starter_plan_atelier_cargo_pipeline_pass_g_4_18d")
+	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("atelier cargo") >= 0, "starter_plan_hero_street_atlas_proof")
 	_expect(plan.get("green_origin_pipeline_pass", "") == "G-4.18B", "starter_plan_green_origin_pipeline_pass")
 	_expect(String(plan.get("yellow_review_art_policy", "")).find("yellow pixels cannot source final-commercial green assets") >= 0, "starter_plan_yellow_review_art_policy")
 	_expect(int(plan.get("layout_rule_count", 0)) == NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS.size(), "starter_plan_g415_layout_rule_count")
@@ -1268,6 +1399,7 @@ func _print_report() -> void:
 		print("routeDebugProbes=", NEWPORT_TOWN.route_debug_probes())
 		print("surfaceKitPass=", NEWPORT_TOWN.starter_district_plan().get("surface_kit_pass", ""))
 		print("assetPipelinePass=", NEWPORT_TOWN.starter_district_plan().get("asset_pipeline_pass", ""))
+		print("atelierCargoPipelinePass=", NEWPORT_TOWN.starter_district_plan().get("atelier_cargo_pipeline_pass", ""))
 	print("reachabilityTargets=", NEWPORT_TOWN.reachability_targets())
 	print("failureCount=", failures.size())
 	print("failures=", failures)

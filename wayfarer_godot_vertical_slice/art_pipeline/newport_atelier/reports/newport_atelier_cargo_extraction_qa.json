@@ -1,0 +1,124 @@
+{
+  "schema_id": "wayfarer.newport_atelier.extraction_qa.v1",
+  "phase": "G-4.18D",
+  "status": "PASS",
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids"
+  ],
+  "assets": {
+    "atelier_newport_crate_01": {
+      "size": {
+        "w": 495,
+        "h": 457
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 479,
+        "h": 441
+      },
+      "alpha_pixels": 162196,
+      "opaque_pixels": 162196,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "upper_left_wooden_shipping_crate",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_newport_barrel_01": {
+      "size": {
+        "w": 301,
+        "h": 442
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 285,
+        "h": 426
+      },
+      "alpha_pixels": 103913,
+      "opaque_pixels": 103913,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "upper_right_coopered_barrel",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_newport_rope_coil_01": {
+      "size": {
+        "w": 517,
+        "h": 298
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 501,
+        "h": 282
+      },
+      "alpha_pixels": 94351,
+      "opaque_pixels": 94351,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "lower_left_rope_coil",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    },
+    "atelier_wharf_cargo_cluster_01": {
+      "size": {
+        "w": 710,
+        "h": 424
+      },
+      "alpha_bbox": {
+        "x": 8,
+        "y": 8,
+        "w": 694,
+        "h": 408
+      },
+      "alpha_pixels": 202905,
+      "opaque_pixels": 202905,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "lower_right_composed_cargo_cluster",
+      "manifest_identity_match": true,
+      "status": "PASS"
+    }
+  }
+}
