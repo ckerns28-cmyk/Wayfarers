@@ -1522,7 +1522,24 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--skip-registry", action="store_true")
     parser.add_argument("--skip-building-provenance", action="store_true")
+    parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
+
+    if args.validate_only:
+        manifest_path = MANIFEST_ROOT / MANIFEST_FILENAME
+        qa_path = REPORT_ROOT / QA_FILENAME
+        if not manifest_path.exists():
+            raise FileNotFoundError(f"missing manifest: {rel(manifest_path)}")
+        if not qa_path.exists():
+            raise FileNotFoundError(f"missing QA report: {rel(qa_path)}")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        qa_report = json.loads(qa_path.read_text(encoding="utf-8"))
+        qa = qa_report.get("assets", {})
+        failures = validate_pipeline(manifest, qa)
+        if failures:
+            raise RuntimeError("\n".join(failures))
+        print(f"PASS: G-4.21A core building rebuild wave validation-only -> {len(manifest.get('assets', []))} assets")
+        return 0
 
     for path in [SOURCE_ROOT, GENERATED_ROOT, ATLAS_ROOT, CONTACT_ROOT, MANIFEST_ROOT, REPORT_ROOT]:
         path.mkdir(parents=True, exist_ok=True)

@@ -1,10 +1,10 @@
 {
   "schema_id": "wayfarer.newport.visual_production_registry.v1",
-  "phase": "G-4.18E",
+  "phase": "G-4.19",
   "generated_at": "2026-05-17",
   "registry_role": "Newport visual production registry and core asset trust audit.",
   "north_star": "Newport is the starting town/village for Wayfarer: a believable, enjoyable, navigable opening location with coastal identity, readable harbor/market/civic/residential organization, emotional invitation to explore, gameplay readiness, and visual consistency with the G-4.18D/G-4.19A atelier standard.",
-  "policy": "G-4.18E adds the Newport Harbor Commercial + Tavern District hero-quality asset family under the autonomous pre-G-5 protocol. Assets remain AI-assisted green-origin candidates pending final generated-art license policy approval and are not final-commercial promoted.",
+  "policy": "G-4.19 establishes the Player Visual Identity Foundation under the autonomous pre-G-5 protocol. The active player sprite family is project-owned deterministic source-authored art, not final-commercial promoted, with preserved script, style tokens, manifest, contact sheet, QA, and runtime integration. The old drawn player placeholder is deprecated from normal review.",
   "status_taxonomy": [
     "APPROVED_FINAL",
     "APPROVED_TEMPORARY",
@@ -81,7 +81,7 @@
     {
       "wave_id": "wave_5_character_npc_standard",
       "title": "Character/NPC standard",
-      "status": "blocked_until_core_building_architecture_and_town_context_are_stronger",
+      "status": "in_progress_g419_player_visual_identity_foundation",
       "atelier_required": true,
       "scope": [
         "player sprite standard",
@@ -89,7 +89,9 @@
         "scale and perspective lock",
         "equipment readability preparation"
       ],
-      "acceptance_note": "Begin only after Newport has enough environmental context for characters to be judged in place."
+      "acceptance_note": "G-4.19 establishes the player visual identity foundation first: directional idle/walk contract, human-scale Newport grounding, and a repeatable provenance-safe character asset path. NPC variants remain future work.",
+      "accepted_pack_count": 1,
+      "accepted_asset_count": 1
     }
   ],
   "asset_entries": [
@@ -1406,15 +1408,16 @@
       "path": "scenes/player/Player.gd",
       "source_provenance_status": "project_code_procedural",
       "current_usage": {
-        "normal_review": true,
+        "normal_review": false,
         "lab_only": false,
-        "runtime_target": "Player._draw",
-        "usage_notes": "Current player is temporary scale/debug art."
+        "runtime_target": "Deprecated by G-4.19 player_wayfarer_foundation_g419",
+        "usage_notes": "Historical drawn scale/debug avatar only; not active in normal review after G-4.19."
       },
       "visual_quality_status": "NEEDS_REWORK",
       "gameplay_role": "Movement, scale, and interaction placeholder.",
-      "rebuild_status": "REBUILD_REQUIRED",
-      "notes": "Wave 5 character/NPC standard must replace this after environment context is stronger."
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
+      "notes": "Replaced by the G-4.19 Player Visual Identity Foundation directional sprite atlas.",
+      "deprecated_visual_target": true
     },
     {
       "asset_id": "edrin_vale_placeholder_drawn",
@@ -4713,6 +4716,50 @@
       "final_commercial_candidate": false,
       "final_commercial_eligible": false,
       "notes": "Sawhorse, boards, and coiled twine. AI-assisted green-origin candidate pending final license policy approval; coherent G-4.18E family member, not random prop scatter."
+    },
+    {
+      "asset_id": "player_wayfarer_foundation_g419",
+      "name": "Wayfarer Player Visual Identity Foundation",
+      "category": "CHARACTER_PLAYER_SPRITE_FOUNDATION",
+      "path": "art_pipeline/player_identity/atlases/player_wayfarer_foundation_g419_v1.png",
+      "source_provenance_status": "green_origin_project_authored_deterministic",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Player AnimatedSprite2D Visual node",
+        "usage_notes": "Active normal-review player sprite foundation for G-4.19; final-commercial promotion remains a later art/legal gate."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Readable human-scale player identity, directional idle/walk foundation, collision/camera/interaction compatible.",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "player_identity_artifacts": {
+        "manifest": "art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json",
+        "style_tokens": "art_pipeline/player_identity/source_authored/g419_player_identity_style_tokens.json",
+        "brief": "art_pipeline/player_identity/source_authored/g419_player_visual_identity_brief.md",
+        "generation_script": "art_pipeline/player_identity/scripts/generate_g419_player_identity_assets.py",
+        "validation_script": "art_pipeline/player_identity/scripts/validate_g419_player_identity.py",
+        "atlas": "art_pipeline/player_identity/atlases/player_wayfarer_foundation_g419_v1.png",
+        "contact_sheet": "art_pipeline/player_identity/contact_sheets/player_wayfarer_foundation_g419_contact_sheet.png",
+        "validation_report": "art_pipeline/player_identity/reports/player_wayfarer_foundation_g419_extraction_qa.json"
+      },
+      "animation_contract": [
+        "idle_down",
+        "idle_up",
+        "idle_left",
+        "idle_right",
+        "walk_down",
+        "walk_up",
+        "walk_left",
+        "walk_right"
+      ],
+      "provenance_detail": {
+        "project_owned_deterministic_source": true,
+        "source_pixels_from_yellow_uncertain_assets": false,
+        "source_pixels_from_third_party_material": false,
+        "web_scraped_source_pixels": false,
+        "final_commercial_promoted": false
+      },
+      "notes": "G-4.19 staged character foundation. It belongs with Newport at gameplay zoom and preserves future outfit/equipment/NPC expansion hooks without claiming final-commercial art status."
     }
   ]
 }

@@ -53,9 +53,9 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.18E", "build_phase_g_4_18e")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.18E Green-Origin Hero-Quality Asset Family", "build_label_g_4_18e")
-	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-18e-green-origin-hero-quality-asset-family", "source_branch_g_4_18e")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.19", "build_phase_g_4_19")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.19 Player Visual Identity Foundation", "build_label_g_4_19")
+	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-19-player-visual-identity-foundation", "source_branch_g_4_19")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -71,6 +71,7 @@ func _validate_scene(main: Node) -> void:
 		_expect(player.get_node_or_null("Camera2D") != null, "player_camera_exists")
 		_expect(root.get_camera_2d() == player.get_node("Camera2D"), "player_camera_is_current")
 		_expect(player.get_node_or_null("CollisionShape2D") != null, "player_collision_exists")
+		_validate_g419_player_runtime_visual(player)
 		_expect(player.global_position.distance_to(NEWPORT_TOWN.PLAYER_SPAWN) < 1.0, "player_spawn_matches_blueprint")
 		var camera := player.get_node_or_null("Camera2D") as Camera2D
 		if camera:
@@ -404,19 +405,78 @@ func _validate_g418_asset_factory(map: Node) -> void:
 	_validate_g420b_town_identity_wave(map)
 	_validate_g421a_core_building_rebuild_wave(map)
 	_validate_g418e_hero_asset_family_wave(map)
+	_validate_g419_player_identity_foundation()
+
+func _validate_g419_player_runtime_visual(player: Node) -> void:
+	var visual := player.get_node_or_null("Visual") as AnimatedSprite2D
+	_expect(visual != null, "g419_player_visual_node_exists")
+	if visual == null:
+		return
+	_expect(visual.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST, "g419_player_visual_nearest_filter")
+	_expect(absf(visual.scale.x - 0.82) < 0.01 and absf(visual.scale.y - 0.82) < 0.01, "g419_player_visual_scale")
+	_expect(visual.position.distance_to(Vector2(0.0, -20.0)) < 0.5, "g419_player_visual_foot_anchor_offset")
+	var frames := visual.sprite_frames
+	_expect(frames != null, "g419_player_sprite_frames")
+	if frames == null:
+		return
+	for animation_name in ["idle_down", "idle_up", "idle_left", "idle_right", "walk_down", "walk_up", "walk_left", "walk_right"]:
+		_expect(frames.has_animation(animation_name), "g419_player_animation_" + animation_name)
+		if frames.has_animation(animation_name):
+			var expected_count := 1 if animation_name.begins_with("idle_") else 4
+			_expect(frames.get_frame_count(animation_name) == expected_count, "g419_player_animation_frame_count_" + animation_name)
+	_expect(player.has_method("set_review_visual_state"), "g419_player_review_pose_hook")
+
+func _validate_g419_player_identity_foundation() -> void:
+	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json")
+	_expect(not manifest.is_empty(), "g419_player_manifest_json")
+	_expect(String(manifest.get("schema_id", "")) == "wayfarer.player_identity.g419.manifest.v1", "g419_player_manifest_schema")
+	_expect(String(manifest.get("phase", "")) == "G-4.19", "g419_player_manifest_phase")
+	_expect(String(manifest.get("family_id", "")) == "player_wayfarer_foundation_g419", "g419_player_manifest_family")
+	_expect(String(manifest.get("commercial_use_status", "")) == "not_final_commercial_promoted", "g419_player_manifest_not_final_promoted")
+	for key in ["source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels"]:
+		_expect(bool(manifest.get(key, true)) == false, "g419_player_manifest_provenance_" + key)
+	var animations: Dictionary = manifest.get("animations", {})
+	for animation_name in ["idle_down", "idle_up", "idle_left", "idle_right", "walk_down", "walk_up", "walk_left", "walk_right"]:
+		_expect(animations.has(animation_name), "g419_player_manifest_animation_" + animation_name)
+	var frames: Array = manifest.get("frames", [])
+	_expect(frames.size() == 12, "g419_player_manifest_frame_count")
+	for required_path in [
+		"res://art_pipeline/player_identity/atlases/player_wayfarer_foundation_g419_v1.png",
+		"res://art_pipeline/player_identity/generated/player_wayfarer_foundation_g419_source_grid.png",
+		"res://art_pipeline/player_identity/contact_sheets/player_wayfarer_foundation_g419_contact_sheet.png",
+		"res://art_pipeline/player_identity/source_authored/g419_player_identity_style_tokens.json",
+		"res://art_pipeline/player_identity/source_authored/g419_player_visual_identity_brief.md",
+		"res://art_pipeline/player_identity/scripts/generate_g419_player_identity_assets.py",
+		"res://art_pipeline/player_identity/scripts/validate_g419_player_identity.py",
+		"res://art_pipeline/player_identity/reports/player_wayfarer_foundation_g419_extraction_qa.json",
+	]:
+		_expect(FileAccess.file_exists(required_path), "g419_player_artifact_exists_" + required_path.get_file())
+	var qa := _load_json_dictionary("res://art_pipeline/player_identity/reports/player_wayfarer_foundation_g419_extraction_qa.json")
+	_expect(not qa.is_empty(), "g419_player_qa_json")
+	_expect(String(qa.get("status", "")) == "PASS", "g419_player_qa_pass")
+	_expect(int(qa.get("frames_checked", 0)) == 12, "g419_player_qa_frame_count")
+	var qa_provenance: Dictionary = qa.get("provenance", {})
+	_expect(bool(qa_provenance.get("project_owned_deterministic_source", false)) == true, "g419_player_qa_project_owned")
+	for key in ["third_party_pixels", "yellow_review_pixels", "web_scraped_pixels", "final_commercial_promoted"]:
+		_expect(bool(qa_provenance.get(key, true)) == false, "g419_player_qa_provenance_" + key)
 
 func _validate_g419b_visual_production_registry() -> void:
 	var registry := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_visual_production_registry.json")
 	_expect(not registry.is_empty(), "g419b_visual_registry_json")
 	_expect(String(registry.get("schema_id", "")) == "wayfarer.newport.visual_production_registry.v1", "g419b_visual_registry_schema")
 	var registry_phase := String(registry.get("phase", ""))
-	_expect(["G-4.21A", "G-4.18E"].has(registry_phase), "g418e_visual_registry_phase_current")
+	_expect(["G-4.21A", "G-4.18E", "G-4.19"].has(registry_phase), "g419_visual_registry_phase_current")
 	_expect(String(registry.get("north_star", "")).find("starting town/village") >= 0, "g419b_visual_registry_north_star")
 	var registry_policy := String(registry.get("policy", "")).to_lower()
 	if registry_phase == "G-4.18E":
 		_expect(registry_policy.find("g-4.18e") >= 0, "g418e_visual_registry_policy_phase")
 		_expect(registry_policy.find("newport harbor commercial + tavern district") >= 0, "g418e_visual_registry_policy_family")
 		_expect(registry_policy.find("not final-commercial promoted") >= 0, "g418e_visual_registry_policy_not_final_promoted")
+	elif registry_phase == "G-4.19":
+		_expect(registry_policy.find("g-4.19") >= 0, "g419_visual_registry_policy_phase")
+		_expect(registry_policy.find("player visual identity foundation") >= 0, "g419_visual_registry_policy_player_identity")
+		_expect(registry_policy.find("not final-commercial promoted") >= 0, "g419_visual_registry_policy_not_final_promoted")
+		_expect(registry_policy.find("old drawn player placeholder is deprecated") >= 0, "g419_visual_registry_policy_placeholder_deprecated")
 	else:
 		_expect(registry_policy.find("core building atelier rebuild") >= 0, "g421a_visual_registry_core_building_policy")
 		_expect(registry_policy.find("tavern/inn is the required hero centerpiece asset") >= 0, "g421a_visual_registry_tavern_hero_policy")
@@ -529,9 +589,31 @@ func _validate_g419b_visual_production_registry() -> void:
 		"atelier_g418e_commercial_market_cart_01",
 		"atelier_g418e_harbor_net_drying_frame_01",
 		"atelier_g418e_service_fence_gate_01",
-		"player_placeholder_drawn"
+		"player_placeholder_drawn",
+		"player_wayfarer_foundation_g419"
 	]:
 		_expect(by_id.has(required_id), "g419b_visual_registry_required_entry_" + required_id)
+
+	if by_id.has("player_wayfarer_foundation_g419"):
+		var player_asset: Dictionary = by_id["player_wayfarer_foundation_g419"]
+		_expect(String(player_asset.get("category", "")) == "CHARACTER_PLAYER_SPRITE_FOUNDATION", "g419_player_registry_category")
+		_expect(String(player_asset.get("rebuild_status", "")) == "APPROVED_TEMPORARY", "g419_player_registry_rebuild_status")
+		var usage: Dictionary = player_asset.get("current_usage", {})
+		_expect(bool(usage.get("normal_review", false)) == true, "g419_player_registry_normal_review")
+		var provenance: Dictionary = player_asset.get("provenance_detail", {})
+		_expect(bool(provenance.get("project_owned_deterministic_source", false)) == true, "g419_player_registry_project_owned")
+		for key in ["source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels", "final_commercial_promoted"]:
+			_expect(bool(provenance.get(key, true)) == false, "g419_player_registry_provenance_" + key)
+		var artifacts: Dictionary = player_asset.get("player_identity_artifacts", {})
+		for artifact_key in ["manifest", "style_tokens", "brief", "generation_script", "validation_script", "atlas", "contact_sheet", "validation_report"]:
+			_expect(artifacts.has(artifact_key), "g419_player_registry_artifact_" + artifact_key)
+			var artifact_path := String(artifacts.get(artifact_key, ""))
+			_expect(artifact_path != "" and FileAccess.file_exists("res://" + artifact_path), "g419_player_registry_artifact_exists_" + artifact_key)
+	if by_id.has("player_placeholder_drawn"):
+		var placeholder: Dictionary = by_id["player_placeholder_drawn"]
+		var placeholder_usage: Dictionary = placeholder.get("current_usage", {})
+		_expect(bool(placeholder_usage.get("normal_review", true)) == false, "g419_player_placeholder_not_normal_review")
+		_expect(String(placeholder.get("rebuild_status", "")) == "DEPRECATED_DO_NOT_USE", "g419_player_placeholder_deprecated")
 
 	if by_id.has("atelier_newport_tavern_inn_hero_01"):
 		var tavern: Dictionary = by_id["atelier_newport_tavern_inn_hero_01"]
@@ -1618,7 +1700,7 @@ func _validate_starter_harbor_plan() -> void:
 				_expect(float(definition.get("visual_scale", 0.0)) >= 185.0, "shop_house_newport_storefront_scale")
 
 	var manifest: Array = NEWPORT_TOWN.missing_asset_manifest()
-	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "additional dock clutter atelier variants beyond the G-4.19A first rollout pack", "sign variants", "fencing variants", "lantern variants", "Newport-detail player character sprite sheet", "Newport-detail NPC sprite sheets", "Newport-detail monster sprite sheets", "Newport-detail equipment, weapons, armor, and combat VFX", "chapel/church decision and final art if needed"]:
+	for needed in ["fishmonger storefront", "cooperage / barrel shop final art", "blacksmith / smithy", "small home variants", "dock shack", "carts", "additional dock clutter atelier variants beyond the G-4.19A first rollout pack", "sign variants", "fencing variants", "lantern variants", "Newport-detail player outfit and equipment variant sheets", "Newport-detail NPC sprite sheets", "Newport-detail monster sprite sheets", "Newport-detail equipment, weapons, armor, and combat VFX", "chapel/church decision and final art if needed"]:
 		_expect(manifest.has(needed), "missing_asset_manifest_" + needed.replace("/", "_").replace(" ", "_"))
 
 	var plan: Dictionary = NEWPORT_TOWN.starter_district_plan()

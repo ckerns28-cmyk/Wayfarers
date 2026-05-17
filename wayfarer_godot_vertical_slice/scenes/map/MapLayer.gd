@@ -1679,7 +1679,7 @@ func _draw_g410_props() -> void:
 		{"pos": Vector2(386, 438), "coat": Color("#536c7d"), "hat": Color("#d8c480")},
 		{"pos": Vector2(704, 388), "coat": Color("#6e5a3e"), "hat": Color("#dbc98b")},
 		{"pos": Vector2(1152, 424), "coat": Color("#744f4c"), "hat": Color("#d8c480")},
-		{"pos": Vector2(675, 604), "coat": Color("#5a5f7e"), "hat": Color("#e0c282")},
+		{"pos": Vector2(1276, 540), "coat": Color("#6e5438"), "hat": Color("#c9ad70")},
 	]:
 		_draw_newport_npc_placeholder(walker["pos"], walker["coat"], walker["hat"])
 	if NEWPORT_TOWN.G422A_SHOW_LEGACY_PROOF_OVERLAYS:

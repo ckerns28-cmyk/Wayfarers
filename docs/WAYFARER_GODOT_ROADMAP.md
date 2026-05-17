@@ -265,6 +265,21 @@ Newport now has an accepted authored street/harbor layout and a coherent
 hero-quality asset family, so the temporary player/NPC visual language is the
 largest remaining screenshot mismatch against the environment bar.
 
+Current G-4.19 result: the temporary scale/debug avatar has been replaced by a
+source-authored directional player visual identity foundation with idle/walk
+animation contracts for down/up/left/right. The player atlas, contact sheet,
+style tokens, source brief, manifest, extraction QA, runtime integration, and
+G-4.19 screenshot capture are preserved. The Agent Council inspected Newport
+district, harbor, rear-service, G-4.18E prop, building-scale, y-sort,
+facing/movement, gameplay-zoom, wide-readability, and contact-sheet evidence
+and assigned `COUNCIL_PASS_READY_FOR_PR`; human visual review is not required
+for this ordinary pre-G-5 phase.
+
+Next recommended phase after G-4.19: G-4.20 HUD/UI Visual Redesign. Newport now
+has accepted street grammar, a coherent green-origin asset family, and a
+readable player identity foundation, so the remaining visible mismatch before a
+hero-slice composition gate is the debug/raw-engine UI layer.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -2011,20 +2026,29 @@ Acceptance:
 
 ## G-4.19: Player Visual Identity Foundation
 
-Status: planned.
+Status: `COUNCIL_PASS_READY_FOR_PR` under the autonomous pre-G-5 production
+protocol.
 
 G-4.19 replaces the temporary scale/debug avatar direction with a player visual
 identity foundation that can support a long-term MMORPG character pipeline.
 
 Acceptance:
 
-- The player belongs with the Newport buildings, streets, docks, and props at
-  the active camera scale.
-- The design anticipates equipment, animation, class/fantasy identity, and
-  future multiplayer readability without building those systems yet.
-- Yellow or temporary character art is clearly labeled and cannot be mistaken
-  for final player identity.
-- Normal screenshots improve in both HUD and no-HUD modes.
+- PASS: The player belongs with the Newport buildings, streets, docks, and
+  G-4.18E props at the active camera scale.
+- PASS: The player has a transparent source-authored directional atlas,
+  manifest, contact sheet, QA report, and runtime `AnimatedSprite2D`
+  integration for idle/walk down/up/left/right.
+- PASS: The implementation preserves spawn, camera, collision, interaction
+  prompt behavior, y-sort/layering, and future extension hooks for animation,
+  outfits, equipment, tools, progression, and NPC/player differentiation.
+- PASS: Provenance is recorded as project-owned deterministic source-authored
+  art; it is not promoted to final-commercial green.
+- PASS: Runtime screenshots prove district fit, scale/grounding, harbor edge,
+  rear-service connector fit, G-4.18E prop scale, y-sort, facing/movement,
+  gameplay zoom, wider Newport readability, and contact-sheet/frame bounds.
+- PASS: The Agent Council inspected screenshot evidence and classified the pass
+  as `COUNCIL_PASS_READY_FOR_PR`.
 
 ## G-4.20: HUD/UI Visual Redesign
 

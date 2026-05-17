@@ -2146,8 +2146,8 @@ def validate_visual_production_registry(failures: list[str]) -> None:
     else:
         pass_check("visual production registry schema id")
     registry_phase = str(registry.get("phase", ""))
-    if registry_phase not in {"G-4.21A", "G-4.18E"}:
-        fail("visual production registry phase must be G-4.21A or G-4.18E", failures)
+    if registry_phase not in {"G-4.21A", "G-4.18E", "G-4.19"}:
+        fail("visual production registry phase must be G-4.21A, G-4.18E, or G-4.19", failures)
     if "starting town/village" not in str(registry.get("north_star", "")):
         fail("visual production registry must restore the Newport starting town/village North Star", failures)
     registry_policy = str(registry.get("policy", ""))
@@ -2160,6 +2160,15 @@ def validate_visual_production_registry(failures: list[str]) -> None:
         ]:
             if required_text not in registry_policy:
                 fail(f"visual production registry G-4.18E policy missing: {required_text}", failures)
+    elif registry_phase == "G-4.19":
+        for required_text in [
+            "G-4.19",
+            "Player Visual Identity Foundation",
+            "not final-commercial promoted",
+            "old drawn player placeholder is deprecated",
+        ]:
+            if required_text not in registry_policy:
+                fail(f"visual production registry G-4.19 policy missing: {required_text}", failures)
     else:
         if "core building atelier rebuild" not in registry_policy or "Tavern/Inn is the required hero centerpiece asset" not in registry_policy:
             fail("visual production registry must record the G-4.21A core building atelier rebuild policy", failures)
@@ -2274,6 +2283,40 @@ def validate_visual_production_registry(failures: list[str]) -> None:
                 else:
                     path_exists(str(artifacts.get(artifact_field, "")), failures)
 
+        if asset_id == "player_wayfarer_foundation_g419":
+            artifacts = raw_entry.get("player_identity_artifacts", {})
+            if not isinstance(artifacts, dict):
+                fail("player_wayfarer_foundation_g419 player_identity_artifacts must be an object", failures)
+                artifacts = {}
+            for artifact_field in [
+                "manifest",
+                "style_tokens",
+                "brief",
+                "generation_script",
+                "validation_script",
+                "atlas",
+                "contact_sheet",
+                "validation_report",
+            ]:
+                if artifact_field not in artifacts:
+                    fail(f"player_wayfarer_foundation_g419 missing player identity artifact {artifact_field}", failures)
+                else:
+                    path_exists(str(artifacts.get(artifact_field, "")), failures)
+            detail = raw_entry.get("provenance_detail", {})
+            if not isinstance(detail, dict):
+                fail("player_wayfarer_foundation_g419 provenance_detail must be an object", failures)
+                detail = {}
+            if detail.get("project_owned_deterministic_source") is not True:
+                fail("player_wayfarer_foundation_g419 must declare project-owned deterministic source", failures)
+            for provenance_key in [
+                "source_pixels_from_yellow_uncertain_assets",
+                "source_pixels_from_third_party_material",
+                "web_scraped_source_pixels",
+                "final_commercial_promoted",
+            ]:
+                if detail.get(provenance_key) is not False:
+                    fail(f"player_wayfarer_foundation_g419 provenance must mark {provenance_key}=false", failures)
+
         if raw_entry.get("category") == "BUILDING" and usage.get("normal_review") is True:
             audit = raw_entry.get("building_audit", {})
             if not isinstance(audit, dict):
@@ -2375,6 +2418,26 @@ def validate_visual_production_registry(failures: list[str]) -> None:
             fail("old inn_tavern_v1 must be deprecated after G-4.21A replacement", failures)
         if isinstance(old_usage, dict) and old_usage.get("normal_review") is True:
             fail("old inn_tavern_v1 must not remain normal-review after G-4.21A replacement", failures)
+
+    player_foundation = by_id.get("player_wayfarer_foundation_g419", {})
+    if not player_foundation:
+        fail("G-4.19 player visual identity foundation missing from visual production registry", failures)
+    elif isinstance(player_foundation, dict):
+        usage = player_foundation.get("current_usage", {})
+        if not isinstance(usage, dict) or usage.get("normal_review") is not True:
+            fail("G-4.19 player visual identity foundation must be active for normal review", failures)
+        if player_foundation.get("rebuild_status") != "APPROVED_TEMPORARY":
+            fail("G-4.19 player visual identity foundation must be approved temporary")
+        if player_foundation.get("visual_quality_status") != "APPROVED_TEMPORARY":
+            fail("G-4.19 player visual identity foundation visual status must be approved temporary")
+
+    player_placeholder = by_id.get("player_placeholder_drawn", {})
+    if isinstance(player_placeholder, dict) and player_placeholder:
+        placeholder_usage = player_placeholder.get("current_usage", {})
+        if player_placeholder.get("rebuild_status") != "DEPRECATED_DO_NOT_USE":
+            fail("drawn player placeholder must be deprecated after G-4.19")
+        if isinstance(placeholder_usage, dict) and placeholder_usage.get("normal_review") is True:
+            fail("drawn player placeholder must not remain normal-review after G-4.19")
 
     if VISUAL_PRODUCTION_AUDIT_PATH.exists():
         report = VISUAL_PRODUCTION_AUDIT_PATH.read_text(encoding="utf-8")
