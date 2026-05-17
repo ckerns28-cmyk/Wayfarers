@@ -998,7 +998,7 @@ func _draw_g410_ground() -> void:
 		_draw_g410_lot_plan()
 	_draw_g415_parcel_grounding()
 	_draw_g423a_city_ground_washes()
-	_draw_g423a_enclosed_lot_cells()
+	_draw_g423b_authored_lot_grounding()
 	_draw_shrub_cluster(Vector2(348, 322))
 	_draw_shrub_cluster(Vector2(644, 332))
 	_draw_shrub_cluster(Vector2(1084, 308))
@@ -1267,6 +1267,7 @@ func _draw_g410_street_plan() -> void:
 	_draw_street_wear(Rect2(178, 580, 1328, 58), 58)
 	_draw_street_wear(Rect2(250, 398, 1198, 42), 38)
 	_draw_street_wear(Rect2(320, 276, 902, 34), 22)
+	_draw_g423b_authored_street_breakup()
 	for p in [Vector2(386, 578), Vector2(704, 574), Vector2(1156, 576), Vector2(1404, 582), Vector2(704, 398), Vector2(1156, 400)]:
 		_draw_edge_grime(p, 92.0)
 	_draw_g420a_terrain_and_path_transitions()
@@ -1429,6 +1430,7 @@ func _draw_g410_wharf_water() -> void:
 	_draw_post_line(Vector2(382, 812), Vector2(490, 812), 36.0)
 	_draw_post_line(Vector2(740, 812), Vector2(874, 812), 38.0)
 	_draw_post_line(Vector2(1214, 812), Vector2(1334, 812), 38.0)
+	_draw_g423b_harbor_working_surface()
 	for p in [Vector2(266, 714), Vector2(358, 724), Vector2(526, 708), Vector2(716, 718), Vector2(934, 712), Vector2(1140, 716), Vector2(1322, 724)]:
 		_draw_shore_rocks(p)
 	for p in [Vector2(422, 846), Vector2(802, 846), Vector2(1252, 846)]:
@@ -1487,6 +1489,8 @@ func _draw_g410_props() -> void:
 		draw_circle(pos + Vector2(-8, -8), 8, Color("#3d7042"))
 	for bench in [Vector2(632, 408), Vector2(1048, 424), Vector2(832, 410), Vector2(342, 606)]:
 		_draw_bench(bench)
+	_draw_g423b_frontage_life_props()
+	_draw_g423b_harbor_economy_props()
 	for anchor in NEWPORT_TOWN.interaction_anchors():
 		var anchor_pos: Vector2 = anchor.get("position", Vector2.ZERO)
 		var anchor_type := String(anchor.get("type", ""))
@@ -1504,10 +1508,10 @@ func _draw_g410_props() -> void:
 	if NEWPORT_TOWN.G422A_SHOW_LEGACY_PROOF_OVERLAYS:
 		_draw_g418_hero_non_cargo_prop_clusters()
 	_draw_g420a_building_grounding_accents()
+	_draw_g420b_town_identity_accents()
 	if NEWPORT_TOWN.G422A_SHOW_LEGACY_PROOF_OVERLAYS:
 		_draw_g418d_atelier_cargo_clusters()
 		_draw_g419a_atelier_dock_clutter_clusters()
-		_draw_g420b_town_identity_accents()
 
 func _draw_g423a_city_ground_washes() -> void:
 	_draw_newport_grass_swale(PackedVector2Array([
@@ -1585,6 +1589,214 @@ func _draw_g423a_enclosed_lot_cells() -> void:
 	]:
 		_draw_planting_bed(bed, Color("#6a845c"), Color("#506f4c"))
 
+func _draw_g423b_authored_lot_grounding() -> void:
+	for raw_spec in [
+		{"points": PackedVector2Array([Vector2(118, 526), Vector2(370, 514), Vector2(414, 552), Vector2(392, 624), Vector2(172, 632), Vector2(120, 596)]), "kind": "tavern", "fill": Color("#566a49", 0.18), "stroke": Color("#b39c68", 0.12)},
+		{"points": PackedVector2Array([Vector2(420, 522), Vector2(724, 510), Vector2(748, 554), Vector2(722, 626), Vector2(450, 626), Vector2(410, 582)]), "kind": "commercial", "fill": Color("#5c684e", 0.14), "stroke": Color("#bca96f", 0.11)},
+		{"points": PackedVector2Array([Vector2(930, 520), Vector2(1296, 508), Vector2(1326, 552), Vector2(1288, 632), Vector2(950, 626), Vector2(918, 578)]), "kind": "commercial", "fill": Color("#5b674e", 0.14), "stroke": Color("#bca96f", 0.11)},
+		{"points": PackedVector2Array([Vector2(1286, 522), Vector2(1516, 534), Vector2(1510, 626), Vector2(1338, 640), Vector2(1274, 606)]), "kind": "market", "fill": Color("#665d49", 0.18), "stroke": Color("#d0b776", 0.13)},
+		{"points": PackedVector2Array([Vector2(578, 300), Vector2(1114, 292), Vector2(1152, 342), Vector2(1106, 422), Vector2(596, 422), Vector2(560, 356)]), "kind": "civic", "fill": Color("#64705a", 0.17), "stroke": Color("#c8b880", 0.11)},
+		{"points": PackedVector2Array([Vector2(266, 304), Vector2(452, 296), Vector2(468, 360), Vector2(418, 408), Vector2(278, 396), Vector2(238, 346)]), "kind": "residential", "fill": Color("#647e59", 0.15), "stroke": Color("#9caf72", 0.12)},
+		{"points": PackedVector2Array([Vector2(1012, 282), Vector2(1238, 288), Vector2(1248, 366), Vector2(1182, 402), Vector2(1014, 382), Vector2(982, 330)]), "kind": "residential", "fill": Color("#667e5a", 0.15), "stroke": Color("#9caf72", 0.12)},
+		{"points": PackedVector2Array([Vector2(1384, 336), Vector2(1560, 346), Vector2(1552, 438), Vector2(1460, 458), Vector2(1370, 420)]), "kind": "support", "fill": Color("#5f6c4f", 0.14), "stroke": Color("#c4ad78", 0.10)},
+		{"points": PackedVector2Array([Vector2(188, 408), Vector2(338, 400), Vector2(358, 472), Vector2(308, 536), Vector2(184, 520), Vector2(154, 456)]), "kind": "support", "fill": Color("#5f6a4e", 0.16), "stroke": Color("#c4ad78", 0.10)},
+	]:
+		var spec: Dictionary = raw_spec
+		_draw_g423b_soft_ground_patch(spec["points"], spec["fill"], spec["stroke"], String(spec.get("kind", "")))
+
+	for threshold in [
+		{"rect": Rect2(146, 548, 218, 26), "kind": "market", "alpha": 0.32},
+		{"rect": Rect2(426, 560, 286, 20), "kind": "commercial", "alpha": 0.24},
+		{"rect": Rect2(944, 560, 342, 20), "kind": "commercial", "alpha": 0.24},
+		{"rect": Rect2(1296, 588, 184, 28), "kind": "market", "alpha": 0.28},
+		{"rect": Rect2(628, 384, 480, 22), "kind": "civic", "alpha": 0.26},
+		{"rect": Rect2(272, 358, 154, 18), "kind": "support", "alpha": 0.22},
+		{"rect": Rect2(1028, 340, 166, 18), "kind": "support", "alpha": 0.22},
+	]:
+		_draw_newport_frontage_threshold(threshold["rect"], String(threshold["kind"]), float(threshold["alpha"]))
+
+	for raw_path in [
+		[Vector2(244, 586), Vector2(244, 626), 13.0],
+		[Vector2(650, 586), Vector2(650, 628), 12.0],
+		[Vector2(1018, 586), Vector2(1018, 626), 12.0],
+		[Vector2(704, 392), Vector2(704, 446), 15.0],
+		[Vector2(362, 376), Vector2(386, 448), 10.0],
+		[Vector2(1094, 362), Vector2(1154, 438), 10.0],
+	]:
+		var path: Array = raw_path
+		_draw_newport_dirt_path(path[0], path[1], path[2], true)
+
+	for fence in [
+		[Vector2(126, 526), Vector2(206, 516)],
+		[Vector2(330, 520), Vector2(396, 552)],
+		[Vector2(266, 396), Vector2(420, 392)],
+		[Vector2(1014, 382), Vector2(1182, 394)],
+		[Vector2(1376, 420), Vector2(1518, 432)],
+	]:
+		_draw_fence_line(fence[0], fence[1], Color("#d7c894", 0.30))
+
+func _draw_g423b_soft_ground_patch(points: PackedVector2Array, fill: Color, stroke: Color, kind: String) -> void:
+	if points.size() < 3:
+		return
+	draw_colored_polygon(points, fill)
+	var bounds := _bounds_for_points(points)
+	_draw_surface_speckles(bounds.grow(-6.0), maxi(8, int(bounds.size.x / 36.0)), stroke, Vector2(26, 3))
+	if kind == "market" or kind == "support":
+		_draw_surface_speckles(bounds.grow(-10.0), 8, Color(0.08, 0.055, 0.035, fill.a * 0.50), Vector2(34, 4))
+	elif kind == "residential":
+		for pos in [bounds.position + Vector2(24.0, bounds.size.y - 20.0), bounds.position + Vector2(bounds.size.x - 24.0, bounds.size.y - 18.0)]:
+			_draw_shrub_cluster(pos, 0.50)
+	_draw_g423b_polyline(points, Color(stroke.r, stroke.g, stroke.b, minf(0.28, stroke.a * 1.5)), 1.0)
+
+func _draw_g423b_authored_street_breakup() -> void:
+	for raw_patch in [
+		{"points": PackedVector2Array([Vector2(184, 586), Vector2(462, 580), Vector2(498, 616), Vector2(454, 638), Vector2(188, 628)]), "count": 22, "alpha": 0.28},
+		{"points": PackedVector2Array([Vector2(548, 584), Vector2(840, 576), Vector2(884, 612), Vector2(826, 638), Vector2(560, 632)]), "count": 24, "alpha": 0.30},
+		{"points": PackedVector2Array([Vector2(986, 584), Vector2(1280, 576), Vector2(1322, 616), Vector2(1270, 638), Vector2(996, 632)]), "count": 24, "alpha": 0.28},
+		{"points": PackedVector2Array([Vector2(1288, 592), Vector2(1500, 596), Vector2(1492, 636), Vector2(1340, 644), Vector2(1280, 622)]), "count": 18, "alpha": 0.28},
+		{"points": PackedVector2Array([Vector2(600, 398), Vector2(1108, 394), Vector2(1138, 424), Vector2(1086, 448), Vector2(620, 440)]), "count": 30, "alpha": 0.24},
+		{"points": PackedVector2Array([Vector2(326, 278), Vector2(1220, 276), Vector2(1204, 304), Vector2(342, 312)]), "count": 28, "alpha": 0.18},
+	]:
+		var patch: Dictionary = raw_patch
+		_draw_g423b_cobble_patch(patch["points"], int(patch["count"]), float(patch["alpha"]))
+
+	for raw_feather in [
+		{"points": PackedVector2Array([Vector2(168, 636), Vector2(506, 638), Vector2(470, 670), Vector2(188, 682)]), "alpha": 0.18},
+		{"points": PackedVector2Array([Vector2(884, 638), Vector2(1300, 638), Vector2(1266, 672), Vector2(930, 680)]), "alpha": 0.18},
+		{"points": PackedVector2Array([Vector2(250, 446), Vector2(478, 444), Vector2(456, 472), Vector2(254, 480)]), "alpha": 0.14},
+		{"points": PackedVector2Array([Vector2(1102, 446), Vector2(1450, 444), Vector2(1424, 476), Vector2(1128, 472)]), "alpha": 0.14},
+		{"points": PackedVector2Array([Vector2(220, 704), Vector2(530, 704), Vector2(500, 734), Vector2(244, 736)]), "alpha": 0.18},
+		{"points": PackedVector2Array([Vector2(918, 704), Vector2(1350, 704), Vector2(1336, 734), Vector2(944, 738)]), "alpha": 0.18},
+	]:
+		var feather: Dictionary = raw_feather
+		_draw_g423b_dirt_feather(feather["points"], float(feather["alpha"]))
+
+	for raw_lane in [
+		[Vector2(480, 452), Vector2(470, 584), 13.0],
+		[Vector2(936, 452), Vector2(926, 584), 13.0],
+		[Vector2(1240, 452), Vector2(1380, 586), 14.0],
+		[Vector2(334, 638), Vector2(318, 704), 12.0],
+		[Vector2(1116, 638), Vector2(1138, 704), 12.0],
+	]:
+		var lane: Array = raw_lane
+		_draw_newport_service_lane_path(lane[0], lane[1], lane[2])
+
+	for raw_rut in [
+		[Vector2(210, 612), Vector2(1480, 604), 0.10],
+		[Vector2(270, 424), Vector2(1424, 416), 0.08],
+		[Vector2(386, 326), Vector2(402, 568), 0.08],
+		[Vector2(704, 312), Vector2(704, 680), 0.09],
+		[Vector2(1156, 336), Vector2(1150, 682), 0.08],
+	]:
+		var rut: Array = raw_rut
+		draw_line(rut[0], rut[1], Color(0.07, 0.055, 0.035, float(rut[2])), 2.0, true)
+
+func _draw_g423b_cobble_patch(points: PackedVector2Array, detail_count: int, alpha: float) -> void:
+	if points.size() < 3:
+		return
+	draw_colored_polygon(points, Color("#736b58", alpha))
+	var bounds := _bounds_for_points(points)
+	for i in range(detail_count):
+		var w := 8.0 + float((i * 5) % 16)
+		var h := 4.0 + float((i * 7) % 8)
+		var x := bounds.position.x + fmod(float(i * 43 + 13), maxf(1.0, bounds.size.x - w))
+		var y := bounds.position.y + fmod(float(i * 29 + 19), maxf(1.0, bounds.size.y - h))
+		if not Geometry2D.is_point_in_polygon(Vector2(x + w * 0.5, y + h * 0.5), points):
+			continue
+		var n := fmod(float(i * 17), 100.0) / 100.0
+		var stone := Color("#5e5a4c").lerp(Color("#b5a67a"), n * 0.45)
+		draw_rect(Rect2(Vector2(x, y), Vector2(w, h)), Color(stone.r, stone.g, stone.b, alpha * 0.72), true)
+	_draw_g423b_polyline(points, Color("#d4bd80", alpha * 0.35), 1.0)
+
+func _draw_g423b_dirt_feather(points: PackedVector2Array, alpha: float) -> void:
+	if points.size() < 3:
+		return
+	draw_colored_polygon(points, Color("#7a6848", alpha))
+	var bounds := _bounds_for_points(points)
+	_draw_surface_speckles(bounds.grow(-6.0), 14, Color(0.09, 0.065, 0.035, alpha * 0.70), Vector2(36, 4))
+	_draw_g423b_polyline(points, Color("#263f2a", alpha * 0.45), 1.0)
+
+func _draw_g423b_harbor_working_surface() -> void:
+	for rect in [
+		Rect2(300, 696, 132, 36),
+		Rect2(454, 690, 86, 44),
+		Rect2(760, 690, 132, 42),
+		Rect2(1136, 694, 126, 40),
+		Rect2(1266, 700, 86, 34),
+		Rect2(312, 838, 126, 32),
+		Rect2(748, 842, 144, 30),
+		Rect2(1200, 838, 138, 30),
+	]:
+		_draw_newport_dock_planks(rect, 18)
+		draw_line(rect.position + Vector2(4.0, 3.0), Vector2(rect.end.x - 4.0, rect.position.y + 2.0), Color("#d6bd7d", 0.12), 1.0)
+		draw_line(Vector2(rect.position.x + 4.0, rect.end.y - 3.0), rect.end - Vector2(4.0, 3.0), Color(0.02, 0.025, 0.018, 0.22), 1.3)
+
+	for raw_rope in [
+		[Vector2(348, 734), Vector2(388, 836)],
+		[Vector2(704, 734), Vector2(786, 844)],
+		[Vector2(1188, 734), Vector2(1248, 840)],
+	]:
+		var rope: Array = raw_rope
+		draw_line(rope[0], rope[1], Color("#c2a66d", 0.34), 1.3, true)
+		draw_line(rope[0] + Vector2(0.0, 2.0), rope[1] + Vector2(0.0, 2.0), Color(0.05, 0.035, 0.02, 0.20), 1.0, true)
+
+	for p in [
+		Vector2(316, 704), Vector2(420, 704), Vector2(488, 696), Vector2(526, 696),
+		Vector2(774, 698), Vector2(878, 698), Vector2(1152, 702), Vector2(1242, 702),
+		Vector2(326, 844), Vector2(432, 844), Vector2(762, 846), Vector2(884, 846),
+		Vector2(1214, 844), Vector2(1328, 844),
+	]:
+		_draw_mooring_bollard(p)
+
+	for p in [Vector2(372, 870), Vector2(820, 872), Vector2(1260, 872)]:
+		_draw_waterline_scum(p, 140.0)
+
+func _draw_g423b_frontage_life_props() -> void:
+	for pos in [Vector2(182, 594), Vector2(322, 594), Vector2(640, 590), Vector2(1004, 590), Vector2(1160, 590), Vector2(1384, 610)]:
+		_draw_door_step(pos)
+	for pos in [Vector2(202, 606), Vector2(356, 606), Vector2(768, 408), Vector2(1044, 410), Vector2(1358, 626)]:
+		_draw_bench(pos)
+	for pos in [Vector2(196, 580), Vector2(332, 582), Vector2(610, 574), Vector2(1028, 574), Vector2(1184, 574)]:
+		_draw_lantern(pos)
+	for pos in [Vector2(216, 618), Vector2(318, 620), Vector2(632, 612), Vector2(1040, 612), Vector2(1186, 612)]:
+		_draw_barrels(pos, 2)
+	for pos in [Vector2(272, 616), Vector2(684, 610), Vector2(1116, 612), Vector2(1328, 632)]:
+		_draw_crate_stack(pos)
+	for pos in [Vector2(410, 382), Vector2(1088, 372), Vector2(280, 462), Vector2(1450, 430)]:
+		_draw_woodpile(pos)
+	_draw_clothesline(Vector2(1042, 334), Vector2(1178, 340))
+	_draw_net_drying_line(Vector2(226, 448), Vector2(326, 430))
+
+func _draw_g423b_harbor_economy_props() -> void:
+	for pos in [Vector2(326, 718), Vector2(384, 722), Vector2(1136, 710), Vector2(1216, 710)]:
+		_draw_fish_rack(pos)
+	for pos in [Vector2(350, 742), Vector2(704, 742), Vector2(842, 734), Vector2(1168, 736), Vector2(1260, 738)]:
+		_draw_net_bundle(pos)
+	for pos in [Vector2(462, 706), Vector2(802, 706), Vector2(1194, 706)]:
+		_draw_sack_stack(pos)
+	for pos in [Vector2(494, 712), Vector2(846, 708), Vector2(1224, 708), Vector2(1294, 716)]:
+		_draw_crate_stack(pos)
+	for pos in [Vector2(420, 716), Vector2(760, 716), Vector2(1160, 716), Vector2(1320, 716)]:
+		_draw_rope_coil(pos)
+	for pos in [Vector2(308, 690), Vector2(772, 686), Vector2(1128, 690), Vector2(1288, 694)]:
+		_draw_lantern(pos)
+	_draw_hoop_stack(Vector2(236, 620))
+	_draw_hoop_stack(Vector2(1018, 674))
+
+func _draw_mooring_bollard(pos: Vector2) -> void:
+	_draw_contact_shadow(pos + Vector2(0.0, 5.0), Vector2(8.0, 3.0), 0.12)
+	draw_rect(Rect2(pos + Vector2(-3.0, -10.0), Vector2(6.0, 15.0)), Color("#33261b"), true)
+	draw_rect(Rect2(pos + Vector2(-5.0, -12.0), Vector2(10.0, 4.0)), Color("#6f5134"), true)
+	draw_line(pos + Vector2(-5.0, -8.0), pos + Vector2(5.0, -9.0), Color("#d0ad70", 0.22), 1.0)
+
+func _draw_g423b_polyline(points: PackedVector2Array, color: Color, width: float) -> void:
+	var closed := PackedVector2Array()
+	for point in points:
+		closed.append(point)
+	if closed.size() > 0:
+		closed.append(closed[0])
+	draw_polyline(closed, color, width, true)
+
 func _draw_g423a_expanded_town_ground() -> void:
 	_draw_newport_grass_swale(PackedVector2Array([
 		Vector2(28, 124), Vector2(286, 88), Vector2(648, 96), Vector2(962, 88),
@@ -1603,7 +1815,7 @@ func _draw_g423a_expanded_town_ground() -> void:
 		Rect2(42, 334, 142, 162),
 		Rect2(1450, 334, 124, 174),
 	]:
-		_draw_newport_lot_variation(rect, Color("#607a56"), Color("#4c6849"), 0.10, "outer_town")
+		_draw_newport_lot_variation(rect, Color("#607a56"), Color("#4c6849"), 0.045, "outer_town")
 	for rect in [
 		Rect2(92, 58, 210, 38),
 		Rect2(366, 58, 238, 38),
@@ -1622,14 +1834,14 @@ func _draw_g423a_expanded_town_ground() -> void:
 		Rect2(1248, 260, 170, 16),
 		Rect2(1430, 260, 138, 16),
 	]:
-		_draw_newport_frontage_threshold(rect, "residential", 0.16)
+		_draw_newport_frontage_threshold(rect, "residential", 0.08)
 	for wall in [
 		[Vector2(44, 300), Vector2(1558, 300)],
 		[Vector2(62, 132), Vector2(1510, 136)],
 		[Vector2(58, 516), Vector2(196, 594)],
 		[Vector2(1430, 518), Vector2(1558, 590)],
 	]:
-		_draw_low_wall(wall[0], wall[1], Color("#5f6f58", 0.28))
+		_draw_low_wall(wall[0], wall[1], Color("#5f6f58", 0.16))
 
 func _draw_g423a_expanded_town_streets() -> void:
 	_draw_newport_street_polygon(PackedVector2Array([
@@ -1637,21 +1849,21 @@ func _draw_g423a_expanded_town_streets() -> void:
 		Vector2(1080, 272), Vector2(1344, 272), Vector2(1566, 278), Vector2(1560, 306),
 		Vector2(1342, 302), Vector2(1080, 300), Vector2(814, 298), Vector2(550, 304),
 		Vector2(296, 300), Vector2(36, 306)
-	]), 72, 0.68)
+	]), 54, 0.34)
 	_draw_newport_street_polygon(PackedVector2Array([
 		Vector2(34, 126), Vector2(336, 118), Vector2(646, 122), Vector2(948, 118),
 		Vector2(1260, 122), Vector2(1564, 130), Vector2(1558, 150), Vector2(1258, 144),
 		Vector2(948, 144), Vector2(646, 148), Vector2(338, 144), Vector2(36, 150)
-	]), 44, 0.42)
+	]), 32, 0.20)
 	for spec in [
-		{"center": Vector2(210, 268), "width": 32.0, "top": 144.0, "bottom": 384.0, "count": 28, "alpha": 0.66},
-		{"center": Vector2(552, 276), "width": 34.0, "top": 146.0, "bottom": 316.0, "count": 26, "alpha": 0.62},
-		{"center": Vector2(892, 274), "width": 34.0, "top": 144.0, "bottom": 324.0, "count": 28, "alpha": 0.62},
-		{"center": Vector2(1268, 276), "width": 34.0, "top": 148.0, "bottom": 410.0, "count": 32, "alpha": 0.64},
+		{"center": Vector2(210, 268), "width": 24.0, "top": 144.0, "bottom": 384.0, "count": 28, "alpha": 0.32},
+		{"center": Vector2(552, 276), "width": 24.0, "top": 146.0, "bottom": 316.0, "count": 26, "alpha": 0.30},
+		{"center": Vector2(892, 274), "width": 24.0, "top": 144.0, "bottom": 324.0, "count": 28, "alpha": 0.30},
+		{"center": Vector2(1268, 276), "width": 24.0, "top": 148.0, "bottom": 410.0, "count": 32, "alpha": 0.31},
 	]:
 		_draw_newport_uphill_street(spec["center"], spec["width"], spec["top"], spec["bottom"], spec["count"], spec["alpha"])
-	_draw_newport_service_lane_path(Vector2(70, 430), Vector2(206, 596), 18.0)
-	_draw_newport_service_lane_path(Vector2(1518, 420), Vector2(1428, 622), 18.0)
+	_draw_newport_service_lane_path(Vector2(70, 430), Vector2(206, 596), 12.0)
+	_draw_newport_service_lane_path(Vector2(1518, 420), Vector2(1428, 622), 12.0)
 	for rect in [
 		Rect2(36, 306, 1518, 8),
 		Rect2(40, 152, 1518, 6),

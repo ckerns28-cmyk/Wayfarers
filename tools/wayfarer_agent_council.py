@@ -185,6 +185,8 @@ def compact_output(result: CommandResult, limit: int = 600) -> str:
 
 def find_latest_screenshots(root: Path) -> list[Path]:
     patterns = [
+        "wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_*.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g423a_runtime_screenshots/g423a_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g422a_runtime_screenshots/g422a_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g421b_runtime_screenshots/g421b_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/**/*screenshot*.png",
@@ -198,10 +200,22 @@ def find_latest_screenshots(root: Path) -> list[Path]:
     return sorted(found, key=lambda item: found[item], reverse=True)
 
 
-def build_validator_commands(root: Path, godot_bin: str, python_bin: str) -> list[ValidatorCommand]:
+def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
+    normalized = phase.upper().strip()
+    if normalized.startswith("G-4.23B"):
+        return "G-4.23B", "g423b"
+    if normalized.startswith("G-4.23A"):
+        return "G-4.23A", "g423a"
+    if normalized.startswith("G-4.22A"):
+        return "G-4.22A", "g422a"
+    return "G-4.22A", "g422a"
+
+
+def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase: str) -> list[ValidatorCommand]:
     game_root = root / "wayfarer_godot_vertical_slice"
-    capture_ps1 = game_root / "tools" / "capture_g422a_runtime_screenshots.ps1"
-    capture_log = game_root / "artifacts" / "review" / "g422a_runtime_screenshots" / "godot_capture.log"
+    capture_label, capture_prefix = screenshot_prefix_for_phase(phase)
+    capture_ps1 = game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"
+    capture_log = game_root / "artifacts" / "review" / f"{capture_prefix}_runtime_screenshots" / "godot_capture.log"
 
     godot_import_text = f"& {powershell_quote(godot_bin)} --headless --path wayfarer_godot_vertical_slice --import"
     vertical_text = (
@@ -220,12 +234,12 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str) -> lis
     )
     screenshot_text = (
         "powershell.exe -NoProfile -ExecutionPolicy Bypass -File "
-        r".\wayfarer_godot_vertical_slice\tools\capture_g422a_runtime_screenshots.ps1 "
+        rf".\wayfarer_godot_vertical_slice\tools\capture_{capture_prefix}_runtime_screenshots.ps1 "
         f"-GodotBin {powershell_quote(godot_bin)}"
     )
     capture_log_text = (
         r"Get-Content -Path wayfarer_godot_vertical_slice\artifacts\review"
-        r"\g422a_runtime_screenshots\godot_capture.log -TotalCount 120"
+        rf"\{capture_prefix}_runtime_screenshots\godot_capture.log -TotalCount 120"
     )
 
     return [
@@ -263,7 +277,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str) -> lis
             required_paths=[game_root / "art_pipeline" / "newport_atelier" / "scripts" / "extract_g421a_core_building_assets.py"],
         ),
         ValidatorCommand(
-            name="Screenshot capture and PNG verification",
+            name=f"{capture_label} screenshot capture and PNG verification",
             command_text=screenshot_text,
             args=[
                 "powershell.exe",
@@ -279,7 +293,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str) -> lis
             required_paths=[capture_ps1],
         ),
         ValidatorCommand(
-            name="Capture log check",
+            name=f"{capture_label} capture log check",
             command_text=capture_log_text,
             args=[
                 "powershell.exe",
@@ -343,8 +357,9 @@ def run_or_list_validators(commands: list[ValidatorCommand], should_run: bool) -
     return results
 
 
-def required_path_status(root: Path) -> list[tuple[str, str, str]]:
+def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
     game_root = root / "wayfarer_godot_vertical_slice"
+    capture_label, capture_prefix = screenshot_prefix_for_phase(phase)
     required = [
         ("Vertical slice validator", game_root / "tools" / "validate_vertical_slice.gd"),
         ("G-4.22A runtime screenshot wrapper", game_root / "tools" / "capture_g422a_runtime_screenshots.ps1"),
@@ -358,6 +373,13 @@ def required_path_status(root: Path) -> list[tuple[str, str, str]]:
             game_root / "art_pipeline" / "newport_atelier" / "scripts" / "extract_g421a_core_building_assets.py",
         ),
     ]
+    if capture_prefix != "g422a":
+        required.extend(
+            [
+                (f"{capture_label} runtime screenshot wrapper", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"),
+                (f"{capture_label} runtime screenshot script", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.gd"),
+            ]
+        )
     return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
 
 
@@ -667,8 +689,8 @@ def main() -> int:
     git_state = get_git_state(root)
     pr_state = get_pr_state(root, args.target_pr)
     screenshots = find_latest_screenshots(root)
-    paths = required_path_status(root)
-    validators = build_validator_commands(root, args.godot_bin, args.python_bin)
+    paths = required_path_status(root, args.phase)
+    validators = build_validator_commands(root, args.godot_bin, args.python_bin, args.phase)
     validator_results = run_or_list_validators(validators, args.run_validators)
 
     report = build_report(
