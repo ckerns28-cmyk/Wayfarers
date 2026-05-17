@@ -10,7 +10,7 @@ Create a gameplay-space review for movement, exploration rhythm, interaction den
 - Map/district plan
 - Route targets
 - Interaction anchors
-- Screenshots or `NEEDS_HUMAN_REVIEW`
+- Screenshots or true-blocker escalation context
 
 ## Procedure
 
@@ -29,7 +29,7 @@ Create a gameplay-space review for movement, exploration rhythm, interaction den
 - Interaction Density:
 - NPC/Player Usability:
 - Fail Conditions Hit:
-- Recommendation for Chris:
+- Council Authority Contribution:
 ```
 
 ## Fail Fast

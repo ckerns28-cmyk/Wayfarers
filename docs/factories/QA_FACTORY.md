@@ -29,9 +29,9 @@ Create an exact validation report with command status for required Wayfarer chec
 - Skipped Commands:
 - Screenshot/PNG Verification:
 - Capture Log:
-- Recommendation for Chris:
+- Council Authority Contribution:
 ```
 
 ## Fail Fast
 
-Fail with `BLOCKED BY VALIDATION` when a required technical command fails.
+Fail with `COUNCIL_FAIL_NEEDS_CODE_FIX` when a required technical command fails.

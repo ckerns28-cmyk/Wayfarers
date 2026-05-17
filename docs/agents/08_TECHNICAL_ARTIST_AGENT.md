@@ -31,7 +31,7 @@ Review sprite provenance, atlas/sheet integrity, layering, shadows/contact, grou
 
 ## Output Format
 
-- Status: `PASS`, `FAIL`, or `NEEDS_HUMAN_REVIEW`
+- Status: `PASS`, `FAIL`, or `BLOCKED`
 - Provenance notes
 - Layering notes
 - Grounding notes

@@ -30,7 +30,7 @@ Create a technical-art review for provenance, atlas integrity, layering, contact
 - Atlas/Sprite Integrity:
 - Layering/Grounding:
 - Pipeline Compliance:
-- Recommendation for Chris:
+- Council Authority Contribution:
 ```
 
 ## Fail Fast

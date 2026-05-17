@@ -14,7 +14,7 @@ Wayfarer is a world-class handcrafted fantasy/colonial harbor RPG. Technical val
 
 ## Council Decision
 
-- Recommendation for Chris:
+- Final Authority Verdict:
 - Blocking agents:
 - Required repairs:
 
@@ -39,4 +39,4 @@ Out of scope:
 - Do not merge.
 - Do not impersonate Chris.
 - Do not hide layout/art/design failures with unrelated clutter.
-- If a required visual/design judgment cannot be made from artifacts, mark `NEEDS_HUMAN_REVIEW`.
+- If required visual/design judgment cannot be made from artifacts because of a true blocker, mark `BLOCKED_REQUIRES_HUMAN_ESCALATION` and document the exact blocker.

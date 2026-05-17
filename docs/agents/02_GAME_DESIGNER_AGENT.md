@@ -9,7 +9,7 @@ Evaluate whether a pass creates playable space, purposeful exploration, interact
 - Phase brief
 - Map/layout diff
 - Route and collision validation
-- Screenshots or explicit `NEEDS_HUMAN_REVIEW`
+- Screenshots or explicit true-blocker escalation context
 - Interaction anchor list
 
 ## Review Checklist
@@ -32,7 +32,7 @@ Evaluate whether a pass creates playable space, purposeful exploration, interact
 
 ## Output Format
 
-- Status: `PASS`, `FAIL`, or `NEEDS_HUMAN_REVIEW`
+- Status: `PASS`, `FAIL`, or `BLOCKED`
 - Movement loop assessment
 - Interaction density assessment
 - NPC/village behavior assessment

@@ -10,7 +10,7 @@ Evaluate whether Newport and other Wayfarer locations feel lived-in, socially le
 - Building roles
 - Interaction anchors
 - NPC placeholder or schedule plan
-- Screenshots or explicit `NEEDS_HUMAN_REVIEW`
+- Screenshots or explicit true-blocker escalation context
 
 ## Review Checklist
 
@@ -30,7 +30,7 @@ Evaluate whether Newport and other Wayfarer locations feel lived-in, socially le
 
 ## Output Format
 
-- Status: `PASS`, `FAIL`, or `NEEDS_HUMAN_REVIEW`
+- Status: `PASS`, `FAIL`, or `BLOCKED`
 - District logic notes
 - Harbor economy notes
 - Story hook notes

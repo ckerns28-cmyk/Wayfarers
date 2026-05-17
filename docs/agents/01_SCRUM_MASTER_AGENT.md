@@ -34,7 +34,7 @@ Keep each Wayfarer pass aligned with branch health, PR health, phase scope, road
 
 ## Output Format
 
-- Status: `PASS`, `FAIL`, or `NEEDS_HUMAN_REVIEW`
+- Status: `PASS`, `FAIL`, or `BLOCKED`
 - Findings
 - Scope notes
-- PR recommendation: `MERGE CANDIDATE`, `REPAIR SAME PR`, `FAIL / CLOSE OR REPLACE`, or `BLOCKED BY PREFLIGHT`
+- Council authority contribution: `COUNCIL_PASS_READY_FOR_PR`, `COUNCIL_FAIL_NEEDS_CODE_FIX`, or `BLOCKED_REQUIRES_HUMAN_ESCALATION`

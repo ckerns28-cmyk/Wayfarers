@@ -10,7 +10,9 @@ This repository uses Codex as a production collaborator, not as an automatic app
 - Preserve the G-4.21B/G-4.22A runtime screenshot automation and keep clean no-HUD/no-debug capture available.
 - Preserve the Newport atelier asset pipeline, provenance validation, and asset quarantine rules.
 - Validators passing does not equal design approval.
-- Visual, gameplay, world-design, UX, and art-direction passes require screenshots or explicit `NEEDS_HUMAN_REVIEW`.
+- Until the G-5 readiness gate, follow `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`: the Wayfarer Agent Council is the default QA and acceptance authority for ordinary pre-G-5 phases.
+- Visual, gameplay, world-design, UX, and art-direction passes require screenshot evidence inspected by the Agent Council, or a true `BLOCKED_REQUIRES_HUMAN_ESCALATION` blocker.
+- Do not use `NEEDS_HUMAN_REVIEW`, `READY_FOR_HUMAN_VISUAL_REVIEW`, `AWAITING_CHRIS_REVIEW`, or `TECHNICAL_PASS_ONLY` as final states for ordinary pre-G-5 phases.
 - PR summaries must separate technical validation from design acceptance.
 - Do not solve layout problems with random prop scatter.
 - Do not hide ground or street problems with clutter.
@@ -36,4 +38,4 @@ Newport review must ask:
 
 ## Agent Council
 
-Use `tools/wayfarer_agent_council.py` and the docs under `docs/agents`, `docs/factories`, `docs/checklists`, and `docs/templates` to structure production review. The council produces recommendations for Chris only. It must never say "Approved by Chris" and must never auto-merge.
+Use `tools/wayfarer_agent_council.py`, `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`, and the docs under `docs/agents`, `docs/factories`, `docs/checklists`, and `docs/templates` to structure production review. For ordinary pre-G-5 work, the council produces the final authority verdict: `COUNCIL_PASS_READY_FOR_PR`, `COUNCIL_FAIL_NEEDS_CODE_FIX`, or `BLOCKED_REQUIRES_HUMAN_ESCALATION`. It must never say "Approved by Chris" and must never auto-merge.

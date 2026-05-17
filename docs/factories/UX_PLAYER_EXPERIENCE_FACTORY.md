@@ -24,12 +24,12 @@ Create a player-experience review for navigation readability, landmark orientati
 
 ```markdown
 ## UX Review
-- Visual Review Status: PASS / FAIL / NEEDS_HUMAN_REVIEW
+- Visual Review Status: PASS / FAIL / BLOCKED
 - Landmark Orientation:
 - Navigation Clarity:
 - Interaction Readability:
 - Screenshot Framing:
-- Recommendation for Chris:
+- Council Authority Contribution:
 ```
 
 ## Fail Fast

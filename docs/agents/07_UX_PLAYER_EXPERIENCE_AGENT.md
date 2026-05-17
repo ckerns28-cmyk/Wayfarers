@@ -29,7 +29,7 @@ Evaluate player readability, navigation clarity, camera/capture framing, landmar
 
 ## Output Format
 
-- Status: `PASS`, `FAIL`, or `NEEDS_HUMAN_REVIEW`
+- Status: `PASS`, `FAIL`, or `BLOCKED`
 - Navigation readability
 - Landmark readability
 - Capture/framing notes

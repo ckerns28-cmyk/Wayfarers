@@ -25,12 +25,12 @@ Create an art-direction review for visual cohesion, sprite quality, grounding, s
 
 ```markdown
 ## Art Director Review
-- Visual Review Status: PASS / FAIL / NEEDS_HUMAN_REVIEW
+- Visual Review Status: PASS / FAIL / BLOCKED
 - Ground/Street Cohesion:
 - Building/Sprite Cohesion:
 - Composition:
 - 8.5+/10 Gap:
-- Recommendation for Chris:
+- Council Authority Contribution:
 ```
 
 ## Fail Fast

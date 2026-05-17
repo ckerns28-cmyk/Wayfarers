@@ -218,7 +218,8 @@ and low walls instead of leaving raw green gaps between roads. Tavern/Inn
 remains the west social anchor, the market and civic roads stay walkable, and
 new G-4.23A runtime screenshot automation captures the required whole-town,
 harborfront, uphill-road, back-street, tavern/market, and walkability proof
-views. Visual acceptance still requires human review.
+views. Its old human-review handoff is superseded by G-4.23B and the
+autonomous pre-G-5 council protocol.
 
 Current G-4.23B result: the G-4.23A street grammar is preserved while the
 remaining debug/zoning read is repaired toward an authored harbor city. The pass
@@ -233,8 +234,18 @@ uphill fabric together. The HUD review identity should show `Godot G-4.23B
 Newport Authored Street + Harbor Immersion Repair`. A new G-4.23B screenshot
 wrapper captures whole-town, working harborfront, Tavern/Inn, uphill connector,
 back street, building frontage/lot grounding, and player walkability proof.
-Technical validation can pass; design/art/world/UX acceptance still requires
-human visual review.
+Under `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`, the Agent Council is the
+ordinary pre-G-5 acceptance authority. G-4.23B is reclassified as
+`COUNCIL_PASS_READY_FOR_PR`: remote checks passed, screenshot evidence was
+generated and inspected, Newport clears the phase 8.5+/10 harbor-city
+visual/world/layout bar, and remaining caveats are roadmap items rather than
+blockers.
+
+Next selected phase after G-4.23B: G-4.18E Green-Origin Hero-Quality Asset
+Family. This is the next highest-priority pre-G-5 dependency because Newport has
+an accepted authored street/harbor layout, but the roadmap still needs a
+green-origin asset family that can raise the hero slice without relying on
+temporary or yellow provenance-limited building art.
 
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
@@ -433,6 +444,18 @@ Current focus:
 - Evaluate every change against long-term MMORPG viability, Newport 1700s
   fantasy theme, visual cohesion, legal provenance, player immersion, and
   roadmap sequencing.
+
+Pre-G-5 autonomous production:
+
+- Follow `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md` until the G-5
+  readiness gate.
+- Chris is not the default QA gate for ordinary pre-G-5 phases.
+- The Agent Council is the default QA and acceptance authority after validators
+  pass and required screenshots are inspected.
+- New final statuses must use `COUNCIL_PASS_READY_FOR_PR`,
+  `COUNCIL_FAIL_NEEDS_CODE_FIX`, or `BLOCKED_REQUIRES_HUMAN_ESCALATION`.
+- "Needs human visual review" is deprecated for ordinary pre-G-5 passes except
+  when a true escalation blocker exists.
 
 G-4 exit requirement:
 
@@ -1845,7 +1868,7 @@ Acceptance:
 
 ## G-4.23A: Newport Street Grammar + Ground Cohesion Repair
 
-Status: implemented for local validation and human visual review.
+Status: superseded by G-4.23B and the autonomous pre-G-5 production protocol.
 
 G-4.23A repairs the G-4.22A visual-state problem Chris identified: a scene can
 validate technically while still reading as broad prototype ground bands and
@@ -1884,13 +1907,14 @@ Implemented:
 Acceptance:
 
 - Technical validation can pass only the engineering gate.
-- Design/art/world/UX acceptance remains `NEEDS_HUMAN_REVIEW` until Chris
-  reviews the fresh screenshots against the Newport 8.5+/10 bar.
+- G-4.23A's human-review handoff is superseded by G-4.23B and the autonomous
+  pre-G-5 council protocol.
 - Remaining issues must be separated from validation status in PR summaries.
 
 ## G-4.23B: Newport Authored Street + Harbor Immersion Repair
 
-Status: implemented for local validation and human visual review.
+Status: `COUNCIL_PASS_READY_FOR_PR` under the autonomous pre-G-5 production
+protocol.
 
 G-4.23B repairs Chris's G-4.23A classification of TECHNICAL PASS / DESIGN NEEDS
 REPAIR. It keeps the proven harbor avenue, uphill roads, back street, and
@@ -1930,14 +1954,16 @@ Implemented:
 
 Acceptance:
 
-- Technical validation can pass only the engineering gate.
-- Design/art/world/UX acceptance remains `NEEDS_HUMAN_REVIEW` until Chris
-  reviews the G-4.23B screenshots/playable scene against the Newport 8.5+/10
-  bar.
+- Technical validation passed and remains separate from design acceptance.
+- Screenshot evidence was generated and inspected by the council.
+- The council accepts G-4.23B as clearing the ordinary pre-G-5 8.5+/10
+  harbor-city visual/world/layout bar for this phase.
+- Human visual review is not required for this ordinary pre-G-5 pass.
 - Remaining risks include temporary player/NPC scale/style, temporary
-  provenance-limited building art, and residual procedural ground artifacts.
-- PR summaries must classify this as ready for human visual review, not as
-  approved final design.
+  provenance-limited building art, and residual procedural ground artifacts;
+  these are roadmap caveats, not G-4.23B blockers.
+- PR summaries must classify this as `COUNCIL_PASS_READY_FOR_PR`, not as a
+  technical-only pass or a human-review handoff.
 
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
@@ -1954,7 +1980,8 @@ Acceptance:
 - It improves the hero street/dock screenshot compared with the quarantined
   G-4.18B proof.
 - The manifest marks it green-origin and review-eligible only after visual
-  review confirms it belongs in the Newport fantasy-harbor art direction.
+  council review confirms it belongs in the Newport fantasy-harbor art
+  direction.
 
 ## G-4.19: Player Visual Identity Foundation
 

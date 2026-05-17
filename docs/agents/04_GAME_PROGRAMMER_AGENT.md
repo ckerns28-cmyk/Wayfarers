@@ -31,7 +31,7 @@ Review Godot implementation quality, maintainability, data-driven structure, reg
 
 ## Output Format
 
-- Status: `PASS`, `FAIL`, or `NEEDS_HUMAN_REVIEW`
+- Status: `PASS`, `FAIL`, or `BLOCKED`
 - Implementation findings
 - Regression risks
 - Required repairs
