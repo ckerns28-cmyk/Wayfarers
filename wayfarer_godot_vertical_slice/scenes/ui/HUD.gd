@@ -2,14 +2,17 @@ extends CanvasLayer
 
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
 const HUD_MARGIN := 12.0
-const STATUS_MIN_WIDTH := 238.0
-const STATUS_MAX_WIDTH := 304.0
-const STATUS_EXPANDED_MAX_WIDTH := 348.0
+const STATUS_MIN_WIDTH := 242.0
+const STATUS_MAX_WIDTH := 330.0
+const STATUS_EXPANDED_MAX_WIDTH := 382.0
+const QUEST_MIN_WIDTH := 308.0
+const QUEST_MAX_WIDTH := 430.0
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
 const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png"
 
 @onready var status_panel: PanelContainer = $Panel
+@onready var title_label: Label = $Panel/MarginContainer/VBoxContainer/Title
 @onready var build_label: Label = $Panel/MarginContainer/VBoxContainer/BuildLabel
 @onready var phase_host_label: Label = $Panel/MarginContainer/VBoxContainer/PhaseHost
 @onready var green_origin_lab_label: Label = $Panel/MarginContainer/VBoxContainer/GreenOriginLab
@@ -18,6 +21,14 @@ const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/conta
 @onready var objective_label: Label = $Panel/MarginContainer/VBoxContainer/Objective
 @onready var zone_label: Label = $Panel/MarginContainer/VBoxContainer/Zone
 @onready var stats_label: Label = $Panel/MarginContainer/VBoxContainer/Stats
+@onready var health_label: Label = $Panel/MarginContainer/VBoxContainer/Vitals/HealthLabel
+@onready var health_bar: ProgressBar = $Panel/MarginContainer/VBoxContainer/Vitals/HealthBar
+@onready var resolve_label: Label = $Panel/MarginContainer/VBoxContainer/Vitals/ResolveLabel
+@onready var resolve_bar: ProgressBar = $Panel/MarginContainer/VBoxContainer/Vitals/ResolveBar
+@onready var quest_panel: PanelContainer = $QuestPanel
+@onready var quest_title: Label = $QuestPanel/MarginContainer/VBoxContainer/QuestTitle
+@onready var quest_body: Label = $QuestPanel/MarginContainer/VBoxContainer/QuestBody
+@onready var quest_region: Label = $QuestPanel/MarginContainer/VBoxContainer/QuestRegion
 @onready var dialogue_panel: PanelContainer = $DialoguePanel
 @onready var dialogue_label: Label = $DialoguePanel/MarginContainer/DialogueLabel
 @onready var bakeoff_panel: PanelContainer = $BakeoffPanel
@@ -47,6 +58,7 @@ func show_dialogue(text: String) -> void:
 	dialogue_panel.visible = false
 
 func _apply_build_identity() -> void:
+	title_label.text = "Wayfarer"
 	build_label.text = "Build label: " + BUILD_INFO.BUILD_LABEL
 	phase_host_label.text = "Phase: %s | Review host: %s" % [BUILD_INFO.BUILD_PHASE, BUILD_INFO.REVIEW_HOST]
 	green_origin_lab_label.text = BUILD_INFO.GREEN_ORIGIN_LAB_LABEL
@@ -55,20 +67,37 @@ func _apply_build_identity() -> void:
 	if branch.length() > 34:
 		branch = branch.substr(0, 31) + "..."
 	branch_label.text = "Branch: " + branch
-	zone_label.text = "Newport Starter Harbor"
-	stats_label.text = "Level 1  HP 52/52"
+	zone_label.text = "Newport Harbor"
+	stats_label.text = "Level 1 Wayfarer"
+	health_label.text = "Health"
+	health_bar.max_value = 52.0
+	health_bar.value = 52.0
+	health_bar.show_percentage = false
+	resolve_label.text = "Resolve"
+	resolve_bar.max_value = 100.0
+	resolve_bar.value = 64.0
+	resolve_bar.show_percentage = false
 	objective_label.text = BUILD_INFO.PLAYER_STYLE_ROADMAP_NOTE
+	quest_title.text = "First Light"
+	quest_body.text = "Make landfall, find the counting house, and listen for work by the harbor."
+	quest_region.text = "Newport - Harbor Ward"
 
 func toggle_review_metadata() -> void:
 	if _review_screenshot_mode:
 		return
-	_metadata_expanded = not _metadata_expanded
+	set_review_metadata_expanded(not _metadata_expanded)
+
+func set_review_metadata_expanded(enabled: bool) -> void:
+	if _review_screenshot_mode:
+		return
+	_metadata_expanded = enabled
 	_apply_metadata_visibility()
 	_apply_layout()
 
 func set_review_screenshot_mode(enabled: bool) -> void:
 	_review_screenshot_mode = enabled
 	status_panel.visible = not enabled
+	quest_panel.visible = not enabled
 	bakeoff_panel.visible = (not enabled) and _green_origin_lab_enabled
 	dialogue_panel.visible = false
 	_apply_layout()
@@ -85,29 +114,41 @@ func toggle_review_screenshot_mode() -> void:
 func _apply_metadata_visibility() -> void:
 	green_origin_lab_label.visible = _green_origin_lab_enabled
 	bakeoff_panel.visible = _green_origin_lab_enabled and not _review_screenshot_mode
+	build_label.visible = _metadata_expanded
+	phase_host_label.visible = _metadata_expanded
 	channel_label.visible = _metadata_expanded
 	branch_label.visible = _metadata_expanded
 	objective_label.visible = _metadata_expanded
 
 func _apply_panel_styles() -> void:
 	var status_style := StyleBoxFlat.new()
-	status_style.bg_color = Color(0.055, 0.075, 0.06, 0.46)
-	status_style.border_color = Color(0.58, 0.66, 0.58, 0.22)
-	status_style.set_border_width_all(1)
-	status_style.corner_radius_top_left = 4
-	status_style.corner_radius_top_right = 4
-	status_style.corner_radius_bottom_left = 4
-	status_style.corner_radius_bottom_right = 4
+	status_style.bg_color = Color(0.035, 0.045, 0.058, 0.78)
+	status_style.border_color = Color(0.76, 0.61, 0.30, 0.58)
+	status_style.set_border_width_all(2)
+	status_style.corner_radius_top_left = 5
+	status_style.corner_radius_top_right = 5
+	status_style.corner_radius_bottom_left = 5
+	status_style.corner_radius_bottom_right = 5
 	status_panel.add_theme_stylebox_override("panel", status_style)
 
+	var quest_style := StyleBoxFlat.new()
+	quest_style.bg_color = Color(0.070, 0.055, 0.044, 0.78)
+	quest_style.border_color = Color(0.24, 0.60, 0.58, 0.54)
+	quest_style.set_border_width_all(2)
+	quest_style.corner_radius_top_left = 5
+	quest_style.corner_radius_top_right = 5
+	quest_style.corner_radius_bottom_left = 5
+	quest_style.corner_radius_bottom_right = 5
+	quest_panel.add_theme_stylebox_override("panel", quest_style)
+
 	var dialogue_style := StyleBoxFlat.new()
-	dialogue_style.bg_color = Color(0.055, 0.07, 0.06, 0.78)
-	dialogue_style.border_color = Color(0.62, 0.70, 0.62, 0.24)
-	dialogue_style.set_border_width_all(1)
-	dialogue_style.corner_radius_top_left = 4
-	dialogue_style.corner_radius_top_right = 4
-	dialogue_style.corner_radius_bottom_left = 4
-	dialogue_style.corner_radius_bottom_right = 4
+	dialogue_style.bg_color = Color(0.080, 0.065, 0.046, 0.86)
+	dialogue_style.border_color = Color(0.77, 0.64, 0.36, 0.70)
+	dialogue_style.set_border_width_all(2)
+	dialogue_style.corner_radius_top_left = 5
+	dialogue_style.corner_radius_top_right = 5
+	dialogue_style.corner_radius_bottom_left = 5
+	dialogue_style.corner_radius_bottom_right = 5
 	dialogue_panel.add_theme_stylebox_override("panel", dialogue_style)
 
 	var bakeoff_style := StyleBoxFlat.new()
@@ -120,6 +161,21 @@ func _apply_panel_styles() -> void:
 	bakeoff_style.corner_radius_bottom_right = 4
 	bakeoff_panel.add_theme_stylebox_override("panel", bakeoff_style)
 
+	_style_label(title_label, Color(0.98, 0.87, 0.54, 1.0), 18)
+	_style_label(zone_label, Color(0.77, 0.88, 0.91, 1.0), 13)
+	_style_label(stats_label, Color(0.91, 0.88, 0.78, 1.0), 12)
+	_style_label(health_label, Color(0.91, 0.66, 0.58, 1.0), 11)
+	_style_label(resolve_label, Color(0.91, 0.79, 0.48, 1.0), 11)
+	_style_label(quest_title, Color(0.99, 0.86, 0.50, 1.0), 15)
+	_style_label(quest_body, Color(0.91, 0.88, 0.78, 1.0), 13)
+	_style_label(quest_region, Color(0.48, 0.82, 0.80, 1.0), 11)
+	_style_label(dialogue_label, Color(0.96, 0.90, 0.75, 1.0), 20)
+	for label in [build_label, phase_host_label, green_origin_lab_label, channel_label, branch_label, objective_label]:
+		_style_label(label, Color(0.72, 0.78, 0.86, 1.0), 10)
+
+	_style_progress_bar(health_bar, Color(0.38, 0.085, 0.075, 1.0), Color(0.76, 0.20, 0.16, 1.0))
+	_style_progress_bar(resolve_bar, Color(0.16, 0.13, 0.07, 1.0), Color(0.85, 0.63, 0.22, 1.0))
+
 func _apply_layout() -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	if viewport_size.x <= 0 or viewport_size.y <= 0:
@@ -128,21 +184,32 @@ func _apply_layout() -> void:
 		return
 
 	var max_width := STATUS_EXPANDED_MAX_WIDTH if _metadata_expanded else STATUS_MAX_WIDTH
-	var status_width: float = clamp(viewport_size.x * 0.17, STATUS_MIN_WIDTH, max_width)
+	var status_width: float = clamp(viewport_size.x * 0.19, STATUS_MIN_WIDTH, max_width)
 	status_panel.offset_left = HUD_MARGIN
 	status_panel.offset_top = HUD_MARGIN
 	status_panel.offset_right = HUD_MARGIN + status_width
-	var status_height := 180.0 if _metadata_expanded else 108.0
+	var status_height := 228.0 if _metadata_expanded else 146.0
 	if _green_origin_lab_enabled:
 		status_height += 34.0
 	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + status_height)
+
+	var quest_width: float = clamp(viewport_size.x * 0.25, QUEST_MIN_WIDTH, QUEST_MAX_WIDTH)
+	var quest_height := 126.0
+	if viewport_size.x < 760.0:
+		quest_panel.offset_left = HUD_MARGIN
+		quest_panel.offset_top = status_panel.offset_bottom + 8.0
+	else:
+		quest_panel.offset_left = max(status_panel.offset_right + HUD_MARGIN, viewport_size.x - HUD_MARGIN - quest_width)
+		quest_panel.offset_top = HUD_MARGIN
+	quest_panel.offset_right = min(viewport_size.x - HUD_MARGIN, quest_panel.offset_left + quest_width)
+	quest_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, quest_panel.offset_top + quest_height)
 
 	var dialogue_width: float = min(DIALOGUE_MAX_WIDTH, max(DIALOGUE_MIN_WIDTH, viewport_size.x - HUD_MARGIN * 2.0))
 	var dialogue_left: float = clamp((viewport_size.x - dialogue_width) * 0.5, HUD_MARGIN, viewport_size.x - HUD_MARGIN - dialogue_width)
 	var dialogue_bottom: float = viewport_size.y - 26.0
 	var dialogue_height: float = min(112.0, max(84.0, viewport_size.y * 0.16))
 	dialogue_panel.offset_left = dialogue_left
-	dialogue_panel.offset_top = max(status_panel.offset_bottom + 16.0, dialogue_bottom - dialogue_height)
+	dialogue_panel.offset_top = max(max(status_panel.offset_bottom, quest_panel.offset_bottom) + 16.0, dialogue_bottom - dialogue_height)
 	dialogue_panel.offset_right = dialogue_left + dialogue_width
 	dialogue_panel.offset_bottom = dialogue_bottom
 
@@ -159,3 +226,47 @@ func _load_bakeoff_board() -> void:
 		push_warning("G-4.18D bakeoff board texture missing: " + G418D_BAKEOFF_BOARD_PATH)
 		return
 	bakeoff_board.texture = texture
+
+func get_hud_visual_contract() -> Dictionary:
+	return {
+		"phase": BUILD_INFO.BUILD_PHASE,
+		"default_player_facing": status_panel.visible and quest_panel.visible,
+		"review_metadata_hidden_by_default": not _metadata_expanded and not build_label.visible and not phase_host_label.visible and not channel_label.visible and not branch_label.visible and not objective_label.visible,
+		"review_metadata_available": has_method("set_review_metadata_expanded"),
+		"no_hud_capture_available": has_method("set_review_screenshot_mode"),
+		"quest_panel_visible": quest_panel.visible,
+		"dialogue_panel_available": dialogue_panel != null,
+		"health_bar_show_percentage": health_bar.show_percentage,
+		"resolve_bar_show_percentage": resolve_bar.show_percentage,
+		"palette": "charcoal_brass_parchment_burgundy_teal",
+	}
+
+func _style_label(label: Label, color: Color, font_size: int) -> void:
+	if label == null:
+		return
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.72))
+	label.add_theme_constant_override("shadow_offset_x", 1)
+	label.add_theme_constant_override("shadow_offset_y", 1)
+	label.add_theme_font_size_override("font_size", font_size)
+
+func _style_progress_bar(bar: ProgressBar, background_color: Color, fill_color: Color) -> void:
+	if bar == null:
+		return
+	var background := StyleBoxFlat.new()
+	background.bg_color = background_color
+	background.border_color = Color(0.0, 0.0, 0.0, 0.54)
+	background.set_border_width_all(1)
+	background.corner_radius_top_left = 3
+	background.corner_radius_top_right = 3
+	background.corner_radius_bottom_left = 3
+	background.corner_radius_bottom_right = 3
+	bar.add_theme_stylebox_override("background", background)
+
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = fill_color
+	fill.corner_radius_top_left = 2
+	fill.corner_radius_top_right = 2
+	fill.corner_radius_bottom_left = 2
+	fill.corner_radius_bottom_right = 2
+	bar.add_theme_stylebox_override("fill", fill)

@@ -190,6 +190,7 @@ def compact_output(result: CommandResult, limit: int = 600) -> str:
 
 def find_latest_screenshots(root: Path) -> list[Path]:
     patterns = [
+        "wayfarer_godot_vertical_slice/artifacts/review/g420_runtime_screenshots/g420_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g419_runtime_screenshots/g419_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g418e_runtime_screenshots/g418e_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_*.png",
@@ -209,6 +210,8 @@ def find_latest_screenshots(root: Path) -> list[Path]:
 
 def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
+    if normalized.startswith("G-4.20"):
+        return "G-4.20", "g420"
     if normalized.startswith("G-4.19"):
         return "G-4.19", "g419"
     if normalized.startswith("G-4.18E"):
@@ -337,7 +340,8 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
             required_paths=[],
         ),
     ]
-    if phase.upper().strip().startswith("G-4.18E"):
+    normalized_phase = phase.upper().strip()
+    if normalized_phase.startswith("G-4.18E") or normalized_phase.startswith("G-4.20"):
         commands.insert(
             3,
             ValidatorCommand(
@@ -351,7 +355,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 required_paths=[game_root / "art_pipeline" / "newport_atelier" / "scripts" / "validate_g418e_hero_asset_family.py"],
             ),
         )
-    if phase.upper().strip().startswith("G-4.19"):
+    if normalized_phase.startswith("G-4.19") or normalized_phase.startswith("G-4.20"):
         commands.insert(
             3,
             ValidatorCommand(
@@ -456,6 +460,21 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     "G-4.19 player contact sheet",
                     game_root / "art_pipeline" / "player_identity" / "contact_sheets" / "player_wayfarer_foundation_g419_contact_sheet.png",
                 ),
+            ]
+        )
+    if phase.upper().strip().startswith("G-4.20"):
+        required.extend(
+            [
+                (
+                    "G-4.18E hero asset family validator",
+                    game_root / "art_pipeline" / "newport_atelier" / "scripts" / "validate_g418e_hero_asset_family.py",
+                ),
+                (
+                    "G-4.19 player identity validator",
+                    game_root / "art_pipeline" / "player_identity" / "scripts" / "validate_g419_player_identity.py",
+                ),
+                ("G-4.20 HUD scene", game_root / "scenes" / "ui" / "HUD.tscn"),
+                ("G-4.20 HUD script", game_root / "scenes" / "ui" / "HUD.gd"),
             ]
         )
     if capture_prefix != "g422a":
@@ -694,10 +713,21 @@ def build_report(
         ["Do screenshots prove gameplay zoom, wide readability, scale, grounding, and facing/movement?", "PASS" if screenshots_inspected else "FAIL"],
         ["Is human escalation truly required?", "NO" if not human_review_required else "YES"],
     ]
+    g420_hud_ui_fields = [
+        ["Does the default HUD feel intentional rather than debug/raw-engine?", "PASS" if art_direction_score >= 8.5 else "FAIL"],
+        ["Is review metadata hidden by default but still available?", "PASS" if technical_stability_score >= 8.5 else "FAIL"],
+        ["Do HUD screenshots preserve player, road, building, and harbor readability?", "PASS" if gameplay_readability_score >= 8.5 else "FAIL"],
+        ["Does dialogue/prompt styling match the Wayfarer fantasy harbor tone?", "PASS" if art_direction_score >= 8.5 else "FAIL"],
+        ["Does no-HUD clean capture remain available?", "PASS" if technical_stability_score >= 8.5 else "FAIL"],
+        ["Are screenshots sufficient proof?", "PASS" if screenshots_inspected else "FAIL"],
+        ["Is human escalation truly required?", "NO" if not human_review_required else "YES"],
+    ]
     if phase.upper().strip().startswith("G-4.18E"):
         scrum_scope = "Scope check: this council pass produced a coherent G-4.18E asset family and controlled runtime placements; it must not scatter random props or hide layout problems."
     elif phase.upper().strip().startswith("G-4.19"):
         scrum_scope = "Scope check: this council pass replaces the drawn player placeholder with a directional runtime sprite foundation while preserving Newport layout, collision, camera, spawn, and interaction behavior."
+    elif phase.upper().strip().startswith("G-4.20"):
+        scrum_scope = "Scope check: this council pass redesigns HUD/UI presentation only; it keeps no-HUD capture, review metadata, Newport runtime layout, player movement, collision, camera, and interaction behavior intact."
     else:
         scrum_scope = "Scope check: this council pass changes production documentation and tooling only; it must not change Newport runtime layout."
 
@@ -840,6 +870,16 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-4.19")
+                else []
+            ),
+            *(
+                [
+                    "## G-4.20 HUD/UI Authority Questions",
+                    "",
+                    md_table(["Question", "Council Answer"], g420_hud_ui_fields),
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-4.20")
                 else []
             ),
             "## Scrum Master Review",

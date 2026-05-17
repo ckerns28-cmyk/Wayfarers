@@ -53,9 +53,9 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.19", "build_phase_g_4_19")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.19 Player Visual Identity Foundation", "build_label_g_4_19")
-	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-19-player-visual-identity-foundation", "source_branch_g_4_19")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.20", "build_phase_g_4_20")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.20 HUD/UI Visual Redesign", "build_label_g_4_20")
+	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-20-hud-ui-visual-redesign", "source_branch_g_4_20")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -96,6 +96,7 @@ func _validate_scene(main: Node) -> void:
 			_validate_detail_blockers(collision_layer)
 
 	_validate_buildings()
+	_validate_g420_hud_ui_visual_redesign(hud)
 	_validate_review_screenshot_mode(main, hud)
 	_validate_building_entity_contract(player, hud)
 	_validate_g414a_street_wall_curb_datum()
@@ -459,6 +460,50 @@ func _validate_g419_player_identity_foundation() -> void:
 	_expect(bool(qa_provenance.get("project_owned_deterministic_source", false)) == true, "g419_player_qa_project_owned")
 	for key in ["third_party_pixels", "yellow_review_pixels", "web_scraped_pixels", "final_commercial_promoted"]:
 		_expect(bool(qa_provenance.get(key, true)) == false, "g419_player_qa_provenance_" + key)
+
+func _validate_g420_hud_ui_visual_redesign(hud: CanvasLayer) -> void:
+	_expect(hud != null, "g420_hud_exists")
+	if hud == null:
+		return
+	_expect(hud.has_method("set_review_metadata_expanded"), "g420_hud_review_metadata_api")
+	_expect(hud.has_method("get_hud_visual_contract"), "g420_hud_visual_contract_api")
+	var status_panel := hud.get_node_or_null("Panel") as Control
+	var quest_panel := hud.get_node_or_null("QuestPanel") as Control
+	var dialogue_panel := hud.get_node_or_null("DialoguePanel") as Control
+	var build_label := hud.get_node_or_null("Panel/MarginContainer/VBoxContainer/BuildLabel") as Label
+	var phase_label := hud.get_node_or_null("Panel/MarginContainer/VBoxContainer/PhaseHost") as Label
+	var channel_label := hud.get_node_or_null("Panel/MarginContainer/VBoxContainer/Channel") as Label
+	var branch_label := hud.get_node_or_null("Panel/MarginContainer/VBoxContainer/Branch") as Label
+	var objective_label := hud.get_node_or_null("Panel/MarginContainer/VBoxContainer/Objective") as Label
+	var health_bar := hud.get_node_or_null("Panel/MarginContainer/VBoxContainer/Vitals/HealthBar") as ProgressBar
+	var resolve_bar := hud.get_node_or_null("Panel/MarginContainer/VBoxContainer/Vitals/ResolveBar") as ProgressBar
+	var quest_body := hud.get_node_or_null("QuestPanel/MarginContainer/VBoxContainer/QuestBody") as Label
+	_expect(status_panel != null and status_panel.visible, "g420_hud_status_panel_visible_default")
+	_expect(quest_panel != null and quest_panel.visible, "g420_hud_quest_panel_visible_default")
+	_expect(dialogue_panel != null and not dialogue_panel.visible, "g420_hud_dialogue_hidden_default")
+	_expect(build_label != null and not build_label.visible, "g420_hud_build_label_hidden_default")
+	_expect(phase_label != null and not phase_label.visible, "g420_hud_phase_label_hidden_default")
+	_expect(channel_label != null and not channel_label.visible, "g420_hud_channel_hidden_default")
+	_expect(branch_label != null and not branch_label.visible, "g420_hud_branch_hidden_default")
+	_expect(objective_label != null and not objective_label.visible, "g420_hud_objective_hidden_default")
+	_expect(health_bar != null and not health_bar.show_percentage and health_bar.value > 0.0, "g420_hud_health_bar_contract")
+	_expect(resolve_bar != null and not resolve_bar.show_percentage and resolve_bar.value > 0.0, "g420_hud_resolve_bar_contract")
+	_expect(quest_body != null and quest_body.text.find("counting house") >= 0, "g420_hud_player_facing_objective")
+	if hud.has_method("get_hud_visual_contract"):
+		var contract: Dictionary = hud.call("get_hud_visual_contract")
+		_expect(String(contract.get("phase", "")) == "G-4.20", "g420_hud_contract_phase")
+		_expect(bool(contract.get("default_player_facing", false)), "g420_hud_contract_player_facing_default")
+		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g420_hud_contract_metadata_hidden")
+		_expect(bool(contract.get("no_hud_capture_available", false)), "g420_hud_contract_no_hud_available")
+		_expect(String(contract.get("palette", "")).find("brass") >= 0 and String(contract.get("palette", "")).find("teal") >= 0, "g420_hud_contract_palette")
+	if hud.has_method("set_review_metadata_expanded"):
+		hud.call("set_review_metadata_expanded", true)
+		_expect(build_label == null or build_label.visible, "g420_hud_build_label_metadata_visible")
+		_expect(phase_label == null or phase_label.visible, "g420_hud_phase_label_metadata_visible")
+		_expect(channel_label == null or channel_label.visible, "g420_hud_channel_metadata_visible")
+		_expect(branch_label == null or branch_label.visible, "g420_hud_branch_metadata_visible")
+		_expect(objective_label == null or objective_label.visible, "g420_hud_objective_metadata_visible")
+		hud.call("set_review_metadata_expanded", false)
 
 func _validate_g419b_visual_production_registry() -> void:
 	var registry := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_visual_production_registry.json")
@@ -1395,13 +1440,16 @@ func _validate_review_screenshot_mode(main: Node, hud: CanvasLayer) -> void:
 
 	var status_panel := hud.get_node_or_null("Panel") as Control
 	var dialogue_panel := hud.get_node_or_null("DialoguePanel") as Control
+	var quest_panel := hud.get_node_or_null("QuestPanel") as Control
 	main.call("set_review_screenshot_mode", true)
 	_expect(bool(main.call("is_review_screenshot_mode")), "review_screenshot_mode_enabled")
 	_expect(status_panel == null or not status_panel.visible, "review_screenshot_mode_hides_status_panel")
+	_expect(quest_panel == null or not quest_panel.visible, "review_screenshot_mode_hides_quest_panel")
 	_expect(dialogue_panel == null or not dialogue_panel.visible, "review_screenshot_mode_hides_dialogue_panel")
 	main.call("set_review_screenshot_mode", false)
 	_expect(not bool(main.call("is_review_screenshot_mode")), "review_screenshot_mode_disabled")
 	_expect(status_panel == null or status_panel.visible, "review_screenshot_mode_restores_status_panel")
+	_expect(quest_panel == null or quest_panel.visible, "review_screenshot_mode_restores_quest_panel")
 
 func _validate_lived_in_details() -> void:
 	var minimum_detail_count := 150 if NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN else (20 if NEWPORT_TOWN.G47_CALIBRATION_MODE else (24 if NEWPORT_TOWN.G49_STREET_VIGNETTE else (20 if NEWPORT_TOWN.G48_PROOF_STREET else (8 if NEWPORT_TOWN.G46_PROOF_FRAME else 40))))
@@ -1718,6 +1766,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("environmental_believability_wave_pass", "") == "G-4.20A", "starter_plan_environmental_believability_wave_pass_g_4_20a")
 	_expect(plan.get("town_identity_wave_pass", "") == "G-4.20B", "starter_plan_town_identity_wave_pass_g_4_20b")
 	_expect(plan.get("hero_quality_asset_family_pass", "") == "G-4.18E", "starter_plan_hero_quality_asset_family_pass_g_4_18e")
+	_expect(plan.get("hud_ui_visual_redesign_pass", "") == "G-4.20", "starter_plan_hud_ui_visual_redesign_pass_g_4_20")
 	_expect(plan.get("core_building_atelier_rebuild_pass", "") == "G-4.21A", "starter_plan_core_building_atelier_rebuild_pass_g_4_21a")
 	_expect(plan.get("walkable_city_reconstruction_pass", "") == "G-4.22A", "starter_plan_walkable_city_reconstruction_pass_g_4_22a")
 	_expect(plan.get("street_grammar_ground_repair_pass", "") == "G-4.23A", "starter_plan_street_grammar_ground_repair_pass_g_4_23a")
@@ -1727,6 +1776,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20b")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.21A") >= 0, "starter_plan_hero_street_atlas_proof_g_4_21a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.18E") >= 0, "starter_plan_hero_street_atlas_proof_g_4_18e")
+	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.23B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_23b")
 	var tavern_lock := String(plan.get("tavern_inn_centerpiece_lock", ""))
 	_expect(tavern_lock.find("G-4.21A") >= 0 and tavern_lock.find("Hotel Viking") >= 0 and tavern_lock.find("two sets") >= 0, "starter_plan_tavern_centerpiece_lock_g_4_21a")

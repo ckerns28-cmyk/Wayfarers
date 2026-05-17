@@ -280,6 +280,18 @@ has accepted street grammar, a coherent green-origin asset family, and a
 readable player identity foundation, so the remaining visible mismatch before a
 hero-slice composition gate is the debug/raw-engine UI layer.
 
+Current G-4.20 result: the default visible debug/review HUD has been replaced
+by a compact fantasy/MMORPG player-facing interface. Review metadata remains
+available through the F2 metadata toggle but is hidden by default, clean no-HUD
+capture is preserved, dialogue/prompt styling now follows the brass/parchment
+harbor UI direction, and dedicated G-4.20 runtime screenshot automation plus
+vertical-slice HUD contract checks are in place. The Agent Council inspected
+HUD, dialogue/prompt, metadata-expanded, no-HUD, commercial avenue, Tavern/Inn,
+and wider harbor evidence and assigned `COUNCIL_PASS_READY_FOR_PR`; human visual
+review is not required for this ordinary pre-G-5 phase.
+
+Next recommended phase after G-4.20: G-4.21 Origin City Hero Slice.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -2052,7 +2064,7 @@ Acceptance:
 
 ## G-4.20: HUD/UI Visual Redesign
 
-Status: planned.
+Status: `COUNCIL_PASS_READY_FOR_PR`.
 
 G-4.20 gives the player-facing HUD/UI intentional fantasy/MMORPG styling
 without adding gameplay systems.
