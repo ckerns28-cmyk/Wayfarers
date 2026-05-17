@@ -25,7 +25,6 @@ const G414A_CURB_DATUM_BUILDING_IDS := [
 	"b_inn_tavern",
 	"b_clerk_townhouse",
 	"b_mercantile",
-	"b_counting_house",
 	"b_chandlery_front",
 	"b_shop_house",
 	"b_market_shed",
@@ -54,8 +53,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.21A", "build_phase_g_4_21a")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.21A Newport Core Building Atelier Rebuild Wave 1", "build_label_g_4_21a")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.22A", "build_phase_g_4_22a")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.22A Newport Walkable City Reconstruction Blockout", "build_label_g_4_22a")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -1445,8 +1444,8 @@ func _validate_starter_harbor_plan() -> void:
 
 	for building_id in NEWPORT_TOWN.STARTER_HARBOR_BUILDING_IDS:
 		_expect(actual_building_lots.has(building_id), "actual_lot_for_" + building_id)
-	_expect(not actual_building_lots.has("b_village_hall"), "chapel_coded_hall_not_active")
-	_expect(actual_building_lots.has("b_custom_house"), "custom_house_replaces_civic_hall")
+	_expect(actual_building_lots.has("b_counting_house"), "town_hall_counting_house_anchor_active")
+	_expect(actual_building_lots.has("b_custom_house"), "custom_house_remains_civic_anchor")
 	for planned_id in NEWPORT_TOWN.STARTER_HARBOR_PLANNED_LOT_IDS:
 		_expect(lot_ids.has(planned_id), "planned_lot_present_" + planned_id)
 	for building_id in NEWPORT_TOWN.G413B_ACTIVE_INFILL_BUILDING_IDS:
@@ -1511,6 +1510,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("environmental_believability_wave_pass", "") == "G-4.20A", "starter_plan_environmental_believability_wave_pass_g_4_20a")
 	_expect(plan.get("town_identity_wave_pass", "") == "G-4.20B", "starter_plan_town_identity_wave_pass_g_4_20b")
 	_expect(plan.get("core_building_atelier_rebuild_pass", "") == "G-4.21A", "starter_plan_core_building_atelier_rebuild_pass_g_4_21a")
+	_expect(plan.get("walkable_city_reconstruction_pass", "") == "G-4.22A", "starter_plan_walkable_city_reconstruction_pass_g_4_22a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("atelier cargo") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("G-4.19A") >= 0, "starter_plan_hero_street_atlas_proof")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20A") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20b")
@@ -1531,9 +1531,17 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("asset_provenance_gate", false) == true, "starter_plan_asset_provenance_gate")
 	_expect(String(plan.get("review_screenshot_mode", "")).find("F4") >= 0, "starter_plan_review_screenshot_mode")
 	_expect(plan_districts.size() >= 4, "starter_plan_district_structure")
-	_expect(plan_loop.has("commercial_rear_road"), "starter_plan_includes_commercial_rear_road")
-	_expect(plan_loop.has("mercantile_counting_house_rear_road"), "starter_plan_includes_mercantile_counting_rear_road")
-	_expect(plan_loop.size() >= 6, "starter_plan_movement_loop")
+	_expect(plan_loop.has("waterfront_avenue"), "starter_plan_includes_waterfront_avenue")
+	_expect(plan_loop.has("central_civic_road"), "starter_plan_includes_central_civic_road")
+	_expect(plan_loop.has("service_alley_return"), "starter_plan_includes_service_alley_return")
+	_expect(plan_loop.size() >= 7, "starter_plan_movement_loop")
+	var street_grammar: Array = plan.get("street_grammar", [])
+	for grammar_id in ["waterfront_avenue_parallel_to_harbor", "west_road_runs_up_from_avenue", "central_civic_road_runs_up_from_avenue", "east_market_road_runs_up_from_avenue", "packed_earth_service_alleys_share_same_cobble_palette", "blockout_guides_default_off"]:
+		_expect(street_grammar.has(grammar_id), "g422a_street_grammar_" + grammar_id)
+	var walking_loops: Array = plan.get("walking_loops", [])
+	for loop_id in ["harbor_loop", "market_loop", "civic_residential_loop"]:
+		_expect(walking_loops.has(loop_id), "g422a_plan_loop_" + loop_id)
+	_validate_g422a_walkable_city_contract()
 	_expect(NEWPORT_TOWN.g413b_rowhouse_infill_slots().size() == NEWPORT_TOWN.G413B_ROWHOUSE_INFILL_SLOT_IDS.size(), "g413b_rowhouse_infill_slot_manifest_count")
 	var active_slots := 0
 	var deferred_slots := 0
@@ -1552,6 +1560,46 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(deferred_slots >= 2, "g413b_deferred_infill_slot_count")
 	_expect(NEWPORT_TOWN.route_debug_probes().size() >= 13, "g413b_route_debug_probe_count")
 	_expect(BUILDING_CATALOG.available_building_assets().size() >= 20, "asset_audit_catalog_populated")
+
+func _validate_g422a_walkable_city_contract() -> void:
+	_expect(NEWPORT_TOWN.G422A_SHOW_BLOCKOUT_GUIDES == false, "g422a_blockout_guides_default_off")
+	_expect(NEWPORT_TOWN.G422A_SHOW_LEGACY_PROOF_OVERLAYS == false, "g422a_legacy_proof_overlays_default_off")
+	_expect(NEWPORT_TOWN.walking_loop_specs().size() == 3, "g422a_three_walking_loops")
+	var loop_ids: Array[String] = []
+	for raw_loop in NEWPORT_TOWN.walking_loop_specs():
+		var loop: Dictionary = raw_loop
+		var loop_id := String(loop.get("id", ""))
+		loop_ids.append(loop_id)
+		var route_targets: Array = loop.get("route_targets", [])
+		_expect(route_targets.size() >= 4, "g422a_loop_has_route_targets_" + loop_id)
+	for loop_id in ["harbor_loop", "market_loop", "civic_residential_loop"]:
+		_expect(loop_ids.has(loop_id), "g422a_loop_present_" + loop_id)
+
+	var anchors: Array = NEWPORT_TOWN.interaction_anchors()
+	_expect(anchors.size() >= 14, "g422a_interaction_anchor_density")
+	var anchor_types := {}
+	var anchor_ids := {}
+	for raw_anchor in anchors:
+		var anchor: Dictionary = raw_anchor
+		var anchor_id := String(anchor.get("id", ""))
+		anchor_ids[anchor_id] = true
+		anchor_types[String(anchor.get("type", ""))] = true
+		var position: Vector2 = anchor.get("position", Vector2.ZERO)
+		_expect(position.x > 0.0 and position.y > 0.0, "g422a_anchor_position_" + anchor_id)
+	for required_id in ["tavern_inn_entrance", "town_hall_entrance", "mercantile_entrance", "town_notice_board", "dock_worker_west", "market_vendor", "harbor_cargo_inspection_west", "well_bench_civic_square"]:
+		_expect(anchor_ids.has(required_id), "g422a_anchor_present_" + required_id)
+	for required_type in ["entrance", "shop", "notice_board", "npc_placeholder", "cargo_inspection", "small_interaction"]:
+		_expect(anchor_types.has(required_type), "g422a_anchor_type_" + required_type)
+
+	var route_rects: Array = NEWPORT_TOWN.route_rects()
+	for required_rect in [
+		Rect2i(6, 17, 41, 3),
+		Rect2i(11, 10, 2, 14),
+		Rect2i(21, 8, 3, 16),
+		Rect2i(35, 9, 2, 15),
+		Rect2i(43, 12, 2, 12),
+	]:
+		_expect(route_rects.has(required_rect), "g422a_route_rect_" + str(required_rect))
 
 func _validate_g415_layout_rules() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
@@ -1601,23 +1649,23 @@ func _validate_visual_composition_spacing() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
 		return
 
-	_validate_visual_sequence_has_tight_seams("harborfront_parceled_street_wall", [
+	_validate_visual_sequence_has_tight_seams("waterfront_avenue_west_block", [
 		"b_inn_tavern",
 		"b_clerk_townhouse",
 		"b_mercantile",
-		"b_counting_house",
+	], 8.0, 90.0)
+	_validate_visual_sequence_has_tight_seams("waterfront_avenue_east_block", [
 		"b_chandlery_front",
 		"b_shop_house",
 		"b_market_shed",
 		"b_printer_rowhouse",
-	], 0.0, 32.0)
+	], 0.0, 70.0)
 	_validate_harborfront_visual_bottom_datum()
-	_validate_harborfront_parcel_rhythm()
-	_validate_review_bounds_track_art_body("harborfront_street_wall", [
+	_validate_g422a_avenue_block_breaks()
+	_validate_review_bounds_track_art_body("waterfront_avenue_blocks", [
 		"b_inn_tavern",
 		"b_clerk_townhouse",
 		"b_mercantile",
-		"b_counting_house",
 		"b_chandlery_front",
 		"b_shop_house",
 		"b_market_shed",
@@ -1626,7 +1674,7 @@ func _validate_visual_composition_spacing() -> void:
 	_validate_visual_sequence_has_tight_seams("support_lane_row", [
 		"b_boarding_house",
 		"b_dockworker_rowhouse",
-	], 0.0, 8.0)
+	], 8.0, 80.0)
 	_validate_review_bounds_track_art_body("support_lane_row", [
 		"b_boarding_house",
 		"b_dockworker_rowhouse",
@@ -1641,22 +1689,30 @@ func _validate_visual_composition_spacing() -> void:
 			var mercantile_rect := _building_visual_world_rect(mercantile)
 			var clerk_to_mercantile_gap := mercantile_rect.position.x - clerk_rect.end.x
 			_expect(clerk_to_mercantile_gap >= 8.0, "clerk_townhouse_not_cut_off_by_mercantile")
-			_expect(clerk_to_mercantile_gap <= 12.0, "clerk_townhouse_keeps_tight_mercantile_gutter")
+			_expect(clerk_to_mercantile_gap <= 40.0, "clerk_townhouse_keeps_readable_mercantile_gutter")
 
-func _validate_harborfront_parcel_rhythm() -> void:
-	var chandlery_to_shop_gap := _visual_gap_between("b_chandlery_front", "b_shop_house")
+func _validate_g422a_avenue_block_breaks() -> void:
+	var tavern_to_clerk_gap := _visual_gap_between("b_inn_tavern", "b_clerk_townhouse")
+	var mercantile_to_chandlery_gap := _visual_gap_between("b_mercantile", "b_chandlery_front")
 	var shop_to_market_gap := _visual_gap_between("b_shop_house", "b_market_shed")
 	var market_to_printer_gap := _visual_gap_between("b_market_shed", "b_printer_rowhouse")
-	_expect(chandlery_to_shop_gap >= 10.0 and chandlery_to_shop_gap <= 18.0, "g415_shop_house_has_chandlery_service_slit")
-	_expect(shop_to_market_gap >= 18.0 and shop_to_market_gap <= 32.0, "g415_shop_house_has_market_breathing_room")
-	_expect(market_to_printer_gap >= 10.0 and market_to_printer_gap <= 26.0, "g415_market_to_printer_has_east_gutter")
+	_expect(tavern_to_clerk_gap >= 48.0 and tavern_to_clerk_gap <= 100.0, "g422a_west_road_break_between_tavern_and_clerk")
+	_expect(mercantile_to_chandlery_gap >= 170.0 and mercantile_to_chandlery_gap <= 280.0, "g422a_central_civic_road_break_between_blocks")
+	_expect(shop_to_market_gap >= 22.0 and shop_to_market_gap <= 60.0, "g422a_shop_to_market_has_avenue_breathing_room")
+	_expect(market_to_printer_gap >= 20.0 and market_to_printer_gap <= 70.0, "g422a_market_to_printer_has_east_road_corner")
 
 	var chandlery := _building_by_name("b_chandlery_front")
 	var shop := _building_by_name("b_shop_house")
 	var market := _building_by_name("b_market_shed")
 	var printer := _building_by_name("b_printer_rowhouse")
 	if chandlery and shop and market and printer:
-		_expect(chandlery.global_position.x < shop.global_position.x and shop.global_position.x < market.global_position.x and market.global_position.x < printer.global_position.x, "g415_parcel_order_chandlery_shop_market_printer")
+		_expect(chandlery.global_position.x < shop.global_position.x and shop.global_position.x < market.global_position.x and market.global_position.x < printer.global_position.x, "g422a_avenue_order_chandlery_shop_market_printer")
+
+	var counting_house := _building_by_name("b_counting_house")
+	var custom_house := _building_by_name("b_custom_house")
+	if counting_house and custom_house:
+		_expect(counting_house.global_position.y < NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * NEWPORT_TOWN.TILE - 120.0, "g422a_town_hall_counting_house_inland_civic_anchor")
+		_expect(custom_house.global_position.y < NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * NEWPORT_TOWN.TILE - 120.0, "g422a_custom_house_inland_civic_anchor")
 
 func _validate_harborfront_visual_bottom_datum() -> void:
 	var street_bottom_y := NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * float(NEWPORT_TOWN.TILE)
@@ -1883,17 +1939,20 @@ func _validate_building_walkability_gate() -> void:
 		return
 
 	var walk_samples := {
-		"road_behind_b_mercantile": Vector2(492.0, 526.0),
-		"road_behind_b_counting_house": Vector2(680.0, 526.0),
-		"harborfront_rear_commercial_row": Vector2(892.0, 526.0),
-		"west_commercial_cross_lane": Vector2(392.0, 520.0),
-		"central_inland_cross_lane": Vector2(672.0, 430.0),
-		"central_front_cross_lane": Vector2(752.0, 604.0),
-		"east_commercial_cross_lane": Vector2(1100.0, 520.0),
-		"dock_layer_walk": Vector2(824.0, 710.0),
-		"clerk_rowhouse_front_walk": Vector2(420.0, 604.0),
-		"market_east_edge_front_walk": Vector2(1430.0, 604.0),
-		"support_boarding_gap_walk": Vector2(1380.0, 418.0),
+		"waterfront_avenue_west": Vector2(292.0, 592.0),
+		"waterfront_avenue_center": Vector2(675.0, 600.0),
+		"waterfront_avenue_east": Vector2(1248.0, 600.0),
+		"west_road_runs_up_from_avenue": Vector2(386.0, 440.0),
+		"central_road_runs_up_from_avenue": Vector2(704.0, 392.0),
+		"east_road_runs_up_from_avenue": Vector2(1152.0, 424.0),
+		"market_road_runs_up_from_avenue": Vector2(1412.0, 500.0),
+		"civic_cross_street": Vector2(840.0, 408.0),
+		"residential_backstreet": Vector2(520.0, 292.0),
+		"service_alley_west_to_wharf": Vector2(512.0, 646.0),
+		"service_alley_central_to_wharf": Vector2(920.0, 664.0),
+		"dock_boardwalk_west": Vector2(420.0, 710.0),
+		"dock_boardwalk_center": Vector2(824.0, 710.0),
+		"dock_boardwalk_east": Vector2(1230.0, 710.0),
 	}
 	for sample_name in walk_samples.keys():
 		var point: Vector2 = walk_samples[sample_name]

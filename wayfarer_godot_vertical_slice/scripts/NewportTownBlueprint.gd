@@ -22,13 +22,16 @@ const G419A_DOCK_CLUTTER_ATELIER_PASS := "G-4.19A"
 const G419B_VISUAL_PRODUCTION_AUDIT_PASS := "G-4.19B"
 const G420A_ENVIRONMENTAL_BELIEVABILITY_PASS := "G-4.20A"
 const G420B_TOWN_IDENTITY_PASS := "G-4.20B"
+const G422A_WALKABLE_CITY_RECONSTRUCTION_PASS := "G-4.22A"
+const G422A_SHOW_BLOCKOUT_GUIDES := false
+const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
 const HARBORFRONT_BUILDING_IDS := [
 	"b_inn_tavern",
 	"b_mercantile",
-	"b_counting_house",
 	"b_chandlery_front",
 	"b_shop_house",
+	"b_market_shed",
 ]
 
 const STARTER_HARBOR_BUILDING_IDS := [
@@ -112,10 +115,10 @@ static func base_ground_rect() -> Rect2i:
 static func district_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			{"id": "inland_residential_civic", "rect": Rect2i(6, 5, 42, 8), "base": Color("#617a55"), "alt": Color("#4d6848")},
-			{"id": "support_lane", "rect": Rect2i(7, 11, 41, 5), "base": Color("#5a744f"), "alt": Color("#486743")},
-			{"id": "harborfront_commercial", "rect": Rect2i(6, 15, 42, 6), "base": Color("#596f50"), "alt": Color("#465f43")},
-			{"id": "working_wharf", "rect": Rect2i(6, 20, 42, 5), "base": Color("#5f6750"), "alt": Color("#4d5944")},
+			{"id": "inland_residential_civic", "rect": Rect2i(6, 6, 39, 7), "base": Color("#607957"), "alt": Color("#4c6749")},
+			{"id": "support_lane", "rect": Rect2i(6, 12, 39, 4), "base": Color("#5a704f"), "alt": Color("#465f43")},
+			{"id": "harborfront_commercial", "rect": Rect2i(5, 15, 42, 6), "base": Color("#5b6850"), "alt": Color("#485943")},
+			{"id": "working_wharf", "rect": Rect2i(6, 20, 40, 5), "base": Color("#5d6350"), "alt": Color("#4a5142")},
 			{"id": "harbor_water", "rect": Rect2i(0, 24, MAP_TILES.x, 8), "base": Color("#2f7184"), "alt": Color("#1f5369")},
 		]
 	return [
@@ -129,9 +132,12 @@ static func district_rects() -> Array:
 static func primary_roads() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(7, 18, 42, 3),
-			Rect2i(10, 13, 30, 2),
-			Rect2i(20, 11, 3, 10),
+			Rect2i(6, 17, 41, 3),
+			Rect2i(7, 21, 39, 3),
+			Rect2i(11, 10, 2, 14),
+			Rect2i(21, 8, 3, 16),
+			Rect2i(35, 9, 2, 15),
+			Rect2i(43, 12, 2, 12),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -165,10 +171,12 @@ static func primary_roads() -> Array:
 static func secondary_roads() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(8, 16, 40, 2),
-			Rect2i(8, 21, 40, 3),
-			Rect2i(12, 13, 2, 11),
-			Rect2i(34, 13, 2, 11),
+			Rect2i(8, 12, 38, 2),
+			Rect2i(10, 8, 29, 2),
+			Rect2i(6, 15, 10, 3),
+			Rect2i(20, 14, 9, 3),
+			Rect2i(37, 15, 10, 4),
+			Rect2i(6, 20, 41, 2),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -195,12 +203,11 @@ static func secondary_roads() -> Array:
 static func service_lanes() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(8, 12, 9, 1),
-			Rect2i(26, 12, 22, 1),
-			Rect2i(9, 15, 7, 1),
-			Rect2i(36, 15, 12, 1),
-			Rect2i(21, 21, 3, 5),
-			Rect2i(32, 22, 2, 4),
+			Rect2i(15, 13, 2, 11),
+			Rect2i(28, 13, 2, 11),
+			Rect2i(31, 19, 2, 5),
+			Rect2i(38, 13, 2, 11),
+			Rect2i(8, 14, 2, 10),
 		]
 	if G49_STREET_VIGNETTE:
 		return []
@@ -219,9 +226,9 @@ static func service_lanes() -> Array:
 static func civic_square_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(18, 10, 8, 4),
-			Rect2i(12, 11, 4, 2),
-			Rect2i(31, 11, 5, 2),
+			Rect2i(18, 8, 10, 5),
+			Rect2i(28, 10, 9, 4),
+			Rect2i(10, 8, 8, 4),
 		]
 	return [
 		Rect2i(19, 10, 8, 4),
@@ -232,9 +239,9 @@ static func civic_square_rects() -> Array:
 static func waterfront_apron_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(7, 16, 36, 2),
-			Rect2i(7, 20, 36, 1),
-			Rect2i(8, 21, 34, 3),
+			Rect2i(6, 17, 41, 3),
+			Rect2i(6, 20, 41, 2),
+			Rect2i(7, 21, 39, 3),
 		]
 	return [
 		Rect2i(8, 15, 25, 2),
@@ -301,8 +308,8 @@ static func wharf_support_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
 			Rect2i(8, 21, 8, 3),
-			Rect2i(20, 21, 9, 3),
-			Rect2i(32, 21, 8, 3),
+			Rect2i(20, 21, 10, 3),
+			Rect2i(34, 21, 9, 3),
 		]
 	return [
 		Rect2i(9, 20, 5, 4),
@@ -324,7 +331,7 @@ static func route_tiles() -> Array:
 
 static func wharf_walkable_tiles() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
-		var starter_rects: Array = [Rect2i(8, 21, 34, 3)]
+		var starter_rects: Array = [Rect2i(7, 21, 39, 3)]
 		for pier in pier_rects():
 			starter_rects.append(pier["rect"])
 		return _tiles_from_rects(starter_rects)
@@ -344,12 +351,16 @@ static func water_collision_tiles() -> Array:
 static func reachability_targets() -> Dictionary:
 	if G410_STARTER_HARBOR_TOWN:
 		return {
-			"harborfront_main_street": Vector2i(21, 19),
-			"west_tavern_frontage": Vector2i(10, 18),
-			"mercantile_frontage": Vector2i(17, 18),
-			"counting_house_frontage": Vector2i(22, 18),
-			"chandlery_frontage": Vector2i(27, 18),
-			"east_storefront_frontage": Vector2i(32, 18),
+			"waterfront_avenue_center": Vector2i(21, 18),
+			"west_tavern_avenue": Vector2i(9, 18),
+			"west_upland_road": Vector2i(12, 12),
+			"central_upland_road": Vector2i(22, 10),
+			"east_upland_road": Vector2i(36, 11),
+			"east_market_road": Vector2i(44, 15),
+			"civic_square": Vector2i(24, 12),
+			"custom_house_crossing": Vector2i(30, 12),
+			"residential_backstreet": Vector2i(14, 9),
+			"service_alley_to_harbor": Vector2i(16, 18),
 			"working_wharf_edge": Vector2i(22, 22),
 			"west_service_pier": Vector2i(11, 25),
 			"west_dock_warehouse_landing": Vector2i(13, 25),
@@ -357,9 +368,6 @@ static func reachability_targets() -> Dictionary:
 			"central_boathouse_landing": Vector2i(24, 25),
 			"east_storehouse_pier": Vector2i(37, 25),
 			"east_storehouse_landing": Vector2i(39, 25),
-			"inland_cross_lane": Vector2i(21, 13),
-			"west_support_lane": Vector2i(13, 13),
-			"east_support_lane": Vector2i(35, 13),
 		}
 	if G49_STREET_VIGNETTE:
 		return {
@@ -408,14 +416,14 @@ static func proof_street_ids() -> Array:
 static func proof_street_walk_targets() -> Dictionary:
 	if G410_STARTER_HARBOR_TOWN:
 		return {
-			"tavern_door": Vector2i(10, 18),
-			"mercantile_door": Vector2i(17, 18),
-			"counting_house_door": Vector2i(22, 18),
-			"chandlery_door": Vector2i(27, 18),
-			"shop_house_door": Vector2i(32, 18),
-			"harborfront_walk": Vector2i(22, 19),
-			"dock_access": Vector2i(23, 22),
-			"inland_return_lane": Vector2i(21, 13),
+			"tavern_door": Vector2i(8, 18),
+			"mercantile_door": Vector2i(20, 18),
+			"chandlery_door": Vector2i(32, 18),
+			"shop_house_door": Vector2i(36, 18),
+			"market_shed_door": Vector2i(43, 18),
+			"harborfront_walk": Vector2i(22, 18),
+			"dock_access": Vector2i(22, 22),
+			"inland_return_lane": Vector2i(22, 12),
 		}
 	if G49_STREET_VIGNETTE:
 		return {
@@ -454,28 +462,28 @@ static func proof_street_walk_targets() -> Dictionary:
 static func route_debug_probes() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_route_probe("black_box_marked_lane", Vector2(500.0, 536.0), "G-4.13A.1 marked lane throat north of mercantile", "black-box"),
-			_route_probe("tavern_mercantile_rear_lane", Vector2(500.0, 528.0), "rear lane between tavern, mercantile, and small residence", "tav/merc"),
-			_route_probe("tavern_mercantile_east_throat", Vector2(562.0, 548.0), "east edge of the tavern/mercantile connector", "east throat"),
-			_route_probe("road_behind_b_mercantile", Vector2(492.0, 526.0), "road behind b_mercantile", "merc rear"),
-			_route_probe("road_behind_b_counting_house", Vector2(680.0, 526.0), "road behind b_counting_house", "count rear"),
-			_route_probe("lane_near_b_res_small", Vector2(492.0, 500.0), "lane near b_res_small", "res lane"),
-			_route_probe("central_rear_road", Vector2(748.0, 526.0), "central rear road", "rear C"),
-			_route_probe("east_rear_road", Vector2(1040.0, 526.0), "east rear road", "rear E"),
-			_route_probe("commercial_street", Vector2(824.0, 600.0), "commercial street", "comm street"),
-			_route_probe("commercial_to_dock_access", Vector2(672.0, 652.0), "commercial row to dock layer access", "dock access"),
-			_route_probe("dock_boardwalk", Vector2(824.0, 710.0), "dock boardwalk", "dock walk"),
-			_route_probe("central_cross_lane", Vector2(672.0, 430.0), "inland road to commercial row access", "cross C"),
-			_route_probe("support_lane_woodpile_road", Vector2(424.0, 430.0), "old support-lane woodpile road position", "wood road"),
-			_route_probe("clerk_rowhouse_front_walk", Vector2(420.0, 604.0), "commercial street approach below the tavern/mercantile clerk-rowhouse infill", "clerk row"),
-			_route_probe("market_east_edge_front_walk", Vector2(1430.0, 604.0), "commercial street approach below the east market-edge printer rowhouse", "market edge"),
-			_route_probe("support_boarding_gap_walk", Vector2(1380.0, 418.0), "east support-lane return below the dockworker rowhouse street wall", "dockworker"),
+			_route_probe("waterfront_avenue_west", Vector2(292.0, 592.0), "main harbor avenue west of Tavern/Inn", "ave W"),
+			_route_probe("waterfront_avenue_center", Vector2(675.0, 600.0), "main harbor avenue center spine", "ave C"),
+			_route_probe("waterfront_avenue_east", Vector2(1248.0, 600.0), "main harbor avenue east market approach", "ave E"),
+			_route_probe("west_road_runs_up_from_avenue", Vector2(386.0, 440.0), "west uphill road from waterfront avenue to residential edge", "up W"),
+			_route_probe("central_road_runs_up_from_avenue", Vector2(704.0, 392.0), "central uphill road from docks to civic square", "up C"),
+			_route_probe("east_road_runs_up_from_avenue", Vector2(1152.0, 424.0), "east uphill road from avenue to boarding/residential edge", "up E"),
+			_route_probe("market_road_runs_up_from_avenue", Vector2(1412.0, 500.0), "far-east market road connecting printer and market edge", "up M"),
+			_route_probe("civic_cross_street", Vector2(840.0, 408.0), "civic cross street behind the commercial avenue", "civic"),
+			_route_probe("residential_backstreet", Vector2(520.0, 292.0), "upper residential/backstreet route", "back"),
+			_route_probe("service_alley_west_to_wharf", Vector2(512.0, 646.0), "narrow service alley feeding the wharf loop", "alley W"),
+			_route_probe("service_alley_central_to_wharf", Vector2(920.0, 664.0), "central goods alley between avenue and wharf", "alley C"),
+			_route_probe("dock_boardwalk_west", Vector2(420.0, 710.0), "west wharf boardwalk stays open", "dock W"),
+			_route_probe("dock_boardwalk_center", Vector2(824.0, 710.0), "central wharf boardwalk stays open", "dock C"),
+			_route_probe("dock_boardwalk_east", Vector2(1230.0, 710.0), "east wharf boardwalk stays open", "dock E"),
+			_route_probe("town_hall_frontage", Vector2(704.0, 392.0), "Town Hall / Counting House civic frontage", "hall"),
+			_route_probe("custom_house_frontage", Vector2(970.0, 402.0), "Custom House civic frontage", "customs"),
 		]
 	return []
 
 static func lived_in_detail_count() -> int:
 	if G410_STARTER_HARBOR_TOWN:
-		return 168
+		return 206
 	if G49_STREET_VIGNETTE:
 		return 38
 	if G48_PROOF_STREET:
@@ -489,21 +497,27 @@ static func lived_in_detail_count() -> int:
 static func detail_blockers() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_blocker("tavern_loading_barrels", Rect2(334, 582, 30, 16)),
-			_blocker("mercantile_front_crates", Rect2(506, 586, 28, 14)),
-			_blocker("west_alley_rope", Rect2(616, 586, 22, 14)),
-			_blocker("counting_house_goods_left", Rect2(604, 582, 34, 16)),
-			_blocker("counting_house_goods_right", Rect2(774, 584, 30, 16)),
-			_blocker("chandlery_rope_stack", Rect2(930, 586, 30, 14)),
-			_blocker("shop_house_crates", Rect2(1062, 584, 32, 16)),
-			_blocker("wharf_west_cargo", Rect2(370, 666, 36, 20)),
-			_blocker("wharf_market_table", Rect2(706, 656, 62, 20)),
-			_blocker("wharf_east_barrels", Rect2(1024, 666, 34, 22)),
+			_blocker("tavern_stoop_barrels", Rect2(252, 586, 30, 16)),
+			_blocker("clerk_stoop_crates", Rect2(448, 588, 28, 16)),
+			_blocker("mercantile_front_crates", Rect2(612, 586, 30, 16)),
+			_blocker("service_alley_west_rope", Rect2(514, 684, 22, 14)),
+			_blocker("counting_house_notice_crates", Rect2(744, 452, 34, 16)),
+			_blocker("chandlery_rope_stack", Rect2(1008, 586, 30, 14)),
+			_blocker("shop_house_crates", Rect2(1150, 586, 32, 16)),
+			_blocker("market_vendor_table", Rect2(1322, 604, 62, 20)),
+			_blocker("printer_delivery_barrels", Rect2(1492, 586, 30, 18)),
+			_blocker("civic_hall_notice_bench", Rect2(746, 388, 42, 16)),
+			_blocker("custom_house_flag_crates", Rect2(904, 390, 34, 18)),
+			_blocker("residential_yard_planter", Rect2(362, 338, 40, 18)),
+			_blocker("boarding_lane_wash", Rect2(1252, 398, 34, 18)),
+			_blocker("cooperage_hoops", Rect2(246, 468, 40, 18)),
+			_blocker("service_alley_cargo", Rect2(962, 660, 38, 20)),
+			_blocker("wharf_west_cargo", Rect2(370, 676, 36, 20)),
+			_blocker("wharf_market_table", Rect2(706, 664, 62, 20)),
+			_blocker("wharf_east_barrels", Rect2(1024, 674, 34, 22)),
 			_blocker("west_pier_posts", Rect2(374, 758, 34, 18)),
 			_blocker("central_pier_cargo", Rect2(746, 742, 36, 20)),
 			_blocker("east_pier_net", Rect2(1070, 746, 34, 20)),
-			_blocker("inland_civic_bench", Rect2(628, 374, 42, 16)),
-			_blocker("support_lane_woodpile", Rect2(404, 462, 40, 18)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -552,23 +566,23 @@ static func player_spawn_tile() -> Vector2i:
 static func building_specs() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(7.95, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(18.12, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(22.40, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.47, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(32.52, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(42.72, G414A_STREET_WALL_CURB_DATUM_Y)),
-			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(38.10, G414A_STREET_WALL_CURB_DATUM_Y)),
+			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(7.60, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(20.35, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_counting_house", "inland_residential_civic", "town_hall_counting_house", Vector2(22.00, 11.55)),
+			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(31.85, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(36.55, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(48.00, G414A_STREET_WALL_CURB_DATUM_Y)),
+			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(42.60, G414A_STREET_WALL_CURB_DATUM_Y), true),
 			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(41.35, 27.55)),
 			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(28.05, 27.65)),
 			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(15.20, 27.55)),
-			_catalog_building("b_custom_house", "inland_residential_civic", "customs_house", Vector2(25.10, 11.70)),
-			_catalog_building("b_clerk_townhouse", "harborfront_commercial", "rowhouse_clerk_lodging", Vector2(13.85, G414A_STREET_WALL_CURB_DATUM_Y)),
-			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(13.65, 11.45)),
-			_catalog_building("b_large_residence", "inland_residential_civic", "civic_residence", Vector2(31.80, 11.55)),
-			_catalog_building("b_boarding_house", "support_lane", "boarding_house", Vector2(38.35, 11.70)),
-			_catalog_building("b_dockworker_rowhouse", "support_lane", "rowhouse_dockworker_lodging", Vector2(42.79, 12.10)),
-			_catalog_building("b_cooperage_shed", "support_lane", "cooperage", Vector2(8.25, 11.85)),
+			_catalog_building("b_custom_house", "inland_residential_civic", "customs_house", Vector2(30.20, 11.55)),
+			_catalog_building("b_clerk_townhouse", "harborfront_commercial", "rowhouse_clerk_lodging", Vector2(15.70, G414A_STREET_WALL_CURB_DATUM_Y)),
+			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(11.35, 11.35)),
+			_catalog_building("b_large_residence", "inland_residential_civic", "civic_residence", Vector2(34.20, 10.95)),
+			_catalog_building("b_boarding_house", "support_lane", "boarding_house", Vector2(40.60, 12.10)),
+			_catalog_building("b_dockworker_rowhouse", "support_lane", "rowhouse_dockworker_lodging", Vector2(46.00, 12.30)),
+			_catalog_building("b_cooperage_shed", "support_lane", "cooperage", Vector2(8.25, 14.25)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -632,23 +646,23 @@ static func g415_layout_rules() -> Dictionary:
 	if not G410_STARTER_HARBOR_TOWN:
 		return {}
 	return {
-		"b_inn_tavern": _layout_rule("parcel_tavern_anchor", "commercial", 584.0, 24.0, 12.0, Vector2(254.0, 616.0), Rect2(282, 578, 58, 26), Rect2(188, 548, 176, 70), "commercial_stone", "tavern loading stays on the west apron while the front door stays clear"),
-		"b_clerk_townhouse": _layout_rule("parcel_clerk_rowhouse", "commercial", 584.0, 22.0, 4.0, Vector2(443.0, 616.0), Rect2(410, 580, 48, 20), Rect2(386, 550, 116, 68), "rowhouse_stone", "brick rowhouse remains attached to the tavern/mercantile run but keeps a distinct stoop"),
-		"b_mercantile": _layout_rule("parcel_harbor_mercantile", "commercial", 584.0, 22.0, 10.0, Vector2(580.0, 616.0), Rect2(538, 582, 64, 24), Rect2(524, 550, 112, 68), "commercial_stone", "trade crates sit on the side apron; the doorway prompt zone remains open"),
-		"b_counting_house": _layout_rule("parcel_counting_house", "commercial", 584.0, 22.0, 12.0, Vector2(710.0, 616.0), Rect2(604, 580, 205, 24), Rect2(612, 548, 196, 70), "civic_stone", "ledger crates flank a formal front walk without crossing the central entry"),
-		"b_chandlery_front": _layout_rule("parcel_chandlery", "commercial", 584.0, 22.0, 12.0, Vector2(873.0, 616.0), Rect2(912, 582, 58, 24), Rect2(806, 550, 154, 68), "commercial_stone", "rope work belongs to the east service slit, not the doorway"),
-		"b_shop_house": _layout_rule("parcel_shop_house", "commercial", 584.0, 22.0, 16.0, Vector2(1019.0, 616.0), Rect2(1058, 580, 58, 24), Rect2(960, 550, 126, 68), "shop_stone", "the shop house gets a wider east gutter before the market parcel"),
-		"b_market_shed": _layout_rule("parcel_market_shed", "market", 584.0, 32.0, 18.0, Vector2(1189.0, 620.0), Rect2(1128, 642, 142, 36), Rect2(1096, 548, 178, 72), "market_stone", "market tables sit in the wharf-facing trade band instead of pinching the shop facade"),
-		"b_printer_rowhouse": _layout_rule("parcel_printer_rowhouse", "commercial", 584.0, 22.0, 12.0, Vector2(1340.0, 616.0), Rect2(1309, 580, 52, 24), Rect2(1284, 540, 124, 80), "rowhouse_stone", "printer frontage keeps the east-edge parcel spacing while the rowhouse now reads at full Newport scale"),
-		"b_custom_house": _layout_rule("parcel_custom_house_green", "civic", 424.0, 44.0, 28.0, Vector2(803.0, 432.0), Rect2(744, 390, 120, 26), Rect2(692, 326, 224, 96), "civic_green", "customs house sits on a formal green with a road-facing walk"),
-		"b_res_small": _layout_rule("parcel_harbor_cottage_yard", "residential", 424.0, 42.0, 24.0, Vector2(437.0, 432.0), Rect2(392, 394, 92, 24), Rect2(360, 326, 154, 88), "residential_yard", "small residence gets a visible yard and path instead of floating on grass"),
-		"b_large_residence": _layout_rule("parcel_harbor_residence_yard", "residential", 424.0, 42.0, 28.0, Vector2(1018.0, 432.0), Rect2(964, 394, 126, 24), Rect2(910, 326, 224, 92), "residential_yard", "large residence has a broad green parcel and walk down to the support road"),
-		"b_boarding_house": _layout_rule("parcel_boarding_house_lane", "support", 424.0, 34.0, 12.0, Vector2(1227.0, 432.0), Rect2(1188, 392, 104, 26), Rect2(1160, 334, 146, 86), "support_yard", "boarding props stay in a lane-side yard"),
-		"b_dockworker_rowhouse": _layout_rule("parcel_dockworker_rowhouse_lane", "support", 424.0, 34.0, 8.0, Vector2(1369.0, 432.0), Rect2(1330, 396, 100, 24), Rect2(1298, 346, 152, 78), "support_yard", "dockworker rowhouse keeps a hard support-lane frontage"),
-		"b_cooperage_shed": _layout_rule("parcel_cooperage_yard", "support", 424.0, 30.0, 18.0, Vector2(264.0, 432.0), Rect2(232, 398, 76, 26), Rect2(204, 338, 128, 78), "support_yard", "cooperage barrels sit in a small work yard beside the support lane"),
-		"b_dock_warehouse": _layout_rule("parcel_west_dock_warehouse", "dock", 708.0, 24.0, 28.0, Vector2(486.0, 758.0), Rect2(398, 716, 154, 48), Rect2(360, 704, 248, 154), "dock_plank", "warehouse cargo belongs on the west pier apron"),
-		"b_wharf_boathouse": _layout_rule("parcel_wharf_boathouse", "dock", 708.0, 24.0, 30.0, Vector2(898.0, 758.0), Rect2(812, 716, 164, 48), Rect2(752, 704, 292, 162), "dock_plank", "boathouse work zone connects directly to the center pier"),
-		"b_dock_storehouse": _layout_rule("parcel_east_dock_storehouse", "dock", 708.0, 24.0, 28.0, Vector2(1323.0, 758.0), Rect2(1238, 716, 154, 48), Rect2(1206, 704, 248, 154), "dock_plank", "east storehouse cargo stays on the wharf apron"),
+		"b_inn_tavern": _layout_rule("parcel_tavern_anchor", "commercial", 584.0, 24.0, 56.0, Vector2(244.0, 596.0), Rect2(248, 578, 56, 24), Rect2(144, 548, 216, 76), "commercial_stone", "Tavern anchors the west end of the waterfront avenue with the west road visibly running uphill beside it."),
+		"b_clerk_townhouse": _layout_rule("parcel_clerk_rowhouse", "commercial", 584.0, 22.0, 16.0, Vector2(502.0, 596.0), Rect2(448, 582, 56, 22), Rect2(420, 548, 166, 76), "rowhouse_stone", "Clerk rowhouse sits after the west road break and shares the same avenue paving family."),
+		"b_mercantile": _layout_rule("parcel_harbor_mercantile", "commercial", 584.0, 22.0, 20.0, Vector2(651.0, 596.0), Rect2(610, 582, 70, 24), Rect2(594, 548, 126, 76), "commercial_stone", "Mercantile marks the central avenue before the civic road climbs north."),
+		"b_counting_house": _layout_rule("parcel_town_hall_counting_house", "civic", 386.0, 44.0, 30.0, Vector2(704.0, 392.0), Rect2(648, 388, 116, 28), Rect2(610, 314, 208, 100), "civic_stone", "Town Hall / Counting House replaces the old meeting-house crop and anchors the top of the central uphill road."),
+		"b_chandlery_front": _layout_rule("parcel_chandlery", "commercial", 584.0, 22.0, 18.0, Vector2(1019.0, 596.0), Rect2(1004, 582, 62, 24), Rect2(940, 548, 170, 76), "commercial_stone", "Chandlery fronts the avenue east of the civic road break."),
+		"b_shop_house": _layout_rule("parcel_shop_house", "commercial", 584.0, 22.0, 20.0, Vector2(1170.0, 596.0), Rect2(1156, 582, 64, 24), Rect2(1120, 548, 162, 76), "shop_stone", "Shop house keeps the east block tight while leaving a readable market-road throat."),
+		"b_market_shed": _layout_rule("parcel_market_shed", "market", 584.0, 30.0, 22.0, Vector2(1364.0, 600.0), Rect2(1320, 604, 132, 34), Rect2(1288, 546, 186, 82), "market_stone", "Market shed sits on the widened east-market pocket of the avenue rather than floating as a loose prop."),
+		"b_printer_rowhouse": _layout_rule("parcel_printer_rowhouse", "commercial", 584.0, 22.0, 14.0, Vector2(1536.0, 596.0), Rect2(1488, 580, 58, 24), Rect2(1472, 540, 118, 84), "rowhouse_stone", "Printer rowhouse closes the east edge of the waterfront avenue and gives the market road a built corner."),
+		"b_custom_house": _layout_rule("parcel_custom_house_green", "civic", 392.0, 44.0, 28.0, Vector2(966.0, 394.0), Rect2(912, 390, 124, 26), Rect2(872, 314, 220, 98), "civic_green", "Customs House sits on the civic cross street, paired with Town Hall instead of another harborfront shelf."),
+		"b_res_small": _layout_rule("parcel_harbor_cottage_yard", "residential", 382.0, 38.0, 24.0, Vector2(363.0, 386.0), Rect2(326, 350, 82, 22), Rect2(300, 304, 146, 82), "residential_yard", "Small cottage yard fronts the west road running uphill from the avenue."),
+		"b_large_residence": _layout_rule("parcel_harbor_residence_yard", "residential", 366.0, 42.0, 28.0, Vector2(1094.0, 374.0), Rect2(1040, 338, 126, 24), Rect2(1002, 292, 218, 90), "residential_yard", "Large residence belongs to the east backstreet above the market road."),
+		"b_boarding_house": _layout_rule("parcel_boarding_house_lane", "support", 400.0, 34.0, 12.0, Vector2(1299.0, 408.0), Rect2(1252, 394, 104, 26), Rect2(1228, 334, 148, 88), "support_yard", "Boarding house fronts the east support lane with a shared street material."),
+		"b_dockworker_rowhouse": _layout_rule("parcel_dockworker_rowhouse_lane", "support", 408.0, 34.0, 8.0, Vector2(1472.0, 416.0), Rect2(1430, 398, 106, 24), Rect2(1398, 348, 160, 82), "support_yard", "Dockworker rowhouse defines the far-east support street instead of reading as a loose background house."),
+		"b_cooperage_shed": _layout_rule("parcel_cooperage_yard", "support", 462.0, 30.0, 18.0, Vector2(264.0, 476.0), Rect2(230, 462, 76, 26), Rect2(204, 408, 128, 82), "support_yard", "Cooperage sits between the west road and wharf service alley as a harbor-economy waypoint."),
+		"b_dock_warehouse": _layout_rule("parcel_west_dock_warehouse", "dock", 708.0, 24.0, 28.0, Vector2(486.0, 758.0), Rect2(398, 716, 154, 48), Rect2(360, 704, 248, 154), "dock_plank", "Warehouse cargo belongs on the west pier apron."),
+		"b_wharf_boathouse": _layout_rule("parcel_wharf_boathouse", "dock", 708.0, 24.0, 30.0, Vector2(898.0, 758.0), Rect2(812, 716, 164, 48), Rect2(752, 704, 292, 162), "dock_plank", "Boathouse work zone connects directly to the center pier."),
+		"b_dock_storehouse": _layout_rule("parcel_east_dock_storehouse", "dock", 708.0, 24.0, 28.0, Vector2(1323.0, 758.0), Rect2(1238, 716, 154, 48), Rect2(1206, 704, 248, 154), "dock_plank", "East storehouse cargo stays on the wharf apron."),
 	}
 
 static func g415_layout_rule(building_id: String) -> Dictionary:
@@ -695,7 +709,8 @@ static func starter_district_plan() -> Dictionary:
 		"visual_production_audit_pass": G419B_VISUAL_PRODUCTION_AUDIT_PASS,
 		"environmental_believability_wave_pass": G420A_ENVIRONMENTAL_BELIEVABILITY_PASS,
 		"town_identity_wave_pass": G420B_TOWN_IDENTITY_PASS,
-		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
+		"walkable_city_reconstruction_pass": G422A_WALKABLE_CITY_RECONSTRUCTION_PASS,
+		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
 		"yellow_review_art_policy": "temporary yellow review art may support prototype composition, scale, and gameplay only; yellow pixels cannot source final-commercial green assets",
@@ -707,7 +722,7 @@ static func starter_district_plan() -> Dictionary:
 		"newport_visual_cohesion_gate": true,
 		"asset_provenance_gate": true,
 		"core_building_atelier_rebuild_pass": "G-4.21A",
-		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.21A core building architecture, player/NPC sprite style still waits until the town environment has enough visual context",
+		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.22A city-structure reconstruction, player/NPC sprite style still waits until the town environment has enough visual context",
 		"tavern_inn_centerpiece_lock": "G-4.21A controlled proof subset replaces the old temporary Tavern/Inn with a brick Hotel Viking-inspired-but-not-copied hero inn with two sets of large twin-stack chimneys; final collision/navigation and commercial promotion remain pending",
 		"review_screenshot_mode": "F4 or --review-no-hud",
 		"districts": [
@@ -717,19 +732,32 @@ static func starter_district_plan() -> Dictionary:
 			"support_lane",
 		],
 		"district_identity": {
-			"harborfront_commercial": "main working street with tavern, shops, exchange, chandlery, and market frontage",
+			"harborfront_commercial": "main waterfront avenue with tavern, mercantile, chandlery, shops, market frontage, and visible uphill roads breaking the blocks",
 			"working_wharf": "goods move from waterline platforms through pier fingers to the wharf apron and street",
-			"inland_residential_civic": "customs administration and higher-status houses sit behind the commercial frontage",
-			"support_lane": "cooperage and boarding-house support the harbor labor loop",
+			"inland_residential_civic": "Town Hall / Counting House, Customs House, and homes sit on streets reached by roads running north from the avenue",
+			"support_lane": "cooperage, boarding house, dockworker rowhouse, and yards support the harbor labor loop",
 		},
+		"street_grammar": [
+			"waterfront_avenue_parallel_to_harbor",
+			"west_road_runs_up_from_avenue",
+			"central_civic_road_runs_up_from_avenue",
+			"east_market_road_runs_up_from_avenue",
+			"packed_earth_service_alleys_share_same_cobble_palette",
+			"blockout_guides_default_off",
+		],
 		"movement_loop": [
-			"harborfront_main_street",
-			"commercial_rear_road",
-			"mercantile_counting_house_rear_road",
-			"dock_access",
+			"waterfront_avenue",
+			"west_upland_road",
+			"central_civic_road",
+			"east_market_road",
 			"working_wharf_edge",
-			"inland_cross_lane",
-			"support_lane_return",
+			"service_alley_return",
+			"civic_residential_backstreet",
+		],
+		"walking_loops": [
+			"harbor_loop",
+			"market_loop",
+			"civic_residential_loop",
 		],
 		"planned_g413b_infill_slots": G413B_ROWHOUSE_INFILL_SLOT_IDS,
 		"future_story_hooks": [
@@ -741,23 +769,23 @@ static func starter_district_plan() -> Dictionary:
 
 static func starter_lot_specs() -> Array:
 	return [
-		_lot("lot_tavern_anchor", "actual", "harborfront_commercial", "tavern", Rect2i(6, 13, 6, 5), "b_inn_tavern"),
-		_lot("lot_mercantile_anchor", "actual", "harborfront_commercial", "mercantile", Rect2i(16, 13, 5, 5), "b_mercantile"),
-		_lot("lot_counting_house_anchor", "actual", "harborfront_commercial", "civic_exchange", Rect2i(20, 12, 7, 6), "b_counting_house"),
-		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(25, 13, 6, 5), "b_chandlery_front"),
-		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(30, 13, 5, 5), "b_shop_house"),
-		_lot("lot_printer_rowhouse_infill", "actual", "harborfront_commercial", "printer_rowhouse", Rect2i(40, 13, 4, 5), "b_printer_rowhouse"),
-		_lot("lot_market_shed_anchor", "actual", "harborfront_commercial", "market_stall", Rect2i(35, 13, 5, 5), "b_market_shed"),
+		_lot("lot_tavern_anchor", "actual", "harborfront_commercial", "tavern", Rect2i(5, 13, 7, 5), "b_inn_tavern"),
+		_lot("lot_mercantile_anchor", "actual", "harborfront_commercial", "mercantile", Rect2i(18, 14, 5, 4), "b_mercantile"),
+		_lot("lot_town_hall_counting_house_anchor", "actual", "inland_residential_civic", "town_hall_counting_house", Rect2i(20, 8, 7, 5), "b_counting_house"),
+		_lot("lot_chandlery_anchor", "actual", "harborfront_commercial", "chandlery", Rect2i(30, 14, 5, 4), "b_chandlery_front"),
+		_lot("lot_shop_house_anchor", "actual", "harborfront_commercial", "future_storefront_pattern", Rect2i(35, 14, 5, 4), "b_shop_house"),
+		_lot("lot_printer_rowhouse_infill", "actual", "harborfront_commercial", "printer_rowhouse", Rect2i(46, 14, 3, 4), "b_printer_rowhouse"),
+		_lot("lot_market_shed_anchor", "actual", "harborfront_commercial", "market_stall", Rect2i(40, 14, 6, 4), "b_market_shed"),
 		_lot("lot_storehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(39, 24, 7, 5), "b_dock_storehouse"),
 		_lot("lot_wharf_boathouse_anchor", "actual", "working_wharf", "waterline_dock_service", Rect2i(25, 24, 8, 5), "b_wharf_boathouse"),
 		_lot("lot_dock_warehouse_anchor", "actual", "working_wharf", "waterline_warehouse", Rect2i(12, 24, 7, 5), "b_dock_warehouse"),
-		_lot("lot_customs_house_anchor", "actual", "inland_residential_civic", "customs_house", Rect2i(22, 8, 8, 5), "b_custom_house"),
-		_lot("lot_clerk_townhouse_infill", "actual", "harborfront_commercial", "clerk_lodging", Rect2i(11, 13, 6, 5), "b_clerk_townhouse"),
-		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(11, 8, 5, 4), "b_res_small"),
-		_lot("lot_civic_residence_anchor", "actual", "inland_residential_civic", "civic_residence", Rect2i(29, 7, 7, 5), "b_large_residence"),
-		_lot("lot_lane_boarding_house_anchor", "actual", "support_lane", "boarding_house", Rect2i(36, 8, 5, 4), "b_boarding_house"),
-		_lot("lot_dockworker_rowhouse_infill", "actual", "support_lane", "dockworker_lodging", Rect2i(41, 9, 5, 4), "b_dockworker_rowhouse"),
-		_lot("lot_lane_cooperage_anchor", "actual", "support_lane", "cooperage_or_barrel_shop", Rect2i(6, 8, 4, 4), "b_cooperage_shed"),
+		_lot("lot_customs_house_anchor", "actual", "inland_residential_civic", "customs_house", Rect2i(27, 8, 8, 5), "b_custom_house"),
+		_lot("lot_clerk_townhouse_infill", "actual", "harborfront_commercial", "clerk_lodging", Rect2i(13, 14, 5, 4), "b_clerk_townhouse"),
+		_lot("lot_cottage_anchor", "actual", "inland_residential_civic", "home", Rect2i(9, 8, 5, 4), "b_res_small"),
+		_lot("lot_civic_residence_anchor", "actual", "inland_residential_civic", "civic_residence", Rect2i(31, 7, 7, 5), "b_large_residence"),
+		_lot("lot_lane_boarding_house_anchor", "actual", "support_lane", "boarding_house", Rect2i(38, 9, 5, 4), "b_boarding_house"),
+		_lot("lot_dockworker_rowhouse_infill", "actual", "support_lane", "dockworker_lodging", Rect2i(43, 9, 6, 4), "b_dockworker_rowhouse"),
+		_lot("lot_lane_cooperage_anchor", "actual", "support_lane", "cooperage_or_barrel_shop", Rect2i(6, 11, 5, 5), "b_cooperage_shed"),
 		_lot("lot_west_fishmonger_future", "planned", "harborfront_commercial", "fishmonger_or_service_shop", Rect2i(3, 14, 4, 4)),
 	]
 
@@ -767,6 +795,48 @@ static func planned_lot_specs() -> Array:
 		if lot.get("status", "") == "planned":
 			planned.append(lot)
 	return planned
+
+static func walking_loop_specs() -> Array:
+	return [
+		{
+			"id": "harbor_loop",
+			"districts": ["working_wharf", "harborfront_commercial"],
+			"route_targets": ["waterfront_avenue_center", "working_wharf_edge", "west_service_pier", "central_market_pier", "east_storehouse_landing", "service_alley_to_harbor"],
+			"notes": "Docks, cargo, warehouse frontage, wharf apron, and service alleys form a circuit instead of a straight shelf.",
+		},
+		{
+			"id": "market_loop",
+			"districts": ["harborfront_commercial", "support_lane"],
+			"route_targets": ["west_tavern_avenue", "waterfront_avenue_center", "east_market_road", "service_alley_to_harbor"],
+			"notes": "Tavern, mercantile, chandlery, shop house, market shed, and printer corner sit on the same avenue fabric.",
+		},
+		{
+			"id": "civic_residential_loop",
+			"districts": ["inland_residential_civic", "support_lane"],
+			"route_targets": ["central_upland_road", "civic_square", "custom_house_crossing", "residential_backstreet", "east_upland_road"],
+			"notes": "Town Hall / Counting House, Customs House, homes, and boarding-house lane connect back to the waterfront.",
+		},
+	]
+
+static func interaction_anchors() -> Array:
+	return [
+		_anchor("tavern_inn_entrance", "entrance", "harborfront_commercial", Vector2(244.0, 596.0), "Tavern/Inn entrance marker on the west avenue anchor."),
+		_anchor("town_hall_entrance", "entrance", "inland_residential_civic", Vector2(704.0, 392.0), "Town Hall / Counting House civic entrance marker."),
+		_anchor("counting_house_records_window", "small_interaction", "inland_residential_civic", Vector2(748.0, 394.0), "Counting-house record window inspection marker."),
+		_anchor("mercantile_entrance", "shop", "harborfront_commercial", Vector2(651.0, 596.0), "Mercantile shop entrance marker."),
+		_anchor("chandlery_entrance", "shop", "harborfront_commercial", Vector2(1019.0, 596.0), "Chandlery shop entrance marker."),
+		_anchor("shop_house_entrance", "shop", "harborfront_commercial", Vector2(1170.0, 596.0), "Shop House entrance marker."),
+		_anchor("town_notice_board", "notice_board", "inland_residential_civic", Vector2(760.0, 390.0), "Civic notice board near Town Hall / Counting House."),
+		_anchor("dock_rules_board", "notice_board", "working_wharf", Vector2(1238.0, 690.0), "Dock rules and harbor bulletin board."),
+		_anchor("dock_worker_west", "npc_placeholder", "working_wharf", Vector2(420.0, 690.0), "Dock worker placeholder near west cargo."),
+		_anchor("dock_worker_east", "npc_placeholder", "working_wharf", Vector2(1218.0, 690.0), "Dock worker placeholder near east storehouse."),
+		_anchor("market_vendor", "npc_placeholder", "harborfront_commercial", Vector2(1364.0, 636.0), "Market vendor placeholder on the east avenue pocket."),
+		_anchor("harbor_cargo_inspection_west", "cargo_inspection", "working_wharf", Vector2(486.0, 736.0), "Warehouse cargo inspection spot."),
+		_anchor("harbor_cargo_inspection_center", "cargo_inspection", "working_wharf", Vector2(824.0, 710.0), "Central wharf cargo inspection spot."),
+		_anchor("well_bench_civic_square", "small_interaction", "inland_residential_civic", Vector2(832.0, 410.0), "Well/bench civic square interaction marker."),
+		_anchor("service_alley_barrels", "small_interaction", "support_lane", Vector2(928.0, 660.0), "Service-alley barrel/crate inspection marker."),
+		_anchor("cooperage_hoops", "small_interaction", "support_lane", Vector2(264.0, 476.0), "Cooperage hoop/barrel inspection marker."),
+	]
 
 static func g413b_rowhouse_infill_slots() -> Array:
 	return [
@@ -974,6 +1044,15 @@ static func _lot(id: String, status: String, district: String, role: String, rec
 		"role": role,
 		"rect": rect,
 		"building_id": building_id,
+	}
+
+static func _anchor(id: String, anchor_type: String, district: String, position: Vector2, notes: String) -> Dictionary:
+	return {
+		"id": id,
+		"type": anchor_type,
+		"district": district,
+		"position": position,
+		"notes": notes,
 	}
 
 static func _infill_slot(id: String, district: String, role: String, rect: Rect2i, guardrail: String, status := "planned_g413b", building_id := "", future_hook := "") -> Dictionary:
