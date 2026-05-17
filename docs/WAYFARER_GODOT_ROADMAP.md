@@ -305,6 +305,19 @@ as G-4.22 gate caveat rather than hidden final art.
 
 Next recommended phase after G-4.21: G-4.22 8.0 Visual Foundation Review Gate.
 
+Current G-4.22 result: the formal visual foundation review gate passed under
+the autonomous pre-G-5 protocol. Godot import, vertical slice, Newport
+provenance, retained G-4.18E, G-4.19, and G-4.21A validators, G-4.22 runtime
+screenshot capture, Python compile, and diff checks passed. The Agent Council
+inspected normal HUD, clean no-HUD, hero street/dock, UI/world cohesion,
+green-origin/yellow-art context, debug-overlay proof, and wide origin-city
+readability evidence and assigned `COUNCIL_PASS_READY_FOR_PR`; human visual
+review is not required. The council answered that G-5 may be recommended after
+this gate, so the pre-G-5 autonomous runway stops at the G-5 readiness gate once
+this phase PR is merged.
+
+Next recommended phase after G-4.22: G-5 Migration Architecture.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -2113,7 +2126,8 @@ Acceptance:
 
 ## G-4.22: 8.0 Visual Foundation Review Gate
 
-Status: planned G-4 exit gate.
+Status: `COUNCIL_PASS_READY_FOR_PR` under the autonomous pre-G-5 production
+protocol.
 
 G-4.22 is the formal review gate for exiting G-4.
 
@@ -2131,6 +2145,9 @@ Acceptance:
 - Asset provenance rules are active; yellow art is clearly temporary; the
   green-origin replacement method is proven.
 - Only after this gate is accepted may G-5 be recommended.
+- Agent Council screenshot inspection assigned 8.7 design/art/world/gameplay
+  scores, confirmed G-5 may be recommended, and did not require human visual
+  escalation.
 
 ## G-5: Migration Architecture
 

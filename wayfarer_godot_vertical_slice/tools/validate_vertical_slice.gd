@@ -53,9 +53,9 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.21", "build_phase_g_4_21")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.21 Origin City Hero Slice", "build_label_g_4_21")
-	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-21-origin-city-hero-slice", "source_branch_g_4_21")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.22", "build_phase_g_4_22")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.22 Visual Foundation Review Gate", "build_label_g_4_22")
+	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-22-visual-foundation-review-gate", "source_branch_g_4_22")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -98,6 +98,7 @@ func _validate_scene(main: Node) -> void:
 	_validate_buildings()
 	_validate_g420_hud_ui_visual_redesign(hud)
 	_validate_g421_origin_city_hero_slice(hud)
+	_validate_g422_visual_foundation_review_gate(hud)
 	_validate_review_screenshot_mode(main, hud)
 	_validate_building_entity_contract(player, hud)
 	_validate_g414a_street_wall_curb_datum()
@@ -492,7 +493,7 @@ func _validate_g420_hud_ui_visual_redesign(hud: CanvasLayer) -> void:
 	_expect(quest_body != null and quest_body.text.find("counting house") >= 0, "g420_hud_player_facing_objective")
 	if hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.20", "G-4.21"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")
+		_expect(["G-4.20", "G-4.21", "G-4.22"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g420_hud_contract_player_facing_default")
 		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g420_hud_contract_metadata_hidden")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g420_hud_contract_no_hud_available")
@@ -515,9 +516,24 @@ func _validate_g421_origin_city_hero_slice(hud: CanvasLayer) -> void:
 	_expect(hud != null and hud.has_method("get_hud_visual_contract"), "g421_hud_contract_available")
 	if hud != null and hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(String(contract.get("phase", "")) == "G-4.21", "g421_hud_contract_phase")
+		_expect(["G-4.21", "G-4.22"].has(String(contract.get("phase", ""))), "g421_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g421_hud_contract_player_facing")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g421_no_hud_capture_available")
+
+func _validate_g422_visual_foundation_review_gate(hud: CanvasLayer) -> void:
+	var plan: Dictionary = NEWPORT_TOWN.starter_district_plan()
+	_expect(plan.get("visual_foundation_review_gate_pass", "") == "G-4.22", "g422_visual_foundation_review_gate_pass")
+	var proof := String(plan.get("hero_street_atlas_proof", ""))
+	for phase_label in ["G-4.18E", "G-4.19", "G-4.20", "G-4.21", "G-4.22", "G-4.22A", "G-4.23B"]:
+		_expect(proof.find(phase_label) >= 0, "g422_visual_gate_proof_mentions_" + phase_label.replace(".", "_").replace("-", "_"))
+	_expect(BUILD_INFO.PLAYER_STYLE_ROADMAP_NOTE.find("G-4.22") >= 0 and BUILD_INFO.PLAYER_STYLE_ROADMAP_NOTE.find("G-4.21") >= 0, "g422_build_info_gate_note")
+	_expect(hud != null and hud.has_method("get_hud_visual_contract"), "g422_hud_contract_available")
+	if hud != null and hud.has_method("get_hud_visual_contract"):
+		var contract: Dictionary = hud.call("get_hud_visual_contract")
+		_expect(String(contract.get("phase", "")) == "G-4.22", "g422_hud_contract_phase")
+		_expect(bool(contract.get("default_player_facing", false)), "g422_hud_contract_player_facing")
+		_expect(bool(contract.get("no_hud_capture_available", false)), "g422_no_hud_capture_available")
+		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g422_review_metadata_hidden_default")
 
 func _validate_g419b_visual_production_registry() -> void:
 	var registry := _load_json_dictionary("res://art_pipeline/newport/manifests/newport_visual_production_registry.json")
@@ -1782,6 +1798,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("hero_quality_asset_family_pass", "") == "G-4.18E", "starter_plan_hero_quality_asset_family_pass_g_4_18e")
 	_expect(plan.get("hud_ui_visual_redesign_pass", "") == "G-4.20", "starter_plan_hud_ui_visual_redesign_pass_g_4_20")
 	_expect(plan.get("origin_city_hero_slice_pass", "") == "G-4.21", "starter_plan_origin_city_hero_slice_pass_g_4_21")
+	_expect(plan.get("visual_foundation_review_gate_pass", "") == "G-4.22", "starter_plan_visual_foundation_review_gate_pass_g_4_22")
 	_expect(plan.get("core_building_atelier_rebuild_pass", "") == "G-4.21A", "starter_plan_core_building_atelier_rebuild_pass_g_4_21a")
 	_expect(plan.get("walkable_city_reconstruction_pass", "") == "G-4.22A", "starter_plan_walkable_city_reconstruction_pass_g_4_22a")
 	_expect(plan.get("street_grammar_ground_repair_pass", "") == "G-4.23A", "starter_plan_street_grammar_ground_repair_pass_g_4_23a")
@@ -1793,6 +1810,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.18E") >= 0, "starter_plan_hero_street_atlas_proof_g_4_18e")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.21") >= 0, "starter_plan_hero_street_atlas_proof_g_4_21")
+	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.22") >= 0, "starter_plan_hero_street_atlas_proof_g_4_22")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.23B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_23b")
 	var tavern_lock := String(plan.get("tavern_inn_centerpiece_lock", ""))
 	_expect(tavern_lock.find("G-4.21A") >= 0 and tavern_lock.find("Hotel Viking") >= 0 and tavern_lock.find("two sets") >= 0, "starter_plan_tavern_centerpiece_lock_g_4_21a")
