@@ -28,6 +28,11 @@ const NEWPORT_ATELIER_SIGN_SHOP_MARKERS_ATLAS_PATH := "res://art_pipeline/newpor
 const NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_lamps_wayfinding_v1.png"
 const NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_civic_market_identity_v1.png"
 const NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_shopfront_support_accents_v1.png"
+const NEWPORT_G418E_HERO_ASSET_FAMILY_VERSION := "G-4.18E"
+const NEWPORT_G418E_TAVERN_INN_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png"
+const NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png"
+const NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png"
+const NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_PATH := "res://art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -163,6 +168,46 @@ const NEWPORT_ATELIER_SHOPFRONT_SUPPORT_MATERIALS := [
 	"atelier_shopfront_rope_pennant_rail_01",
 	"atelier_shopfront_basket_parcel_display_01",
 ]
+const NEWPORT_G418E_TAVERN_INN_MATERIALS := [
+	"atelier_g418e_tavern_hanging_inn_sign_01",
+	"atelier_g418e_tavern_entry_lantern_pair_01",
+	"atelier_g418e_tavern_threshold_planters_01",
+	"atelier_g418e_tavern_service_barrel_crate_01",
+	"atelier_g418e_tavern_brick_threshold_01",
+	"atelier_g418e_tavern_twin_stack_chimney_detail_01",
+	"atelier_g418e_tavern_stable_tack_rack_01",
+	"atelier_g418e_tavern_firewood_coal_scuttle_01",
+]
+const NEWPORT_G418E_COMMERCIAL_AVENUE_MATERIALS := [
+	"atelier_g418e_commercial_mercantile_sign_01",
+	"atelier_g418e_commercial_fishmonger_sign_01",
+	"atelier_g418e_commercial_market_cart_01",
+	"atelier_g418e_commercial_produce_crates_01",
+	"atelier_g418e_commercial_basket_parcel_display_01",
+	"atelier_g418e_commercial_canvas_awning_roll_01",
+	"atelier_g418e_commercial_street_lamp_01",
+	"atelier_g418e_commercial_directional_signpost_01",
+]
+const NEWPORT_G418E_HARBOR_DOCK_EDGE_MATERIALS := [
+	"atelier_g418e_harbor_dock_barrel_row_01",
+	"atelier_g418e_harbor_rope_coil_large_01",
+	"atelier_g418e_harbor_fishing_crate_net_stack_01",
+	"atelier_g418e_harbor_net_drying_frame_01",
+	"atelier_g418e_harbor_bollard_pair_01",
+	"atelier_g418e_harbor_cargo_stack_01",
+	"atelier_g418e_harbor_service_post_lantern_01",
+	"atelier_g418e_harbor_fish_baskets_tub_01",
+]
+const NEWPORT_G418E_REAR_SERVICE_CONNECTOR_MATERIALS := [
+	"atelier_g418e_service_fence_gate_01",
+	"atelier_g418e_service_utility_barrels_01",
+	"atelier_g418e_service_alley_crates_01",
+	"atelier_g418e_service_firewood_barrow_01",
+	"atelier_g418e_service_stone_edge_01",
+	"atelier_g418e_service_wash_tub_linen_01",
+	"atelier_g418e_service_rain_barrel_01",
+	"atelier_g418e_service_repair_sawhorse_01",
+]
 const NEWPORT_HERO_ATLAS_REGIONS := {
 	"commercial_cobble_long_a": Rect2(0, 0, 320, 96),
 	"commercial_cobble_patch_b": Rect2(0, 104, 220, 72),
@@ -287,6 +332,46 @@ const NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_REGIONS := {
 	"atelier_shopfront_coastal_planter_01": Rect2(894, 525, 269, 207),
 	"atelier_shopfront_rope_pennant_rail_01": Rect2(276, 768, 381, 186),
 	"atelier_shopfront_basket_parcel_display_01": Rect2(851, 739, 347, 249),
+}
+const NEWPORT_G418E_TAVERN_INN_ATLAS_REGIONS := {
+	"atelier_g418e_tavern_hanging_inn_sign_01": Rect2(258, 10, 293, 270),
+	"atelier_g418e_tavern_entry_lantern_pair_01": Rect2(915, 36, 421, 238),
+	"atelier_g418e_tavern_threshold_planters_01": Rect2(189, 291, 401, 223),
+	"atelier_g418e_tavern_service_barrel_crate_01": Rect2(939, 288, 392, 227),
+	"atelier_g418e_tavern_brick_threshold_01": Rect2(133, 570, 505, 143),
+	"atelier_g418e_tavern_twin_stack_chimney_detail_01": Rect2(925, 531, 397, 213),
+	"atelier_g418e_tavern_stable_tack_rack_01": Rect2(171, 776, 440, 221),
+	"atelier_g418e_tavern_firewood_coal_scuttle_01": Rect2(908, 780, 456, 210),
+}
+const NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_REGIONS := {
+	"atelier_g418e_commercial_mercantile_sign_01": Rect2(285, 17, 270, 237),
+	"atelier_g418e_commercial_fishmonger_sign_01": Rect2(958, 24, 262, 240),
+	"atelier_g418e_commercial_market_cart_01": Rect2(271, 275, 365, 253),
+	"atelier_g418e_commercial_produce_crates_01": Rect2(917, 291, 337, 236),
+	"atelier_g418e_commercial_basket_parcel_display_01": Rect2(284, 544, 302, 161),
+	"atelier_g418e_commercial_canvas_awning_roll_01": Rect2(920, 569, 331, 150),
+	"atelier_g418e_commercial_street_lamp_01": Rect2(360, 736, 105, 277),
+	"atelier_g418e_commercial_directional_signpost_01": Rect2(971, 736, 197, 273),
+}
+const NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS := {
+	"atelier_g418e_harbor_dock_barrel_row_01": Rect2(179, 49, 471, 186),
+	"atelier_g418e_harbor_rope_coil_large_01": Rect2(910, 30, 424, 199),
+	"atelier_g418e_harbor_fishing_crate_net_stack_01": Rect2(197, 266, 402, 235),
+	"atelier_g418e_harbor_net_drying_frame_01": Rect2(882, 263, 448, 245),
+	"atelier_g418e_harbor_bollard_pair_01": Rect2(198, 523, 394, 216),
+	"atelier_g418e_harbor_cargo_stack_01": Rect2(881, 516, 425, 222),
+	"atelier_g418e_harbor_service_post_lantern_01": Rect2(244, 756, 226, 259),
+	"atelier_g418e_harbor_fish_baskets_tub_01": Rect2(873, 774, 470, 221),
+}
+const NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS := {
+	"atelier_g418e_service_fence_gate_01": Rect2(188, 50, 477, 215),
+	"atelier_g418e_service_utility_barrels_01": Rect2(852, 17, 446, 248),
+	"atelier_g418e_service_alley_crates_01": Rect2(230, 285, 393, 223),
+	"atelier_g418e_service_firewood_barrow_01": Rect2(891, 289, 381, 219),
+	"atelier_g418e_service_stone_edge_01": Rect2(190, 580, 468, 139),
+	"atelier_g418e_service_wash_tub_linen_01": Rect2(861, 516, 426, 203),
+	"atelier_g418e_service_rain_barrel_01": Rect2(254, 727, 339, 280),
+	"atelier_g418e_service_repair_sawhorse_01": Rect2(890, 727, 380, 280),
 }
 const NEWPORT_ATELIER_CARGO_PLACEMENTS := [
 	{
@@ -517,6 +602,45 @@ const NEWPORT_G420B_SHOPFRONT_SUPPORT_PLACEMENTS := [
 	{"asset_id": "atelier_shopfront_hanging_basket_01", "dest": Rect2(724, 332, 48, 34), "purpose": "town_hall_counting_house_shopfront_warmth_accent", "alpha": 0.86},
 	{"asset_id": "atelier_shopfront_rope_pennant_rail_01", "dest": Rect2(1320, 632, 94, 42), "purpose": "market_edge_low_pennant_boundary", "alpha": 0.88, "contact_shadow": true},
 ]
+const NEWPORT_G418E_TAVERN_INN_PLACEMENTS := [
+	{"asset_id": "atelier_g418e_tavern_hanging_inn_sign_01", "dest": Rect2(196, 508, 66, 61), "purpose": "tavern_frontage_hero_sign_read", "alpha": 0.98, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_tavern_entry_lantern_pair_01", "dest": Rect2(292, 536, 66, 37), "purpose": "tavern_entry_warm_lantern_threshold", "alpha": 0.98, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_tavern_threshold_planters_01", "dest": Rect2(160, 574, 72, 40), "purpose": "tavern_social_frontage_planters", "alpha": 0.97, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_tavern_service_barrel_crate_01", "dest": Rect2(332, 592, 68, 39), "purpose": "tavern_delivery_edge_service_cluster", "alpha": 0.96, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_tavern_brick_threshold_01", "dest": Rect2(184, 558, 126, 36), "purpose": "tavern_entry_brick_threshold_grounding", "alpha": 0.88},
+	{"asset_id": "atelier_g418e_tavern_stable_tack_rack_01", "dest": Rect2(244, 436, 76, 38), "purpose": "tavern_rear_stable_service_yard", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_tavern_firewood_coal_scuttle_01", "dest": Rect2(168, 432, 82, 38), "purpose": "tavern_rear_hearth_service_detail", "alpha": 0.92, "contact_shadow": true},
+]
+const NEWPORT_G418E_COMMERCIAL_AVENUE_PLACEMENTS := [
+	{"asset_id": "atelier_g418e_commercial_mercantile_sign_01", "dest": Rect2(616, 506, 60, 53), "purpose": "mercantile_avenue_hero_shop_sign", "alpha": 0.98, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_commercial_fishmonger_sign_01", "dest": Rect2(988, 506, 62, 57), "purpose": "fishmonger_chandlery_avenue_harbor_identity", "alpha": 0.98, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_commercial_market_cart_01", "dest": Rect2(1304, 596, 92, 64), "purpose": "market_spine_hero_cart_clear_of_route", "alpha": 0.96, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_commercial_produce_crates_01", "dest": Rect2(1138, 596, 76, 53), "purpose": "commercial_avenue_produce_frontage", "alpha": 0.95, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_commercial_basket_parcel_display_01", "dest": Rect2(1218, 618, 66, 35), "purpose": "commercial_avenue_compact_goods_display", "alpha": 0.95, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_commercial_canvas_awning_roll_01", "dest": Rect2(1036, 542, 76, 34), "purpose": "chandlery_shopfront_canvas_color_accent", "alpha": 0.86},
+	{"asset_id": "atelier_g418e_commercial_street_lamp_01", "dest": Rect2(516, 506, 30, 79), "purpose": "commercial_spine_lamp_rhythm", "alpha": 0.94, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_commercial_directional_signpost_01", "dest": Rect2(1400, 580, 46, 64), "purpose": "market_to_harbor_blank_wayfinding", "alpha": 0.96, "contact_shadow": true},
+]
+const NEWPORT_G418E_HARBOR_DOCK_EDGE_PLACEMENTS := [
+	{"asset_id": "atelier_g418e_harbor_dock_barrel_row_01", "dest": Rect2(304, 700, 88, 35), "purpose": "west_dock_barrel_row_working_edge", "alpha": 0.96, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_harbor_rope_coil_large_01", "dest": Rect2(742, 722, 72, 34), "purpose": "central_wharf_large_rope_coil", "alpha": 0.96, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_harbor_fishing_crate_net_stack_01", "dest": Rect2(1116, 700, 76, 45), "purpose": "east_dock_fishing_crate_net_stack", "alpha": 0.96, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_harbor_net_drying_frame_01", "dest": Rect2(1188, 770, 96, 53), "purpose": "dock_edge_net_drying_service_life", "alpha": 0.95, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_harbor_bollard_pair_01", "dest": Rect2(936, 704, 72, 39), "purpose": "central_mooring_bollard_pair", "alpha": 0.96, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_harbor_cargo_stack_01", "dest": Rect2(520, 700, 86, 45), "purpose": "wharf_cargo_stack_replacing_weak_cluster_language", "alpha": 0.95, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_harbor_service_post_lantern_01", "dest": Rect2(1012, 640, 48, 62), "purpose": "harbor_service_lantern_route_marker", "alpha": 0.96, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_harbor_fish_baskets_tub_01", "dest": Rect2(1250, 714, 86, 41), "purpose": "fish_market_dock_transition_goods", "alpha": 0.95, "contact_shadow": true},
+]
+const NEWPORT_G418E_REAR_SERVICE_CONNECTOR_PLACEMENTS := [
+	{"asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(286, 404, 112, 51), "purpose": "west_rear_service_connector_fence_gate", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_service_utility_barrels_01", "dest": Rect2(1248, 402, 80, 45), "purpose": "east_rear_service_utility_barrels", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_service_alley_crates_01", "dest": Rect2(462, 430, 76, 43), "purpose": "central_alley_storage_without_blocking_route", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_service_firewood_barrow_01", "dest": Rect2(1080, 416, 76, 44), "purpose": "rear_lane_firewood_service_motion", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_service_stone_edge_01", "dest": Rect2(592, 420, 112, 34), "purpose": "service_path_stone_edge_grounding", "alpha": 0.82},
+	{"asset_id": "atelier_g418e_service_wash_tub_linen_01", "dest": Rect2(1268, 454, 74, 35), "purpose": "rear_yard_domestic_service_life", "alpha": 0.90, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_service_rain_barrel_01", "dest": Rect2(1438, 414, 58, 50), "purpose": "building_back_rain_barrel_grounding", "alpha": 0.90, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_service_repair_sawhorse_01", "dest": Rect2(214, 402, 70, 52), "purpose": "west_service_yard_repair_sawhorse", "alpha": 0.90, "contact_shadow": true},
+]
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
 var _newport_hero_atlas: Texture2D
@@ -531,6 +655,10 @@ var _newport_atelier_sign_shop_markers_atlas: Texture2D
 var _newport_atelier_lamps_wayfinding_atlas: Texture2D
 var _newport_atelier_civic_market_atlas: Texture2D
 var _newport_atelier_shopfront_support_atlas: Texture2D
+var _newport_g418e_tavern_inn_atlas: Texture2D
+var _newport_g418e_commercial_avenue_atlas: Texture2D
+var _newport_g418e_harbor_dock_edge_atlas: Texture2D
+var _newport_g418e_rear_service_connector_atlas: Texture2D
 var _g418d1_m01b_proof: Texture2D
 var _g418d2_capability_asset: Texture2D
 var _green_origin_lab_enabled := false
@@ -573,6 +701,18 @@ func _ready() -> void:
 	_newport_atelier_shopfront_support_atlas = ResourceLoader.load(NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_PATH, "Texture2D") as Texture2D
 	if _newport_atelier_shopfront_support_atlas == null:
 		push_error("Failed to load Newport atelier shopfront support atlas: " + NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_PATH)
+	_newport_g418e_tavern_inn_atlas = ResourceLoader.load(NEWPORT_G418E_TAVERN_INN_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_g418e_tavern_inn_atlas == null:
+		push_error("Failed to load Newport G-4.18E tavern/inn atlas: " + NEWPORT_G418E_TAVERN_INN_ATLAS_PATH)
+	_newport_g418e_commercial_avenue_atlas = ResourceLoader.load(NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_g418e_commercial_avenue_atlas == null:
+		push_error("Failed to load Newport G-4.18E commercial avenue atlas: " + NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_PATH)
+	_newport_g418e_harbor_dock_edge_atlas = ResourceLoader.load(NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_g418e_harbor_dock_edge_atlas == null:
+		push_error("Failed to load Newport G-4.18E harbor dock edge atlas: " + NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_PATH)
+	_newport_g418e_rear_service_connector_atlas = ResourceLoader.load(NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_PATH, "Texture2D") as Texture2D
+	if _newport_g418e_rear_service_connector_atlas == null:
+		push_error("Failed to load Newport G-4.18E rear service connector atlas: " + NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_PATH)
 	_g418d1_m01b_proof = ResourceLoader.load(G418D1_M01B_PROOF_PATH, "Texture2D") as Texture2D
 	if _g418d1_m01b_proof == null:
 		push_warning("Failed to load G-4.18D.1 M01B lab proof: " + G418D1_M01B_PROOF_PATH)
@@ -653,6 +793,25 @@ func newport_town_identity_placements() -> Array:
 	placements.append_array(NEWPORT_G420B_LAMPS_WAYFINDING_PLACEMENTS)
 	placements.append_array(NEWPORT_G420B_CIVIC_MARKET_PLACEMENTS)
 	placements.append_array(NEWPORT_G420B_SHOPFRONT_SUPPORT_PLACEMENTS)
+	return placements.duplicate(true)
+
+func newport_g418e_hero_asset_family_version() -> String:
+	return NEWPORT_G418E_HERO_ASSET_FAMILY_VERSION
+
+func newport_g418e_hero_asset_family_materials() -> Array:
+	var materials: Array = []
+	materials.append_array(NEWPORT_G418E_TAVERN_INN_MATERIALS)
+	materials.append_array(NEWPORT_G418E_COMMERCIAL_AVENUE_MATERIALS)
+	materials.append_array(NEWPORT_G418E_HARBOR_DOCK_EDGE_MATERIALS)
+	materials.append_array(NEWPORT_G418E_REAR_SERVICE_CONNECTOR_MATERIALS)
+	return materials
+
+func newport_g418e_hero_asset_family_placements() -> Array:
+	var placements: Array = []
+	placements.append_array(NEWPORT_G418E_TAVERN_INN_PLACEMENTS)
+	placements.append_array(NEWPORT_G418E_COMMERCIAL_AVENUE_PLACEMENTS)
+	placements.append_array(NEWPORT_G418E_HARBOR_DOCK_EDGE_PLACEMENTS)
+	placements.append_array(NEWPORT_G418E_REAR_SERVICE_CONNECTOR_PLACEMENTS)
 	return placements.duplicate(true)
 
 func set_green_origin_lab_mode(enabled: bool) -> void:
@@ -778,6 +937,24 @@ func _draw_town_identity_atelier_placement(atlas: Texture2D, regions: Dictionary
 	if bool(placement.get("contact_shadow", false)):
 		_draw_contact_shadow(Vector2(dest.get_center().x, dest.end.y - 2.0), Vector2(dest.size.x * 0.30, max(4.0, dest.size.y * 0.075)), 0.13)
 	_draw_town_identity_atelier_piece(atlas, regions, asset_id, dest, alpha)
+
+func _draw_g418e_hero_family_piece(atlas: Texture2D, regions: Dictionary, region_id: String, dest: Rect2, alpha := 1.0) -> void:
+	if atlas == null:
+		return
+	if not regions.has(region_id):
+		push_error("Unknown Newport G-4.18E hero family atelier region: " + region_id)
+		return
+	draw_texture_rect_region(atlas, dest, regions[region_id], Color(1, 1, 1, alpha), false, true)
+
+func _draw_g418e_hero_family_placement(atlas: Texture2D, regions: Dictionary, placement: Dictionary) -> void:
+	var asset_id := String(placement.get("asset_id", ""))
+	var dest: Rect2 = placement.get("dest", Rect2())
+	if asset_id == "" or dest.size.x <= 0.0 or dest.size.y <= 0.0:
+		return
+	var alpha := float(placement.get("alpha", 1.0))
+	if bool(placement.get("contact_shadow", false)):
+		_draw_contact_shadow(Vector2(dest.get_center().x, dest.end.y - 2.0), Vector2(dest.size.x * 0.31, max(4.0, dest.size.y * 0.078)), 0.14)
+	_draw_g418e_hero_family_piece(atlas, regions, asset_id, dest, alpha)
 
 func _is_g417_hero_prop_placeholder(pos: Vector2) -> bool:
 	return G417_HERO_PROP_REPLACEMENT_RECT.has_point(pos)
@@ -1509,6 +1686,7 @@ func _draw_g410_props() -> void:
 		_draw_g418_hero_non_cargo_prop_clusters()
 	_draw_g420a_building_grounding_accents()
 	_draw_g420b_town_identity_accents()
+	_draw_g418e_hero_asset_family_accents()
 	if NEWPORT_TOWN.G422A_SHOW_LEGACY_PROOF_OVERLAYS:
 		_draw_g418d_atelier_cargo_clusters()
 		_draw_g419a_atelier_dock_clutter_clusters()
@@ -2005,6 +2183,16 @@ func _draw_g420b_town_identity_accents() -> void:
 		_draw_town_identity_atelier_placement(_newport_atelier_civic_market_atlas, NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS, placement)
 	for placement in NEWPORT_G420B_SHOPFRONT_SUPPORT_PLACEMENTS:
 		_draw_town_identity_atelier_placement(_newport_atelier_shopfront_support_atlas, NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_REGIONS, placement)
+
+func _draw_g418e_hero_asset_family_accents() -> void:
+	for placement in NEWPORT_G418E_TAVERN_INN_PLACEMENTS:
+		_draw_g418e_hero_family_placement(_newport_g418e_tavern_inn_atlas, NEWPORT_G418E_TAVERN_INN_ATLAS_REGIONS, placement)
+	for placement in NEWPORT_G418E_COMMERCIAL_AVENUE_PLACEMENTS:
+		_draw_g418e_hero_family_placement(_newport_g418e_commercial_avenue_atlas, NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_REGIONS, placement)
+	for placement in NEWPORT_G418E_HARBOR_DOCK_EDGE_PLACEMENTS:
+		_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
+	for placement in NEWPORT_G418E_REAR_SERVICE_CONNECTOR_PLACEMENTS:
+		_draw_g418e_hero_family_placement(_newport_g418e_rear_service_connector_atlas, NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS, placement)
 
 func _draw_g49_ground() -> void:
 	_draw_soft_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#435f3f"), Color("#334c35"), 1.0, 34)

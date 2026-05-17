@@ -1,0 +1,253 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g418e.extraction_qa.v1",
+  "phase": "G-4.18E",
+  "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+  "pack": "commercial_avenue",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "generated sheet grid separators are excluded from crops",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10"
+  ],
+  "assets": {
+    "atelier_g418e_commercial_mercantile_sign_01": {
+      "size": {
+        "w": 306,
+        "h": 273
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 238,
+        "h": 205
+      },
+      "alpha_pixels": 28193,
+      "opaque_pixels": 28193,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "mercantile hanging shop sign",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_commercial_fishmonger_sign_01": {
+      "size": {
+        "w": 298,
+        "h": 276
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 230,
+        "h": 208
+      },
+      "alpha_pixels": 28978,
+      "opaque_pixels": 28978,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "fishmonger/chandlery painted signboard",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_commercial_market_cart_01": {
+      "size": {
+        "w": 401,
+        "h": 289
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 22,
+        "w": 333,
+        "h": 234
+      },
+      "alpha_pixels": 44413,
+      "opaque_pixels": 44413,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 22,
+        "right": 34,
+        "bottom": 33
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "market handcart",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_commercial_produce_crates_01": {
+      "size": {
+        "w": 373,
+        "h": 272
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 305,
+        "h": 204
+      },
+      "alpha_pixels": 41417,
+      "opaque_pixels": 41417,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "stacked produce crates",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_commercial_basket_parcel_display_01": {
+      "size": {
+        "w": 338,
+        "h": 197
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 270,
+        "h": 129
+      },
+      "alpha_pixels": 25507,
+      "opaque_pixels": 25507,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "woven basket and parcel display",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_commercial_canvas_awning_roll_01": {
+      "size": {
+        "w": 367,
+        "h": 186
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 299,
+        "h": 118
+      },
+      "alpha_pixels": 21607,
+      "opaque_pixels": 21607,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "rolled canvas awning segment",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_commercial_street_lamp_01": {
+      "size": {
+        "w": 141,
+        "h": 313
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 24,
+        "w": 73,
+        "h": 255
+      },
+      "alpha_pixels": 6281,
+      "opaque_pixels": 6281,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 24,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "colonial street lamp post",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_commercial_directional_signpost_01": {
+      "size": {
+        "w": 233,
+        "h": 309
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 29,
+        "w": 165,
+        "h": 246
+      },
+      "alpha_pixels": 13569,
+      "opaque_pixels": 13569,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 29,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "blank directional signpost",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}

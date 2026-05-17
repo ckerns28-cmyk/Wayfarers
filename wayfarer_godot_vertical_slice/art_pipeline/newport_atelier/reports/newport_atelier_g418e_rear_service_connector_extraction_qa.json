@@ -1,0 +1,253 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g418e.extraction_qa.v1",
+  "phase": "G-4.18E",
+  "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+  "pack": "rear_service_connector",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "generated sheet grid separators are excluded from crops",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10"
+  ],
+  "assets": {
+    "atelier_g418e_service_fence_gate_01": {
+      "size": {
+        "w": 513,
+        "h": 251
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 445,
+        "h": 184
+      },
+      "alpha_pixels": 48761,
+      "opaque_pixels": 48761,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 33
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "low fence gate",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_service_utility_barrels_01": {
+      "size": {
+        "w": 482,
+        "h": 284
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 414,
+        "h": 228
+      },
+      "alpha_pixels": 58327,
+      "opaque_pixels": 58327,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 22
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "utility barrels with broom and bucket",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_service_alley_crates_01": {
+      "size": {
+        "w": 429,
+        "h": 259
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 361,
+        "h": 200
+      },
+      "alpha_pixels": 47430,
+      "opaque_pixels": 47430,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 25
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "alley crate stack",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_service_firewood_barrow_01": {
+      "size": {
+        "w": 417,
+        "h": 255
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 349,
+        "h": 196
+      },
+      "alpha_pixels": 39135,
+      "opaque_pixels": 39135,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 25
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "firewood handbarrow",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_service_stone_edge_01": {
+      "size": {
+        "w": 504,
+        "h": 175
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 436,
+        "h": 113
+      },
+      "alpha_pixels": 28970,
+      "opaque_pixels": 28970,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 28
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "stone edging strip with tufts",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_service_wash_tub_linen_01": {
+      "size": {
+        "w": 462,
+        "h": 239
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 394,
+        "h": 183
+      },
+      "alpha_pixels": 50665,
+      "opaque_pixels": 50665,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 22
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "wash tub with buckets and linen",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_service_rain_barrel_01": {
+      "size": {
+        "w": 375,
+        "h": 316
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 22,
+        "w": 307,
+        "h": 268
+      },
+      "alpha_pixels": 49760,
+      "opaque_pixels": 49760,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 22,
+        "right": 34,
+        "bottom": 26
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "rain barrel with drain stones",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_service_repair_sawhorse_01": {
+      "size": {
+        "w": 416,
+        "h": 316
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 33,
+        "w": 348,
+        "h": 257
+      },
+      "alpha_pixels": 60052,
+      "opaque_pixels": 60052,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 33,
+        "right": 34,
+        "bottom": 26
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "repair board bundle with sawhorse",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}

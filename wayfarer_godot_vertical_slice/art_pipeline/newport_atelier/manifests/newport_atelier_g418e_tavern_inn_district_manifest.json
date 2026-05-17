@@ -1,0 +1,1000 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g418e.tavern_inn_district.manifest.v1",
+  "phase": "G-4.18E",
+  "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+  "pack_id": "tavern_inn_district",
+  "title": "Tavern/Inn District",
+  "generated_at": "2026-05-17T20:08:43.144888+00:00",
+  "visual_standard": "G-4.18E hero-quality family using the locked G-4.18D/G-4.19A Newport atelier production standard with an 8.5/10 minimum visual/world gate.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_tavern_inn_district_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G418E_TAVERN_INN_DISTRICT_ATELIER_PACK.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_g418e_tavern_inn_district_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D Newport atelier cargo pipeline lock and G-4.19A dock clutter rollout pack",
+  "family_role": "Coherent Newport harbor commercial, tavern, dock, and service connector visual language for the accepted G-4.23B layout.",
+  "placement_policy": "Controlled Tavern/Inn frontage and service-yard placement only; dress thresholds and social-hub reads without hiding street grammar or pretending the building rebuild is complete.",
+  "green_origin_note": "Green-origin candidate status is provenance-gated and pending final generated-art license policy approval; no asset is final-commercial promoted.",
+  "assets": [
+    {
+      "asset_id": "atelier_g418e_tavern_hanging_inn_sign_01",
+      "asset_type": "hanging_inn_sign",
+      "source_identity": "ornate hanging inn sign",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_hanging_inn_sign_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 258,
+        "y": 10,
+        "w": 293,
+        "h": 270
+      },
+      "sprite_size": {
+        "w": 329,
+        "h": 306
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.14,
+      "visual_quality_rating": 9.4,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "source_image_sha256": "bd12719707b52f6122aa0b70cbae5c9183cd42f9e88ac0616374a1ce6c9fbb75",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 329,
+          "h": 306
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 261,
+          "h": 239
+        },
+        "alpha_pixels": 29186,
+        "opaque_pixels": 29186,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 33
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "ornate hanging inn sign",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.4,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds a controlled social-hub marker to the Tavern/Inn frontage without readable lettering.",
+      "sha256": "ded1d0db600b5c1571ac0fdaa22020bccd89ee6fed8613beeb6064e741239695",
+      "notes": "Hero-quality sign candidate; placed as frontage identity, not a building rebuild."
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_entry_lantern_pair_01",
+      "asset_type": "entry_lantern_pair",
+      "source_identity": "wrought iron entry lantern pair",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_entry_lantern_pair_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 915,
+        "y": 36,
+        "w": 421,
+        "h": 238
+      },
+      "sprite_size": {
+        "w": 457,
+        "h": 274
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.96
+      },
+      "grounding": {
+        "pivot_y": 0.96,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.12,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "source_image_sha256": "bd12719707b52f6122aa0b70cbae5c9183cd42f9e88ac0616374a1ce6c9fbb75",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 457,
+          "h": 274
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 389,
+          "h": 206
+        },
+        "alpha_pixels": 29101,
+        "opaque_pixels": 29101,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "wrought iron entry lantern pair",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.3,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds warm threshold light and evening identity near the inn entrance.",
+      "sha256": "0727bc947e1ecb49438910aaaa82d10b66ed0969eccbd60be8ff810b83a81a58",
+      "notes": "Wrought iron and warm glass candidate for controlled inn threshold dressing."
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_threshold_planters_01",
+      "asset_type": "threshold_planters",
+      "source_identity": "paired stone planters",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_threshold_planters_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 189,
+        "y": 291,
+        "w": 401,
+        "h": 223
+      },
+      "sprite_size": {
+        "w": 437,
+        "h": 259
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "source_image_sha256": "bd12719707b52f6122aa0b70cbae5c9183cd42f9e88ac0616374a1ce6c9fbb75",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 437,
+          "h": 259
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 369,
+          "h": 191
+        },
+        "alpha_pixels": 42224,
+        "opaque_pixels": 42224,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "paired stone planters",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Softens the Tavern/Inn frontage and improves social-hub warmth.",
+      "sha256": "00ab1cfbb5e26950298cc4c0bc9a77d4cdda76f044333ff23e466bc5dc8e3f78",
+      "notes": "Stone planters with coastal herbs and flowers."
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_service_barrel_crate_01",
+      "asset_type": "service_barrel_crate_cluster",
+      "source_identity": "inn delivery barrel and crate cluster",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_service_barrel_crate_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 939,
+        "y": 288,
+        "w": 392,
+        "h": 227
+      },
+      "sprite_size": {
+        "w": 428,
+        "h": 263
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "source_image_sha256": "bd12719707b52f6122aa0b70cbae5c9183cd42f9e88ac0616374a1ce6c9fbb75",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 428,
+          "h": 263
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 33,
+          "w": 360,
+          "h": 196
+        },
+        "alpha_pixels": 48354,
+        "opaque_pixels": 48354,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 33,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "inn delivery barrel and crate cluster",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds restrained service-life detail to the inn delivery edge.",
+      "sha256": "1b47ecbb5bb440d7364e28e90eb7d552d2881a9ffcbcf673d7dc6df2a9320b78",
+      "notes": "Delivery cluster for inn yard and rear service connector."
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_brick_threshold_01",
+      "asset_type": "brick_stone_entry_threshold",
+      "source_identity": "brick and stone entry threshold strip",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_brick_threshold_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 133,
+        "y": 570,
+        "w": 505,
+        "h": 143
+      },
+      "sprite_size": {
+        "w": 541,
+        "h": 179
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "grounding": {
+        "pivot_y": 0.86,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.19,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "source_image_sha256": "bd12719707b52f6122aa0b70cbae5c9183cd42f9e88ac0616374a1ce6c9fbb75",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 541,
+          "h": 179
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 473,
+          "h": 111
+        },
+        "alpha_pixels": 41744,
+        "opaque_pixels": 41744,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "brick and stone entry threshold strip",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Grounds the Tavern/Inn entry with a readable, walkable doorstep edge.",
+      "sha256": "7359d3386ddddb2ac5f7f42bc868ad6391fb429bc767f122968ba89fedfad113",
+      "notes": "Low threshold strip; reinforces ground contact rather than clutter."
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_twin_stack_chimney_detail_01",
+      "asset_type": "twin_stack_chimney_detail",
+      "source_identity": "twin chimney stack detail pair",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_twin_stack_chimney_detail_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 925,
+        "y": 531,
+        "w": 397,
+        "h": 213
+      },
+      "sprite_size": {
+        "w": 433,
+        "h": 249
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "grounding": {
+        "pivot_y": 0.94,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.12,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "source_image_sha256": "bd12719707b52f6122aa0b70cbae5c9183cd42f9e88ac0616374a1ce6c9fbb75",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": false,
+      "extraction_qa": {
+        "size": {
+          "w": 433,
+          "h": 249
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 365,
+          "h": 181
+        },
+        "alpha_pixels": 44007,
+        "opaque_pixels": 44007,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "twin chimney stack detail pair",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Registers the future brick inn/tavern chimney language as a controlled roof-detail candidate.",
+      "sha256": "7dc16783d1347b5c780fd6350ebc758ca976fe32609183e84cd8f938125c485c",
+      "notes": "Registered candidate; not placed where it would imply an unbuilt roof integration."
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_stable_tack_rack_01",
+      "asset_type": "stable_tack_rack",
+      "source_identity": "small stable tack rack",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_stable_tack_rack_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 171,
+        "y": 776,
+        "w": 440,
+        "h": 221
+      },
+      "sprite_size": {
+        "w": 476,
+        "h": 257
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.14,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "source_image_sha256": "bd12719707b52f6122aa0b70cbae5c9183cd42f9e88ac0616374a1ce6c9fbb75",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 476,
+          "h": 257
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 408,
+          "h": 189
+        },
+        "alpha_pixels": 46197,
+        "opaque_pixels": 46197,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "small stable tack rack",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds optional inn service-yard life without animals or route blocking.",
+      "sha256": "3a6a6eb9c5c48ff017321086be9dcb2654bf1bdb31c1dc9b9e1333b416176153",
+      "notes": "Stable/service-yard support candidate."
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_firewood_coal_scuttle_01",
+      "asset_type": "firewood_coal_scuttle_cluster",
+      "source_identity": "firewood and coal scuttle cluster",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_firewood_coal_scuttle_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 908,
+        "y": 780,
+        "w": 456,
+        "h": 210
+      },
+      "sprite_size": {
+        "w": 492,
+        "h": 246
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "source_image_sha256": "bd12719707b52f6122aa0b70cbae5c9183cd42f9e88ac0616374a1ce6c9fbb75",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 492,
+          "h": 246
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 424,
+          "h": 178
+        },
+        "alpha_pixels": 50407,
+        "opaque_pixels": 50407,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "firewood and coal scuttle cluster",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds believable heat/service support near the Tavern/Inn rear yard.",
+      "sha256": "beb765c0492a02938f3e909ec2f541426e995911f38bde4439a6676f3c5e9075",
+      "notes": "Warm service cluster for restrained rear placement."
+    }
+  ]
+}
