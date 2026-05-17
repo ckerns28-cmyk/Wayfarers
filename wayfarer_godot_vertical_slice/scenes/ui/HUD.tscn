@@ -6,31 +6,33 @@
 script = ExtResource("1_hud")
 
 [node name="Panel" type="PanelContainer" parent="."]
-offset_left = 18.0
-offset_top = 18.0
-offset_right = 304.0
-offset_bottom = 132.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 330.0
+offset_bottom = 158.0
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
-theme_override_constants/margin_left = 11
-theme_override_constants/margin_top = 9
-theme_override_constants/margin_right = 11
-theme_override_constants/margin_bottom = 9
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 11
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
-theme_override_constants/separation = 4
+theme_override_constants/separation = 5
 
 [node name="Title" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 18
 text = "Wayfarer"
 
 [node name="BuildLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+visible = false
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 11
 text = "Build label: Godot G-4.15 Village Layout Using Object Rules"
 autowrap_mode = 3
 
 [node name="PhaseHost" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+visible = false
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 11
 text = "Phase: G-4.15 | Review host: itch"
@@ -44,30 +46,83 @@ text = "Green-Origin Lab: ON | Not normal review art"
 autowrap_mode = 3
 
 [node name="Channel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+visible = false
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 10
 text = "Channel: manual ZIP"
 autowrap_mode = 3
 
 [node name="Branch" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+visible = false
 theme_override_colors/font_color = Color(0.72, 0.78, 0.86, 1)
 theme_override_font_sizes/font_size = 10
 text = "Branch: g-4-15-village-layout-object-rules"
 autowrap_mode = 3
 
 [node name="Objective" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+visible = false
 theme_override_font_sizes/font_size = 11
 text = "Objective: Village layout object rules"
 autowrap_mode = 3
 
 [node name="Zone" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 12
-text = "Newport Starter Harbor"
+text = "Newport Harbor"
 
 [node name="Stats" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 theme_override_colors/font_color = Color(0.86, 0.92, 1, 1)
 theme_override_font_sizes/font_size = 12
-text = "Level 1  HP 52/52"
+text = "Level 1 Wayfarer"
+
+[node name="Vitals" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+theme_override_constants/separation = 3
+
+[node name="HealthLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/Vitals"]
+theme_override_font_sizes/font_size = 11
+text = "Health"
+
+[node name="HealthBar" type="ProgressBar" parent="Panel/MarginContainer/VBoxContainer/Vitals"]
+custom_minimum_size = Vector2(210, 12)
+max_value = 52.0
+value = 52.0
+show_percentage = false
+
+[node name="ResolveLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/Vitals"]
+theme_override_font_sizes/font_size = 11
+text = "Resolve"
+
+[node name="ResolveBar" type="ProgressBar" parent="Panel/MarginContainer/VBoxContainer/Vitals"]
+custom_minimum_size = Vector2(210, 12)
+value = 64.0
+show_percentage = false
+
+[node name="QuestPanel" type="PanelContainer" parent="."]
+offset_left = 1160.0
+offset_top = 12.0
+offset_right = 1588.0
+offset_bottom = 138.0
+
+[node name="MarginContainer" type="MarginContainer" parent="QuestPanel"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 11
+
+[node name="VBoxContainer" type="VBoxContainer" parent="QuestPanel/MarginContainer"]
+theme_override_constants/separation = 5
+
+[node name="QuestTitle" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
+theme_override_font_sizes/font_size = 15
+text = "First Light"
+
+[node name="QuestBody" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
+theme_override_font_sizes/font_size = 13
+text = "Make landfall, find the counting house, and listen for work by the harbor."
+autowrap_mode = 3
+
+[node name="QuestRegion" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
+theme_override_font_sizes/font_size = 11
+text = "Newport - Harbor Ward"
 
 [node name="DialoguePanel" type="PanelContainer" parent="."]
 offset_left = 400.0

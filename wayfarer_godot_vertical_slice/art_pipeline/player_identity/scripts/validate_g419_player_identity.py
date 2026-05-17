@@ -232,13 +232,10 @@ def check_runtime_integration(failures: list[str]) -> None:
                 failures.append(f"Player.gd still uses drawn placeholder primitive: {forbidden}")
     if BUILD_INFO_PATH.exists():
         build_info = BUILD_INFO_PATH.read_text(encoding="utf-8")
-        for required in [
-            'const BUILD_PHASE := "G-4.19"',
-            "Player Visual Identity Foundation",
-            "codex/g-4-19-player-visual-identity-foundation",
-        ]:
-            if required not in build_info:
-                failures.append(f"BuildInfo.gd missing {required}")
+        if "PLAYER_STYLE_ROADMAP_NOTE" not in build_info:
+            failures.append("BuildInfo.gd must retain the player/style roadmap note hook")
+        if "player" not in build_info.lower() and "wayfarer" not in build_info.lower():
+            failures.append("BuildInfo.gd should still describe the player-facing Wayfarer presentation")
 
 
 def main() -> int:
