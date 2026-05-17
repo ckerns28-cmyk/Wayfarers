@@ -24,6 +24,7 @@ const G420A_ENVIRONMENTAL_BELIEVABILITY_PASS := "G-4.20A"
 const G420B_TOWN_IDENTITY_PASS := "G-4.20B"
 const G422A_WALKABLE_CITY_RECONSTRUCTION_PASS := "G-4.22A"
 const G423A_STREET_GRAMMAR_GROUND_REPAIR_PASS := "G-4.23A"
+const G423B_AUTHORED_STREET_HARBOR_IMMERSION_PASS := "G-4.23B"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -716,7 +717,8 @@ static func starter_district_plan() -> Dictionary:
 		"town_identity_wave_pass": G420B_TOWN_IDENTITY_PASS,
 		"walkable_city_reconstruction_pass": G422A_WALKABLE_CITY_RECONSTRUCTION_PASS,
 		"street_grammar_ground_repair_pass": G423A_STREET_GRAMMAR_GROUND_REPAIR_PASS,
-		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; G-4.23A repairs street grammar and ground cohesion by narrowing old slab-like road reads, exposing a back street behind the waterfront road, suppressing oversized cargo/dock dressing in clean review, and reusing provenance-safe atelier terrain/grounding transitions only where they reinforce ordered parcels; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
+		"authored_street_harbor_immersion_pass": G423B_AUTHORED_STREET_HARBOR_IMMERSION_PASS,
+		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; G-4.23A repairs street grammar and ground cohesion by narrowing old slab-like road reads, exposing a back street behind the waterfront road, suppressing oversized cargo/dock dressing in clean review, and reusing provenance-safe atelier terrain/grounding transitions only where they reinforce ordered parcels; G-4.23B converts the remaining blockout read into authored street, harbor, and frontage immersion with irregular terrain edges, working pier/economy clusters, Tavern/Inn social grounding, and review screenshots for visual judgment; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
 		"yellow_review_art_policy": "temporary yellow review art may support prototype composition, scale, and gameplay only; yellow pixels cannot source final-commercial green assets",
@@ -728,7 +730,7 @@ static func starter_district_plan() -> Dictionary:
 		"newport_visual_cohesion_gate": true,
 		"asset_provenance_gate": true,
 		"core_building_atelier_rebuild_pass": "G-4.21A",
-		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.22A city-structure reconstruction, player/NPC sprite style still waits until the town environment has enough visual context",
+		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.23B authored harbor/street repair, player/NPC sprite style still waits until the town environment has enough visual context",
 		"tavern_inn_centerpiece_lock": "G-4.21A controlled proof subset replaces the old temporary Tavern/Inn with a brick Hotel Viking-inspired-but-not-copied hero inn with two sets of large twin-stack chimneys; final collision/navigation and commercial promotion remain pending",
 		"review_screenshot_mode": "F4 or --review-no-hud",
 		"districts": [
@@ -756,6 +758,11 @@ static func starter_district_plan() -> Dictionary:
 			"ordered_outer_frontage_fills_review_view",
 			"enclosed_lot_cells_reduce_raw_green_gaps",
 			"closer_street_entry_camera_without_rescaling_player",
+			"authored_ground_irregular_edges_replace_rectangular_lot_blocks",
+			"working_harbor_piers_cargo_and_mooring_points_read_as_economy",
+			"tavern_inn_market_social_threshold_integrated",
+			"commercial_residential_civic_frontage_grounded_without_scatter",
+			"camera_review_shows_harbor_civic_and_uphill_fabric",
 			"packed_earth_service_alleys_share_same_cobble_palette",
 			"blockout_guides_default_off",
 		],
@@ -847,6 +854,10 @@ static func interaction_anchors() -> Array:
 		_anchor("market_vendor", "npc_placeholder", "harborfront_commercial", Vector2(1364.0, 636.0), "Market vendor placeholder on the east avenue pocket."),
 		_anchor("harbor_cargo_inspection_west", "cargo_inspection", "working_wharf", Vector2(486.0, 736.0), "Warehouse cargo inspection spot."),
 		_anchor("harbor_cargo_inspection_center", "cargo_inspection", "working_wharf", Vector2(824.0, 710.0), "Central wharf cargo inspection spot."),
+		_anchor("west_pier_mooring_point", "cargo_inspection", "working_wharf", Vector2(390.0, 812.0), "West pier mooring and loading proof marker."),
+		_anchor("east_storehouse_loading_point", "cargo_inspection", "working_wharf", Vector2(1218.0, 708.0), "East storehouse loading proof marker."),
+		_anchor("tavern_market_social_pocket", "small_interaction", "harborfront_commercial", Vector2(342.0, 606.0), "Tavern/Inn bench and market-edge social pocket proof marker."),
+		_anchor("backstreet_service_gate", "small_interaction", "support_lane", Vector2(1302.0, 500.0), "Backstreet service gate proof marker."),
 		_anchor("well_bench_civic_square", "small_interaction", "inland_residential_civic", Vector2(832.0, 410.0), "Well/bench civic square interaction marker."),
 		_anchor("service_alley_barrels", "small_interaction", "support_lane", Vector2(928.0, 660.0), "Service-alley barrel/crate inspection marker."),
 		_anchor("cooperage_hoops", "small_interaction", "support_lane", Vector2(264.0, 476.0), "Cooperage hoop/barrel inspection marker."),

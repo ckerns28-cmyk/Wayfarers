@@ -220,6 +220,22 @@ new G-4.23A runtime screenshot automation captures the required whole-town,
 harborfront, uphill-road, back-street, tavern/market, and walkability proof
 views. Visual acceptance still requires human review.
 
+Current G-4.23B result: the G-4.23A street grammar is preserved while the
+remaining debug/zoning read is repaired toward an authored harbor city. The pass
+softens old translucent outer lot and road overlays, adds irregular ground
+patches, cobble wear, verge strips, thresholds, service lanes, market pockets,
+and yard edges, and strengthens the harborfront with piers, dock seams, bollards,
+mooring points, rope coils, crates, cargo/loading zones, fishery/service hints,
+and water-edge transitions. Tavern/Inn remains the west social anchor, the
+commercial/civic/residential/service districts have clearer frontage logic, and
+the review camera now frames harbor, avenue, civic/commercial/tavern focus, and
+uphill fabric together. The HUD review identity should show `Godot G-4.23B
+Newport Authored Street + Harbor Immersion Repair`. A new G-4.23B screenshot
+wrapper captures whole-town, working harborfront, Tavern/Inn, uphill connector,
+back street, building frontage/lot grounding, and player walkability proof.
+Technical validation can pass; design/art/world/UX acceptance still requires
+human visual review.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -1871,6 +1887,57 @@ Acceptance:
 - Design/art/world/UX acceptance remains `NEEDS_HUMAN_REVIEW` until Chris
   reviews the fresh screenshots against the Newport 8.5+/10 bar.
 - Remaining issues must be separated from validation status in PR summaries.
+
+## G-4.23B: Newport Authored Street + Harbor Immersion Repair
+
+Status: implemented for local validation and human visual review.
+
+G-4.23B repairs Chris's G-4.23A classification of TECHNICAL PASS / DESIGN NEEDS
+REPAIR. It keeps the proven harbor avenue, uphill roads, back street, and
+ordered frontage rows, but moves the scene away from a debug/zoning diagram and
+toward an authored colonial harbor-city starter scene.
+
+Implemented:
+
+- HUD identity: `Godot G-4.23B Newport Authored Street + Harbor Immersion Repair`.
+- Branch: `codex/g-4-23b-newport-authored-street-harbor-immersion`.
+- Build metadata records `REVIEW_HOST = itch`, `REVIEW_CHANNEL = manual ZIP`,
+  and the G-4.23B source branch without packaging a ZIP.
+- Old translucent outer-town lot and street overlays are softened, and the main
+  lot read is replaced by irregular ground patches, yards, service courts,
+  stoops, fences, frontage thresholds, and worn door paths.
+- Harborfront economy gains dock seams, piers/fingers, loading surfaces,
+  bollards, mooring points, rope coils, crates, cargo piles, fishery/service
+  hints, ramps/steps, and water-edge transitions with purposeful placement.
+- Tavern/Inn remains the centerpiece and is integrated into a street/market
+  social pocket rather than pasted beside a road.
+- Mercantile/shop buildings face the avenue with clearer commercial frontage,
+  while civic, residential, and service buildings sit on more believable lots,
+  yards, or work courts.
+- Subtle irregularity is added through broken cobble patches, compacted dirt
+  feathers, narrowed service lanes, soft ground boundaries, and uneven old-town
+  edges without destroying G-4.23A clarity.
+- Camera framing is adjusted so the first runtime review presents harbor,
+  waterfront avenue, Tavern/Inn/commercial/civic focus, uphill connectors, and
+  back street fabric in one coherent view.
+- The G-4.23B screenshot wrapper captures whole town, working harborfront
+  avenue, Tavern/Inn social anchor, uphill connector road, back street/service
+  lane, building frontage/lot grounding, and player walkability proof while
+  preserving no-HUD review capture.
+- The Agent Council runner now uses phase-aware screenshot wrapper selection,
+  so G-4.23B reports list the G-4.23B capture gate while preserving the older
+  G-4.22A automation paths.
+
+Acceptance:
+
+- Technical validation can pass only the engineering gate.
+- Design/art/world/UX acceptance remains `NEEDS_HUMAN_REVIEW` until Chris
+  reviews the G-4.23B screenshots/playable scene against the Newport 8.5+/10
+  bar.
+- Remaining risks include temporary player/NPC scale/style, temporary
+  provenance-limited building art, and residual procedural ground artifacts.
+- PR summaries must classify this as ready for human visual review, not as
+  approved final design.
 
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
