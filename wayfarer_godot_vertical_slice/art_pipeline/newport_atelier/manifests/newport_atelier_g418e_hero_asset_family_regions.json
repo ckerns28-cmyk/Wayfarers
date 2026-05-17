@@ -1,0 +1,438 @@
+{
+  "tavern_inn_district": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+    "assets": {
+      "atelier_g418e_tavern_hanging_inn_sign_01": {
+        "region": {
+          "x": 258,
+          "y": 10,
+          "w": 293,
+          "h": 270
+        },
+        "sprite_size": {
+          "w": 329,
+          "h": 306
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_g418e_tavern_entry_lantern_pair_01": {
+        "region": {
+          "x": 915,
+          "y": 36,
+          "w": 421,
+          "h": 238
+        },
+        "sprite_size": {
+          "w": 457,
+          "h": 274
+        },
+        "recommended_game_scale": 0.12
+      },
+      "atelier_g418e_tavern_threshold_planters_01": {
+        "region": {
+          "x": 189,
+          "y": 291,
+          "w": 401,
+          "h": 223
+        },
+        "sprite_size": {
+          "w": 437,
+          "h": 259
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_tavern_service_barrel_crate_01": {
+        "region": {
+          "x": 939,
+          "y": 288,
+          "w": 392,
+          "h": 227
+        },
+        "sprite_size": {
+          "w": 428,
+          "h": 263
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_tavern_brick_threshold_01": {
+        "region": {
+          "x": 133,
+          "y": 570,
+          "w": 505,
+          "h": 143
+        },
+        "sprite_size": {
+          "w": 541,
+          "h": 179
+        },
+        "recommended_game_scale": 0.19
+      },
+      "atelier_g418e_tavern_twin_stack_chimney_detail_01": {
+        "region": {
+          "x": 925,
+          "y": 531,
+          "w": 397,
+          "h": 213
+        },
+        "sprite_size": {
+          "w": 433,
+          "h": 249
+        },
+        "recommended_game_scale": 0.12
+      },
+      "atelier_g418e_tavern_stable_tack_rack_01": {
+        "region": {
+          "x": 171,
+          "y": 776,
+          "w": 440,
+          "h": 221
+        },
+        "sprite_size": {
+          "w": 476,
+          "h": 257
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_g418e_tavern_firewood_coal_scuttle_01": {
+        "region": {
+          "x": 908,
+          "y": 780,
+          "w": 456,
+          "h": 210
+        },
+        "sprite_size": {
+          "w": 492,
+          "h": 246
+        },
+        "recommended_game_scale": 0.15
+      }
+    }
+  },
+  "commercial_avenue": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+    "assets": {
+      "atelier_g418e_commercial_mercantile_sign_01": {
+        "region": {
+          "x": 285,
+          "y": 17,
+          "w": 270,
+          "h": 237
+        },
+        "sprite_size": {
+          "w": 306,
+          "h": 273
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_g418e_commercial_fishmonger_sign_01": {
+        "region": {
+          "x": 958,
+          "y": 24,
+          "w": 262,
+          "h": 240
+        },
+        "sprite_size": {
+          "w": 298,
+          "h": 276
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_g418e_commercial_market_cart_01": {
+        "region": {
+          "x": 271,
+          "y": 275,
+          "w": 365,
+          "h": 253
+        },
+        "sprite_size": {
+          "w": 401,
+          "h": 289
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_g418e_commercial_produce_crates_01": {
+        "region": {
+          "x": 917,
+          "y": 291,
+          "w": 337,
+          "h": 236
+        },
+        "sprite_size": {
+          "w": 373,
+          "h": 272
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_commercial_basket_parcel_display_01": {
+        "region": {
+          "x": 284,
+          "y": 544,
+          "w": 302,
+          "h": 161
+        },
+        "sprite_size": {
+          "w": 338,
+          "h": 197
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_commercial_canvas_awning_roll_01": {
+        "region": {
+          "x": 920,
+          "y": 569,
+          "w": 331,
+          "h": 150
+        },
+        "sprite_size": {
+          "w": 367,
+          "h": 186
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_g418e_commercial_street_lamp_01": {
+        "region": {
+          "x": 360,
+          "y": 736,
+          "w": 105,
+          "h": 277
+        },
+        "sprite_size": {
+          "w": 141,
+          "h": 313
+        },
+        "recommended_game_scale": 0.12
+      },
+      "atelier_g418e_commercial_directional_signpost_01": {
+        "region": {
+          "x": 971,
+          "y": 736,
+          "w": 197,
+          "h": 273
+        },
+        "sprite_size": {
+          "w": 233,
+          "h": 309
+        },
+        "recommended_game_scale": 0.13
+      }
+    }
+  },
+  "harbor_dock_edge": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+    "assets": {
+      "atelier_g418e_harbor_dock_barrel_row_01": {
+        "region": {
+          "x": 179,
+          "y": 49,
+          "w": 471,
+          "h": 186
+        },
+        "sprite_size": {
+          "w": 507,
+          "h": 222
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_g418e_harbor_rope_coil_large_01": {
+        "region": {
+          "x": 910,
+          "y": 30,
+          "w": 424,
+          "h": 199
+        },
+        "sprite_size": {
+          "w": 460,
+          "h": 235
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_g418e_harbor_fishing_crate_net_stack_01": {
+        "region": {
+          "x": 197,
+          "y": 266,
+          "w": 402,
+          "h": 235
+        },
+        "sprite_size": {
+          "w": 438,
+          "h": 271
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_g418e_harbor_net_drying_frame_01": {
+        "region": {
+          "x": 882,
+          "y": 263,
+          "w": 448,
+          "h": 245
+        },
+        "sprite_size": {
+          "w": 484,
+          "h": 281
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_harbor_bollard_pair_01": {
+        "region": {
+          "x": 198,
+          "y": 523,
+          "w": 394,
+          "h": 216
+        },
+        "sprite_size": {
+          "w": 430,
+          "h": 252
+        },
+        "recommended_game_scale": 0.13
+      },
+      "atelier_g418e_harbor_cargo_stack_01": {
+        "region": {
+          "x": 881,
+          "y": 516,
+          "w": 425,
+          "h": 222
+        },
+        "sprite_size": {
+          "w": 461,
+          "h": 258
+        },
+        "recommended_game_scale": 0.14
+      },
+      "atelier_g418e_harbor_service_post_lantern_01": {
+        "region": {
+          "x": 244,
+          "y": 756,
+          "w": 226,
+          "h": 259
+        },
+        "sprite_size": {
+          "w": 262,
+          "h": 295
+        },
+        "recommended_game_scale": 0.12
+      },
+      "atelier_g418e_harbor_fish_baskets_tub_01": {
+        "region": {
+          "x": 873,
+          "y": 774,
+          "w": 470,
+          "h": 221
+        },
+        "sprite_size": {
+          "w": 506,
+          "h": 257
+        },
+        "recommended_game_scale": 0.14
+      }
+    }
+  },
+  "rear_service_connector": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+    "assets": {
+      "atelier_g418e_service_fence_gate_01": {
+        "region": {
+          "x": 188,
+          "y": 50,
+          "w": 477,
+          "h": 215
+        },
+        "sprite_size": {
+          "w": 513,
+          "h": 251
+        },
+        "recommended_game_scale": 0.16
+      },
+      "atelier_g418e_service_utility_barrels_01": {
+        "region": {
+          "x": 852,
+          "y": 17,
+          "w": 446,
+          "h": 248
+        },
+        "sprite_size": {
+          "w": 482,
+          "h": 284
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_service_alley_crates_01": {
+        "region": {
+          "x": 230,
+          "y": 285,
+          "w": 393,
+          "h": 223
+        },
+        "sprite_size": {
+          "w": 429,
+          "h": 259
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_service_firewood_barrow_01": {
+        "region": {
+          "x": 891,
+          "y": 289,
+          "w": 381,
+          "h": 219
+        },
+        "sprite_size": {
+          "w": 417,
+          "h": 255
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_service_stone_edge_01": {
+        "region": {
+          "x": 190,
+          "y": 580,
+          "w": 468,
+          "h": 139
+        },
+        "sprite_size": {
+          "w": 504,
+          "h": 175
+        },
+        "recommended_game_scale": 0.2
+      },
+      "atelier_g418e_service_wash_tub_linen_01": {
+        "region": {
+          "x": 861,
+          "y": 516,
+          "w": 426,
+          "h": 203
+        },
+        "sprite_size": {
+          "w": 462,
+          "h": 239
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_service_rain_barrel_01": {
+        "region": {
+          "x": 254,
+          "y": 727,
+          "w": 339,
+          "h": 280
+        },
+        "sprite_size": {
+          "w": 375,
+          "h": 316
+        },
+        "recommended_game_scale": 0.15
+      },
+      "atelier_g418e_service_repair_sawhorse_01": {
+        "region": {
+          "x": 890,
+          "y": 727,
+          "w": 380,
+          "h": 280
+        },
+        "sprite_size": {
+          "w": 416,
+          "h": 316
+        },
+        "recommended_game_scale": 0.15
+      }
+    }
+  }
+}

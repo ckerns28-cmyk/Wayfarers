@@ -1,0 +1,808 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g418e.hero_asset_family.v1",
+  "phase": "G-4.18E",
+  "generated_at": "2026-05-17T20:08:58.781997+00:00",
+  "title": "Newport Harbor Commercial + Tavern District Asset Family",
+  "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+  "role": "Coherent green-origin candidate asset family that raises Newport from coherent G-4.23B layout into a richer production-directed harbor-town slice.",
+  "visual_quality_gate": 8.5,
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "source_policy": "AI-assisted green-origin candidates pending final license policy approval; no yellow building pixels, third-party sprites, marketplace packs, web-scraped images, or ripped game art were supplied as source input.",
+  "placement_policy": "Controlled subset placed across Tavern/Inn, commercial avenue, harbor edge, and rear-service connectors; no random prop scatter and no navigation blocking.",
+  "packs": [
+    {
+      "pack_id": "tavern_inn_district",
+      "title": "Tavern/Inn District",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_g418e_tavern_inn_district_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_tavern_inn_district_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_tavern_inn_district_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_g418e_tavern_inn_district_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G418E_TAVERN_INN_DISTRICT_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_g418e_tavern_hanging_inn_sign_01",
+        "atelier_g418e_tavern_entry_lantern_pair_01",
+        "atelier_g418e_tavern_threshold_planters_01",
+        "atelier_g418e_tavern_service_barrel_crate_01",
+        "atelier_g418e_tavern_brick_threshold_01",
+        "atelier_g418e_tavern_twin_stack_chimney_detail_01",
+        "atelier_g418e_tavern_stable_tack_rack_01",
+        "atelier_g418e_tavern_firewood_coal_scuttle_01"
+      ]
+    },
+    {
+      "pack_id": "commercial_avenue",
+      "title": "Commercial Avenue",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_g418e_commercial_avenue_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_commercial_avenue_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_commercial_avenue_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_commercial_avenue_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_g418e_commercial_avenue_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G418E_COMMERCIAL_AVENUE_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_g418e_commercial_mercantile_sign_01",
+        "atelier_g418e_commercial_fishmonger_sign_01",
+        "atelier_g418e_commercial_market_cart_01",
+        "atelier_g418e_commercial_produce_crates_01",
+        "atelier_g418e_commercial_basket_parcel_display_01",
+        "atelier_g418e_commercial_canvas_awning_roll_01",
+        "atelier_g418e_commercial_street_lamp_01",
+        "atelier_g418e_commercial_directional_signpost_01"
+      ]
+    },
+    {
+      "pack_id": "harbor_dock_edge",
+      "title": "Harbor/Dock Edge",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_g418e_harbor_dock_edge_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_harbor_dock_edge_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_g418e_harbor_dock_edge_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G418E_HARBOR_DOCK_EDGE_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_g418e_harbor_dock_barrel_row_01",
+        "atelier_g418e_harbor_rope_coil_large_01",
+        "atelier_g418e_harbor_fishing_crate_net_stack_01",
+        "atelier_g418e_harbor_net_drying_frame_01",
+        "atelier_g418e_harbor_bollard_pair_01",
+        "atelier_g418e_harbor_cargo_stack_01",
+        "atelier_g418e_harbor_service_post_lantern_01",
+        "atelier_g418e_harbor_fish_baskets_tub_01"
+      ]
+    },
+    {
+      "pack_id": "rear_service_connector",
+      "title": "Rear Street / Service Connectors",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_g418e_rear_service_connector_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_rear_service_connector_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_g418e_rear_service_connector_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G418E_REAR_SERVICE_CONNECTOR_ATELIER_PACK.md",
+      "asset_ids": [
+        "atelier_g418e_service_fence_gate_01",
+        "atelier_g418e_service_utility_barrels_01",
+        "atelier_g418e_service_alley_crates_01",
+        "atelier_g418e_service_firewood_barrow_01",
+        "atelier_g418e_service_stone_edge_01",
+        "atelier_g418e_service_wash_tub_linen_01",
+        "atelier_g418e_service_rain_barrel_01",
+        "atelier_g418e_service_repair_sawhorse_01"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_g418e_tavern_hanging_inn_sign_01",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_hanging_inn_sign_01.png",
+      "pack_id": "tavern_inn_district",
+      "visual_quality_rating": 9.4,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 258,
+        "y": 10,
+        "w": 293,
+        "h": 270
+      },
+      "sprite_size": {
+        "w": 329,
+        "h": 306
+      },
+      "recommended_game_scale": 0.14
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_entry_lantern_pair_01",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_entry_lantern_pair_01.png",
+      "pack_id": "tavern_inn_district",
+      "visual_quality_rating": 9.3,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 915,
+        "y": 36,
+        "w": 421,
+        "h": 238
+      },
+      "sprite_size": {
+        "w": 457,
+        "h": 274
+      },
+      "recommended_game_scale": 0.12
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_threshold_planters_01",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_threshold_planters_01.png",
+      "pack_id": "tavern_inn_district",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 189,
+        "y": 291,
+        "w": 401,
+        "h": 223
+      },
+      "sprite_size": {
+        "w": 437,
+        "h": 259
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_service_barrel_crate_01",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_service_barrel_crate_01.png",
+      "pack_id": "tavern_inn_district",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 939,
+        "y": 288,
+        "w": 392,
+        "h": 227
+      },
+      "sprite_size": {
+        "w": 428,
+        "h": 263
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_brick_threshold_01",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_brick_threshold_01.png",
+      "pack_id": "tavern_inn_district",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 133,
+        "y": 570,
+        "w": 505,
+        "h": 143
+      },
+      "sprite_size": {
+        "w": 541,
+        "h": 179
+      },
+      "recommended_game_scale": 0.19
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_twin_stack_chimney_detail_01",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_twin_stack_chimney_detail_01.png",
+      "pack_id": "tavern_inn_district",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": false,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 925,
+        "y": 531,
+        "w": 397,
+        "h": 213
+      },
+      "sprite_size": {
+        "w": 433,
+        "h": 249
+      },
+      "recommended_game_scale": 0.12
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_stable_tack_rack_01",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_stable_tack_rack_01.png",
+      "pack_id": "tavern_inn_district",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 171,
+        "y": 776,
+        "w": 440,
+        "h": 221
+      },
+      "sprite_size": {
+        "w": 476,
+        "h": 257
+      },
+      "recommended_game_scale": 0.14
+    },
+    {
+      "asset_id": "atelier_g418e_tavern_firewood_coal_scuttle_01",
+      "category": "G418E_TAVERN_INN_DISTRICT",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_tavern_firewood_coal_scuttle_01.png",
+      "pack_id": "tavern_inn_district",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
+      "atlas_region": {
+        "x": 908,
+        "y": 780,
+        "w": 456,
+        "h": 210
+      },
+      "sprite_size": {
+        "w": 492,
+        "h": 246
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_commercial_mercantile_sign_01",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_commercial_mercantile_sign_01.png",
+      "pack_id": "commercial_avenue",
+      "visual_quality_rating": 9.3,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "atlas_region": {
+        "x": 285,
+        "y": 17,
+        "w": 270,
+        "h": 237
+      },
+      "sprite_size": {
+        "w": 306,
+        "h": 273
+      },
+      "recommended_game_scale": 0.13
+    },
+    {
+      "asset_id": "atelier_g418e_commercial_fishmonger_sign_01",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_commercial_fishmonger_sign_01.png",
+      "pack_id": "commercial_avenue",
+      "visual_quality_rating": 9.3,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "atlas_region": {
+        "x": 958,
+        "y": 24,
+        "w": 262,
+        "h": 240
+      },
+      "sprite_size": {
+        "w": 298,
+        "h": 276
+      },
+      "recommended_game_scale": 0.13
+    },
+    {
+      "asset_id": "atelier_g418e_commercial_market_cart_01",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_commercial_market_cart_01.png",
+      "pack_id": "commercial_avenue",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "atlas_region": {
+        "x": 271,
+        "y": 275,
+        "w": 365,
+        "h": 253
+      },
+      "sprite_size": {
+        "w": 401,
+        "h": 289
+      },
+      "recommended_game_scale": 0.14
+    },
+    {
+      "asset_id": "atelier_g418e_commercial_produce_crates_01",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_commercial_produce_crates_01.png",
+      "pack_id": "commercial_avenue",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "atlas_region": {
+        "x": 917,
+        "y": 291,
+        "w": 337,
+        "h": 236
+      },
+      "sprite_size": {
+        "w": 373,
+        "h": 272
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_commercial_basket_parcel_display_01",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_commercial_basket_parcel_display_01.png",
+      "pack_id": "commercial_avenue",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "atlas_region": {
+        "x": 284,
+        "y": 544,
+        "w": 302,
+        "h": 161
+      },
+      "sprite_size": {
+        "w": 338,
+        "h": 197
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_commercial_canvas_awning_roll_01",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_commercial_canvas_awning_roll_01.png",
+      "pack_id": "commercial_avenue",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "atlas_region": {
+        "x": 920,
+        "y": 569,
+        "w": 331,
+        "h": 150
+      },
+      "sprite_size": {
+        "w": 367,
+        "h": 186
+      },
+      "recommended_game_scale": 0.14
+    },
+    {
+      "asset_id": "atelier_g418e_commercial_street_lamp_01",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_commercial_street_lamp_01.png",
+      "pack_id": "commercial_avenue",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "atlas_region": {
+        "x": 360,
+        "y": 736,
+        "w": 105,
+        "h": 277
+      },
+      "sprite_size": {
+        "w": 141,
+        "h": 313
+      },
+      "recommended_game_scale": 0.12
+    },
+    {
+      "asset_id": "atelier_g418e_commercial_directional_signpost_01",
+      "category": "G418E_COMMERCIAL_AVENUE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_commercial_directional_signpost_01.png",
+      "pack_id": "commercial_avenue",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_commercial_avenue_v1.png",
+      "atlas_region": {
+        "x": 971,
+        "y": 736,
+        "w": 197,
+        "h": 273
+      },
+      "sprite_size": {
+        "w": 233,
+        "h": 309
+      },
+      "recommended_game_scale": 0.13
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_dock_barrel_row_01",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_dock_barrel_row_01.png",
+      "pack_id": "harbor_dock_edge",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 179,
+        "y": 49,
+        "w": 471,
+        "h": 186
+      },
+      "sprite_size": {
+        "w": 507,
+        "h": 222
+      },
+      "recommended_game_scale": 0.13
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_rope_coil_large_01",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_rope_coil_large_01.png",
+      "pack_id": "harbor_dock_edge",
+      "visual_quality_rating": 9.3,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 910,
+        "y": 30,
+        "w": 424,
+        "h": 199
+      },
+      "sprite_size": {
+        "w": 460,
+        "h": 235
+      },
+      "recommended_game_scale": 0.13
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_fishing_crate_net_stack_01",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_fishing_crate_net_stack_01.png",
+      "pack_id": "harbor_dock_edge",
+      "visual_quality_rating": 9.3,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 197,
+        "y": 266,
+        "w": 402,
+        "h": 235
+      },
+      "sprite_size": {
+        "w": 438,
+        "h": 271
+      },
+      "recommended_game_scale": 0.14
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_net_drying_frame_01",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_net_drying_frame_01.png",
+      "pack_id": "harbor_dock_edge",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 882,
+        "y": 263,
+        "w": 448,
+        "h": 245
+      },
+      "sprite_size": {
+        "w": 484,
+        "h": 281
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_bollard_pair_01",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_bollard_pair_01.png",
+      "pack_id": "harbor_dock_edge",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 198,
+        "y": 523,
+        "w": 394,
+        "h": 216
+      },
+      "sprite_size": {
+        "w": 430,
+        "h": 252
+      },
+      "recommended_game_scale": 0.13
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_cargo_stack_01",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_cargo_stack_01.png",
+      "pack_id": "harbor_dock_edge",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 881,
+        "y": 516,
+        "w": 425,
+        "h": 222
+      },
+      "sprite_size": {
+        "w": 461,
+        "h": 258
+      },
+      "recommended_game_scale": 0.14
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_service_post_lantern_01",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_service_post_lantern_01.png",
+      "pack_id": "harbor_dock_edge",
+      "visual_quality_rating": 9.3,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 244,
+        "y": 756,
+        "w": 226,
+        "h": 259
+      },
+      "sprite_size": {
+        "w": 262,
+        "h": 295
+      },
+      "recommended_game_scale": 0.12
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_fish_baskets_tub_01",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_fish_baskets_tub_01.png",
+      "pack_id": "harbor_dock_edge",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 873,
+        "y": 774,
+        "w": 470,
+        "h": 221
+      },
+      "sprite_size": {
+        "w": 506,
+        "h": 257
+      },
+      "recommended_game_scale": 0.14
+    },
+    {
+      "asset_id": "atelier_g418e_service_fence_gate_01",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_fence_gate_01.png",
+      "pack_id": "rear_service_connector",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 188,
+        "y": 50,
+        "w": 477,
+        "h": 215
+      },
+      "sprite_size": {
+        "w": 513,
+        "h": 251
+      },
+      "recommended_game_scale": 0.16
+    },
+    {
+      "asset_id": "atelier_g418e_service_utility_barrels_01",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_utility_barrels_01.png",
+      "pack_id": "rear_service_connector",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 852,
+        "y": 17,
+        "w": 446,
+        "h": 248
+      },
+      "sprite_size": {
+        "w": 482,
+        "h": 284
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_service_alley_crates_01",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_alley_crates_01.png",
+      "pack_id": "rear_service_connector",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 230,
+        "y": 285,
+        "w": 393,
+        "h": 223
+      },
+      "sprite_size": {
+        "w": 429,
+        "h": 259
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_service_firewood_barrow_01",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_firewood_barrow_01.png",
+      "pack_id": "rear_service_connector",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 891,
+        "y": 289,
+        "w": 381,
+        "h": 219
+      },
+      "sprite_size": {
+        "w": 417,
+        "h": 255
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_service_stone_edge_01",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_stone_edge_01.png",
+      "pack_id": "rear_service_connector",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 190,
+        "y": 580,
+        "w": 468,
+        "h": 139
+      },
+      "sprite_size": {
+        "w": 504,
+        "h": 175
+      },
+      "recommended_game_scale": 0.2
+    },
+    {
+      "asset_id": "atelier_g418e_service_wash_tub_linen_01",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_wash_tub_linen_01.png",
+      "pack_id": "rear_service_connector",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 861,
+        "y": 516,
+        "w": 426,
+        "h": 203
+      },
+      "sprite_size": {
+        "w": 462,
+        "h": 239
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_service_rain_barrel_01",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_rain_barrel_01.png",
+      "pack_id": "rear_service_connector",
+      "visual_quality_rating": 9.1,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 254,
+        "y": 727,
+        "w": 339,
+        "h": 280
+      },
+      "sprite_size": {
+        "w": 375,
+        "h": 316
+      },
+      "recommended_game_scale": 0.15
+    },
+    {
+      "asset_id": "atelier_g418e_service_repair_sawhorse_01",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_repair_sawhorse_01.png",
+      "pack_id": "rear_service_connector",
+      "visual_quality_rating": 9.2,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "used_in_g418e_playable_hero_slice": true,
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 890,
+        "y": 727,
+        "w": 380,
+        "h": 280
+      },
+      "sprite_size": {
+        "w": 416,
+        "h": 316
+      },
+      "recommended_game_scale": 0.15
+    }
+  ]
+}

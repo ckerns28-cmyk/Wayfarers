@@ -1,0 +1,1000 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g418e.rear_service_connector.manifest.v1",
+  "phase": "G-4.18E",
+  "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+  "pack_id": "rear_service_connector",
+  "title": "Rear Street / Service Connectors",
+  "generated_at": "2026-05-17T20:08:58.712205+00:00",
+  "visual_standard": "G-4.18E hero-quality family using the locked G-4.18D/G-4.19A Newport atelier production standard with an 8.5/10 minimum visual/world gate.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_rear_service_connector_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G418E_REAR_SERVICE_CONNECTOR_ATELIER_PACK.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_g418e_rear_service_connector_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D Newport atelier cargo pipeline lock and G-4.19A dock clutter rollout pack",
+  "family_role": "Coherent Newport harbor commercial, tavern, dock, and service connector visual language for the accepted G-4.23B layout.",
+  "placement_policy": "Controlled rear-lane, alley, service-yard, and building-grounding placement only; use to make buildings sit naturally without hiding layout defects.",
+  "green_origin_note": "Green-origin candidate status is provenance-gated and pending final generated-art license policy approval; no asset is final-commercial promoted.",
+  "assets": [
+    {
+      "asset_id": "atelier_g418e_service_fence_gate_01",
+      "asset_type": "low_fence_gate",
+      "source_identity": "low fence gate",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_fence_gate_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 188,
+        "y": 50,
+        "w": 477,
+        "h": 215
+      },
+      "sprite_size": {
+        "w": 513,
+        "h": 251
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.16,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "source_image_sha256": "d3dccab9214d883fddcb7d8fd2c389cb5147126c600e62ca3616fc1c018be6b2",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 513,
+          "h": 251
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 445,
+          "h": 184
+        },
+        "alpha_pixels": 48761,
+        "opaque_pixels": 48761,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 33
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "low fence gate",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Defines rear yards and service connectors without blocking walkability.",
+      "sha256": "3820e249d3aa4ec6bbb53e9d366df4a395e984c219b320809da7b7eda016199c",
+      "notes": "Fence gate with weeds and rope latch."
+    },
+    {
+      "asset_id": "atelier_g418e_service_utility_barrels_01",
+      "asset_type": "utility_barrels_broom_bucket",
+      "source_identity": "utility barrels with broom and bucket",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_utility_barrels_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 852,
+        "y": 17,
+        "w": 446,
+        "h": 248
+      },
+      "sprite_size": {
+        "w": 482,
+        "h": 284
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "source_image_sha256": "d3dccab9214d883fddcb7d8fd2c389cb5147126c600e62ca3616fc1c018be6b2",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 482,
+          "h": 284
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 414,
+          "h": 228
+        },
+        "alpha_pixels": 58327,
+        "opaque_pixels": 58327,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 22
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "utility barrels with broom and bucket",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds service-life grounding at building backs and alleys.",
+      "sha256": "9ddd2bd38b5b726454f76699ab2310aa5f5922ab931d275a12381f6439cda8fc",
+      "notes": "Utility barrels, broom, bucket, and scrap plank."
+    },
+    {
+      "asset_id": "atelier_g418e_service_alley_crates_01",
+      "asset_type": "alley_crate_stack",
+      "source_identity": "alley crate stack",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_alley_crates_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 230,
+        "y": 285,
+        "w": 393,
+        "h": 223
+      },
+      "sprite_size": {
+        "w": 429,
+        "h": 259
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "source_image_sha256": "d3dccab9214d883fddcb7d8fd2c389cb5147126c600e62ca3616fc1c018be6b2",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 429,
+          "h": 259
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 361,
+          "h": 200
+        },
+        "alpha_pixels": 47430,
+        "opaque_pixels": 47430,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 25
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "alley crate stack",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds controlled rear-lane storage detail without random scatter.",
+      "sha256": "8e71888e316ba41e155dd0e38adfad4d2f4e035d59d058a86be91b0b1178ad48",
+      "notes": "Covered crates and worn cloth for alley edges."
+    },
+    {
+      "asset_id": "atelier_g418e_service_firewood_barrow_01",
+      "asset_type": "firewood_handbarrow",
+      "source_identity": "firewood handbarrow",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_firewood_barrow_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 891,
+        "y": 289,
+        "w": 381,
+        "h": 219
+      },
+      "sprite_size": {
+        "w": 417,
+        "h": 255
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "grounding": {
+        "pivot_y": 0.94,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "source_image_sha256": "d3dccab9214d883fddcb7d8fd2c389cb5147126c600e62ca3616fc1c018be6b2",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 417,
+          "h": 255
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 349,
+          "h": 196
+        },
+        "alpha_pixels": 39135,
+        "opaque_pixels": 39135,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 25
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "firewood handbarrow",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds believable service movement and yard utility.",
+      "sha256": "993805ceb24e763208a266ee6560e10ed22854461f1884f1ac79ffbc64e77449",
+      "notes": "Handbarrow with split logs and mud contact."
+    },
+    {
+      "asset_id": "atelier_g418e_service_stone_edge_01",
+      "asset_type": "service_path_stone_edge",
+      "source_identity": "stone edging strip with tufts",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_stone_edge_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 190,
+        "y": 580,
+        "w": 468,
+        "h": 139
+      },
+      "sprite_size": {
+        "w": 504,
+        "h": 175
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "grounding": {
+        "pivot_y": 0.86,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.2,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "source_image_sha256": "d3dccab9214d883fddcb7d8fd2c389cb5147126c600e62ca3616fc1c018be6b2",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 504,
+          "h": 175
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 436,
+          "h": 113
+        },
+        "alpha_pixels": 28970,
+        "opaque_pixels": 28970,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 28
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "stone edging strip with tufts",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.0,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Grounds service paths and building edges with low readable detail.",
+      "sha256": "a5d2be4fc72aaedbbdc021c8c1f70a8b356f1d7bab0eb11d4f63f1cc7a34968b",
+      "notes": "Low stone strip; supports composition rather than clutter."
+    },
+    {
+      "asset_id": "atelier_g418e_service_wash_tub_linen_01",
+      "asset_type": "wash_tub_buckets_linen",
+      "source_identity": "wash tub with buckets and linen",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_wash_tub_linen_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 861,
+        "y": 516,
+        "w": 426,
+        "h": 203
+      },
+      "sprite_size": {
+        "w": 462,
+        "h": 239
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "source_image_sha256": "d3dccab9214d883fddcb7d8fd2c389cb5147126c600e62ca3616fc1c018be6b2",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 462,
+          "h": 239
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 394,
+          "h": 183
+        },
+        "alpha_pixels": 50665,
+        "opaque_pixels": 50665,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 22
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "wash tub with buckets and linen",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds domestic service life near rear connectors.",
+      "sha256": "104fa6c87a85497d8ae69127b97f39f5e1e485adad614a5b286d92de2e4a346a",
+      "notes": "Wash tub, buckets, and folded linen."
+    },
+    {
+      "asset_id": "atelier_g418e_service_rain_barrel_01",
+      "asset_type": "rain_barrel_drain_stones",
+      "source_identity": "rain barrel with drain stones",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_rain_barrel_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 254,
+        "y": 727,
+        "w": 339,
+        "h": 280
+      },
+      "sprite_size": {
+        "w": 375,
+        "h": 316
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "source_image_sha256": "d3dccab9214d883fddcb7d8fd2c389cb5147126c600e62ca3616fc1c018be6b2",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 375,
+          "h": 316
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 22,
+          "w": 307,
+          "h": 268
+        },
+        "alpha_pixels": 49760,
+        "opaque_pixels": 49760,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 22,
+          "right": 34,
+          "bottom": 26
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "rain barrel with drain stones",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.1,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Grounds buildings with practical water-service detail.",
+      "sha256": "1f4e7406e8a525e95fb7d3cfdb33ebd883a44e14c61202d8c0be821b86c4f92a",
+      "notes": "Rain barrel, drain stones, and small crate."
+    },
+    {
+      "asset_id": "atelier_g418e_service_repair_sawhorse_01",
+      "asset_type": "repair_sawhorse_board_bundle",
+      "source_identity": "repair board bundle with sawhorse",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_REAR_SERVICE_CONNECTOR",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_service_repair_sawhorse_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_rear_service_connector_v1.png",
+      "atlas_region": {
+        "x": 890,
+        "y": 727,
+        "w": 380,
+        "h": 280
+      },
+      "sprite_size": {
+        "w": 416,
+        "h": 316
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "source_image_sha256": "d3dccab9214d883fddcb7d8fd2c389cb5147126c600e62ca3616fc1c018be6b2",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 416,
+          "h": 316
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 33,
+          "w": 348,
+          "h": 257
+        },
+        "alpha_pixels": 60052,
+        "opaque_pixels": 60052,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 33,
+          "right": 34,
+          "bottom": 26
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "repair board bundle with sawhorse",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds service-yard craft detail along rear streets.",
+      "sha256": "18d2a63cd194e180a1ad07eee31bc9e8c5eb304422e69d6e0f9b492e8fb55c97",
+      "notes": "Sawhorse, boards, and coiled twine."
+    }
+  ]
+}

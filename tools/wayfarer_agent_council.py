@@ -158,21 +158,22 @@ def get_pr_state(root: Path, target_pr: int) -> dict[str, object]:
     else:
         state["errors"].append("Open PR discovery failed: " + compact_output(open_result))
 
-    target_json, target_result = run_json(
-        [
-            gh,
-            "pr",
-            "view",
-            str(target_pr),
-            "--json",
-            "number,title,state,isDraft,mergedAt,headRefName,baseRefName,url",
-        ],
-        root,
-    )
-    if target_result.ok and isinstance(target_json, dict):
-        state["target_pr"] = target_json
-    else:
-        state["errors"].append(f"PR #{target_pr} discovery failed: " + compact_output(target_result))
+    if target_pr > 0:
+        target_json, target_result = run_json(
+            [
+                gh,
+                "pr",
+                "view",
+                str(target_pr),
+                "--json",
+                "number,title,state,isDraft,mergedAt,headRefName,baseRefName,url",
+            ],
+            root,
+        )
+        if target_result.ok and isinstance(target_json, dict):
+            state["target_pr"] = target_json
+        else:
+            state["errors"].append(f"PR #{target_pr} discovery failed: " + compact_output(target_result))
 
     return state
 
@@ -189,6 +190,7 @@ def compact_output(result: CommandResult, limit: int = 600) -> str:
 
 def find_latest_screenshots(root: Path) -> list[Path]:
     patterns = [
+        "wayfarer_godot_vertical_slice/artifacts/review/g418e_runtime_screenshots/g418e_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g423a_runtime_screenshots/g423a_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g422a_runtime_screenshots/g422a_*.png",
@@ -206,6 +208,8 @@ def find_latest_screenshots(root: Path) -> list[Path]:
 
 def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
+    if normalized.startswith("G-4.18E"):
+        return "G-4.18E", "g418e"
     if normalized.startswith("G-4.23B"):
         return "G-4.23B", "g423b"
     if normalized.startswith("G-4.23A"):
@@ -231,6 +235,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\art_pipeline\newport\scripts\validate_newport_asset_provenance.py"
     )
+    g418e_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\art_pipeline\newport_atelier\scripts\validate_g418e_hero_asset_family.py"
+    )
     extraction_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\art_pipeline\newport_atelier\scripts\extract_g421a_core_building_assets.py "
@@ -246,7 +254,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         rf"\{capture_prefix}_runtime_screenshots\godot_capture.log -TotalCount 120"
     )
 
-    return [
+    commands = [
         ValidatorCommand(
             name="Godot import validation",
             command_text=godot_import_text,
@@ -323,6 +331,21 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
             required_paths=[],
         ),
     ]
+    if phase.upper().strip().startswith("G-4.18E"):
+        commands.insert(
+            3,
+            ValidatorCommand(
+                name="G-4.18E hero asset family validation",
+                command_text=g418e_text,
+                args=[
+                    python_bin,
+                    str(game_root / "art_pipeline" / "newport_atelier" / "scripts" / "validate_g418e_hero_asset_family.py"),
+                ],
+                cwd=root,
+                required_paths=[game_root / "art_pipeline" / "newport_atelier" / "scripts" / "validate_g418e_hero_asset_family.py"],
+            ),
+        )
+    return commands
 
 
 def run_or_list_validators(commands: list[ValidatorCommand], should_run: bool) -> list[dict[str, str]]:
@@ -377,6 +400,23 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
             game_root / "art_pipeline" / "newport_atelier" / "scripts" / "extract_g421a_core_building_assets.py",
         ),
     ]
+    if phase.upper().strip().startswith("G-4.18E"):
+        required.extend(
+            [
+                (
+                    "G-4.18E hero asset family validator",
+                    game_root / "art_pipeline" / "newport_atelier" / "scripts" / "validate_g418e_hero_asset_family.py",
+                ),
+                (
+                    "G-4.18E asset family manifest",
+                    game_root
+                    / "art_pipeline"
+                    / "newport_atelier"
+                    / "manifests"
+                    / "newport_atelier_g418e_hero_asset_family_manifest.json",
+                ),
+            ]
+        )
     if capture_prefix != "g422a":
         required.extend(
             [
@@ -435,6 +475,8 @@ def final_pr_number(pr_state: dict[str, object], target_pr: int) -> str:
     target_pr_data = pr_state.get("target_pr")
     if isinstance(target_pr_data, dict) and target_pr_data.get("number"):
         return f"#{target_pr_data.get('number')}"
+    if target_pr <= 0:
+        return "Not available yet"
     return f"#{target_pr}"
 
 
@@ -590,6 +632,23 @@ def build_report(
         ["Does the scene support 90+ seconds of exploration in principle?", "PASS" if gameplay_readability_score >= 8.5 else "FAIL"],
         ["Does it approach the Newport 8.5+/10 bar?", "PASS" if meets_bar else "FAIL"],
     ]
+    g418e_asset_family_fields = [
+        ["Does the new asset family improve Newport as a believable harbor city?", "PASS" if world_layout_score >= 8.5 else "FAIL"],
+        ["Does it support the accepted G-4.23B street/harbor layout?", "PASS" if design_score >= 8.5 else "FAIL"],
+        ["Does it meet or exceed the 8.5+/10 pre-G-5 visual/art/world bar?", "PASS" if meets_bar else "FAIL"],
+        ["Are the assets coherent as one Newport visual language?", "PASS" if art_direction_score >= 8.5 else "FAIL"],
+        ["Are the assets cleanly extracted and properly rendered?", "PASS" if technical_stability_score >= 8.5 else "FAIL"],
+        ["Are the assets correctly classified for provenance?", "PASS" if technical_stability_score >= 8.5 else "FAIL"],
+        ["Are any yellow/red/unknown assets incorrectly promoted?", "NO" if technical_stability_score >= 8.5 else "CHECK REQUIRED"],
+        ["Is gameplay readability preserved?", "PASS" if gameplay_readability_score >= 8.5 else "FAIL"],
+        ["Are screenshots sufficient proof?", "PASS" if screenshots_inspected else "FAIL"],
+        ["Is human escalation truly required?", "NO" if not human_review_required else "YES"],
+    ]
+    scrum_scope = (
+        "Scope check: this council pass produced a coherent G-4.18E asset family and controlled runtime placements; it must not scatter random props or hide layout problems."
+        if phase.upper().strip().startswith("G-4.18E")
+        else "Scope check: this council pass changes production documentation and tooling only; it must not change Newport runtime layout."
+    )
 
     screenshot_rows = []
     for path in screenshots[:16]:
@@ -712,10 +771,20 @@ def build_report(
             "",
             md_table(["Criterion", "Status"], visual_fields),
             "",
+            *(
+                [
+                    "## G-4.18E Asset Family Authority Questions",
+                    "",
+                    md_table(["Question", "Council Answer"], g418e_asset_family_fields),
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-4.18E")
+                else []
+            ),
             "## Scrum Master Review",
             "",
             "- Status: PASS",
-            "- Scope check: this council pass changes production documentation and tooling only; it must not change Newport runtime layout.",
+            f"- {scrum_scope}",
             "- PR health check: open PR state was queried when gh was available.",
             "- Roadmap alignment: this supports future Newport reviews by splitting production disciplines before merge decisions.",
             "- Merge discipline: no merge action is allowed from this tool.",

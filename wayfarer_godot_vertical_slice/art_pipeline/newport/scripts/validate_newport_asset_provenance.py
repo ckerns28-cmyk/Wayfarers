@@ -38,6 +38,8 @@ ATELIER_G420B_WAVE_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier
 ATELIER_G420B_WAVE_REPORT_PATH = ATELIER_ROOT / "reports" / "G420B_NEWPORT_TOWN_IDENTITY_ATELIER_WAVE.md"
 ATELIER_G421A_WAVE_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_core_building_rebuild_wave_1_manifest.json"
 ATELIER_G421A_WAVE_REPORT_PATH = ATELIER_ROOT / "reports" / "G421A_NEWPORT_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md"
+ATELIER_G418E_WAVE_MANIFEST_PATH = ATELIER_ROOT / "manifests" / "newport_atelier_g418e_hero_asset_family_manifest.json"
+ATELIER_G418E_WAVE_REPORT_PATH = ATELIER_ROOT / "reports" / "G418E_GREEN_ORIGIN_HERO_ASSET_FAMILY.md"
 BUILDING_CATALOG_PATH = PROJECT_ROOT / "scripts" / "BuildingCatalog.gd"
 TOWN_BLUEPRINT_PATH = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 MAP_LAYER_PATH = PROJECT_ROOT / "scenes" / "map" / "MapLayer.gd"
@@ -76,6 +78,12 @@ ATELIER_G420B_PACK_IDS = {
     "shopfront_support_accents",
 }
 ATELIER_G421A_PACK_IDS = {"core_building_rebuild_wave_1"}
+ATELIER_G418E_PACK_IDS = {
+    "tavern_inn_district",
+    "commercial_avenue",
+    "harbor_dock_edge",
+    "rear_service_connector",
+}
 G421A_REQUIRED_BUILDING_ASSETS = {
     "atelier_newport_tavern_inn_hero_01",
     "atelier_newport_mercantile_store_01",
@@ -1996,6 +2004,139 @@ def validate_g421a_core_building_rebuild_wave(failures: list[str]) -> None:
         fail(f"missing G-4.21A core building wave report: {ATELIER_G421A_WAVE_REPORT_PATH}", failures)
 
 
+def validate_g418e_hero_asset_family(failures: list[str]) -> None:
+    wave = load_json(ATELIER_G418E_WAVE_MANIFEST_PATH, failures)
+    if not wave:
+        return
+    if wave.get("schema_id") != "wayfarer.newport_atelier.g418e.hero_asset_family.v1":
+        fail("G-4.18E hero asset family schema mismatch", failures)
+    if wave.get("phase") != "G-4.18E":
+        fail("G-4.18E hero asset family phase mismatch", failures)
+    if wave.get("family_id") != "newport_harbor_commercial_tavern_district_asset_family":
+        fail("G-4.18E family id mismatch", failures)
+    if float(wave.get("visual_quality_gate", 0.0)) < 8.5:
+        fail("G-4.18E visual gate must be at least 8.5", failures)
+    if "no random prop scatter" not in str(wave.get("placement_policy", "")).lower():
+        fail("G-4.18E placement policy must forbid random prop scatter", failures)
+    packs = wave.get("packs", [])
+    if not isinstance(packs, list):
+        fail("G-4.18E packs must be a list", failures)
+        packs = []
+    pack_ids = {str(pack.get("pack_id", "")) for pack in packs if isinstance(pack, dict)}
+    if pack_ids != ATELIER_G418E_PACK_IDS:
+        fail(f"G-4.18E pack ids mismatch: {sorted(pack_ids)}", failures)
+    else:
+        pass_check("G-4.18E hero asset family pack ids")
+    wave_assets = wave.get("assets", [])
+    if not isinstance(wave_assets, list) or len(wave_assets) != 32:
+        fail("G-4.18E hero asset family must contain exactly 32 assets", failures)
+    wave_asset_ids = {str(asset.get("asset_id", "")) for asset in wave_assets if isinstance(asset, dict)}
+    placed_asset_ids = {
+        str(asset.get("asset_id", ""))
+        for asset in wave_assets
+        if isinstance(asset, dict) and asset.get("used_in_g418e_playable_hero_slice") is True
+    }
+
+    for raw_pack in packs:
+        if not isinstance(raw_pack, dict):
+            fail("G-4.18E pack entry is not an object", failures)
+            continue
+        pack = raw_pack
+        pack_id = str(pack.get("pack_id", ""))
+        for path_key in ["manifest", "source_image", "generation_prompt", "atlas", "contact_sheet", "validation_report", "provenance_report"]:
+            rel_path = str(pack.get(path_key, ""))
+            path_exists(rel_path, failures)
+            if rel_path.endswith(".png"):
+                path_exists(rel_path + ".import", failures)
+        pack_manifest = load_json(PROJECT_ROOT / str(pack.get("manifest", "")), failures)
+        qa_report = load_json(PROJECT_ROOT / str(pack.get("validation_report", "")), failures)
+        if pack_manifest.get("schema_id") != f"wayfarer.newport_atelier.g418e.{pack_id}.manifest.v1":
+            fail(f"G-4.18E {pack_id} manifest schema mismatch", failures)
+        if pack_manifest.get("phase") != "G-4.18E":
+            fail(f"G-4.18E {pack_id} manifest phase mismatch", failures)
+        if pack_manifest.get("family_id") != "newport_harbor_commercial_tavern_district_asset_family":
+            fail(f"G-4.18E {pack_id} manifest family mismatch", failures)
+        if qa_report.get("schema_id") != "wayfarer.newport_atelier.g418e.extraction_qa.v1":
+            fail(f"G-4.18E {pack_id} QA schema mismatch", failures)
+        if qa_report.get("phase") != "G-4.18E":
+            fail(f"G-4.18E {pack_id} QA phase mismatch", failures)
+        if qa_report.get("status") != "PASS":
+            fail(f"G-4.18E {pack_id} QA must pass", failures)
+        assets = pack_manifest.get("assets", [])
+        if not isinstance(assets, list) or len(assets) != 8:
+            fail(f"G-4.18E {pack_id} manifest must contain 8 assets", failures)
+            continue
+        for raw_asset in assets:
+            if not isinstance(raw_asset, dict):
+                fail(f"G-4.18E {pack_id} asset entry is not an object", failures)
+                continue
+            asset = raw_asset
+            asset_id = str(asset.get("asset_id", "unknown"))
+            if asset_id not in wave_asset_ids:
+                fail(f"{asset_id} missing from G-4.18E wave manifest", failures)
+            for key in ["asset_id", "asset_type", "source_identity", "family_id", "path", "atlas", "atlas_region", "sprite_size", "generation_prompt", "source_image", "extraction_script", "input_sources", "provenance_status", "origin_classification", "commercial_use_status", "visual_quality_rating", "extraction_qa", "sha256"]:
+                if key not in asset:
+                    fail(f"{asset_id} missing G-4.18E field {key}", failures)
+            if asset.get("provenance_status") != "ai_assisted_green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} G-4.18E provenance status mismatch", failures)
+            if asset.get("origin_classification") != "green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} G-4.18E origin classification mismatch", failures)
+            if asset.get("commercial_use_status") != "green_origin_candidate_pending_license_review":
+                fail(f"{asset_id} G-4.18E commercial status mismatch", failures)
+            if asset.get("final_commercial_candidate") is not False or asset.get("final_commercial_eligible") is not False:
+                fail(f"{asset_id} incorrectly final-commercial promoted", failures)
+            if asset.get("source_pixels_from_yellow_uncertain_assets") is not False:
+                fail(f"{asset_id} uses yellow/uncertain source pixels", failures)
+            if asset.get("source_pixels_from_third_party_material") is not False or asset.get("web_scraped_source_pixels") is not False:
+                fail(f"{asset_id} uses unsafe external source pixels", failures)
+            if float(asset.get("visual_quality_rating", 0.0)) < 8.5:
+                fail(f"{asset_id} G-4.18E visual rating below 8.5", failures)
+            path_exists(str(asset.get("path", "")), failures)
+            path_exists(str(asset.get("path", "")) + ".import", failures)
+            metrics = image_alpha_metrics(PROJECT_ROOT / str(asset.get("path", "")))
+            if metrics.get("magenta_pixels_remaining") != 0:
+                fail(f"{asset_id} has magenta pixels remaining", failures)
+            if metrics.get("magenta_halo_pixels") != 0:
+                fail(f"{asset_id} has magenta halo pixels", failures)
+            if metrics.get("cutoff_edges"):
+                fail(f"{asset_id} has crop/cutoff risk: {metrics.get('cutoff_edges')}", failures)
+            if metrics.get("readable") is not True:
+                fail(f"{asset_id} is not readable by alpha metrics", failures)
+            qa = asset.get("extraction_qa", {})
+            if not isinstance(qa, dict) or qa.get("status") != "PASS":
+                fail(f"{asset_id} embedded G-4.18E extraction QA must pass", failures)
+
+    map_layer = read_text(MAP_LAYER_PATH, failures)
+    material_ids: set[str] = set()
+    for const_name in [
+        "NEWPORT_G418E_TAVERN_INN_MATERIALS",
+        "NEWPORT_G418E_COMMERCIAL_AVENUE_MATERIALS",
+        "NEWPORT_G418E_HARBOR_DOCK_EDGE_MATERIALS",
+        "NEWPORT_G418E_REAR_SERVICE_CONNECTOR_MATERIALS",
+    ]:
+        material_ids.update(_extract_quoted_list(map_layer, const_name))
+    if material_ids != wave_asset_ids:
+        fail(f"G-4.18E MapLayer material ids mismatch: missing {sorted(wave_asset_ids - material_ids)} extra {sorted(material_ids - wave_asset_ids)}", failures)
+    else:
+        pass_check("G-4.18E MapLayer material ids")
+    placed_in_map = {
+        asset_id
+        for asset_id in wave_asset_ids
+        if map_layer.find('"asset_id": "' + asset_id + '"') >= 0
+    }
+    if placed_in_map != placed_asset_ids:
+        fail(f"G-4.18E MapLayer placed ids mismatch: missing {sorted(placed_asset_ids - placed_in_map)} extra {sorted(placed_in_map - placed_asset_ids)}", failures)
+    if "atelier_g418e_tavern_twin_stack_chimney_detail_01" in placed_in_map:
+        fail("G-4.18E chimney detail must not be placed without roof integration", failures)
+    if ATELIER_G418E_WAVE_REPORT_PATH.exists():
+        report = ATELIER_G418E_WAVE_REPORT_PATH.read_text(encoding="utf-8")
+        for required_text in ["not random prop scatter", "No asset is final-commercial promoted", "Agent Council"]:
+            if required_text not in report:
+                fail(f"G-4.18E report missing text: {required_text}", failures)
+    else:
+        fail(f"missing G-4.18E report: {ATELIER_G418E_WAVE_REPORT_PATH}", failures)
+
+
 def validate_visual_production_registry(failures: list[str]) -> None:
     registry = load_json(VISUAL_REGISTRY_PATH, failures)
     if not registry:
@@ -2004,16 +2145,27 @@ def validate_visual_production_registry(failures: list[str]) -> None:
         fail("visual production registry schema_id must be wayfarer.newport.visual_production_registry.v1", failures)
     else:
         pass_check("visual production registry schema id")
-    if registry.get("phase") != "G-4.21A":
-        fail("visual production registry phase must be G-4.21A", failures)
+    registry_phase = str(registry.get("phase", ""))
+    if registry_phase not in {"G-4.21A", "G-4.18E"}:
+        fail("visual production registry phase must be G-4.21A or G-4.18E", failures)
     if "starting town/village" not in str(registry.get("north_star", "")):
         fail("visual production registry must restore the Newport starting town/village North Star", failures)
     registry_policy = str(registry.get("policy", ""))
-    if "core building atelier rebuild" not in registry_policy or "Tavern/Inn is the required hero centerpiece asset" not in registry_policy:
-        fail("visual production registry must record the G-4.21A core building atelier rebuild policy", failures)
-    for required_text in ["brick construction", "two front/back bridged twin-stack chimney sets", "Hotel Viking-inspired", "coherent starting-town architectural set"]:
-        if required_text not in registry_policy:
-            fail(f"visual production registry G-4.21A policy missing: {required_text}", failures)
+    if registry_phase == "G-4.18E":
+        for required_text in [
+            "G-4.18E",
+            "Newport Harbor Commercial + Tavern District",
+            "AI-assisted green-origin candidates pending final generated-art license policy approval",
+            "not final-commercial promoted",
+        ]:
+            if required_text not in registry_policy:
+                fail(f"visual production registry G-4.18E policy missing: {required_text}", failures)
+    else:
+        if "core building atelier rebuild" not in registry_policy or "Tavern/Inn is the required hero centerpiece asset" not in registry_policy:
+            fail("visual production registry must record the G-4.21A core building atelier rebuild policy", failures)
+        for required_text in ["brick construction", "two front/back bridged twin-stack chimney sets", "Hotel Viking-inspired", "coherent starting-town architectural set"]:
+            if required_text not in registry_policy:
+                fail(f"visual production registry G-4.21A policy missing: {required_text}", failures)
 
     statuses = registry.get("status_taxonomy", [])
     if not isinstance(statuses, list):
@@ -2171,6 +2323,10 @@ def validate_visual_production_registry(failures: list[str]) -> None:
         "NEWPORT_ATELIER_LAMPS_WAYFINDING_MATERIALS",
         "NEWPORT_ATELIER_CIVIC_MARKET_MATERIALS",
         "NEWPORT_ATELIER_SHOPFRONT_SUPPORT_MATERIALS",
+        "NEWPORT_G418E_TAVERN_INN_MATERIALS",
+        "NEWPORT_G418E_COMMERCIAL_AVENUE_MATERIALS",
+        "NEWPORT_G418E_HARBOR_DOCK_EDGE_MATERIALS",
+        "NEWPORT_G418E_REAR_SERVICE_CONNECTOR_MATERIALS",
     ]:
         for asset_id in _extract_quoted_list(map_layer, const_name):
             if asset_id not in by_id:
@@ -2264,6 +2420,7 @@ def main() -> int:
     validate_g420a_environmental_believability_wave(failures)
     validate_g420b_town_identity_wave(failures)
     validate_g421a_core_building_rebuild_wave(failures)
+    validate_g418e_hero_asset_family(failures)
     validate_visual_production_registry(failures)
 
     if failures:

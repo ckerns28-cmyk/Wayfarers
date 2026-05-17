@@ -1,0 +1,253 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g418e.extraction_qa.v1",
+  "phase": "G-4.18E",
+  "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+  "pack": "tavern_inn_district",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "generated sheet grid separators are excluded from crops",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10"
+  ],
+  "assets": {
+    "atelier_g418e_tavern_hanging_inn_sign_01": {
+      "size": {
+        "w": 329,
+        "h": 306
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 261,
+        "h": 239
+      },
+      "alpha_pixels": 29186,
+      "opaque_pixels": 29186,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 33
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "ornate hanging inn sign",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.4,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_tavern_entry_lantern_pair_01": {
+      "size": {
+        "w": 457,
+        "h": 274
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 389,
+        "h": 206
+      },
+      "alpha_pixels": 29101,
+      "opaque_pixels": 29101,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "wrought iron entry lantern pair",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_tavern_threshold_planters_01": {
+      "size": {
+        "w": 437,
+        "h": 259
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 369,
+        "h": 191
+      },
+      "alpha_pixels": 42224,
+      "opaque_pixels": 42224,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "paired stone planters",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_tavern_service_barrel_crate_01": {
+      "size": {
+        "w": 428,
+        "h": 263
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 33,
+        "w": 360,
+        "h": 196
+      },
+      "alpha_pixels": 48354,
+      "opaque_pixels": 48354,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 33,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "inn delivery barrel and crate cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_tavern_brick_threshold_01": {
+      "size": {
+        "w": 541,
+        "h": 179
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 473,
+        "h": 111
+      },
+      "alpha_pixels": 41744,
+      "opaque_pixels": 41744,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "brick and stone entry threshold strip",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_tavern_twin_stack_chimney_detail_01": {
+      "size": {
+        "w": 433,
+        "h": 249
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 365,
+        "h": 181
+      },
+      "alpha_pixels": 44007,
+      "opaque_pixels": 44007,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "twin chimney stack detail pair",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.0,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_tavern_stable_tack_rack_01": {
+      "size": {
+        "w": 476,
+        "h": 257
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 408,
+        "h": 189
+      },
+      "alpha_pixels": 46197,
+      "opaque_pixels": 46197,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "small stable tack rack",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_tavern_firewood_coal_scuttle_01": {
+      "size": {
+        "w": 492,
+        "h": 246
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 424,
+        "h": 178
+      },
+      "alpha_pixels": 50407,
+      "opaque_pixels": 50407,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "firewood and coal scuttle cluster",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.1,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}

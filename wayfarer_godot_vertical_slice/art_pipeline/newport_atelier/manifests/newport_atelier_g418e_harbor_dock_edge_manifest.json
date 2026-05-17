@@ -1,0 +1,1000 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g418e.harbor_dock_edge.manifest.v1",
+  "phase": "G-4.18E",
+  "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+  "pack_id": "harbor_dock_edge",
+  "title": "Harbor/Dock Edge",
+  "generated_at": "2026-05-17T20:08:53.472657+00:00",
+  "visual_standard": "G-4.18E hero-quality family using the locked G-4.18D/G-4.19A Newport atelier production standard with an 8.5/10 minimum visual/world gate.",
+  "source_policy": "AI-assisted original art is allowed here only with recorded prompt/source image/extraction script and no yellow building pixels, third-party sprites, marketplace packs, or web-scraped images as source inputs.",
+  "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+  "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+  "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+  "generated_asset_root": "art_pipeline/newport_atelier/generated",
+  "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_harbor_dock_edge_contact_sheet.png",
+  "provenance_report": "art_pipeline/newport_atelier/reports/G418E_HARBOR_DOCK_EDGE_ATELIER_PACK.md",
+  "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_g418e_harbor_dock_edge_extraction_qa.json",
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "base_pipeline_standard": "G-4.18D Newport atelier cargo pipeline lock and G-4.19A dock clutter rollout pack",
+  "family_role": "Coherent Newport harbor commercial, tavern, dock, and service connector visual language for the accepted G-4.23B layout.",
+  "placement_policy": "Controlled harbor edge, dock-frontage, and cargo-service placement only; replace weak procedural clusters with authored harbor-life assets while preserving walkable dock reads.",
+  "green_origin_note": "Green-origin candidate status is provenance-gated and pending final generated-art license policy approval; no asset is final-commercial promoted.",
+  "assets": [
+    {
+      "asset_id": "atelier_g418e_harbor_dock_barrel_row_01",
+      "asset_type": "dock_barrel_row",
+      "source_identity": "dock barrel row",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_dock_barrel_row_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 179,
+        "y": 49,
+        "w": 471,
+        "h": 186
+      },
+      "sprite_size": {
+        "w": 507,
+        "h": 222
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.13,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "source_image_sha256": "c74593c366fa0717aa7bbfc9a7dc419c57fc826f18a99368fb86494886d48264",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 507,
+          "h": 222
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 439,
+          "h": 154
+        },
+        "alpha_pixels": 55226,
+        "opaque_pixels": 55226,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "dock barrel row",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds authored cargo rhythm along the working harbor edge.",
+      "sha256": "c99914ad801c640ade2b17084dd5474d0c334c76e2870edb622c22465c612a41",
+      "notes": "Better than old weak deterministic cargo rows; controlled wharf placement only."
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_rope_coil_large_01",
+      "asset_type": "large_rope_coil",
+      "source_identity": "large rope coil",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_rope_coil_large_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 910,
+        "y": 30,
+        "w": 424,
+        "h": 199
+      },
+      "sprite_size": {
+        "w": 460,
+        "h": 235
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.13,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "source_image_sha256": "c74593c366fa0717aa7bbfc9a7dc419c57fc826f18a99368fb86494886d48264",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 460,
+          "h": 235
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 392,
+          "h": 167
+        },
+        "alpha_pixels": 39612,
+        "opaque_pixels": 39612,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "large rope coil",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.3,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds crisp harbor material identity near mooring paths.",
+      "sha256": "72530b7a651bde316d9c23699b9dab85a55d89a699f8a560bd1637c68000a74b",
+      "notes": "Large rope coil with frayed loose end."
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_fishing_crate_net_stack_01",
+      "asset_type": "fishing_crate_net_stack",
+      "source_identity": "fishing crate stack with net",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_fishing_crate_net_stack_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 197,
+        "y": 266,
+        "w": 402,
+        "h": 235
+      },
+      "sprite_size": {
+        "w": 438,
+        "h": 271
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.14,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "source_image_sha256": "c74593c366fa0717aa7bbfc9a7dc419c57fc826f18a99368fb86494886d48264",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 438,
+          "h": 271
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 370,
+          "h": 203
+        },
+        "alpha_pixels": 57656,
+        "opaque_pixels": 57656,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "fishing crate stack with net",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.3,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds fishery-specific dock economy detail.",
+      "sha256": "7366ca070d8a3d5ba407b41e4500606d437132b9a40e9d04473f1a4b28dd8991",
+      "notes": "Crates, net, cork floats, and dock wear."
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_net_drying_frame_01",
+      "asset_type": "drying_net_frame",
+      "source_identity": "drying net frame",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_net_drying_frame_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 882,
+        "y": 263,
+        "w": 448,
+        "h": 245
+      },
+      "sprite_size": {
+        "w": 484,
+        "h": 281
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 1
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.15,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "source_image_sha256": "c74593c366fa0717aa7bbfc9a7dc419c57fc826f18a99368fb86494886d48264",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 484,
+          "h": 281
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 416,
+          "h": 213
+        },
+        "alpha_pixels": 36706,
+        "opaque_pixels": 36706,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "drying net frame",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds recognizable working-harbor service life while staying off routes.",
+      "sha256": "4fbc1670176a47443c63832236265ad95f57dbc34deb34aa59f9a18cf3648254",
+      "notes": "Net frame with weights; placed as edge feature."
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_bollard_pair_01",
+      "asset_type": "bollard_pair_rope_wrap",
+      "source_identity": "bollard pair with rope wrap",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_bollard_pair_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 198,
+        "y": 523,
+        "w": 394,
+        "h": 216
+      },
+      "sprite_size": {
+        "w": 430,
+        "h": 252
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "grounding": {
+        "pivot_y": 0.94,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.13,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "source_image_sha256": "c74593c366fa0717aa7bbfc9a7dc419c57fc826f18a99368fb86494886d48264",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 430,
+          "h": 252
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 362,
+          "h": 184
+        },
+        "alpha_pixels": 43595,
+        "opaque_pixels": 43595,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "bollard pair with rope wrap",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Defines mooring edges without blocking player movement.",
+      "sha256": "6f4a2254e09fd2c2b34ed981a5cf24a34fdfc02ef892dd094590c567556aa1cd",
+      "notes": "Short mooring hardware for dock edge reads."
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_cargo_stack_01",
+      "asset_type": "compact_cargo_stack",
+      "source_identity": "compact cargo stack",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_cargo_stack_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 881,
+        "y": 516,
+        "w": 425,
+        "h": 222
+      },
+      "sprite_size": {
+        "w": 461,
+        "h": 258
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 2
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.14,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "source_image_sha256": "c74593c366fa0717aa7bbfc9a7dc419c57fc826f18a99368fb86494886d48264",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 461,
+          "h": 258
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 393,
+          "h": 190
+        },
+        "alpha_pixels": 56249,
+        "opaque_pixels": 56249,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "compact cargo stack",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Raises cargo quality at wharf service points without old procedural clutter.",
+      "sha256": "e7097073423b1f92ede4d75375c012a17c985494151915a0fbde6b0d93cd4d80",
+      "notes": "Crates, sacks, tarped barrel, and rope."
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_service_post_lantern_01",
+      "asset_type": "harbor_service_post_lantern",
+      "source_identity": "harbor service post with lantern",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_service_post_lantern_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 244,
+        "y": 756,
+        "w": 226,
+        "h": 259
+      },
+      "sprite_size": {
+        "w": 262,
+        "h": 295
+      },
+      "source_cell": {
+        "column": 0,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.98
+      },
+      "grounding": {
+        "pivot_y": 0.98,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.12,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "source_image_sha256": "c74593c366fa0717aa7bbfc9a7dc419c57fc826f18a99368fb86494886d48264",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 262,
+          "h": 295
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 25,
+          "w": 194,
+          "h": 236
+        },
+        "alpha_pixels": 23472,
+        "opaque_pixels": 23472,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 25,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "harbor service post with lantern",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.3,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds working-harbor lighting and route landmark function.",
+      "sha256": "b2eefdb9fc297dba035e17a95fd2ab9b95d38fcddb759c8b1e61a7ebbd475e97",
+      "notes": "Lantern service post with coil; controlled harbor edge placement."
+    },
+    {
+      "asset_id": "atelier_g418e_harbor_fish_baskets_tub_01",
+      "asset_type": "fish_baskets_covered_tub",
+      "source_identity": "fish baskets and covered tub",
+      "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+      "category": "G418E_HARBOR_DOCK_EDGE",
+      "path": "art_pipeline/newport_atelier/generated/atelier_g418e_harbor_fish_baskets_tub_01.png",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_harbor_dock_edge_v1.png",
+      "atlas_region": {
+        "x": 873,
+        "y": 774,
+        "w": 470,
+        "h": 221
+      },
+      "sprite_size": {
+        "w": 506,
+        "h": 257
+      },
+      "source_cell": {
+        "column": 1,
+        "row": 3
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "grounding": {
+        "pivot_y": 0.92,
+        "expected_contact": "hero-family sprite draws from transparent atlas bounds; destination bottom is the intended grounding line"
+      },
+      "recommended_game_scale": 0.14,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "visual_quality_status": "atelier_review_pass_8_5_plus",
+      "source_type": "ai_assisted_image_generation_with_local_chroma_extraction",
+      "created_by": "Codex built-in image generation tool plus local transparent extraction",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "source_image_sha256": "c74593c366fa0717aa7bbfc9a7dc419c57fc826f18a99368fb86494886d48264",
+      "extraction_script": "art_pipeline/newport_atelier/scripts/extract_g418e_hero_asset_family.py",
+      "input_sources": [
+        {
+          "type": "ai_generated_source_image",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+          "source_pixels_used": true,
+          "commercial_status": "green_origin_candidate_pending_license_review"
+        },
+        {
+          "type": "project_prompt",
+          "path": "art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+          "source_pixels_used": false,
+          "commercial_status": "green_origin_candidate"
+        },
+        {
+          "type": "project_style_rules",
+          "path": "docs/NEWPORT_ART_BIBLE.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "locked_atelier_standard",
+          "path": "art_pipeline/newport_atelier/reports/G418D_ATELIER_CARGO_STANDARD.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        },
+        {
+          "type": "prior_atelier_rollout_reference",
+          "path": "art_pipeline/newport_atelier/reports/G419A_NEWPORT_DOCK_CLUTTER_ATELIER_PACK.md",
+          "source_pixels_used": false,
+          "commercial_status": "documentation_only"
+        }
+      ],
+      "license": "AI-assisted original generated sprite candidate for Wayfarer; no web image, marketplace pack, ripped sheet, or copied game sprite was supplied as source input. Final-commercial promotion still requires project policy approval for AI-generated artwork.",
+      "ownership": "project-owned-candidate",
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "origin_classification": "green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "review_eligible": true,
+      "normal_review_eligible": true,
+      "lab_only": false,
+      "final_commercial_candidate": false,
+      "final_commercial_eligible": false,
+      "source_pixels_from_yellow_uncertain_assets": false,
+      "source_pixels_from_third_party_material": false,
+      "web_scraped_source_pixels": false,
+      "ai_generated": true,
+      "human_selected": true,
+      "chroma_key_removed": true,
+      "used_in_g418e_playable_hero_slice": true,
+      "extraction_qa": {
+        "size": {
+          "w": 506,
+          "h": 257
+        },
+        "alpha_bbox": {
+          "x": 34,
+          "y": 34,
+          "w": 438,
+          "h": 189
+        },
+        "alpha_pixels": 57903,
+        "opaque_pixels": 57903,
+        "magenta_pixels_remaining": 0,
+        "magenta_halo_pixels": 0,
+        "crop_padding": {
+          "left": 34,
+          "top": 34,
+          "right": 34,
+          "bottom": 34
+        },
+        "cutoff_edges": [],
+        "readable": true,
+        "source_identity": "fish baskets and covered tub",
+        "manifest_identity_match": true,
+        "visual_quality_rating": 9.2,
+        "visual_quality_gate": 8.5,
+        "status": "PASS"
+      },
+      "gameplay_role": "Adds fish-market service detail near dock/market transition.",
+      "sha256": "e64ac75ea5bdc76c9e2d78d429867779d44070f8b36f7db2c1ddcc9e2c282733",
+      "notes": "Fish baskets and covered tub cluster."
+    }
+  ]
+}

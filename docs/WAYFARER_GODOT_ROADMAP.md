@@ -247,6 +247,24 @@ an accepted authored street/harbor layout, but the roadmap still needs a
 green-origin asset family that can raise the hero slice without relying on
 temporary or yellow provenance-limited building art.
 
+Current G-4.18E result: the locked Newport atelier pipeline produced the
+Newport Harbor Commercial + Tavern District Asset Family as a coherent
+hero-quality, AI-assisted green-origin candidate set pending final generated-art
+license policy approval. The family adds 32 registered/extracted assets across
+Tavern/Inn, commercial avenue, harbor/dock edge, and rear-service connector
+roles; 31 are placed as controlled runtime dressing in the accepted G-4.23B
+layout, while the chimney-detail candidate remains registered but unplaced
+until a roof-attachment pass exists. Source prompts/images, transparent sprites,
+atlases, contact sheets, manifests, provenance entries, G-4.18E validation, and
+runtime screenshots are preserved. The Agent Council verdict is
+`COUNCIL_PASS_READY_FOR_PR`; human visual review is not required for this
+ordinary pre-G-5 phase.
+
+Next recommended phase after G-4.18E: G-4.19 Player Visual Identity Foundation.
+Newport now has an accepted authored street/harbor layout and a coherent
+hero-quality asset family, so the temporary player/NPC visual language is the
+largest remaining screenshot mismatch against the environment bar.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -1967,21 +1985,29 @@ Acceptance:
 
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
-Status: planned.
+Status: `COUNCIL_PASS_READY_FOR_PR` under the autonomous pre-G-5 production
+protocol.
 
 G-4.18E creates one green-origin asset family that is good enough to be placed
-beside the current yellow buildings without lowering the scene quality.
+beside the current yellow buildings without lowering the scene quality. The
+completed family is the Newport Harbor Commercial + Tavern District Asset
+Family.
 
 Acceptance:
 
-- The family is source-safe, documented, and repeatable.
-- It contains enough variants to prove production scale, not just a one-off
+- PASS: The family is source-safe, documented, and repeatable through preserved
+  prompts, source sheets, extraction script, manifests, atlases, contact sheets,
+  and validation reports.
+- PASS: It contains 32 coordinated variants across Tavern/Inn, commercial
+  avenue, harbor/dock edge, and rear-service connector roles, not a one-off
   hero image.
-- It improves the hero street/dock screenshot compared with the quarantined
-  G-4.18B proof.
-- The manifest marks it green-origin and review-eligible only after visual
-  council review confirms it belongs in the Newport fantasy-harbor art
-  direction.
+- PASS: Runtime screenshots show the family improving the accepted G-4.23B
+  Tavern/Inn, commercial street, dock edge, service-lane, gameplay zoom, and
+  wider-town views.
+- PASS: The manifest marks assets as green-origin candidates pending final
+  generated-art license policy approval; no asset is final-commercial promoted.
+- PASS: The Agent Council inspected screenshot evidence and classified the pass
+  as `COUNCIL_PASS_READY_FOR_PR`.
 
 ## G-4.19: Player Visual Identity Foundation
 

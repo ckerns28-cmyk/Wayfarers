@@ -1,0 +1,253 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g418e.extraction_qa.v1",
+  "phase": "G-4.18E",
+  "family_id": "newport_harbor_commercial_tavern_district_asset_family",
+  "pack": "harbor_dock_edge",
+  "status": "PASS",
+  "visual_quality_gate": 8.5,
+  "checks": [
+    "source image and prompt exist",
+    "transparent sprites have no magenta background",
+    "transparent sprites have no magenta halo on alpha edges",
+    "generated sheet grid separators are excluded from crops",
+    "sprites retain clean transparent crop padding",
+    "sprites are not cut off at object edges",
+    "sprites remain visually readable by alpha footprint",
+    "source sheet object identity maps to manifest asset ids",
+    "visual quality rating meets or exceeds 8.5/10"
+  ],
+  "assets": {
+    "atelier_g418e_harbor_dock_barrel_row_01": {
+      "size": {
+        "w": 507,
+        "h": 222
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 439,
+        "h": 154
+      },
+      "alpha_pixels": 55226,
+      "opaque_pixels": 55226,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "dock barrel row",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_harbor_rope_coil_large_01": {
+      "size": {
+        "w": 460,
+        "h": 235
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 392,
+        "h": 167
+      },
+      "alpha_pixels": 39612,
+      "opaque_pixels": 39612,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "large rope coil",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_harbor_fishing_crate_net_stack_01": {
+      "size": {
+        "w": 438,
+        "h": 271
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 370,
+        "h": 203
+      },
+      "alpha_pixels": 57656,
+      "opaque_pixels": 57656,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "fishing crate stack with net",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_harbor_net_drying_frame_01": {
+      "size": {
+        "w": 484,
+        "h": 281
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 416,
+        "h": 213
+      },
+      "alpha_pixels": 36706,
+      "opaque_pixels": 36706,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "drying net frame",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_harbor_bollard_pair_01": {
+      "size": {
+        "w": 430,
+        "h": 252
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 362,
+        "h": 184
+      },
+      "alpha_pixels": 43595,
+      "opaque_pixels": 43595,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "bollard pair with rope wrap",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_harbor_cargo_stack_01": {
+      "size": {
+        "w": 461,
+        "h": 258
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 393,
+        "h": 190
+      },
+      "alpha_pixels": 56249,
+      "opaque_pixels": 56249,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "compact cargo stack",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_harbor_service_post_lantern_01": {
+      "size": {
+        "w": 262,
+        "h": 295
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 25,
+        "w": 194,
+        "h": 236
+      },
+      "alpha_pixels": 23472,
+      "opaque_pixels": 23472,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 25,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "harbor service post with lantern",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.3,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    },
+    "atelier_g418e_harbor_fish_baskets_tub_01": {
+      "size": {
+        "w": 506,
+        "h": 257
+      },
+      "alpha_bbox": {
+        "x": 34,
+        "y": 34,
+        "w": 438,
+        "h": 189
+      },
+      "alpha_pixels": 57903,
+      "opaque_pixels": 57903,
+      "magenta_pixels_remaining": 0,
+      "magenta_halo_pixels": 0,
+      "crop_padding": {
+        "left": 34,
+        "top": 34,
+        "right": 34,
+        "bottom": 34
+      },
+      "cutoff_edges": [],
+      "readable": true,
+      "source_identity": "fish baskets and covered tub",
+      "manifest_identity_match": true,
+      "visual_quality_rating": 9.2,
+      "visual_quality_gate": 8.5,
+      "status": "PASS"
+    }
+  }
+}
