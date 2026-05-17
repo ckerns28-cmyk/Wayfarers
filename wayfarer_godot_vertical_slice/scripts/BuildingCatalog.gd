@@ -86,7 +86,7 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_mercantile":
 			return _definition(building_id, "Mercantile", "atelier_newport_mercantile_store_01", "mercantile", 108.0, Vector2(655.0, 847.0), Vector2(112.0, 18.0), Rect2(Vector2(-54.0, -112.0), Vector2(108.0, 124.0)), Vector2(0.0, 22.0), 96.0, false, ["harborfront_commercial", "commercial", "mercantile", "market_spine"], "G-4.21A rebuild candidate: practical coastal mercantile with readable shopfront and sign/awning compatibility; scaled to the market-spine footprint so it supports the Tavern/Inn hero instead of competing with it.")
 		"b_counting_house":
-			return _definition(building_id, "Counting House", "newport_counting_house_civic_exchange", "counting_house", 190.0, Vector2(229.0, 346.0), Vector2(166.0, 18.0), Rect2(Vector2(-104.0, -166.0), Vector2(208.0, 178.0)), Vector2(0.0, 25.0), 150.0)
+			return _definition(building_id, "Town Hall / Counting House", "newport_counting_house_civic_exchange", "town_hall_counting_house", 190.0, Vector2(229.0, 346.0), Vector2(166.0, 18.0), Rect2(Vector2(-104.0, -166.0), Vector2(208.0, 178.0)), Vector2(0.0, 25.0), 150.0, false, ["inland_residential_civic", "civic", "town_hall", "counting_house"], "G-4.22A uses the stronger dedicated civic exchange sprite as the provisional Town Hall anchor instead of reactivating the old meeting-house crop.")
 		"b_chandlery_front":
 			return _definition(building_id, "Chandlery", "newport_chandlery_outfitter_front", "chandlery", 181.0, Vector2(217.5, 376.0), Vector2(154.0, 18.0), Rect2(Vector2(-92.0, -168.0), Vector2(184.0, 180.0)), Vector2(0.0, 24.0), 132.0)
 		"b_shop_house":
@@ -102,7 +102,7 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_custom_house":
 			return _definition(building_id, "Custom House", "newport_custom_house_civic_front", "customs_house", 176.0, Vector2(214.5, 409.0), Vector2(164.0, 20.0), Rect2(Vector2(-96.0, -146.0), Vector2(192.0, 156.0)), Vector2(0.0, 24.0), 146.0, false, ["inland_residential_civic", "harborfront_commercial", "civic", "customs"], "G-4.11 intentional civic/admin anchor; uses the dedicated custom house asset from the left side of Newport pack B.")
 		"b_village_hall":
-			return _definition(building_id, "Meeting House Chapel", "village_hall_meeting_house", "chapel_deferred", 178.0, Vector2(219.0, 454.0), Vector2(160.0, 20.0), Rect2(Vector2(-92.0, -152.0), Vector2(184.0, 164.0)), Vector2(0.0, 24.0), 142.0, false, ["inland_residential_civic", "chapel"], "Church/chapel-coded asset demoted in G-4.11; not active as the starter town civic anchor.")
+			return _definition(building_id, "Village Hall", "village_hall_meeting_house", "deferred_chapel", 178.0, Vector2(219.0, 454.0), Vector2(160.0, 20.0), Rect2(Vector2(-92.0, -152.0), Vector2(184.0, 164.0)), Vector2(0.0, 24.0), 142.0, false, ["deferred", "chapel"], "Deferred yellow meeting-house crop; G-4.22A does not use this as an active civic anchor.")
 		"b_res_small":
 			return _definition(building_id, "Harbor Cottage", "atelier_newport_harbor_cottage_gabled_01", "residence", 138.0, Vector2(604.5, 873.0), Vector2(112.0, 18.0), Rect2(Vector2(-68.0, -118.0), Vector2(136.0, 130.0)), Vector2(0.0, 22.0), 108.0, false, ["inland_residential_civic", "residential", "cottage"], "G-4.21A residence rebuild candidate: quiet gabled harbor cottage with Newport coastal clapboard language.")
 		"b_large_residence":
@@ -284,7 +284,7 @@ static func _entity_metadata_for(building_id: String, display_name: String, dist
 		"b_mercantile":
 			return _entity("mercantile", "public", "res://scenes/interiors/mercantile_stub.tscn", true, "Press E to enter Harbor Mercantile", "", "Harbor Mercantile will be enterable in G-4.15.")
 		"b_counting_house":
-			return _entity("civic", "public", "res://scenes/interiors/counting_house_stub.tscn", true, "Press E to enter Counting House", "", "The Counting House will be enterable in G-4.15.")
+			return _entity("civic", "public", "res://scenes/interiors/counting_house_stub.tscn", true, "Press E to enter Town Hall / Counting House", "", "Town Hall / Counting House will be enterable in G-4.15.")
 		"b_chandlery_front":
 			return _entity("shop", "public", "res://scenes/interiors/chandlery_stub.tscn", true, "Press E to enter Chandlery", "", "The Chandlery will be enterable in G-4.15.")
 		"b_shop_house":
@@ -314,7 +314,7 @@ static func _entity_metadata_for(building_id: String, display_name: String, dist
 		"b_cooperage_shed":
 			return _entity("dock_service", "locked", "res://scenes/interiors/cooperage_stub.tscn", false, "Press E to inspect Cooperage Shed", "", "The cooperage shed is not open yet.")
 		"b_village_hall":
-			return _entity("civic", "locked", "res://scenes/interiors/chapel_stub.tscn", false, "Press E to inspect Meeting House Chapel", "", "The meeting house is not open yet.")
+			return _entity("deferred_chapel", "locked", "res://scenes/interiors/building_stub.tscn", false, "Press E to inspect Village Hall", "", "The old Village Hall crop is deferred from normal review.")
 		_:
 			return _entity(district_role, "locked", "res://scenes/interiors/building_stub.tscn", false, "Press E to inspect " + display_name, "", display_name + " is not open yet.")
 
@@ -381,7 +381,7 @@ static func _interaction_size_for(building_id: String, _collision_footprint: Rec
 	match building_id:
 		"b_dock_storehouse", "b_dock_warehouse", "b_wharf_boathouse":
 			return Vector2(64.0, 36.0)
-		"b_counting_house", "b_custom_house":
+		"b_counting_house", "b_custom_house", "b_village_hall":
 			return Vector2(58.0, 36.0)
 		"b_inn_tavern", "b_mercantile", "b_chandlery_front", "b_shop_house":
 			return Vector2(56.0, 34.0)
