@@ -1,0 +1,349 @@
+{
+  "schema_id": "wayfarer.player_identity.g419.manifest.v1",
+  "phase": "G-4.19",
+  "family_id": "player_wayfarer_foundation_g419",
+  "status": "APPROVED_TEMPORARY",
+  "origin_classification": "project_owned_deterministic_source_authored",
+  "provenance_status": "green_origin_project_authored",
+  "commercial_use_status": "not_final_commercial_promoted",
+  "source_pixels_from_yellow_uncertain_assets": false,
+  "source_pixels_from_third_party_material": false,
+  "web_scraped_source_pixels": false,
+  "runtime_asset": "art_pipeline/player_identity/atlases/player_wayfarer_foundation_g419_v1.png",
+  "source_grid": "art_pipeline/player_identity/generated/player_wayfarer_foundation_g419_source_grid.png",
+  "contact_sheet": "art_pipeline/player_identity/contact_sheets/player_wayfarer_foundation_g419_contact_sheet.png",
+  "style_tokens": "art_pipeline/player_identity/source_authored/g419_player_identity_style_tokens.json",
+  "brief": "art_pipeline/player_identity/source_authored/g419_player_visual_identity_brief.md",
+  "generation_script": "art_pipeline/player_identity/scripts/generate_g419_player_identity_assets.py",
+  "validation_script": "art_pipeline/player_identity/scripts/validate_g419_player_identity.py",
+  "frame_size": {
+    "w": 64,
+    "h": 64
+  },
+  "atlas_dimensions": {
+    "w": 192,
+    "h": 256
+  },
+  "runtime_scale": 0.82,
+  "animations": {
+    "idle_down": [
+      "idle_down"
+    ],
+    "idle_up": [
+      "idle_up"
+    ],
+    "idle_left": [
+      "idle_left"
+    ],
+    "idle_right": [
+      "idle_right"
+    ],
+    "walk_down": [
+      "idle_down",
+      "walk_a_down",
+      "idle_down",
+      "walk_b_down"
+    ],
+    "walk_up": [
+      "idle_up",
+      "walk_a_up",
+      "idle_up",
+      "walk_b_up"
+    ],
+    "walk_left": [
+      "idle_left",
+      "walk_a_left",
+      "idle_left",
+      "walk_b_left"
+    ],
+    "walk_right": [
+      "idle_right",
+      "walk_a_right",
+      "idle_right",
+      "walk_b_right"
+    ]
+  },
+  "frames": [
+    {
+      "id": "idle_down",
+      "animation": "idle_down",
+      "kind": "idle",
+      "direction": "down",
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "walk_a_down",
+      "animation": "walk_down",
+      "kind": "walk_a",
+      "direction": "down",
+      "region": {
+        "x": 64,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "walk_b_down",
+      "animation": "walk_down",
+      "kind": "walk_b",
+      "direction": "down",
+      "region": {
+        "x": 128,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "idle_up",
+      "animation": "idle_up",
+      "kind": "idle",
+      "direction": "up",
+      "region": {
+        "x": 0,
+        "y": 64,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "walk_a_up",
+      "animation": "walk_up",
+      "kind": "walk_a",
+      "direction": "up",
+      "region": {
+        "x": 64,
+        "y": 64,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "walk_b_up",
+      "animation": "walk_up",
+      "kind": "walk_b",
+      "direction": "up",
+      "region": {
+        "x": 128,
+        "y": 64,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "idle_left",
+      "animation": "idle_left",
+      "kind": "idle",
+      "direction": "left",
+      "region": {
+        "x": 0,
+        "y": 128,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "walk_a_left",
+      "animation": "walk_left",
+      "kind": "walk_a",
+      "direction": "left",
+      "region": {
+        "x": 64,
+        "y": 128,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "walk_b_left",
+      "animation": "walk_left",
+      "kind": "walk_b",
+      "direction": "left",
+      "region": {
+        "x": 128,
+        "y": 128,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "idle_right",
+      "animation": "idle_right",
+      "kind": "idle",
+      "direction": "right",
+      "region": {
+        "x": 0,
+        "y": 192,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "walk_a_right",
+      "animation": "walk_right",
+      "kind": "walk_a",
+      "direction": "right",
+      "region": {
+        "x": 64,
+        "y": 192,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    },
+    {
+      "id": "walk_b_right",
+      "animation": "walk_right",
+      "kind": "walk_b",
+      "direction": "right",
+      "region": {
+        "x": 128,
+        "y": 192,
+        "w": 64,
+        "h": 64
+      },
+      "foot_anchor": {
+        "x": 32,
+        "y": 56
+      },
+      "body_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 32,
+        "h": 52
+      },
+      "contact_shadow": true
+    }
+  ],
+  "extensibility": {
+    "equipment_layers": "Future overlays should share the 64x64 frame contract and foot anchor.",
+    "outfit_variants": "Palette swaps or authored replacement atlases can reuse the same Player.gd animation contract.",
+    "npc_differentiation": "NPCs should inherit the scale/anchor standard while changing silhouette, clothes, and readable accents."
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "schema_id": "wayfarer.player_identity.g419.style_tokens.v1",
+  "phase": "G-4.19",
+  "family_id": "player_wayfarer_foundation_g419",
+  "generation_method": "project-owned deterministic Python/Pillow source authored in repo",
+  "source_pixels_from_yellow_or_third_party_assets": false,
+  "visual_direction": {
+    "identity": "Newport harbor-town wayfarer: readable human adventurer, grounded in colonial-fantasy port clothes without ornate MMO armor.",
+    "silhouette": "small human-scale figure with coat taper, boots, satchel, teal scarf accent, and dark hair.",
+    "scale_goal": "roughly 40-44 visible pixels tall in-game after runtime scale, smaller than door height and readable at gameplay zoom.",
+    "future_hooks": [
+      "outfit colorways",
+      "equipment overlays",
+      "tool poses",
+      "NPC differentiation",
+      "multiplayer readability"
+    ]
+  },
+  "palette": {
+    "outline": "#15191b",
+    "outline_soft": "#283033",
+    "shadow": [
+      0,
+      0,
+      0,
+      72
+    ],
+    "skin": "#d6a978",
+    "skin_light": "#edc493",
+    "skin_shadow": "#9a694d",
+    "hair": "#352519",
+    "hair_hi": "#5a3921",
+    "coat": "#26384a",
+    "coat_shadow": "#182633",
+    "coat_hi": "#3d5872",
+    "shirt": "#e6d7b8",
+    "shirt_shadow": "#bba77d",
+    "scarf": "#2c8a82",
+    "scarf_hi": "#5bb7aa",
+    "belt": "#69472a",
+    "belt_hi": "#ad7c45",
+    "trousers": "#3f4d50",
+    "trousers_shadow": "#293336",
+    "boot": "#251d18",
+    "boot_hi": "#4d3526",
+    "satchel": "#8b5d31",
+    "satchel_hi": "#bd8751",
+    "brass": "#d7b65c"
+  },
+  "runtime_anchor": {
+    "foot_anchor": [
+      32,
+      56
+    ],
+    "frame_size": [
+      64,
+      64
+    ],
+    "recommended_visual_scale": 0.82
+  }
+}

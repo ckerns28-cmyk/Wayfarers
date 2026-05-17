@@ -1,0 +1,162 @@
+{
+  "schema_id": "wayfarer.player_identity.g419.extraction_qa.v1",
+  "phase": "G-4.19",
+  "family_id": "player_wayfarer_foundation_g419",
+  "status": "PASS",
+  "created_at": "2026-05-17T21:16:39.035305+00:00",
+  "atlas_path": "art_pipeline/player_identity/atlases/player_wayfarer_foundation_g419_v1.png",
+  "contact_sheet_path": "art_pipeline/player_identity/contact_sheets/player_wayfarer_foundation_g419_contact_sheet.png",
+  "required_animations": [
+    "idle_down",
+    "idle_up",
+    "idle_left",
+    "idle_right",
+    "walk_down",
+    "walk_up",
+    "walk_left",
+    "walk_right"
+  ],
+  "frames_checked": 12,
+  "frame_reports": [
+    {
+      "id": "idle_down",
+      "alpha_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 33,
+        "h": 54
+      },
+      "alpha_coverage": 1293,
+      "opaque_pixels": 1167
+    },
+    {
+      "id": "walk_a_down",
+      "alpha_bounds": {
+        "x": 16,
+        "y": 6,
+        "w": 33,
+        "h": 55
+      },
+      "alpha_coverage": 1333,
+      "opaque_pixels": 1222
+    },
+    {
+      "id": "walk_b_down",
+      "alpha_bounds": {
+        "x": 16,
+        "y": 8,
+        "w": 33,
+        "h": 53
+      },
+      "alpha_coverage": 1295,
+      "opaque_pixels": 1183
+    },
+    {
+      "id": "idle_up",
+      "alpha_bounds": {
+        "x": 16,
+        "y": 8,
+        "w": 33,
+        "h": 53
+      },
+      "alpha_coverage": 1264,
+      "opaque_pixels": 1138
+    },
+    {
+      "id": "walk_a_up",
+      "alpha_bounds": {
+        "x": 16,
+        "y": 7,
+        "w": 33,
+        "h": 54
+      },
+      "alpha_coverage": 1303,
+      "opaque_pixels": 1192
+    },
+    {
+      "id": "walk_b_up",
+      "alpha_bounds": {
+        "x": 16,
+        "y": 9,
+        "w": 33,
+        "h": 52
+      },
+      "alpha_coverage": 1267,
+      "opaque_pixels": 1155
+    },
+    {
+      "id": "idle_left",
+      "alpha_bounds": {
+        "x": 19,
+        "y": 7,
+        "w": 29,
+        "h": 54
+      },
+      "alpha_coverage": 1150,
+      "opaque_pixels": 1017
+    },
+    {
+      "id": "walk_a_left",
+      "alpha_bounds": {
+        "x": 20,
+        "y": 6,
+        "w": 28,
+        "h": 55
+      },
+      "alpha_coverage": 1187,
+      "opaque_pixels": 1064
+    },
+    {
+      "id": "walk_b_left",
+      "alpha_bounds": {
+        "x": 18,
+        "y": 8,
+        "w": 30,
+        "h": 53
+      },
+      "alpha_coverage": 1146,
+      "opaque_pixels": 1019
+    },
+    {
+      "id": "idle_right",
+      "alpha_bounds": {
+        "x": 18,
+        "y": 7,
+        "w": 31,
+        "h": 54
+      },
+      "alpha_coverage": 1209,
+      "opaque_pixels": 1069
+    },
+    {
+      "id": "walk_a_right",
+      "alpha_bounds": {
+        "x": 18,
+        "y": 6,
+        "w": 31,
+        "h": 55
+      },
+      "alpha_coverage": 1247,
+      "opaque_pixels": 1116
+    },
+    {
+      "id": "walk_b_right",
+      "alpha_bounds": {
+        "x": 18,
+        "y": 8,
+        "w": 31,
+        "h": 53
+      },
+      "alpha_coverage": 1209,
+      "opaque_pixels": 1073
+    }
+  ],
+  "failures": [],
+  "provenance": {
+    "project_owned_deterministic_source": true,
+    "third_party_pixels": false,
+    "yellow_review_pixels": false,
+    "web_scraped_pixels": false,
+    "final_commercial_promoted": false
+  }
+}

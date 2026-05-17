@@ -190,6 +190,7 @@ def compact_output(result: CommandResult, limit: int = 600) -> str:
 
 def find_latest_screenshots(root: Path) -> list[Path]:
     patterns = [
+        "wayfarer_godot_vertical_slice/artifacts/review/g419_runtime_screenshots/g419_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g418e_runtime_screenshots/g418e_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g423a_runtime_screenshots/g423a_*.png",
@@ -208,6 +209,8 @@ def find_latest_screenshots(root: Path) -> list[Path]:
 
 def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
+    if normalized.startswith("G-4.19"):
+        return "G-4.19", "g419"
     if normalized.startswith("G-4.18E"):
         return "G-4.18E", "g418e"
     if normalized.startswith("G-4.23B"):
@@ -239,10 +242,14 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\art_pipeline\newport_atelier\scripts\validate_g418e_hero_asset_family.py"
     )
+    g419_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\art_pipeline\player_identity\scripts\validate_g419_player_identity.py"
+    )
     extraction_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\art_pipeline\newport_atelier\scripts\extract_g421a_core_building_assets.py "
-        "--skip-registry --skip-building-provenance"
+        "--validate-only"
     )
     screenshot_text = (
         "powershell.exe -NoProfile -ExecutionPolicy Bypass -File "
@@ -282,8 +289,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
             args=[
                 python_bin,
                 str(game_root / "art_pipeline" / "newport_atelier" / "scripts" / "extract_g421a_core_building_assets.py"),
-                "--skip-registry",
-                "--skip-building-provenance",
+                "--validate-only",
             ],
             cwd=root,
             required_paths=[game_root / "art_pipeline" / "newport_atelier" / "scripts" / "extract_g421a_core_building_assets.py"],
@@ -343,6 +349,20 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 ],
                 cwd=root,
                 required_paths=[game_root / "art_pipeline" / "newport_atelier" / "scripts" / "validate_g418e_hero_asset_family.py"],
+            ),
+        )
+    if phase.upper().strip().startswith("G-4.19"):
+        commands.insert(
+            3,
+            ValidatorCommand(
+                name="G-4.19 player identity validation",
+                command_text=g419_text,
+                args=[
+                    python_bin,
+                    str(game_root / "art_pipeline" / "player_identity" / "scripts" / "validate_g419_player_identity.py"),
+                ],
+                cwd=root,
+                required_paths=[game_root / "art_pipeline" / "player_identity" / "scripts" / "validate_g419_player_identity.py"],
             ),
         )
     return commands
@@ -414,6 +434,27 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     / "newport_atelier"
                     / "manifests"
                     / "newport_atelier_g418e_hero_asset_family_manifest.json",
+                ),
+            ]
+        )
+    if phase.upper().strip().startswith("G-4.19"):
+        required.extend(
+            [
+                (
+                    "G-4.19 player identity validator",
+                    game_root / "art_pipeline" / "player_identity" / "scripts" / "validate_g419_player_identity.py",
+                ),
+                (
+                    "G-4.19 player identity manifest",
+                    game_root / "art_pipeline" / "player_identity" / "manifests" / "player_wayfarer_foundation_g419_manifest.json",
+                ),
+                (
+                    "G-4.19 player atlas",
+                    game_root / "art_pipeline" / "player_identity" / "atlases" / "player_wayfarer_foundation_g419_v1.png",
+                ),
+                (
+                    "G-4.19 player contact sheet",
+                    game_root / "art_pipeline" / "player_identity" / "contact_sheets" / "player_wayfarer_foundation_g419_contact_sheet.png",
                 ),
             ]
         )
@@ -644,11 +685,21 @@ def build_report(
         ["Are screenshots sufficient proof?", "PASS" if screenshots_inspected else "FAIL"],
         ["Is human escalation truly required?", "NO" if not human_review_required else "YES"],
     ]
-    scrum_scope = (
-        "Scope check: this council pass produced a coherent G-4.18E asset family and controlled runtime placements; it must not scatter random props or hide layout problems."
-        if phase.upper().strip().startswith("G-4.18E")
-        else "Scope check: this council pass changes production documentation and tooling only; it must not change Newport runtime layout."
-    )
+    g419_player_identity_fields = [
+        ["Does the player read as human-scale in Newport?", "PASS" if gameplay_readability_score >= 8.5 else "FAIL"],
+        ["Does the player belong with buildings, streets, docks, and G-4.18E props?", "PASS" if art_direction_score >= 8.5 else "FAIL"],
+        ["Are idle/walk directions established for down/up/left/right?", "PASS" if technical_stability_score >= 8.5 else "FAIL"],
+        ["Are collision, camera, spawn, and interaction hooks preserved?", "PASS" if technical_stability_score >= 8.5 else "FAIL"],
+        ["Are provenance artifacts preserved and final-commercial promotion avoided?", "PASS" if technical_stability_score >= 8.5 else "FAIL"],
+        ["Do screenshots prove gameplay zoom, wide readability, scale, grounding, and facing/movement?", "PASS" if screenshots_inspected else "FAIL"],
+        ["Is human escalation truly required?", "NO" if not human_review_required else "YES"],
+    ]
+    if phase.upper().strip().startswith("G-4.18E"):
+        scrum_scope = "Scope check: this council pass produced a coherent G-4.18E asset family and controlled runtime placements; it must not scatter random props or hide layout problems."
+    elif phase.upper().strip().startswith("G-4.19"):
+        scrum_scope = "Scope check: this council pass replaces the drawn player placeholder with a directional runtime sprite foundation while preserving Newport layout, collision, camera, spawn, and interaction behavior."
+    else:
+        scrum_scope = "Scope check: this council pass changes production documentation and tooling only; it must not change Newport runtime layout."
 
     screenshot_rows = []
     for path in screenshots[:16]:
@@ -779,6 +830,16 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-4.18E")
+                else []
+            ),
+            *(
+                [
+                    "## G-4.19 Player Identity Authority Questions",
+                    "",
+                    md_table(["Question", "Council Answer"], g419_player_identity_fields),
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-4.19")
                 else []
             ),
             "## Scrum Master Review",

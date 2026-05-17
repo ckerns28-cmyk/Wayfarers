@@ -19,6 +19,7 @@ const G418_ASSET_FACTORY_PASS := "G-4.18B"
 const G418C_GREEN_ORIGIN_QUARANTINE_PASS := "G-4.18C"
 const G418D_ATELIER_CARGO_PASS := "G-4.18D"
 const G418E_HERO_ASSET_FAMILY_PASS := "G-4.18E"
+const G419_PLAYER_VISUAL_IDENTITY_PASS := "G-4.19"
 const G419A_DOCK_CLUTTER_ATELIER_PASS := "G-4.19A"
 const G419B_VISUAL_PRODUCTION_AUDIT_PASS := "G-4.19B"
 const G420A_ENVIRONMENTAL_BELIEVABILITY_PASS := "G-4.20A"
@@ -713,6 +714,7 @@ static func starter_district_plan() -> Dictionary:
 		"green_origin_quarantine_pass": G418C_GREEN_ORIGIN_QUARANTINE_PASS,
 		"atelier_cargo_pipeline_pass": G418D_ATELIER_CARGO_PASS,
 		"hero_quality_asset_family_pass": G418E_HERO_ASSET_FAMILY_PASS,
+		"player_visual_identity_pass": G419_PLAYER_VISUAL_IDENTITY_PASS,
 		"dock_clutter_atelier_pack_pass": G419A_DOCK_CLUTTER_ATELIER_PASS,
 		"visual_production_audit_pass": G419B_VISUAL_PRODUCTION_AUDIT_PASS,
 		"environmental_believability_wave_pass": G420A_ENVIRONMENTAL_BELIEVABILITY_PASS,
@@ -720,7 +722,7 @@ static func starter_district_plan() -> Dictionary:
 		"walkable_city_reconstruction_pass": G422A_WALKABLE_CITY_RECONSTRUCTION_PASS,
 		"street_grammar_ground_repair_pass": G423A_STREET_GRAMMAR_GROUND_REPAIR_PASS,
 		"authored_street_harbor_immersion_pass": G423B_AUTHORED_STREET_HARBOR_IMMERSION_PASS,
-		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; G-4.18E adds the Newport Harbor Commercial + Tavern District green-origin hero-quality asset family as controlled Tavern/Inn, commercial avenue, harbor edge, and rear-service dressing; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; G-4.23A repairs street grammar and ground cohesion by narrowing old slab-like road reads, exposing a back street behind the waterfront road, suppressing oversized cargo/dock dressing in clean review, and reusing provenance-safe atelier terrain/grounding transitions only where they reinforce ordered parcels; G-4.23B converts the remaining blockout read into authored street, harbor, and frontage immersion with irregular terrain edges, working pier/economy clusters, Tavern/Inn social grounding, and review screenshots for visual judgment; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
+		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; G-4.18E adds the Newport Harbor Commercial + Tavern District green-origin hero-quality asset family as controlled Tavern/Inn, commercial avenue, harbor edge, and rear-service dressing; G-4.19 establishes the source-authored player visual identity foundation with directional idle/walk hooks; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; G-4.23A repairs street grammar and ground cohesion by narrowing old slab-like road reads, exposing a back street behind the waterfront road, suppressing oversized cargo/dock dressing in clean review, and reusing provenance-safe atelier terrain/grounding transitions only where they reinforce ordered parcels; G-4.23B converts the remaining blockout read into authored street, harbor, and frontage immersion with irregular terrain edges, working pier/economy clusters, Tavern/Inn social grounding, and review screenshots for visual judgment; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
 		"yellow_review_art_policy": "temporary yellow review art may support prototype composition, scale, and gameplay only; yellow pixels cannot source final-commercial green assets",
@@ -732,7 +734,7 @@ static func starter_district_plan() -> Dictionary:
 		"newport_visual_cohesion_gate": true,
 		"asset_provenance_gate": true,
 		"core_building_atelier_rebuild_pass": "G-4.21A",
-		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.23B authored harbor/street repair, player/NPC sprite style still waits until the town environment has enough visual context",
+		"player_style_deferred_note": "G-4.19 replaces the temporary scale/debug player with a source-authored directional identity foundation; NPC standards, outfit variants, equipment overlays, and final-commercial promotion remain future gates",
 		"tavern_inn_centerpiece_lock": "G-4.21A controlled proof subset replaces the old temporary Tavern/Inn with a brick Hotel Viking-inspired-but-not-copied hero inn with two sets of large twin-stack chimneys; final collision/navigation and commercial promotion remain pending",
 		"review_screenshot_mode": "F4 or --review-no-hud",
 		"districts": [
@@ -941,7 +943,7 @@ static func missing_asset_manifest() -> Array:
 		"sign variants",
 		"fencing variants",
 		"lantern variants",
-		"Newport-detail player character sprite sheet",
+		"Newport-detail player outfit and equipment variant sheets",
 		"Newport-detail NPC sprite sheets",
 		"Newport-detail monster sprite sheets",
 		"Newport-detail equipment, weapons, armor, and combat VFX",

@@ -7,35 +7,45 @@ const WORLD_LIMIT_LEFT := 0
 const WORLD_LIMIT_TOP := 0
 const WORLD_LIMIT_RIGHT := 1600
 const WORLD_LIMIT_BOTTOM := 1024
+const PLAYER_SPRITE_ATLAS_PATH := "res://art_pipeline/player_identity/atlases/player_wayfarer_foundation_g419_v1.png"
+const PLAYER_FRAME_SIZE := Vector2i(64, 64)
+const PLAYER_VISUAL_SCALE := 0.82
+const PLAYER_VISUAL_OFFSET := Vector2(0.0, -20.0)
+const PLAYER_DIRECTIONS := ["down", "up", "left", "right"]
+const PLAYER_FRAME_VARIANTS := ["idle", "walk_a", "walk_b"]
 
 @export var speed := 185.0
 @export var interaction_radius := 44.0
 
+@onready var visual_sprite: AnimatedSprite2D = $Visual
 @onready var camera: Camera2D = $Camera2D
 @onready var prompt_label: Label = $PromptLabel
 
 var _current_target: Node = null
 var _interact_was_down := false
 var _world_limits := Rect2(Vector2(WORLD_LIMIT_LEFT, WORLD_LIMIT_TOP), Vector2(WORLD_LIMIT_RIGHT, WORLD_LIMIT_BOTTOM))
+var _facing_direction := "down"
+var _current_visual_animation := ""
 
 func _ready() -> void:
 	add_to_group("player")
+	_configure_visual_sprite()
 	_configure_camera()
 	prompt_label.z_as_relative = false
 	prompt_label.z_index = 100
 	prompt_label.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	prompt_label.offset_left = -92.0
-	prompt_label.offset_top = -50.0
+	prompt_label.offset_top = -72.0
 	prompt_label.offset_right = 92.0
-	prompt_label.offset_bottom = -28.0
+	prompt_label.offset_bottom = -50.0
 	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	prompt_label.clip_text = false
 	prompt_label.add_theme_font_size_override("font_size", 15)
-	queue_redraw()
 
 func _physics_process(_delta: float) -> void:
 	var input := _movement_axis()
 	velocity = input.normalized() * speed
+	_update_visual_animation(input)
 	move_and_slide()
 	_update_interaction_target()
 
@@ -54,6 +64,96 @@ func configure_world_limits(world_rect: Rect2) -> void:
 	if is_node_ready():
 		_apply_camera_limits()
 		camera.reset_smoothing()
+
+func set_review_visual_state(direction: String, moving: bool, frame_index := 0) -> void:
+	if PLAYER_DIRECTIONS.has(direction):
+		_facing_direction = direction
+	var animation_name := ("walk_" if moving else "idle_") + _facing_direction
+	_play_visual_animation(animation_name)
+	if visual_sprite and visual_sprite.sprite_frames and visual_sprite.sprite_frames.has_animation(animation_name):
+		var frame_count := visual_sprite.sprite_frames.get_frame_count(animation_name)
+		visual_sprite.frame = clampi(frame_index, 0, maxi(0, frame_count - 1))
+		if moving:
+			visual_sprite.pause()
+
+func _configure_visual_sprite() -> void:
+	if visual_sprite == null:
+		push_error("Player Visual AnimatedSprite2D is missing.")
+		return
+
+	var atlas := ResourceLoader.load(PLAYER_SPRITE_ATLAS_PATH, "Texture2D") as Texture2D
+	if atlas == null:
+		push_error("Failed to load G-4.19 player sprite atlas: " + PLAYER_SPRITE_ATLAS_PATH)
+		return
+
+	var sprite_frames := SpriteFrames.new()
+	if sprite_frames.has_animation("default"):
+		sprite_frames.remove_animation("default")
+	for raw_direction in PLAYER_DIRECTIONS:
+		var direction := String(raw_direction)
+		var idle_animation := "idle_" + direction
+		sprite_frames.add_animation(idle_animation)
+		sprite_frames.set_animation_loop(idle_animation, true)
+		sprite_frames.set_animation_speed(idle_animation, 1.0)
+		sprite_frames.add_frame(idle_animation, _atlas_frame(atlas, direction, "idle"), 1.0)
+
+		var walk_animation := "walk_" + direction
+		sprite_frames.add_animation(walk_animation)
+		sprite_frames.set_animation_loop(walk_animation, true)
+		sprite_frames.set_animation_speed(walk_animation, 7.0)
+		for raw_variant in ["idle", "walk_a", "idle", "walk_b"]:
+			var variant := String(raw_variant)
+			sprite_frames.add_frame(walk_animation, _atlas_frame(atlas, direction, variant), 1.0)
+
+	visual_sprite.sprite_frames = sprite_frames
+	visual_sprite.position = PLAYER_VISUAL_OFFSET
+	visual_sprite.scale = Vector2.ONE * PLAYER_VISUAL_SCALE
+	visual_sprite.centered = true
+	visual_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	visual_sprite.z_as_relative = true
+	visual_sprite.z_index = 1
+	_play_visual_animation("idle_down")
+
+func _atlas_frame(atlas: Texture2D, direction: String, variant: String) -> AtlasTexture:
+	var direction_index := PLAYER_DIRECTIONS.find(direction)
+	var variant_index := PLAYER_FRAME_VARIANTS.find(variant)
+	if direction_index < 0:
+		direction_index = 0
+	if variant_index < 0:
+		variant_index = 0
+	var frame := AtlasTexture.new()
+	frame.atlas = atlas
+	frame.region = Rect2(
+		variant_index * PLAYER_FRAME_SIZE.x,
+		direction_index * PLAYER_FRAME_SIZE.y,
+		PLAYER_FRAME_SIZE.x,
+		PLAYER_FRAME_SIZE.y
+	)
+	frame.filter_clip = true
+	return frame
+
+func _update_visual_animation(input: Vector2) -> void:
+	if input.length_squared() > 0.01:
+		_update_facing_direction(input)
+		_play_visual_animation("walk_" + _facing_direction)
+	else:
+		_play_visual_animation("idle_" + _facing_direction)
+
+func _update_facing_direction(input: Vector2) -> void:
+	if absf(input.x) > absf(input.y):
+		_facing_direction = "right" if input.x > 0.0 else "left"
+	else:
+		_facing_direction = "down" if input.y > 0.0 else "up"
+
+func _play_visual_animation(animation_name: String) -> void:
+	if visual_sprite == null or visual_sprite.sprite_frames == null:
+		return
+	if not visual_sprite.sprite_frames.has_animation(animation_name):
+		return
+	if _current_visual_animation == animation_name and visual_sprite.is_playing():
+		return
+	_current_visual_animation = animation_name
+	visual_sprite.play(animation_name)
 
 func _configure_camera() -> void:
 	camera.enabled = true
@@ -135,13 +235,3 @@ func _candidate_interaction_position(candidate: Node2D) -> Vector2:
 	if candidate.has_method("get_interaction_position"):
 		return candidate.get_interaction_position()
 	return candidate.global_position
-
-func _draw() -> void:
-	var visual_scale := 0.78 if (NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN or NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE) else (1.12 if NEWPORT_TOWN.G46_PROOF_FRAME else 1.0)
-	draw_set_transform(Vector2(0, 8 * visual_scale), 0.0, Vector2(1.45 * visual_scale, 0.42 * visual_scale))
-	draw_circle(Vector2.ZERO, 10.0, Color(0, 0, 0, 0.24))
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	draw_circle(Vector2(0, -31 * visual_scale), 12.0 * visual_scale, Color("#f3d6a0"))
-	draw_rect(Rect2(Vector2(-9, -20) * visual_scale, Vector2(18, 26) * visual_scale), Color("#4a6fa3"), true)
-	draw_rect(Rect2(Vector2(-11, 4) * visual_scale, Vector2(22, 8) * visual_scale), Color("#2f4769"), true)
-	draw_line(Vector2(-15, -10) * visual_scale, Vector2(15, -10) * visual_scale, Color("#d2b978"), 3.0)
