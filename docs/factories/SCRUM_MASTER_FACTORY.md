@@ -20,7 +20,7 @@ Create a Scrum Master review for any Wayfarer phase, branch, or PR.
 3. Identify open/duplicate/conflicting PRs.
 4. Compare requested work to roadmap and phase scope.
 5. Flag scope creep or unrelated changes.
-6. Recommend same-PR repair, replacement PR, or merge candidate.
+6. Contribute to the final authority verdict.
 
 ## Required Output
 
@@ -30,9 +30,9 @@ Create a Scrum Master review for any Wayfarer phase, branch, or PR.
 - Branch/PR Health:
 - Roadmap Alignment:
 - Scope Risks:
-- Recommendation for Chris:
+- Council Authority Contribution:
 ```
 
 ## Fail Fast
 
-Fail with `BLOCKED BY PREFLIGHT` when branch sync, PR conflict, or worktree state is unsafe.
+Fail with `BLOCKED_REQUIRES_HUMAN_ESCALATION` only when branch sync, PR conflict, or worktree state cannot be safely resolved by Codex.

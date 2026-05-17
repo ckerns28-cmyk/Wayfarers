@@ -32,7 +32,7 @@ Evaluate visual cohesion, sprite quality, street composition, ground material la
 
 ## Output Format
 
-- Status: `PASS`, `FAIL`, or `NEEDS_HUMAN_REVIEW`
+- Status: `PASS`, `FAIL`, or `BLOCKED`
 - Visual cohesion notes
 - Ground/street material notes
 - Sprite quality notes

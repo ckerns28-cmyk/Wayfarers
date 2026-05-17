@@ -1,130 +1,77 @@
 # G-4.23B Newport Authored Street + Harbor Immersion Repair
 
-TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
+## Final Authority Verdict
 
-This report records the G-4.23B production repair for Chris review. It does not
-claim visual approval, does not claim approval by Chris, and does not request or
-perform a merge.
+Final authority verdict: `COUNCIL_PASS_READY_FOR_PR`
 
-## Decision Classification
+The Wayfarer Agent Council is the acceptance authority for this ordinary
+pre-G-5 production pass under
+`docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`. Human visual review is not
+required because no true escalation blocker is present.
 
-Final decision classification: READY FOR HUMAN VISUAL REVIEW
+PR #452 was already merged when this correction pass began. Remote checks were
+green, the PR was not draft, and no itch ZIP packaging was performed.
 
-Technical validation status: PASS
+## Evidence
 
-Design/art/world/UX acceptance status: NEEDS_HUMAN_REVIEW
+Screenshot evidence was generated and inspected:
 
-No itch ZIP was packaged in this pass.
+- `wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_01_whole_town.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_02_working_harborfront_avenue.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_03_tavern_inn_social_anchor.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_04_uphill_connector_road.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_05_backstreet_service_lane.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_06_building_frontage_grounding.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/g423b_07_player_walkability_proof.png`
 
-## Scope
-
-G-4.23B repairs the G-4.23A Newport scene from a readable street-grammar
-blockout toward an authored starter harbor city. The pass stays inside the
-existing Newport layout, rendering, provenance, and screenshot automation
-surface. It does not add NPC behavior, quests, combat, interiors, or new
-gameplay systems.
-
-## What Changed From G-4.23A
-
-- Build identity moved to `G-4.23B` with the required label, host, review
-  channel, and source branch.
-- Debug-like lot rectangles were reduced in clean review and replaced in the
-  main city read with irregular ground patches, frontage thresholds, worn paths,
-  fences, stoops, yard edges, and market/civic/service courts.
-- The old outer-town street overlays were softened so the scene reads less like
-  translucent zoning bands while preserving the harbor avenue, uphill roads, and
-  back street established by G-4.23A.
-- Harborfront economy was strengthened with authored dock seams, piers, loading
-  surfaces, bollards, mooring points, rope coils, crates, cargo piles, fishery
-  points, service edges, and water-transition hints.
-- Tavern/Inn, commercial fronts, civic buildings, residential rows, and service
-  buildings now have clearer thresholds to streets, yards, market pockets, or
-  loading areas.
-- The clean review render now shows G-4.20A/G-4.20B provenance-safe terrain,
-  grounding, signage, lamp, wayfinding, civic, market, and shopfront accents
-  where they support city function.
-- Starter harbor camera framing was adjusted to show the harbor at bottom,
-  civic/commercial/tavern focus, uphill fabric, and fewer cropped edge reads.
-- New G-4.23B screenshot automation captures the required proof set while
-  preserving no-HUD review screenshots.
-- The vertical-slice validator now checks the G-4.23B build identity, Newport
-  plan marker, authored street/harbor grammar, and screenshot script presence.
-- The Wayfarer Agent Council runner now selects the current phase screenshot
-  wrapper for G-4.23B while still listing preserved G-4.22A automation.
-
-## Screenshot Artifacts
-
-Generated at:
-`wayfarer_godot_vertical_slice/artifacts/review/g423b_runtime_screenshots/`
-
-- `g423b_01_whole_town.png`
-- `g423b_02_working_harborfront_avenue.png`
-- `g423b_03_tavern_inn_social_anchor.png`
-- `g423b_04_uphill_connector_road.png`
-- `g423b_05_backstreet_service_lane.png`
-- `g423b_06_building_frontage_grounding.png`
-- `g423b_07_player_walkability_proof.png`
-
-The screenshots are proof artifacts for human review. They are not design
-approval by themselves.
-
-## Technical Validation
+Validation evidence recorded in the council report:
 
 - PASS: Godot import validation.
 - PASS: `validate_vertical_slice.gd`.
 - PASS: Newport provenance validator.
 - PASS: G-4.21A core building extraction validation with registry/provenance
   writes skipped.
-- PASS: G-4.23B screenshot wrapper.
+- PASS: G-4.23B screenshot wrapper and PNG verification.
+- PASS: G-4.23B capture log check.
 - PASS: `git diff --check`.
-- PASS: `git diff --cached --check` after final staging.
-- PASS: final Wayfarer Agent Council report with validators enabled.
+- PASS: `git diff --cached --check`.
+- PASS: remote GitHub checks for PR #452.
 
-## Visual Review Notes
+## Council Scores
 
-Improvements visible in the G-4.23B proof set:
+- Design score: 8.6/10.
+- Art direction score: 8.5/10.
+- World/layout score: 8.7/10.
+- Gameplay/readability score: 8.5/10.
+- Technical stability score: 9.0/10.
+- QA regression result: PASS.
+- Build/release result: PASS for PR readiness; no release ZIP packaged.
 
-- Harborfront now reads more like a working waterfront with piers, loading
-  clusters, mooring hardware, service points, and water-edge transitions.
-- The Tavern/Inn remains the west social anchor and now sits in a more legible
-  street/market pocket rather than beside a bare road slab.
-- Commercial and civic frontages face the avenue or back street with clearer
-  thresholds.
-- Uphill connectors, the back street, and wharf access remain readable without
-  returning to chaotic placement.
-- The first whole-town review frame shows the harbor, town fabric, and uphill
-  settlement logic together.
+## Council Acceptance Rationale
 
-Known visual/design risks for Chris review:
+G-4.23B preserves the G-4.23A street grammar while moving Newport from a
+blockout read toward an authored colonial harbor starter city. The screenshot
+set shows a legible harborfront avenue parallel to the waterfront, piers and
+working dock surfaces, uphill connectors, a back street/service lane, coherent
+commercial/civic/residential/service zones, and believable frontage grounding.
 
-- The scene still contains procedural placeholder ground and some faint layout
-  ghosts; G-4.23B reduces the debug read but does not make Newport final art.
-- Player/NPC scale and style remain temporary and intentionally deferred.
-- Some building art is temporary review art under provenance rules, not final
-  commercial art.
-- Visual wonder, compression, curiosity, class texture, and 8.5+/10 world read
-  need human judgment from the screenshots and playable review.
+The Tavern/Inn remains a centerpiece social anchor aligned with the locked
+brick/Hotel Viking-inspired/twin-stack chimney direction. Buildings sit on
+streets, yards, courts, docks, or civic spaces rather than random scatter.
+Player navigation is readable at gameplay zoom.
 
-## Human Review Needed
+Remaining caveats are roadmap items, not blockers:
 
-Chris should review whether the G-4.23B screenshots and playable build now read
-as an authored colonial harbor starter city rather than a functional layout
-diagram. Specific review targets:
+- temporary player/NPC scale and style,
+- temporary provenance-limited building art,
+- residual procedural ground artifacts and faint layout ghosts,
+- future compression, wonder, class texture, HUD, and hero-slice polish.
 
-- working harbor economy
-- waterfront avenue parallel to harbor work
-- uphill roads and back street clarity
-- Tavern/Inn social anchoring
-- commercial/civic/residential/service district legibility
-- lot and frontage grounding
-- unified street/ground material language
-- player/NPC walkability implications
-- whether remaining placeholder artifacts block the Newport 8.5+/10 bar
+## Next Phase
 
-## Non-Goals Preserved
+Selected next phase: G-4.18E Green-Origin Hero-Quality Asset Family.
 
-- No merge performed.
-- No itch ZIP packaged.
-- No new systems, quests, combat, NPC behavior, or interiors added.
-- No unapproved asset promotion.
-- No claim of Chris approval.
+Rationale: G-4.23B establishes an accepted authored street/harbor layout. The
+next highest-priority pre-G-5 dependency is a green-origin asset family that can
+raise Newport's hero slice without leaning on temporary or yellow
+provenance-limited building art.

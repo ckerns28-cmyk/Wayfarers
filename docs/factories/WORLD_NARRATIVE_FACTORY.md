@@ -10,7 +10,7 @@ Create a world/narrative review for lived-in logic, harbor economy, social struc
 - Building roles
 - NPC/activity plan
 - Interaction anchors
-- Screenshots or `NEEDS_HUMAN_REVIEW`
+- Screenshots or true-blocker escalation context
 
 ## Procedure
 
@@ -28,7 +28,7 @@ Create a world/narrative review for lived-in logic, harbor economy, social struc
 - Harbor Economy:
 - Social Texture:
 - Story Hooks:
-- Recommendation for Chris:
+- Council Authority Contribution:
 ```
 
 ## Fail Fast

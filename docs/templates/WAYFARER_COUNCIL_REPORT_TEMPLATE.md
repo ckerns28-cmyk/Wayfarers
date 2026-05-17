@@ -7,7 +7,9 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 - Phase:
 - Branch:
 - PR:
-- Recommendation for Chris:
+- Final Authority Verdict:
+- Final recommended next phase:
+- Human escalation blocker:
 
 ## Agent Status Table
 
@@ -40,6 +42,6 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 
 ## Release Manager Decision
 
-- Recommendation for Chris:
+- Final Authority Verdict:
 - Required repairs:
-- Merge conditions:
+- PR readiness conditions:

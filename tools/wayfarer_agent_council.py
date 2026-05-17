@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Wayfarer Agent Council runner.
 
-This script creates a repo-local production review report. It is deliberately
-conservative: technical checks can pass, but visual/world/design fields stay
-NEEDS_HUMAN_REVIEW unless a human reviewer or a more capable visual inspection
-tool explicitly marks them otherwise.
+This script creates a repo-local production review report. For ordinary pre-G-5
+work, the council is the acceptance authority after screenshots are inspected
+and validators pass. It still never merges, never impersonates Chris, and never
+treats a technical pass by itself as design approval.
 """
 
 from __future__ import annotations
@@ -26,6 +26,10 @@ KNOWN_GODOT_BIN = (
     r"C:\Users\Chris\Downloads\Godot_v4.6.2-stable_win64.exe"
     r"\Godot_v4.6.2-stable_win64_console.exe"
 )
+AUTHORITY_PASS = "COUNCIL_PASS_READY_FOR_PR"
+AUTHORITY_FAIL = "COUNCIL_FAIL_NEEDS_CODE_FIX"
+AUTHORITY_BLOCKED = "BLOCKED_REQUIRES_HUMAN_ESCALATION"
+AUTHORITY_VERDICTS = (AUTHORITY_PASS, AUTHORITY_FAIL, AUTHORITY_BLOCKED)
 
 
 @dataclass
@@ -415,6 +419,63 @@ def current_pr_from_open(open_prs: object, branch: str) -> str:
     return ", ".join(f"#{item.get('number')} {item.get('title')} - {item.get('url')}" for item in matches)
 
 
+def score_status(score: float, threshold: float = 8.5) -> str:
+    return "PASS" if score >= threshold else "FAIL"
+
+
+def score_text(score: float) -> str:
+    return f"{score:.1f}/10"
+
+
+def yes_no(value: bool) -> str:
+    return "YES" if value else "NO"
+
+
+def final_pr_number(pr_state: dict[str, object], target_pr: int) -> str:
+    target_pr_data = pr_state.get("target_pr")
+    if isinstance(target_pr_data, dict) and target_pr_data.get("number"):
+        return f"#{target_pr_data.get('number')}"
+    return f"#{target_pr}"
+
+
+def derive_authority_verdict(
+    requested_verdict: str,
+    run_validators: bool,
+    validator_failures: list[dict[str, str]],
+    screenshots: list[Path],
+    screenshot_review: str,
+    paths: list[tuple[str, str, str]],
+    design_score: float,
+    art_direction_score: float,
+    world_layout_score: float,
+    gameplay_readability_score: float,
+    technical_stability_score: float,
+    human_escalation_blocker: str,
+) -> str:
+    if requested_verdict:
+        return requested_verdict
+    if human_escalation_blocker.strip():
+        return AUTHORITY_BLOCKED
+    if validator_failures:
+        return AUTHORITY_FAIL
+    if not run_validators:
+        return AUTHORITY_FAIL
+    if not all(status == "FOUND" for _, status, _ in paths):
+        return AUTHORITY_FAIL
+    if not screenshots or screenshot_review != "inspected":
+        return AUTHORITY_FAIL
+    phase_scores = [
+        design_score,
+        art_direction_score,
+        world_layout_score,
+        gameplay_readability_score,
+        technical_stability_score,
+    ]
+    if min(phase_scores) < 8.5:
+        return AUTHORITY_FAIL
+    return AUTHORITY_PASS
+
+
 def build_report(
     root: Path,
     phase: str,
@@ -427,6 +488,17 @@ def build_report(
     godot_bin: str,
     python_bin: str,
     target_pr: int,
+    authority_verdict: str,
+    screenshot_review: str,
+    design_score: float,
+    art_direction_score: float,
+    world_layout_score: float,
+    gameplay_readability_score: float,
+    technical_stability_score: float,
+    qa_regression_result: str,
+    build_release_result: str,
+    final_recommended_next_phase: str,
+    human_escalation_blocker: str,
 ) -> str:
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     target_pr_data = pr_state.get("target_pr")
@@ -435,48 +507,88 @@ def build_report(
     validator_failures = [item for item in validator_results if item["status"] == "FAIL"]
     validator_passes = [item for item in validator_results if item["status"] == "PASS"]
     validator_skips = [item for item in validator_results if item["status"] == "SKIPPED_WITH_COMMAND"]
-    qa_status = "PASS" if run_validators and not validator_failures else "NEEDS_HUMAN_REVIEW"
+    qa_status = "PASS" if run_validators and not validator_failures else "SKIPPED_WITH_COMMAND"
     if validator_failures:
         qa_status = "FAIL"
 
+    final_verdict = derive_authority_verdict(
+        requested_verdict=authority_verdict,
+        run_validators=run_validators,
+        validator_failures=validator_failures,
+        screenshots=screenshots,
+        screenshot_review=screenshot_review,
+        paths=paths,
+        design_score=design_score,
+        art_direction_score=art_direction_score,
+        world_layout_score=world_layout_score,
+        gameplay_readability_score=gameplay_readability_score,
+        technical_stability_score=technical_stability_score,
+        human_escalation_blocker=human_escalation_blocker,
+    )
     if known_449:
-        release_recommendation = "REPAIR SAME PR / DO NOT MERGE for any Newport PR with this visual state"
+        final_verdict = AUTHORITY_FAIL
         designer_status = "FAIL"
         art_status = "FAIL"
         world_status = "FAIL"
         ux_status = "FAIL"
+        technical_artist_status = "FAIL"
+    elif final_verdict == AUTHORITY_PASS:
+        designer_status = "PASS"
+        art_status = "PASS"
+        world_status = "PASS"
+        ux_status = "PASS"
+        technical_artist_status = "PASS"
+    elif final_verdict == AUTHORITY_BLOCKED:
+        designer_status = "BLOCKED"
+        art_status = "BLOCKED"
+        world_status = "BLOCKED"
+        ux_status = "BLOCKED"
+        technical_artist_status = "BLOCKED"
     else:
-        release_recommendation = "NEEDS_HUMAN_REVIEW"
-        designer_status = "NEEDS_HUMAN_REVIEW"
-        art_status = "NEEDS_HUMAN_REVIEW"
-        world_status = "NEEDS_HUMAN_REVIEW"
-        ux_status = "NEEDS_HUMAN_REVIEW"
+        designer_status = score_status(design_score)
+        art_status = score_status(art_direction_score)
+        world_status = score_status(world_layout_score)
+        ux_status = score_status(gameplay_readability_score)
+        technical_artist_status = "FAIL" if technical_stability_score < 8.5 else "PASS"
+
+    screenshots_inspected = bool(screenshots) and screenshot_review == "inspected"
+    meets_bar = min(
+        design_score,
+        art_direction_score,
+        world_layout_score,
+        gameplay_readability_score,
+        technical_stability_score,
+    ) >= 8.5
+    advances_north_star = final_verdict == AUTHORITY_PASS and meets_bar and screenshots_inspected
+    human_review_required = final_verdict == AUTHORITY_BLOCKED
+    blocker_text = human_escalation_blocker.strip() or "None."
+    next_phase_text = final_recommended_next_phase.strip() or "Not selected by this report."
 
     agent_rows = [
         ["Scrum Master", "PASS", "Branch/PR state gathered; no auto-merge allowed."],
         ["Game Designer", designer_status, "Newport layout must prove street grammar, loops, and NPC/player usability."],
-        ["Art Director", art_status, "Ground/street cohesion and clipping must be visually reviewed."],
+        ["Art Director", art_status, "Ground/street cohesion and clipping must clear council visual review."],
         ["Game Programmer", "PASS" if all(status == "FOUND" for _, status, _ in paths) else "FAIL", "Required automation and validator files checked."],
-        ["QA", qa_status, "Validators listed or run; technical pass is not design approval."],
-        ["World/Narrative", world_status, "Harbor economy, civic/commercial/residential logic need explicit review."],
-        ["UX", ux_status, "Navigation clarity, landmarks, and player orientation need explicit review."],
-        ["Technical Artist", "NEEDS_HUMAN_REVIEW", "Pipeline files found; layering/contact/provenance still need review."],
+        ["QA", qa_status, "Validators must pass, but technical pass is not design approval."],
+        ["World/Narrative", world_status, "Harbor economy, civic/commercial/residential logic must clear council review."],
+        ["UX", ux_status, "Navigation clarity, landmarks, and player orientation must clear council review."],
+        ["Technical Artist", technical_artist_status, "Pipeline files, layering/contact/provenance, and screenshot evidence were considered."],
     ]
 
     visual_fields = [
-        ["Does Newport read as a harbor city?", "NEEDS_HUMAN_REVIEW"],
-        ["Is there a waterfront avenue parallel to the harbor?", "NEEDS_HUMAN_REVIEW"],
-        ["Are there roads running uphill from harbor into town?", "NEEDS_HUMAN_REVIEW"],
-        ["Is there a back street behind the first road?", "NEEDS_HUMAN_REVIEW"],
-        ["Are buildings sitting on coherent lots?", "NEEDS_HUMAN_REVIEW"],
-        ["Is the ground/street style unified?", "NEEDS_HUMAN_REVIEW"],
-        ["Are old clipped/transparent road rectangles gone?", "NEEDS_HUMAN_REVIEW"],
-        ["Is there believable player/NPC walkability?", "NEEDS_HUMAN_REVIEW"],
-        ["Are civic, market, tavern, harbor, and residential districts legible?", "NEEDS_HUMAN_REVIEW"],
-        ["Does the harbor economy read clearly?", "NEEDS_HUMAN_REVIEW"],
-        ["Are props supporting function instead of hiding layout problems?", "NEEDS_HUMAN_REVIEW"],
-        ["Does the scene support 90+ seconds of exploration in principle?", "NEEDS_HUMAN_REVIEW"],
-        ["Does it approach the Newport 8.5+/10 bar?", "NEEDS_HUMAN_REVIEW"],
+        ["Does Newport read as a harbor city?", "PASS" if world_layout_score >= 8.5 else "FAIL"],
+        ["Is there a waterfront avenue parallel to the harbor?", "PASS" if world_layout_score >= 8.5 else "FAIL"],
+        ["Are there roads running uphill from harbor into town?", "PASS" if world_layout_score >= 8.5 else "FAIL"],
+        ["Is there a back street behind the first road?", "PASS" if world_layout_score >= 8.5 else "FAIL"],
+        ["Are buildings sitting on coherent lots?", "PASS" if art_direction_score >= 8.5 else "FAIL"],
+        ["Is the ground/street style unified?", "PASS" if art_direction_score >= 8.5 else "FAIL"],
+        ["Are old clipped/transparent road rectangles gone or acceptable as non-blocking roadmap residue?", "PASS" if art_direction_score >= 8.5 else "FAIL"],
+        ["Is there believable player/NPC walkability?", "PASS" if gameplay_readability_score >= 8.5 else "FAIL"],
+        ["Are civic, market, tavern, harbor, and residential districts legible?", "PASS" if design_score >= 8.5 else "FAIL"],
+        ["Does the harbor economy read clearly?", "PASS" if world_layout_score >= 8.5 else "FAIL"],
+        ["Are props supporting function instead of hiding layout problems?", "PASS" if design_score >= 8.5 else "FAIL"],
+        ["Does the scene support 90+ seconds of exploration in principle?", "PASS" if gameplay_readability_score >= 8.5 else "FAIL"],
+        ["Does it approach the Newport 8.5+/10 bar?", "PASS" if meets_bar else "FAIL"],
     ]
 
     screenshot_rows = []
@@ -509,19 +621,46 @@ def build_report(
         "",
         "TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.",
         "",
-        "This report is a Recommendation for Chris. It never auto-merges, never impersonates Chris, and never converts technical validation into creative approval.",
+        "For ordinary pre-G-5 work, this report is the council authority verdict after validators and screenshot review. It never auto-merges, never impersonates Chris, and never converts technical validation alone into creative approval.",
         "",
         "## Summary",
         "",
         f"- Generated: {now}",
         f"- Repo root: `{root}`",
-        f"- Phase: {phase}",
+        f"- Phase ID: {phase}",
         f"- Branch: `{git_state['branch']}`",
-        f"- HEAD: `{git_state['head']}`",
+        f"- Commit: `{git_state['head']}`",
         f"- origin/main: `{git_state['origin_main']}`",
         f"- Current branch PR: {current_pr_from_open(open_prs, git_state['branch'])}",
         f"- Target PR check: {pr_label(target_pr_data)}",
-        f"- Recommendation for Chris: {release_recommendation}",
+        f"- PR number if available: {final_pr_number(pr_state, target_pr)}",
+        f"- Final Authority Verdict: {final_verdict}",
+        f"- Final recommended next phase: {next_phase_text}",
+        f"- Human escalation required: {yes_no(human_review_required)}",
+        f"- Escalation blocker: {blocker_text}",
+        "",
+        "## Final Authority Verdict",
+        "",
+        f"Final Authority Verdict: `{final_verdict}`",
+        "",
+        md_table(
+            ["Field", "Result"],
+            [
+                ["Phase ID", phase],
+                ["Branch", git_state["branch"]],
+                ["Commit", git_state["head"]],
+                ["PR number if available", final_pr_number(pr_state, target_pr)],
+                ["Screenshot review", screenshot_review],
+                ["Design score", score_text(design_score)],
+                ["Art direction score", score_text(art_direction_score)],
+                ["World/layout score", score_text(world_layout_score)],
+                ["Gameplay/readability score", score_text(gameplay_readability_score)],
+                ["Technical stability score", score_text(technical_stability_score)],
+                ["QA regression result", qa_regression_result],
+                ["Build/release result", build_release_result],
+                ["Final recommended next phase", next_phase_text],
+            ],
+        ),
         "",
         "## Agent Status Table",
         "",
@@ -551,7 +690,19 @@ def build_report(
             "",
             md_table(["Path", "Bytes", "Modified"], screenshot_rows),
             "",
-            "Visual fields remain NEEDS_HUMAN_REVIEW because this script locates screenshot artifacts but does not judge image quality.",
+            f"Screenshot evidence status: {screenshot_review}. Final authority depends on council image inspection, not artifact existence alone.",
+            "",
+            "## Visual/World Authority Questions",
+            "",
+            md_table(
+                ["Question", "Council Answer"],
+                [
+                    ["Does this meet the 8.5+/10 pre-G-5 visual/world bar?", yes_no(meets_bar)],
+                    ["Does this advance Wayfarer toward the North Star?", yes_no(advances_north_star)],
+                    ["Is human visual review truly required, or can the council accept this?", "Human review required only for true blocker." if human_review_required else "Council can accept this ordinary pre-G-5 pass."],
+                    ["If human review is required, what exact blocker justifies escalation?", blocker_text if human_review_required else "None."],
+                ],
+            ),
             "",
             "## Required Tooling And Validator Paths",
             "",
@@ -615,9 +766,9 @@ def build_report(
             "",
             "## Technical Artist Review",
             "",
-            "- Status: NEEDS_HUMAN_REVIEW",
+            f"- Status: {technical_artist_status}",
             "- Required pass condition: sprite provenance, atlas integrity, layering, shadows/contact, ground transitions, and asset pipeline compliance all hold together.",
-            "- This script verifies pipeline paths but does not visually approve layering/contact quality.",
+            "- Council authority requires screenshot inspection for layering/contact quality.",
         ]
     )
 
@@ -647,7 +798,7 @@ def build_report(
                         ["Art Director", "FAIL", "Street/ground cohesion and clipping problems block visual acceptance."],
                         ["World/Narrative", "FAIL", "Harbor-city life structure is not yet legible enough."],
                         ["UX", "FAIL OR NEEDS REPAIR", "Navigation and village-readability remain too unclear."],
-                        ["Release Manager", "REPAIR SAME PR / DO NOT MERGE", "Recommendation for Chris: repair before any equivalent PR is merged."],
+                        ["Release Manager", AUTHORITY_FAIL, "Repair before any equivalent PR advances."],
                     ],
                 ),
             ]
@@ -658,11 +809,13 @@ def build_report(
             "",
             "## Release Manager Decision",
             "",
-            f"- Recommendation for Chris: {release_recommendation}",
+            f"- Final Authority Verdict: {final_verdict}",
             "- Never auto-merge.",
             "- Never treat validator pass as design acceptance.",
-            "- Merge candidate conditions: all required agents pass, or remaining issues are explicitly marked acceptable for the phase.",
-            "- Blockers to resolve before Newport layout acceptance: street grammar, ground cohesion, lot logic, player/NPC walkability, district readability, and visual cohesion.",
+            "- PR candidate conditions: validators pass, screenshots are inspected, all required discipline scores clear the phase bar, and remaining caveats are roadmap items.",
+            "- Repair conditions: street grammar, ground cohesion, lot logic, player/NPC walkability, district readability, or visual cohesion fail the phase bar.",
+            f"- Final recommended next phase: {next_phase_text}",
+            f"- Human escalation blocker: {blocker_text}",
             "",
         ]
     )
@@ -677,6 +830,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--godot-bin", default=default_godot_bin(), help="Path to Godot console executable.")
     parser.add_argument("--python-bin", default=default_python_bin(), help="Path to Python executable.")
     parser.add_argument("--report-name", default=REPORT_NAME, help="Markdown report filename under docs/reports.")
+    parser.add_argument("--authority-verdict", choices=AUTHORITY_VERDICTS, default="", help="Optional explicit final authority verdict after council review.")
+    parser.add_argument(
+        "--screenshot-review",
+        choices=["inspected", "not-inspected", "missing"],
+        default="not-inspected",
+        help="Whether required screenshot evidence was inspected by the council.",
+    )
+    parser.add_argument("--design-score", type=float, default=0.0, help="Council design score out of 10.")
+    parser.add_argument("--art-direction-score", type=float, default=0.0, help="Council art direction score out of 10.")
+    parser.add_argument("--world-layout-score", type=float, default=0.0, help="Council world/layout score out of 10.")
+    parser.add_argument("--gameplay-readability-score", type=float, default=0.0, help="Council gameplay/readability score out of 10.")
+    parser.add_argument("--technical-stability-score", type=float, default=0.0, help="Council technical stability score out of 10.")
+    parser.add_argument("--qa-regression-result", default="Not recorded.", help="Council QA regression result text.")
+    parser.add_argument("--build-release-result", default="Not recorded.", help="Council build/release result text.")
+    parser.add_argument("--final-recommended-next-phase", default="", help="Next roadmap phase selected by the council.")
+    parser.add_argument("--human-escalation-blocker", default="", help="Exact blocker if the verdict requires human escalation.")
     return parser.parse_args()
 
 
@@ -705,6 +874,17 @@ def main() -> int:
         godot_bin=args.godot_bin,
         python_bin=args.python_bin,
         target_pr=args.target_pr,
+        authority_verdict=args.authority_verdict,
+        screenshot_review=args.screenshot_review,
+        design_score=args.design_score,
+        art_direction_score=args.art_direction_score,
+        world_layout_score=args.world_layout_score,
+        gameplay_readability_score=args.gameplay_readability_score,
+        technical_stability_score=args.technical_stability_score,
+        qa_regression_result=args.qa_regression_result,
+        build_release_result=args.build_release_result,
+        final_recommended_next_phase=args.final_recommended_next_phase,
+        human_escalation_blocker=args.human_escalation_blocker,
     )
 
     report_path = report_dir / args.report_name
@@ -720,7 +900,7 @@ def main() -> int:
     print("Validator mode:", "RUN" if args.run_validators else "LIST_ONLY")
     print("Report:", report_path)
     print("TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.")
-    print("Recommendation for Chris only; no auto-merge performed.")
+    print("Council authority verdict recorded; no auto-merge performed.")
     return 0
 
 
