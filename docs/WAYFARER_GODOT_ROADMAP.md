@@ -292,6 +292,19 @@ review is not required for this ordinary pre-G-5 phase.
 
 Next recommended phase after G-4.20: G-4.21 Origin City Hero Slice.
 
+Current G-4.21 result: the accepted Newport street/dock layout, G-4.18E prop
+family, G-4.19 player foundation, and G-4.20 HUD are composed into a hero-slice
+screenshot packet without adding gameplay systems or changing asset provenance
+status. Godot import, vertical slice, Newport provenance, retained G-4.18E,
+G-4.19, and G-4.21A validators, runtime screenshots, Python compile, and diff
+checks passed. The Agent Council inspected normal HUD, no-HUD, close-up
+street/dock, Tavern/Inn-to-harbor, player/HUD/world, and wide Newport evidence
+and assigned `COUNCIL_PASS_READY_FOR_PR`; human visual review is not required
+for this ordinary pre-G-5 phase. Remaining yellow/provisional art is documented
+as G-4.22 gate caveat rather than hidden final art.
+
+Next recommended phase after G-4.21: G-4.22 8.0 Visual Foundation Review Gate.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -2080,7 +2093,8 @@ Acceptance:
 
 ## G-4.21: Origin City Hero Slice
 
-Status: planned.
+Status: `COUNCIL_PASS_READY_FOR_PR` under the autonomous pre-G-5 production
+protocol.
 
 G-4.21 composes the strongest green-origin/yellow-clearly-marked assets,
 player foundation, HUD redesign, and Newport surface grammar into one
@@ -2094,6 +2108,8 @@ Acceptance:
 - Yellow temporary art is visible only when explicitly accepted as temporary
   and documented.
 - Screenshots show the authored slice in normal, no-HUD, and close-up review.
+- Agent Council screenshot inspection assigned 8.6+ design/art/world scores and
+  accepted the phase as PR-ready without human visual escalation.
 
 ## G-4.22: 8.0 Visual Foundation Review Gate
 
