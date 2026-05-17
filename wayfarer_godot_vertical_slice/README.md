@@ -22,6 +22,7 @@ reference prototype.
 - G-4.19B adds the Newport visual production registry and core asset audit, shifting future work from isolated sheets to atelier production waves for a believable playable starting town.
 - G-4.20A is the first mass atelier production wave: Newport environmental believability, adding controlled terrain-edge, cobble/path, shoreline/harbor, and building-grounding assets while keeping building rebuilds and the Tavern/Inn centerpiece pass deferred.
 - G-4.20B is the Town Identity atelier wave: signage, lamps, wayfinding, civic/market markers, and shopfront support assets that improve Newport readability and navigation while keeping core building rebuilds and the Tavern/Inn centerpiece pass deferred.
+- G-4.21A begins the Newport core building atelier rebuild with a controlled Tavern/Inn hero asset, mercantile, wharf warehouse, two cottage variants, and cooperage/service building. The Tavern/Inn is brick, Hotel Viking-inspired without direct copy, and uses two front/back bridged twin-stack chimney sets.
 - Green-origin art is required, but weak green-origin proof art must be
   quarantined from normal review if it lowers the screenshot bar.
 - NPCs are disabled for the current town-layout review pass.

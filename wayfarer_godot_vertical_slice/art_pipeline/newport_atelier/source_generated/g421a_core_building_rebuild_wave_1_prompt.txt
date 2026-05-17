@@ -1,0 +1,70 @@
+G-4.21A Newport Core Building Atelier Rebuild Wave 1
+
+Pack-level brief retained for continuity:
+Use case: stylized-concept
+Asset type: production 2D game sprite sheet, original legally clean building sprite sheet for a fantasy 1700s Newport harbor RPG
+Primary request: Create a coherent first wave of Newport core buildings as a shared architectural family, not isolated generic fantasy houses. The sheet must contain exactly six separate buildings: 1) a hero centerpiece Tavern/Inn built from brick with two front/back bridged twin-stack chimney sets, warm windows, clear entrance, strong stone foundation, old coastal prestige, and Hotel Viking-inspired grand coastal landmark presence without copying Hotel Viking; 2) a practical mercantile/general store with coastal trade identity, readable shopfront, sign/awning compatibility, and market-spine fit; 3) a wharf warehouse or dock office supporting the working harbor economy, with weathered wood, brick, stone foundation, cargo-door readability, and maritime utility; 4) a small quiet coastal residence/cottage variant with clapboard, stone foundation, readable door, and non-generic Newport character; 5) a second small residence/cottage variant with a different silhouette and roofline but the same architectural family; 6) a workshop/cooperage/service building with useful grounded service-lane identity.
+Scene/backdrop: perfectly flat solid #ff00ff chroma-key background only, no floor plane, no scenery, no gradients, no texture, no cast shadow outside the buildings. Add only small neutral contact shadows directly under each building if needed, using dark neutral pixels that do not blend into the chroma key.
+Subject: Newport coastal fantasy starting-town buildings for real in-world proof placement. The Tavern/Inn is the required hero asset and must visually outrank ordinary shops/homes while staying compatible with the town layout.
+Style/medium: refined authored pixel art / painterly pixel sprite, 3/4 top-down RPG building perspective, crisp readable silhouettes, warm window light, colonial/coastal Newport material language, slate and cedar roofs, brick, clapboard, stone foundations, restrained fantasy charm, readable entrances, no malformed roofs/chimneys/walls.
+Composition/framing: one clean wide sprite sheet with exactly six buildings arranged in a tidy 2 columns by 3 rows grid. Every building must be fully visible with generous padding; no cropped roofs, chimneys, walls, foundations, doors, or shadows. No readable text labels.
+Materials/textures: old brick, stone foundation blocks, slate shingles, cedar clapboard, weathered painted trim, iron brackets, warm glass windows, rope/cargo accents on working buildings, muted coastal reds, creams, sea greens, navy, charcoal roofs, and salt-air wear.
+Constraints: original art only, no copied game sprites, no marketplace asset style, no logos, no real-world brands, no readable text, no UI, no photorealism, no flat vector icons, no yellow Newport building pixels, no existing Hearthvale building pixels, no web-scraped images, no NPC/player standards, no collision finalization.
+Avoid: generic medieval huts, generic fantasy taverns, direct Hotel Viking copy, magenta halos, cropped chimneys, cropped rooflines, malformed walls, floating buildings, visually noisy density, buildings that hide navigation paths.
+
+Accepted individual source prompts:
+
+## atelier_newport_tavern_inn_hero_01
+Use case: stylized-concept
+Asset type: project-bound 2D RPG building sprite source for later chroma-key extraction
+Primary request: Create ONE premium hand-painted pixel-art building sprite for Newport in Wayfarer: a revised centerpiece Tavern/Inn hero building with corrected chimney stack layout.
+Reference intent: Use the attached real brick hotel image only as inspiration for grand coastal brick-hotel presence and the roof chimney-stack idea. Do not copy the hotel facade, exact massing, window layout, entrance, or silhouette.
+Subject: Historic coastal brick inn/tavern landmark, old Newport prestige, fantasy charm, larger and more memorable than ordinary shops. Brick construction must be unmistakable. The roof must have TWO SETS of large twin-stack chimneys. Important: each twin-stack set is arranged front-to-back along the roof depth, not horizontally side-by-side. For each set, one chimney rises from the front/lower roof plane and one chimney rises behind it from the rear/higher roof plane, connected by a short brick bridge/collar/saddle running between the two stacks across the roof slope. Place one front-to-back bridged twin-stack set on the left roof side and one matching front-to-back bridged twin-stack set on the right roof side. Four chimneys total. Warm lit windows, clear central entrance with stone steps, strong stone foundation/base grounding, readable social-hub / quest-anchor presence.
+Style: high-end authored 2D game sprite, hand-painted pixel art with rich material texture, readable silhouette, subtle pixel clusters, roof slate detail, brick variation, warm window glow. Must match a polished fantasy harbor-town game, not a flat vector icon, not simple geometric shapes, not a generic medieval tavern.
+Camera/framing: orthographic 3/4 front view with slight top-down game-ready perspective so the front/back chimney depth is visible, full building visible, no cropped roof/chimneys/walls/foundation, generous padding.
+Background: perfectly flat solid #ff00ff chroma-key background only. No ground plane, no cast shadow, no contact shadow, no border, no labels, no text, no watermark. Do not use #ff00ff anywhere in the building.
+
+## atelier_newport_mercantile_store_01
+Use case: stylized-concept
+Asset type: project-bound 2D RPG building sprite source for later chroma-key extraction
+Primary request: Create ONE premium hand-painted pixel-art building sprite for Newport in Wayfarer: a Mercantile / General Store.
+Subject: Coastal town trade mercantile, practical and inviting, commercially active but clearly subordinate to the larger hero inn. Readable shopfront with broad windows, central door, modest hanging sign bracket area, canvas awning compatibility, crates/barrels/rope goods tucked into the facade, clapboard and brick/stone foundation details, old Newport harbor-market identity.
+Style: high-end authored 2D game sprite, hand-painted pixel art with rich material texture, readable silhouette, subtle pixel clusters, weathered clapboard, slate/shingle roof, warm windows. Must match a polished fantasy harbor-town game, not a flat vector icon, not simple geometric shapes, not a generic medieval shop.
+Camera/framing: orthographic 3/4 front view with slight top-down game-ready perspective, full building visible, no cropped roof/chimneys/walls/foundation, generous padding, same scale family as a town building sprite.
+Background: perfectly flat solid #ff00ff chroma-key background only. No ground plane, no cast shadow, no contact shadow, no border, no labels, no text, no watermark. Do not use #ff00ff anywhere in the building.
+
+## atelier_newport_wharf_warehouse_01
+Use case: stylized-concept
+Asset type: project-bound 2D RPG building sprite source for later chroma-key extraction
+Primary request: Create ONE premium hand-painted pixel-art building sprite for Newport in Wayfarer: a Wharf Warehouse / Dock Office.
+Subject: Working harbor warehouse and dock office, larger utility structure, maritime economy anchor near docks. Weathered wood siding mixed with brick end-wall sections and a stone foundation, broad cargo doors, small dock-office window, rope hooks, cargo pulley, fish-basket/crate/barrel details integrated into the facade, salt-weathered coastal utility character. Functional and maritime, not heroic, not generic fantasy.
+Style: high-end authored 2D game sprite, hand-painted pixel art with rich material texture, readable silhouette, subtle pixel clusters, weathered wood grain, brick/stone texture, slate or dark shingle roof. Must match a polished fantasy harbor-town game, not a flat vector icon, not simple geometric shapes.
+Camera/framing: orthographic 3/4 front view with slight top-down game-ready perspective, full building visible, no cropped roof/chimney/walls/foundation, generous padding, same camera family as RPG town building sprites.
+Background: perfectly flat solid #ff00ff chroma-key background only. No ground plane, no cast shadow, no contact shadow, no border, no labels, no text, no watermark. Do not use #ff00ff anywhere in the building.
+
+## atelier_newport_harbor_cottage_gabled_01
+Use case: stylized-concept
+Asset type: project-bound 2D RPG building sprite source for later chroma-key extraction
+Primary request: Create ONE premium hand-painted pixel-art building sprite for Newport in Wayfarer: a small coastal residence / cottage variant A.
+Subject: Quiet Newport harbor cottage, modest residential building, not generic medieval hut. Clapboard siding, stone foundation, slate or cedar-shingle roof, warm windows, clear door with small stoop, coastal trim, a few believable details like shutters, flower box, rain barrel, and weathered porch boards. Visually quieter than shops and much quieter than the hero inn.
+Style: high-end authored 2D game sprite, hand-painted pixel art with rich material texture, readable silhouette, subtle pixel clusters, weathered coastal materials. Must match a polished fantasy harbor-town game, not a flat vector icon, not simple geometric shapes.
+Camera/framing: orthographic 3/4 front view with slight top-down game-ready perspective, full building visible, no cropped roof/chimney/walls/foundation, generous padding, same camera family as RPG town building sprites.
+Background: perfectly flat solid #ff00ff chroma-key background only. No ground plane, no cast shadow, no contact shadow, no border, no labels, no text, no watermark. Do not use #ff00ff anywhere in the building.
+
+## atelier_newport_harbor_cottage_dormer_01
+Use case: stylized-concept
+Asset type: project-bound 2D RPG building sprite source for later chroma-key extraction
+Primary request: Create ONE premium hand-painted pixel-art building sprite for Newport in Wayfarer: a small coastal residence / cottage variant B.
+Subject: Modest dormered boarding-house cottage for a harbor support lane, visually distinct from variant A. Narrower footprint, salt-worn clapboard, small dormer, side lean-to or rear ell, stone foundation, clear front door and small stoop, warm windows, quiet residential personality, no shopfront. Coastal fantasy tone, not generic medieval hut.
+Style: high-end authored 2D game sprite, hand-painted pixel art with rich material texture, readable silhouette, subtle pixel clusters, weathered coastal materials. Must match a polished fantasy harbor-town game, not a flat vector icon, not simple geometric shapes.
+Camera/framing: orthographic 3/4 front view with slight top-down game-ready perspective, full building visible, no cropped roof/chimney/walls/foundation, generous padding, same camera family as RPG town building sprites.
+Background: perfectly flat solid #ff00ff chroma-key background only. No ground plane, no cast shadow, no contact shadow, no border, no labels, no text, no watermark. Do not use #ff00ff anywhere in the building.
+
+## atelier_newport_cooperage_workshop_01
+Use case: stylized-concept
+Asset type: project-bound 2D RPG building sprite source for later chroma-key extraction
+Primary request: Create ONE premium hand-painted pixel-art building sprite for Newport in Wayfarer: a cooperage / carpenter / service workshop.
+Subject: Grounded harbor service building for barrel repair and carpentry, useful town-life support structure. Weathered timber frame, plank siding, stone foundation, wide workshop doors, small side shed or lean-to, barrel hoops, sawhorse, stacked planks, rope and crates integrated near the facade. Fits service lane or dock-adjacent work area, practical and quiet, not heroic, not generic fantasy.
+Style: high-end authored 2D game sprite, hand-painted pixel art with rich material texture, readable silhouette, subtle pixel clusters, weathered wood grain, slate or dark shingle roof. Must match a polished fantasy harbor-town game, not a flat vector icon, not simple geometric shapes.
+Camera/framing: orthographic 3/4 front view with slight top-down game-ready perspective, full building visible, no cropped roof/chimney/walls/foundation, generous padding, same camera family as RPG town building sprites.
+Background: perfectly flat solid #ff00ff chroma-key background only. No ground plane, no cast shadow, no contact shadow, no border, no labels, no text, no watermark. Do not use #ff00ff anywhere in the building.

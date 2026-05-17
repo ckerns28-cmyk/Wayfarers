@@ -552,8 +552,8 @@ static func player_spawn_tile() -> Vector2i:
 static func building_specs() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(8.95, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(17.86, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(7.95, G414A_STREET_WALL_CURB_DATUM_Y), true),
+			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(18.12, G414A_STREET_WALL_CURB_DATUM_Y), true),
 			_catalog_building("b_counting_house", "harborfront_commercial", "commercial", Vector2(22.40, G414A_STREET_WALL_CURB_DATUM_Y), true),
 			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(27.47, G414A_STREET_WALL_CURB_DATUM_Y), true),
 			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(32.52, G414A_STREET_WALL_CURB_DATUM_Y), true),
@@ -632,9 +632,9 @@ static func g415_layout_rules() -> Dictionary:
 	if not G410_STARTER_HARBOR_TOWN:
 		return {}
 	return {
-		"b_inn_tavern": _layout_rule("parcel_tavern_anchor", "commercial", 584.0, 24.0, 12.0, Vector2(286.0, 616.0), Rect2(314, 578, 58, 26), Rect2(220, 548, 176, 70), "commercial_stone", "tavern loading stays on the west apron while the front door stays clear"),
+		"b_inn_tavern": _layout_rule("parcel_tavern_anchor", "commercial", 584.0, 24.0, 12.0, Vector2(254.0, 616.0), Rect2(282, 578, 58, 26), Rect2(188, 548, 176, 70), "commercial_stone", "tavern loading stays on the west apron while the front door stays clear"),
 		"b_clerk_townhouse": _layout_rule("parcel_clerk_rowhouse", "commercial", 584.0, 22.0, 4.0, Vector2(443.0, 616.0), Rect2(410, 580, 48, 20), Rect2(386, 550, 116, 68), "rowhouse_stone", "brick rowhouse remains attached to the tavern/mercantile run but keeps a distinct stoop"),
-		"b_mercantile": _layout_rule("parcel_harbor_mercantile", "commercial", 584.0, 22.0, 10.0, Vector2(565.0, 616.0), Rect2(502, 582, 78, 24), Rect2(498, 550, 136, 68), "commercial_stone", "trade crates sit on the side apron; the doorway prompt zone remains open"),
+		"b_mercantile": _layout_rule("parcel_harbor_mercantile", "commercial", 584.0, 22.0, 10.0, Vector2(580.0, 616.0), Rect2(538, 582, 64, 24), Rect2(524, 550, 112, 68), "commercial_stone", "trade crates sit on the side apron; the doorway prompt zone remains open"),
 		"b_counting_house": _layout_rule("parcel_counting_house", "commercial", 584.0, 22.0, 12.0, Vector2(710.0, 616.0), Rect2(604, 580, 205, 24), Rect2(612, 548, 196, 70), "civic_stone", "ledger crates flank a formal front walk without crossing the central entry"),
 		"b_chandlery_front": _layout_rule("parcel_chandlery", "commercial", 584.0, 22.0, 12.0, Vector2(873.0, 616.0), Rect2(912, 582, 58, 24), Rect2(806, 550, 154, 68), "commercial_stone", "rope work belongs to the east service slit, not the doorway"),
 		"b_shop_house": _layout_rule("parcel_shop_house", "commercial", 584.0, 22.0, 16.0, Vector2(1019.0, 616.0), Rect2(1058, 580, 58, 24), Rect2(960, 550, 126, 68), "shop_stone", "the shop house gets a wider east gutter before the market parcel"),
@@ -695,7 +695,7 @@ static func starter_district_plan() -> Dictionary:
 		"visual_production_audit_pass": G419B_VISUAL_PRODUCTION_AUDIT_PASS,
 		"environmental_believability_wave_pass": G420A_ENVIRONMENTAL_BELIEVABILITY_PASS,
 		"town_identity_wave_pass": G420B_TOWN_IDENTITY_PASS,
-		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
+		"hero_street_atlas_proof": "central commercial row uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
 		"yellow_review_art_policy": "temporary yellow review art may support prototype composition, scale, and gameplay only; yellow pixels cannot source final-commercial green assets",
@@ -706,8 +706,9 @@ static func starter_district_plan() -> Dictionary:
 		"surface_cohesion_gate": true,
 		"newport_visual_cohesion_gate": true,
 		"asset_provenance_gate": true,
-		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.20B town identity and wayfinding, player/NPC sprite style still waits until the town environment has enough visual context",
-		"tavern_inn_centerpiece_lock": "current Tavern/Inn remains REBUILD_REQUIRED_CENTERPIECE for a future brick Hotel Viking-inspired twin-stack chimney rebuild; G-4.20B may register temporary sign candidates but does not patch or rebuild it",
+		"core_building_atelier_rebuild_pass": "G-4.21A",
+		"player_style_deferred_note": "current player is temporary scale/debug art; after G-4.21A core building architecture, player/NPC sprite style still waits until the town environment has enough visual context",
+		"tavern_inn_centerpiece_lock": "G-4.21A controlled proof subset replaces the old temporary Tavern/Inn with a brick Hotel Viking-inspired-but-not-copied hero inn with two sets of large twin-stack chimneys; final collision/navigation and commercial promotion remain pending",
 		"review_screenshot_mode": "F4 or --review-no-hud",
 		"districts": [
 			"harborfront_commercial",

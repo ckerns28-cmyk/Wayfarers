@@ -1754,6 +1754,61 @@ Acceptance:
   final assets without provenance, deprecated final targets, magenta/halo
   extraction remnants, and missing/deprecated MapLayer references.
 
+## G-4.21A: Newport Core Building Atelier Rebuild Wave 1
+
+Status: implemented as the first controlled core-building atelier rebuild wave.
+
+G-4.21A begins the Newport core building atelier rebuild. This is the first
+true architectural pass for the starting town: the buildings are rebuilt as a
+coherent Newport coastal fantasy family for orientation, emotional memory,
+gameplay clarity, and believable playable density, not as isolated asset
+accumulation.
+
+The required hero asset is the Tavern/Inn. Its direction is brick
+construction, two front/back bridged twin-stack chimney sets, warm windows, a clear
+entrance, strong foundation grounding, old Newport/coastal prestige, and a
+Hotel Viking-inspired coastal landmark presence without direct copying. It is
+the social hub, quest anchor, and player landmark, and it must visually outrank
+ordinary shops and homes.
+
+Wave 1 also rebuilds a controlled proof subset around the Tavern/Inn:
+
+- Mercantile / General Store for the market spine.
+- Wharf Warehouse / Dock Office for the working harbor economy.
+- Two quieter residence/cottage variants for residential streets.
+- Cooperage workshop / service building for service-lane and dock-adjacent
+  town life.
+
+Production artifacts live under `art_pipeline/newport_atelier/` and include
+the exact prompt, source generated sheet, extracted transparent sprites, atlas,
+contact sheet, manifests, extraction QA, and provenance reports. New building
+entries are registered in
+`art_pipeline/newport/manifests/newport_visual_production_registry.json` and
+`art_pipeline/newport/manifests/newport_building_sprite_provenance.json` as
+AI-assisted green-origin candidates pending final license policy approval.
+
+Old building assets are retained. Replaced old/unverified buildings are not
+automatically final; their registry status is updated so they cannot be treated
+as current final visual targets. Controlled in-world placement is wired through
+`BuildingCatalog` without deleting old files, over-placing buildings, masking
+layout problems, or finalizing collision/navigation beyond the current proof
+validation.
+
+Acceptance:
+
+- Tavern/Inn hero asset is present, registered, and validated as brick with two
+  front/back bridged twin-stack chimney sets and Hotel Viking-inspired-but-not-copied
+  landmark presence.
+- At least three additional building types ship with the same source/prompt,
+  extraction, atlas/contact sheet, manifest, QA, and provenance chain.
+- New buildings are registered with status/provenance and controlled proof
+  placement.
+- Old building statuses are updated without deleting old assets.
+- Validators fail clearly for missing building artifacts, missing Tavern/Inn
+  hero QA, deprecated active targets, missing MapLayer/BuildingCatalog assets,
+  magenta halo/background remnants, cropped sprites, and missing transparent
+  bounds metadata where detectable.
+
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
 Status: planned.

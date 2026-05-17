@@ -1,0 +1,192 @@
+{
+  "schema_id": "wayfarer.newport_atelier.g421a.core_building_rebuild_wave_1.v1",
+  "phase": "G-4.21A",
+  "generated_at": "2026-05-16T23:50:33.838650+00:00",
+  "title": "Newport Core Building Atelier Rebuild Wave 1",
+  "wave_id": "wave_4_building_rebuild_or_enhancement",
+  "role": "First Newport core building atelier rebuild wave for coherent starting-town architecture.",
+  "visual_quality_gate": 8.5,
+  "pipeline_status": "ai_assisted_green_origin_candidate_pending_final_license_policy_approval",
+  "source_policy": "AI-assisted green-origin candidates pending final license policy approval; no yellow building pixels, third-party sprites, marketplace packs, web-scraped images, or ripped game art were supplied as source input.",
+  "placement_policy": "Controlled proof subset only; do not over-place, block navigation, hide paths, mask broken layout, or treat old unverified buildings as final.",
+  "tavern_inn_hero_direction": "Required hero asset and centerpiece: brick construction, two front/back bridged twin-stack chimney sets, Hotel Viking-inspired coastal landmark presence without direct copy, warm windows, clear entrance, strong base, social hub, quest anchor, and player landmark.",
+  "packs": [
+    {
+      "pack_id": "core_building_rebuild_wave_1",
+      "title": "Core Building Atelier Rebuild Wave 1",
+      "category": "CORE_BUILDING_REBUILD",
+      "manifest": "art_pipeline/newport_atelier/manifests/newport_atelier_core_buildings_wave_1_manifest.json",
+      "source_image": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_sheet_imagegen.png",
+      "generation_prompt": "art_pipeline/newport_atelier/source_generated/g421a_core_building_rebuild_wave_1_prompt.txt",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "contact_sheet": "art_pipeline/newport_atelier/contact_sheets/newport_atelier_core_buildings_wave_1_contact_sheet.png",
+      "validation_report": "art_pipeline/newport_atelier/reports/newport_atelier_core_buildings_wave_1_extraction_qa.json",
+      "provenance_report": "art_pipeline/newport_atelier/reports/G421A_CORE_BUILDING_ATELIER_REBUILD_WAVE_1.md",
+      "asset_ids": [
+        "atelier_newport_tavern_inn_hero_01",
+        "atelier_newport_mercantile_store_01",
+        "atelier_newport_wharf_warehouse_01",
+        "atelier_newport_harbor_cottage_gabled_01",
+        "atelier_newport_harbor_cottage_dormer_01",
+        "atelier_newport_cooperage_workshop_01"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "asset_id": "atelier_newport_tavern_inn_hero_01",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_tavern_inn_hero_01.png",
+      "pack_id": "core_building_rebuild_wave_1",
+      "building_id": "b_inn_tavern",
+      "replaces_asset_id": "inn_tavern_v1",
+      "visual_quality_rating": 9.3,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 0,
+        "w": 1475,
+        "h": 959
+      },
+      "building_qa": {
+        "hero_centerpiece": true,
+        "brick_construction": true,
+        "two_sets_large_twin_stack_chimneys": true,
+        "front_back_bridged_chimney_pairs": true,
+        "hotel_viking_inspired_not_direct_copy": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true,
+        "warm_windows": true,
+        "visually_outranks_ordinary_buildings": true
+      }
+    },
+    {
+      "asset_id": "atelier_newport_mercantile_store_01",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_mercantile_store_01.png",
+      "pack_id": "core_building_rebuild_wave_1",
+      "building_id": "b_mercantile",
+      "replaces_asset_id": "mercantile_shop",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 1507,
+        "y": 0,
+        "w": 1310,
+        "h": 875
+      },
+      "building_qa": {
+        "hero_centerpiece": false,
+        "clear_shopfront": true,
+        "sign_awning_compatible": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true,
+        "does_not_compete_with_tavern": true
+      }
+    },
+    {
+      "asset_id": "atelier_newport_wharf_warehouse_01",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_wharf_warehouse_01.png",
+      "pack_id": "core_building_rebuild_wave_1",
+      "building_id": "b_dock_warehouse",
+      "replaces_asset_id": "newport_dockside_storehouse",
+      "visual_quality_rating": 9.0,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 991,
+        "w": 1505,
+        "h": 853
+      },
+      "building_qa": {
+        "working_harbor_economy": true,
+        "large_utility_structure": true,
+        "weathered_material_mix": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      }
+    },
+    {
+      "asset_id": "atelier_newport_harbor_cottage_gabled_01",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_harbor_cottage_gabled_01.png",
+      "pack_id": "core_building_rebuild_wave_1",
+      "building_id": "b_res_small",
+      "replaces_asset_id": "residence_small",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 1537,
+        "y": 991,
+        "w": 1209,
+        "h": 901
+      },
+      "building_qa": {
+        "residence_variant": true,
+        "visually_quieter_than_tavern": true,
+        "non_generic_medieval_hut": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      }
+    },
+    {
+      "asset_id": "atelier_newport_harbor_cottage_dormer_01",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_harbor_cottage_dormer_01.png",
+      "pack_id": "core_building_rebuild_wave_1",
+      "building_id": "b_boarding_house",
+      "replaces_asset_id": "newport_modest_clapboard_residence_a",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 0,
+        "y": 1924,
+        "w": 1089,
+        "h": 884
+      },
+      "building_qa": {
+        "residence_variant": true,
+        "visually_quieter_than_tavern": true,
+        "non_generic_medieval_hut": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      }
+    },
+    {
+      "asset_id": "atelier_newport_cooperage_workshop_01",
+      "category": "CORE_BUILDING_REBUILD",
+      "path": "art_pipeline/newport_atelier/generated/atelier_newport_cooperage_workshop_01.png",
+      "pack_id": "core_building_rebuild_wave_1",
+      "building_id": "b_cooperage_shed",
+      "replaces_asset_id": "service_dependency_shed",
+      "visual_quality_rating": 8.9,
+      "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "commercial_use_status": "green_origin_candidate_pending_license_review",
+      "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+      "atlas_region": {
+        "x": 1121,
+        "y": 1924,
+        "w": 1454,
+        "h": 913
+      },
+      "building_qa": {
+        "service_building": true,
+        "useful_grounded_workshop": true,
+        "fits_service_lane_or_market_edge": true,
+        "clear_entrance": true,
+        "strong_foundation_grounding": true
+      }
+    }
+  ]
+}

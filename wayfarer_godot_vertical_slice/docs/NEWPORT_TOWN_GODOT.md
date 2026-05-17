@@ -331,23 +331,29 @@ Active starter mix:
 
 Asset audit by role:
 
-- Tavern / inn: `inn_tavern_v1` integrated.
-- Mercantile / general goods: `mercantile_shop` and `newport_shopfront_awning`
-  integrated; `newport_market_frontage_row` deferred as a duplicate frontage
-  variant.
+- Tavern / inn: `atelier_newport_tavern_inn_hero_01` is the active G-4.21A
+  hero proof asset for `b_inn_tavern`; old `inn_tavern_v1` is retained as
+  history only and is not final.
+- Mercantile / general goods: `atelier_newport_mercantile_store_01` is the
+  active G-4.21A mercantile proof asset for `b_mercantile`; old
+  `mercantile_shop`, `newport_shopfront_awning`, and
+  `newport_market_frontage_row` remain retained/deferred support history.
 - Counting house / administrative office: `newport_counting_house_civic_exchange`
   integrated; `newport_formal_townhouse_block_a` is integrated as the brick
   clerk rowhouse beside the mercantile.
 - Chandlery / rope / sail shop: `newport_chandlery_outfitter_front`
   integrated; `newport_chandlery_cottage` deferred.
-- Warehouse: `newport_dockside_storehouse_long` and
-  `newport_dockside_storehouse` integrated.
-- Dock shack / dock service: `newport_wharf_boathouse_large` integrated;
-  `service_dependency_shed` integrated as a temporary cooperage/service shed.
+- Warehouse: `newport_dockside_storehouse_long` remains integrated for the
+  long storehouse; `atelier_newport_wharf_warehouse_01` is the active G-4.21A
+  wharf warehouse proof asset for `b_dock_warehouse`.
+- Dock shack / dock service: `newport_wharf_boathouse_large` remains
+  integrated; `atelier_newport_cooperage_workshop_01` is the active G-4.21A
+  cooperage/service proof asset for `b_cooperage_shed`.
 - Fishmonger: `newport_market_shed_stalls` integrated as a market/fish-stall
   stand-in; a dedicated fishmonger storefront is still missing.
-- Cooperage / barrel shop: `service_dependency_shed` stands in for now; final
-  cooperage art is still needed.
+- Cooperage / barrel shop: `atelier_newport_cooperage_workshop_01` is the
+  active G-4.21A proof asset; final navigation/collision and license promotion
+  still remain later.
 - Blacksmith / smithy: no suitable Newport-starting-town asset found.
 - Small residence: `residence_small` and `newport_modest_clapboard_residence_a`
   integrated.
@@ -1498,6 +1504,13 @@ Next visual foundation phases:
   wayfinding, civic/market markers, and shopfront support assets so Newport
   becomes easier to read, remember, and navigate without rebuilding core
   buildings.
+- G-4.21A begins the Newport core building atelier rebuild. The Tavern/Inn is
+  the required hero centerpiece: brick construction, two front/back bridged
+  twin-stack chimney sets, warm windows, clear entrance, strong foundation, and
+  Hotel Viking-inspired coastal landmark presence without direct copy. The
+  pass rebuilds a coherent starting-town architectural set rather than
+  accumulating isolated building sprites; old/unverified buildings are not
+  automatically final.
 - G-4.18E creates one green-origin hero-quality asset family.
 - G-4.19 establishes player visual identity.
 - G-4.20 redesigns the HUD/UI with intentional fantasy/MMORPG styling.
@@ -1535,6 +1548,18 @@ Tavern/Inn remains a future `REBUILD_REQUIRED_CENTERPIECE` with the documented
 brick, twin-stack chimney, Hotel Viking-inspired coastal landmark direction.
 G-4.20B may register temporary Tavern/Inn sign candidates, but it does not
 patch the current Tavern/Inn or treat it as final.
+
+G-4.21A starts the core building rebuild with the first controlled building
+proof subset under `art_pipeline/newport_atelier/`: Tavern/Inn hero asset,
+Mercantile, Wharf Warehouse/Dock Office, two cottage variants, and Cooperage
+workshop/service building. Each building keeps the exact prompt, source
+generated sheet, transparent sprite extraction, atlas, contact sheet,
+manifest, QA, and provenance report. Placement is controlled through
+`BuildingCatalog`: Tavern/Inn as the landmark/social hub, Mercantile on the
+market spine, Warehouse by the wharf economy, residences in quieter streets,
+and Cooperage in the service lane. Old building files remain, but replaced
+old/unverified targets are marked as deprecated or temporary and are not final
+visual targets.
 
 G-5 must not be recommended until G-4.22 accepts the screenshot-supported 8.0+
 origin city foundation.

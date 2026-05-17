@@ -5,23 +5,32 @@ const ATLAS_V1 := "res://assets/buildings/hearthvale_buildings_atlas_v1.png"
 const PACK_A := "res://assets/buildings/hearthvale_newport_structure_pack_v1_a.png"
 const PACK_B := "res://assets/buildings/hearthvale_newport_structure_pack_v1_b.png"
 const ISOLATED_BUILDINGS := "res://assets/sprites/buildings/isolated"
+const ATELIER_BUILDINGS := "res://art_pipeline/newport_atelier/generated"
 
 static func sprite_config(sprite_id: String) -> Dictionary:
 	match sprite_id:
 		"inn_tavern_v1":
 			return _sprite(ISOLATED_BUILDINGS + "/inn_tavern_v1_isolated.png", Rect2(0, 0, 473, 468), 142.0, Rect2(55, 24, 379, 420))
+		"atelier_newport_tavern_inn_hero_01":
+			return _sprite(ATELIER_BUILDINGS + "/atelier_newport_tavern_inn_hero_01.png", Rect2(0, 0, 1475, 959), 224.0, Rect2(28, 28, 1419, 903))
 		"mercantile_shop":
 			return _sprite(ISOLATED_BUILDINGS + "/mercantile_shop_isolated.png", Rect2(0, 0, 398, 451), 150.0, Rect2(83, 24, 277, 403))
+		"atelier_newport_mercantile_store_01":
+			return _sprite(ATELIER_BUILDINGS + "/atelier_newport_mercantile_store_01.png", Rect2(0, 0, 1310, 875), 108.0, Rect2(28, 28, 1254, 819))
 		"village_hall_meeting_house":
 			return _sprite(ISOLATED_BUILDINGS + "/village_hall_meeting_house_isolated.png", Rect2(0, 0, 438, 498), 178.0)
 		"residence_small":
 			return _sprite(ISOLATED_BUILDINGS + "/residence_small_isolated.png", Rect2(0, 0, 393, 368), 126.0)
+		"atelier_newport_harbor_cottage_gabled_01":
+			return _sprite(ATELIER_BUILDINGS + "/atelier_newport_harbor_cottage_gabled_01.png", Rect2(0, 0, 1209, 901), 138.0, Rect2(28, 28, 1153, 845))
 		"residence_large":
 			return _sprite(ATLAS_V1, Rect2(836, 418, 381, 418), 184.0)
 		"hunter_lodge_or_outfitter":
 			return _sprite(ATLAS_V1, Rect2(44, 836, 367, 343), 150.0)
 		"service_dependency_shed":
 			return _sprite(ISOLATED_BUILDINGS + "/service_dependency_shed_isolated.png", Rect2(0, 0, 298, 293), 124.0)
+		"atelier_newport_cooperage_workshop_01":
+			return _sprite(ATELIER_BUILDINGS + "/atelier_newport_cooperage_workshop_01.png", Rect2(0, 0, 1454, 913), 132.0, Rect2(28, 28, 1398, 857))
 		"newport_georgian_merchant_residence_a":
 			return _sprite(PACK_A, Rect2(57, 57, 361, 361), 178.0)
 		"newport_elite_garden_mansion_a":
@@ -52,12 +61,16 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 			return _sprite(PACK_B, Rect2(840, 60, 380, 348), 192.0)
 		"newport_modest_clapboard_residence_a":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_modest_clapboard_residence_a_isolated.png", Rect2(0, 0, 247, 418), 126.0)
+		"atelier_newport_harbor_cottage_dormer_01":
+			return _sprite(ATELIER_BUILDINGS + "/atelier_newport_harbor_cottage_dormer_01.png", Rect2(0, 0, 1089, 884), 132.0, Rect2(28, 28, 1033, 828))
 		"newport_counting_house_civic_exchange":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_counting_house_civic_exchange_isolated.png", Rect2(0, 0, 458, 370), 190.0, Rect2(32, 24, 394, 322))
 		"newport_chandlery_outfitter_front":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_chandlery_outfitter_front_isolated.png", Rect2(0, 0, 435, 400), 181.0, Rect2(31, 24, 365, 352))
 		"newport_dockside_storehouse":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_dockside_storehouse_isolated.png", Rect2(0, 0, 443, 448), 220.0)
+		"atelier_newport_wharf_warehouse_01":
+			return _sprite(ATELIER_BUILDINGS + "/atelier_newport_wharf_warehouse_01.png", Rect2(0, 0, 1505, 853), 224.0, Rect2(28, 28, 1449, 797))
 		"newport_market_shed_stalls":
 			return _sprite(ISOLATED_BUILDINGS + "/newport_market_shed_stalls_isolated.png", Rect2(0, 0, 434, 438), 210.0, Rect2(35, 36, 344, 353))
 		"newport_market_frontage_row":
@@ -69,9 +82,9 @@ static func sprite_config(sprite_id: String) -> Dictionary:
 static func building_definition(building_id: String) -> Dictionary:
 	match building_id:
 		"b_inn_tavern":
-			return _definition(building_id, "Inn & Tavern", "inn_tavern_v1", "tavern", 166.0, Vector2(214.0, 444.0), Vector2(154.0, 22.0), Rect2(Vector2(-78.0, -164.0), Vector2(156.0, 176.0)), Vector2(0.0, 26.0), 138.0)
+			return _definition(building_id, "Inn & Tavern", "atelier_newport_tavern_inn_hero_01", "tavern", 224.0, Vector2(737.5, 931.0), Vector2(196.0, 28.0), Rect2(Vector2(-104.0, -188.0), Vector2(208.0, 200.0)), Vector2(0.0, 28.0), 176.0, false, ["harborfront_commercial", "tavern", "centerpiece", "hero_landmark"], "G-4.21A hero rebuild: brick coastal inn, two sets of large front/back bridged twin-stack chimneys, warm windows, clear entrance, strong foundation, Hotel Viking-inspired landmark presence without direct copy.")
 		"b_mercantile":
-			return _definition(building_id, "Mercantile", "mercantile_shop", "mercantile", 150.0, Vector2(199.0, 427.0), Vector2(138.0, 17.0), Rect2(Vector2(-74.0, -160.0), Vector2(148.0, 172.0)), Vector2(0.0, 24.0), 116.0)
+			return _definition(building_id, "Mercantile", "atelier_newport_mercantile_store_01", "mercantile", 108.0, Vector2(655.0, 847.0), Vector2(112.0, 18.0), Rect2(Vector2(-54.0, -112.0), Vector2(108.0, 124.0)), Vector2(0.0, 22.0), 96.0, false, ["harborfront_commercial", "commercial", "mercantile", "market_spine"], "G-4.21A rebuild candidate: practical coastal mercantile with readable shopfront and sign/awning compatibility; scaled to the market-spine footprint so it supports the Tavern/Inn hero instead of competing with it.")
 		"b_counting_house":
 			return _definition(building_id, "Counting House", "newport_counting_house_civic_exchange", "counting_house", 190.0, Vector2(229.0, 346.0), Vector2(166.0, 18.0), Rect2(Vector2(-104.0, -166.0), Vector2(208.0, 178.0)), Vector2(0.0, 25.0), 150.0)
 		"b_chandlery_front":
@@ -85,19 +98,19 @@ static func building_definition(building_id: String) -> Dictionary:
 		"b_wharf_boathouse":
 			return _definition(building_id, "Wharf Boathouse", "newport_wharf_boathouse_large", "dock_service", 280.0, Vector2(289.0, 378.0), Vector2(196.0, 20.0), Rect2(Vector2(-124.0, -138.0), Vector2(248.0, 146.0)), Vector2(0.0, 22.0), 190.0, true)
 		"b_dock_warehouse":
-			return _definition(building_id, "Dock Warehouse", "newport_dockside_storehouse", "warehouse", 220.0, Vector2(221.5, 351.0), Vector2(176.0, 20.0), Rect2(Vector2(-106.0, -136.0), Vector2(212.0, 144.0)), Vector2(0.0, 22.0), 160.0, true)
+			return _definition(building_id, "Dock Warehouse", "atelier_newport_wharf_warehouse_01", "warehouse", 224.0, Vector2(752.5, 610.0), Vector2(176.0, 22.0), Rect2(Vector2(-108.0, -134.0), Vector2(216.0, 146.0)), Vector2(0.0, 22.0), 164.0, true, ["working_wharf", "dock_service", "warehouse"], "G-4.21A rebuild candidate: working wharf warehouse/dock office with weathered wood, brick, stone foundation, and cargo-door readability.")
 		"b_custom_house":
 			return _definition(building_id, "Custom House", "newport_custom_house_civic_front", "customs_house", 176.0, Vector2(214.5, 409.0), Vector2(164.0, 20.0), Rect2(Vector2(-96.0, -146.0), Vector2(192.0, 156.0)), Vector2(0.0, 24.0), 146.0, false, ["inland_residential_civic", "harborfront_commercial", "civic", "customs"], "G-4.11 intentional civic/admin anchor; uses the dedicated custom house asset from the left side of Newport pack B.")
 		"b_village_hall":
 			return _definition(building_id, "Meeting House Chapel", "village_hall_meeting_house", "chapel_deferred", 178.0, Vector2(219.0, 454.0), Vector2(160.0, 20.0), Rect2(Vector2(-92.0, -152.0), Vector2(184.0, 164.0)), Vector2(0.0, 24.0), 142.0, false, ["inland_residential_civic", "chapel"], "Church/chapel-coded asset demoted in G-4.11; not active as the starter town civic anchor.")
 		"b_res_small":
-			return _definition(building_id, "Harbor Cottage", "residence_small", "residence", 126.0, Vector2(196.5, 338.0), Vector2(112.0, 17.0), Rect2(Vector2(-66.0, -116.0), Vector2(132.0, 126.0)), Vector2(0.0, 22.0), 102.0)
+			return _definition(building_id, "Harbor Cottage", "atelier_newport_harbor_cottage_gabled_01", "residence", 138.0, Vector2(604.5, 873.0), Vector2(112.0, 18.0), Rect2(Vector2(-68.0, -118.0), Vector2(136.0, 130.0)), Vector2(0.0, 22.0), 108.0, false, ["inland_residential_civic", "residential", "cottage"], "G-4.21A residence rebuild candidate: quiet gabled harbor cottage with Newport coastal clapboard language.")
 		"b_large_residence":
 			return _definition(building_id, "Harbor Residence", "newport_large_front_residence", "large_residence", 200.0, Vector2(217.5, 345.0), Vector2(156.0, 18.0), Rect2(Vector2(-92.0, -142.0), Vector2(184.0, 152.0)), Vector2(0.0, 23.0), 142.0, false, ["inland_residential_civic", "residential", "civic_residence"], "Integrated from Newport pack A with an isolated crop so the full residence and side dressing are visible.")
 		"b_boarding_house":
-			return _definition(building_id, "Boarding House", "newport_modest_clapboard_residence_a", "boarding_house", 126.0, Vector2(123.5, 394.0), Vector2(112.0, 17.0), Rect2(Vector2(-66.0, -126.0), Vector2(132.0, 136.0)), Vector2(0.0, 21.0), 104.0, false, ["support_lane", "inland_residential_civic", "residential"], "Tall clapboard residence reused as a boarding house with an isolated crop to remove neighboring sprite pixels.")
+			return _definition(building_id, "Boarding House", "atelier_newport_harbor_cottage_dormer_01", "boarding_house", 132.0, Vector2(544.5, 856.0), Vector2(112.0, 18.0), Rect2(Vector2(-66.0, -126.0), Vector2(132.0, 138.0)), Vector2(0.0, 21.0), 108.0, false, ["support_lane", "inland_residential_civic", "residential", "cottage"], "G-4.21A residence rebuild candidate: dormered coastal boarding cottage with a distinct quiet residential silhouette.")
 		"b_cooperage_shed":
-			return _definition(building_id, "Cooperage Shed", "service_dependency_shed", "cooperage", 124.0, Vector2(149.0, 269.0), Vector2(98.0, 16.0), Rect2(Vector2(-58.0, -108.0), Vector2(116.0, 118.0)), Vector2(0.0, 20.0), 92.0, false, ["support_lane", "working_wharf", "dock_service"], "Compact service shed standing in for cooperage/barrel-shop support with an isolated crop to remove the building above it.")
+			return _definition(building_id, "Cooperage Shed", "atelier_newport_cooperage_workshop_01", "cooperage", 132.0, Vector2(727.0, 885.0), Vector2(98.0, 18.0), Rect2(Vector2(-60.0, -108.0), Vector2(120.0, 120.0)), Vector2(0.0, 20.0), 96.0, false, ["support_lane", "working_wharf", "dock_service", "service_building"], "G-4.21A service rebuild candidate: cooperage workshop with barrel repair and grounded service-lane utility.")
 		"b_printer_rowhouse":
 			return _definition(building_id, "Printer Rowhouse", "newport_narrow_merchant_townhouse_a", "printer_rowhouse", 118.0, Vector2(136.5, 385.0), Vector2(96.0, 16.0), Rect2(Vector2(-52.0, -154.0), Vector2(104.0, 166.0)), Vector2(0.0, 24.0), 92.0, false, ["harborfront_commercial", "commercial", "rowhouse", "future_printer"], "G-4.15 scales the narrow printer rowhouse at the asset's Newport default width so it reads as a real street-wall building beside the market shed instead of a prop-sized infill.")
 		"b_clerk_townhouse":
@@ -111,7 +124,9 @@ static func building_definition(building_id: String) -> Dictionary:
 static func available_building_assets() -> Array:
 	return [
 		_asset("inn_tavern_v1", "tavern / inn", "integrated", "Accepted isolated tavern anchor."),
+		_asset("atelier_newport_tavern_inn_hero_01", "tavern / inn", "integrated_g421a", "G-4.21A hero building rebuild: brick coastal inn with two twin-stack chimney sets."),
 		_asset("mercantile_shop", "mercantile / general goods", "integrated", "Accepted isolated shop anchor."),
+		_asset("atelier_newport_mercantile_store_01", "mercantile / general goods", "integrated_g421a", "G-4.21A coastal mercantile rebuild candidate."),
 		_asset("newport_counting_house_civic_exchange", "counting house / civic exchange", "integrated", "Accepted isolated harborfront office."),
 		_asset("newport_chandlery_outfitter_front", "chandlery / rope / sail shop", "integrated", "Accepted isolated working-harbor storefront."),
 		_asset("newport_shopfront_awning", "shop house / general storefront", "integrated", "Accepted isolated harborfront shop."),
@@ -119,11 +134,15 @@ static func available_building_assets() -> Array:
 		_asset("newport_dockside_storehouse_long", "warehouse", "integrated", "Accepted isolated long dock storehouse."),
 		_asset("newport_wharf_boathouse_large", "dock shack / boathouse", "integrated", "Accepted isolated wharf service building."),
 		_asset("newport_dockside_storehouse", "warehouse / dock service", "integrated", "Accepted isolated dock warehouse."),
+		_asset("atelier_newport_wharf_warehouse_01", "warehouse / dock service", "integrated_g421a", "G-4.21A wharf warehouse / dock office rebuild candidate."),
 		_asset("newport_custom_house_civic_front", "customs house / civic", "integrated_g411", "Dedicated custom-house asset intentionally used as the starter civic/admin anchor."),
 		_asset("residence_small", "small residence", "integrated", "Accepted isolated cottage."),
+		_asset("atelier_newport_harbor_cottage_gabled_01", "small residence", "integrated_g421a", "G-4.21A quiet gabled harbor cottage variant."),
 		_asset("newport_large_front_residence", "large residence / civic residence", "integrated_g411", "Adds inland residential depth using an isolated full-width crop."),
 		_asset("newport_modest_clapboard_residence_a", "boarding house / small residence", "integrated_g411", "Adds support-lane housing using an isolated crop."),
+		_asset("atelier_newport_harbor_cottage_dormer_01", "boarding house / small residence", "integrated_g421a", "G-4.21A dormered coastal cottage / boarding-house variant."),
 		_asset("service_dependency_shed", "cooperage / barrel shop / dock shack", "integrated_g411", "Temporary support/service role using an isolated crop."),
+		_asset("atelier_newport_cooperage_workshop_01", "cooperage / barrel shop / dock shack", "integrated_g421a", "G-4.21A cooperage workshop/service-lane rebuild candidate."),
 		_asset("village_hall_meeting_house", "church / chapel", "deferred", "Demoted in G-4.11; not used as the starter civic anchor."),
 		_asset("residence_large", "large residence", "available_deferred", "Base atlas residence; not active in starter pass."),
 		_asset("hunter_lodge_or_outfitter", "outfitter / rural lodge", "available_deferred", "Less Newport-civic than current set."),
@@ -233,7 +252,7 @@ static func _projection_details_for(building_id: String) -> Array:
 	match building_id:
 		"b_mercantile":
 			return [
-				_projection_detail("mercantile_hanging_sign", Rect2(Vector2(18.0, 212.0), Vector2(72.0, 96.0)), 12),
+				_projection_detail("mercantile_hanging_sign", Rect2(Vector2(1194.0, 418.0), Vector2(108.0, 172.0)), 12),
 			]
 		_:
 			return []

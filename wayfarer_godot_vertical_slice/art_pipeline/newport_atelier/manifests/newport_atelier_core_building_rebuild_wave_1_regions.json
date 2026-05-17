@@ -1,0 +1,97 @@
+{
+  "core_building_rebuild_wave_1": {
+    "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_core_buildings_wave_1_v1.png",
+    "assets": {
+      "atelier_newport_tavern_inn_hero_01": {
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1475,
+          "h": 959
+        },
+        "sprite_size": {
+          "w": 1475,
+          "h": 959
+        },
+        "recommended_game_scale": 0.152,
+        "building_id": "b_inn_tavern",
+        "replaces_asset_id": "inn_tavern_v1"
+      },
+      "atelier_newport_mercantile_store_01": {
+        "region": {
+          "x": 1507,
+          "y": 0,
+          "w": 1310,
+          "h": 875
+        },
+        "sprite_size": {
+          "w": 1310,
+          "h": 875
+        },
+        "recommended_game_scale": 0.082,
+        "building_id": "b_mercantile",
+        "replaces_asset_id": "mercantile_shop"
+      },
+      "atelier_newport_wharf_warehouse_01": {
+        "region": {
+          "x": 0,
+          "y": 991,
+          "w": 1505,
+          "h": 853
+        },
+        "sprite_size": {
+          "w": 1505,
+          "h": 853
+        },
+        "recommended_game_scale": 0.149,
+        "building_id": "b_dock_warehouse",
+        "replaces_asset_id": "newport_dockside_storehouse"
+      },
+      "atelier_newport_harbor_cottage_gabled_01": {
+        "region": {
+          "x": 1537,
+          "y": 991,
+          "w": 1209,
+          "h": 901
+        },
+        "sprite_size": {
+          "w": 1209,
+          "h": 901
+        },
+        "recommended_game_scale": 0.114,
+        "building_id": "b_res_small",
+        "replaces_asset_id": "residence_small"
+      },
+      "atelier_newport_harbor_cottage_dormer_01": {
+        "region": {
+          "x": 0,
+          "y": 1924,
+          "w": 1089,
+          "h": 884
+        },
+        "sprite_size": {
+          "w": 1089,
+          "h": 884
+        },
+        "recommended_game_scale": 0.121,
+        "building_id": "b_boarding_house",
+        "replaces_asset_id": "newport_modest_clapboard_residence_a"
+      },
+      "atelier_newport_cooperage_workshop_01": {
+        "region": {
+          "x": 1121,
+          "y": 1924,
+          "w": 1454,
+          "h": 913
+        },
+        "sprite_size": {
+          "w": 1454,
+          "h": 913
+        },
+        "recommended_game_scale": 0.091,
+        "building_id": "b_cooperage_shed",
+        "replaces_asset_id": "service_dependency_shed"
+      }
+    }
+  }
+}
