@@ -53,8 +53,8 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.22A", "build_phase_g_4_22a")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.22A Newport Walkable City Reconstruction Blockout", "build_label_g_4_22a")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.23A", "build_phase_g_4_23a")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.23A Newport Street Grammar + Ground Cohesion Repair", "build_label_g_4_23a")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -1511,6 +1511,7 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("town_identity_wave_pass", "") == "G-4.20B", "starter_plan_town_identity_wave_pass_g_4_20b")
 	_expect(plan.get("core_building_atelier_rebuild_pass", "") == "G-4.21A", "starter_plan_core_building_atelier_rebuild_pass_g_4_21a")
 	_expect(plan.get("walkable_city_reconstruction_pass", "") == "G-4.22A", "starter_plan_walkable_city_reconstruction_pass_g_4_22a")
+	_expect(plan.get("street_grammar_ground_repair_pass", "") == "G-4.23A", "starter_plan_street_grammar_ground_repair_pass_g_4_23a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("atelier cargo") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("G-4.19A") >= 0, "starter_plan_hero_street_atlas_proof")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20A") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20b")
@@ -1538,6 +1539,8 @@ func _validate_starter_harbor_plan() -> void:
 	var street_grammar: Array = plan.get("street_grammar", [])
 	for grammar_id in ["waterfront_avenue_parallel_to_harbor", "west_road_runs_up_from_avenue", "central_civic_road_runs_up_from_avenue", "east_market_road_runs_up_from_avenue", "packed_earth_service_alleys_share_same_cobble_palette", "blockout_guides_default_off"]:
 		_expect(street_grammar.has(grammar_id), "g422a_street_grammar_" + grammar_id)
+	for grammar_id in ["back_street_behind_waterfront_road", "lots_yards_docks_and_civic_spaces_ground_buildings", "atelier_terrain_edges_unify_ground_language"]:
+		_expect(street_grammar.has(grammar_id), "g423a_street_grammar_" + grammar_id)
 	var walking_loops: Array = plan.get("walking_loops", [])
 	for loop_id in ["harbor_loop", "market_loop", "civic_residential_loop"]:
 		_expect(walking_loops.has(loop_id), "g422a_plan_loop_" + loop_id)

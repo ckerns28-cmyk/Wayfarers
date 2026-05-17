@@ -23,6 +23,7 @@ const G419B_VISUAL_PRODUCTION_AUDIT_PASS := "G-4.19B"
 const G420A_ENVIRONMENTAL_BELIEVABILITY_PASS := "G-4.20A"
 const G420B_TOWN_IDENTITY_PASS := "G-4.20B"
 const G422A_WALKABLE_CITY_RECONSTRUCTION_PASS := "G-4.22A"
+const G423A_STREET_GRAMMAR_GROUND_REPAIR_PASS := "G-4.23A"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -497,27 +498,31 @@ static func lived_in_detail_count() -> int:
 static func detail_blockers() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_blocker("tavern_stoop_barrels", Rect2(252, 586, 30, 16)),
-			_blocker("clerk_stoop_crates", Rect2(448, 588, 28, 16)),
-			_blocker("mercantile_front_crates", Rect2(612, 586, 30, 16)),
-			_blocker("service_alley_west_rope", Rect2(514, 684, 22, 14)),
-			_blocker("counting_house_notice_crates", Rect2(744, 452, 34, 16)),
-			_blocker("chandlery_rope_stack", Rect2(1008, 586, 30, 14)),
-			_blocker("shop_house_crates", Rect2(1150, 586, 32, 16)),
-			_blocker("market_vendor_table", Rect2(1322, 604, 62, 20)),
-			_blocker("printer_delivery_barrels", Rect2(1492, 586, 30, 18)),
-			_blocker("civic_hall_notice_bench", Rect2(746, 388, 42, 16)),
-			_blocker("custom_house_flag_crates", Rect2(904, 390, 34, 18)),
-			_blocker("residential_yard_planter", Rect2(362, 338, 40, 18)),
-			_blocker("boarding_lane_wash", Rect2(1252, 398, 34, 18)),
-			_blocker("cooperage_hoops", Rect2(246, 468, 40, 18)),
-			_blocker("service_alley_cargo", Rect2(962, 660, 38, 20)),
-			_blocker("wharf_west_cargo", Rect2(370, 676, 36, 20)),
-			_blocker("wharf_market_table", Rect2(706, 664, 62, 20)),
-			_blocker("wharf_east_barrels", Rect2(1024, 674, 34, 22)),
-			_blocker("west_pier_posts", Rect2(374, 758, 34, 18)),
-			_blocker("central_pier_cargo", Rect2(746, 742, 36, 20)),
-			_blocker("east_pier_net", Rect2(1070, 746, 34, 20)),
+			_blocker("tavern_stoop_barrels", Rect2(232, 604, 28, 18)),
+			_blocker("chandlery_stoop_barrels", Rect2(1022, 586, 30, 18)),
+			_blocker("cooperage_hoops", Rect2(246, 468, 76, 18)),
+			_blocker("market_vendor_tables", Rect2(1316, 620, 132, 28)),
+			_blocker("civic_hall_notice_bench", Rect2(620, 400, 42, 18)),
+			_blocker("custom_house_bench", Rect2(1038, 416, 42, 18)),
+			_blocker("west_wharf_crates", Rect2(452, 686, 38, 24)),
+			_blocker("east_wharf_crates", Rect2(1028, 686, 38, 24)),
+			_blocker("west_wharf_fish_rack", Rect2(322, 722, 42, 22)),
+			_blocker("east_wharf_fish_rack", Rect2(1134, 714, 42, 22)),
+			_blocker("central_pier_net_bundle_west", Rect2(696, 722, 44, 22)),
+			_blocker("central_pier_net_bundle_east", Rect2(868, 722, 44, 22)),
+			_blocker("harbor_boat_west", Rect2(378, 874, 64, 20)),
+			_blocker("harbor_boat_center", Rect2(760, 890, 64, 20)),
+			_blocker("harbor_boat_east", Rect2(1088, 878, 64, 20)),
+			_blocker("outer_town_northwest_townhouse", Rect2(94, 244, 84, 24)),
+			_blocker("outer_town_gabled_cottage", Rect2(266, 244, 104, 24)),
+			_blocker("outer_town_formal_row", Rect2(465, 244, 126, 24)),
+			_blocker("outer_town_elite_residence", Rect2(665, 244, 138, 24)),
+			_blocker("outer_town_georgian_house", Rect2(878, 244, 124, 24)),
+			_blocker("outer_town_dormer_cottage", Rect2(1088, 244, 104, 24)),
+			_blocker("outer_town_chandlery_cottage", Rect2(1264, 244, 108, 24)),
+			_blocker("outer_town_east_townhouse", Rect2(1457, 244, 86, 24)),
+			_blocker("outer_town_west_side_cottage", Rect2(40, 414, 112, 24)),
+			_blocker("outer_town_east_side_market_row", Rect2(1458, 428, 120, 24)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -710,7 +715,8 @@ static func starter_district_plan() -> Dictionary:
 		"environmental_believability_wave_pass": G420A_ENVIRONMENTAL_BELIEVABILITY_PASS,
 		"town_identity_wave_pass": G420B_TOWN_IDENTITY_PASS,
 		"walkable_city_reconstruction_pass": G422A_WALKABLE_CITY_RECONSTRUCTION_PASS,
-		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
+		"street_grammar_ground_repair_pass": G423A_STREET_GRAMMAR_GROUND_REPAIR_PASS,
+		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; G-4.23A repairs street grammar and ground cohesion by narrowing old slab-like road reads, exposing a back street behind the waterfront road, suppressing oversized cargo/dock dressing in clean review, and reusing provenance-safe atelier terrain/grounding transitions only where they reinforce ordered parcels; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
 		"yellow_review_art_policy": "temporary yellow review art may support prototype composition, scale, and gameplay only; yellow pixels cannot source final-commercial green assets",
@@ -742,6 +748,14 @@ static func starter_district_plan() -> Dictionary:
 			"west_road_runs_up_from_avenue",
 			"central_civic_road_runs_up_from_avenue",
 			"east_market_road_runs_up_from_avenue",
+			"back_street_behind_waterfront_road",
+			"lots_yards_docks_and_civic_spaces_ground_buildings",
+			"atelier_terrain_edges_unify_ground_language",
+			"props_scale_below_buildings_and_do_not_define_layout",
+			"ordered_parcels_before_dressing",
+			"ordered_outer_frontage_fills_review_view",
+			"enclosed_lot_cells_reduce_raw_green_gaps",
+			"closer_street_entry_camera_without_rescaling_player",
 			"packed_earth_service_alleys_share_same_cobble_palette",
 			"blockout_guides_default_off",
 		],

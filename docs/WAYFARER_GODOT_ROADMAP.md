@@ -202,6 +202,24 @@ deferred because they protect walkability or currently read as orphaned
 placement. The HUD review identity should show `Godot G-4.13B Rowhouse Infill
 Density`.
 
+Current G-4.23A result: the G-4.22A walkable-city blockout was not treated as
+design approval. This pass tightens Newport around a more readable harborfront
+avenue, visible uphill connectors, and a back street behind the first
+waterfront road. Broad slab-like road polygons were narrowed, old proof/legacy
+ground overlays remain off, and the provenance-tracked G-4.20A atelier
+terrain, path, shoreline, and building-grounding transitions are reintroduced
+as controlled clean-review material glue rather than random decoration.
+Follow-up repair within the pass expands the surrounding city fabric into
+ordered upper and side frontage instead of isolated building drops, and the
+starter camera moves closer to the streets so the player reads as entering a
+city rather than observing one from a distance. Enclosed lot cells now fill the
+street grid with yards, service courts, civic lawns, market courts, thresholds,
+and low walls instead of leaving raw green gaps between roads. Tavern/Inn
+remains the west social anchor, the market and civic roads stay walkable, and
+new G-4.23A runtime screenshot automation captures the required whole-town,
+harborfront, uphill-road, back-street, tavern/market, and walkability proof
+views. Visual acceptance still requires human review.
+
 Cloudflare Pages remains the preferred separate static-hosting target, but it
 is deferred for the current stock Godot export because Pages Direct Upload
 rejects the 37,695,054-byte `index.wasm` file as larger than the 25 MB
@@ -1808,6 +1826,51 @@ Acceptance:
   hero QA, deprecated active targets, missing MapLayer/BuildingCatalog assets,
   magenta halo/background remnants, cropped sprites, and missing transparent
   bounds metadata where detectable.
+
+## G-4.23A: Newport Street Grammar + Ground Cohesion Repair
+
+Status: implemented for local validation and human visual review.
+
+G-4.23A repairs the G-4.22A visual-state problem Chris identified: a scene can
+validate technically while still reading as broad prototype ground bands and
+disconnected placement rather than a coherent colonial harbor city.
+
+Implemented:
+
+- HUD identity: `Godot G-4.23A Newport Street Grammar + Ground Cohesion Repair`.
+- Branch: `codex/g-4-23a-newport-street-grammar`.
+- The harborfront avenue is narrower and stays visually parallel to the wharf
+  instead of filling the town with a wide gray blockout slab.
+- West, central, east, and market uphill connector roads are drawn first and
+  remain visible as routes from harbor work into civic/residential town.
+- The back street behind the first waterfront road has a more legible street
+  surface and yard/civic frontage rather than a disconnected horizontal pad.
+- Additional upper-town and side-edge building fabric now follows shared
+  frontage lines, with lot thresholds and fences aligned to the streets so the
+  review camera does not read as empty green space around a small set piece.
+- Enclosed residential, civic, market, and service lot cells fill the major
+  gaps between streets with purposeful yards and work courts rather than
+  scatter dressing.
+- Starter harbor-town camera framing is closer to the street and buildings,
+  giving player movement a more entered-city perspective without enlarging the
+  player sprite.
+- G-4.20A atelier terrain/path/shoreline/building-grounding placements are
+  visible in clean review as provenance-tracked material transitions, while
+  older G-4.17/G-4.18 proof overlays remain gated behind
+  `G422A_SHOW_LEGACY_PROOF_OVERLAYS`.
+- Buildings keep the existing collision/pathing contract and are visually tied
+  to lots, yards, docks, civic spaces, and frontage thresholds without adding
+  decorative clutter to hide unresolved layout.
+- A G-4.23A screenshot wrapper captures whole town, harborfront avenue, uphill
+  connector road, back street, tavern/market anchor, and player walkability
+  proof while preserving the G-4.22A wrapper.
+
+Acceptance:
+
+- Technical validation can pass only the engineering gate.
+- Design/art/world/UX acceptance remains `NEEDS_HUMAN_REVIEW` until Chris
+  reviews the fresh screenshots against the Newport 8.5+/10 bar.
+- Remaining issues must be separated from validation status in PR summaries.
 
 ## G-4.18E: Green-Origin Hero-Quality Asset Family
 
