@@ -1431,6 +1431,18 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     ("G-15B island world cohesion validator", game_root / "tools" / "validate_island_world_cohesion.py"),
                 ]
             )
+        if phase.upper().strip().startswith("G-15A"):
+            required.extend(
+                [
+                    ("G-15A transition source", game_root / "data" / "world_layout" / "village_to_island_transition_v1.json"),
+                    ("G-15A phase report", root / "docs" / "reports" / "G15A_VILLAGE_TO_ISLAND_TRANSITION_PASS.md"),
+                    ("G-15A phase report JSON", root / "docs" / "reports" / "G15A_VILLAGE_TO_ISLAND_TRANSITION_PASS.json"),
+                    (
+                        "G-15A runtime screenshot manifest",
+                        game_root / "artifacts" / "review" / "g15a_runtime_screenshots" / "g15a_runtime_screenshot_manifest.json",
+                    ),
+                ]
+            )
         if phase.upper().strip().startswith("G-16"):
             required.extend(
                 [

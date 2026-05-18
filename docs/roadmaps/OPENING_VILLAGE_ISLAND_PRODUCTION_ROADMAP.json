@@ -168,7 +168,7 @@
         "validate_village_to_island_transition.py",
         "validate_island_world_topology.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-15B",

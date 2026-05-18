@@ -1,0 +1,51 @@
+{
+  "schema_id": "wayfarer.g15a.village_to_island_transition.v1",
+  "phase": "G-15A",
+  "topology_source": "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+  "purpose": "Make leaving Newport feel readable, intentional, and exciting before the wider island terrain pass.",
+  "world_size": {"w": 2400, "h": 1600},
+  "transition_route": {
+    "id": "newport_east_gate_to_outskirt_lane",
+    "from_zone": "newport_east_gate",
+    "to_zone": "outskirt_lane",
+    "route_rects": [
+      {"x": 44, "y": 15, "w": 8, "h": 4},
+      {"x": 51, "y": 14, "w": 7, "h": 3},
+      {"x": 57, "y": 13, "w": 8, "h": 3},
+      {"x": 64, "y": 12, "w": 6, "h": 3},
+      {"x": 69, "y": 11, "w": 4, "h": 3}
+    ],
+    "walkable_samples": [
+      {"id": "village_exit_to_island", "position": {"x": 1608, "y": 548}},
+      {"id": "island_entry_transition", "position": {"x": 1792, "y": 492}},
+      {"id": "first_mystery_beyond_town", "position": {"x": 2150, "y": 420}}
+    ]
+  },
+  "threshold_storytelling": [
+    "market road becomes an outskirt lane",
+    "fence break and lantern mark the last village threshold",
+    "old road stones pull the player toward the signal rise",
+    "sealed roadside cache hints that the tavern whisper has physical stakes"
+  ],
+  "runtime_sources": [
+    "res://scripts/NewportTownBlueprint.gd::opening_island_transition_contract",
+    "res://scenes/map/MapLayer.gd::_draw_g15a_transition_ground",
+    "res://scenes/map/MapLayer.gd::_draw_g15a_transition_streets",
+    "res://scenes/map/MapLayer.gd::_draw_g15a_transition_props"
+  ],
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g15a_runtime_screenshots/g15a_runtime_screenshot_manifest.json",
+  "required_screenshots": [
+    "g15a_01_village_exit_to_island.png",
+    "g15a_02_island_entry_transition.png",
+    "g15a_03_first_mystery_beyond_town.png",
+    "g15a_04_debug_overlays_disabled.png"
+  ],
+  "acceptance": {
+    "player_knows_where_to_go_next": true,
+    "transition_feels_natural": true,
+    "world_opens_without_confusion": true,
+    "no_invisible_wall_or_random_edge_feeling": true,
+    "world_layout_score": 8.6,
+    "ux_readability_score": 8.6
+  }
+}
