@@ -41,6 +41,8 @@ const STARTER_VILLAGE_G7A_COHESION_PASS := "G-7A"
 const G7A_TOWN_COHESION_PHASE_SCORE := 7.6
 const STARTER_VILLAGE_G7B_HARBOR_SPINE_PASS := "G-7B"
 const G7B_HARBOR_WORLD_SCORE := 8.5
+const STARTER_VILLAGE_G7C_LANDMARK_IDENTITY_PASS := "G-7C"
+const G7C_ART_WORLD_SCORE := 8.5
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -690,6 +692,22 @@ const NEWPORT_G7B_HARBOR_WORK_ZONE_PLACEMENTS := [
 	{"family": "commercial", "asset_id": "atelier_g418e_commercial_market_cart_01", "dest": Rect2(1320, 604, 94, 66), "purpose": "g7b_market_cart_clear_of_main_route", "alpha": 0.97, "contact_shadow": true},
 	{"family": "harbor", "asset_id": "atelier_g418e_harbor_dock_barrel_row_01", "dest": Rect2(1220, 696, 92, 36), "purpose": "g7b_east_storehouse_barrel_row_work_queue", "alpha": 0.97, "contact_shadow": true},
 	{"family": "harbor", "asset_id": "atelier_g418e_harbor_net_drying_frame_01", "dest": Rect2(1262, 764, 102, 56), "purpose": "g7b_east_net_drying_service_life", "alpha": 0.96, "contact_shadow": true},
+]
+const NEWPORT_G7C_LANDMARK_IDENTITY_PLACEMENTS := [
+	{"family": "tavern", "asset_id": "atelier_g418e_tavern_entry_lantern_pair_01", "dest": Rect2(238, 530, 90, 51), "purpose": "g7c_tavern_inn_warm_entry_landmark", "alpha": 0.99, "contact_shadow": true},
+	{"family": "tavern", "asset_id": "atelier_g418e_tavern_threshold_planters_01", "dest": Rect2(128, 578, 96, 53), "purpose": "g7c_tavern_inn_social_threshold_centerpiece", "alpha": 0.98, "contact_shadow": true},
+	{"family": "tavern", "asset_id": "atelier_g418e_tavern_service_barrel_crate_01", "dest": Rect2(356, 582, 82, 47), "purpose": "g7c_tavern_service_lane_links_to_harbor_labor", "alpha": 0.97, "contact_shadow": true},
+	{"family": "civic", "asset_id": "atelier_civic_harbor_bulletin_board_01", "dest": Rect2(800, 392, 86, 54), "purpose": "g7c_counting_house_civic_notice_board_landmark", "alpha": 0.94, "contact_shadow": true},
+	{"family": "civic", "asset_id": "atelier_civic_flag_cluster_01", "dest": Rect2(884, 366, 72, 42), "purpose": "g7c_custom_house_civic_flag_landmark", "alpha": 0.90, "contact_shadow": true},
+	{"family": "shopfront", "asset_id": "atelier_shopfront_canvas_awning_segment_01", "dest": Rect2(1082, 544, 92, 43), "purpose": "g7c_commercial_shop_row_colored_awning_identity", "alpha": 0.90, "contact_shadow": true},
+	{"family": "shopfront", "asset_id": "atelier_shopfront_basket_parcel_display_01", "dest": Rect2(1136, 620, 74, 53), "purpose": "g7c_commercial_row_goods_below_shopfront", "alpha": 0.94, "contact_shadow": true},
+	{"family": "lamps", "asset_id": "atelier_wayfinding_street_lamp_post_01", "dest": Rect2(894, 516, 30, 83), "purpose": "g7c_commercial_avenue_lamp_rhythm_landmark", "alpha": 0.94, "contact_shadow": true},
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_service_post_lantern_01", "dest": Rect2(720, 660, 52, 66), "purpose": "g7c_harbor_work_lantern_landmark_at_manifest_route", "alpha": 0.98, "contact_shadow": true},
+	{"family": "civic", "asset_id": "atelier_civic_anchor_plaque_01", "dest": Rect2(1136, 674, 46, 41), "purpose": "g7c_harbor_work_area_anchor_plaque_memory_point", "alpha": 0.88, "contact_shadow": true},
+	{"family": "service", "asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(300, 396, 118, 54), "purpose": "g7c_rear_service_lane_gate_identity", "alpha": 0.93, "contact_shadow": true},
+	{"family": "service", "asset_id": "atelier_g418e_service_wash_tub_linen_01", "dest": Rect2(1218, 454, 78, 37), "purpose": "g7c_rear_service_lane_domestic_work_identity", "alpha": 0.92, "contact_shadow": true},
+	{"family": "grounding", "asset_id": "atelier_ground_low_fence_weeds_01", "dest": Rect2(116, 330, 148, 54), "purpose": "g7c_residential_edge_small_yard_landmark", "alpha": 0.42, "contact_shadow": true},
+	{"family": "grounding", "asset_id": "atelier_ground_wash_tub_buckets_01", "dest": Rect2(1320, 386, 62, 31), "purpose": "g7c_residential_edge_lived_in_yard_identity", "alpha": 0.40, "contact_shadow": true},
 ]
 const NEWPORT_ATELIER_CHARACTER_PLACEMENTS := [
 	{"asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(420, 690), "size": Vector2(82, 82), "purpose": "west_dock_worker_replaces_placeholder", "contact_shadow": true},
@@ -1789,6 +1807,30 @@ func _draw_g7b_spine_placement(placement: Dictionary) -> void:
 	else:
 		_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
 
+func _draw_g7c_landmark_district_identity_pass() -> void:
+	for placement in NEWPORT_G7C_LANDMARK_IDENTITY_PLACEMENTS:
+		_draw_g7c_landmark_placement(placement)
+
+func _draw_g7c_landmark_placement(placement: Dictionary) -> void:
+	var family := String(placement.get("family", "civic"))
+	match family:
+		"tavern":
+			_draw_g418e_hero_family_placement(_newport_g418e_tavern_inn_atlas, NEWPORT_G418E_TAVERN_INN_ATLAS_REGIONS, placement)
+		"commercial":
+			_draw_g418e_hero_family_placement(_newport_g418e_commercial_avenue_atlas, NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_REGIONS, placement)
+		"harbor":
+			_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
+		"service":
+			_draw_g418e_hero_family_placement(_newport_g418e_rear_service_connector_atlas, NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS, placement)
+		"lamps":
+			_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, placement)
+		"shopfront":
+			_draw_town_identity_atelier_placement(_newport_atelier_shopfront_support_atlas, NEWPORT_ATELIER_SHOPFRONT_SUPPORT_ATLAS_REGIONS, placement)
+		"grounding":
+			_draw_environmental_atelier_placement(_newport_atelier_building_grounding_atlas, NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_REGIONS, placement)
+		_:
+			_draw_town_identity_atelier_placement(_newport_atelier_civic_market_atlas, NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS, placement)
+
 func _draw_g422a_block_boundaries() -> void:
 	for fence in [
 		[Vector2(304, 356), Vector2(444, 354)],
@@ -2002,6 +2044,7 @@ func _draw_g410_props() -> void:
 	_draw_g420b_town_identity_accents()
 	_draw_g418e_hero_asset_family_accents()
 	_draw_g7b_harbor_commercial_spine_dressing()
+	_draw_g7c_landmark_district_identity_pass()
 	if NEWPORT_TOWN.G422A_SHOW_LEGACY_PROOF_OVERLAYS:
 		_draw_g418d_atelier_cargo_clusters()
 		_draw_g419a_atelier_dock_clutter_clusters()

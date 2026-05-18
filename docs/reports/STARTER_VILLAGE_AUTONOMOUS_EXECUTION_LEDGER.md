@@ -31,8 +31,8 @@ Deprecated final states are forbidden.
 | --- | --- | --- | --- | --- | --- |
 | G-7 | Newport Living Origin Village Masterplan Lock | `codex/sv1-autonomous-roadmap` | #462 merged | PASS | `docs/reports/G7_NEWPORT_LIVING_ORIGIN_VILLAGE_MASTERPLAN_LOCK.md`, roadmap JSON, ledger JSON, G-7 council report, and G-7 validators. |
 | G-7A | Street, Lot, and Ground Cohesion Reconstruction | `codex/g-7a-street-lot-ground-cohesion` | #463 merged | PASS | `docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md`, G-7A council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, and atelier runtime validator. |
-| G-7B | Harbor, Wharf, and Commercial Spine Cohesion | `codex/g-7b-harbor-commercial-spine` | pending current phase PR | PASS | `docs/reports/G7B_HARBOR_WHARF_COMMERCIAL_SPINE_COHESION.md`, G-7B council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, NPC route validator, and atelier runtime validator. |
-| G-7C | Landmark and District Identity Pass | pending | pending | PENDING | Must make Tavern/Inn, counting house, commerce, harbor, rear lane, residential edge, and civic notice point memorable. |
+| G-7B | Harbor, Wharf, and Commercial Spine Cohesion | `codex/g-7b-harbor-commercial-spine` | #464 merged | PASS | `docs/reports/G7B_HARBOR_WHARF_COMMERCIAL_SPINE_COHESION.md`, G-7B council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, NPC route validator, and atelier runtime validator. |
+| G-7C | Landmark and District Identity Pass | `codex/g-7c-landmark-district-identity` | pending current phase PR | PASS | `docs/reports/G7C_LANDMARK_DISTRICT_IDENTITY_PASS.md`, G-7C council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, interaction UX validator, and atelier runtime validator. |
 | G-8 | Atelier Character and NPC Movement Foundation | pending | pending | PENDING | Must eliminate static-sprite glide/hover and add grounded movement states. |
 | G-8A | Living NPC Population Pass | pending | pending | PENDING | Must add purposeful NPC roles, routes/stations, dialogue seeds, and provenance. |
 | G-9 | Interaction UX and Diegetic Prompt Pass | pending | pending | PENDING | Must remove debug-like prompts/markers and clarify interactables. |
@@ -48,10 +48,9 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after G-7B: `G-7C Landmark and District Identity Pass`.
+Current phase after G-7C: `G-8 Atelier Character and NPC Movement Foundation`.
 
-G-7B changed the runtime map so the wharf now has distinct fish offload,
-manifest cargo, rope/mooring, market transfer, and storehouse work zones tied
-to the commercial avenue and counting-house route. G-7C must now make the
-Tavern/Inn, counting house, commercial row, harbor work, rear service lane,
-residential edge, and civic notice point read as memorable landmarks.
+G-7C changed the runtime map so the Tavern/Inn, Counting House civic notice
+anchor, commercial shop row, harbor work area, rear service lane, residential
+edge, and civic notice-board location read as distinct landmarks. G-8 must now
+fix the known hover/glide risk by grounding player and NPC movement states.
