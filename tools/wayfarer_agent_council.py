@@ -323,6 +323,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_tavern_whisper_system.py"
     )
+    multi_path_choice_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_multi_path_starter_choice.py"
+    )
     pre_g5_ledger_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_pre_g5_roadmap_ledger.py"
@@ -554,6 +558,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     args=[python_bin, str(game_root / "tools" / "validate_tavern_whisper_system.py")],
                     cwd=root,
                     required_paths=[game_root / "tools" / "validate_tavern_whisper_system.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-10B"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Multi-path starter choice validation",
+                    command_text=multi_path_choice_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_multi_path_starter_choice.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_multi_path_starter_choice.py"],
                 ),
             )
         commands[diff_index:diff_index] = starter_commands
@@ -812,6 +827,17 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     ),
                     ("G-10A tavern whisper system", game_root / "scripts" / "dialogue" / "TavernWhisperSystem.gd"),
                     ("G-10A tavern whisper data", game_root / "data" / "dialogue" / "tavern_whispers.json"),
+                ]
+            )
+        if phase.upper().strip().startswith("G-10B"):
+            required.extend(
+                [
+                    (
+                        "G-10B multi-path starter choice validator",
+                        game_root / "tools" / "validate_multi_path_starter_choice.py",
+                    ),
+                    ("G-10B choice router", game_root / "scripts" / "quests" / "FirstLightChoiceRouter.gd"),
+                    ("G-10B multi-path data", game_root / "data" / "quests" / "first_light_multi_path_choices.json"),
                 ]
             )
     elif phase.upper().strip().startswith("G-9A"):
@@ -1124,6 +1150,8 @@ def build_report(
         scrum_scope = "Scope check: this council pass is the formal G-4 visual foundation gate; it records acceptance authority and may recommend G-5 only if screenshots, provenance, validators, and council scores clear the gate."
     elif phase.upper().strip().startswith("G-10A"):
         scrum_scope = "Scope check: this council pass makes the Tavern/Inn a rumor gameplay hub with Bess, Silas, Nora, Jonah, rotating barks, and quest-relevant whisper data; it must not claim the broader multi-path starter foundation is complete."
+    elif phase.upper().strip().startswith("G-10B"):
+        scrum_scope = "Scope check: this council pass adds the multi-path starter choice foundation for First Light, including harbor, tavern, counting-house, merchant, and optional secret routes; it must not claim G-11 living town rhythm or G-12 final pacing/readability are complete."
     elif phase.upper().strip().startswith("G-10") and not phase.upper().strip().startswith(("G-10A", "G-10B")):
         scrum_scope = "Scope check: this council pass expands First Light into a playable opening quest arc with named NPCs, branch choice, optional discovery, reward/progression, and a reason to continue; it must not claim the later dedicated tavern-system or multi-path foundation phases are complete."
     elif phase.upper().strip().startswith("G-9A"):
@@ -1425,6 +1453,26 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-10A")
+                else []
+            ),
+            *(
+                [
+                    "## G-10B Multi-Path Starter Choice Result",
+                    "",
+                    f"Narrative/gameplay hook score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime screenshots inspected: G-10B proof frames show the counting-house lead, Bess's Third Toast tavern branch, Honor's merchant-street branch, Silas's optional rear-gate clue, debug-off normal play, and the multi-path choice contract in the manifest.",
+                    "",
+                    "- G-10B accepted proof: First Light can advance through harbor work, tavern rumor, counting-house pressure, merchant street gossip, and optional secret clues without reducing the opening mystery to one railroaded click path.",
+                    "",
+                    "## Screenshot Contradiction Review",
+                    "",
+                    "- Council failure mode enforced: written reports and validators cannot override visible screenshot evidence. If a screenshot shows route/building order confusion, debug overlays, patchwork that breaks the phase target, hovering NPCs, non-atelier sprites, or unclear objective guidance, the verdict must be `COUNCIL_FAIL_NEEDS_CODE_FIX`.",
+                    "",
+                    "- Current G-10B visual caveat: broad ground-material patchwork remains visible in wide shots and must stay in the G-11/G-12 review queue; it is not allowed to disappear from future council reports.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-10B")
                 else []
             ),
             *(

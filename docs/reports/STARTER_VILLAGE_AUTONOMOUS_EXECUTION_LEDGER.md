@@ -38,8 +38,8 @@ Deprecated final states are forbidden.
 | G-9 | Interaction UX and Diegetic Prompt Pass | `codex/g-9-interaction-ux-prompts` | #468 merged | PASS | `docs/reports/G9_INTERACTION_UX_DIEGETIC_PROMPT_PASS.md`, G-9 council report, runtime screenshot manifest, vertical-slice validator, interaction UX validator, and atelier runtime validator. |
 | G-9A | Journal, Objective, and Quest State Foundation | `codex/g-9a-journal-objective-state` | #469 merged | PASS | `docs/reports/G9A_JOURNAL_OBJECTIVE_QUEST_STATE_FOUNDATION.md`, G-9A council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
 | G-10 | Opening Quest Arc: First Light / Whispers Before Dawn | `codex/g-10-opening-quest-arc` | #470 merged | PASS | `docs/reports/G10_OPENING_QUEST_ARC_FIRST_LIGHT_WHISPERS_BEFORE_DAWN.md`, G-10 council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
-| G-10A | Tavern Whisper System | `codex/g-10a-tavern-whisper-system` | pending current phase PR | PASS | `docs/reports/G10A_TAVERN_WHISPER_SYSTEM.md`, G-10A council report, runtime screenshot manifest, vertical-slice validator, tavern whisper validator, Newport visual-order validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
-| G-10B | Multi-Path Starter Choice Foundation | pending | pending | PENDING | Must support at least two NPC advancement paths and optional clue discovery. |
+| G-10A | Tavern Whisper System | `codex/g-10a-tavern-whisper-system` | #471 merged | PASS | `docs/reports/G10A_TAVERN_WHISPER_SYSTEM.md`, G-10A council report, runtime screenshot manifest, vertical-slice validator, tavern whisper validator, Newport visual-order validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
+| G-10B | Multi-Path Starter Choice Foundation | `codex/g-10b-multi-path-starter-choice` | pending current phase PR | PASS | `docs/reports/G10B_MULTI_PATH_STARTER_CHOICE_FOUNDATION.md`, G-10B council report, runtime screenshot manifest, vertical-slice validator, multi-path starter choice validator, opening quest validator, tavern whisper validator, Newport visual-order validator, interaction UX validator, and atelier runtime validator. |
 | G-11 | Living Town Rhythm Pass | pending | pending | PENDING | Must add believable town rhythm, barks, pauses, and route behavior. |
 | G-11A | Audio/Atmosphere Placeholder-Free Foundation | pending | pending | PENDING | Must add safe hooks or document non-blocking integration points. |
 | G-12 | First-Session Fun, Pacing, and Readability Pass | pending | pending | PENDING | Must prove the first 15-20 minutes are readable, paced, and fun. |
@@ -48,16 +48,16 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after G-10A: `G-10B Multi-Path Starter Choice Foundation`.
+Current phase after G-10B: `G-11 Living Town Rhythm Pass`.
 
-G-10A makes the Tavern/Inn a runtime-backed rumor gameplay hub through Bess,
-Silas, Nora, Jonah, the Third Toast, rear-gate secrecy, wharf-lantern rumor
-ties, and rotating ambient barks. G-10B must now make the broader opening
-mystery support multiple advancement paths instead of only proving the tavern
-hub.
+G-10B adds a runtime-backed multi-path choice foundation for First Light:
+counting-house, harbor-work, tavern-rumor, merchant-street, and optional
+secret routes can now advance the opening mystery without a single railroaded
+click path. G-11 must now make the town feel alive between quest steps.
 
 Chris screenshot QA also exposed that the prior process let route/building
-order pass as long as proof screenshots existed. G-10A now adds a hard
-visual-order gate: route corridors are drawn from an explicit contract and are
-validated against runtime building visual bounds so tavern/commercial/civic
-building bodies cannot sit under visible road corridors without failing.
+order pass as long as proof screenshots existed. G-10A added a hard visual-order
+gate: route corridors are drawn from an explicit contract and are validated
+against runtime building visual bounds. G-10B extends the process so screenshots
+can overrule written report claims; any visible phase-blocking contradiction
+must force `COUNCIL_FAIL_NEEDS_CODE_FIX`.

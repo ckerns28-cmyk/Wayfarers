@@ -150,6 +150,7 @@ func starter_village_quest_contract() -> Dictionary:
 		"response_text": String(snapshot.get("response_text", "")),
 		"journal_visible": hud != null and hud.has_method("journal_objective_contract"),
 		"tavern_whisper_contract": starter_village_tavern_whisper_contract(),
+		"multi_path_choice_contract": starter_village_multi_path_choice_contract(),
 	}
 
 func starter_village_tavern_whisper_contract() -> Dictionary:
@@ -159,6 +160,16 @@ func starter_village_tavern_whisper_contract() -> Dictionary:
 		"phase": "G-10A",
 		"system_id": "newport_tavern_whisper_system",
 		"has_rumor_dialogue": false,
+	}
+
+func starter_village_multi_path_choice_contract() -> Dictionary:
+	if _first_light_quest != null and _first_light_quest.has_method("multi_path_choice_contract"):
+		return _first_light_quest.multi_path_choice_contract()
+	return {
+		"phase": "G-10B",
+		"system_id": "first_light_multi_path_choice_foundation",
+		"path_count": 0,
+		"not_single_railroad": false,
 	}
 
 func debug_apply_first_light_quest_events(events: Array) -> Dictionary:

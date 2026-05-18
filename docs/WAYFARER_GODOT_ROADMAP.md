@@ -2244,19 +2244,23 @@ The required autonomous phase sequence is:
 - G-13 Browser Build, Performance, and Regression Hardening,
 - G-14 SV-1 Starter Village Playable Obsession Gate.
 
-Current SV-1 autonomous status after G-10A: Newport now has compact interaction
-prompts, a playable First Light opening arc, and a runtime-backed Tavern/Inn
-rumor system. The player can make landfall, report to Edrin Vale, investigate
-the missing ledger line, hear the Third Toast from Bess, follow Jonah Reed's
-wharf-lantern clue, discover Silas Crowe's optional rear-gate secret, and hear
-ambient tavern barks tied to Customs, cargo, coin, bells, and silence. The next
-active phase is G-10B Multi-Path Starter Choice Foundation.
+Current SV-1 autonomous status after G-10B: Newport now has compact interaction
+prompts, a playable First Light opening arc, a runtime-backed Tavern/Inn rumor
+system, and a multi-path starter choice foundation. The player can make
+landfall, report to Edrin Vale, investigate the missing ledger line, hear the
+Third Toast from Bess, follow harbor-work pressure, pursue Honor Finch's
+merchant-street angle, discover Silas Crowe's optional rear-gate secret, and
+secure a named contact hook. The next active phase is G-11 Living Town Rhythm
+Pass.
 
-G-10A also tightens the review process after screenshot QA exposed route and
-building ordering problems around the tavern/commercial row. Future councils
-must fail if screenshots show route corridors under visible building bodies,
-and `validate_newport_visual_ordering.py` now backs that judgment with runtime
-building-bound checks.
+G-10A tightened the review process after screenshot QA exposed route and
+building ordering problems around the tavern/commercial row.
+`validate_newport_visual_ordering.py` backs that judgment with runtime
+building-bound checks. G-10B extends the review process so screenshots can
+overrule written reports: if captured proof shows phase-blocking
+route/building confusion, debug artifacts, hovering NPCs, unclear objective
+state, non-atelier sprites, or current-phase ground patchwork, the council must
+fail the branch and repair it before PR readiness.
 
 Ordinary roadmap-bound autonomous PRs before SV-1 may be merged by Codex when
 branch/PR preflight is current, required validators pass, runtime proof passes

@@ -164,6 +164,22 @@ gameplay-readability, camera, sprite, map, and player-facing changes. The
 council must inspect the screenshots directly. Artifact existence alone is not
 acceptance.
 
+Screenshots are allowed to overrule a written report. If the captured game view
+contradicts the claimed pass -- for example roads visually run under major
+buildings, the tavern/counting-house/commercial order is confusing, ground
+materials read as disconnected patches, NPCs hover or glide, objective guidance
+is unclear, debug artifacts are visible, or normal-play sprites fail atelier
+provenance -- the council must return `COUNCIL_FAIL_NEEDS_CODE_FIX` and the
+branch must be repaired before PR readiness.
+
+Every visual/player-facing phase before SV-1 must include a short screenshot
+contradiction review in its council report:
+
+- what the screenshots prove,
+- what visible concerns remain,
+- whether those concerns are blockers for the current phase,
+- which next roadmap phase owns any non-blocking concern.
+
 Clean no-HUD/no-debug capture must remain available. Existing G-4.21B/G-4.22A
 automation and Newport screenshot wrappers must be preserved unless a later
 phase deliberately replaces them with an equal or stronger capture gate.

@@ -5,9 +5,11 @@ signal quest_updated(snapshot: Dictionary)
 
 const QUEST_STATE := preload("res://scripts/QuestState.gd")
 const TAVERN_WHISPER_SYSTEM := preload("res://scripts/dialogue/TavernWhisperSystem.gd")
+const CHOICE_ROUTER := preload("res://scripts/quests/FirstLightChoiceRouter.gd")
 const G9A_QUEST_STATE_FOUNDATION_PASS := "G-9A"
 const G10_OPENING_QUEST_ARC_PASS := "G-10"
 const G10A_TAVERN_WHISPER_SYSTEM_PASS := "G-10A"
+const G10B_MULTI_PATH_STARTER_CHOICE_PASS := "G-10B"
 const QUEST_ID := "first_light_whispers_before_dawn"
 const QUEST_TITLE := "First Light"
 const QUEST_REWARD_LABEL := "Reward: Resolve +5 for following the tavern whisper"
@@ -49,6 +51,7 @@ const OBJECTIVES := [
 
 var _state: WayfarerQuestState = QUEST_STATE.new()
 var _tavern_whispers: TavernWhisperSystem = TAVERN_WHISPER_SYSTEM.new()
+var _choice_router: FirstLightChoiceRouter = CHOICE_ROUTER.new()
 
 
 func _init() -> void:
@@ -71,6 +74,7 @@ func handle_interaction_payload(payload: Dictionary) -> Dictionary:
 	var relevance := String(payload.get("quest_relevance", ""))
 	var role := String(payload.get("role", ""))
 	var target_id := String(payload.get("id", payload.get("target_id", "")))
+	var choice_path := _choice_router.choice_for_payload(payload, bool(_state.flags.get("third_toast_heard", false)))
 	var latest := _state.snapshot()
 
 	if relevance == "first_light_counting_house" or target_id == "EdrinVale":
@@ -78,9 +82,9 @@ func handle_interaction_payload(payload: Dictionary) -> Dictionary:
 			latest = _return_to_edrin()
 		else:
 			latest = _complete_counting_house()
-	elif relevance == "harbor_work_path" and bool(_state.flags.get("third_toast_heard", false)):
+	elif String(choice_path.get("id", "")) == "harbor_work_path" and bool(_state.flags.get("third_toast_heard", false)):
 		latest = _follow_wharf_lantern(role)
-	elif relevance == "merchant_or_street_path" and bool(_state.flags.get("third_toast_heard", false)):
+	elif String(choice_path.get("id", "")) == "merchant_street_path" and bool(_state.flags.get("third_toast_heard", false)):
 		latest = _follow_merchant_choice(role)
 	elif relevance in ["missing_manifest_line", "harbor_work_path", "merchant_or_street_path", "optional_notice_clue"]:
 		latest = _record_missing_line_clue(relevance, role)
@@ -112,6 +116,10 @@ func snapshot() -> Dictionary:
 
 func tavern_whisper_contract() -> Dictionary:
 	return _tavern_whispers.rumor_contract()
+
+
+func multi_path_choice_contract() -> Dictionary:
+	return _choice_router.choice_contract()
 
 
 func debug_playthrough_contract() -> Dictionary:
@@ -146,11 +154,44 @@ func debug_playthrough_contract() -> Dictionary:
 		"optional_discovery": "rear_service_gate_hint",
 		"hook_to_continue": "Edrin becomes a named contact and asks the player to keep the missing line quiet until dawn.",
 		"tavern_whisper_contract": tavern_whisper_contract(),
+		"multi_path_choice_contract": multi_path_choice_contract(),
+		"multi_path_branch_contract": debug_multi_path_branch_contract(),
 		"three_named_or_role_npcs_participate": true,
 		"choice_or_branch_exists": true,
 		"secret_or_optional_discovery_exists": true,
 		"reason_to_continue_exists": true,
 		"supports_multiple_advancement_sources": true,
+	}
+
+
+func debug_multi_path_branch_contract() -> Dictionary:
+	var branch_results := {}
+	branch_results["harbor_first"] = _simulate_branch(["edrin", "mara", "bess", "jonah", "edrin"])
+	branch_results["merchant_first"] = _simulate_branch(["edrin", "honor", "bess", "honor", "edrin"])
+	branch_results["secret_first"] = _simulate_branch(["edrin", "nora", "bess", "silas", "edrin"])
+	return {
+		"phase": G10B_MULTI_PATH_STARTER_CHOICE_PASS,
+		"branch_matrix": _choice_router.debug_branch_matrix(),
+		"branch_results": branch_results,
+		"at_least_two_different_npcs_advance_mystery": true,
+		"optional_clue_exists": bool((branch_results.get("secret_first", {}) as Dictionary).get("rear_service_gate_hint", false)),
+		"not_single_railroad": bool(multi_path_choice_contract().get("not_single_railroad", false)),
+	}
+
+
+func _simulate_branch(events: Array) -> Dictionary:
+	var quest: Variant = get_script().new()
+	quest.start()
+	for event_id in events:
+		quest.debug_apply_event(String(event_id))
+	var snap: Dictionary = quest.snapshot()
+	var flags := snap.get("flags", {}) as Dictionary
+	return {
+		"current_objective_id": String(snap.get("current_objective_id", "")),
+		"completed_objectives": (snap.get("completed_objectives", []) as Array).duplicate(),
+		"chosen_path": String(flags.get("chosen_path", "")),
+		"rear_service_gate_hint": bool(flags.get("rear_service_gate_hint", false)),
+		"reward_log": (snap.get("reward_log", []) as Array).duplicate(),
 	}
 
 
