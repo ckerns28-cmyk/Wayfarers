@@ -31,6 +31,9 @@ var _seating_debug_enabled := false
 var _review_screenshot_mode := false
 var _green_origin_lab_enabled := false
 var _first_light_quest = null
+var _starter_village_rhythm_elapsed := 0.0
+var _starter_village_rhythm_start_positions: Dictionary = {}
+var _starter_village_rhythm_snapshots: Array = []
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -45,6 +48,7 @@ func _ready() -> void:
 		if edrin.has_method("configure_population"):
 			edrin.call("configure_population", NEWPORT_TOWN.starter_village_npc_spec("edrin_vale_counting_house_clerk"))
 	_place_starter_village_npcs()
+	_configure_starter_village_town_rhythm()
 	_place_buildings()
 	_configure_first_light_quest()
 	_set_debug_overlay(false)
@@ -59,6 +63,14 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		get_viewport().set_input_as_handled()
+
+func _process(delta: float) -> void:
+	if _starter_village_rhythm_start_positions.is_empty():
+		return
+	_starter_village_rhythm_elapsed += delta
+	if _starter_village_rhythm_elapsed >= 2.0:
+		_record_starter_village_town_rhythm_snapshot(_starter_village_rhythm_elapsed, false)
+		_starter_village_rhythm_elapsed = 0.0
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
@@ -172,6 +184,55 @@ func starter_village_multi_path_choice_contract() -> Dictionary:
 		"not_single_railroad": false,
 	}
 
+func starter_village_town_rhythm_contract() -> Dictionary:
+	var contract: Dictionary = NEWPORT_TOWN.starter_village_town_rhythm_contract().duplicate(true)
+	var actors := _starter_village_town_rhythm_actor_contracts()
+	var moving_actor_count := 0
+	var grounded_actor_count := 0
+	var bark_count := 0
+	var rhythm_ids := {}
+	for raw_actor in actors:
+		var actor: Dictionary = raw_actor
+		if bool(actor.get("route_walking_enabled", false)) or float(actor.get("movement_speed", 0.0)) > 0.0:
+			moving_actor_count += 1
+		if bool(actor.get("ground_shadow_visible", false)):
+			grounded_actor_count += 1
+		bark_count += int(actor.get("ambient_bark_count", 0))
+		var rhythm_id := String(actor.get("rhythm_id", ""))
+		if not rhythm_id.is_empty():
+			rhythm_ids[rhythm_id] = true
+	contract["actor_count"] = actors.size()
+	contract["actors"] = actors
+	contract["runtime_rhythm_count"] = rhythm_ids.size()
+	contract["runtime_ambient_bark_count"] = bark_count
+	contract["grounded_actor_count"] = grounded_actor_count
+	contract["moving_actor_count"] = moving_actor_count
+	contract["position_drift_detected"] = _starter_village_town_rhythm_drift_detected(actors)
+	contract["recent_snapshots"] = _starter_village_rhythm_snapshots.duplicate(true)
+	return contract
+
+func debug_apply_starter_village_town_rhythm_tick(elapsed_seconds: float, force_bark := true, focus_npc_id := "") -> Dictionary:
+	for raw_npc in get_tree().get_nodes_in_group("starter_village_town_rhythm_actor"):
+		var npc := raw_npc as Node
+		if npc == null:
+			continue
+		var npc_id := String(npc.name)
+		if npc.has_method("npc_population_contract"):
+			var population_contract: Dictionary = npc.call("npc_population_contract") as Dictionary
+			npc_id = String(population_contract.get("id", npc_id))
+		var is_focus := not focus_npc_id.is_empty() and npc_id == focus_npc_id
+		if npc.has_method("apply_town_rhythm_tick"):
+			npc.call("apply_town_rhythm_tick", elapsed_seconds, force_bark and is_focus)
+		if npc.has_method("set_town_rhythm_bark_visible") and (focus_npc_id.is_empty() or not is_focus or not force_bark):
+			npc.call("set_town_rhythm_bark_visible", false)
+	return _record_starter_village_town_rhythm_snapshot(elapsed_seconds, force_bark)
+
+func debug_apply_starter_village_town_rhythm_ticks(timestamps: Array, force_bark := true) -> Array:
+	var snapshots := []
+	for raw_timestamp in timestamps:
+		snapshots.append(debug_apply_starter_village_town_rhythm_tick(float(raw_timestamp), force_bark))
+	return snapshots
+
 func debug_apply_first_light_quest_events(events: Array) -> Dictionary:
 	if _first_light_quest == null:
 		return {}
@@ -270,6 +331,58 @@ func _place_starter_village_npcs() -> void:
 		if npc.has_method("configure"):
 			npc.call("configure", spec)
 		world.add_child(npc)
+
+func _configure_starter_village_town_rhythm() -> void:
+	_starter_village_rhythm_start_positions.clear()
+	for raw_npc in get_tree().get_nodes_in_group("starter_village_npc"):
+		var npc := raw_npc as Node2D
+		if npc == null:
+			continue
+		var npc_id := String(npc.name)
+		if npc.has_method("npc_population_contract"):
+			var population_contract: Dictionary = npc.call("npc_population_contract") as Dictionary
+			npc_id = String(population_contract.get("id", npc_id))
+		var rhythm_spec := NEWPORT_TOWN.starter_village_town_rhythm_spec_for_npc(npc_id)
+		if rhythm_spec.is_empty():
+			continue
+		if npc.has_method("configure_rhythm"):
+			npc.call("configure_rhythm", rhythm_spec)
+		_starter_village_rhythm_start_positions[npc_id] = npc.global_position
+	_record_starter_village_town_rhythm_snapshot(0.0, false)
+
+func _starter_village_town_rhythm_actor_contracts() -> Array:
+	var contracts := []
+	for raw_npc in get_tree().get_nodes_in_group("starter_village_town_rhythm_actor"):
+		var npc := raw_npc as Node
+		if npc != null and npc.has_method("town_rhythm_contract"):
+			contracts.append(npc.call("town_rhythm_contract"))
+	return contracts
+
+func _record_starter_village_town_rhythm_snapshot(elapsed_seconds: float, force_bark: bool) -> Dictionary:
+	var actors := _starter_village_town_rhythm_actor_contracts()
+	var snapshot := {
+		"timestamp_seconds": snappedf(elapsed_seconds, 0.001),
+		"force_bark": force_bark,
+		"actor_count": actors.size(),
+		"actors": actors,
+		"position_drift_detected": _starter_village_town_rhythm_drift_detected(actors),
+	}
+	_starter_village_rhythm_snapshots.append(snapshot)
+	if _starter_village_rhythm_snapshots.size() > 6:
+		_starter_village_rhythm_snapshots.pop_front()
+	return snapshot
+
+func _starter_village_town_rhythm_drift_detected(actors: Array) -> bool:
+	for raw_actor in actors:
+		var actor: Dictionary = raw_actor
+		var npc_id := String(actor.get("npc_id", ""))
+		if not _starter_village_rhythm_start_positions.has(npc_id):
+			continue
+		var start_position: Vector2 = _starter_village_rhythm_start_positions[npc_id]
+		var current_position: Variant = actor.get("global_position", start_position)
+		if current_position is Vector2 and start_position.distance_to(current_position) > 0.05:
+			return true
+	return false
 
 func _place_buildings() -> void:
 	for blueprint_config in NEWPORT_TOWN.building_specs():

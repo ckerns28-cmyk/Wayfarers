@@ -194,6 +194,7 @@ def compact_output(result: CommandResult, limit: int = 600) -> str:
 def find_latest_screenshots(root: Path) -> list[Path]:
     patterns = [
         "wayfarer_godot_vertical_slice/artifacts/review/g422r_runtime_screenshots/g422r_*.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g422_runtime_screenshots/g422_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g421_runtime_screenshots/g421_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g420_runtime_screenshots/g420_*.png",
@@ -218,6 +219,8 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
     if normalized.startswith("SV-0"):
         return "SV-0", "sv0"
+    if normalized.startswith("G-11"):
+        return "G-11", "g11"
     if normalized.startswith("G-10B"):
         return "G-10B", "g10b"
     if normalized.startswith("G-10A"):
@@ -308,6 +311,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     npc_population_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_npc_population_and_routes.py"
+    )
+    living_town_rhythm_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_living_town_rhythm.py"
     )
     interaction_ux_text = (
         f"& {powershell_quote(python_bin)} "
@@ -605,6 +612,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     args=[python_bin, str(game_root / "tools" / "validate_npc_population_and_routes.py")],
                     cwd=root,
                     required_paths=[game_root / "tools" / "validate_npc_population_and_routes.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-11"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Living town rhythm validation",
+                    command_text=living_town_rhythm_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_living_town_rhythm.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_living_town_rhythm.py"],
                 ),
             )
         if normalized_phase.startswith("G-9"):
@@ -912,6 +930,25 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ),
                 ("G-8A generic town NPC script", game_root / "scenes" / "npc" / "AtelierTownNpc.gd"),
                 ("G-8A generic town NPC scene", game_root / "scenes" / "npc" / "AtelierTownNpc.tscn"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-11"):
+        required.extend(
+            [
+                (
+                    "G-11 living town rhythm validator",
+                    game_root / "tools" / "validate_living_town_rhythm.py",
+                ),
+                (
+                    "G-11 runtime screenshot manifest",
+                    game_root / "artifacts" / "review" / "g11_runtime_screenshots" / "g11_runtime_screenshot_manifest.json",
+                ),
+                ("G-11 runtime screenshot wrapper", game_root / "tools" / "capture_g11_runtime_screenshots.ps1"),
+                ("G-11 runtime screenshot script", game_root / "tools" / "capture_g11_runtime_screenshots.gd"),
+                ("G-11 Newport blueprint rhythm source", game_root / "scripts" / "NewportTownBlueprint.gd"),
+                ("G-11 Main runtime rhythm integration", game_root / "scenes" / "Main.gd"),
+                ("G-11 generic NPC rhythm script", game_root / "scenes" / "npc" / "AtelierTownNpc.gd"),
+                ("G-11 Edrin rhythm script", game_root / "scenes" / "npc" / "EdrinVale.gd"),
             ]
         )
     if phase.upper().strip().startswith("G-10"):
@@ -1585,6 +1622,22 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-8A")
+                else []
+            ),
+            *(
+                [
+                    "## G-11 Living Town Rhythm Result",
+                    "",
+                    f"NPC rhythm score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime screenshots inspected: G-11 proof frames show dock work, tavern social, merchant street, civic notice, and rear-gate rhythms with ambient barks and debug overlays disabled.",
+                    "",
+                    "- G-11 accepted proof: NPCs face, pause, and bark on authored district rhythms while route walking remains disabled until dedicated walk sheets exist; position drift: none.",
+                    "",
+                    "- QA guardrail: no static NPC sprite translates across the map, and broad ground/material patchwork remains a G-12 review risk rather than being hidden by activity.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-11")
                 else []
             ),
             *(

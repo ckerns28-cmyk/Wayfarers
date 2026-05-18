@@ -48,6 +48,9 @@ const STARTER_VILLAGE_G10A_TAVERN_WHISPER_SYSTEM_PASS := "G-10A"
 const STARTER_VILLAGE_G10A_TAVERN_SOCIAL_SCORE := 8.5
 const STARTER_VILLAGE_G10B_MULTI_PATH_CHOICE_PASS := "G-10B"
 const STARTER_VILLAGE_G10B_MULTI_PATH_SCORE := 8.6
+const STARTER_VILLAGE_G11_LIVING_TOWN_RHYTHM_PASS := "G-11"
+const STARTER_VILLAGE_G11_TOWN_RHYTHM_SCORE := 8.5
+const STARTER_VILLAGE_G11_NPC_RHYTHM_POLICY := "stationary_no_glide_rhythm_until_dedicated_walk_sheets"
 const STARTER_VILLAGE_VISUAL_ORDER_REVIEW_SCORE := 8.6
 const STARTER_VILLAGE_LAYOUT_SOURCE_PATH := "res://data/world_layout/starter_village_world_layout_v1.json"
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
@@ -1199,6 +1202,127 @@ static func starter_village_npc_spec(id: String) -> Dictionary:
 			return spec.duplicate(true)
 	return {}
 
+static func starter_village_town_rhythm_specs() -> Array:
+	return [
+		_town_rhythm_spec(
+			"dock_work_bell",
+			"working_wharf",
+			["mara_pike_dockworker", "jonah_reed_dock_courier"],
+			["west_fish_offload", "east_storehouse_queue", "central_manifest_cargo_waiting_for_counting_house"],
+			18.0,
+			[
+				{"at": 0.0, "duration": 5.0, "action": "check_rope_and_watch_tide", "facing": "right", "bark": "Rope first, questions after the bell."},
+				{"at": 5.0, "duration": 6.0, "action": "listen_for_counting_house_runner", "facing": "up", "bark": "That missing line touched more than ink."},
+				{"at": 11.0, "duration": 7.0, "action": "return_to_cargo_station", "facing": "left", "bark": "Keep the dry crates clear of the tide mark."},
+			],
+			"dock_work_behavior"
+		),
+		_town_rhythm_spec(
+			"tavern_whisper_pulse",
+			"harborfront_commercial",
+			["bess_armitage_tavern_keeper", "silas_crowe_suspicious_patron"],
+			["tavern_front_threshold", "tavern_rear_service_gate", "tavern_market_social_pocket"],
+			22.0,
+			[
+				{"at": 0.0, "duration": 6.0, "action": "watch_the_door", "facing": "down", "bark": "Third Toast waits for careful ears."},
+				{"at": 6.0, "duration": 7.0, "action": "hear_rear_lane_signal", "facing": "left", "bark": "Lanterns speak softer than officials."},
+				{"at": 13.0, "duration": 9.0, "action": "hold_the_room", "facing": "right", "bark": "No names in the common room."},
+			],
+			"tavern_social_behavior"
+		),
+		_town_rhythm_spec(
+			"market_street_trade",
+			"harborfront_commercial",
+			["honor_finch_merchant_shopkeeper"],
+			["east_market_cart", "mercantile_entrance", "market_transfer_goods_linked_to_wharf"],
+			20.0,
+			[
+				{"at": 0.0, "duration": 6.0, "action": "count_parcels", "facing": "left", "bark": "Coin is honest only until it is afraid."},
+				{"at": 6.0, "duration": 6.0, "action": "watch_wharf_goods", "facing": "down", "bark": "Someone paid twice for silence."},
+				{"at": 12.0, "duration": 8.0, "action": "return_to_shopfront", "facing": "right", "bark": "Bring me a clean manifest and I will show you a dirty one."},
+			],
+			"merchant_street_behavior"
+		),
+		_town_rhythm_spec(
+			"counting_house_watch",
+			"inland_residential_civic",
+			["edrin_vale_counting_house_clerk", "nora_vale_rumor_carrier"],
+			["counting_house_records_route", "civic_notice_board", "well_bench_civic_square"],
+			24.0,
+			[
+				{"at": 0.0, "duration": 8.0, "action": "guard_the_ledger", "facing": "down", "bark": "Records do not vanish by accident."},
+				{"at": 8.0, "duration": 6.0, "action": "read_notice_board", "facing": "right", "bark": "Two notices. One for officials, one for us."},
+				{"at": 14.0, "duration": 10.0, "action": "watch_the_harbor_road", "facing": "up", "bark": "If the clerk asks twice, answer once."},
+			],
+			"civic_notice_behavior"
+		),
+		_town_rhythm_spec(
+			"rear_gate_suspicion",
+			"support_lane",
+			["silas_crowe_suspicious_patron"],
+			["tavern_rear_service_gate", "service_alley_barrels", "backstreet_service_gate"],
+			26.0,
+			[
+				{"at": 0.0, "duration": 9.0, "action": "hold_sealed_note", "facing": "down", "bark": "The back door hears less applause."},
+				{"at": 9.0, "duration": 7.0, "action": "check_rear_gate", "facing": "right", "bark": "Second lantern. Then wait."},
+				{"at": 16.0, "duration": 10.0, "action": "blend_into_service_lane", "facing": "left", "bark": "A secret that walks loudly is no secret."},
+			],
+			"rear_service_lane_behavior"
+		),
+	]
+
+static func starter_village_town_rhythm_spec_for_npc(npc_id: String) -> Dictionary:
+	for raw_spec in starter_village_town_rhythm_specs():
+		var spec: Dictionary = raw_spec
+		var participants: Array = spec.get("participants", [])
+		if participants.has(npc_id):
+			return spec.duplicate(true)
+	return {}
+
+static func starter_village_town_rhythm_contract() -> Dictionary:
+	var rhythm_specs := starter_village_town_rhythm_specs()
+	var participant_ids := {}
+	var district_ids := {}
+	var station_ids := {}
+	var ambient_bark_count := 0
+	for raw_spec in rhythm_specs:
+		var spec: Dictionary = raw_spec
+		district_ids[String(spec.get("district", ""))] = true
+		for raw_station in spec.get("station_points", []):
+			station_ids[String(raw_station)] = true
+		for raw_participant in spec.get("participants", []):
+			participant_ids[String(raw_participant)] = true
+		for raw_stage in spec.get("stages", []):
+			var stage: Dictionary = raw_stage
+			if not String(stage.get("bark", "")).is_empty():
+				ambient_bark_count += 1
+	return {
+		"phase": STARTER_VILLAGE_G11_LIVING_TOWN_RHYTHM_PASS,
+		"system_id": "starter_village_living_town_rhythm",
+		"target_score_this_phase": STARTER_VILLAGE_G11_TOWN_RHYTHM_SCORE,
+		"repeating_town_life_rhythm": true,
+		"rhythm_count": rhythm_specs.size(),
+		"participant_count": participant_ids.size(),
+		"districts": district_ids.keys(),
+		"station_count": station_ids.size(),
+		"ambient_bark_count": ambient_bark_count,
+		"required_behaviors": [
+			"ambient_barks",
+			"dock_work_behavior",
+			"tavern_social_behavior",
+			"merchant_street_behavior",
+			"civic_notice_behavior",
+			"rear_service_lane_behavior",
+			"idle_pauses",
+			"facing_changes",
+		],
+		"movement_policy": STARTER_VILLAGE_G11_NPC_RHYTHM_POLICY,
+		"route_walking_enabled": false,
+		"no_static_sprite_translation": true,
+		"no_glide_guardrail": "NPCs may face, bark, pause, and express route intent; they must not translate until dedicated walk sheets exist.",
+		"visual_caveat_carried_forward": "G-10B ground-material patchwork remains in G-11/G-12 review and cannot be hidden by bark or prop clutter.",
+	}
+
 static func interaction_anchors() -> Array:
 	return [
 		_anchor("tavern_inn_entrance", "entrance", "harborfront_commercial", Vector2(244.0, 596.0), "Tavern/Inn entrance marker on the west avenue anchor."),
@@ -1451,6 +1575,23 @@ static func _npc_spec(id: String, display_name: String, role: String, asset_id: 
 		"movement_policy": STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY,
 		"runtime_node": runtime_node,
 		"provenance": "newport_atelier_characters_g422r_manifest.json",
+	}
+
+static func _town_rhythm_spec(id: String, district: String, participants: Array, station_points: Array, cycle_seconds: float, stages: Array, behavior_tag: String) -> Dictionary:
+	return {
+		"id": id,
+		"district": district,
+		"participants": participants,
+		"station_points": station_points,
+		"route_intent": id + "_route_intent",
+		"cycle_seconds": cycle_seconds,
+		"stages": stages,
+		"behavior_tag": behavior_tag,
+		"movement_policy": STARTER_VILLAGE_G11_NPC_RHYTHM_POLICY,
+		"route_walking_enabled": false,
+		"stationary_until_walk_sheet": true,
+		"pause_behavior": "idle_pause_with_facing_and_bark_no_translation",
+		"proof_requirement": "timestamped screenshot sequence must show facing or bark state changes with stable ground anchors",
 	}
 
 static func _anchor(id: String, anchor_type: String, district: String, position: Vector2, notes: String) -> Dictionary:

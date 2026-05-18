@@ -31,7 +31,7 @@ Deprecated final states are forbidden.
 | --- | --- | --- | --- | --- | --- |
 | SV-0 | Free Tooling Intake Production Stack Lock | `codex/sv0-free-tooling-stack` | #473 merged | PASS | `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md`, structured stack JSON, tooling roadmap, authoritative world-layout source, visual QA manifest, movement proof manifest, ground stack, SV-0 validator, and `docs/reports/SV0_FREE_TOOLING_AGENT_COUNCIL_REPORT.md`. |
 | G-7 | Newport Living Origin Village Masterplan Lock | `codex/sv1-autonomous-roadmap` | #462 merged | PASS | `docs/reports/G7_NEWPORT_LIVING_ORIGIN_VILLAGE_MASTERPLAN_LOCK.md`, roadmap JSON, ledger JSON, G-7 council report, and G-7 validators. |
-| G-7A | Street, Lot, and Ground Cohesion Reconstruction | `codex/g-7a-street-lot-ground-cohesion`; corrective subpass `codex/g-7a-tool-backed-layout-repair` | #463 merged; corrective PR #474 open | PASS with corrective subpass council-passing | `docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md`, G-7A council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, atelier runtime validator, plus `docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR.md`, `docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR_AGENT_COUNCIL_REPORT.md`, and `validate_starter_village_layout_source_usage.py`. |
+| G-7A | Street, Lot, and Ground Cohesion Reconstruction | `codex/g-7a-street-lot-ground-cohesion`; corrective subpass `codex/g-7a-tool-backed-layout-repair` | #463 merged; #474 merged | PASS | `docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md`, G-7A council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, atelier runtime validator, plus `docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR.md`, `docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR_AGENT_COUNCIL_REPORT.md`, and `validate_starter_village_layout_source_usage.py`. |
 | G-7B | Harbor, Wharf, and Commercial Spine Cohesion | `codex/g-7b-harbor-commercial-spine` | #464 merged | PASS | `docs/reports/G7B_HARBOR_WHARF_COMMERCIAL_SPINE_COHESION.md`, G-7B council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, NPC route validator, and atelier runtime validator. |
 | G-7C | Landmark and District Identity Pass | `codex/g-7c-landmark-district-identity` | #465 merged | PASS | `docs/reports/G7C_LANDMARK_DISTRICT_IDENTITY_PASS.md`, G-7C council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, interaction UX validator, and atelier runtime validator. |
 | G-8 | Atelier Character and NPC Movement Foundation | `codex/g-8-character-motion-foundation` | #466 merged | PASS | `docs/reports/G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_FOUNDATION.md`, G-8 council report, runtime screenshot manifest, vertical-slice validator, character motion validator, and atelier runtime validator. |
@@ -41,7 +41,7 @@ Deprecated final states are forbidden.
 | G-10 | Opening Quest Arc: First Light / Whispers Before Dawn | `codex/g-10-opening-quest-arc` | #470 merged | PASS | `docs/reports/G10_OPENING_QUEST_ARC_FIRST_LIGHT_WHISPERS_BEFORE_DAWN.md`, G-10 council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
 | G-10A | Tavern Whisper System | `codex/g-10a-tavern-whisper-system` | #471 merged | PASS | `docs/reports/G10A_TAVERN_WHISPER_SYSTEM.md`, G-10A council report, runtime screenshot manifest, vertical-slice validator, tavern whisper validator, Newport visual-order validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
 | G-10B | Multi-Path Starter Choice Foundation | `codex/g-10b-multi-path-starter-choice` | pending current phase PR | PASS | `docs/reports/G10B_MULTI_PATH_STARTER_CHOICE_FOUNDATION.md`, G-10B council report, runtime screenshot manifest, vertical-slice validator, multi-path starter choice validator, opening quest validator, tavern whisper validator, Newport visual-order validator, interaction UX validator, and atelier runtime validator. |
-| G-11 | Living Town Rhythm Pass | pending | pending | PENDING | Must add believable town rhythm, barks, pauses, and route behavior. |
+| G-11 | Living Town Rhythm Pass | `codex/g-11-living-town-rhythm-pass` | pending current phase PR | PASS | `docs/reports/G11_LIVING_TOWN_RHYTHM_PASS.md`, G-11 council report, runtime screenshot manifest, living town rhythm validator, NPC route validator, vertical-slice validator, and atelier runtime validator. |
 | G-11A | Audio/Atmosphere Placeholder-Free Foundation | pending | pending | PENDING | Must add safe hooks or document non-blocking integration points. |
 | G-12 | First-Session Fun, Pacing, and Readability Pass | pending | pending | PENDING | Must prove the first 15-20 minutes are readable, paced, and fun. |
 | G-13 | Browser Build, Performance, and Regression Hardening | pending | pending | PENDING | Must harden import, vertical slice, screenshots, review build, input, performance, and assets. |
@@ -49,16 +49,21 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after Chris screenshot QA and SV-0 merge: `G-7A-SV0 Tool-Backed
-Layout Repair`.
+Current phase after G-11: `G-11A Audio/Atmosphere Placeholder-Free Foundation`.
 
-G-10B adds a runtime-backed multi-path choice foundation for First Light:
+G-11 adds a runtime-backed living town rhythm layer: dock work, tavern social
+pressure, merchant street behavior, civic notice activity, and rear-gate
+suspicion now have authored rhythm contracts, focused ambient barks, facing
+changes, pauses, and timestamped proof. It deliberately preserves the no-glide
+rule: NPC route walking remains disabled until dedicated walk sheets exist.
+
+G-10B added a runtime-backed multi-path choice foundation for First Light:
 counting-house, harbor-work, tavern-rumor, merchant-street, and optional
 secret routes can now advance the opening mystery without a single railroaded
 click path. However, screenshot evidence showed the process still allowed
 patchwork layout, visual-order confusion, false stable reads, and mismatched
-building scale to survive. SV-0 locked the free production stack; G-7A-SV0 now
-applies that source-of-truth process to runtime lot assignments, building
+building scale to survive. SV-0 locked the free production stack; G-7A-SV0
+applied that source-of-truth process to runtime lot assignments, building
 scale, false tavern-stable reads, overlap/cutoff risks, and screenshot proof.
 
 Chris screenshot QA also exposed that the prior process let route/building
