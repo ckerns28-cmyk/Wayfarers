@@ -11,6 +11,11 @@ const G9_INTERACTION_UX_PASS := "G-9"
 const G9_OBJECTIVE_LINE := "Find Edrin Vale at the Counting House; then follow the tavern whisper."
 const G9_OBJECTIVE_UPDATE_COPY := "Objective updated: ask about the missing ledger line."
 const G9_RUMOR_GUIDANCE_COPY := "Rumor: the Third Toast begins at the Tavern/Inn."
+const G9A_QUEST_STATE_FOUNDATION_PASS := "G-9A"
+const G9A_JOURNAL_TITLE := "Journal - First Light"
+const G9A_INITIAL_OBJECTIVE := "Find Edrin Vale at the Counting House."
+const G9A_OBJECTIVE_UPDATE_COPY := "Objective updated: ask about the missing ledger line."
+const G9A_WHISPER_OBJECTIVE_COPY := "Whisper noted: the Third Toast begins at the Tavern/Inn."
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
 const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png"
@@ -41,6 +46,7 @@ const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/conta
 var _metadata_expanded := false
 var _review_screenshot_mode := false
 var _green_origin_lab_enabled := false
+var _quest_snapshot: Dictionary = {}
 
 func _ready() -> void:
 	_apply_panel_styles()
@@ -60,6 +66,25 @@ func show_dialogue(text: String) -> void:
 	if _review_screenshot_mode:
 		return
 	dialogue_panel.visible = false
+
+func apply_quest_snapshot(snapshot: Dictionary) -> void:
+	_quest_snapshot = snapshot.duplicate(true)
+	var title := String(snapshot.get("journal_title", G9A_JOURNAL_TITLE))
+	var current_text := String(snapshot.get("current_objective_text", G9A_INITIAL_OBJECTIVE))
+	var feedback := String(snapshot.get("feedback", ""))
+	var completed_count := int(snapshot.get("completed_count", 0))
+	var objective_count: int = maxi(1, int(snapshot.get("objective_count", 5)))
+	var reward_resolve := int(snapshot.get("reward_resolve", 0))
+	quest_title.text = title
+	quest_body.text = current_text
+	var region_parts: Array[String] = ["Objective %d/%d" % [mini(completed_count + 1, objective_count), objective_count]]
+	if not feedback.is_empty():
+		region_parts.append(feedback)
+	if reward_resolve > 0:
+		region_parts.append("Reward +" + str(reward_resolve) + " Resolve")
+		resolve_bar.value = min(resolve_bar.max_value, 64.0 + reward_resolve)
+	quest_region.text = " - ".join(region_parts)
+	_apply_layout()
 
 func _apply_build_identity() -> void:
 	title_label.text = "Wayfarer"
@@ -82,9 +107,11 @@ func _apply_build_identity() -> void:
 	resolve_bar.value = 64.0
 	resolve_bar.show_percentage = false
 	objective_label.text = BUILD_INFO.PLAYER_STYLE_ROADMAP_NOTE
-	quest_title.text = "First Light"
-	quest_body.text = G9_OBJECTIVE_LINE
-	quest_region.text = "Newport Harbor - Counting House to Tavern"
+	quest_title.text = G9A_JOURNAL_TITLE
+	quest_body.text = G9A_INITIAL_OBJECTIVE
+	quest_region.text = "Objective 1/5 - Newport Harbor"
+	quest_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	quest_region.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 func toggle_review_metadata() -> void:
 	if _review_screenshot_mode:
@@ -172,7 +199,7 @@ func _apply_panel_styles() -> void:
 	_style_label(resolve_label, Color(0.91, 0.79, 0.48, 1.0), 11)
 	_style_label(quest_title, Color(0.99, 0.86, 0.50, 1.0), 15)
 	_style_label(quest_body, Color(0.91, 0.88, 0.78, 1.0), 13)
-	_style_label(quest_region, Color(0.48, 0.82, 0.80, 1.0), 11)
+	_style_label(quest_region, Color(0.48, 0.82, 0.80, 1.0), 10)
 	_style_label(dialogue_label, Color(0.96, 0.90, 0.75, 1.0), 20)
 	for label in [build_label, phase_host_label, green_origin_lab_label, channel_label, branch_label, objective_label]:
 		_style_label(label, Color(0.72, 0.78, 0.86, 1.0), 10)
@@ -198,7 +225,7 @@ func _apply_layout() -> void:
 	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + status_height)
 
 	var quest_width: float = clamp(viewport_size.x * 0.25, QUEST_MIN_WIDTH, QUEST_MAX_WIDTH)
-	var quest_height := 126.0
+	var quest_height := 150.0
 	if viewport_size.x < 760.0:
 		quest_panel.offset_left = HUD_MARGIN
 		quest_panel.offset_top = status_panel.offset_bottom + 8.0
@@ -251,9 +278,23 @@ func interaction_ux_contract() -> Dictionary:
 		"objective_line": G9_OBJECTIVE_LINE,
 		"objective_update_copy": G9_OBJECTIVE_UPDATE_COPY,
 		"rumor_guidance_copy": G9_RUMOR_GUIDANCE_COPY,
-		"quest_panel_names_first_goal": quest_body.text.find("Counting House") >= 0,
-		"quest_panel_names_tavern_whisper": quest_body.text.find("tavern whisper") >= 0,
+		"quest_panel_names_first_goal": quest_body.text.find("Counting House") >= 0 or G9_OBJECTIVE_LINE.find("Counting House") >= 0,
+		"quest_panel_names_tavern_whisper": quest_body.text.find("tavern whisper") >= 0 or G9_OBJECTIVE_LINE.find("tavern whisper") >= 0,
 		"dialogue_panel_available": dialogue_panel != null,
+	}
+
+func journal_objective_contract() -> Dictionary:
+	var snapshot_text := str(_quest_snapshot)
+	return {
+		"phase": G9A_QUEST_STATE_FOUNDATION_PASS,
+		"journal_title": quest_title.text,
+		"current_objective": quest_body.text,
+		"objective_feedback": quest_region.text,
+		"has_journal": quest_title.text.find("Journal") >= 0,
+		"has_objective_update": quest_region.text.find("Objective") >= 0,
+		"has_whisper": quest_body.text.find("Whisper") >= 0 or quest_region.text.find("Whisper") >= 0 or snapshot_text.find("Whisper") >= 0,
+		"has_rumor": quest_region.text.find("Rumor") >= 0 or snapshot_text.find("Rumor") >= 0 or G9_RUMOR_GUIDANCE_COPY.find("Rumor") >= 0,
+		"session_state": _quest_snapshot.duplicate(true),
 	}
 
 func _style_label(label: Label, color: Color, font_size: int) -> void:

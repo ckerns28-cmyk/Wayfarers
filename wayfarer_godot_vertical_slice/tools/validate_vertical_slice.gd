@@ -114,6 +114,7 @@ func _validate_scene(main: Node) -> void:
 	_validate_review_screenshot_mode(main, hud)
 	_validate_building_entity_contract(player, hud)
 	_validate_g9_interaction_ux_foundation(main, player, hud)
+	_validate_g9a_quest_state_foundation(main, hud)
 	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
 	_validate_g415_layout_rules()
@@ -607,6 +608,46 @@ func _validate_g9_prompt_for_target(player: CharacterBody2D, target: Node2D, exp
 	_expect(prompt_label.text == expected_text, "g9_prompt_copy_" + label)
 	_expect(prompt_label.text.find("Press E") < 0, "g9_prompt_no_press_e_" + label)
 	_expect(prompt_label.text.length() <= 30, "g9_prompt_length_" + label)
+
+func _validate_g9a_quest_state_foundation(main: Node, hud: CanvasLayer) -> void:
+	var quest_state_source := FileAccess.get_file_as_string("res://scripts/QuestState.gd")
+	var first_light_source := FileAccess.get_file_as_string("res://scripts/quests/FirstLightQuest.gd")
+	var quest_data := _load_json_dictionary("res://data/quests/first_light_whispers_before_dawn.json")
+	_expect(quest_state_source.find("class_name WayfarerQuestState") >= 0, "g9a_quest_state_class")
+	_expect(quest_state_source.find("complete_objective") >= 0, "g9a_quest_state_complete_objective")
+	_expect(quest_state_source.find("add_reward") >= 0, "g9a_quest_state_reward_api")
+	_expect(first_light_source.find("class_name FirstLightQuest") >= 0, "g9a_first_light_quest_class")
+	_expect(first_light_source.find("handle_interaction_payload") >= 0, "g9a_first_light_interaction_payload")
+	_expect(first_light_source.find("debug_playthrough_contract") >= 0, "g9a_first_light_debug_playthrough")
+	_expect(String(quest_data.get("quest_id", "")) == "first_light_whispers_before_dawn", "g9a_quest_data_id")
+	_expect((quest_data.get("objectives", []) as Array).size() >= 5, "g9a_quest_data_objective_count")
+	_expect(main.has_method("starter_village_quest_contract"), "g9a_main_quest_contract_api")
+	_expect(main.has_method("debug_apply_first_light_quest_events"), "g9a_main_debug_quest_events_api")
+	if hud:
+		_expect(hud.has_method("apply_quest_snapshot"), "g9a_hud_apply_quest_snapshot_api")
+		_expect(hud.has_method("journal_objective_contract"), "g9a_hud_journal_contract_api")
+	var start_contract: Dictionary = main.call("starter_village_quest_contract") if main.has_method("starter_village_quest_contract") else {}
+	_expect(String(start_contract.get("phase", "")) == "G-9A", "g9a_start_contract_phase")
+	_expect(String(start_contract.get("quest_id", "")) == "first_light_whispers_before_dawn", "g9a_start_contract_quest_id")
+	_expect(String(start_contract.get("current_objective_id", "")) == "report_to_counting_house", "g9a_start_objective_counting_house")
+	_expect((start_contract.get("completed_objectives", []) as Array).has("make_landfall"), "g9a_landfall_completed")
+	if main.has_method("debug_apply_first_light_quest_events"):
+		main.call("debug_apply_first_light_quest_events", ["edrin", "mara", "bess", "silas"])
+	var final_contract: Dictionary = main.call("starter_village_quest_contract") if main.has_method("starter_village_quest_contract") else {}
+	var completed := final_contract.get("completed_objectives", []) as Array
+	var rewards := final_contract.get("reward_log", []) as Array
+	_expect(completed.has("report_to_counting_house"), "g9a_counting_house_objective_completed")
+	_expect(completed.has("investigate_missing_line"), "g9a_missing_line_objective_completed")
+	_expect(completed.has("follow_tavern_whisper"), "g9a_tavern_whisper_objective_completed")
+	_expect(String(final_contract.get("current_objective_id", "")) == "choose_next_lead", "g9a_next_lead_objective_active")
+	_expect(not rewards.is_empty(), "g9a_reward_progression_recorded")
+	if hud and hud.has_method("journal_objective_contract"):
+		var journal_contract: Dictionary = hud.call("journal_objective_contract") as Dictionary
+		_expect(String(journal_contract.get("phase", "")) == "G-9A", "g9a_journal_contract_phase")
+		_expect(bool(journal_contract.get("has_journal", false)) == true, "g9a_journal_visible")
+		_expect(bool(journal_contract.get("has_objective_update", false)) == true, "g9a_objective_update_visible")
+		_expect(bool(journal_contract.get("has_whisper", false)) == true, "g9a_whisper_visible")
+		_expect(bool(journal_contract.get("has_rumor", false)) == true, "g9a_rumor_visible")
 
 func _validate_g419_player_identity_foundation() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json")

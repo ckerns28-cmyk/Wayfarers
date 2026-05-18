@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 signal dialogue_triggered(text: String)
+signal interaction_triggered(target: Node, text: String)
 
 const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
 const WORLD_LIMIT_LEFT := 0
@@ -76,7 +77,9 @@ func _physics_process(_delta: float) -> void:
 
 	var interact_down := Input.is_key_pressed(KEY_E)
 	if interact_down and not _interact_was_down and _current_target and _current_target.has_method("interact"):
-		dialogue_triggered.emit(_current_target.interact())
+		var dialogue_text := String(_current_target.interact())
+		dialogue_triggered.emit(dialogue_text)
+		interaction_triggered.emit(_current_target, dialogue_text)
 	_interact_was_down = interact_down
 
 func _notification(what: int) -> void:

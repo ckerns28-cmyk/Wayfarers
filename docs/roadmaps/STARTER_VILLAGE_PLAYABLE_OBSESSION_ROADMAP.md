@@ -85,11 +85,11 @@ when the autonomous merge rule in `AGENTS.md` and
 | G-13 | Browser Build, Performance, and Regression Hardening | Hardens Godot import, vertical slice, screenshots, review build, input, performance, assets, and route stability. |
 | G-14 | SV-1 Starter Village Playable Obsession Gate | Produces the final review package and stops for Chris. |
 
-Current execution status after G-9: interaction prompts now use compact
-`E: Action - Name` copy, the first objective names the Counting House and
-tavern whisper route, and runtime proof covers counting-house dialogue, tavern
-rumor dialogue, objective-update feedback, and debug-off normal play. G-9A is
-next.
+Current execution status after G-9A: First Light now has in-session quest
+state, a Journal - First Light HUD surface, objective completion, NPC-driven
+progression, optional clue-source support, session persistence, and a Resolve
+reward. G-10 is next and must turn the foundation into richer 10-15 minute
+opening content.
 
 ## G-7 Masterplan Contract
 
