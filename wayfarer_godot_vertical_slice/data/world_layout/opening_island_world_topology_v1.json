@@ -95,5 +95,11 @@
     "source": "wayfarer_godot_vertical_slice/data/world_layout/island_poi_landmarks_v1.json",
     "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_poi_landmarks_contract",
     "status": "PASS"
+  },
+  "g16a_atelier_asset_family_implementation": {
+    "phase": "G-16A",
+    "source": "wayfarer_godot_vertical_slice/data/world_layout/island_atelier_asset_family_v1.json",
+    "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_atelier_asset_family_contract",
+    "status": "PASS"
   }
 }

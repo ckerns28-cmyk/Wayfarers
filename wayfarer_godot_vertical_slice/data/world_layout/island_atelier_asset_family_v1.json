@@ -1,0 +1,183 @@
+{
+  "schema_id": "wayfarer.g16a.island_atelier_asset_family.v1",
+  "phase": "G-16A",
+  "topology_source": "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+  "poi_source": "wayfarer_godot_vertical_slice/data/world_layout/island_poi_landmarks_v1.json",
+  "purpose": "Raise the opening island visual language to the same Newport atelier discipline as the village: authored, provenance-backed, route-supporting assets that reinforce pre-Revolutionary harbor mystery without placeholder props.",
+  "north_star_guardrail": "The island must feel like a handcrafted fantasy/colonial harbor RPG region with MMORPG ambition. Asset placement supports place memory, exploration purpose, and first-session pull inspired by Tibia and Ragnarok Online rather than merely proving that sprites render.",
+  "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_atelier_asset_family_contract",
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g16a_runtime_screenshots/g16a_runtime_screenshot_manifest.json",
+  "required_asset_ids": [
+    "atelier_terrain_dirt_path_border_01",
+    "atelier_terrain_broken_grassy_shoulder_01",
+    "atelier_path_dirt_worn_section_01",
+    "atelier_path_loose_paving_fragments_01",
+    "atelier_shore_shell_pebble_cluster_01",
+    "atelier_shore_wet_rocks_sand_01",
+    "atelier_shore_driftwood_log_cluster_01",
+    "atelier_shore_harbor_debris_slats_rope_01",
+    "atelier_shore_eelgrass_reeds_cluster_01",
+    "atelier_wayfinding_pier_lantern_stand_01",
+    "atelier_wayfinding_harbor_road_marker_01",
+    "atelier_wayfinding_multi_arrow_signpost_01",
+    "atelier_wayfinding_bollard_lantern_01",
+    "atelier_wayfinding_coastal_waystone_01",
+    "atelier_civic_anchor_plaque_01",
+    "atelier_civic_dock_rules_board_01",
+    "atelier_g418e_service_fence_gate_01",
+    "atelier_g418e_service_utility_barrels_01",
+    "atelier_g418e_service_alley_crates_01",
+    "atelier_g418e_service_firewood_barrow_01",
+    "atelier_g418e_service_repair_sawhorse_01",
+    "atelier_g418e_service_stone_edge_01",
+    "atelier_g418e_harbor_bollard_pair_01",
+    "atelier_g418e_harbor_rope_coil_large_01",
+    "atelier_g418e_harbor_cargo_stack_01",
+    "atelier_g418e_harbor_fishing_crate_net_stack_01",
+    "atelier_g418e_harbor_service_post_lantern_01",
+    "atelier_g418e_harbor_fish_baskets_tub_01"
+  ],
+  "asset_families": [
+    {
+      "family_id": "coastal_rocks_shore_debris_cove_objects",
+      "manifest": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/manifests/newport_atelier_shoreline_harbor_edge_manifest.json",
+      "contact_sheet": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/contact_sheets/newport_atelier_shoreline_harbor_edge_contact_sheet.png",
+      "source_image": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_sheet_imagegen.png",
+      "generation_prompt": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420a_shoreline_harbor_edge_prompt.txt",
+      "provenance_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/G420A_SHORELINE_HARBOR_EDGE_ATELIER_PACK.md",
+      "validation_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/newport_atelier_shoreline_harbor_edge_extraction_qa.json",
+      "asset_ids": [
+        "atelier_shore_shell_pebble_cluster_01",
+        "atelier_shore_wet_rocks_sand_01",
+        "atelier_shore_driftwood_log_cluster_01",
+        "atelier_shore_harbor_debris_slats_rope_01",
+        "atelier_shore_eelgrass_reeds_cluster_01"
+      ],
+      "island_role": "Makes the lower island cove and hidden landing feel like a worked shore rather than a bare map edge."
+    },
+    {
+      "family_id": "trail_edge_clutter_wooded_props",
+      "manifest": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/manifests/newport_atelier_terrain_edge_dressing_manifest.json",
+      "contact_sheet": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/contact_sheets/newport_atelier_terrain_edge_dressing_contact_sheet.png",
+      "source_image": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_sheet_imagegen.png",
+      "generation_prompt": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420a_terrain_edge_dressing_prompt.txt",
+      "provenance_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/G420A_TERRAIN_EDGE_DRESSING_ATELIER_PACK.md",
+      "validation_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/newport_atelier_terrain_edge_dressing_extraction_qa.json",
+      "asset_ids": [
+        "atelier_terrain_dirt_path_border_01",
+        "atelier_terrain_broken_grassy_shoulder_01"
+      ],
+      "island_role": "Softens trail and wooded path edges while keeping walkable space readable."
+    },
+    {
+      "family_id": "old_road_path_fragments",
+      "manifest": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/manifests/newport_atelier_cobble_path_transition_manifest.json",
+      "contact_sheet": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/contact_sheets/newport_atelier_cobble_path_transition_contact_sheet.png",
+      "source_image": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_sheet_imagegen.png",
+      "generation_prompt": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420a_cobble_path_transition_prompt.txt",
+      "provenance_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/G420A_COBBLE_PATH_TRANSITION_ATELIER_PACK.md",
+      "validation_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/newport_atelier_cobble_path_transition_extraction_qa.json",
+      "asset_ids": [
+        "atelier_path_dirt_worn_section_01",
+        "atelier_path_loose_paving_fragments_01"
+      ],
+      "island_role": "Ties the old road marker and route fork to lived history instead of signage-only guidance."
+    },
+    {
+      "family_id": "lantern_posts_signposts_wayfinding",
+      "manifest": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/manifests/newport_atelier_lamps_wayfinding_manifest.json",
+      "contact_sheet": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/contact_sheets/newport_atelier_lamps_wayfinding_contact_sheet.png",
+      "source_image": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_sheet_imagegen.png",
+      "generation_prompt": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420b_lamps_wayfinding_prompt.txt",
+      "provenance_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/G420B_LAMPS_WAYFINDING_ATELIER_PACK.md",
+      "validation_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/newport_atelier_lamps_wayfinding_extraction_qa.json",
+      "asset_ids": [
+        "atelier_wayfinding_pier_lantern_stand_01",
+        "atelier_wayfinding_harbor_road_marker_01",
+        "atelier_wayfinding_multi_arrow_signpost_01",
+        "atelier_wayfinding_bollard_lantern_01",
+        "atelier_wayfinding_coastal_waystone_01"
+      ],
+      "island_role": "Guides the player through the exit, old road, signal rise, and cove without debug-looking markers."
+    },
+    {
+      "family_id": "quest_clue_props_civic_harbor_memory",
+      "manifest": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/manifests/newport_atelier_civic_market_identity_manifest.json",
+      "contact_sheet": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/contact_sheets/newport_atelier_civic_market_identity_contact_sheet.png",
+      "source_image": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_sheet_imagegen.png",
+      "generation_prompt": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g420b_civic_market_identity_prompt.txt",
+      "provenance_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/G420B_CIVIC_MARKET_IDENTITY_ATELIER_PACK.md",
+      "validation_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/newport_atelier_civic_market_identity_extraction_qa.json",
+      "asset_ids": [
+        "atelier_civic_anchor_plaque_01",
+        "atelier_civic_dock_rules_board_01"
+      ],
+      "island_role": "Carries Newport civic/harbor authority into the island clue site and signal point."
+    },
+    {
+      "family_id": "farm_service_props_fences_small_carts_crates",
+      "manifest": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/manifests/newport_atelier_g418e_rear_service_connector_manifest.json",
+      "contact_sheet": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_rear_service_connector_contact_sheet.png",
+      "source_image": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_sheet_imagegen.png",
+      "generation_prompt": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g418e_rear_service_connector_prompt.txt",
+      "provenance_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/G418E_REAR_SERVICE_CONNECTOR_ATELIER_PACK.md",
+      "validation_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/newport_atelier_g418e_rear_service_connector_extraction_qa.json",
+      "asset_ids": [
+        "atelier_g418e_service_fence_gate_01",
+        "atelier_g418e_service_utility_barrels_01",
+        "atelier_g418e_service_alley_crates_01",
+        "atelier_g418e_service_firewood_barrow_01",
+        "atelier_g418e_service_repair_sawhorse_01",
+        "atelier_g418e_service_stone_edge_01"
+      ],
+      "island_role": "Makes the farm/service edge believable as a worked borderland outside Newport."
+    },
+    {
+      "family_id": "cove_objects_harbor_work_props",
+      "manifest": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/manifests/newport_atelier_g418e_harbor_dock_edge_manifest.json",
+      "contact_sheet": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/contact_sheets/newport_atelier_g418e_harbor_dock_edge_contact_sheet.png",
+      "source_image": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_sheet_imagegen.png",
+      "generation_prompt": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/source_generated/g418e_harbor_dock_edge_prompt.txt",
+      "provenance_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/G418E_HARBOR_DOCK_EDGE_ATELIER_PACK.md",
+      "validation_report": "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/reports/newport_atelier_g418e_harbor_dock_edge_extraction_qa.json",
+      "asset_ids": [
+        "atelier_g418e_harbor_bollard_pair_01",
+        "atelier_g418e_harbor_rope_coil_large_01",
+        "atelier_g418e_harbor_cargo_stack_01",
+        "atelier_g418e_harbor_fishing_crate_net_stack_01",
+        "atelier_g418e_harbor_service_post_lantern_01",
+        "atelier_g418e_harbor_fish_baskets_tub_01"
+      ],
+      "island_role": "Lets the hidden landing and clue cache read as harbor-world evidence rather than random coast clutter."
+    }
+  ],
+  "placement_rules": [
+    "All island assets must be placed from manifest-backed Newport atelier atlases already available in the project.",
+    "No placeholder sprites, crude shape markers, yellow/red/unknown assets, untracked textures, or debug labels may appear in normal play.",
+    "Props must clarify routes, work, clue purpose, and return orientation; they may not hide broken terrain or create random scatter.",
+    "Route probes and walkable tiles remain clear after dressing.",
+    "Every visible island asset used for the pass must have manifest, contact sheet, source image, prompt, provenance report, and validation report proof."
+  ],
+  "required_screenshots": [
+    "g16a_01_island_asset_family_wide.png",
+    "g16a_02_trail_edge_clutter.png",
+    "g16a_03_cove_coastal_assets.png",
+    "g16a_04_farm_service_props.png",
+    "g16a_05_quest_clue_asset_provenance.png",
+    "g16a_06_debug_overlays_disabled.png"
+  ],
+  "acceptance": {
+    "island_assets_feel_cohesive_with_Newport": true,
+    "assets_reinforce_island_fantasy": true,
+    "manifest_provenance_source_proof_exists": true,
+    "no_placeholders": true,
+    "no_untracked_sprites": true,
+    "no_crude_markers": true,
+    "no_yellow_red_unknown_assets_promoted": true,
+    "route_probes_remain_clear": true,
+    "atelier_compliance": "PASS",
+    "art_direction_score": 8.7,
+    "world_layout_score": 8.7,
+    "north_star_alignment": "PASS"
+  }
+}

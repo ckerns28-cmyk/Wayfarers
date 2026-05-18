@@ -263,6 +263,9 @@ func opening_island_world_cohesion_contract() -> Dictionary:
 func opening_island_poi_landmarks_contract() -> Dictionary:
 	return NEWPORT_TOWN.opening_island_poi_landmarks_contract().duplicate(true)
 
+func opening_island_atelier_asset_family_contract() -> Dictionary:
+	return NEWPORT_TOWN.opening_island_atelier_asset_family_contract().duplicate(true)
+
 func debug_apply_starter_village_audio_hooks() -> Dictionary:
 	for hook_id in STARTER_VILLAGE_AUDIO_HOOKS.REQUIRED_HOOK_IDS:
 		_record_starter_village_audio_hook(String(hook_id), {"debug_proof": true})

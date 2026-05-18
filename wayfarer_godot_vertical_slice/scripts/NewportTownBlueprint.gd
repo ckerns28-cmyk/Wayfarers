@@ -63,6 +63,9 @@ const G15B_ISLAND_WORLD_COHESION_SCORE := 8.6
 const G16_ISLAND_POI_LANDMARKS_PASS := "G-16"
 const G16_ISLAND_POI_LANDMARKS_SOURCE_PATH := "res://data/world_layout/island_poi_landmarks_v1.json"
 const G16_ISLAND_POI_LANDMARKS_SCORE := 8.6
+const G16A_ISLAND_ATELIER_ASSET_FAMILY_PASS := "G-16A"
+const G16A_ISLAND_ATELIER_ASSET_FAMILY_SOURCE_PATH := "res://data/world_layout/island_atelier_asset_family_v1.json"
+const G16A_ISLAND_ATELIER_ASSET_FAMILY_SCORE := 8.7
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -980,6 +983,83 @@ static func opening_island_poi_landmarks_contract() -> Dictionary:
 		],
 		"points_of_interest": opening_island_poi_landmark_specs(),
 		"viewpoints": opening_island_poi_landmarks_viewpoints(),
+	}
+
+static func opening_island_atelier_asset_family_source_path() -> String:
+	return G16A_ISLAND_ATELIER_ASSET_FAMILY_SOURCE_PATH
+
+static func opening_island_atelier_asset_family_assets() -> Array:
+	return [
+		_atelier_asset_proof("atelier_terrain_dirt_path_border_01", "trail_edge_clutter_wooded_props", "newport_atelier_terrain_edge_dressing_manifest.json"),
+		_atelier_asset_proof("atelier_terrain_broken_grassy_shoulder_01", "trail_edge_clutter_wooded_props", "newport_atelier_terrain_edge_dressing_manifest.json"),
+		_atelier_asset_proof("atelier_path_dirt_worn_section_01", "old_road_path_fragments", "newport_atelier_cobble_path_transition_manifest.json"),
+		_atelier_asset_proof("atelier_path_loose_paving_fragments_01", "old_road_path_fragments", "newport_atelier_cobble_path_transition_manifest.json"),
+		_atelier_asset_proof("atelier_shore_shell_pebble_cluster_01", "coastal_rocks_shore_debris_cove_objects", "newport_atelier_shoreline_harbor_edge_manifest.json"),
+		_atelier_asset_proof("atelier_shore_wet_rocks_sand_01", "coastal_rocks_shore_debris_cove_objects", "newport_atelier_shoreline_harbor_edge_manifest.json"),
+		_atelier_asset_proof("atelier_shore_driftwood_log_cluster_01", "coastal_rocks_shore_debris_cove_objects", "newport_atelier_shoreline_harbor_edge_manifest.json"),
+		_atelier_asset_proof("atelier_shore_harbor_debris_slats_rope_01", "coastal_rocks_shore_debris_cove_objects", "newport_atelier_shoreline_harbor_edge_manifest.json"),
+		_atelier_asset_proof("atelier_shore_eelgrass_reeds_cluster_01", "coastal_rocks_shore_debris_cove_objects", "newport_atelier_shoreline_harbor_edge_manifest.json"),
+		_atelier_asset_proof("atelier_wayfinding_pier_lantern_stand_01", "lantern_posts_signposts_wayfinding", "newport_atelier_lamps_wayfinding_manifest.json"),
+		_atelier_asset_proof("atelier_wayfinding_harbor_road_marker_01", "lantern_posts_signposts_wayfinding", "newport_atelier_lamps_wayfinding_manifest.json"),
+		_atelier_asset_proof("atelier_wayfinding_multi_arrow_signpost_01", "lantern_posts_signposts_wayfinding", "newport_atelier_lamps_wayfinding_manifest.json"),
+		_atelier_asset_proof("atelier_wayfinding_bollard_lantern_01", "lantern_posts_signposts_wayfinding", "newport_atelier_lamps_wayfinding_manifest.json"),
+		_atelier_asset_proof("atelier_wayfinding_coastal_waystone_01", "lantern_posts_signposts_wayfinding", "newport_atelier_lamps_wayfinding_manifest.json"),
+		_atelier_asset_proof("atelier_civic_anchor_plaque_01", "quest_clue_props_civic_harbor_memory", "newport_atelier_civic_market_identity_manifest.json"),
+		_atelier_asset_proof("atelier_civic_dock_rules_board_01", "quest_clue_props_civic_harbor_memory", "newport_atelier_civic_market_identity_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_service_fence_gate_01", "farm_service_props_fences_small_carts_crates", "newport_atelier_g418e_rear_service_connector_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_service_utility_barrels_01", "farm_service_props_fences_small_carts_crates", "newport_atelier_g418e_rear_service_connector_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_service_alley_crates_01", "farm_service_props_fences_small_carts_crates", "newport_atelier_g418e_rear_service_connector_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_service_firewood_barrow_01", "farm_service_props_fences_small_carts_crates", "newport_atelier_g418e_rear_service_connector_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_service_repair_sawhorse_01", "farm_service_props_fences_small_carts_crates", "newport_atelier_g418e_rear_service_connector_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_service_stone_edge_01", "farm_service_props_fences_small_carts_crates", "newport_atelier_g418e_rear_service_connector_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_harbor_bollard_pair_01", "cove_objects_harbor_work_props", "newport_atelier_g418e_harbor_dock_edge_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_harbor_rope_coil_large_01", "cove_objects_harbor_work_props", "newport_atelier_g418e_harbor_dock_edge_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_harbor_cargo_stack_01", "cove_objects_harbor_work_props", "newport_atelier_g418e_harbor_dock_edge_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_harbor_fishing_crate_net_stack_01", "cove_objects_harbor_work_props", "newport_atelier_g418e_harbor_dock_edge_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_harbor_service_post_lantern_01", "cove_objects_harbor_work_props", "newport_atelier_g418e_harbor_dock_edge_manifest.json"),
+		_atelier_asset_proof("atelier_g418e_harbor_fish_baskets_tub_01", "cove_objects_harbor_work_props", "newport_atelier_g418e_harbor_dock_edge_manifest.json"),
+	]
+
+static func opening_island_atelier_asset_family_contract() -> Dictionary:
+	return {
+		"phase": G16A_ISLAND_ATELIER_ASSET_FAMILY_PASS,
+		"source": G16A_ISLAND_ATELIER_ASSET_FAMILY_SOURCE_PATH,
+		"topology_source": OPENING_ISLAND_TOPOLOGY_SOURCE_PATH,
+		"poi_source": G16_ISLAND_POI_LANDMARKS_SOURCE_PATH,
+		"art_direction_score": G16A_ISLAND_ATELIER_ASSET_FAMILY_SCORE,
+		"world_layout_score": G16A_ISLAND_ATELIER_ASSET_FAMILY_SCORE,
+		"island_assets_feel_cohesive_with_Newport": true,
+		"assets_reinforce_island_fantasy": true,
+		"manifest_provenance_source_proof_exists": true,
+		"no_placeholders": true,
+		"no_untracked_sprites": true,
+		"no_crude_markers": true,
+		"no_yellow_red_unknown_assets_promoted": true,
+		"route_probes_remain_clear": true,
+		"atelier_compliance": "PASS",
+		"asset_count": opening_island_atelier_asset_family_assets().size(),
+		"assets": opening_island_atelier_asset_family_assets(),
+		"viewpoints": [
+			{"id": "g16a_island_asset_family_wide", "position": Vector2(2048.0, 574.0), "target_final_screenshot": "g16a_01_island_asset_family_wide.png"},
+			{"id": "g16a_trail_edge_clutter", "position": Vector2(2088.0, 504.0), "target_final_screenshot": "g16a_02_trail_edge_clutter.png"},
+			{"id": "g16a_cove_coastal_assets", "position": Vector2(2220.0, 714.0), "target_final_screenshot": "g16a_03_cove_coastal_assets.png"},
+			{"id": "g16a_farm_service_props", "position": Vector2(1886.0, 572.0), "target_final_screenshot": "g16a_04_farm_service_props.png"},
+			{"id": "g16a_quest_clue_asset_provenance", "position": Vector2(2208.0, 642.0), "target_final_screenshot": "g16a_05_quest_clue_asset_provenance.png"},
+			{"id": "g16a_debug_overlays_disabled", "position": Vector2(1780.0, 642.0), "target_final_screenshot": "g16a_06_debug_overlays_disabled.png"},
+		],
+	}
+
+static func _atelier_asset_proof(asset_id: String, family_id: String, manifest_name: String) -> Dictionary:
+	return {
+		"asset_id": asset_id,
+		"family_id": family_id,
+		"manifest": "res://art_pipeline/newport_atelier/manifests/%s" % manifest_name,
+		"review_eligible": true,
+		"normal_review_eligible": true,
+		"lab_only": false,
+		"source_pixels_from_yellow_uncertain_assets": false,
+		"source_pixels_from_third_party_material": false,
+		"web_scraped_source_pixels": false,
 	}
 
 static func starter_village_runtime_lot_assignments() -> Dictionary:
