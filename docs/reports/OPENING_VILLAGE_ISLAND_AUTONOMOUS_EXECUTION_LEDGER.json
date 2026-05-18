@@ -1,0 +1,169 @@
+{
+  "schema_id": "wayfarer.ovi1.autonomous_execution_ledger.v1",
+  "milestone_id": "OVI-1",
+  "milestone_name": "Opening Village + Island Production Playable Gate",
+  "generated_at": "2026-05-18",
+  "source_authorization": "Chris May 2026 live steering addendum: G-14 is not the human stop; continue autonomously to OVI-1.",
+  "starting_main_commit": "05453e9cc2241e3b1985774f2c97cf7c42abe217",
+  "next_true_human_review_milestone": "OVI-1 Opening Village + Island Production Playable Gate",
+  "human_review_required_before_ovi1": false,
+  "g14_internal_checkpoint": {
+    "phase_id": "G-14",
+    "human_review_required": false,
+    "reason": "G-14 is now an internal checkpoint inside the larger OVI-1 autonomous runway.",
+    "next_phase": "G-15 Opening Island Masterplan + World Topology"
+  },
+  "preflight_snapshot": {
+    "branch_before_addendum": "main",
+    "worktree_before_addendum": "clean",
+    "origin_main_commit": "05453e9cc2241e3b1985774f2c97cf7c42abe217",
+    "open_prs_before_addendum": []
+  },
+  "roadmap_source": "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md",
+  "structured_roadmap_source": "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
+  "phases": [
+    {
+      "phase_id": "G-14",
+      "phase_name": "Internal Starter Village Proof Gate",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "G-14 is pending. It must prove village cohesion, NPC motion, opening tavern/counter-house/harbor quest, interaction UX, browser/review identity, and atelier/provenance compliance.",
+      "next_required_action": "Run G-14 as an internal checkpoint. If it passes, merge and continue to G-15 without stopping for Chris."
+    },
+    {
+      "phase_id": "G-15",
+      "phase_name": "Opening Island Masterplan + World Topology",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Opening island masterplan/topology work has not started.",
+      "next_required_action": "Start after G-14 passes and main is synced."
+    },
+    {
+      "phase_id": "G-15A",
+      "phase_name": "Village-to-Island Transition Pass",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Village-to-island transition work has not started.",
+      "next_required_action": "Start after G-15 passes and main is synced."
+    },
+    {
+      "phase_id": "G-15B",
+      "phase_name": "Island Terrain, Ground, and Route Cohesion",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Island terrain and route cohesion work has not started.",
+      "next_required_action": "Start after G-15A passes and main is synced."
+    },
+    {
+      "phase_id": "G-16",
+      "phase_name": "Island Landmark and Point-of-Interest Pass",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Island landmark/POI work has not started.",
+      "next_required_action": "Start after G-15B passes and main is synced."
+    },
+    {
+      "phase_id": "G-16A",
+      "phase_name": "Island Atelier Asset Family Pass",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Island atelier asset family work has not started.",
+      "next_required_action": "Start after G-16 passes and main is synced."
+    },
+    {
+      "phase_id": "G-17",
+      "phase_name": "Island NPC / Encounter / Ambient Life Foundation",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Island NPC/encounter/ambient life work has not started.",
+      "next_required_action": "Start after G-16A passes and main is synced."
+    },
+    {
+      "phase_id": "G-18",
+      "phase_name": "Opening Quest Extension: From Whispers to the Island",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Village-to-island opening quest extension has not started.",
+      "next_required_action": "Start after G-17 passes and main is synced."
+    },
+    {
+      "phase_id": "G-18A",
+      "phase_name": "Multi-Path Rumor and Choice Foundation",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Village-to-island multi-path rumor/choice work has not started.",
+      "next_required_action": "Start after G-18 passes and main is synced."
+    },
+    {
+      "phase_id": "G-19",
+      "phase_name": "Player Guidance, Map, Journal, and Interaction Polish",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Combined opening guidance polish has not started.",
+      "next_required_action": "Start after G-18A passes and main is synced."
+    },
+    {
+      "phase_id": "G-20",
+      "phase_name": "First-Session Gameplay Loop and Reward Pass",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "First-session gameplay loop and reward work has not started.",
+      "next_required_action": "Start after G-19 passes and main is synced."
+    },
+    {
+      "phase_id": "G-21",
+      "phase_name": "Opening Island Performance, Browser Build, and Regression Hardening",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Combined village/island build hardening has not started.",
+      "next_required_action": "Start after G-20 passes and main is synced."
+    },
+    {
+      "phase_id": "G-22",
+      "phase_name": "OVI-1 Opening Village + Island Production Playable Gate",
+      "branch": "pending",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "OVI-1 final review package has not started.",
+      "next_required_action": "Start after G-21 passes and main is synced. When G-22 passes, stop for Chris with the full OVI-1 review package."
+    }
+  ]
+}

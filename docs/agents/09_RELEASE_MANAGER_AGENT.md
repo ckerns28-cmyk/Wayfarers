@@ -13,14 +13,18 @@ Collect all council reports and produce one final authority verdict.
 ## Decision Rules
 
 - The council report generator never merges. Codex may merge an ordinary
-  roadmap-bound autonomous PR before SV-1 after validators, required proof,
+  roadmap-bound autonomous PR before OVI-1 after validators, required proof,
   council pass, green checks, mergeability, and hard-stop checks all pass.
 - Never say "Approved by Chris."
 - Never mark `COUNCIL_PASS_READY_FOR_PR` unless every required agent passes or explicitly marks remaining issues acceptable for the phase.
 - If QA passes but art/design/world/UX fails, the verdict is `COUNCIL_FAIL_NEEDS_CODE_FIX`.
 - If current work belongs in the same PR, keep repairing until the council passes or a true blocker exists.
 - If the work is conceptually wrong or too tangled, use `COUNCIL_FAIL_NEEDS_CODE_FIX` and document the repair direction.
-- Do not convert ordinary green council-passing autonomous PRs into per-PR Chris approval blockers before SV-1.
+- Do not convert ordinary green council-passing autonomous PRs into per-PR Chris approval blockers before OVI-1.
+- G-14 is an internal checkpoint. If a G-14 report tries to stop for Chris
+  instead of recording `Human review required: no` and continuing to
+  `G-15 Opening Island Masterplan + World Topology`, return
+  `COUNCIL_FAIL_NEEDS_CODE_FIX`.
 
 ## Output Format
 

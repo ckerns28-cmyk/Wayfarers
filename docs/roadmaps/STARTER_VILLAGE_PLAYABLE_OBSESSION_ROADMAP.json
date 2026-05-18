@@ -1,12 +1,19 @@
 {
   "schema_id": "wayfarer.sv1.starter_village_playable_obsession_roadmap.v1",
   "milestone_id": "SV-1",
-  "milestone_name": "Starter Village Playable Obsession Gate",
+  "milestone_name": "Internal Starter Village Proof Gate",
   "generated_at": "2026-05-18",
   "starting_main_after_g6_merge": "a6ec338f795f7f61c9974af5a3338a37e165aa11",
-  "source_authorization": "Chris May 2026 autonomous Starter Village directive",
-  "next_human_review_milestone": "SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE",
-  "autonomous_merge_authorized_until": "SV-1",
+  "source_authorization": "Chris May 2026 autonomous Starter Village directive, superseded by Chris May 2026 OVI-1 addendum for human-review stopping point",
+  "next_human_review_milestone": "OVI-1 Opening Village + Island Production Playable Gate",
+  "autonomous_merge_authorized_until": "OVI-1",
+  "g14_policy": {
+    "phase_id": "G-14",
+    "role": "Internal Starter Village Proof Gate",
+    "human_review_required": false,
+    "reason": "G-14 is now an internal checkpoint inside the larger OVI-1 autonomous runway.",
+    "next_phase": "G-15 Opening Island Masterplan + World Topology"
+  },
   "merge_policy": {
     "ordinary_autonomous_prs_may_merge": true,
     "required_conditions": [
@@ -25,7 +32,7 @@
       "unresolvable_github_auth_or_permission_problem",
       "major_creative_fork_with_multiple_valid_directions",
       "asset_licensing_or_provenance_blocker",
-      "formal_sv1_milestone_review"
+      "formal_ovi1_milestone_review"
     ]
   },
   "tooling_stack_gate": {
@@ -507,8 +514,8 @@
     },
     {
       "phase_id": "G-14",
-      "title": "SV-1 Starter Village Playable Obsession Gate",
-      "purpose": "Final review package for Chris.",
+      "title": "SV-1 Internal Starter Village Proof Gate",
+      "purpose": "Internal proof that the village is strong enough to support the wider opening island experience.",
       "objectives": [
         "town_cohesion_score_at_least_8_5",
         "art_direction_score_at_least_8_5",
@@ -517,10 +524,12 @@
         "narrative_hook_score_at_least_8_5",
         "ux_readability_score_at_least_8_5",
         "technical_stability_score_at_least_8_5",
-        "provenance_atelier_compliance_passes"
+        "provenance_atelier_compliance_passes",
+        "Human review required: no",
+        "Next phase: G-15 Opening Island Masterplan + World Topology"
       ],
       "acceptance": [
-        "sv1_review_package_exists",
+        "internal_sv1_review_package_exists",
         "current_main_commit_recorded",
         "clean_worktree_proof_recorded",
         "no_open_pr_proof_recorded",
@@ -529,10 +538,13 @@
         "runtime_asset_consistency_audit_passes",
         "opening_quest_playthrough_proof_exists",
         "known_caveats_separated_from_blockers",
-        "stop_for_chris_review"
+        "Human review required: no",
+        "merge_and_continue_to_g15"
       ],
       "primary_validators": [
-        "validate_sv1_gate.py"
+        "validate_sv1_gate.py",
+        "validate_opening_village_island_roadmap.py",
+        "validate_opening_village_island_execution_ledger.py"
       ],
       "status": "PENDING"
     }

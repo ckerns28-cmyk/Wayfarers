@@ -24,7 +24,7 @@ This repository uses Codex as a production collaborator, not as an automatic app
   `validate_sv0_tool_acquisition_manifest.py`, installed only in approved
   project/tool locations, requires no payment, stores no credentials/secrets,
   and has a rollback path.
-- Until the SV-1 Starter Village Playable Obsession Gate, follow
+- Until the OVI-1 Opening Village + Island Production Playable Gate, follow
   `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`: the Wayfarer Agent Council
   is the default QA and acceptance authority for ordinary roadmap-bound
   autonomous phases.
@@ -65,13 +65,13 @@ Newport review must ask:
 
 ## Agent Council
 
-Use `tools/wayfarer_agent_council.py`, `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`, and the docs under `docs/agents`, `docs/factories`, `docs/checklists`, and `docs/templates` to structure production review. For ordinary roadmap-bound autonomous work before SV-1, the council produces the final authority verdict: `COUNCIL_PASS_READY_FOR_PR`, `COUNCIL_FAIL_NEEDS_CODE_FIX`, or `BLOCKED_REQUIRES_HUMAN_ESCALATION`. It must never say "Approved by Chris." The council tool itself does not merge; Codex may merge an ordinary autonomous PR after the required merge gates below pass.
+Use `tools/wayfarer_agent_council.py`, `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`, and the docs under `docs/agents`, `docs/factories`, `docs/checklists`, and `docs/templates` to structure production review. For ordinary roadmap-bound autonomous work before OVI-1, the council produces the final authority verdict: `COUNCIL_PASS_READY_FOR_PR`, `COUNCIL_FAIL_NEEDS_CODE_FIX`, or `BLOCKED_REQUIRES_HUMAN_ESCALATION`. It must never say "Approved by Chris." The council tool itself does not merge; Codex may merge an ordinary autonomous PR after the required merge gates below pass.
 
 ## Autonomous Merge Authorization
 
-Chris's May 2026 Starter Village directive pre-authorizes Codex to merge
-ordinary roadmap-bound autonomous PRs until the `SV-1 STARTER VILLAGE PLAYABLE
-OBSESSION GATE` when all of the following are true:
+Chris's May 2026 Opening Village + Island directive pre-authorizes Codex to
+merge ordinary roadmap-bound autonomous PRs until the `OVI-1 OPENING VILLAGE +
+ISLAND PRODUCTION PLAYABLE GATE` when all of the following are true:
 
 - branch and PR preflight is current,
 - required local validators pass,
@@ -85,4 +85,9 @@ Explicit Chris approval is still required only for destructive operations,
 unsafe file operations, budget/tool purchase decisions, any paid tool or
 subscription action, unresolvable GitHub authentication or permission problems,
 major creative forks with multiple valid directions, asset licensing/provenance
-blockers, and the formal SV-1 milestone review.
+blockers, and the formal OVI-1 milestone review.
+
+G-14 is no longer a formal human stop. Treat `G-14 Internal Starter Village
+Proof Gate` as an internal checkpoint inside the OVI-1 autonomous runway. If it
+passes, merge the PR when green and mergeable, sync main, update the ledger, and
+continue immediately to `G-15 Opening Island Masterplan + World Topology`.

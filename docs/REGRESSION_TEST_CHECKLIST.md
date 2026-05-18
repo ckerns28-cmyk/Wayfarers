@@ -319,3 +319,23 @@ the JavaScript Worker route by accident.
 - [ ] Ground/material cohesion follows the locked Godot-native material stack before props or clutter are used.
 - [ ] No paid, unknown-license, admin-only, or external-drive-modifying tool is required for the Starter Village path.
 - [ ] Any adopted free tool has source, license, free status, install path, rollback path, export/web-review impact, credential status, and validation proof in the Tool Acquisition Manifest.
+
+## V. OVI-1 Opening Village + Island Production Playable Gate
+
+- [ ] `wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py` reports `PASS`.
+- [ ] `wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py` reports `PASS`.
+- [ ] G-14 reports `Human review required: no` and `Next phase: G-15 Opening Island Masterplan + World Topology`.
+- [ ] G-14 does not stop for Chris unless a true hard blocker exists.
+- [ ] G-15 through G-21 each have phase PR, merge status, screenshots/proof, validators, Agent Council verdict, scores, and ledger rows.
+- [ ] Island topology validator covers authored island structure, danger/safety gradient, routes, loops, quest destination, optional secret, and return path.
+- [ ] Village-to-island transition validator covers clear town exit, natural boundary, readable route, and first mystery threshold.
+- [ ] Island cohesion validator covers terrain transitions, coastline/shoreline treatment, walkable/blocked reads, loop routes, and no patchwork terrain.
+- [ ] Island landmark validator covers signal/overlook, old road marker, cove/hidden landing, wooded path, farm/service edge, quest clue site, optional secret, and return landmark.
+- [ ] Island atelier validator covers manifest/provenance/source proof and rejects placeholders, untracked sprites, crude markers, and unknown/yellow/red assets in normal play.
+- [ ] Island NPC/encounter validator covers purpose, route/station, dialogue/bark/interaction, quest/world relevance, atelier sprite, and grounded movement proof where applicable.
+- [ ] Opening quest village-to-island validator covers arrival, first objective, counting-house/ledger beat, tavern whisper, island lead, island clue, optional clue/branch, return/report or next hook, reward/progression, and reason to continue.
+- [ ] First-session gameplay loop validator covers readable guidance, journal/objective updates, interaction polish, reward/progression, and no dead objective states.
+- [ ] G-22 final proof regenerates from current main in `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/`.
+- [ ] G-22 motion proof exists in `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/`.
+- [ ] G-22 quest playthrough proof exists in `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/`.
+- [ ] `wayfarer_godot_vertical_slice/tools/validate_ovi1_gate.py` reports `PASS` only when OVI-1 is complete.

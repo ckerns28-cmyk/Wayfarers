@@ -2,7 +2,7 @@
 
 TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 
-For ordinary roadmap-bound work before SV-1, this report is the council authority verdict after validators and screenshot review. This tool never merges, never impersonates Chris, and never converts technical validation alone into creative approval.
+For ordinary roadmap-bound work before OVI-1, this report is the council authority verdict after validators and screenshot review. This tool never merges, never impersonates Chris, and never converts technical validation alone into creative approval.
 
 ## Summary
 
@@ -16,7 +16,7 @@ For ordinary roadmap-bound work before SV-1, this report is the council authorit
 - Target PR check: Not detected
 - PR number if available: Not available yet
 - Final Authority Verdict: COUNCIL_PASS_READY_FOR_PR
-- Final recommended next phase: G-14 SV-1 Starter Village Playable Obsession Gate
+- Final recommended next phase: G-14 SV-1 Internal Starter Village Proof Gate, then G-15 Opening Island Masterplan + World Topology if G-14 passes
 - Human escalation required: NO
 - Escalation blocker: None.
 
@@ -38,7 +38,7 @@ Final Authority Verdict: `COUNCIL_PASS_READY_FOR_PR`
 | Technical stability score | 8.8/10 |
 | QA regression result | PASS: G-13 browser build identity, package ZIP root, runtime screenshot regression, first-session route, interaction UX, living rhythm, audio hooks, visual ordering, layout source usage, and atelier runtime validators passed. |
 | Build/release result | PASS: package_itch_web.sh generated stable and versioned G-13 ZIPs with index.html at root and no web_build nesting; generated artifacts remain ignored. |
-| Final recommended next phase | G-14 SV-1 Starter Village Playable Obsession Gate |
+| Final recommended next phase | G-14 SV-1 Internal Starter Village Proof Gate, then G-15 Opening Island Masterplan + World Topology if G-14 passes |
 
 ## Agent Status Table
 
@@ -318,5 +318,5 @@ Screenshot evidence status: inspected. Final authority depends on council image 
 - Never treat validator pass as design acceptance.
 - PR candidate conditions: validators pass, screenshots are inspected, all required discipline scores clear the phase bar, and remaining caveats are roadmap items.
 - Repair conditions: street grammar, ground cohesion, lot logic, player/NPC walkability, district readability, or visual cohesion fail the phase bar.
-- Final recommended next phase: G-14 SV-1 Starter Village Playable Obsession Gate
+- Final recommended next phase: G-14 SV-1 Internal Starter Village Proof Gate, then G-15 Opening Island Masterplan + World Topology if G-14 passes
 - Human escalation blocker: None.

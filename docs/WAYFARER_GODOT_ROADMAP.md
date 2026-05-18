@@ -2194,10 +2194,12 @@ route protection is lost. The G-6 package consists of
 The Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`. PR #461 has been
 merged to main and supersedes the old "no next phase" endpoint.
 
-## SV-1: Starter Village Playable Obsession Gate
+## SV-1: Internal Starter Village Proof Gate
 
-SV-1 is the next true human review milestone. It is not merely G-5 readiness
-and not merely the next PR. The active roadmap is
+SV-1/G-14 is no longer the next true human review milestone. Chris's May 2026
+OVI-1 addendum reframes G-14 as an internal starter village checkpoint inside
+the larger `OVI-1 Opening Village + Island Production Playable Gate` runway.
+The village roadmap remains
 `docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md` with structured
 source in
 `docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json`.
@@ -2217,12 +2219,17 @@ ground/material cohesion. The current corrective layout subpass is G-7A-SV0,
 documented in `docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR.md` and guarded
 by `wayfarer_godot_vertical_slice/tools/validate_starter_village_layout_source_usage.py`.
 
-The production objective is a Newport-inspired 1700s harbor starting village
+The village production objective is a Newport-inspired 1700s harbor starting village
 that a first-time player can load into, understand, navigate, investigate, and
 want to keep playing. Newport must become a cohesive authored origin town with
 districts, routes, landmarks, tavern whisper culture, harbor commerce,
 pre-Revolution pressure, grounded NPC life, readable quest direction, and a
 playable 10-20 minute opening loop.
+
+If G-14 passes, Codex records `Human review required: no`, merges when green
+and mergeable, syncs main, updates the ledger, and continues to G-15. The final
+G-14 report must name `G-15 Opening Island Masterplan + World Topology` as the
+next phase.
 
 Current screenshot QA baseline after G-6:
 
@@ -2253,7 +2260,7 @@ The required autonomous phase sequence is:
 - G-11A Audio/Atmosphere Placeholder-Free Foundation,
 - G-12 First-Session Fun, Pacing, and Readability Pass,
 - G-13 Browser Build, Performance, and Regression Hardening,
-- G-14 SV-1 Starter Village Playable Obsession Gate.
+- G-14 SV-1 Internal Starter Village Proof Gate.
 
 Current SV-1 autonomous status after SV-0 and Chris screenshot QA: Newport
 has compact interaction prompts, a playable First Light opening arc, a
@@ -2277,10 +2284,38 @@ route/building confusion, debug artifacts, hovering NPCs, unclear objective
 state, non-atelier sprites, or current-phase ground patchwork, the council must
 fail the branch and repair it before PR readiness.
 
-Ordinary roadmap-bound autonomous PRs before SV-1 may be merged by Codex when
+Ordinary roadmap-bound autonomous PRs before OVI-1 may be merged by Codex when
 branch/PR preflight is current, required validators pass, runtime proof passes
 where applicable, the Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`,
 the PR is green and mergeable, and no hard stop condition exists. Chris merge
 approval remains required only for destructive/unsafe operations, budget/tool
 purchase decisions, GitHub permission/auth blockers, major creative forks,
-asset licensing/provenance blockers, and the formal SV-1 milestone review.
+asset licensing/provenance blockers, and the formal OVI-1 milestone review.
+
+## OVI-1: Opening Village + Island Production Playable Gate
+
+OVI-1 is the next true Chris review milestone. The active OVI-1 roadmap is
+`docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md` with structured
+source in
+`docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json`.
+
+The OVI-1 execution ledger is
+`docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md` with
+structured source in
+`docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json`.
+
+The required autonomous sequence after G-14 is G-15 Opening Island Masterplan +
+World Topology, G-15A Village-to-Island Transition Pass, G-15B Island Terrain,
+Ground, and Route Cohesion, G-16 Island Landmark and Point-of-Interest Pass,
+G-16A Island Atelier Asset Family Pass, G-17 Island NPC / Encounter / Ambient
+Life Foundation, G-18 Opening Quest Extension: From Whispers to the Island,
+G-18A Multi-Path Rumor and Choice Foundation, G-19 Player Guidance, Map,
+Journal, and Interaction Polish, G-20 First-Session Gameplay Loop and Reward
+Pass, G-21 Opening Island Performance, Browser Build, and Regression
+Hardening, and G-22 OVI-1 Opening Village + Island Production Playable Gate.
+
+Ordinary roadmap-bound autonomous PRs before OVI-1 may be merged by Codex when
+branch/PR preflight is current, required validators pass, runtime proof passes
+where applicable, the Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`,
+the PR is green and mergeable, and no hard stop condition exists. Chris review
+is required at the formal OVI-1 milestone, not at G-14.
