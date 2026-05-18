@@ -35,6 +35,8 @@ const STARTER_VILLAGE_G7A_STREET_LOT_GROUND_COHESION_PASS := "G-7A"
 const STARTER_VILLAGE_G7A_TOWN_COHESION_SCORE := 7.6
 const STARTER_VILLAGE_G7B_HARBOR_COMMERCIAL_SPINE_PASS := "G-7B"
 const STARTER_VILLAGE_G7B_HARBOR_WORLD_SCORE := 8.5
+const STARTER_VILLAGE_G7C_LANDMARK_DISTRICT_IDENTITY_PASS := "G-7C"
+const STARTER_VILLAGE_G7C_ART_WORLD_SCORE := 8.5
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -737,6 +739,8 @@ static func starter_district_plan() -> Dictionary:
 		"g7a_town_cohesion_score": STARTER_VILLAGE_G7A_TOWN_COHESION_SCORE,
 		"harbor_commercial_spine_cohesion_pass": STARTER_VILLAGE_G7B_HARBOR_COMMERCIAL_SPINE_PASS,
 		"g7b_harbor_world_score": STARTER_VILLAGE_G7B_HARBOR_WORLD_SCORE,
+		"landmark_district_identity_pass": STARTER_VILLAGE_G7C_LANDMARK_DISTRICT_IDENTITY_PASS,
+		"g7c_art_world_score": STARTER_VILLAGE_G7C_ART_WORLD_SCORE,
 		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; G-4.18E adds the Newport Harbor Commercial + Tavern District green-origin hero-quality asset family as controlled Tavern/Inn, commercial avenue, harbor edge, and rear-service dressing; G-4.19 establishes the source-authored player visual identity foundation with directional idle/walk hooks; G-4.20 redesigns the default HUD/UI into restrained fantasy/MMORPG presentation while hiding review metadata by default; G-4.21 composes those accepted street, dock, player, prop, camera, and HUD elements into the first origin city hero-slice screenshot packet; G-4.22 formally reviews that visual foundation packet against the G-4 exit gate before any G-5 recommendation; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; G-4.23A repairs street grammar and ground cohesion by narrowing old slab-like road reads, exposing a back street behind the waterfront road, suppressing oversized cargo/dock dressing in clean review, and reusing provenance-safe atelier terrain/grounding transitions only where they reinforce ordered parcels; G-4.23B converts the remaining blockout read into authored street, harbor, and frontage immersion with irregular terrain edges, working pier/economy clusters, Tavern/Inn social grounding, and review screenshots for visual judgment; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
@@ -759,10 +763,10 @@ static func starter_district_plan() -> Dictionary:
 			"support_lane",
 		],
 		"district_identity": {
-			"harborfront_commercial": "main waterfront avenue with tavern, mercantile, chandlery, shops, market frontage, and visible uphill roads breaking the blocks",
-			"working_wharf": "goods move from waterline platforms through pier fingers to the wharf apron and street",
-			"inland_residential_civic": "Town Hall / Counting House, Customs House, and homes sit on streets reached by roads running north from the avenue",
-			"support_lane": "cooperage, boarding house, dockworker rowhouse, and yards support the harbor labor loop",
+			"harborfront_commercial": "main waterfront avenue with Tavern/Inn centerpiece, mercantile/chandlery shop row, market frontage, and visible uphill roads breaking the blocks",
+			"working_wharf": "fish offload, manifest cargo, rope/mooring service, warehouse landings, and harbor bulletin identity make the waterfront read as work",
+			"inland_residential_civic": "Counting House, Custom House, civic notice board, flags, and residential lots sit on streets reached by roads running north from the avenue",
+			"support_lane": "rear service gates, cooperage, boarding house, dockworker rowhouse, wash lines, and yards support the harbor labor loop",
 		},
 		"street_grammar": [
 			"waterfront_avenue_parallel_to_harbor",
@@ -794,6 +798,10 @@ static func starter_district_plan() -> Dictionary:
 			"g7b_commercial_avenue_goods_visibly_flow_to_wharf",
 			"g7b_counting_house_route_reads_as_harbor_commerce",
 			"g7b_dock_objects_group_by_function_without_blocking_navigation",
+			"g7c_tavern_inn_reads_as_centerpiece_at_a_glance",
+			"g7c_counting_house_civic_notice_anchor_is_memorable",
+			"g7c_commercial_row_and_harbor_work_have_distinct_identity",
+			"g7c_rear_service_lane_and_residential_edges_are_distinct",
 		],
 		"g7a_runtime_cohesion_contract": {
 			"phase": STARTER_VILLAGE_G7A_STREET_LOT_GROUND_COHESION_PASS,
@@ -812,6 +820,13 @@ static func starter_district_plan() -> Dictionary:
 			"navigation_rule": "work-zone props must reinforce jobs while leaving harborfront and wharf routes clear",
 			"quest_support": "cargo manifest clue can plausibly move from dock ledger to counting house to tavern rumor",
 		},
+		"g7c_landmark_identity_contract": {
+			"phase": STARTER_VILLAGE_G7C_LANDMARK_DISTRICT_IDENTITY_PASS,
+			"target_score_this_phase": STARTER_VILLAGE_G7C_ART_WORLD_SCORE,
+			"required_landmarks": ["Tavern/Inn centerpiece", "Counting House civic notice anchor", "commercial shop row", "harbor work area", "rear service lane", "residential edge", "small civic notice-board location"],
+			"first_quest_read_order": ["harbor landfall", "manifest cargo and counting house", "Tavern/Inn rumor threshold"],
+			"placement_rule": "landmark props must strengthen district identity and must not be random scatter or crude markers",
+		},
 		"movement_loop": [
 			"waterfront_avenue",
 			"west_upland_road",
@@ -826,6 +841,8 @@ static func starter_district_plan() -> Dictionary:
 			"g7b_fish_offload_to_market_transfer",
 			"g7b_manifest_cargo_to_counting_house",
 			"g7b_chandlery_rope_service_to_storehouse",
+			"g7c_harbor_to_counting_house_to_tavern_landmark_read",
+			"g7c_rear_lane_to_residential_edge_identity_read",
 		],
 		"walking_loops": [
 			"harbor_loop",

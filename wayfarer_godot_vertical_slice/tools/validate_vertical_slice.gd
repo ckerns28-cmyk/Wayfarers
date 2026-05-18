@@ -1897,6 +1897,8 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(float(plan.get("g7a_town_cohesion_score", 0.0)) >= 7.5, "starter_plan_g7a_town_cohesion_score")
 	_expect(plan.get("harbor_commercial_spine_cohesion_pass", "") == "G-7B", "starter_plan_harbor_commercial_spine_cohesion_pass_g_7b")
 	_expect(float(plan.get("g7b_harbor_world_score", 0.0)) >= 8.5, "starter_plan_g7b_harbor_world_score")
+	_expect(plan.get("landmark_district_identity_pass", "") == "G-7C", "starter_plan_landmark_district_identity_pass_g_7c")
+	_expect(float(plan.get("g7c_art_world_score", 0.0)) >= 8.5, "starter_plan_g7c_art_world_score")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("atelier cargo") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("G-4.19A") >= 0, "starter_plan_hero_street_atlas_proof")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20A") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20b")
@@ -1937,6 +1939,8 @@ func _validate_starter_harbor_plan() -> void:
 		_expect(street_grammar.has(grammar_id), "g7a_street_grammar_" + grammar_id)
 	for grammar_id in ["g7b_fish_offload_manifest_chandlery_market_work_zones", "g7b_commercial_avenue_goods_visibly_flow_to_wharf", "g7b_counting_house_route_reads_as_harbor_commerce", "g7b_dock_objects_group_by_function_without_blocking_navigation"]:
 		_expect(street_grammar.has(grammar_id), "g7b_street_grammar_" + grammar_id)
+	for grammar_id in ["g7c_tavern_inn_reads_as_centerpiece_at_a_glance", "g7c_counting_house_civic_notice_anchor_is_memorable", "g7c_commercial_row_and_harbor_work_have_distinct_identity", "g7c_rear_service_lane_and_residential_edges_are_distinct"]:
+		_expect(street_grammar.has(grammar_id), "g7c_street_grammar_" + grammar_id)
 	_expect(FileAccess.file_exists("res://tools/capture_g423b_runtime_screenshots.gd"), "g423b_runtime_screenshot_script_exists")
 	_expect(FileAccess.file_exists("res://tools/capture_g7a_runtime_screenshots.gd"), "g7a_runtime_screenshot_script_exists")
 	var g7a_contract: Dictionary = plan.get("g7a_runtime_cohesion_contract", {})
@@ -1945,6 +1949,9 @@ func _validate_starter_harbor_plan() -> void:
 	var g7b_contract: Dictionary = plan.get("g7b_harbor_commercial_spine_contract", {})
 	_expect(g7b_contract.get("phase", "") == "G-7B", "g7b_contract_phase")
 	_expect(String(g7b_contract.get("quest_support", "")).find("cargo manifest") >= 0, "g7b_contract_supports_manifest_quest")
+	var g7c_contract: Dictionary = plan.get("g7c_landmark_identity_contract", {})
+	_expect(g7c_contract.get("phase", "") == "G-7C", "g7c_contract_phase")
+	_expect(String(g7c_contract.get("placement_rule", "")).find("random scatter") >= 0, "g7c_contract_forbids_random_scatter")
 	var walking_loops: Array = plan.get("walking_loops", [])
 	for loop_id in ["harbor_loop", "market_loop", "civic_residential_loop"]:
 		_expect(walking_loops.has(loop_id), "g422a_plan_loop_" + loop_id)

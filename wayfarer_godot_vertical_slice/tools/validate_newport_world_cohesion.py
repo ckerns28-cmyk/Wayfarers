@@ -13,6 +13,9 @@ from starter_village_validator_common import (
     G7B_COUNCIL_REPORT,
     G7B_REPORT,
     G7B_SCREENSHOT_MANIFEST,
+    G7C_COUNCIL_REPORT,
+    G7C_REPORT,
+    G7C_SCREENSHOT_MANIFEST,
     G7_COUNCIL_REPORT,
     G7_REPORT,
     LEDGER_JSON,
@@ -50,6 +53,9 @@ def main() -> int:
             "STARTER_VILLAGE_G7B_HARBOR_COMMERCIAL_SPINE_PASS",
             "harbor_commercial_spine_cohesion_pass",
             "g7b_harbor_commercial_spine_contract",
+            "STARTER_VILLAGE_G7C_LANDMARK_DISTRICT_IDENTITY_PASS",
+            "landmark_district_identity_pass",
+            "g7c_landmark_identity_contract",
         ],
         failures,
     )
@@ -72,6 +78,12 @@ def main() -> int:
             "g7b_west_fish_offload_zone_net_crates",
             "g7b_central_manifest_cargo_waiting_for_counting_house",
             "g7b_market_transfer_goods_linked_to_wharf",
+            "STARTER_VILLAGE_G7C_LANDMARK_IDENTITY_PASS",
+            "NEWPORT_G7C_LANDMARK_IDENTITY_PLACEMENTS",
+            "_draw_g7c_landmark_district_identity_pass",
+            "g7c_tavern_inn_warm_entry_landmark",
+            "g7c_counting_house_civic_notice_board_landmark",
+            "g7c_rear_service_lane_gate_identity",
         ],
         failures,
     )
@@ -142,6 +154,14 @@ def main() -> int:
     ]:
         if token not in blueprint:
             failures.append(f"blueprint missing G-7B harbor/commercial token: {token}")
+    for token in [
+        "g7c_tavern_inn_reads_as_centerpiece_at_a_glance",
+        "g7c_counting_house_civic_notice_anchor_is_memorable",
+        "g7c_commercial_row_and_harbor_work_have_distinct_identity",
+        "g7c_rear_service_lane_and_residential_edges_are_distinct",
+    ]:
+        if token not in blueprint:
+            failures.append(f"blueprint missing G-7C landmark/district token: {token}")
     if "draw_circle(pos, 4, Color(\"#2f251b\"))" in map_layer and "if not G422R_SUPPRESS_PRIMITIVE_WORLD_PROPS" not in map_layer:
         failures.append("primitive marker draw calls must stay behind suppression guards")
 
@@ -224,11 +244,49 @@ def main() -> int:
                         raw_path = str(shot.get("path", ""))
                         if raw_path and not repo_path(raw_path).exists():
                             failures.append(f"G-7B screenshot path missing: {raw_path}")
+        if ledger_phases.get("G-7C", {}).get("current_status") == "PASS":
+            require_text(
+                G7C_REPORT,
+                [
+                    "G-7C Landmark and District Identity Pass",
+                    "Tavern/Inn centerpiece",
+                    "Counting House civic notice anchor",
+                    "G-8 next",
+                ],
+                failures,
+            )
+            require_text(
+                G7C_COUNCIL_REPORT,
+                [
+                    "COUNCIL_PASS_READY_FOR_PR",
+                    "Art Director",
+                    "runtime screenshots",
+                    "art/world score: 8.5",
+                ],
+                failures,
+            )
+            manifest = load_json(G7C_SCREENSHOT_MANIFEST, failures)
+            if isinstance(manifest, dict):
+                if manifest.get("status") != "PASS":
+                    failures.append("G-7C screenshot manifest must be PASS")
+                screenshots = manifest.get("screenshots")
+                if not isinstance(screenshots, list) or len(screenshots) < 15:
+                    failures.append("G-7C screenshot manifest must include the 15 recurring proof views")
+                else:
+                    for shot in screenshots:
+                        if not isinstance(shot, dict):
+                            failures.append("G-7C screenshot manifest row must be an object")
+                            continue
+                        if shot.get("status") != "PASS":
+                            failures.append(f"G-7C screenshot failed: {shot.get('filename')}")
+                        raw_path = str(shot.get("path", ""))
+                        if raw_path and not repo_path(raw_path).exists():
+                            failures.append(f"G-7C screenshot path missing: {raw_path}")
 
     return print_result(
         "newport world cohesion",
         failures,
-        ["G-7A/G-7B cohesion contracts are runtime-backed when the ledger marks those phases PASS."],
+        ["G-7A/G-7B/G-7C cohesion contracts are runtime-backed when the ledger marks those phases PASS."],
     )
 
 
