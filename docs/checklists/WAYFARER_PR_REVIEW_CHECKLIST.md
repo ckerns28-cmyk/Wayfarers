@@ -24,6 +24,7 @@
 - [ ] Screenshot capture/PNG verification for visual passes.
 - [ ] Capture log check for screenshot passes.
 - [ ] G-5 migration architecture validator when the PR touches migration planning or post-G-5 roadmap direction.
+- [ ] G-6 production cutover validator when the PR touches deployment, cutover policy, route ownership, or post-G-5 release planning.
 - [ ] `git diff --check`.
 - [ ] `git diff --cached --check`.
 

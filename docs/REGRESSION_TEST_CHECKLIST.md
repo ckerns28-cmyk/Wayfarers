@@ -285,3 +285,25 @@ route or port gameplay systems by copying Worker code into Godot scene scripts.
 - [ ] Save compatibility bridge is ordered before quest, combat, inventory, reward, dungeon, or cutover work.
 - [ ] Movement/camera/zone, interaction/dialogue/quest, inventory/equipment/economy, combat/enemy/loot/progression, save/load/persistence, world objects/dungeons, UI/HUD/Chronicle, and deployment/QA systems all have future Godot owners and validation gates.
 - [ ] Future player-facing migration work still requires screenshot proof and Agent Council inspection.
+
+## T. G-6 Production Cutover Planning
+
+G-6 defines production cutover criteria and rollback safety. It must not replace
+the JavaScript Worker route by accident.
+
+### A. Cutover package
+- [ ] `docs/reports/G6_PRODUCTION_CUTOVER_PLANNING.md` exists and states G-6 is planning-only.
+- [ ] `docs/reports/G6_PRODUCTION_CUTOVER_PLANNING.json` includes the hosting decision matrix, QA gates, cutover runbook, and rollback runbook.
+- [ ] `docs/reports/G6_PRODUCTION_CUTOVER_AGENT_COUNCIL_REPORT.md` records `COUNCIL_PASS_READY_FOR_PR`.
+- [ ] `wayfarer_godot_vertical_slice/tools/validate_g6_production_cutover.py` reports `PASS`.
+
+### B. Production route protection
+- [ ] Root `wrangler.toml` still points at `wayfarer_v7_github_ready/worker/src/index.js`.
+- [ ] Root `wrangler.toml` still uses `./wayfarer_v7_github_ready/worker/assets`.
+- [ ] The Godot route remains a review/migration route and not the production replacement.
+- [ ] Any future route replacement PR has explicit cutover authority and rollback evidence.
+
+### C. Cutover readiness gates
+- [ ] G-5.1 through G-5.9 parity evidence exists before any future replacement.
+- [ ] Worker save schema v2 round-trips through Godot without progress loss before any future replacement.
+- [ ] Served Godot Web export validation, runtime visual QA, performance/browser matrix, rollback rehearsal, and Agent Council release authority are all required before any future replacement.

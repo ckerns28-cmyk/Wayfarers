@@ -429,3 +429,16 @@ Visit button.
 `wayfarer_v7_github_ready/worker/assets/`. The Godot delivery is a
 parallel preview only; the JS Worker stays the production-facing build
 until a future migration pass replaces it explicitly.
+
+## 6. G-6 Production Cutover Planning
+
+G-6 does not replace the production route. It defines the criteria and rollback
+plan that a later explicit cutover PR must satisfy before `wrangler.toml` may
+stop pointing at `wayfarer_v7_github_ready/worker/src/index.js`.
+
+Before any future replacement, the project must have G-5.1 through G-5.9 parity
+evidence, Worker save schema v2 round-trip proof, served Godot Web validation,
+runtime visual QA screenshots, browser/performance smoke evidence, rollback
+rehearsal proof, and an Agent Council release report. Until those gates pass,
+the JavaScript Worker remains production-facing and Godot remains a parallel
+review and migration-validation route.
