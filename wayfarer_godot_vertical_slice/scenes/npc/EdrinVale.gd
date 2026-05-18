@@ -54,6 +54,7 @@ var _current_bark := ""
 var _facing_direction := "down"
 var _current_visual_animation := ""
 var _ambient_bark_label: Label = null
+var _ambient_barks_enabled := true
 
 func _ready() -> void:
 	add_to_group("interactable")
@@ -134,6 +135,11 @@ func apply_town_rhythm_tick(elapsed_seconds: float, force_bark := false) -> Dict
 func set_town_rhythm_bark_visible(visible: bool) -> void:
 	_set_ambient_bark(_current_bark, visible and not _current_bark.is_empty())
 
+func set_town_rhythm_barks_enabled(enabled: bool) -> void:
+	_ambient_barks_enabled = enabled
+	if not enabled:
+		_set_ambient_bark(_current_bark, false)
+
 func is_route_walking_enabled() -> bool:
 	return NPC_ROUTE_WALKING_ENABLED
 
@@ -187,6 +193,7 @@ func town_rhythm_contract() -> Dictionary:
 		"movement_policy": NPC_TOWN_RHYTHM_POLICY,
 		"global_position": global_position,
 		"ground_shadow_visible": ground_shadow != null and ground_shadow.visible,
+		"ambient_barks_enabled": _ambient_barks_enabled,
 		"no_static_sprite_translation": true,
 	}
 
@@ -259,7 +266,7 @@ func _set_ambient_bark(text: String, visible: bool) -> void:
 	if _ambient_bark_label == null:
 		return
 	_ambient_bark_label.text = text
-	_ambient_bark_label.visible = visible and not text.is_empty()
+	_ambient_bark_label.visible = _ambient_barks_enabled and visible and not text.is_empty()
 
 func _rhythm_stage_for_time(elapsed_seconds: float) -> Dictionary:
 	var stages: Array = _rhythm_config.get("stages", [])

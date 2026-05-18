@@ -865,10 +865,10 @@
       "phase_name": "Multi-Path Starter Choice Foundation",
       "branch": "codex/g-10b-multi-path-starter-choice",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#472"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "b8ec7a6"
       ],
       "current_status": "PASS",
       "reason_for_status": "First Light now has a runtime-backed multi-path choice foundation: counting-house, harbor-work, tavern-rumor, merchant-street, and optional secret routes can advance the opening mystery without a single railroaded click path. Chris screenshot feedback also produced a stronger screenshot-contradiction review process for future councils.",
@@ -954,10 +954,10 @@
       "phase_name": "Living Town Rhythm Pass",
       "branch": "codex/g-11-living-town-rhythm-pass",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#475"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "71a60bd"
       ],
       "current_status": "PASS",
       "reason_for_status": "Newport now has a runtime-backed living town rhythm foundation: dock work, tavern social, merchant street, civic notice, and rear-gate suspicion rhythms are authored in the blueprint, wired into NPC runtime state, and proven with focused screenshot/motion metadata. Route walking remains disabled so one-frame NPCs cannot glide.",
@@ -1029,10 +1029,10 @@
       "phase_name": "Audio/Atmosphere Placeholder-Free Foundation",
       "branch": "codex/g-11a-audio-atmosphere-hooks",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#476"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "1a074de"
       ],
       "current_status": "PASS",
       "reason_for_status": "G-11A adds a placeholder-free audio/atmosphere foundation: required ambience, footstep, quest, and UI hooks are data-driven, runtime-auditable, and playback-disabled until license-safe assets are documented.",
@@ -1087,16 +1087,79 @@
     {
       "phase_id": "G-12",
       "phase_name": "First-Session Fun, Pacing, and Readability Pass",
-      "branch": "pending",
+      "branch": "codex/g-12-first-session-playability",
       "implementing_prs": [
-        "pending"
+        "#477"
       ],
       "commits": [
-        "pending"
+        "current_g12_branch_commit_pending_final_merge_hash"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "First-session playthrough proof does not exist.",
-      "next_required_action": "Playtest and tune first-session readability and pacing."
+      "current_status": "PASS",
+      "reason_for_status": "G-12 adds a runtime-backed first-session playability gate: the screenshot manifest proves first-goal clarity, harbor/counting-house/tavern route readability, objective advancement, tavern rumor content, optional secret discovery, reward/contact progression, prompt/dialogue/bark overlap suppression, debug-off normal play, and camera focus safety.",
+      "next_required_action": "Open and merge the G-12 PR when green, then start G-13 Browser Build, Performance, and Regression Hardening.",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+        "wayfarer_godot_vertical_slice/scenes/npc/AtelierTownNpc.gd",
+        "wayfarer_godot_vertical_slice/scenes/npc/EdrinVale.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g12_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g12_runtime_screenshots.gd.uid",
+        "wayfarer_godot_vertical_slice/tools/capture_g12_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/validate_first_session_playability.py",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "tools/wayfarer_agent_council.py",
+        "docs/reports/G12_FIRST_SESSION_FUN_PACING_READABILITY_PASS.md",
+        "docs/reports/G12_FIRST_SESSION_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_03_player_on_route_to_counting_house.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_04_player_near_tavern_inn.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_05_player_on_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_06_player_at_dock_wharf_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_07_living_town_rhythm_without_prompt_clutter.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_08_npc_idle_and_readability_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_09_player_interacting_with_counting_house_clerk.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_10_player_interacting_at_tavern_rumor_location.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_11_quest_prompt_journal_objective_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_12_signs_markers_interaction_ux_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_13_y_sort_layering_near_buildings_props.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_15_contact_sheet_provenance_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g12_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_first_session_playability.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_quest_arc.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_living_town_rhythm.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator failureCount=0; PASS: G-12 runtime screenshot capture and PNG verification; PASS: first-session playability validator; PASS: opening quest arc validator; PASS: interaction UX validator; PASS: living town rhythm validator; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G12_FIRST_SESSION_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "art_direction_score": 8.5,
+      "world_layout_score": 8.5,
+      "npc_animation_score": 8.6,
+      "narrative_score": 8.6,
+      "gameplay_hook_score": 8.7,
+      "ux_readability_score": 8.7,
+      "technical_stability_score": 8.7,
+      "performance_build_score": 8.6,
+      "town_cohesion_score": 8.5,
+      "provenance_atelier_result": "PASS: G-12 adds no visible raster assets. Runtime proof uses existing atelier-compliant world, building, player, NPC, prop, prompt, and journal assets with debug overlays disabled.",
+      "north_star_result": "PASS for G-12: the first-session loop now proves readable arrival, route guidance, quest progression, tavern rumor gameplay, optional secrecy, reward/contact progression, and stricter screenshot contradiction gates. It is not SV-1 complete; browser build hardening and final gate package remain G-13/G-14."
     },
     {
       "phase_id": "G-13",
