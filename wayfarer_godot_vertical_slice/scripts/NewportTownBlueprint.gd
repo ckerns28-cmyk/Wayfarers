@@ -31,6 +31,8 @@ const G422A_WALKABLE_CITY_RECONSTRUCTION_PASS := "G-4.22A"
 const G423A_STREET_GRAMMAR_GROUND_REPAIR_PASS := "G-4.23A"
 const G423B_AUTHORED_STREET_HARBOR_IMMERSION_PASS := "G-4.23B"
 const G422R_ATELIER_CONSISTENCY_GATE_REPAIR_PASS := "G-4.22R"
+const STARTER_VILLAGE_G7A_STREET_LOT_GROUND_COHESION_PASS := "G-7A"
+const STARTER_VILLAGE_G7A_TOWN_COHESION_SCORE := 7.6
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -729,6 +731,8 @@ static func starter_district_plan() -> Dictionary:
 		"walkable_city_reconstruction_pass": G422A_WALKABLE_CITY_RECONSTRUCTION_PASS,
 		"street_grammar_ground_repair_pass": G423A_STREET_GRAMMAR_GROUND_REPAIR_PASS,
 		"authored_street_harbor_immersion_pass": G423B_AUTHORED_STREET_HARBOR_IMMERSION_PASS,
+		"street_lot_ground_cohesion_reconstruction_pass": STARTER_VILLAGE_G7A_STREET_LOT_GROUND_COHESION_PASS,
+		"g7a_town_cohesion_score": STARTER_VILLAGE_G7A_TOWN_COHESION_SCORE,
 		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; G-4.18E adds the Newport Harbor Commercial + Tavern District green-origin hero-quality asset family as controlled Tavern/Inn, commercial avenue, harbor edge, and rear-service dressing; G-4.19 establishes the source-authored player visual identity foundation with directional idle/walk hooks; G-4.20 redesigns the default HUD/UI into restrained fantasy/MMORPG presentation while hiding review metadata by default; G-4.21 composes those accepted street, dock, player, prop, camera, and HUD elements into the first origin city hero-slice screenshot packet; G-4.22 formally reviews that visual foundation packet against the G-4 exit gate before any G-5 recommendation; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; G-4.23A repairs street grammar and ground cohesion by narrowing old slab-like road reads, exposing a back street behind the waterfront road, suppressing oversized cargo/dock dressing in clean review, and reusing provenance-safe atelier terrain/grounding transitions only where they reinforce ordered parcels; G-4.23B converts the remaining blockout read into authored street, harbor, and frontage immersion with irregular terrain edges, working pier/economy clusters, Tavern/Inn social grounding, and review screenshots for visual judgment; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
@@ -776,7 +780,22 @@ static func starter_district_plan() -> Dictionary:
 			"camera_review_shows_harbor_civic_and_uphill_fabric",
 			"packed_earth_service_alleys_share_same_cobble_palette",
 			"blockout_guides_default_off",
+			"g7a_continuous_harborfront_avenue_binds_the_wide_view",
+			"g7a_back_street_and_service_lane_read_as_connected_routes",
+			"g7a_uphill_connectors_join_harbor_commerce_to_civic_residential_blocks",
+			"g7a_lot_foundations_ground_every_major_visible_building",
+			"g7a_dock_to_road_transition_replaces_random_green_empty_blocks",
+			"g7a_no_debug_like_road_planning_artifacts_in_normal_play",
 		],
+		"g7a_runtime_cohesion_contract": {
+			"phase": STARTER_VILLAGE_G7A_STREET_LOT_GROUND_COHESION_PASS,
+			"target_score_this_phase": STARTER_VILLAGE_G7A_TOWN_COHESION_SCORE,
+			"harborfront_avenue": "continuous cobble route parallel to the harbor, with curb bands and dock transition",
+			"back_street": "connected route behind the waterfront road, serving civic and residential blocks",
+			"uphill_connectors": ["west_upland_road", "central_civic_road", "east_market_road", "east_service_cut"],
+			"lot_foundations": ["tavern", "clerk_mercantile", "counting_house", "custom_house", "chandlery_shop", "market", "residential", "support", "wharf"],
+			"forbidden_normal_play_read": ["random_asset_collage", "translucent_patchwork_roads", "unexplained_green_blocks", "debug_layout_guides"],
+		},
 		"movement_loop": [
 			"waterfront_avenue",
 			"west_upland_road",
@@ -785,6 +804,9 @@ static func starter_district_plan() -> Dictionary:
 			"working_wharf_edge",
 			"service_alley_return",
 			"civic_residential_backstreet",
+			"g7a_harborfront_avenue_to_wharf_apron",
+			"g7a_backstreet_to_civic_lots",
+			"g7a_service_lane_to_market_edge",
 		],
 		"walking_loops": [
 			"harbor_loop",

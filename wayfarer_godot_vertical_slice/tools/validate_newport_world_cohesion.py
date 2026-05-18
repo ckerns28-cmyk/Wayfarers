@@ -7,11 +7,17 @@ import sys
 
 from starter_village_validator_common import (
     BLUEPRINT,
+    G7A_COUNCIL_REPORT,
+    G7A_REPORT,
+    G7A_SCREENSHOT_MANIFEST,
     G7_COUNCIL_REPORT,
     G7_REPORT,
+    LEDGER_JSON,
+    MAP_LAYER,
     ROADMAP_JSON,
     ROADMAP_MD,
     load_json,
+    phase_map,
     print_result,
     repo_path,
     require_text,
@@ -21,6 +27,7 @@ from starter_village_validator_common import (
 def main() -> int:
     failures: list[str] = []
     roadmap = load_json(ROADMAP_JSON, failures)
+    ledger = load_json(LEDGER_JSON, failures)
     blueprint = require_text(
         BLUEPRINT,
         [
@@ -34,6 +41,24 @@ def main() -> int:
             "tavern_inn_entrance",
             "town_hall_entrance",
             "dock_worker_west",
+            "STARTER_VILLAGE_G7A_STREET_LOT_GROUND_COHESION_PASS",
+            "street_lot_ground_cohesion_reconstruction_pass",
+            "g7a_runtime_cohesion_contract",
+        ],
+        failures,
+    )
+    map_layer = require_text(
+        MAP_LAYER,
+        [
+            "STARTER_VILLAGE_G7A_COHESION_PASS",
+            "G7A_TOWN_COHESION_PHASE_SCORE",
+            "_draw_g7a_cohesive_ground_foundation",
+            "_draw_g7a_lot_foundation_overlays",
+            "_draw_g7a_continuous_street_base",
+            "_draw_g7a_route_curbs_and_material_transitions",
+            "g7a_tavern_lot_foundation",
+            "g7a_counting_house_civic_lot_foundation",
+            "g7a_west_wharf_lot_foundation",
         ],
         failures,
     )
@@ -78,15 +103,72 @@ def main() -> int:
         g14 = phases.get("G-14", {})
         if "town_cohesion_score_at_least_8_5" not in str(g14):
             failures.append("G-14 acceptance must require town cohesion at least 8.5")
+        if phases.get("G-7A", {}).get("status") == "PASS":
+            if phases.get("G-7B", {}).get("status") != "PENDING":
+                failures.append("G-7B must remain PENDING immediately after G-7A")
 
     for token in ["harbor_loop", "market_loop", "civic_residential_loop"]:
         if token not in blueprint:
             failures.append(f"blueprint missing walking loop token: {token}")
+    for token in [
+        "g7a_continuous_harborfront_avenue_binds_the_wide_view",
+        "g7a_back_street_and_service_lane_read_as_connected_routes",
+        "g7a_uphill_connectors_join_harbor_commerce_to_civic_residential_blocks",
+        "g7a_lot_foundations_ground_every_major_visible_building",
+        "g7a_dock_to_road_transition_replaces_random_green_empty_blocks",
+        "g7a_no_debug_like_road_planning_artifacts_in_normal_play",
+    ]:
+        if token not in blueprint:
+            failures.append(f"blueprint missing G-7A street grammar token: {token}")
+    if "draw_circle(pos, 4, Color(\"#2f251b\"))" in map_layer and "if not G422R_SUPPRESS_PRIMITIVE_WORLD_PROPS" not in map_layer:
+        failures.append("primitive marker draw calls must stay behind suppression guards")
+
+    if isinstance(ledger, dict):
+        ledger_phases = phase_map(ledger, failures)
+        if ledger_phases.get("G-7A", {}).get("current_status") == "PASS":
+            require_text(
+                G7A_REPORT,
+                [
+                    "G-7A Street, Lot, and Ground Cohesion Reconstruction",
+                    "Roads lead somewhere",
+                    "Town cohesion score",
+                    "G-7B next",
+                ],
+                failures,
+            )
+            require_text(
+                G7A_COUNCIL_REPORT,
+                [
+                    "COUNCIL_PASS_READY_FOR_PR",
+                    "World/Layout Designer",
+                    "Art Director",
+                    "runtime screenshots",
+                    "town cohesion score: 7.6",
+                ],
+                failures,
+            )
+            manifest = load_json(G7A_SCREENSHOT_MANIFEST, failures)
+            if isinstance(manifest, dict):
+                if manifest.get("status") != "PASS":
+                    failures.append("G-7A screenshot manifest must be PASS")
+                screenshots = manifest.get("screenshots")
+                if not isinstance(screenshots, list) or len(screenshots) < 15:
+                    failures.append("G-7A screenshot manifest must include the 15 recurring proof views")
+                else:
+                    for shot in screenshots:
+                        if not isinstance(shot, dict):
+                            failures.append("G-7A screenshot manifest row must be an object")
+                            continue
+                        if shot.get("status") != "PASS":
+                            failures.append(f"G-7A screenshot failed: {shot.get('filename')}")
+                        raw_path = str(shot.get("path", ""))
+                        if raw_path and not repo_path(raw_path).exists():
+                            failures.append(f"G-7A screenshot path missing: {raw_path}")
 
     return print_result(
-        "newport world cohesion masterplan",
+        "newport world cohesion",
         failures,
-        ["Current runtime cohesion baseline remains failing; G-7A must repair it."],
+        ["G-7A cohesion contract is runtime-backed when ledger marks the phase PASS."],
     )
 
 
