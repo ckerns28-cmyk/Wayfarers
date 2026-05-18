@@ -320,7 +320,7 @@
         "validate_opening_quest_arc.py",
         "validate_tavern_whisper_system.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-18A",

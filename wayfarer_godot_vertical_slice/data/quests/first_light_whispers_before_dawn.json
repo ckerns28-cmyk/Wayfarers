@@ -1,7 +1,7 @@
 {
   "schema_id": "wayfarer.quest.first_light_whispers_before_dawn.v1",
   "phase": "G-10",
-  "phase_extensions": ["G-10A", "G-10B"],
+  "phase_extensions": ["G-10A", "G-10B", "G-18"],
   "quest_id": "first_light_whispers_before_dawn",
   "title": "First Light / Whispers Before Dawn",
   "theme": "A missing ledger line pulls the player from Newport Harbor into counting-house pressure, tavern whisper culture, harbor rumors, and pre-Revolution unrest.",
@@ -35,8 +35,24 @@
       "text": "Secure a trusted contact before the rumor spreads."
     },
     {
+      "id": "follow_island_lead",
+      "text": "Follow the island lead beyond Newport's eastern edge."
+    },
+    {
+      "id": "travel_to_island_clue_site",
+      "text": "Take the old road toward the signal rise and hidden landing."
+    },
+    {
+      "id": "discover_physical_evidence",
+      "text": "Search the hidden landing for proof of the missing manifest line."
+    },
+    {
+      "id": "return_or_report_choice",
+      "text": "Choose who receives the proof: Edrin at the Counting House or Annelise at the return lane."
+    },
+    {
       "id": "hook_to_continue",
-      "text": "Keep the missing line quiet until dawn."
+      "text": "Carry the proof into dawn before the Governor's men close the harbor."
     }
   ],
   "opening_arc": {
@@ -81,6 +97,41 @@
     ],
     "multi_path_choice_foundation": "res://data/quests/first_light_multi_path_choices.json",
     "not_single_railroad": true,
-    "optional_clue_paths": ["folded_notice", "rear_service_gate_hint"]
+    "optional_clue_paths": ["folded_notice", "rear_service_gate_hint", "optional_signal_cache_clue"]
+  },
+  "opening_island_extension": {
+    "phase": "G-18",
+    "working_title": "Whispers Before Dawn",
+    "source": "res://data/quests/whispers_before_dawn_village_to_island_v1.json",
+    "playable_minutes_estimate": 20,
+    "quest_beats": [
+      "arrival_in_Newport",
+      "counting_house_missing_manifest",
+      "tavern_rumor",
+      "coded_whisper",
+      "island_lead",
+      "travel_to_island_clue_site",
+      "discover_physical_evidence",
+      "optional_signal_cache_clue",
+      "return_or_report_choice",
+      "reason_to_continue_hook"
+    ],
+    "island_npcs": [
+      "Isla Brooke - farmhand island lead",
+      "Elias Ward - suspicious courier coded whisper",
+      "Mara Oren - coast patrol optional signal clue",
+      "Tomas Reed - dock runner hidden landing evidence",
+      "Annelise Crow - return/report rumor contact"
+    ],
+    "reward": "Resolve +8 for proving the island clue, Annelise Crow as named contact, and access to the dawn signal hook",
+    "acceptance": {
+      "village_to_island_quest_chain": true,
+      "at_least_two_ways_to_gather_the_lead": true,
+      "optional_clue": "optional_signal_cache_clue",
+      "meaningful_return_to_town": true,
+      "reason_to_continue": "Edrin names the dawn signal and the Governor's men.",
+      "quest_gameplay_score": 8.6,
+      "narrative_hook_score": 8.6
+    }
   }
 }

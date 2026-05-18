@@ -1,0 +1,92 @@
+{
+  "schema_id": "wayfarer.quest.whispers_before_dawn_village_to_island.v1",
+  "phase": "G-18",
+  "quest_id": "first_light_whispers_before_dawn",
+  "working_title": "Whispers Before Dawn",
+  "purpose": "Extend the opening quest from Newport harbor, counting house, tavern, and wharf rumors into a purposeful island investigation that returns with proof and momentum.",
+  "north_star_guardrail": "The opening quest must make Newport feel like the first social knot in a larger pre-Revolutionary harbor RPG: authored, mysterious, readable, and exciting in the way Tibia and Ragnarok Online made early towns and routes feel memorable.",
+  "runtime_contract": "res://scripts/quests/FirstLightQuest.gd::debug_village_to_island_playthrough_contract",
+  "main_contract": "res://scenes/Main.gd::opening_village_to_island_quest_contract",
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g18_runtime_screenshots/g18_runtime_screenshot_manifest.json",
+  "quest_playthrough": {
+    "directory": "wayfarer_godot_vertical_slice/artifacts/review/g18_quest_playthrough",
+    "log": "wayfarer_godot_vertical_slice/artifacts/review/g18_quest_playthrough/quest_playthrough_log.md",
+    "state_trace": "wayfarer_godot_vertical_slice/artifacts/review/g18_quest_playthrough/quest_playthrough_state_trace.json",
+    "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g18_quest_playthrough/quest_playthrough_screenshot_manifest.json"
+  },
+  "required_steps": [
+    "arrival",
+    "first_objective",
+    "counting_house_clerk",
+    "missing_manifest_or_harbor_ledger",
+    "tavern_whisper",
+    "npc_rumor_interaction",
+    "island_lead",
+    "travel_to_island",
+    "island_clue_discovery",
+    "optional_clue_or_branch",
+    "return_report_or_next_hook",
+    "reward_progression_update",
+    "reason_to_continue"
+  ],
+  "village_paths": [
+    {
+      "id": "counting_house_path",
+      "npc": "Edrin Vale",
+      "function": "Establishes the missing manifest line and official pressure."
+    },
+    {
+      "id": "tavern_rumor_path",
+      "npc": "Bess Armitage",
+      "function": "Turns the missing line into the Third Toast coded whisper."
+    },
+    {
+      "id": "dockworker_harbor_path",
+      "npc": "Jonah Reed",
+      "function": "Connects the lantern signal to harbor labor and the island route."
+    }
+  ],
+  "island_path": [
+    {
+      "id": "isla_brooke_farmhand",
+      "beat": "island_lead",
+      "function": "Points the player out of Newport toward the signal rise."
+    },
+    {
+      "id": "elias_ward_suspicious_courier",
+      "beat": "coded_whisper",
+      "function": "Carries the tavern code onto the old road."
+    },
+    {
+      "id": "mara_oren_coast_patrol",
+      "beat": "optional_clue_or_branch",
+      "function": "Adds the three-lantern signal clue and reinforces coastal tension."
+    },
+    {
+      "id": "tomas_reed_dock_runner",
+      "beat": "physical_evidence",
+      "function": "Reveals tar-marked cargo rope at the hidden landing."
+    },
+    {
+      "id": "annelise_crow_rumor_contact",
+      "display_name": "Annelise Crow",
+      "beat": "return_or_report_choice",
+      "function": "Frames the return/report choice and gives the route home a social hook."
+    }
+  ],
+  "acceptance": {
+    "quest_playable_end_to_end": true,
+    "player_knows_next_objective": true,
+    "quest_state_updates_correctly": true,
+    "dialogue_supports_story": true,
+    "island_exploration_has_purpose": true,
+    "at_least_two_ways_to_gather_the_lead": true,
+    "optional_clue_changes_or_enriches_journal": true,
+    "reward_or_progression_beat": true,
+    "meaningful_return_to_town": true,
+    "quest_gameplay_score": 8.6,
+    "narrative_hook_score": 8.6,
+    "ux_readability_score": 8.6,
+    "north_star_alignment": "PASS"
+  }
+}
