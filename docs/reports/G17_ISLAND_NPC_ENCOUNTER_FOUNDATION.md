@@ -4,7 +4,7 @@ Phase ID: G-17
 
 Branch: `codex/g-17-island-npc-encounter-foundation`
 
-Commit: `c6f6574532136101829836ee4eebbda1a6dbede5`
+Commit: `50b4f16a6d32590613126c111334d53ff2e45d4d`
 
 PR number: `pending_open_pr`
 
