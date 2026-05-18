@@ -101,5 +101,12 @@
     "source": "wayfarer_godot_vertical_slice/data/world_layout/island_atelier_asset_family_v1.json",
     "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_atelier_asset_family_contract",
     "status": "PASS"
+  },
+  "g17_npc_encounter_implementation": {
+    "phase": "G-17",
+    "source": "wayfarer_godot_vertical_slice/data/world_layout/island_npc_encounter_foundation_v1.json",
+    "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_npc_encounter_contract",
+    "motion_proof": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_island_npc_motion_trace.json",
+    "status": "PASS"
   }
 }

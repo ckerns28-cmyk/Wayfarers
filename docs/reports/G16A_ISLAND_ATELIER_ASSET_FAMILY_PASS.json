@@ -4,12 +4,12 @@
   "phase_name": "Island Atelier Asset Family Pass",
   "branch": "codex/g-16a-island-atelier-asset-family",
   "commits": [
-    "pending_branch_commit_before_pr"
+    "69d30029972b4c7901ee1a17c5a7a5a018a8edaf"
   ],
   "implementing_prs": [
-    "pending_open_pr"
+    "#485"
   ],
-  "merge_status": "pending",
+  "merge_status": "merged",
   "status": "PASS",
   "human_review_required": false,
   "reason_human_review_not_required": "G-16A is an ordinary autonomous OVI-1 runway phase; failures are production issues to fix autonomously, not a Chris stop.",

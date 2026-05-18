@@ -1,0 +1,76 @@
+{
+  "schema_id": "wayfarer.g17.island_npc_encounter_foundation_report.v1",
+  "phase_id": "G-17",
+  "phase_name": "Island NPC / Encounter / Ambient Life Foundation",
+  "branch": "codex/g-17-island-npc-encounter-foundation",
+  "commits": [
+    "c6f6574532136101829836ee4eebbda1a6dbede5"
+  ],
+  "implementing_prs": [
+    "pending_open_pr"
+  ],
+  "merge_status": "pending",
+  "status": "PASS",
+  "human_review_required": false,
+  "reason_human_review_not_required": "G-17 is an ordinary autonomous OVI-1 runway phase; failures are production issues to fix autonomously, not a Chris stop.",
+  "north_star_guardrail": "Production-playable never means merely functional. Island NPCs must make Newport feel like the origin of a larger pre-Revolutionary harbor RPG world, with social texture and mystery momentum inspired by Tibia and Ragnarok Online.",
+  "source_files": [
+    "wayfarer_godot_vertical_slice/data/world_layout/island_npc_encounter_foundation_v1.json",
+    "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+    "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+    "wayfarer_godot_vertical_slice/scenes/Main.gd",
+    "wayfarer_godot_vertical_slice/scenes/npc/AtelierTownNpc.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g17_runtime_screenshots.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g17_runtime_screenshots.gd.uid",
+    "wayfarer_godot_vertical_slice/tools/capture_g17_runtime_screenshots.ps1",
+    "wayfarer_godot_vertical_slice/tools/validate_island_npc_encounter_foundation.py",
+    "docs/reports/G17_ISLAND_NPC_ENCOUNTER_AGENT_COUNCIL_REPORT.md"
+  ],
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g17_runtime_screenshots/g17_runtime_screenshot_manifest.json",
+  "screenshots": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_runtime_screenshots/g17_01_island_life_wide.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_runtime_screenshots/g17_02_farmhand_service_edge.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_runtime_screenshots/g17_03_dock_runner_cove_watch.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_runtime_screenshots/g17_04_suspicious_courier_old_road.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_runtime_screenshots/g17_05_signal_patrol_overlook.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_runtime_screenshots/g17_06_return_rumor_contact_debug_disabled.png"
+  ],
+  "motion_proof": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_island_npc_motion_trace.json",
+  "motion_frame_sequence": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_00.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_01.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_02.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_03.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_04.png"
+  ],
+  "npc_encounters": [
+    "isla_brooke_farmhand",
+    "tomas_reed_dock_runner",
+    "elias_ward_suspicious_courier",
+    "mara_oren_coast_patrol",
+    "annelise_crow_rumor_contact"
+  ],
+  "acceptance": {
+    "island_does_not_feel_empty": true,
+    "npcs_do_not_hover_or_glide": true,
+    "npcs_reinforce_opening_mystery": true,
+    "movement_proof_exists_where_applicable": true,
+    "all_visible_npcs_atelier_standard": true,
+    "quest_or_world_relevance_for_each_npc": true,
+    "review_capture_no_hud": true,
+    "debug_overlays_disabled": true
+  },
+  "design_score": 8.6,
+  "world_layout_score": 8.6,
+  "art_direction_score": 8.6,
+  "npc_ambient_score": 8.6,
+  "npc_motion_grounding_score": 8.6,
+  "ux_readability_score": 8.6,
+  "technical_stability_score": 8.7,
+  "validation_results": "PASS: G-17 runtime screenshots and timestamped motion proof regenerated from Godot 4.6.2 with no HUD, no debug overlays, five purposeful island NPCs, visible ground shadows, facing/bark state changes, no position drift, no hover/glide/slide, and approved Newport atelier NPC assets. PASS: island NPC encounter foundation, character motion foundation, NPC population/routes, runtime atelier consistency, OVI roadmap, OVI ledger, Python compile, JSON checks, git diff check, validate_vertical_slice.gd, and Agent Council.",
+  "provenance_atelier_result": "PASS",
+  "north_star_result": "PASS: G-17 adds island social texture and quiet pre-Revolutionary tension that makes Newport feel like the beginning of a larger RPG world, not just a working map; OVI-1 remains incomplete until G-22.",
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "agent_council_report_path": "docs/reports/G17_ISLAND_NPC_ENCOUNTER_AGENT_COUNCIL_REPORT.md",
+  "next_phase": "G-18 Opening Quest Extension: From Whispers to the Island"
+}
