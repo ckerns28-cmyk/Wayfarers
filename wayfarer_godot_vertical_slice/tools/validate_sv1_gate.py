@@ -10,7 +10,11 @@ from __future__ import annotations
 
 import sys
 
-from starter_village_validator_common import LEDGER_JSON, REQUIRED_PHASES, load_json, phase_map, print_result
+from starter_village_validator_common import REPO_ROOT, LEDGER_JSON, REQUIRED_PHASES, load_json, phase_map, print_result, require_text
+
+
+G14_PACKAGE_MD = REPO_ROOT / "docs" / "reports" / "G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md"
+G14_PACKAGE_JSON = REPO_ROOT / "docs" / "reports" / "G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.json"
 
 
 def main() -> int:
@@ -30,6 +34,31 @@ def main() -> int:
             failures.append("SV-1 internal gate not complete: g14_internal_review_package is missing")
         elif package.get("human_review_required") is not False:
             failures.append("SV-1 internal package must record human_review_required=false")
+        else:
+            for key in ["package_markdown", "package_json", "screenshot_manifest", "browser_review_zip", "next_phase"]:
+                if not str(package.get(key, "")).strip():
+                    failures.append(f"SV-1 internal package missing {key}")
+            if package.get("next_phase") != "G-15 Opening Island Masterplan + World Topology":
+                failures.append("SV-1 internal package must continue to G-15")
+    require_text(
+        G14_PACKAGE_MD,
+        [
+            "G-14 Internal Starter Village Proof Gate",
+            "Human review required: no",
+            "Reason: G-14 is now an internal checkpoint inside the larger OVI-1 autonomous",
+            "Next phase: G-15 Opening Island Masterplan + World Topology",
+            "COUNCIL_PASS_READY_FOR_PR",
+        ],
+        failures,
+    )
+    package_json = load_json(G14_PACKAGE_JSON, failures)
+    if isinstance(package_json, dict):
+        if package_json.get("status") != "PASS":
+            failures.append("G-14 package JSON status must be PASS")
+        if package_json.get("human_review_required") is not False:
+            failures.append("G-14 package JSON human_review_required must be false")
+        if package_json.get("agent_council_verdict") != "COUNCIL_PASS_READY_FOR_PR":
+            failures.append("G-14 package JSON council verdict must be COUNCIL_PASS_READY_FOR_PR")
     return print_result("SV-1 internal gate", failures)
 
 

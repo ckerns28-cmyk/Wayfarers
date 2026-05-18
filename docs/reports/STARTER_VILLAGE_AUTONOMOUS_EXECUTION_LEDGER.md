@@ -50,11 +50,18 @@ Deprecated final states are forbidden.
 | G-11A | Audio/Atmosphere Placeholder-Free Foundation | `codex/g-11a-audio-atmosphere-hooks` | #476 merged | PASS | `docs/reports/G11A_AUDIO_ATMOSPHERE_PLACEHOLDER_FREE_FOUNDATION.md`, G-11A council report, placeholder-free audio hook registry, hook-only runtime contract, audio atmosphere validator, vertical-slice validator, screenshot capture baseline, and atelier runtime validator. |
 | G-12 | First-Session Fun, Pacing, and Readability Pass | `codex/g-12-first-session-playability` | #477 open | PASS | `docs/reports/G12_FIRST_SESSION_FUN_PACING_READABILITY_PASS.md`, `docs/reports/G12_FIRST_SESSION_AGENT_COUNCIL_REPORT.md`, G-12 runtime screenshot manifest, first-session playability validator, prompt/dialogue/bark overlap suppression, Game Studio playtest method, vertical-slice validator, opening quest validator, interaction UX validator, living town rhythm validator, and atelier runtime validator. |
 | G-13 | Browser Build, Performance, and Regression Hardening | `codex/g-13-browser-build-hardening` | pending open PR | PASS | `docs/reports/G13_BROWSER_BUILD_PERFORMANCE_REGRESSION_HARDENING.md`, `docs/reports/G13_BROWSER_BUILD_AGENT_COUNCIL_REPORT.md`, fresh G-12 regression screenshot manifest, G-13 stable/versioned browser-review ZIPs, package root checks, vertical-slice validator, browser build hardening validator, first-session/quest/UX/rhythm/audio/layout/atelier validators, and Agent Council run-validators mode. |
-| G-14 | SV-1 Internal Starter Village Proof Gate | pending | pending | PENDING | Must prove village cohesion, NPC motion, opening village quest clarity, tavern whisper hook, UX/readability, browser identity, and atelier/provenance; then merge and continue to G-15. |
+| G-14 | SV-1 Internal Starter Village Proof Gate | `codex/g-14-internal-starter-village-proof` | pending open PR | PASS | `docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md`, `docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.json`, G-14 Agent Council report, G-12/G-13 proof reuse, browser-review ZIPs, SV-1 internal gate validator, OVI validators, starter validators, and phase-specific village validators. Human review required: no. |
 
 ## Current Phase
 
-Current phase after G-13: `G-14 SV-1 Internal Starter Village Proof Gate`.
+Current phase after G-14: `G-15 Opening Island Masterplan + World Topology`.
+
+G-14 proves the starter village is internally ready to support the OVI-1 island
+runway. It records `Human review required: no`, uses the G-12 recurring
+screenshot proof, G-8/G-8A/G-11 movement proof, G-10/G-10A/G-10B/G-12 quest
+proof, and G-13 browser-review package evidence, and receives
+`COUNCIL_PASS_READY_FOR_PR` from the Agent Council. This is not OVI-1
+completion; island production begins at G-15.
 
 G-13 hardened the browser-review route after G-12. `BuildInfo.gd` now reports
 `G-13`, the HUD metadata and vertical-slice validator enforce the active

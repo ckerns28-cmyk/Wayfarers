@@ -1,0 +1,46 @@
+{
+  "schema_id": "wayfarer.g14.internal_starter_village_proof_gate.v1",
+  "phase_id": "G-14",
+  "phase_name": "Internal Starter Village Proof Gate",
+  "date": "2026-05-18",
+  "branch": "codex/g-14-internal-starter-village-proof",
+  "starting_main_commit": "2d9364cc9261914012ce9eea68e47ad7442ef0c7",
+  "human_review_required": false,
+  "reason": "G-14 is now an internal checkpoint inside the larger OVI-1 autonomous runway.",
+  "next_phase": "G-15 Opening Island Masterplan + World Topology",
+  "status": "PASS",
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "scores": {
+    "town_cohesion": 8.6,
+    "npc_motion_grounding": 8.6,
+    "opening_village_quest_clarity": 8.7,
+    "tavern_whisper_hook": 8.7,
+    "ux_readability": 8.7,
+    "technical_stability": 8.8
+  },
+  "atelier_provenance_result": "PASS",
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json",
+  "motion_proof_paths": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_runtime_screenshot_manifest.json",
+    "wayfarer_godot_vertical_slice/artifacts/review/g8a_runtime_screenshots/g8a_runtime_screenshot_manifest.json",
+    "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_runtime_screenshot_manifest.json"
+  ],
+  "quest_proof_paths": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g10_runtime_screenshots/g10_runtime_screenshot_manifest.json",
+    "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_runtime_screenshot_manifest.json",
+    "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_runtime_screenshot_manifest.json",
+    "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json"
+  ],
+  "browser_review_zip_paths": [
+    "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip",
+    "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-g-13-browser-build-performance-and-regression-hardening.zip"
+  ],
+  "reports": [
+    "docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md",
+    "docs/reports/G14_INTERNAL_STARTER_VILLAGE_AGENT_COUNCIL_REPORT.md"
+  ],
+  "known_caveats": [
+    "Opening island production playability is not complete and is owned by G-15 through G-22.",
+    "G-14 does not stop for Chris unless a true hard blocker exists."
+  ]
+}
