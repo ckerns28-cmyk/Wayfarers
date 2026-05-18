@@ -1027,16 +1027,62 @@
     {
       "phase_id": "G-11A",
       "phase_name": "Audio/Atmosphere Placeholder-Free Foundation",
-      "branch": "pending",
+      "branch": "codex/g-11a-audio-atmosphere-hooks",
       "implementing_prs": [
-        "pending"
+        "pending_current_phase_pr"
       ],
       "commits": [
-        "pending"
+        "pending_current_phase_commit"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "Audio hooks not audited for SV-1.",
-      "next_required_action": "Add safe atmosphere hooks or document integration points."
+      "current_status": "PASS",
+      "reason_for_status": "G-11A adds a placeholder-free audio/atmosphere foundation: required ambience, footstep, quest, and UI hooks are data-driven, runtime-auditable, and playback-disabled until license-safe assets are documented.",
+      "next_required_action": "Start G-12 First-Session Fun, Pacing, and Readability Pass.",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/data/audio/starter_village_atmosphere_hooks.json",
+        "wayfarer_godot_vertical_slice/scripts/audio/StarterVillageAudioHooks.gd",
+        "wayfarer_godot_vertical_slice/scripts/audio/StarterVillageAudioHooks.gd.uid",
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/tools/validate_audio_atmosphere_hooks.py",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "tools/wayfarer_agent_council.py",
+        "docs/reports/G11A_AUDIO_ATMOSPHERE_PLACEHOLDER_FREE_FOUNDATION.md",
+        "docs/reports/G11A_AUDIO_ATMOSPHERE_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --log-file wayfarer_godot_vertical_slice/artifacts/review/validator_logs/g11_godot_import.log --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --log-file wayfarer_godot_vertical_slice/artifacts/review/validator_logs/g11_vertical_slice.log --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g11_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_audio_atmosphere_hooks.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_living_town_rhythm.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_npc_population_and_routes.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator failureCount=0; PASS: G-11 runtime screenshot capture and PNG verification; PASS: audio atmosphere hooks validator; PASS: living town rhythm validator; PASS: NPC population and routes validator; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G11A_AUDIO_ATMOSPHERE_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "art_direction_score": 8.6,
+      "world_layout_score": 8.6,
+      "npc_animation_score": 8.6,
+      "narrative_score": 8.6,
+      "gameplay_hook_score": 8.7,
+      "ux_readability_score": 8.7,
+      "technical_stability_score": 9.0,
+      "performance_build_score": 8.8,
+      "town_cohesion_score": 8.6,
+      "provenance_atelier_result": "PASS: G-11A adds no audio assets and no visible raster assets. Runtime hooks are contract-only and require future license/provenance before playback.",
+      "north_star_result": "PASS for G-11A: Newport gains safe atmosphere integration points for harbor ambience, Tavern/Inn ambience, footsteps, quest updates, and UI feedback without introducing placeholder sound or web-export risk."
     },
     {
       "phase_id": "G-12",
