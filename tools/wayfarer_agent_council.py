@@ -3,7 +3,7 @@
 
 This script creates a repo-local production review report. For ordinary pre-G-5
 work, the council is the acceptance authority after screenshots are inspected
-work, and for ordinary roadmap-bound work before SV-1, the council is the
+work, and for ordinary roadmap-bound work before OVI-1, the council is the
 acceptance authority after screenshots are inspected and validators pass. This
 tool still never merges, never impersonates Chris, and never treats a technical
 pass by itself as design approval. Codex may separately merge an ordinary
@@ -223,6 +223,32 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
     if normalized.startswith("SV-0"):
         return "SV-0", "sv0"
+    if normalized.startswith("G-22"):
+        return "G-22 OVI-1", "g22_ovi1"
+    if normalized.startswith("G-21"):
+        return "G-21", "g21"
+    if normalized.startswith("G-20"):
+        return "G-20", "g20"
+    if normalized.startswith("G-19"):
+        return "G-19", "g19"
+    if normalized.startswith("G-18A"):
+        return "G-18A", "g18a"
+    if normalized.startswith("G-18"):
+        return "G-18", "g18"
+    if normalized.startswith("G-17"):
+        return "G-17", "g17"
+    if normalized.startswith("G-16A"):
+        return "G-16A", "g16a"
+    if normalized.startswith("G-16"):
+        return "G-16", "g16"
+    if normalized.startswith("G-15B"):
+        return "G-15B", "g15b"
+    if normalized.startswith("G-15A"):
+        return "G-15A", "g15a"
+    if normalized.startswith("G-15"):
+        return "G-15", "g15"
+    if normalized.startswith("G-14"):
+        return "G-14", "g14"
     if normalized.startswith("G-11A"):
         return "G-11A", "g11"
     if normalized.startswith("G-11"):
@@ -346,6 +372,54 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     browser_build_hardening_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_browser_build_hardening.py"
+    )
+    ovi_roadmap_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_opening_village_island_roadmap.py"
+    )
+    ovi_ledger_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_opening_village_island_execution_ledger.py"
+    )
+    island_topology_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_island_world_topology.py"
+    )
+    village_island_transition_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_village_to_island_transition.py"
+    )
+    island_cohesion_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_island_world_cohesion.py"
+    )
+    island_poi_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_island_poi_landmarks.py"
+    )
+    island_atelier_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_island_atelier_asset_family.py"
+    )
+    island_npc_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_island_npc_encounter_foundation.py"
+    )
+    quest_village_island_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_opening_quest_village_to_island.py"
+    )
+    multipath_rumor_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_multipath_rumor_choice_foundation.py"
+    )
+    first_session_loop_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_first_session_gameplay_loop.py"
+    )
+    ovi_gate_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_ovi1_gate.py"
     )
     interaction_ux_text = (
         f"& {powershell_quote(python_bin)} "
@@ -492,6 +566,51 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         ),
     ]
     normalized_phase = phase.upper().strip()
+    if normalized_phase.startswith("OVI-1"):
+        return [
+            ValidatorCommand(
+                name="Opening Village + Island roadmap validation",
+                command_text=ovi_roadmap_text,
+                args=[python_bin, str(game_root / "tools" / "validate_opening_village_island_roadmap.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_opening_village_island_roadmap.py"],
+            ),
+            ValidatorCommand(
+                name="Opening Village + Island execution ledger validation",
+                command_text=ovi_ledger_text,
+                args=[python_bin, str(game_root / "tools" / "validate_opening_village_island_execution_ledger.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_opening_village_island_execution_ledger.py"],
+            ),
+            ValidatorCommand(
+                name="Starter Village roadmap validation",
+                command_text=starter_village_roadmap_text,
+                args=[python_bin, str(game_root / "tools" / "validate_starter_village_roadmap.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_starter_village_roadmap.py"],
+            ),
+            ValidatorCommand(
+                name="Starter Village execution ledger validation",
+                command_text=starter_village_ledger_text,
+                args=[python_bin, str(game_root / "tools" / "validate_starter_village_execution_ledger.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_starter_village_execution_ledger.py"],
+            ),
+            ValidatorCommand(
+                name="git diff --check",
+                command_text="git diff --check",
+                args=["git", "diff", "--check"],
+                cwd=root,
+                required_paths=[],
+            ),
+            ValidatorCommand(
+                name="git diff --cached --check",
+                command_text="git diff --cached --check",
+                args=["git", "diff", "--cached", "--check"],
+                cwd=root,
+                required_paths=[],
+            ),
+        ]
     if normalized_phase.startswith("SV-0"):
         return [
             ValidatorCommand(
@@ -801,6 +920,146 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 ),
             )
         commands[diff_index:diff_index] = starter_commands
+    if normalized_phase.startswith(("G-14", "G-15", "G-16", "G-17", "G-18", "G-19", "G-20", "G-21", "G-22")):
+        diff_index = max(0, len(commands) - 2)
+        ovi_commands = [
+            ValidatorCommand(
+                name="Opening Village + Island roadmap validation",
+                command_text=ovi_roadmap_text,
+                args=[python_bin, str(game_root / "tools" / "validate_opening_village_island_roadmap.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_opening_village_island_roadmap.py"],
+            ),
+            ValidatorCommand(
+                name="Opening Village + Island execution ledger validation",
+                command_text=ovi_ledger_text,
+                args=[python_bin, str(game_root / "tools" / "validate_opening_village_island_execution_ledger.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_opening_village_island_execution_ledger.py"],
+            ),
+        ]
+        if normalized_phase.startswith("G-15A"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Village-to-island transition validation",
+                    command_text=village_island_transition_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_village_to_island_transition.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_village_to_island_transition.py"],
+                ),
+            )
+        elif normalized_phase.startswith("G-15B"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Island world cohesion validation",
+                    command_text=island_cohesion_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_island_world_cohesion.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_island_world_cohesion.py"],
+                ),
+            )
+        elif normalized_phase.startswith("G-15"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Island world topology validation",
+                    command_text=island_topology_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_island_world_topology.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_island_world_topology.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-16A"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Island atelier asset family validation",
+                    command_text=island_atelier_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_island_atelier_asset_family.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_island_atelier_asset_family.py"],
+                ),
+            )
+        elif normalized_phase.startswith("G-16"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Island POI landmarks validation",
+                    command_text=island_poi_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_island_poi_landmarks.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_island_poi_landmarks.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-17"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Island NPC encounter foundation validation",
+                    command_text=island_npc_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_island_npc_encounter_foundation.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_island_npc_encounter_foundation.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-18A"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Multi-path rumor choice foundation validation",
+                    command_text=multipath_rumor_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_multipath_rumor_choice_foundation.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_multipath_rumor_choice_foundation.py"],
+                ),
+            )
+        elif normalized_phase.startswith("G-18"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Opening quest village-to-island validation",
+                    command_text=quest_village_island_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_opening_quest_village_to_island.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_opening_quest_village_to_island.py"],
+                ),
+            )
+        if normalized_phase.startswith(("G-19", "G-20")):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="First-session gameplay loop validation",
+                    command_text=first_session_loop_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_first_session_gameplay_loop.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_first_session_gameplay_loop.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-21"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="G-13 browser build hardening validation",
+                    command_text=browser_build_hardening_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_browser_build_hardening.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-22"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="OVI-1 gate validation",
+                    command_text=ovi_gate_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_ovi1_gate.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_ovi1_gate.py"],
+                ),
+            )
+        commands[diff_index:diff_index] = ovi_commands
     return commands
 
 
@@ -858,6 +1117,18 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
             ("SV-0 ground material stack", game_root / "data" / "ground_materials" / "starter_village_ground_material_stack_v1.json"),
             ("Starter Village roadmap", root / "docs" / "roadmaps" / "STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md"),
             ("Starter Village execution ledger", root / "docs" / "reports" / "STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md"),
+        ]
+        return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
+    if phase.upper().strip().startswith("OVI-1"):
+        required = [
+            ("OVI-1 roadmap", root / "docs" / "roadmaps" / "OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md"),
+            ("OVI-1 roadmap JSON", root / "docs" / "roadmaps" / "OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json"),
+            ("OVI-1 execution ledger", root / "docs" / "reports" / "OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md"),
+            ("OVI-1 execution ledger JSON", root / "docs" / "reports" / "OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json"),
+            ("OVI-1 roadmap validator", game_root / "tools" / "validate_opening_village_island_roadmap.py"),
+            ("OVI-1 ledger validator", game_root / "tools" / "validate_opening_village_island_execution_ledger.py"),
+            ("Starter Village roadmap validator", game_root / "tools" / "validate_starter_village_roadmap.py"),
+            ("Starter Village ledger validator", game_root / "tools" / "validate_starter_village_execution_ledger.py"),
         ]
         return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
     required = [
@@ -1027,6 +1298,52 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ),
             ]
         )
+    if phase.upper().strip().startswith(("G-14", "G-15", "G-16", "G-17", "G-18", "G-19", "G-20", "G-21", "G-22")):
+        required.extend(
+            [
+                ("OVI-1 roadmap", root / "docs" / "roadmaps" / "OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md"),
+                ("OVI-1 roadmap JSON", root / "docs" / "roadmaps" / "OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json"),
+                ("OVI-1 execution ledger", root / "docs" / "reports" / "OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md"),
+                ("OVI-1 execution ledger JSON", root / "docs" / "reports" / "OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json"),
+                ("OVI-1 roadmap validator", game_root / "tools" / "validate_opening_village_island_roadmap.py"),
+                ("OVI-1 ledger validator", game_root / "tools" / "validate_opening_village_island_execution_ledger.py"),
+            ]
+        )
+        if phase.upper().strip().startswith("G-15"):
+            required.extend(
+                [
+                    ("G-15 island world topology validator", game_root / "tools" / "validate_island_world_topology.py"),
+                    ("G-15A village-to-island transition validator", game_root / "tools" / "validate_village_to_island_transition.py"),
+                    ("G-15B island world cohesion validator", game_root / "tools" / "validate_island_world_cohesion.py"),
+                ]
+            )
+        if phase.upper().strip().startswith("G-16"):
+            required.extend(
+                [
+                    ("G-16 island POI validator", game_root / "tools" / "validate_island_poi_landmarks.py"),
+                    ("G-16A island atelier asset family validator", game_root / "tools" / "validate_island_atelier_asset_family.py"),
+                ]
+            )
+        if phase.upper().strip().startswith("G-17"):
+            required.append(("G-17 island NPC encounter validator", game_root / "tools" / "validate_island_npc_encounter_foundation.py"))
+        if phase.upper().strip().startswith("G-18"):
+            required.extend(
+                [
+                    ("G-18 village-to-island quest validator", game_root / "tools" / "validate_opening_quest_village_to_island.py"),
+                    ("G-18A multi-path rumor choice validator", game_root / "tools" / "validate_multipath_rumor_choice_foundation.py"),
+                ]
+            )
+        if phase.upper().strip().startswith(("G-19", "G-20")):
+            required.append(("G-19/G-20 first-session gameplay loop validator", game_root / "tools" / "validate_first_session_gameplay_loop.py"))
+        if phase.upper().strip().startswith("G-22"):
+            required.extend(
+                [
+                    ("OVI-1 gate validator", game_root / "tools" / "validate_ovi1_gate.py"),
+                    ("OVI-1 review screenshot directory", game_root / "artifacts" / "review" / "g22_ovi1_review_screenshots"),
+                    ("OVI-1 motion proof directory", game_root / "artifacts" / "review" / "g22_ovi1_motion_proof"),
+                    ("OVI-1 quest playthrough directory", game_root / "artifacts" / "review" / "g22_ovi1_quest_playthrough"),
+                ]
+            )
     if phase.upper().strip().startswith("G-8"):
         required.extend(
             [
@@ -1257,7 +1574,7 @@ def yes_no(value: bool) -> str:
 
 def phase_requires_screenshots(phase: str) -> bool:
     normalized = phase.upper().strip()
-    if normalized.startswith("SV-0"):
+    if normalized.startswith(("SV-0", "OVI-1")):
         return False
     return True
 
@@ -1406,11 +1723,12 @@ def build_report(
     release_status = "PASS" if final_verdict == AUTHORITY_PASS else ("BLOCKED" if final_verdict == AUTHORITY_BLOCKED else "FAIL")
     agent_rows = [
         ["Scrum Master", "PASS", "Branch/PR state gathered; autonomous merge rule must still be checked outside this report."],
-        ["Game Designer", designer_status, "Newport layout must prove street grammar, loops, first-session motivation, and NPC/player usability."],
+        ["World-class Game Designer", designer_status, "Newport layout must prove street grammar, loops, first-session motivation, and NPC/player usability."],
         ["World/Layout Designer", world_status, "Districts, lots, harbor spine, uphill roads, back street, and movement routes must read as one town."],
         ["Art Director", art_status, "Ground/street cohesion, landmark hierarchy, sprite fit, and screenshot beauty must clear council review."],
         ["Animation/NPC Behavior Director", ux_status, "NPCs must be grounded, idle/walk intentionally, and never glide as static cutouts in normal play."],
         ["Narrative Designer", world_status, "Tavern whispers, harbor rumors, counting-house pressure, and opening quest stakes must be playable."],
+        ["Quest Designer", world_status, "Quest state, branch paths, clue discovery, reward beats, and return hooks must be playable and readable."],
         ["UX Designer", ux_status, "Navigation clarity, interaction prompts, objectives, and player orientation must clear council review."],
         ["Game Programmer", programmer_status, "Required automation and validator files checked; systems must remain maintainable."],
         ["QA Analyst", qa_status, "Validators must pass, but technical pass is not design approval."],
@@ -1483,6 +1801,8 @@ def build_report(
         scrum_scope = "Scope check: this council pass produced a coherent G-4.18E asset family and controlled runtime placements; it must not scatter random props or hide layout problems."
     elif phase.upper().strip().startswith("SV-0"):
         scrum_scope = "Scope check: this SV-0 Tooling Stack gate locks free, safe production tooling, source-of-truth layout data, visual-regression warnings, runtime movement proof, asset cleanup, and ground cohesion before more Newport placement work."
+    elif phase.upper().strip().startswith("OVI-1"):
+        scrum_scope = "Scope check: this OVI-1 control-plane pass updates roadmap authority, ledgers, checklists, and validators only; it must not claim village or island runtime production completion."
     elif phase.upper().strip().startswith("G-4.19"):
         scrum_scope = "Scope check: this council pass replaces the drawn player placeholder with a directional runtime sprite foundation while preserving Newport layout, collision, camera, spawn, and interaction behavior."
     elif phase.upper().strip().startswith("G-4.20"):
@@ -1493,6 +1813,10 @@ def build_report(
         scrum_scope = "Scope check: this council pass reopens the false-positive G-5 readiness gate, verifies the pre-G-5 roadmap ledger, and repairs visible player/NPC/marker/world sprite consistency before G-5 can be recommended."
     elif phase.upper().strip().startswith("G-4.22"):
         scrum_scope = "Scope check: this council pass is the formal G-4 visual foundation gate; it records acceptance authority and may recommend G-5 only if screenshots, provenance, validators, and council scores clear the gate."
+    elif phase.upper().strip().startswith("G-14"):
+        scrum_scope = "Scope check: this council pass proves Starter Village readiness as an internal OVI-1 checkpoint; it must record Human review required: no and continue to G-15 if it passes."
+    elif phase.upper().strip().startswith(("G-15", "G-16", "G-17", "G-18", "G-19", "G-20", "G-21", "G-22")):
+        scrum_scope = "Scope check: this council pass belongs to the OVI-1 Opening Village + Island autonomous runway; it must prove the active island/village/quest/build slice without skipping required roadmap rows."
     elif phase.upper().strip().startswith("G-12"):
         scrum_scope = "Scope check: this council pass playtests the first-session loop, screenshot framing, objective readability, bark/prompt/dialogue overlap, and route clarity; it must not claim SV-1 final cohesion or browser build hardening."
     elif phase.upper().strip().startswith("G-10A"):
@@ -1513,6 +1837,14 @@ def build_report(
     game_root = root / "wayfarer_godot_vertical_slice"
     ledger_validator_status = next(
         (item["status"] for item in validator_results if item["name"] == "Pre-G-5 roadmap execution ledger validation"),
+        "NOT_RUN_FOR_PHASE",
+    )
+    ovi_roadmap_validator_status = next(
+        (item["status"] for item in validator_results if item["name"] == "Opening Village + Island roadmap validation"),
+        "NOT_RUN_FOR_PHASE",
+    )
+    ovi_ledger_validator_status = next(
+        (item["status"] for item in validator_results if item["name"] == "Opening Village + Island execution ledger validation"),
         "NOT_RUN_FOR_PHASE",
     )
     runtime_asset_validator_status = next(
@@ -1537,6 +1869,8 @@ def build_report(
         ["Ledger markdown", "FOUND" if (root / "docs" / "reports" / "PRE_G5_ROADMAP_EXECUTION_LEDGER.md").exists() else "MISSING", "docs/reports/PRE_G5_ROADMAP_EXECUTION_LEDGER.md"],
         ["Ledger JSON", "FOUND" if (root / "docs" / "reports" / "PRE_G5_ROADMAP_EXECUTION_LEDGER.json").exists() else "MISSING", "docs/reports/PRE_G5_ROADMAP_EXECUTION_LEDGER.json"],
         ["Ledger validator", ledger_validator_status, "wayfarer_godot_vertical_slice/tools/validate_pre_g5_roadmap_ledger.py"],
+        ["OVI-1 roadmap validator", ovi_roadmap_validator_status, "wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py"],
+        ["OVI-1 ledger validator", ovi_ledger_validator_status, "wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py"],
         ["Runtime asset consistency validator", runtime_asset_validator_status, "wayfarer_godot_vertical_slice/tools/validate_g422r_runtime_asset_consistency.py"],
     ]
     runtime_asset_audit_rows = [
@@ -1602,7 +1936,7 @@ def build_report(
     north_star_rows = [
         ["Harbor RPG believability", "Newport remains a coherent harbor city rather than an asset board.", "PASS" if advances_north_star else "CHECK"],
         ["Player-facing wonder/readability", "Player/NPC art no longer breaks the atelier environment language.", "PASS" if art_direction_score >= 8.5 else "FAIL"],
-        ["Autonomous QA integrity", "Ledger, validators, screenshots, and council sections prevent silent phase compression.", "PASS" if ledger_validator_status in {"PASS", "NOT_RUN_FOR_PHASE"} else "FAIL"],
+        ["Autonomous QA integrity", "Ledger, validators, screenshots, and council sections prevent silent phase compression.", "PASS" if ledger_validator_status in {"PASS", "NOT_RUN_FOR_PHASE"} and ovi_ledger_validator_status in {"PASS", "NOT_RUN_FOR_PHASE"} else "FAIL"],
     ]
     visual_bar_rows = [
         ["Design", score_text(design_score), score_status(design_score)],
@@ -1643,7 +1977,7 @@ def build_report(
         "",
         "TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.",
         "",
-        "For ordinary roadmap-bound work before SV-1, this report is the council authority verdict after validators and screenshot review. This tool never merges, never impersonates Chris, and never converts technical validation alone into creative approval.",
+        "For ordinary roadmap-bound work before OVI-1, this report is the council authority verdict after validators and screenshot review. This tool never merges, never impersonates Chris, and never converts technical validation alone into creative approval.",
         "",
         "## Summary",
         "",
@@ -1719,12 +2053,23 @@ def build_report(
             md_table(
                 ["Question", "Council Answer"],
                 [
-                    ["Does this meet the 8.5+/10 pre-G-5 visual/world bar?", yes_no(meets_bar)],
+                    ["Does this meet the active 8.5+/10 visual/world bar?", yes_no(meets_bar)],
                     ["Does this advance Wayfarer toward the North Star?", yes_no(advances_north_star)],
-                    ["Is human visual review truly required, or can the council accept this?", "Human review required only for true blocker." if human_review_required else "Council can accept this ordinary pre-G-5 pass."],
+                    ["Is human visual review truly required, or can the council accept this?", "Human review required only for true blocker." if human_review_required else "Council can accept this ordinary pre-OVI-1 pass."],
                     ["If human review is required, what exact blocker justifies escalation?", blocker_text if human_review_required else "None."],
                 ],
             ),
+            "",
+            "## OVI-1 Hard Failure Rules",
+            "",
+            "- Fail with `COUNCIL_FAIL_NEEDS_CODE_FIX` if G-14 tries to stop for Chris before OVI-1.",
+            "- Fail if the island roadmap or execution ledger rows are missing or unproven.",
+            "- Fail if the village is good but the island is not playable, or if the island is explorable but not cohesive.",
+            "- Fail if the village-to-island quest chain is not playable.",
+            "- Fail if NPCs hover, glide, or lack required movement proof.",
+            "- Fail if normal-play assets are non-atelier, untracked, or placeholder-like.",
+            "- Fail if the first-session loop is boring, confusing, incomplete, or unrewarded.",
+            "- Fail if browser/review package identity is stale.",
             "",
             "## Roadmap Execution Ledger Result",
             "",
@@ -2012,7 +2357,7 @@ def build_report(
             "- Roadmap alignment: this supports future Newport reviews by splitting production disciplines before merge decisions.",
             "- Merge discipline: no merge action is allowed from this tool.",
             "",
-            "## Game Designer Review",
+            "## World-class Game Designer Review",
             "",
             f"- Status: {designer_status}",
             "- Required pass condition: Newport must read as a navigable settlement, not an asset board.",
@@ -2042,6 +2387,12 @@ def build_report(
             f"- Status: {world_status}",
             "- Required pass condition: opening play must expose tavern whispers, harbor rumors, counting-house pressure, and a reason to continue.",
             "- Review focus: First Light / Whispers Before Dawn quest beats, NPC motives, optional clues, rewards, and pre-Revolution tension as gameplay.",
+            "",
+            "## Quest Designer Review",
+            "",
+            f"- Status: {world_status}",
+            "- Required pass condition: quest objectives, branches, clue states, rewards, and return/report hooks must be playable without manual guidance.",
+            "- Review focus: village-to-island quest chain, optional clue enrichment, journal/objective text, and no broken progression branches.",
             "",
             "## UX Designer Review",
             "",

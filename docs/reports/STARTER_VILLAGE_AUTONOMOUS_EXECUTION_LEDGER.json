@@ -1,8 +1,17 @@
 {
   "schema_id": "wayfarer.sv1.autonomous_execution_ledger.v1",
   "milestone_id": "SV-1",
-  "milestone_name": "Starter Village Playable Obsession Gate",
+  "milestone_name": "Internal Starter Village Proof Gate",
   "generated_at": "2026-05-18",
+  "source_authorization": "Chris May 2026 autonomous Starter Village directive, superseded by Chris May 2026 OVI-1 addendum for human-review stopping point",
+  "next_human_review_milestone": "OVI-1 Opening Village + Island Production Playable Gate",
+  "g14_policy": {
+    "phase_id": "G-14",
+    "role": "Internal Starter Village Proof Gate",
+    "human_review_required": false,
+    "reason": "G-14 is now an internal checkpoint inside the larger OVI-1 autonomous runway.",
+    "next_phase": "G-15 Opening Island Masterplan + World Topology"
+  },
   "starting_main_after_g6_merge": "a6ec338f795f7f61c9974af5a3338a37e165aa11",
   "pr_461_merge_result": {
     "state": "MERGED",
@@ -11,7 +20,7 @@
     "local_main_after_sync": "a6ec338f795f7f61c9974af5a3338a37e165aa11"
   },
   "autonomous_merge_governance": {
-    "ordinary_roadmap_prs_before_sv1_may_merge": true,
+    "ordinary_roadmap_prs_before_ovi1_may_merge": true,
     "per_pr_chris_approval_removed_as_recurring_blocker": true,
     "hard_stop_conditions_still_require_escalation": true
   },
@@ -1173,7 +1182,7 @@
       ],
       "current_status": "PASS",
       "reason_for_status": "G-13 hardens the browser-review route: BuildInfo, HUD metadata, vertical-slice identity checks, and package output now prove the active G-13 phase; package_itch_web.sh produced stable and versioned G-13 ZIPs with index.html at root; the G-12 recurring screenshot regression route captured all 15 proof frames; Godot import, vertical slice, first-session, quest, interaction, rhythm, audio hook, visual ordering, layout source, atelier runtime, roadmap, ledger, and browser build hardening validators passed.",
-      "next_required_action": "Open and merge the G-13 PR when green, then start G-14 SV-1 Starter Village Playable Obsession Gate and stop for Chris at the formal milestone review.",
+      "next_required_action": "Open and merge the G-13 PR when green, then start G-14 SV-1 Internal Starter Village Proof Gate. If G-14 passes, merge and continue to G-15 Opening Island Masterplan + World Topology without stopping for Chris.",
       "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
       "files_changed": [
         "wayfarer_godot_vertical_slice/scripts/BuildInfo.gd",
@@ -1243,11 +1252,11 @@
       "performance_build_score": 8.8,
       "town_cohesion_score": 8.6,
       "provenance_atelier_result": "PASS: G-13 adds no visible raster assets. The browser review package preserves the G-4.22R atelier runtime asset gate and uses existing manifest-backed player, NPC, building, world, prompt, and journal assets.",
-      "north_star_result": "PASS for G-13: the review build now identifies itself as the current Starter Village hardening phase, exports cleanly, packages with a phase-specific ZIP slug, and retains the G-12 first-session proof route. It is not the formal SV-1 milestone; G-14 must produce the final review package and stop for Chris."
+      "north_star_result": "PASS for G-13: the review build now identifies itself as the current Starter Village hardening phase, exports cleanly, packages with a phase-specific ZIP slug, and retains the G-12 first-session proof route. G-14 is an internal village proof checkpoint inside the larger OVI-1 autonomous runway."
     },
     {
       "phase_id": "G-14",
-      "phase_name": "SV-1 Starter Village Playable Obsession Gate",
+      "phase_name": "SV-1 Internal Starter Village Proof Gate",
       "branch": "pending",
       "implementing_prs": [
         "pending"
@@ -1256,8 +1265,8 @@
         "pending"
       ],
       "current_status": "PENDING",
-      "reason_for_status": "SV-1 is not complete.",
-      "next_required_action": "Complete all prior phases, produce review package, and stop for Chris."
+      "reason_for_status": "G-14 internal village proof is not complete.",
+      "next_required_action": "Produce the internal G-14 village proof package with Human review required: no; if it passes, merge and continue to G-15 Opening Island Masterplan + World Topology."
     }
   ]
 }

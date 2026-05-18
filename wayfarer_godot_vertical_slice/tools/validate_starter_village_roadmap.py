@@ -29,7 +29,8 @@ def main() -> int:
     require_text(
         ROADMAP_MD,
         [
-            "SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE",
+            "SV-1 INTERNAL STARTER VILLAGE PROOF GATE",
+            "OVI-1 Opening Village + Island Production Playable Gate",
             "Street, Lot, and Ground Cohesion Reconstruction",
             "Opening Quest Arc: First Light / Whispers Before Dawn",
             "Autonomous Production Loop",
@@ -49,11 +50,18 @@ def main() -> int:
             failures.append("roadmap schema_id mismatch")
         if roadmap.get("milestone_id") != "SV-1":
             failures.append("roadmap milestone_id must be SV-1")
-        if roadmap.get("autonomous_merge_authorized_until") != "SV-1":
-            failures.append("roadmap must authorize autonomous merge only until SV-1")
+        if roadmap.get("next_human_review_milestone") != "OVI-1 Opening Village + Island Production Playable Gate":
+            failures.append("roadmap must point human review to OVI-1")
+        if roadmap.get("autonomous_merge_authorized_until") != "OVI-1":
+            failures.append("roadmap must authorize ordinary autonomous merge until OVI-1")
+        g14_policy = roadmap.get("g14_policy")
+        if not isinstance(g14_policy, dict) or g14_policy.get("human_review_required") is not False:
+            failures.append("roadmap must record G-14 as internal with human_review_required=false")
+        elif "G-15 Opening Island Masterplan + World Topology" not in str(g14_policy.get("next_phase", "")):
+            failures.append("roadmap G-14 policy must continue to G-15")
         merge_policy = roadmap.get("merge_policy")
         if not isinstance(merge_policy, dict) or merge_policy.get("ordinary_autonomous_prs_may_merge") is not True:
-            failures.append("merge_policy must authorize ordinary autonomous PR merges before SV-1")
+            failures.append("merge_policy must authorize ordinary autonomous PR merges before OVI-1")
         else:
             required_conditions = " ".join(str(item) for item in merge_policy.get("required_conditions", []))
             for token in ["remote_checks_green", "pr_mergeable", "agent_council_verdict_COUNCIL_PASS_READY_FOR_PR"]:
@@ -85,8 +93,10 @@ def main() -> int:
                     failures.append(f"{phase_id} missing {key}")
         if by_phase.get("G-7", {}).get("status") != "PASS":
             failures.append("G-7 roadmap status must be PASS after masterplan lock")
-        if by_phase.get("G-14", {}).get("title") != "SV-1 Starter Village Playable Obsession Gate":
-            failures.append("G-14 must be the SV-1 gate")
+        if by_phase.get("G-14", {}).get("title") != "SV-1 Internal Starter Village Proof Gate":
+            failures.append("G-14 must be the internal SV-1 proof gate")
+        if "Human review required: no" not in str(by_phase.get("G-14", {})):
+            failures.append("G-14 must record Human review required: no")
         serialized = str(roadmap)
         for deprecated in DEPRECATED_STATUSES:
             if deprecated in serialized:

@@ -1,0 +1,475 @@
+{
+  "schema_id": "wayfarer.ovi1.opening_village_island_production_roadmap.v1",
+  "milestone_id": "OVI-1",
+  "milestone_name": "Opening Village + Island Production Playable Gate",
+  "generated_at": "2026-05-18",
+  "source_authorization": "Chris May 2026 live steering addendum: do not stop at G-14; continue autonomously to OVI-1.",
+  "next_human_review_milestone": "OVI-1 Opening Village + Island Production Playable Gate",
+  "autonomous_merge_authorized_until": "OVI-1",
+  "g14_policy": {
+    "phase_id": "G-14",
+    "role": "Internal Starter Village Proof Gate",
+    "human_review_required": false,
+    "reason": "G-14 is now an internal checkpoint inside the larger OVI-1 autonomous runway.",
+    "next_phase": "G-15 Opening Island Masterplan + World Topology",
+    "if_pass": "merge and continue",
+    "if_fail": "fix autonomously"
+  },
+  "merge_policy": {
+    "ordinary_autonomous_prs_may_merge": true,
+    "required_conditions": [
+      "branch_pr_preflight_current",
+      "required_validators_pass",
+      "runtime_screenshots_or_proof_pass_where_applicable",
+      "agent_council_verdict_COUNCIL_PASS_READY_FOR_PR",
+      "remote_checks_green",
+      "pr_mergeable",
+      "no_hard_stop_condition"
+    ],
+    "still_requires_chris": [
+      "destructive_operations",
+      "unsafe_file_operations",
+      "budget_or_tool_purchase_decisions",
+      "unresolvable_github_auth_or_permission_problem",
+      "major_creative_fork_with_multiple_valid_directions",
+      "asset_licensing_or_provenance_blocker",
+      "formal_ovi1_milestone_review"
+    ]
+  },
+  "required_council_roles": [
+    "Scrum Master",
+    "World-class Game Designer",
+    "Game Programmer",
+    "Art Director",
+    "World/Layout Designer",
+    "Narrative Designer",
+    "Quest Designer",
+    "Animation/NPC Behavior Director",
+    "UX Designer",
+    "QA Analyst",
+    "Build/Release Engineer"
+  ],
+  "required_final_screenshots": [
+    "01_village_wide_cohesion.png",
+    "02_player_arrival_harbor.png",
+    "03_counting_house_route.png",
+    "04_tavern_rumor_hub.png",
+    "05_commercial_avenue.png",
+    "06_harbor_wharf_work_area.png",
+    "07_village_exit_to_island.png",
+    "08_island_entry_transition.png",
+    "09_island_main_trail.png",
+    "10_island_landmark_signal_or_overlook.png",
+    "11_island_cove_or_hidden_landing.png",
+    "12_island_optional_discovery.png",
+    "13_npc_village_movement.png",
+    "14_npc_island_movement.png",
+    "15_quest_journal_village_step.png",
+    "16_quest_journal_island_step.png",
+    "17_return_to_town_or_next_hook.png",
+    "18_interaction_ux_proof.png",
+    "19_ysort_layering_proof.png",
+    "20_debug_overlays_disabled.png",
+    "21_browser_review_identity_proof.png",
+    "22_contact_sheet_player_npc_world_assets.png"
+  ],
+  "required_review_package_files": [
+    "docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.md",
+    "docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.json",
+    "docs/reports/G22_OVI1_AGENT_COUNCIL_REPORT.md",
+    "docs/reports/OVI1_REVIEW_INDEX.md",
+    "docs/reports/OVI1_REVIEW_INDEX.json"
+  ],
+  "phases": [
+    {
+      "phase_id": "G-14",
+      "title": "Internal Starter Village Proof Gate",
+      "purpose": "Prove the village is strong enough to support the island opening.",
+      "objectives": [
+        "village_cohesion_verified",
+        "npc_motion_verified",
+        "opening_tavern_counter_house_harbor_quest_verified",
+        "interaction_ux_verified",
+        "browser_review_identity_verified",
+        "atelier_provenance_compliance_verified",
+        "Human review required: no",
+        "Next phase: G-15 Opening Island Masterplan + World Topology"
+      ],
+      "acceptance": [
+        "town_cohesion_score_at_least_8_5",
+        "npc_motion_grounding_score_at_least_8_5",
+        "opening_village_quest_clarity_at_least_8_5",
+        "Tavern whisper hook score_at_least_8_5",
+        "ux_readability_score_at_least_8_5",
+        "technical_stability_PASS",
+        "atelier_provenance_PASS",
+        "merge_and_continue_without_chris_review"
+      ],
+      "primary_validators": [
+        "validate_starter_village_roadmap.py",
+        "validate_starter_village_execution_ledger.py",
+        "validate_opening_village_island_roadmap.py",
+        "validate_opening_village_island_execution_ledger.py",
+        "validate_first_session_playability.py",
+        "validate_browser_build_hardening.py",
+        "validate_runtime_atelier_asset_consistency.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-15",
+      "title": "Opening Island Masterplan + World Topology",
+      "purpose": "Design the opening island as a coherent playable region, not a random extension of the town.",
+      "objectives": [
+        "island_masterplan",
+        "village_to_island_transition",
+        "roads_trails_coastline_paths",
+        "natural_landmarks",
+        "quest_relevant_routes",
+        "exploration_loops",
+        "interior_wilderness_coastal_zones",
+        "danger/safety gradient",
+        "camera_screenshot_viewpoints",
+        "quest destination"
+      ],
+      "acceptance": [
+        "island_reads_as_one_authored_place",
+        "player_understands_how_to_leave_town_and_explore",
+        "routes_loop_naturally",
+        "no_patchwork_terrain",
+        "no_meaningless_empty_sprawl",
+        "world_layout_score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_island_world_topology.py",
+        "validate_opening_village_island_roadmap.py",
+        "validate_opening_village_island_execution_ledger.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-15A",
+      "title": "Village-to-Island Transition Pass",
+      "purpose": "Make leaving the village feel intentional and exciting.",
+      "objectives": [
+        "Clear town exit",
+        "readable_trail_road_out_of_Newport",
+        "settlement_island_boundary",
+        "environmental_storytelling_threshold",
+        "First sense of mystery beyond_the_town"
+      ],
+      "acceptance": [
+        "player_knows_where_to_go_next",
+        "transition_feels_natural",
+        "world_opens_without_confusion",
+        "no_invisible_wall_or_random_edge_feeling"
+      ],
+      "primary_validators": [
+        "validate_village_to_island_transition.py",
+        "validate_island_world_topology.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-15B",
+      "title": "Island Terrain, Ground, and Route Cohesion",
+      "purpose": "Make the island physically believable.",
+      "objectives": [
+        "fix_patchy_ground",
+        "fix_random_green_blocks",
+        "fix_disconnected_paths",
+        "fix_unreadable_terrain_transitions",
+        "fix_empty_decorative_sprawl",
+        "cohesive_paths",
+        "coastline_shoreline_treatment",
+        "grass_stone_dirt_transition_logic",
+        "clear_walkable_space",
+        "clear_blocked_space",
+        "route loops",
+        "landmark_sightlines"
+      ],
+      "acceptance": [
+        "wide_screenshots_read_as_cohesive_island",
+        "gameplay_zoom_reads_cleanly",
+        "routes_lead_somewhere",
+        "No patchwork terrain",
+        "terrain_world_cohesion_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_island_world_cohesion.py",
+        "validate_village_to_island_transition.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-16",
+      "title": "Island Landmark and Point-of-Interest Pass",
+      "purpose": "Give the opening island memorable destinations.",
+      "objectives": [
+        "harbor_overlook_or_signal_point",
+        "old_road_marker",
+        "cove_wharf_remnant_hidden_landing",
+        "wooded_path_or_grove",
+        "small_farm_service_outbuilding_or_edge_settlement",
+        "quest_clue_site",
+        "Optional secret location",
+        "Return landmark visible_from_multiple_routes"
+      ],
+      "acceptance": [
+        "player_can_name_or_recognize_destinations",
+        "each_poi_supports_exploration_or_quest_purpose",
+        "pois_are_not_random_props",
+        "at_least_one_optional_discovery_exists",
+        "art_world_score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_island_poi_landmarks.py",
+        "validate_island_world_cohesion.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-16A",
+      "title": "Island Atelier Asset Family Pass",
+      "purpose": "Raise the island visual standard using the same atelier discipline as the village.",
+      "objectives": [
+        "coastal_rocks",
+        "trail_edge_clutter",
+        "fences",
+        "lantern_posts",
+        "signposts",
+        "small_carts_crates",
+        "shore_debris",
+        "wooded_props",
+        "cove_objects",
+        "farm_service_props",
+        "quest_clue_props",
+        "No placeholders",
+        "no_untracked_sprites",
+        "no_crude_markers"
+      ],
+      "acceptance": [
+        "island_assets_feel_cohesive_with_Newport",
+        "assets_reinforce_island_fantasy",
+        "manifest_provenance_source_proof_exists",
+        "Atelier compliance PASS"
+      ],
+      "primary_validators": [
+        "validate_island_atelier_asset_family.py",
+        "validate_runtime_atelier_asset_consistency.py",
+        "validate_newport_asset_provenance.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-17",
+      "title": "Island NPC / Encounter / Ambient Life Foundation",
+      "purpose": "Make the island feel alive beyond the village.",
+      "objectives": [
+        "traveler_or_dock_runner_or_farmhand_or_suspicious_courier_or_patrol_or_sailor_or_rumor_contact",
+        "purpose",
+        "route_or_station",
+        "dialogue_bark_or_interaction",
+        "quest_relevance_or_world_flavor",
+        "atelier_standard_sprite",
+        "grounded movement if_moving"
+      ],
+      "acceptance": [
+        "island_does_not_feel_empty",
+        "npcs_do_not_hover_or_glide",
+        "npcs_reinforce_opening_mystery",
+        "movement_proof_exists_where_applicable",
+        "NPC/ambient score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_island_npc_encounter_foundation.py",
+        "validate_character_motion_foundation.py",
+        "validate_runtime_atelier_asset_consistency.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-18",
+      "title": "Opening Quest Extension: From Whispers to the Island",
+      "purpose": "Extend the starting quest from tavern/harbor rumors into island exploration.",
+      "working_title": "Whispers Before Dawn",
+      "objectives": [
+        "Whispers Before Dawn",
+        "arrival_in_Newport",
+        "counting_house_missing_manifest",
+        "tavern_rumor",
+        "coded_whisper",
+        "island_lead",
+        "travel_to_island_clue_site",
+        "discover_physical_evidence",
+        "return or report choice",
+        "reason_to_continue_hook",
+        "village-to-island quest chain"
+      ],
+      "acceptance": [
+        "quest_playable_end_to_end",
+        "player_knows_next_objective",
+        "quest_state_updates_correctly",
+        "dialogue_supports_story",
+        "island_exploration_has_purpose",
+        "narrative_gameplay_hook_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_opening_quest_village_to_island.py",
+        "validate_opening_quest_arc.py",
+        "validate_tavern_whisper_system.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-18A",
+      "title": "Multi-Path Rumor and Choice Foundation",
+      "purpose": "The opening should not feel like a single railroaded click path.",
+      "objectives": [
+        "Counting house path",
+        "tavern_rumor_path",
+        "Dockworker/harbor path",
+        "optional_island_clue_path",
+        "two_npcs_can_advance_main_thread",
+        "optional_discovery_enriches_journal",
+        "choice_changes_dialogue_route_or_next_objective_text"
+      ],
+      "acceptance": [
+        "player_agency_exists",
+        "quest_state_supports_branching",
+        "no_broken_branches",
+        "no_unclear_progression"
+      ],
+      "primary_validators": [
+        "validate_multipath_rumor_choice_foundation.py",
+        "validate_opening_quest_village_to_island.py",
+        "validate_multi_path_starter_choice.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-19",
+      "title": "Player Guidance, Map, Journal, and Interaction Polish",
+      "purpose": "Make the first session readable without debug UI.",
+      "objectives": [
+        "clean_objective_display",
+        "journal_updates",
+        "interaction_prompts",
+        "location_names_or_subtle_guidance",
+        "quest_markers_signage_that_do_not_look_crude",
+        "first_session_route_readability",
+        "No debug-looking prompts"
+      ],
+      "acceptance": [
+        "player_knows_where_to_go",
+        "ui_does_not_break_immersion",
+        "no_oversized_labels_blocking_world",
+        "ux_readability_score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_first_session_gameplay_loop.py",
+        "validate_interaction_ux.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-20",
+      "title": "First-Session Gameplay Loop and Reward Pass",
+      "purpose": "Make the opening fun, not just functional.",
+      "objectives": [
+        "arrive",
+        "orient",
+        "talk",
+        "investigate",
+        "explore",
+        "discover",
+        "return_report",
+        "reward_progression",
+        "unlock_next_hook",
+        "first 20-30 minutes playable",
+        "reason to continue"
+      ],
+      "acceptance": [
+        "first_session_playable",
+        "player_receives_feedback_and_reward",
+        "player_has_reason_to_continue",
+        "no_dead_objective_states",
+        "gameplay_hook_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_first_session_gameplay_loop.py",
+        "validate_opening_quest_village_to_island.py",
+        "validate_first_session_playability.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-21",
+      "title": "Opening Island Performance, Browser Build, and Regression Hardening",
+      "purpose": "Make the combined village/island opening stable for review.",
+      "objectives": [
+        "web_review_build_works",
+        "correct_BuildInfo_metadata",
+        "package_script_drift_protection",
+        "all_validators_pass",
+        "all_screenshots_regenerate",
+        "motion_proof_regenerates",
+        "quest_playthrough_proof_regenerates",
+        "performance_acceptable",
+        "no_missing_assets",
+        "no_stale_phase_identity"
+      ],
+      "acceptance": [
+        "Browser/review artifact is_valid",
+        "no_open_critical_regressions",
+        "no_failing_checks",
+        "build_release_score_PASS"
+      ],
+      "primary_validators": [
+        "validate_ovi1_gate.py",
+        "validate_browser_build_hardening.py",
+        "validate_vertical_slice.gd"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-22",
+      "title": "OVI-1 Opening Village + Island Production Playable Gate",
+      "purpose": "This is the next true Chris review milestone.",
+      "objectives": [
+        "opening_village_cohesive_and_production_playable",
+        "opening_island_cohesive_and_production_playable",
+        "village_and_island_connect_naturally",
+        "opening_quest_arc_playable_from_arrival_through_island_clue_and_return_hook",
+        "npcs_visually_and_motion_quality_compliant",
+        "all_visible_assets_atelier_provenance_compliant",
+        "first_session_loop_fun_readable_compelling",
+        "browser_review_build_ready",
+        "North Star alignment PASS"
+      ],
+      "acceptance": [
+        "village_cohesion_at_least_8_5",
+        "island_cohesion_at_least_8_5",
+        "village_to_island_transition_at_least_8_5",
+        "art_direction_at_least_8_5",
+        "world_layout_believability_at_least_8_5",
+        "npc_motion_grounding_at_least_8_5",
+        "opening_quest_gameplay_at_least_8_5",
+        "narrative_hook_at_least_8_5",
+        "ux_readability_at_least_8_5",
+        "first_session_fun_at_least_8_5",
+        "technical_stability_at_least_8_5",
+        "atelier_provenance_compliance_PASS",
+        "browser_review_readiness_PASS",
+        "North Star alignment PASS",
+        "stop_for_Chris_with_full_OVI1_review_package"
+      ],
+      "primary_validators": [
+        "validate_ovi1_gate.py",
+        "validate_opening_village_island_roadmap.py",
+        "validate_opening_village_island_execution_ledger.py"
+      ],
+      "status": "PENDING"
+    }
+  ]
+}

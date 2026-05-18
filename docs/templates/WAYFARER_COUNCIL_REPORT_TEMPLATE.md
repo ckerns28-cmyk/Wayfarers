@@ -10,17 +10,19 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 - Final Authority Verdict:
 - Final recommended next phase:
 - Human escalation blocker:
+- Active milestone: OVI-1 Opening Village + Island Production Playable Gate
 
 ## Agent Status Table
 
 | Agent | Status | Recommendation |
 | --- | --- | --- |
 | Scrum Master |  |  |
-| Game Designer |  |  |
+| World-class Game Designer |  |  |
 | World/Layout Designer |  |  |
 | Art Director |  |  |
 | Animation/NPC Behavior Director |  |  |
 | Narrative Designer |  |  |
+| Quest Designer |  |  |
 | UX Designer |  |  |
 | Game Programmer |  |  |
 | QA Analyst |  |  |
@@ -28,7 +30,7 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 
 ## Scrum Master Review
 
-## Game Designer Review
+## World-class Game Designer Review
 
 ## World/Layout Designer Review
 
@@ -37,6 +39,8 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 ## Animation/NPC Behavior Director Review
 
 ## Narrative Designer Review
+
+## Quest Designer Review
 
 ## UX Designer Review
 
@@ -52,6 +56,9 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 - Required rows audited:
 - Non-PASS rows:
 - Result:
+- OVI-1 ledger path:
+- G-14 human review required: no / yes:
+- Next phase if G-14: G-15 Opening Island Masterplan + World Topology:
 
 ## Visible Runtime Asset Consistency Audit
 
@@ -102,3 +109,4 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 - Required repairs:
 - PR readiness conditions:
 - Merge authority result:
+- OVI-1 rule: fail if G-14 tries to stop for Chris, if island roadmap rows are missing, if village/island/quest chain are not playable and cohesive, if NPCs hover/glide, if assets are non-atelier, if first-session loop is boring/confusing/incomplete, if browser/review identity is stale, or if any required roadmap row is unproven.

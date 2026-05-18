@@ -91,9 +91,11 @@ Passed locally:
 Technical validation: PASS. G-13 proves the browser build/package/regression
 route is stable enough for PR review.
 
-Design acceptance: limited to G-13 hardening scope. Final SV-1 creative
-acceptance remains owned by G-14 and must stop for Chris at the formal
-`SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE`.
+Design acceptance: limited to G-13 hardening scope. Chris's May 2026 OVI-1
+addendum supersedes the old human-stop language: G-14 is now an internal
+Starter Village proof checkpoint, must record `Human review required: no`, and
+continues to `G-15 Opening Island Masterplan + World Topology` if it passes.
+The next true human review milestone is OVI-1.
 
 ## Current Council Status
 

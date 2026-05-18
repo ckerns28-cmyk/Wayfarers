@@ -50,7 +50,10 @@ def main() -> int:
     require_text(
         LEDGER_MD,
         [
-            "SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE",
+            "SV-1 INTERNAL STARTER VILLAGE PROOF GATE",
+            "OVI-1",
+            "G-14 is now an internal checkpoint",
+            "Human review required: no",
             "PR #461 result: already merged",
             "Autonomous merge-governance result",
             "Street, Lot, and Ground Cohesion Reconstruction",
@@ -66,6 +69,13 @@ def main() -> int:
             failures.append("ledger schema_id mismatch")
         if ledger.get("milestone_id") != "SV-1":
             failures.append("ledger milestone_id must be SV-1")
+        if ledger.get("next_human_review_milestone") != "OVI-1 Opening Village + Island Production Playable Gate":
+            failures.append("ledger must point next human review to OVI-1")
+        g14_policy = ledger.get("g14_policy")
+        if not isinstance(g14_policy, dict) or g14_policy.get("human_review_required") is not False:
+            failures.append("ledger must record G-14 as internal with human_review_required=false")
+        elif "G-15 Opening Island Masterplan + World Topology" not in str(g14_policy.get("next_phase", "")):
+            failures.append("ledger G-14 policy must continue to G-15")
         governance = ledger.get("autonomous_merge_governance")
         if not isinstance(governance, dict) or governance.get("per_pr_chris_approval_removed_as_recurring_blocker") is not True:
             failures.append("ledger must record recurring per-PR merge approval blocker removal")

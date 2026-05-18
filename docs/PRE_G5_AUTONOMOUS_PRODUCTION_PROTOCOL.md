@@ -2,9 +2,10 @@
 
 This protocol governed ordinary Wayfarer roadmap work until the G-5 readiness
 gate. After G-6, Chris extended the same autonomous production model through
-the `SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE`. It changes the default
-acceptance authority from Chris to the Wayfarer Agent Council for ordinary
-roadmap-bound autonomous production phases before SV-1.
+the Starter Village runway. Chris's May 2026 OVI-1 addendum now extends it
+through the `OVI-1 OPENING VILLAGE + ISLAND PRODUCTION PLAYABLE GATE`. It
+changes the default acceptance authority from Chris to the Wayfarer Agent
+Council for ordinary roadmap-bound autonomous production phases before OVI-1.
 
 ## Operating Model
 
@@ -21,14 +22,31 @@ The default loop is:
    Codex under the autonomous authorization, main is synced, and the next
    roadmap phase is selected.
 
-Chris is not the default QA gate for ordinary pre-SV-1 roadmap work. A normal
+Chris is not the default QA gate for ordinary pre-OVI-1 roadmap work. A normal
 visual QA pass is not a valid escalation reason by itself.
 
 The roadmap must be executed as visible phase evidence, not as a compressed
-summary. Each pre-SV-1 item needs implementation evidence, screenshot evidence
+summary. Each pre-OVI-1 item needs implementation evidence, screenshot evidence
 where applicable, validation evidence, Agent Council judgment, PR/merge
 evidence, and an authoritative row in the active execution ledger before its
 milestone gate can pass.
+
+## OVI-1 Addendum
+
+G-14 is no longer the formal human review stop. G-14 is now
+`G-14 Internal Starter Village Proof Gate`, an internal checkpoint inside the
+larger OVI-1 autonomous runway.
+
+The required G-14 final report language is:
+
+- Human review required: no
+- Reason: G-14 is now an internal checkpoint inside the larger OVI-1 autonomous
+  runway.
+- Next phase: G-15 Opening Island Masterplan + World Topology
+
+If G-14 passes, Codex merges the PR when green and mergeable, syncs main,
+updates the ledger, and continues to G-15. The next true Chris review milestone
+is `OVI-1 Opening Village + Island Production Playable Gate`.
 
 ## SV-0 Tooling Stack Gate
 
@@ -69,7 +87,7 @@ must return `COUNCIL_FAIL_NEEDS_CODE_FIX`.
 
 ## Authority
 
-The Agent Council is the default QA and acceptance gate for ordinary pre-SV-1
+The Agent Council is the default QA and acceptance gate for ordinary pre-OVI-1
 roadmap work. The council verdict is authoritative for ordinary phases once it
 has reviewed:
 
@@ -86,7 +104,7 @@ council must explicitly accept or reject the player-facing result.
 
 ## Autonomous Merge Rule
 
-For roadmap-bound autonomous phases before the SV-1 gate, Codex is
+For roadmap-bound autonomous phases before the OVI-1 gate, Codex is
 pre-authorized to merge the PR when:
 
 - branch/PR preflight is current,
@@ -101,7 +119,7 @@ Chris merge approval remains required only for destructive operations, unsafe
 file operations, budget/tool purchase decisions, any paid tool or subscription
 action, unresolvable GitHub authentication or permission problems, major
 creative forks with multiple valid directions, asset licensing/provenance
-blockers, and the formal SV-1 review.
+blockers, and the formal OVI-1 review.
 Do not leave ordinary green council-passing autonomous PRs open solely for
 per-PR human merge approval.
 
@@ -174,7 +192,7 @@ review before moving on.
 
 `BLOCKED_REQUIRES_HUMAN_ESCALATION` is reserved for true blockers only:
 
-- formal SV-1 milestone review,
+- formal OVI-1 milestone review,
 - major creative fork with multiple valid directions,
 - legal/licensing/provenance blocker,
 - GitHub permission/authentication blocker,
@@ -185,7 +203,7 @@ review before moving on.
 
 ## Deprecated Statuses
 
-These are deprecated as final states for ordinary pre-SV-1 work:
+These are deprecated as final states for ordinary pre-OVI-1 work:
 
 - `NEEDS_HUMAN_REVIEW`
 - `READY_FOR_HUMAN_VISUAL_REVIEW`
@@ -210,7 +228,7 @@ is unclear, debug artifacts are visible, or normal-play sprites fail atelier
 provenance -- the council must return `COUNCIL_FAIL_NEEDS_CODE_FIX` and the
 branch must be repaired before PR readiness.
 
-Every visual/player-facing phase before SV-1 must include a short screenshot
+Every visual/player-facing phase before OVI-1 must include a short screenshot
 contradiction review in its council report:
 
 - what the screenshots prove,
@@ -271,4 +289,4 @@ Do not start a new roadmap phase while the current phase is ambiguous,
 technically-only, or waiting on ordinary human visual review. Failed phases stay
 on the same branch until repaired. Passing phases can proceed to PR readiness
 and then next-phase selection. The system should continue phase-to-phase until
-the G-5 gate.
+the active milestone gate, currently OVI-1.

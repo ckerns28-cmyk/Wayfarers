@@ -1,14 +1,15 @@
 # Starter Village Playable Obsession Roadmap
 
-Milestone: `SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE`
+Milestone: `SV-1 INTERNAL STARTER VILLAGE PROOF GATE`
 
 Starting main after G-6 merge: `a6ec338f795f7f61c9974af5a3338a37e165aa11`
 
-This roadmap supersedes the old post-G-6 gap. The next stop is not another
-planning endpoint; it is a playable Newport-inspired origin village that makes
-a first-time player understand where they are, find the harbor/counting
-house/tavern route, hear rumors, meet believable NPCs, advance an opening
-quest, and want to keep playing.
+This roadmap supersedes the old post-G-6 gap for the village portion of the
+opening. Chris's May 2026 OVI-1 addendum supersedes the old SV-1 human-stop
+language: G-14 is now an internal checkpoint inside the larger
+`OVI-1 Opening Village + Island Production Playable Gate` runway. The active
+OVI-1 roadmap is
+`docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md`.
 
 ## North Star
 
@@ -60,7 +61,7 @@ For each phase:
     condition exists.
 11. Sync main, update the ledger, and continue.
 
-Ordinary roadmap-bound autonomous PRs before SV-1 are pre-authorized to merge
+Ordinary roadmap-bound autonomous PRs before OVI-1 are pre-authorized to merge
 when the autonomous merge rule in `AGENTS.md` and
 `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md` is satisfied.
 
@@ -91,7 +92,7 @@ current screenshot failures before later living-town work resumes.
 | G-11A | Audio/Atmosphere Placeholder-Free Foundation | Adds safe atmosphere hooks or documents future hook points without unsafe placeholder audio. |
 | G-12 | First-Session Fun, Pacing, and Readability Pass | Playtests the first 15-20 minutes for clarity, pacing, curiosity, prompts, NPC usefulness, and no dead objective states. |
 | G-13 | Browser Build, Performance, and Regression Hardening | Hardens Godot import, vertical slice, screenshots, review build, input, performance, assets, and route stability. |
-| G-14 | SV-1 Starter Village Playable Obsession Gate | Produces the final review package and stops for Chris. |
+| G-14 | SV-1 Internal Starter Village Proof Gate | Proves the village is ready to support island production, records `Human review required: no`, merges if green and mergeable, and continues to G-15. |
 
 Current execution status after SV-0 and Chris screenshot QA: SV-0 is merged and
 the active corrective pass is G-7A-SV0. First Light has a playable opening arc,
@@ -124,6 +125,20 @@ map. The locked town plan must include:
 - NPC home/work/walk logic,
 - a building-purpose ledger so every building exists for a reason,
 - explicit prohibition on random prop scatter as a layout fix.
+
+## G-14 Internal Checkpoint Contract
+
+G-14 must produce an internal starter village proof package. Its final report
+must say:
+
+- Human review required: no
+- Reason: G-14 is now an internal checkpoint inside the larger OVI-1 autonomous
+  runway.
+- Next phase: G-15 Opening Island Masterplan + World Topology
+
+If G-14 passes, Codex merges and continues. If G-14 fails, Codex fixes the
+branch autonomously. G-14 must not stop for Chris unless a true hard blocker
+exists.
 
 ## World-Class Starter Village Standard
 
@@ -180,7 +195,7 @@ Deprecated final states remain forbidden:
 
 ## Hard Stops
 
-Stop only for SV-1 completion, GitHub permission/auth failure, unresolvable
+Stop only for OVI-1 completion, GitHub permission/auth failure, unresolvable
 merge conflict, unsafe/destructive operation risk, asset licensing/provenance
 blocker, tooling failure that prevents required proof after serious debugging,
 major creative fork with multiple valid roadmap-valid directions, or

@@ -1,6 +1,6 @@
 # Starter Village Autonomous Execution Ledger
 
-Milestone: `SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE`
+Milestone: `SV-1 INTERNAL STARTER VILLAGE PROOF GATE`
 
 Starting main after G-6 merge: `a6ec338f795f7f61c9974af5a3338a37e165aa11`
 
@@ -9,8 +9,13 @@ PR #461 result: already merged when checked on 2026-05-18; its head
 fast-forward to `a6ec338f795f7f61c9974af5a3338a37e165aa11`.
 
 Autonomous merge-governance result: recurring per-PR Chris merge approval is no
-longer a blocker for ordinary roadmap-bound autonomous PRs before SV-1 when the
+longer a blocker for ordinary roadmap-bound autonomous PRs before OVI-1 when the
 autonomous merge rule is satisfied.
+
+Chris's May 2026 OVI-1 addendum supersedes the old SV-1 human-stop language.
+G-14 is now an internal checkpoint inside the larger OVI-1 autonomous runway.
+Human review required: no. Next phase: G-15 Opening Island Masterplan + World
+Topology.
 
 Structured ledger source:
 `docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json`
@@ -45,11 +50,11 @@ Deprecated final states are forbidden.
 | G-11A | Audio/Atmosphere Placeholder-Free Foundation | `codex/g-11a-audio-atmosphere-hooks` | #476 merged | PASS | `docs/reports/G11A_AUDIO_ATMOSPHERE_PLACEHOLDER_FREE_FOUNDATION.md`, G-11A council report, placeholder-free audio hook registry, hook-only runtime contract, audio atmosphere validator, vertical-slice validator, screenshot capture baseline, and atelier runtime validator. |
 | G-12 | First-Session Fun, Pacing, and Readability Pass | `codex/g-12-first-session-playability` | #477 open | PASS | `docs/reports/G12_FIRST_SESSION_FUN_PACING_READABILITY_PASS.md`, `docs/reports/G12_FIRST_SESSION_AGENT_COUNCIL_REPORT.md`, G-12 runtime screenshot manifest, first-session playability validator, prompt/dialogue/bark overlap suppression, Game Studio playtest method, vertical-slice validator, opening quest validator, interaction UX validator, living town rhythm validator, and atelier runtime validator. |
 | G-13 | Browser Build, Performance, and Regression Hardening | `codex/g-13-browser-build-hardening` | pending open PR | PASS | `docs/reports/G13_BROWSER_BUILD_PERFORMANCE_REGRESSION_HARDENING.md`, `docs/reports/G13_BROWSER_BUILD_AGENT_COUNCIL_REPORT.md`, fresh G-12 regression screenshot manifest, G-13 stable/versioned browser-review ZIPs, package root checks, vertical-slice validator, browser build hardening validator, first-session/quest/UX/rhythm/audio/layout/atelier validators, and Agent Council run-validators mode. |
-| G-14 | SV-1 Starter Village Playable Obsession Gate | pending | pending | PENDING | Must produce final SV-1 review package and stop for Chris. |
+| G-14 | SV-1 Internal Starter Village Proof Gate | pending | pending | PENDING | Must prove village cohesion, NPC motion, opening village quest clarity, tavern whisper hook, UX/readability, browser identity, and atelier/provenance; then merge and continue to G-15. |
 
 ## Current Phase
 
-Current phase after G-13: `G-14 SV-1 Starter Village Playable Obsession Gate`.
+Current phase after G-13: `G-14 SV-1 Internal Starter Village Proof Gate`.
 
 G-13 hardened the browser-review route after G-12. `BuildInfo.gd` now reports
 `G-13`, the HUD metadata and vertical-slice validator enforce the active
@@ -60,7 +65,7 @@ package route produced both the stable upload ZIP and
 with `index.html` at ZIP root and no `web_build/index.html` nesting. G-13 also
 reran the G-12 recurring screenshot route as browser-regression proof and
 received `COUNCIL_PASS_READY_FOR_PR` from the Agent Council. This is a
-technical/build hardening pass, not the final SV-1 milestone review.
+technical/build hardening pass, not an OVI-1 milestone review.
 
 G-12 adds a runtime-backed first-session playability gate. The new capture
 set proves harbor arrival, route readability, Tavern/Inn rumor interaction,
