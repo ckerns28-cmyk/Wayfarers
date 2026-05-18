@@ -27,7 +27,7 @@
     {"id": "residential_edge", "rect": {"x": 110, "y": 60, "w": 1390, "h": 250}, "purpose": "upper homes, class texture, boarding and clerks"}
   ],
   "roads": [
-    {"id": "waterfront_avenue_main", "kind": "primary", "polyline": [{"x": 120, "y": 596}, {"x": 1490, "y": 596}], "width": 88, "connects": ["tavern_social", "commercial_spine", "harbor_waterfront"]},
+    {"id": "waterfront_avenue_main", "kind": "primary", "polyline": [{"x": 120, "y": 596}, {"x": 1522, "y": 596}], "width": 88, "connects": ["tavern_social", "commercial_spine", "harbor_waterfront"]},
     {"id": "west_uphill_connector", "kind": "secondary", "polyline": [{"x": 386, "y": 596}, {"x": 386, "y": 420}, {"x": 420, "y": 290}], "width": 42, "connects": ["waterfront_avenue", "residential_edge"]},
     {"id": "central_counting_connector", "kind": "secondary", "polyline": [{"x": 704, "y": 626}, {"x": 704, "y": 392}], "width": 44, "connects": ["harbor_waterfront", "waterfront_avenue", "civic_counting"]},
     {"id": "east_market_connector", "kind": "secondary", "polyline": [{"x": 1248, "y": 638}, {"x": 1248, "y": 430}], "width": 36, "connects": ["commercial_spine", "civic_counting", "rear_service_lane"]},
@@ -49,13 +49,17 @@
     {"id": "lot_chandlery", "district": "commercial_spine", "building_id": "b_chandlery_front", "anchor": {"x": 1018, "y": 596}, "frontage": "waterfront_avenue_main"},
     {"id": "lot_shop_house", "district": "commercial_spine", "building_id": "b_shop_house", "anchor": {"x": 1180, "y": 596}, "frontage": "waterfront_avenue_main"},
     {"id": "lot_market_shed", "district": "commercial_spine", "building_id": "b_market_shed", "anchor": {"x": 1364, "y": 636}, "frontage": "waterfront_avenue_main"},
+    {"id": "lot_printer_rowhouse", "district": "commercial_spine", "building_id": "b_printer_rowhouse", "anchor": {"x": 1522, "y": 596}, "frontage": "waterfront_avenue_main"},
     {"id": "lot_counting_house", "district": "civic_counting", "building_id": "b_counting_house", "anchor": {"x": 704, "y": 392}, "frontage": "central_counting_connector"},
     {"id": "lot_customs_house", "district": "civic_counting", "building_id": "b_custom_house", "anchor": {"x": 970, "y": 402}, "frontage": "central_counting_connector"},
     {"id": "lot_small_residence", "district": "residential_edge", "building_id": "b_res_small", "anchor": {"x": 300, "y": 275}, "frontage": "residential_backstreet"},
     {"id": "lot_large_residence", "district": "residential_edge", "building_id": "b_large_residence", "anchor": {"x": 980, "y": 275}, "frontage": "residential_backstreet"},
     {"id": "lot_boarding_house", "district": "rear_service_lane", "building_id": "b_boarding_house", "anchor": {"x": 1160, "y": 430}, "frontage": "rear_service_lane"},
     {"id": "lot_dockworker_rowhouse", "district": "rear_service_lane", "building_id": "b_dockworker_rowhouse", "anchor": {"x": 1320, "y": 430}, "frontage": "rear_service_lane"},
-    {"id": "lot_cooperage_wharf", "district": "harbor_waterfront", "building_id": "b_cooperage_shed", "anchor": {"x": 1165, "y": 705}, "frontage": "wharf_boardwalk_east"}
+    {"id": "lot_cooperage_wharf", "district": "harbor_waterfront", "building_id": "b_cooperage_shed", "anchor": {"x": 1165, "y": 705}, "frontage": "wharf_boardwalk_east"},
+    {"id": "lot_west_dock_warehouse", "district": "harbor_waterfront", "building_id": "b_dock_warehouse", "anchor": {"x": 486, "y": 758}, "frontage": "wharf_boardwalk_west"},
+    {"id": "lot_wharf_boathouse", "district": "harbor_waterfront", "building_id": "b_wharf_boathouse", "anchor": {"x": 898, "y": 758}, "frontage": "wharf_boardwalk_center"},
+    {"id": "lot_east_dock_storehouse", "district": "harbor_waterfront", "building_id": "b_dock_storehouse", "anchor": {"x": 1323, "y": 758}, "frontage": "wharf_boardwalk_east"}
   ],
   "building_anchors": [
     {"building_id": "b_inn_tavern", "landmark_priority": 1, "must_not_overlap": ["rear_service_stable_false_read"]},

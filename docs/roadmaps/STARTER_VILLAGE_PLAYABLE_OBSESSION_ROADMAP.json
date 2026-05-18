@@ -167,6 +167,7 @@
         "town_cohesion_at_least_7_5"
       ],
       "primary_validators": [
+        "validate_starter_village_layout_source_usage.py",
         "validate_newport_world_cohesion.py",
         "validate_runtime_atelier_asset_consistency.py"
       ],

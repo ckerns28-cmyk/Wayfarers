@@ -333,6 +333,14 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_sv0_tooling_stack.py"
     )
+    sv0_tool_acquisition_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_sv0_tool_acquisition_manifest.py"
+    )
+    layout_source_usage_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_starter_village_layout_source_usage.py"
+    )
     pre_g5_ledger_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_pre_g5_roadmap_ledger.py"
@@ -439,6 +447,13 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 required_paths=[game_root / "tools" / "validate_sv0_tooling_stack.py"],
             ),
             ValidatorCommand(
+                name="SV-0 Tool Acquisition Manifest validation",
+                command_text=sv0_tool_acquisition_text,
+                args=[python_bin, str(game_root / "tools" / "validate_sv0_tool_acquisition_manifest.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_sv0_tool_acquisition_manifest.py"],
+            ),
+            ValidatorCommand(
                 name="Starter Village roadmap validation",
                 command_text=starter_village_roadmap_text,
                 args=[python_bin, str(game_root / "tools" / "validate_starter_village_roadmap.py")],
@@ -528,6 +543,13 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 required_paths=[game_root / "tools" / "validate_sv0_tooling_stack.py"],
             ),
             ValidatorCommand(
+                name="SV-0 Tool Acquisition Manifest validation",
+                command_text=sv0_tool_acquisition_text,
+                args=[python_bin, str(game_root / "tools" / "validate_sv0_tool_acquisition_manifest.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_sv0_tool_acquisition_manifest.py"],
+            ),
+            ValidatorCommand(
                 name="Starter Village roadmap validation",
                 command_text=starter_village_roadmap_text,
                 args=[python_bin, str(game_root / "tools" / "validate_starter_village_roadmap.py")],
@@ -547,6 +569,13 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 args=[python_bin, str(game_root / "tools" / "validate_runtime_atelier_asset_consistency.py")],
                 cwd=root,
                 required_paths=[game_root / "tools" / "validate_runtime_atelier_asset_consistency.py"],
+            ),
+            ValidatorCommand(
+                name="Starter Village layout source usage validation",
+                command_text=layout_source_usage_text,
+                args=[python_bin, str(game_root / "tools" / "validate_starter_village_layout_source_usage.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_starter_village_layout_source_usage.py"],
             ),
             ValidatorCommand(
                 name="Newport visual ordering validation",
@@ -669,8 +698,11 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
         required = [
             ("SV-0 Tooling Stack report", root / "docs" / "reports" / "SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md"),
             ("SV-0 Tooling Stack JSON", root / "docs" / "reports" / "SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json"),
+            ("SV-0 Tool Acquisition Manifest", root / "docs" / "reports" / "SV0_TOOL_ACQUISITION_MANIFEST.md"),
+            ("SV-0 Tool Acquisition Manifest JSON", root / "docs" / "reports" / "SV0_TOOL_ACQUISITION_MANIFEST.json"),
             ("SV-0 Tooling Stack roadmap", root / "docs" / "roadmaps" / "STARTER_VILLAGE_TOOLING_STACK.md"),
             ("SV-0 Tooling Stack validator", game_root / "tools" / "validate_sv0_tooling_stack.py"),
+            ("SV-0 Tool Acquisition Manifest validator", game_root / "tools" / "validate_sv0_tool_acquisition_manifest.py"),
             ("SV-0 world layout source", game_root / "data" / "world_layout" / "starter_village_world_layout_v1.json"),
             ("SV-0 visual QA manifest", game_root / "data" / "visual_qa" / "starter_village_visual_regression_manifest_v1.json"),
             ("SV-0 movement proof manifest", game_root / "data" / "movement_proof" / "starter_village_movement_proof_manifest_v1.json"),
@@ -822,6 +854,27 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 (
                     "G-4.22R gate reopen report",
                     root / "docs" / "reports" / "G422R_PRE_G5_ROADMAP_EXECUTION_AND_GATE_REOPEN_REPORT.md",
+                ),
+            ]
+        )
+    if phase.upper().strip().startswith(("G-7", "G-8", "G-9", "G-10", "G-11", "G-12", "G-13", "G-14")):
+        required.extend(
+            [
+                (
+                    "SV-0 authoritative world layout source",
+                    game_root / "data" / "world_layout" / "starter_village_world_layout_v1.json",
+                ),
+                (
+                    "SV-0 Tool Acquisition Manifest validator",
+                    game_root / "tools" / "validate_sv0_tool_acquisition_manifest.py",
+                ),
+                (
+                    "Starter Village layout source usage validator",
+                    game_root / "tools" / "validate_starter_village_layout_source_usage.py",
+                ),
+                (
+                    "G-7A-SV0 corrective layout repair report",
+                    root / "docs" / "reports" / "G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR.md",
                 ),
             ]
         )
@@ -1496,8 +1549,10 @@ def build_report(
                     "",
                     "- Report: `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md`",
                     "- Structured report: `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json`",
+                    "- Tool acquisition manifest: `docs/reports/SV0_TOOL_ACQUISITION_MANIFEST.json`",
                     "- Tooling roadmap: `docs/roadmaps/STARTER_VILLAGE_TOOLING_STACK.md`",
                     "- Validator: `wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py`",
+                    "- Acquisition validator: `wayfarer_godot_vertical_slice/tools/validate_sv0_tool_acquisition_manifest.py`",
                     "- Council rule: future SV phases must use the locked stack where applicable, including runtime movement proof and screenshot visual-regression warnings.",
                     "",
                 ]

@@ -240,7 +240,7 @@
       "visual_quality_rating": 9.1,
       "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
       "commercial_use_status": "green_origin_candidate_pending_license_review",
-      "used_in_g418e_playable_hero_slice": true,
+      "used_in_g418e_playable_hero_slice": false,
       "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
       "atlas_region": {
         "x": 171,
@@ -262,7 +262,7 @@
       "visual_quality_rating": 9.1,
       "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
       "commercial_use_status": "green_origin_candidate_pending_license_review",
-      "used_in_g418e_playable_hero_slice": true,
+      "used_in_g418e_playable_hero_slice": false,
       "atlas": "art_pipeline/newport_atelier/atlases/newport_atelier_g418e_tavern_inn_district_v1.png",
       "atlas_region": {
         "x": 908,

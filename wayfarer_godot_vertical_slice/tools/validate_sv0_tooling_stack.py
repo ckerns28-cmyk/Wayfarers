@@ -15,6 +15,8 @@ REPO_ROOT = PROJECT_ROOT.parent
 
 REPORT_MD = REPO_ROOT / "docs" / "reports" / "SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md"
 REPORT_JSON = REPO_ROOT / "docs" / "reports" / "SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json"
+ACQUISITION_MD = REPO_ROOT / "docs" / "reports" / "SV0_TOOL_ACQUISITION_MANIFEST.md"
+ACQUISITION_JSON = REPO_ROOT / "docs" / "reports" / "SV0_TOOL_ACQUISITION_MANIFEST.json"
 TOOLING_ROADMAP_MD = REPO_ROOT / "docs" / "roadmaps" / "STARTER_VILLAGE_TOOLING_STACK.md"
 SV1_ROADMAP_MD = REPO_ROOT / "docs" / "roadmaps" / "STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md"
 SV1_ROADMAP_JSON = REPO_ROOT / "docs" / "roadmaps" / "STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json"
@@ -311,6 +313,8 @@ def main() -> int:
     for path, label in [
         (REPORT_MD, "SV-0 markdown report"),
         (REPORT_JSON, "SV-0 json report"),
+        (ACQUISITION_MD, "SV-0 tool acquisition markdown manifest"),
+        (ACQUISITION_JSON, "SV-0 tool acquisition json manifest"),
         (TOOLING_ROADMAP_MD, "Starter Village tooling roadmap"),
         (WORLD_LAYOUT, "world layout source"),
         (VISUAL_QA, "visual QA manifest"),
@@ -327,12 +331,13 @@ def main() -> int:
     ]:
         require_path(path, failures, label)
 
-    require_text(REPORT_MD, ["SV-0", "ADOPT_NOW", "COUNCIL_PASS_READY_FOR_PR", "screenshots can override reports"], failures)
-    require_text(TOOLING_ROADMAP_MD, ["Locked Stack", "Runtime movement proof", "External Tool Policy"], failures)
-    require_text(AGENTS_MD, ["SV-0", "locked SV-0 tooling stack", "movement proof"], failures)
-    require_text(PR_CHECKLIST, ["SV-0 tooling stack", "movement proof"], failures)
-    require_text(REGRESSION_CHECKLIST, ["SV-0", "visual regression"], failures)
-    require_text(COUNCIL_TOOL, ["validate_sv0_tooling_stack.py", "SV-0 Tooling Stack"], failures)
+    require_text(REPORT_MD, ["SV-0", "ADOPT_NOW", "COUNCIL_PASS_READY_FOR_PR", "screenshots can override reports", "SV-0 Tool Acquisition Manifest"], failures)
+    require_text(ACQUISITION_MD, ["No paid tools", "No Google/browser credentials", "Deferred Or Spike-Only Tools"], failures)
+    require_text(TOOLING_ROADMAP_MD, ["Locked Stack", "Runtime movement proof", "External Tool Policy", "Tool Acquisition Manifest"], failures)
+    require_text(AGENTS_MD, ["SV-0", "locked SV-0 tooling stack", "movement proof", "SV-0 Tool Acquisition Manifest"], failures)
+    require_text(PR_CHECKLIST, ["SV-0 tooling stack", "movement proof", "SV-0 tool acquisition manifest"], failures)
+    require_text(REGRESSION_CHECKLIST, ["SV-0", "visual regression", "validate_sv0_tool_acquisition_manifest.py"], failures)
+    require_text(COUNCIL_TOOL, ["validate_sv0_tooling_stack.py", "validate_sv0_tool_acquisition_manifest.py", "SV-0 Tooling Stack"], failures)
     require_text(SV1_ROADMAP_MD, ["SV-0", "Starter Village Tooling Stack"], failures)
     require_text(SV1_LEDGER_MD, ["SV-0", "Free Tooling Intake Production Stack Lock"], failures)
 

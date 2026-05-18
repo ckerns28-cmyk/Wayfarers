@@ -194,8 +194,6 @@ G418E_PLACED_ASSET_IDS = {
     "atelier_g418e_tavern_threshold_planters_01",
     "atelier_g418e_tavern_service_barrel_crate_01",
     "atelier_g418e_tavern_brick_threshold_01",
-    "atelier_g418e_tavern_stable_tack_rack_01",
-    "atelier_g418e_tavern_firewood_coal_scuttle_01",
     "atelier_g418e_commercial_mercantile_sign_01",
     "atelier_g418e_commercial_fishmonger_sign_01",
     "atelier_g418e_commercial_market_cart_01",

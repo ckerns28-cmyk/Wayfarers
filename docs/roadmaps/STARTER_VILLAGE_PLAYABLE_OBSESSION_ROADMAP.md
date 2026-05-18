@@ -67,7 +67,9 @@ when the autonomous merge rule in `AGENTS.md` and
 SV-0 now precedes renewed layout work. The Starter Village Tooling Stack locks
 the source-of-truth map schema, runtime movement proof, screenshot visual
 regression warnings, dialogue/quest authoring approach, asset cleanup workflow,
-and ground/material cohesion rules before G-7/G-7A continues.
+and ground/material cohesion rules before G-7/G-7A continues. G-7A-SV0 is the
+corrective layout repair subpass that applies the locked layout source to the
+current screenshot failures before later living-town work resumes.
 
 ## Phase Sequence
 
@@ -91,13 +93,13 @@ and ground/material cohesion rules before G-7/G-7A continues.
 | G-13 | Browser Build, Performance, and Regression Hardening | Hardens Godot import, vertical slice, screenshots, review build, input, performance, assets, and route stability. |
 | G-14 | SV-1 Starter Village Playable Obsession Gate | Produces the final review package and stops for Chris. |
 
-Current execution status after G-10B and Chris screenshot QA: the next pass is
-SV-0, not more placement work. First Light has a playable opening arc, a
-runtime-backed Tavern/Inn rumor system, and a multi-path starter choice
-foundation, but screenshot evidence shows the review process still lets
-patchwork layout, mismatched buildings, false stable reads, and overlapping
-visual order escape. SV-0 locks the tooling and QA process before the next
-G-7/G-7A tool-backed layout repair continues.
+Current execution status after SV-0 and Chris screenshot QA: SV-0 is merged and
+the active corrective pass is G-7A-SV0. First Light has a playable opening arc,
+a runtime-backed Tavern/Inn rumor system, and a multi-path starter choice
+foundation, but screenshot evidence shows the layout process still allowed
+patchwork composition, mismatched buildings, false stable reads, and overlap/
+cutoff risks. G-7A-SV0 must use the locked layout source and
+`validate_starter_village_layout_source_usage.py` before the roadmap resumes.
 
 G-10A added a standing visual-order review gate after screenshot QA caught
 road/building order problems around the Tavern/Inn and commercial row. G-10B

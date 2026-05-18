@@ -29,9 +29,9 @@ Deprecated final states are forbidden.
 
 | Phase | Roadmap Item | Branch | PR | Current Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| SV-0 | Free Tooling Intake Production Stack Lock | `codex/sv0-free-tooling-stack` | pending current phase PR | PASS | `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md`, structured stack JSON, tooling roadmap, authoritative world-layout source, visual QA manifest, movement proof manifest, ground stack, SV-0 validator, and `docs/reports/SV0_FREE_TOOLING_AGENT_COUNCIL_REPORT.md`. |
+| SV-0 | Free Tooling Intake Production Stack Lock | `codex/sv0-free-tooling-stack` | #473 merged | PASS | `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md`, structured stack JSON, tooling roadmap, authoritative world-layout source, visual QA manifest, movement proof manifest, ground stack, SV-0 validator, and `docs/reports/SV0_FREE_TOOLING_AGENT_COUNCIL_REPORT.md`. |
 | G-7 | Newport Living Origin Village Masterplan Lock | `codex/sv1-autonomous-roadmap` | #462 merged | PASS | `docs/reports/G7_NEWPORT_LIVING_ORIGIN_VILLAGE_MASTERPLAN_LOCK.md`, roadmap JSON, ledger JSON, G-7 council report, and G-7 validators. |
-| G-7A | Street, Lot, and Ground Cohesion Reconstruction | `codex/g-7a-street-lot-ground-cohesion` | #463 merged | PASS | `docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md`, G-7A council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, and atelier runtime validator. |
+| G-7A | Street, Lot, and Ground Cohesion Reconstruction | `codex/g-7a-street-lot-ground-cohesion`; corrective subpass `codex/g-7a-tool-backed-layout-repair` | #463 merged; corrective PR pending | PASS with corrective subpass council-passing | `docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md`, G-7A council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, atelier runtime validator, plus `docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR.md`, `docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR_AGENT_COUNCIL_REPORT.md`, and `validate_starter_village_layout_source_usage.py`. |
 | G-7B | Harbor, Wharf, and Commercial Spine Cohesion | `codex/g-7b-harbor-commercial-spine` | #464 merged | PASS | `docs/reports/G7B_HARBOR_WHARF_COMMERCIAL_SPINE_COHESION.md`, G-7B council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, NPC route validator, and atelier runtime validator. |
 | G-7C | Landmark and District Identity Pass | `codex/g-7c-landmark-district-identity` | #465 merged | PASS | `docs/reports/G7C_LANDMARK_DISTRICT_IDENTITY_PASS.md`, G-7C council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, interaction UX validator, and atelier runtime validator. |
 | G-8 | Atelier Character and NPC Movement Foundation | `codex/g-8-character-motion-foundation` | #466 merged | PASS | `docs/reports/G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_FOUNDATION.md`, G-8 council report, runtime screenshot manifest, vertical-slice validator, character motion validator, and atelier runtime validator. |
@@ -49,16 +49,17 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after Chris screenshot QA: `SV-0 Free Tooling Intake Production
-Stack Lock`.
+Current phase after Chris screenshot QA and SV-0 merge: `G-7A-SV0 Tool-Backed
+Layout Repair`.
 
 G-10B adds a runtime-backed multi-path choice foundation for First Light:
 counting-house, harbor-work, tavern-rumor, merchant-street, and optional
 secret routes can now advance the opening mystery without a single railroaded
 click path. However, screenshot evidence showed the process still allowed
 patchwork layout, visual-order confusion, false stable reads, and mismatched
-building scale to survive. SV-0 must lock the free production stack before G-7/
-G-7A resumes with a real source of truth for town layout.
+building scale to survive. SV-0 locked the free production stack; G-7A-SV0 now
+applies that source-of-truth process to runtime lot assignments, building
+scale, false tavern-stable reads, overlap/cutoff risks, and screenshot proof.
 
 Chris screenshot QA also exposed that the prior process let route/building
 order pass as long as proof screenshots existed. G-10A added a hard visual-order

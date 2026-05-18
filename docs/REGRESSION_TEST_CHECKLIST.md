@@ -311,8 +311,11 @@ the JavaScript Worker route by accident.
 ## U. SV-0 Starter Village Tooling Stack
 
 - [ ] `wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py` reports `PASS`.
+- [ ] `wayfarer_godot_vertical_slice/tools/validate_sv0_tool_acquisition_manifest.py` reports `PASS` when tooling, addons, packages, browser resources, QA tools, or council/tooling policy changes.
 - [ ] The authoritative world-layout source identifies districts, lots, roads, alleys, dock paths, NPC routes, interaction zones, quest beats, and screenshot viewpoints before new placement work begins.
+- [ ] `wayfarer_godot_vertical_slice/tools/validate_starter_village_layout_source_usage.py` reports `PASS` for layout phases and catches active buildings without lots, layout-source bypasses, overlap/cutoff risks, false tavern-stable reads, and building-scale regression.
 - [ ] The visual regression manifest covers the recurring Newport views and is treated as a warning system, not automatic art approval.
 - [ ] Runtime movement proof is produced for NPC/player movement phases before the Agent Council can pass them.
 - [ ] Ground/material cohesion follows the locked Godot-native material stack before props or clutter are used.
 - [ ] No paid, unknown-license, admin-only, or external-drive-modifying tool is required for the Starter Village path.
+- [ ] Any adopted free tool has source, license, free status, install path, rollback path, export/web-review impact, credential status, and validation proof in the Tool Acquisition Manifest.

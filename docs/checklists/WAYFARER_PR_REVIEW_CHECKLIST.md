@@ -28,6 +28,8 @@
 - [ ] Starter Village roadmap validator when the PR touches SV-1 planning or phase sequencing.
 - [ ] Starter Village execution ledger validator when the PR touches SV-1 evidence/status.
 - [ ] SV-0 tooling stack validator when the PR touches Starter Village layout, quest/dialogue, NPC movement, screenshots, runtime proof, asset cleanup, ground cohesion, or council process.
+- [ ] SV-0 tool acquisition manifest validator when the PR adds, downloads, installs, configures, or depends on free tooling, addons, packages, browser resources, QA tools, or council/tooling policy.
+- [ ] Starter Village layout-source usage validator when the PR touches Newport map placement, lots, building scale, service-yard reads, or world-layout source data.
 - [ ] Phase-specific Starter Village validator(s) when the PR touches world cohesion, runtime atelier assets, character motion, NPC population, interaction UX, quest arc, tavern whispers, first-session playability, or SV-1 gate readiness.
 - [ ] Runtime movement proof manifest/frames for NPC or player movement phases.
 - [ ] `git diff --check`.
