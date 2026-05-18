@@ -1,0 +1,20 @@
+{
+  "schema_id": "wayfarer.g15.opening_island_masterplan_world_topology.v1",
+  "phase_id": "G-15",
+  "phase_name": "Opening Island Masterplan + World Topology",
+  "date": "2026-05-18",
+  "branch": "codex/g-15-opening-island-topology",
+  "starting_main_commit": "74f13668c2e70e7418e2317c0e1dc1a65f9c49bc",
+  "status": "PASS",
+  "topology_source": "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+  "screenshot_viewpoint_manifest": "wayfarer_godot_vertical_slice/data/visual_qa/g15_topology_screenshot_viewpoint_manifest.json",
+  "runtime_screenshots_required_now": false,
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "world_layout_score": 8.6,
+  "design_score": 8.6,
+  "art_direction_score": 8.5,
+  "ux_readability_score": 8.5,
+  "technical_stability_score": 8.8,
+  "north_star_result": "PASS: the island is authored as one playable opening region connected to Newport with routes, loops, landmarks, danger gradient, quest destination, optional secret, and return path.",
+  "next_phase": "G-15A Village-to-Island Transition Pass"
+}

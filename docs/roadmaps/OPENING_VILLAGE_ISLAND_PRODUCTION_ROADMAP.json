@@ -145,7 +145,7 @@
         "validate_opening_village_island_roadmap.py",
         "validate_opening_village_island_execution_ledger.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-15A",

@@ -300,6 +300,11 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     return "G-4.22A", "g422a"
 
 
+def is_g15_topology_planning_phase(phase: str) -> bool:
+    normalized = phase.upper().strip()
+    return normalized == "G-15" or normalized.startswith("G-15 ")
+
+
 def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase: str) -> list[ValidatorCommand]:
     game_root = root / "wayfarer_godot_vertical_slice"
     capture_label, capture_prefix = screenshot_prefix_for_phase(phase)
@@ -640,6 +645,44 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 args=[python_bin, str(game_root / "tools" / "validate_starter_village_execution_ledger.py")],
                 cwd=root,
                 required_paths=[game_root / "tools" / "validate_starter_village_execution_ledger.py"],
+            ),
+            ValidatorCommand(
+                name="git diff --check",
+                command_text="git diff --check",
+                args=["git", "diff", "--check"],
+                cwd=root,
+                required_paths=[],
+            ),
+            ValidatorCommand(
+                name="git diff --cached --check",
+                command_text="git diff --cached --check",
+                args=["git", "diff", "--cached", "--check"],
+                cwd=root,
+                required_paths=[],
+            ),
+        ]
+    if is_g15_topology_planning_phase(phase):
+        return [
+            ValidatorCommand(
+                name="Island world topology validation",
+                command_text=island_topology_text,
+                args=[python_bin, str(game_root / "tools" / "validate_island_world_topology.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_island_world_topology.py"],
+            ),
+            ValidatorCommand(
+                name="Opening Village + Island roadmap validation",
+                command_text=ovi_roadmap_text,
+                args=[python_bin, str(game_root / "tools" / "validate_opening_village_island_roadmap.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_opening_village_island_roadmap.py"],
+            ),
+            ValidatorCommand(
+                name="Opening Village + Island execution ledger validation",
+                command_text=ovi_ledger_text,
+                args=[python_bin, str(game_root / "tools" / "validate_opening_village_island_execution_ledger.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_opening_village_island_execution_ledger.py"],
             ),
             ValidatorCommand(
                 name="git diff --check",
@@ -1184,6 +1227,24 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
             ("Starter Village ledger validator", game_root / "tools" / "validate_starter_village_execution_ledger.py"),
         ]
         return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
+    if is_g15_topology_planning_phase(phase):
+        required = [
+            ("OVI-1 roadmap", root / "docs" / "roadmaps" / "OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md"),
+            ("OVI-1 roadmap JSON", root / "docs" / "roadmaps" / "OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json"),
+            ("OVI-1 execution ledger", root / "docs" / "reports" / "OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md"),
+            ("OVI-1 execution ledger JSON", root / "docs" / "reports" / "OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json"),
+            ("G-15 topology source", game_root / "data" / "world_layout" / "opening_island_world_topology_v1.json"),
+            (
+                "G-15 screenshot viewpoint manifest",
+                game_root / "data" / "visual_qa" / "g15_topology_screenshot_viewpoint_manifest.json",
+            ),
+            ("G-15 phase report", root / "docs" / "reports" / "G15_OPENING_ISLAND_MASTERPLAN_WORLD_TOPOLOGY.md"),
+            ("G-15 phase report JSON", root / "docs" / "reports" / "G15_OPENING_ISLAND_MASTERPLAN_WORLD_TOPOLOGY.json"),
+            ("G-15 island world topology validator", game_root / "tools" / "validate_island_world_topology.py"),
+            ("OVI-1 roadmap validator", game_root / "tools" / "validate_opening_village_island_roadmap.py"),
+            ("OVI-1 ledger validator", game_root / "tools" / "validate_opening_village_island_execution_ledger.py"),
+        ]
+        return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
     required = [
         ("Vertical slice validator", game_root / "tools" / "validate_vertical_slice.gd"),
         (f"{capture_label} runtime screenshot wrapper", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"),
@@ -1627,7 +1688,7 @@ def yes_no(value: bool) -> str:
 
 def phase_requires_screenshots(phase: str) -> bool:
     normalized = phase.upper().strip()
-    if normalized.startswith(("SV-0", "OVI-1")):
+    if normalized.startswith(("SV-0", "OVI-1")) or is_g15_topology_planning_phase(phase):
         return False
     return True
 

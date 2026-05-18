@@ -1,0 +1,52 @@
+{
+  "schema_id": "wayfarer.g15.topology_screenshot_viewpoint_manifest.v1",
+  "phase": "G-15",
+  "source_topology": "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+  "screenshots_required_now": false,
+  "runtime_capture_phase": "G-15A/G-15B and final G-22 OVI-1 proof",
+  "note": "G-15 is a topology/masterplan phase. These planned viewpoints become runtime screenshot obligations when the island transition and terrain are implemented.",
+  "planned_viewpoints": [
+    {
+      "id": "07_village_exit_to_island",
+      "zone": "newport_east_gate",
+      "purpose": "prove readable town exit",
+      "target_final_screenshot": "07_village_exit_to_island.png"
+    },
+    {
+      "id": "08_island_entry_transition",
+      "zone": "outskirt_lane",
+      "purpose": "prove settlement-to-island boundary",
+      "target_final_screenshot": "08_island_entry_transition.png"
+    },
+    {
+      "id": "09_island_main_trail",
+      "zone": "wooded_switchback",
+      "purpose": "prove main trail readability",
+      "target_final_screenshot": "09_island_main_trail.png"
+    },
+    {
+      "id": "10_island_landmark_signal_or_overlook",
+      "zone": "signal_rise",
+      "purpose": "prove landmark destination",
+      "target_final_screenshot": "10_island_landmark_signal_or_overlook.png"
+    },
+    {
+      "id": "11_island_cove_or_hidden_landing",
+      "zone": "hidden_landing",
+      "purpose": "prove coastal/cove POI",
+      "target_final_screenshot": "11_island_cove_or_hidden_landing.png"
+    },
+    {
+      "id": "12_island_optional_discovery",
+      "zone": "optional_secret_cache",
+      "purpose": "prove optional secret",
+      "target_final_screenshot": "12_island_optional_discovery.png"
+    },
+    {
+      "id": "17_return_to_town_or_next_hook",
+      "zone": "return_lane",
+      "purpose": "prove return momentum",
+      "target_final_screenshot": "17_return_to_town_or_next_hook.png"
+    }
+  ]
+}

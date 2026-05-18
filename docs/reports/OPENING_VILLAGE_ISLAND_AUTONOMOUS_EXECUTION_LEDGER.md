@@ -43,8 +43,8 @@ Agent Council pass verdict for merge-ready phases: `COUNCIL_PASS_READY_FOR_PR`
 
 | Phase | Roadmap Item | Branch | PR | Current Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| G-14 | Internal Starter Village Proof Gate | `codex/g-14-internal-starter-village-proof` | pending open PR | PASS | `docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md`, structured proof JSON, G-14 Agent Council report, village screenshots, motion proof manifests, quest proof manifests, browser-review ZIPs, and validators. Human review required: no. |
-| G-15 | Opening Island Masterplan + World Topology | pending | pending | PENDING | Must create the island masterplan, safe-to-danger gradient, roads/trails/coastline, quest routes, exploration loops, and screenshot viewpoints. |
+| G-14 | Internal Starter Village Proof Gate | `codex/g-14-internal-starter-village-proof` | #480 merged | PASS | `docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md`, structured proof JSON, G-14 Agent Council report, village screenshots, motion proof manifests, quest proof manifests, browser-review ZIPs, and validators. Human review required: no. |
+| G-15 | Opening Island Masterplan + World Topology | `codex/g-15-opening-island-topology` | pending open PR | PASS | `wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json`, `docs/reports/G15_OPENING_ISLAND_MASTERPLAN_WORLD_TOPOLOGY.md`, and `wayfarer_godot_vertical_slice/data/visual_qa/g15_topology_screenshot_viewpoint_manifest.json` define the authored island structure, routes, loops, danger/safety gradient, quest destination, optional secret, return path, and future OVI-1 screenshot viewpoints. |
 | G-15A | Village-to-Island Transition Pass | pending | pending | PENDING | Must make leaving Newport readable, natural, and mysterious. |
 | G-15B | Island Terrain, Ground, and Route Cohesion | pending | pending | PENDING | Must remove patchwork terrain, disconnected paths, empty sprawl, and unreadable transitions. |
 | G-16 | Island Landmark and Point-of-Interest Pass | pending | pending | PENDING | Must create memorable, quest-relevant island destinations and at least one optional discovery. |
