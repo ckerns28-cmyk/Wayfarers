@@ -53,9 +53,9 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.22R", "build_phase_g_4_22r")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.22R Pre-G-5 Atelier Consistency Gate Repair", "build_label_g_4_22r")
-	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-22r-roadmap-execution-ledger-and-pre-g5-gate-repair", "source_branch_g_4_22r")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-13", "build_phase_g_13")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-13 Browser Build, Performance, and Regression Hardening", "build_label_g_13")
+	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-13-browser-build-hardening", "source_branch_g_13")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -855,7 +855,7 @@ func _validate_g420_hud_ui_visual_redesign(hud: CanvasLayer) -> void:
 	_expect(quest_body != null and quest_body.text.to_lower().find("counting house") >= 0, "g420_hud_player_facing_objective")
 	if hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.20", "G-4.21", "G-4.22", "G-4.22R"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")
+		_expect(["G-4.20", "G-4.21", "G-4.22", "G-4.22R", "G-13"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g420_hud_contract_player_facing_default")
 		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g420_hud_contract_metadata_hidden")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g420_hud_contract_no_hud_available")
@@ -878,7 +878,7 @@ func _validate_g421_origin_city_hero_slice(hud: CanvasLayer) -> void:
 	_expect(hud != null and hud.has_method("get_hud_visual_contract"), "g421_hud_contract_available")
 	if hud != null and hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.21", "G-4.22", "G-4.22R"].has(String(contract.get("phase", ""))), "g421_hud_contract_phase")
+		_expect(["G-4.21", "G-4.22", "G-4.22R", "G-13"].has(String(contract.get("phase", ""))), "g421_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g421_hud_contract_player_facing")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g421_no_hud_capture_available")
 
@@ -892,7 +892,7 @@ func _validate_g422_visual_foundation_review_gate(hud: CanvasLayer) -> void:
 	_expect(hud != null and hud.has_method("get_hud_visual_contract"), "g422_hud_contract_available")
 	if hud != null and hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.22", "G-4.22R"].has(String(contract.get("phase", ""))), "g422_hud_contract_phase")
+		_expect(["G-4.22", "G-4.22R", "G-13"].has(String(contract.get("phase", ""))), "g422_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g422_hud_contract_player_facing")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g422_no_hud_capture_available")
 		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g422_review_metadata_hidden_default")

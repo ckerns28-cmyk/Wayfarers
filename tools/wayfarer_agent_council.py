@@ -229,6 +229,8 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
         return "G-11", "g11"
     if normalized.startswith("G-12"):
         return "G-12", "g12"
+    if normalized.startswith("G-13"):
+        return "G-13 browser regression", "g12"
     if normalized.startswith("G-10B"):
         return "G-10B", "g10b"
     if normalized.startswith("G-10A"):
@@ -340,6 +342,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     first_session_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_first_session_playability.py"
+    )
+    browser_build_hardening_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_browser_build_hardening.py"
     )
     interaction_ux_text = (
         f"& {powershell_quote(python_bin)} "
@@ -687,6 +693,67 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     args=[python_bin, str(game_root / "tools" / "validate_first_session_playability.py")],
                     cwd=root,
                     required_paths=[game_root / "tools" / "validate_first_session_playability.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-13"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="G-13 browser build hardening validation",
+                    command_text=browser_build_hardening_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_browser_build_hardening.py"],
+                ),
+            )
+            starter_commands.insert(
+                1,
+                ValidatorCommand(
+                    name="First-session playability validation",
+                    command_text=first_session_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_first_session_playability.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_first_session_playability.py"],
+                ),
+            )
+            starter_commands.insert(
+                2,
+                ValidatorCommand(
+                    name="Opening quest arc validation",
+                    command_text=opening_quest_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_opening_quest_arc.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_opening_quest_arc.py"],
+                ),
+            )
+            starter_commands.insert(
+                3,
+                ValidatorCommand(
+                    name="Interaction UX validation",
+                    command_text=interaction_ux_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_interaction_ux.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_interaction_ux.py"],
+                ),
+            )
+            starter_commands.insert(
+                4,
+                ValidatorCommand(
+                    name="Living town rhythm validation",
+                    command_text=living_town_rhythm_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_living_town_rhythm.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_living_town_rhythm.py"],
+                ),
+            )
+            starter_commands.insert(
+                5,
+                ValidatorCommand(
+                    name="Audio atmosphere hooks validation",
+                    command_text=audio_atmosphere_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_audio_atmosphere_hooks.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_audio_atmosphere_hooks.py"],
                 ),
             )
         if normalized_phase.startswith("G-9"):
@@ -1040,6 +1107,24 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ("G-12 player prompt suppression", game_root / "scenes" / "player" / "Player.gd"),
                 ("G-12 first light quest script", game_root / "scripts" / "quests" / "FirstLightQuest.gd"),
                 ("G-12 first light quest data", game_root / "data" / "quests" / "first_light_whispers_before_dawn.json"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-13"):
+        required.extend(
+            [
+                ("G-13 browser build hardening validator", game_root / "tools" / "validate_browser_build_hardening.py"),
+                ("G-13 review build identity", game_root / "scripts" / "BuildInfo.gd"),
+                ("G-13 package script", game_root / "tools" / "package_itch_web.sh"),
+                ("G-13 stable review ZIP", game_root / "artifacts" / "wayfarers-tale-godot-web.zip"),
+                (
+                    "G-13 versioned review ZIP",
+                    game_root
+                    / "artifacts"
+                    / "wayfarers-tale-godot-g-13-browser-build-performance-and-regression-hardening.zip",
+                ),
+                ("G-12 regression screenshot wrapper reused for G-13", game_root / "tools" / "capture_g12_runtime_screenshots.ps1"),
+                ("G-12 regression screenshot script reused for G-13", game_root / "tools" / "capture_g12_runtime_screenshots.gd"),
+                ("G-13 phase report", root / "docs" / "reports" / "G13_BROWSER_BUILD_PERFORMANCE_REGRESSION_HARDENING.md"),
             ]
         )
     if phase.upper().strip().startswith("G-10"):
