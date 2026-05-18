@@ -70,7 +70,12 @@ func _validate_scene(main: Node) -> void:
 		var edrin := main.get_node_or_null("World/EdrinVale") as Node2D
 		_expect(edrin != null, "g422r_edrin_enabled")
 		if edrin:
-			_expect(edrin.get_node_or_null("Visual") is Sprite2D, "g422r_edrin_sprite_visual")
+			_expect(edrin.get_node_or_null("Visual") is AnimatedSprite2D, "g8_edrin_animated_sprite_visual")
+			_expect(edrin.get_node_or_null("GroundShadow") is Polygon2D, "g8_edrin_ground_shadow")
+			_expect(edrin.has_method("set_review_motion_state"), "g8_edrin_review_motion_state_api")
+			_expect(edrin.has_method("motion_foundation_contract"), "g8_edrin_motion_foundation_contract_api")
+			if edrin.has_method("is_route_walking_enabled"):
+				_expect(edrin.call("is_route_walking_enabled") == false, "g8_edrin_route_walking_disabled_until_walk_sheet")
 
 	if player:
 		_expect(player.get_node_or_null("Camera2D") != null, "player_camera_exists")
@@ -424,7 +429,8 @@ func _validate_g419_player_runtime_visual(player: Node) -> void:
 		return
 	_expect(visual.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR, "g422r_player_visual_linear_filter")
 	_expect(absf(visual.scale.x - 0.32) < 0.01 and absf(visual.scale.y - 0.32) < 0.01, "g422r_player_visual_scale")
-	_expect(visual.position.distance_to(Vector2(0.0, -33.0)) < 0.5, "g422r_player_visual_foot_anchor_offset")
+	_expect(visual.position.distance_to(Vector2(0.0, -37.12)) < 0.5, "g422r_player_visual_foot_anchor_offset")
+	_expect(player.get_node_or_null("GroundShadow") is Polygon2D, "g8_player_ground_shadow_exists")
 	var frames := visual.sprite_frames
 	_expect(frames != null, "g419_player_sprite_frames")
 	if frames == null:
@@ -435,6 +441,11 @@ func _validate_g419_player_runtime_visual(player: Node) -> void:
 			var expected_count := 1 if animation_name.begins_with("idle_") else 4
 			_expect(frames.get_frame_count(animation_name) == expected_count, "g419_player_animation_frame_count_" + animation_name)
 	_expect(player.has_method("set_review_visual_state"), "g419_player_review_pose_hook")
+	_expect(player.has_method("character_motion_contract"), "g8_player_motion_contract")
+	if player.has_method("character_motion_contract"):
+		var motion_contract: Dictionary = player.call("character_motion_contract")
+		_expect(motion_contract.get("phase", "") == "G-8", "g8_player_motion_contract_phase")
+		_expect(String(motion_contract.get("pause_behavior", "")).find("idle") >= 0, "g8_player_pause_behavior")
 
 func _validate_g422r_atelier_runtime_asset_consistency(main: Node, player: Node, map: Node) -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/newport_atelier_characters_g422r_manifest.json")
@@ -470,6 +481,8 @@ func _validate_g422r_atelier_runtime_asset_consistency(main: Node, player: Node,
 	_expect(edrin_source.find("newport_npc_atelier_g422r_v1.png") >= 0, "g422r_edrin_runtime_uses_npc_atlas")
 	for primitive in ["func _draw()", "draw_circle", "draw_rect", "draw_line"]:
 		_expect(edrin_source.find(primitive) < 0, "g422r_edrin_no_primitive_" + primitive.replace(" ", "_").replace("(", "").replace(")", ""))
+	_expect(edrin_source.find("NPC_ROUTE_WALKING_ENABLED := false") >= 0, "g8_edrin_route_walking_disabled_until_walk_sheet")
+	_expect(edrin_source.find("set_review_motion_state") >= 0, "g8_edrin_review_motion_state_hook")
 	var blueprint_source := FileAccess.get_file_as_string("res://scripts/NewportTownBlueprint.gd")
 	_expect(blueprint_source.find("npc_placeholder") < 0, "g422r_blueprint_no_npc_placeholder")
 	_expect(blueprint_source.find("npc_atelier") >= 0, "g422r_blueprint_has_npc_atelier")

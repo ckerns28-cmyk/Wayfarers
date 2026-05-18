@@ -15,8 +15,13 @@ script = ExtResource("1_player")
 position = Vector2(0, -7)
 shape = SubResource("CapsuleShape2D_player")
 
+[node name="GroundShadow" type="Polygon2D" parent="."]
+position = Vector2(0, 1)
+color = Color(0, 0, 0, 0.17)
+polygon = PackedVector2Array(-17, -1, -9.35, -4, 0, -5, 9.35, -4, 17, -1, 9.35, 4, 0, 5, -9.35, 4)
+
 [node name="Visual" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -33)
+position = Vector2(0, -37.12)
 scale = Vector2(0.32, 0.32)
 
 [node name="Camera2D" type="Camera2D" parent="."]

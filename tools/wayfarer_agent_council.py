@@ -216,6 +216,18 @@ def find_latest_screenshots(root: Path) -> list[Path]:
 
 def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
+    if normalized.startswith("G-8A"):
+        return "G-8A", "g8a"
+    if normalized.startswith("G-8"):
+        return "G-8", "g8"
+    if normalized.startswith("G-7C"):
+        return "G-7C", "g7c"
+    if normalized.startswith("G-7B"):
+        return "G-7B", "g7b"
+    if normalized.startswith("G-7A"):
+        return "G-7A", "g7a"
+    if normalized.startswith("G-7"):
+        return "G-7", "g7"
     if normalized.startswith("G-4.22R"):
         return "G-4.22R", "g422r"
     if normalized.startswith("G-4.22A"):
@@ -264,6 +276,22 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     g422r_runtime_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_g422r_runtime_asset_consistency.py"
+    )
+    runtime_atelier_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_runtime_atelier_asset_consistency.py"
+    )
+    starter_village_roadmap_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_starter_village_roadmap.py"
+    )
+    starter_village_ledger_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_starter_village_execution_ledger.py"
+    )
+    character_motion_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_character_motion_foundation.py"
     )
     pre_g5_ledger_text = (
         f"& {powershell_quote(python_bin)} "
@@ -411,6 +439,43 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 required_paths=[game_root / "tools" / "validate_pre_g5_roadmap_ledger.py"],
             ),
         )
+    if normalized_phase.startswith(("G-7", "G-8", "G-9", "G-10", "G-11", "G-12", "G-13", "G-14")):
+        diff_index = max(0, len(commands) - 2)
+        starter_commands = [
+            ValidatorCommand(
+                name="Starter Village roadmap validation",
+                command_text=starter_village_roadmap_text,
+                args=[python_bin, str(game_root / "tools" / "validate_starter_village_roadmap.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_starter_village_roadmap.py"],
+            ),
+            ValidatorCommand(
+                name="Starter Village execution ledger validation",
+                command_text=starter_village_ledger_text,
+                args=[python_bin, str(game_root / "tools" / "validate_starter_village_execution_ledger.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_starter_village_execution_ledger.py"],
+            ),
+            ValidatorCommand(
+                name="Runtime atelier asset consistency validation",
+                command_text=runtime_atelier_text,
+                args=[python_bin, str(game_root / "tools" / "validate_runtime_atelier_asset_consistency.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_runtime_atelier_asset_consistency.py"],
+            ),
+        ]
+        if normalized_phase.startswith("G-8"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="G-8 character motion foundation validation",
+                    command_text=character_motion_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_character_motion_foundation.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_character_motion_foundation.py"],
+                ),
+            )
+        commands[diff_index:diff_index] = starter_commands
     return commands
 
 
@@ -455,8 +520,8 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
     capture_label, capture_prefix = screenshot_prefix_for_phase(phase)
     required = [
         ("Vertical slice validator", game_root / "tools" / "validate_vertical_slice.gd"),
-        ("G-4.22A runtime screenshot wrapper", game_root / "tools" / "capture_g422a_runtime_screenshots.ps1"),
-        ("G-4.22A runtime screenshot script", game_root / "tools" / "capture_g422a_runtime_screenshots.gd"),
+        (f"{capture_label} runtime screenshot wrapper", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"),
+        (f"{capture_label} runtime screenshot script", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.gd"),
         (
             "Newport asset provenance validator",
             game_root / "art_pipeline" / "newport" / "scripts" / "validate_newport_asset_provenance.py",
@@ -599,11 +664,25 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ),
             ]
         )
-    if capture_prefix != "g422a":
+    if phase.upper().strip().startswith("G-8"):
         required.extend(
             [
-                (f"{capture_label} runtime screenshot wrapper", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"),
-                (f"{capture_label} runtime screenshot script", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.gd"),
+                (
+                    "G-8 character motion foundation validator",
+                    game_root / "tools" / "validate_character_motion_foundation.py",
+                ),
+                (
+                    "G-8 runtime screenshot manifest",
+                    game_root / "artifacts" / "review" / "g8_runtime_screenshots" / "g8_runtime_screenshot_manifest.json",
+                ),
+                (
+                    "G-8 character manifest",
+                    game_root / "art_pipeline" / "player_identity" / "manifests" / "newport_atelier_characters_g422r_manifest.json",
+                ),
+                ("G-8 player script", game_root / "scenes" / "player" / "Player.gd"),
+                ("G-8 player scene", game_root / "scenes" / "player" / "Player.tscn"),
+                ("G-8 Edrin NPC script", game_root / "scenes" / "npc" / "EdrinVale.gd"),
+                ("G-8 Edrin NPC scene", game_root / "scenes" / "npc" / "EdrinVale.tscn"),
             ]
         )
     return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
@@ -877,6 +956,8 @@ def build_report(
         scrum_scope = "Scope check: this council pass reopens the false-positive G-5 readiness gate, verifies the pre-G-5 roadmap ledger, and repairs visible player/NPC/marker/world sprite consistency before G-5 can be recommended."
     elif phase.upper().strip().startswith("G-4.22"):
         scrum_scope = "Scope check: this council pass is the formal G-4 visual foundation gate; it records acceptance authority and may recommend G-5 only if screenshots, provenance, validators, and council scores clear the gate."
+    elif phase.upper().strip().startswith("G-8"):
+        scrum_scope = "Scope check: this council pass changes the player/NPC motion foundation, runtime proof capture, validators, and SV-1 ledger only; it must eliminate static-sprite glide without expanding the quest scope."
     else:
         scrum_scope = "Scope check: this council pass changes production documentation and tooling only; it must not change Newport runtime layout."
 
@@ -886,7 +967,11 @@ def build_report(
         "NOT_RUN_FOR_PHASE",
     )
     runtime_asset_validator_status = next(
-        (item["status"] for item in validator_results if item["name"] == "G-4.22R runtime asset consistency validation"),
+        (
+            item["status"]
+            for item in validator_results
+            if item["name"] in {"G-4.22R runtime asset consistency validation", "Runtime atelier asset consistency validation"}
+        ),
         "NOT_RUN_FOR_PHASE",
     )
     g422r_consistency_fields = [
@@ -946,7 +1031,7 @@ def build_report(
     ]
     npc_asset_audit_rows = [
         ["Runtime atlas", "newport_npc_atelier_g422r_v1.png", "Manifest-backed three-variant NPC sheet", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
-        ["Interactable NPC", "scenes/npc/EdrinVale.gd / EdrinVale.tscn", "Sprite2D atlas visual, primitive draw removed", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Interactable NPC", "scenes/npc/EdrinVale.gd / EdrinVale.tscn", "AnimatedSprite2D atlas visual, primitive draw removed, G-8 no-drift contract", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
         ["Ambient NPC placements", "MapLayer.gd NEWPORT_ATELIER_CHARACTER_PLACEMENTS", "Manifest-backed dockworker/vendor/clerk variants", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
         ["Blueprint anchors", "NewportTownBlueprint.gd", "npc_atelier anchors, no npc_placeholder normal-play anchors", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
     ]
@@ -958,7 +1043,7 @@ def build_report(
     screenshot_inspection_rows = [
         ["Screenshots found", str(len(screenshots)), "PASS" if screenshots else "FAIL"],
         ["Screenshot review flag", screenshot_review, "PASS" if screenshots_inspected else "FAIL"],
-        ["Debug overlays disabled proof", "g422r_09_debug_overlays_disabled_proof.png", "PASS" if screenshots_inspected else "CHECK"],
+        ["Debug overlays disabled proof", f"{screenshot_prefix_for_phase(phase)[1]}_14_debug_overlays_disabled.png", "PASS" if screenshots_inspected else "CHECK"],
         ["Visible failures found/fixed", "Non-atelier player/NPC/marker placeholders replaced or hidden by G-4.22R", "PASS" if final_verdict == AUTHORITY_PASS else "CHECK"],
     ]
     north_star_rows = [
@@ -1120,6 +1205,20 @@ def build_report(
             "",
             md_table(["Discipline", "Score", "Status"], visual_bar_rows),
             "",
+            *(
+                [
+                    "## G-8 Character Motion Result",
+                    "",
+                    f"NPC motion/grounding score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime screenshots inspected: G-8 proof frames include player directional walk states, Edrin stationary no-drift proof, debug-off proof, and atelier provenance proof.",
+                    "",
+                    "- G-8 accepted proof: player directional walk frames are grounded and Edrin cannot glide as a static cutout because route walking is disabled until dedicated walk sheets ship.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-8")
+                else []
+            ),
             "## Required Tooling And Validator Paths",
             "",
             md_table(["Item", "Status", "Path"], paths),

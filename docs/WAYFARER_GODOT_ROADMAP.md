@@ -2244,6 +2244,12 @@ The required autonomous phase sequence is:
 - G-13 Browser Build, Performance, and Regression Hardening,
 - G-14 SV-1 Starter Village Playable Obsession Gate.
 
+Current SV-1 autonomous status after G-8: the movement foundation pass has
+grounded player directional walk/idle states, converted Edrin Vale to a
+manifest-backed `AnimatedSprite2D`, disabled normal-play NPC route walking
+until dedicated walk sheets exist, and produced G-8 runtime screenshot proof.
+The next active phase is G-8A Living NPC Population Pass.
+
 Ordinary roadmap-bound autonomous PRs before SV-1 may be merged by Codex when
 branch/PR preflight is current, required validators pass, runtime proof passes
 where applicable, the Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`,

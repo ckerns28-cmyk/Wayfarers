@@ -8,15 +8,32 @@ const WORLD_LIMIT_TOP := 0
 const WORLD_LIMIT_RIGHT := 1600
 const WORLD_LIMIT_BOTTOM := 1024
 const PLAYER_SPRITE_ATLAS_PATH := "res://art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png"
+const G8_CHARACTER_MOTION_FOUNDATION_PASS := "G-8"
 const PLAYER_FRAME_SIZE := Vector2i(256, 256)
+const PLAYER_FOOT_ANCHOR := Vector2(128.0, 244.0)
 const PLAYER_VISUAL_SCALE := 0.32
-const PLAYER_VISUAL_OFFSET := Vector2(0.0, -33.0)
+const PLAYER_VISUAL_OFFSET := Vector2(0.0, -37.12)
+const PLAYER_GROUND_SHADOW_SIZE := Vector2(34.0, 8.0)
+const PLAYER_GROUND_SHADOW_ALPHA := 0.17
+const PLAYER_WALK_ANIMATION_FPS := 7.0
+const PLAYER_MOVEMENT_SPEED_SYNC := 185.0
 const PLAYER_DIRECTIONS := ["down", "up", "left", "right"]
 const PLAYER_FRAME_VARIANTS := ["idle", "walk_a", "walk_b"]
+const PLAYER_MOTION_STATE_NAMES := [
+	"idle_down",
+	"idle_up",
+	"idle_left",
+	"idle_right",
+	"walk_down",
+	"walk_up",
+	"walk_left",
+	"walk_right",
+]
 
 @export var speed := 185.0
 @export var interaction_radius := 44.0
 
+@onready var ground_shadow: Polygon2D = $GroundShadow
 @onready var visual_sprite: AnimatedSprite2D = $Visual
 @onready var camera: Camera2D = $Camera2D
 @onready var prompt_label: Label = $PromptLabel
@@ -29,6 +46,7 @@ var _current_visual_animation := ""
 
 func _ready() -> void:
 	add_to_group("player")
+	_configure_ground_shadow()
 	_configure_visual_sprite()
 	_configure_camera()
 	prompt_label.z_as_relative = false
@@ -76,6 +94,40 @@ func set_review_visual_state(direction: String, moving: bool, frame_index := 0) 
 		if moving:
 			visual_sprite.pause()
 
+func character_motion_contract() -> Dictionary:
+	return {
+		"phase": G8_CHARACTER_MOTION_FOUNDATION_PASS,
+		"states": PLAYER_MOTION_STATE_NAMES.duplicate(),
+		"foot_anchor": PLAYER_FOOT_ANCHOR,
+		"visual_offset": PLAYER_VISUAL_OFFSET,
+		"ground_shadow_size": PLAYER_GROUND_SHADOW_SIZE,
+		"movement_speed": speed,
+		"movement_speed_synced_to_animation": absf(speed - PLAYER_MOVEMENT_SPEED_SYNC) < 0.01,
+		"walk_animation_fps": PLAYER_WALK_ANIMATION_FPS,
+		"pause_behavior": "idle state holds the last facing direction when movement input stops",
+	}
+
+func _configure_ground_shadow() -> void:
+	if ground_shadow == null:
+		push_error("Player GroundShadow Polygon2D is missing.")
+		return
+	var half_w := PLAYER_GROUND_SHADOW_SIZE.x * 0.5
+	var half_h := PLAYER_GROUND_SHADOW_SIZE.y * 0.5
+	ground_shadow.polygon = PackedVector2Array([
+		Vector2(-half_w, -1.0),
+		Vector2(-half_w * 0.55, -half_h),
+		Vector2(0.0, -half_h - 1.0),
+		Vector2(half_w * 0.55, -half_h),
+		Vector2(half_w, -1.0),
+		Vector2(half_w * 0.55, half_h),
+		Vector2(0.0, half_h + 1.0),
+		Vector2(-half_w * 0.55, half_h),
+	])
+	ground_shadow.position = Vector2(0.0, 1.0)
+	ground_shadow.color = Color(0.0, 0.0, 0.0, PLAYER_GROUND_SHADOW_ALPHA)
+	ground_shadow.z_as_relative = true
+	ground_shadow.z_index = 0
+
 func _configure_visual_sprite() -> void:
 	if visual_sprite == null:
 		push_error("Player Visual AnimatedSprite2D is missing.")
@@ -100,7 +152,7 @@ func _configure_visual_sprite() -> void:
 		var walk_animation := "walk_" + direction
 		sprite_frames.add_animation(walk_animation)
 		sprite_frames.set_animation_loop(walk_animation, true)
-		sprite_frames.set_animation_speed(walk_animation, 7.0)
+		sprite_frames.set_animation_speed(walk_animation, PLAYER_WALK_ANIMATION_FPS)
 		for raw_variant in ["idle", "walk_a", "idle", "walk_b"]:
 			var variant := String(raw_variant)
 			sprite_frames.add_frame(walk_animation, _atlas_frame(atlas, direction, variant), 1.0)
