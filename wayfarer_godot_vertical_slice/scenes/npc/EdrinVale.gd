@@ -6,6 +6,7 @@ extends Node2D
 const NPC_ATLAS_PATH := "res://art_pipeline/player_identity/atlases/newport_npc_atelier_g422r_v1.png"
 const G8_CHARACTER_MOTION_FOUNDATION_PASS := "G-8"
 const G9_INTERACTION_UX_PASS := "G-9"
+const G11_LIVING_TOWN_RHYTHM_PASS := "G-11"
 const NPC_FRAME_SIZE := Vector2i(256, 256)
 const EDRIN_FRAME_INDEX := 2
 const NPC_VISUAL_SCALE := 0.32
@@ -16,6 +17,8 @@ const NPC_STATIONARY_UNTIL_WALK_SHEET := true
 const NPC_MOVEMENT_SPEED := 0.0
 const NPC_WALK_ANIMATION_FPS := 0.0
 const NPC_PAUSE_BEHAVIOR := "stationary_idle_until_dedicated_walk_sheet_no_static_drift"
+const NPC_TOWN_RHYTHM_POLICY := "stationary_no_glide_rhythm_until_dedicated_walk_sheets"
+const NPC_BARK_DISPLAY_SECONDS := 2.6
 const NPC_DIRECTIONS := ["down", "up", "left", "right"]
 const NPC_MOTION_STATE_NAMES := [
 	"idle_down",
@@ -44,14 +47,27 @@ var _population_config: Dictionary = {
 	"movement_policy": NPC_PAUSE_BEHAVIOR,
 	"asset_id": "npc_civic_clerk_atelier_g422r",
 }
+var _rhythm_config: Dictionary = {}
+var _rhythm_elapsed := 0.0
+var _rhythm_stage: Dictionary = {}
+var _current_bark := ""
 var _facing_direction := "down"
 var _current_visual_animation := ""
+var _ambient_bark_label: Label = null
 
 func _ready() -> void:
 	add_to_group("interactable")
 	add_to_group("starter_village_npc")
+	add_to_group("starter_village_town_rhythm_actor")
 	_configure_ground_shadow()
 	_configure_visual_sprite()
+	_configure_ambient_bark_label()
+
+func _process(delta: float) -> void:
+	if _rhythm_config.is_empty():
+		return
+	_rhythm_elapsed += delta
+	apply_town_rhythm_tick(_rhythm_elapsed, false)
 
 func get_interaction_label() -> String:
 	return "Talk - " + npc_name
@@ -95,6 +111,29 @@ func set_review_motion_state(direction: String, moving: bool, frame_index := 0) 
 		if should_walk:
 			visual_sprite.pause()
 
+func configure_rhythm(config: Dictionary) -> void:
+	_rhythm_config = config.duplicate(true)
+	_rhythm_elapsed = 0.0
+	if is_node_ready() and not _rhythm_config.is_empty():
+		apply_town_rhythm_tick(0.0, false)
+
+func apply_town_rhythm_tick(elapsed_seconds: float, force_bark := false) -> Dictionary:
+	if _rhythm_config.is_empty():
+		return town_rhythm_contract()
+	var stage := _rhythm_stage_for_time(elapsed_seconds)
+	_rhythm_stage = stage.duplicate(true)
+	var facing := String(stage.get("facing", _facing_direction))
+	set_review_motion_state(facing, false, 0)
+	_current_bark = String(stage.get("bark", ""))
+	var stage_age := _stage_age(elapsed_seconds, stage)
+	var duration := maxf(float(stage.get("duration", NPC_BARK_DISPLAY_SECONDS)), NPC_BARK_DISPLAY_SECONDS)
+	var should_show_bark := force_bark or (stage_age >= 0.0 and stage_age <= minf(NPC_BARK_DISPLAY_SECONDS, duration))
+	_set_ambient_bark(_current_bark, should_show_bark and not _current_bark.is_empty())
+	return town_rhythm_contract()
+
+func set_town_rhythm_bark_visible(visible: bool) -> void:
+	_set_ambient_bark(_current_bark, visible and not _current_bark.is_empty())
+
 func is_route_walking_enabled() -> bool:
 	return NPC_ROUTE_WALKING_ENABLED
 
@@ -118,6 +157,37 @@ func prompt_ux_contract() -> Dictionary:
 		"prompt_text": get_prompt_text(),
 		"dialogue_seed": String(_population_config.get("dialogue_seed", "")),
 		"quest_relevance": String(_population_config.get("quest_relevance", "")),
+	}
+
+func town_rhythm_contract() -> Dictionary:
+	var stages: Array = _rhythm_config.get("stages", [])
+	var bark_count := 0
+	for raw_stage in stages:
+		var stage: Dictionary = raw_stage
+		if not String(stage.get("bark", "")).is_empty():
+			bark_count += 1
+	return {
+		"phase": G11_LIVING_TOWN_RHYTHM_PASS,
+		"npc_id": String(_population_config.get("id", name)),
+		"display_name": String(_population_config.get("display_name", npc_name)),
+		"role": String(_population_config.get("role", "")),
+		"district": String(_population_config.get("district", "")),
+		"station": String(_population_config.get("station", "")),
+		"rhythm_id": String(_rhythm_config.get("id", "")),
+		"behavior_tag": String(_rhythm_config.get("behavior_tag", "")),
+		"station_points": (_rhythm_config.get("station_points", []) as Array).duplicate(),
+		"stage_count": stages.size(),
+		"ambient_bark_count": bark_count,
+		"current_action": String(_rhythm_stage.get("action", "")),
+		"current_bark": _current_bark,
+		"facing_direction": _facing_direction,
+		"route_walking_enabled": NPC_ROUTE_WALKING_ENABLED,
+		"stationary_until_walk_sheet": NPC_STATIONARY_UNTIL_WALK_SHEET,
+		"movement_speed": NPC_MOVEMENT_SPEED,
+		"movement_policy": NPC_TOWN_RHYTHM_POLICY,
+		"global_position": global_position,
+		"ground_shadow_visible": ground_shadow != null and ground_shadow.visible,
+		"no_static_sprite_translation": true,
 	}
 
 func get_interaction_position() -> Vector2:
@@ -164,6 +234,54 @@ func _configure_visual_sprite() -> void:
 	visual_sprite.z_as_relative = true
 	visual_sprite.z_index = 1
 	_play_visual_animation("idle_down")
+
+func _configure_ambient_bark_label() -> void:
+	if _ambient_bark_label != null:
+		return
+	_ambient_bark_label = Label.new()
+	_ambient_bark_label.name = "AmbientBarkLabel"
+	_ambient_bark_label.visible = false
+	_ambient_bark_label.position = Vector2(-88.0, -106.0)
+	_ambient_bark_label.custom_minimum_size = Vector2(176.0, 28.0)
+	_ambient_bark_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ambient_bark_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_ambient_bark_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_ambient_bark_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ambient_bark_label.z_as_relative = true
+	_ambient_bark_label.z_index = 4
+	_ambient_bark_label.modulate = Color(1.0, 0.93, 0.70, 0.92)
+	_ambient_bark_label.add_theme_font_size_override("font_size", 10)
+	_ambient_bark_label.add_theme_color_override("font_outline_color", Color(0.05, 0.04, 0.02, 0.88))
+	_ambient_bark_label.add_theme_constant_override("outline_size", 3)
+	add_child(_ambient_bark_label)
+
+func _set_ambient_bark(text: String, visible: bool) -> void:
+	if _ambient_bark_label == null:
+		return
+	_ambient_bark_label.text = text
+	_ambient_bark_label.visible = visible and not text.is_empty()
+
+func _rhythm_stage_for_time(elapsed_seconds: float) -> Dictionary:
+	var stages: Array = _rhythm_config.get("stages", [])
+	if stages.is_empty():
+		return {}
+	var cycle_seconds := maxf(float(_rhythm_config.get("cycle_seconds", 1.0)), 1.0)
+	var cycle_time := fposmod(elapsed_seconds, cycle_seconds)
+	var selected: Dictionary = stages[0]
+	for raw_stage in stages:
+		var stage: Dictionary = raw_stage
+		var start := float(stage.get("at", 0.0))
+		var duration := maxf(float(stage.get("duration", 0.0)), 0.01)
+		if cycle_time >= start and cycle_time < start + duration:
+			return stage
+		if cycle_time >= start:
+			selected = stage
+	return selected
+
+func _stage_age(elapsed_seconds: float, stage: Dictionary) -> float:
+	var cycle_seconds := maxf(float(_rhythm_config.get("cycle_seconds", 1.0)), 1.0)
+	var cycle_time := fposmod(elapsed_seconds, cycle_seconds)
+	return cycle_time - float(stage.get("at", 0.0))
 
 func _atlas_frame(atlas: Texture2D) -> AtlasTexture:
 	var frame := AtlasTexture.new()

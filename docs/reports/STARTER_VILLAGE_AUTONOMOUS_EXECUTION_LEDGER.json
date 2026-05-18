@@ -217,7 +217,7 @@
       "north_star_result": "PASS for G-7A: the town now reads as a connected harborfront, wharf apron, back street, uphill connector, and lot-foundation plan. It is not SV-1 complete.",
       "current_status": "PASS",
       "reason_for_status": "Runtime map reconstruction replaced the worst patchwork planning read with a connected street/lot/ground layer and 15 screenshot proof views. Chris screenshot QA later required G-7A-SV0 to repair false tavern-stable reads, overlap/cutoff risks, scale mismatch, and source-of-truth bypasses.",
-      "next_required_action": "Merge G-7A-SV0 corrective PR #474 if green, then continue the Starter Village roadmap from the next weakest foundation pass."
+      "next_required_action": "G-7A-SV0 corrective PR #474 is merged. Continue with G-11 Living Town Rhythm Pass."
     },
     {
       "phase_id": "G-7B",
@@ -952,16 +952,77 @@
     {
       "phase_id": "G-11",
       "phase_name": "Living Town Rhythm Pass",
-      "branch": "pending",
+      "branch": "codex/g-11-living-town-rhythm-pass",
       "implementing_prs": [
-        "pending"
+        "pending_current_phase_pr"
       ],
       "commits": [
-        "pending"
+        "pending_current_phase_commit"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "Town rhythm is not yet implemented.",
-      "next_required_action": "Add ambient town-life loops."
+      "current_status": "PASS",
+      "reason_for_status": "Newport now has a runtime-backed living town rhythm foundation: dock work, tavern social, merchant street, civic notice, and rear-gate suspicion rhythms are authored in the blueprint, wired into NPC runtime state, and proven with focused screenshot/motion metadata. Route walking remains disabled so one-frame NPCs cannot glide.",
+      "next_required_action": "Start G-11A Audio/Atmosphere Placeholder-Free Foundation.",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scenes/npc/AtelierTownNpc.gd",
+        "wayfarer_godot_vertical_slice/scenes/npc/EdrinVale.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g11_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g11_runtime_screenshots.gd.uid",
+        "wayfarer_godot_vertical_slice/tools/capture_g11_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/validate_living_town_rhythm.py",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "tools/wayfarer_agent_council.py",
+        "docs/reports/G11_LIVING_TOWN_RHYTHM_PASS.md",
+        "docs/reports/G11_LIVING_TOWN_RHYTHM_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_03_player_on_route_to_counting_house.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_04_player_near_tavern_inn.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_05_player_on_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_06_player_at_dock_wharf_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_07_player_near_npc_movement_path.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_08_npc_idle_and_rhythm_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_09_player_interacting_with_counting_house_clerk.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_10_player_interacting_at_tavern_rumor_location.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_11_quest_prompt_journal_objective_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_12_signs_markers_interaction_ux_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_13_y_sort_layering_near_buildings_props.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_15_contact_sheet_provenance_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g11_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_living_town_rhythm.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_npc_population_and_routes.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-11 runtime screenshot capture and PNG verification; PASS: living town rhythm validator; PASS: NPC population and routes validator; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G11_LIVING_TOWN_RHYTHM_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.5,
+      "art_direction_score": 8.5,
+      "world_layout_score": 8.5,
+      "npc_animation_score": 8.5,
+      "narrative_score": 8.5,
+      "gameplay_hook_score": 8.5,
+      "ux_readability_score": 8.5,
+      "technical_stability_score": 8.7,
+      "performance_build_score": 8.6,
+      "town_cohesion_score": 8.1,
+      "provenance_atelier_result": "PASS: G-11 adds no visible raster assets. NPC rhythm uses existing atelier NPC sprites, existing ground shadows, and runtime-only focused bark labels.",
+      "north_star_result": "PASS for G-11: Newport has authored dock, tavern, merchant, civic, and rear-lane rhythms that make the town feel more inhabited while preserving the no-glide rule. It is not SV-1 complete; ground/material patchwork remains a G-12 review risk."
     },
     {
       "phase_id": "G-11A",
