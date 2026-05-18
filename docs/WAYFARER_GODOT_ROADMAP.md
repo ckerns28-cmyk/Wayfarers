@@ -2177,3 +2177,19 @@ phase is G-6 Production Cutover Planning.
 Define the eventual production-hosting decision, rollback plan, QA gates, and
 criteria for replacing the JavaScript Worker route. The Worker remains
 production-facing until this phase explicitly changes that.
+
+Current G-6 result: production cutover is defined as a future explicit
+route-replacement PR, not an automatic consequence of G-5 architecture. The
+JavaScript Worker remains the active production/reference route through
+`wrangler.toml`; Godot remains the Newport browser-review and migration
+validation route. The G-6 package selects "keep the JavaScript Worker as
+production route" as the current hosting decision, blocks replacing the Worker
+until G-5.1 through G-5.9 parity/save/runtime evidence exists, defines rollback
+and save-preservation steps, and adds a machine-readable validator that fails if
+route protection is lost. The G-6 package consists of
+`docs/reports/G6_PRODUCTION_CUTOVER_PLANNING.md`,
+`docs/reports/G6_PRODUCTION_CUTOVER_PLANNING.json`,
+`docs/reports/G6_PRODUCTION_CUTOVER_AGENT_COUNCIL_REPORT.md`, and
+`wayfarer_godot_vertical_slice/tools/validate_g6_production_cutover.py`.
+The Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`. No roadmap phase is
+currently defined after G-6 in this document.

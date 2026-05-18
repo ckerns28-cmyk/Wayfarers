@@ -1,0 +1,225 @@
+{
+  "schema_id": "wayfarer.g6.production_cutover_plan.v1",
+  "phase_id": "G-6",
+  "phase_name": "Production Cutover Planning",
+  "generated": "2026-05-18",
+  "planning_only": true,
+  "production_route_change": false,
+  "worker_route_remains_production": true,
+  "cutover_authorized_now": false,
+  "starting_main_commit": "fe45b2a6dbd41de00b37b5897790c54b6c5d7090",
+  "source_evidence": {
+    "roadmap": "docs/WAYFARER_GODOT_ROADMAP.md",
+    "g5_migration_architecture": "docs/reports/G5_MIGRATION_ARCHITECTURE.md",
+    "g5_migration_architecture_json": "docs/reports/G5_MIGRATION_ARCHITECTURE.json",
+    "web_delivery": "wayfarer_godot_vertical_slice/WEB_DELIVERY.md",
+    "root_wrangler": "wrangler.toml",
+    "worker_wrangler": "wayfarer_v7_github_ready/worker/wrangler.toml",
+    "javascript_worker": "wayfarer_v7_github_ready/worker/src/index.js",
+    "multiplayer_architecture": "docs/MULTIPLAYER_ARCHITECTURE.md",
+    "save_schema": "docs/SAVE_SCHEMA.md",
+    "pre_g5_ledger": "docs/reports/PRE_G5_ROADMAP_EXECUTION_LEDGER.json"
+  },
+  "current_routes": {
+    "production_route": {
+      "id": "javascript_worker_phase_35_13r",
+      "status": "ACTIVE_PRODUCTION_REFERENCE",
+      "wrangler_file": "wrangler.toml",
+      "main": "wayfarer_v7_github_ready/worker/src/index.js",
+      "assets": "./wayfarer_v7_github_ready/worker/assets",
+      "decision": "Remain production-facing until a future cutover PR satisfies every G-6 gate."
+    },
+    "godot_review_route": {
+      "id": "godot_newport_browser_review",
+      "status": "PARALLEL_REVIEW_ONLY",
+      "itch_review_url": "https://wayfarersguild.itch.io/wayfarers-tale",
+      "cloudflare_pages_candidate": "wayfarers-godot-slice",
+      "decision": "Remain a review and migration validation route; do not replace the Worker in G-6."
+    }
+  },
+  "decision_matrix": [
+    {
+      "decision_id": "keep_js_worker_production_route",
+      "option": "Keep the JavaScript Worker as production route",
+      "status": "SELECTED_FOR_NOW",
+      "reason": "The Worker is still the complete gameplay, save, and deployment reference. Godot has visual/runtime foundation plus migration architecture, but not gameplay parity implementation.",
+      "risk": "Future Godot work can drift if parity fixtures are skipped.",
+      "guardrail": "G-5.1 through G-5.9 must create contracts, save compatibility, service migration, visual proof, and parity evidence before replacement is reconsidered."
+    },
+    {
+      "decision_id": "parallel_godot_itch_review_route",
+      "option": "Continue Godot as an itch.io browser-review route",
+      "status": "ACTIVE_REVIEW_PATH",
+      "reason": "The current Godot web review pipeline exists and does not disturb production hosting.",
+      "risk": "Manual itch upload can lag behind main.",
+      "guardrail": "Each review build must list source commit, validation results, screenshots, and upload status."
+    },
+    {
+      "decision_id": "parallel_godot_pages_preview_route",
+      "option": "Use a separate Cloudflare Pages preview for Godot",
+      "status": "DEFERRED_PREVIEW_OPTION",
+      "reason": "Cloudflare Pages is the preferred static preview target when export size and upload constraints are solved.",
+      "risk": "The Godot wasm artifact has exceeded Pages Direct Upload single-file limits in prior evidence.",
+      "guardrail": "Pages may be used only as a separate preview project, never by reusing the production Worker route."
+    },
+    {
+      "decision_id": "replace_worker_with_godot_route",
+      "option": "Replace the production Worker route with Godot",
+      "status": "NOT_AUTHORIZED",
+      "reason": "G-5 migration implementation and parity evidence do not exist yet.",
+      "risk": "Replacing now would drop quests, combat, inventory, save/load, persistence, economy, and player trust.",
+      "guardrail": "Only a future cutover PR may change root deployment after every G-6 QA gate passes."
+    },
+    {
+      "decision_id": "hybrid_worker_router_godot_client",
+      "option": "Keep Worker as ingress/API while Godot becomes the client",
+      "status": "FUTURE_CANDIDATE",
+      "reason": "This shape best matches the future server-authoritative Durable Object/D1 direction, but requires migrated Godot domain services and save compatibility.",
+      "risk": "Premature hybrid routing can split canonical state across client and Worker.",
+      "guardrail": "Hybrid work must begin only after SaveService, EntityRegistry, and MigrationQA fixtures pass."
+    }
+  ],
+  "hard_cutover_preconditions": [
+    "All G-5 migration sequence rows from G-5.1 through G-5.9 are implemented or explicitly superseded with equivalent evidence.",
+    "Worker golden fixtures exist for save payloads, movement, quest states, inventory/equipment, combat outcomes, persistent objects, UI feedback, and deployment smoke behavior.",
+    "Godot SaveService can import, repair, preserve, and export Worker save schema v2 without losing player progress.",
+    "Godot gameplay services own the migrated systems; sprites, HUD, animation, and scene scripts do not own canonical mutations.",
+    "Side-by-side Worker/Godot parity reports pass for core loop, quests, combat, inventory, economy, dungeon persistence, and save/load.",
+    "Normal-play Godot screenshots pass the atelier runtime asset consistency gate with no visible placeholder/debug assets.",
+    "Remote checks pass on the cutover PR, including route-protection validation proving rollback is still possible.",
+    "A rollback rehearsal demonstrates how to restore the JavaScript Worker route and preserve or downgrade saves safely.",
+    "Release notes clearly separate known caveats from blockers."
+  ],
+  "qa_gates": [
+    {
+      "gate_id": "preflight_branch_remote",
+      "name": "Branch and remote preflight",
+      "required_evidence": "Branch starts from latest origin/main, worktree clean, no conflicting open PRs, remote auth healthy.",
+      "blocking": true
+    },
+    {
+      "gate_id": "production_route_protection",
+      "name": "Production route protection",
+      "required_evidence": "Root wrangler.toml still points at wayfarer_v7_github_ready/worker/src/index.js unless the PR is the explicit final cutover PR.",
+      "blocking": true
+    },
+    {
+      "gate_id": "g5_parity_evidence",
+      "name": "G-5 parity evidence",
+      "required_evidence": "G-5.1 through G-5.9 implementation reports, validators, screenshots where player-facing, and council verdicts.",
+      "blocking": true
+    },
+    {
+      "gate_id": "save_compatibility_round_trip",
+      "name": "Save compatibility round trip",
+      "required_evidence": "Worker schema v2 fixtures import, repair, preserve unknown fields where possible, export, and reload without progress loss.",
+      "blocking": true
+    },
+    {
+      "gate_id": "godot_web_export_served",
+      "name": "Godot web export served validation",
+      "required_evidence": "Fresh Godot export launches in a browser-like served environment, not only from local editor state.",
+      "blocking": true
+    },
+    {
+      "gate_id": "runtime_visual_qa",
+      "name": "Runtime visual QA",
+      "required_evidence": "No-HUD/no-debug screenshots prove player, NPCs, markers, props, streets, harbor, and UI meet the active visual bar.",
+      "blocking": true
+    },
+    {
+      "gate_id": "performance_browser_matrix",
+      "name": "Performance and browser matrix",
+      "required_evidence": "Desktop browser smoke coverage, input latency, load time, memory, crash-free runtime, and fallback notes.",
+      "blocking": true
+    },
+    {
+      "gate_id": "rollback_rehearsal",
+      "name": "Rollback rehearsal",
+      "required_evidence": "Documented restore path for Worker route, saved data compatibility, and deployment rollback timing.",
+      "blocking": true
+    },
+    {
+      "gate_id": "release_authority",
+      "name": "Release authority",
+      "required_evidence": "Agent Council final authority report for the cutover PR and explicit merge/cutover authorization.",
+      "blocking": true
+    }
+  ],
+  "cutover_runbook": [
+    {
+      "step": 1,
+      "name": "Freeze production route",
+      "action": "Confirm the current Worker deployment and source commit before any route edit."
+    },
+    {
+      "step": 2,
+      "name": "Build Godot candidate",
+      "action": "Export Godot Web from the validated commit and serve it from the preview route."
+    },
+    {
+      "step": 3,
+      "name": "Run parity and save gates",
+      "action": "Run Worker/Godot parity fixtures, save round trips, vertical slice validation, runtime asset consistency validation, and browser smoke checks."
+    },
+    {
+      "step": 4,
+      "name": "Inspect player-facing proof",
+      "action": "Capture and inspect screenshots for normal play, no-HUD, UI feedback, combat/quest/inventory surfaces, and debug-disabled state."
+    },
+    {
+      "step": 5,
+      "name": "Prepare explicit cutover PR",
+      "action": "Only the final cutover PR may edit production routing files. The PR must include rollback commands and all QA evidence."
+    },
+    {
+      "step": 6,
+      "name": "Verify remote checks",
+      "action": "Wait for GitHub checks and hosted smoke results before merging."
+    },
+    {
+      "step": 7,
+      "name": "Post-cutover monitor",
+      "action": "Confirm served gameplay, save/load, first quest, combat, inventory, and rollback readiness after merge/deploy."
+    }
+  ],
+  "rollback_runbook": [
+    {
+      "step": 1,
+      "name": "Restore Worker routing",
+      "action": "Revert root deployment routing to wayfarer_v7_github_ready/worker/src/index.js and ./wayfarer_v7_github_ready/worker/assets."
+    },
+    {
+      "step": 2,
+      "name": "Preserve saves",
+      "action": "Keep migrated save backups and, if needed, export a Worker-readable schema v2 payload before downgrading the route."
+    },
+    {
+      "step": 3,
+      "name": "Redeploy Worker",
+      "action": "Deploy the known-good Worker commit and verify production URL behavior."
+    },
+    {
+      "step": 4,
+      "name": "Capture rollback evidence",
+      "action": "Record production smoke results, save behavior, and any player-facing caveats in the rollback report."
+    }
+  ],
+  "route_files_that_must_not_change_in_g6": [
+    "wrangler.toml",
+    "wayfarer_v7_github_ready/worker/wrangler.toml"
+  ],
+  "known_caveats_not_blockers_for_g6": [
+    "G-6 defines cutover safety but does not implement G-5.1 through G-5.9 migration systems.",
+    "Godot remains a browser-review route until parity implementation and cutover proof exist.",
+    "Cloudflare Pages remains a separate preview option and not the production replacement route."
+  ],
+  "blockers_to_actual_cutover": [
+    "G-5 migration implementation sequence is not complete.",
+    "Godot save compatibility bridge is not implemented.",
+    "Worker/Godot parity fixture suite is not implemented.",
+    "Rollback rehearsal has not been executed against an actual cutover candidate."
+  ],
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "next_recommended_roadmap_phase": "NO_NEXT_PHASE_DEFINED_IN_ROADMAP"
+}
