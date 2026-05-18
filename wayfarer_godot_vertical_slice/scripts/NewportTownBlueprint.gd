@@ -42,6 +42,8 @@ const STARTER_VILLAGE_G8A_NPC_POPULATION_SCORE := 8.5
 const STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY := "stationary_work_pose_until_dedicated_walk_sheets"
 const STARTER_VILLAGE_G9_INTERACTION_UX_PASS := "G-9"
 const STARTER_VILLAGE_G9_UX_SCORE := 8.5
+const STARTER_VILLAGE_G9A_QUEST_STATE_FOUNDATION_PASS := "G-9A"
+const STARTER_VILLAGE_G9A_QUEST_STATE_SCORE := 8.5
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -852,6 +854,15 @@ static func starter_district_plan() -> Dictionary:
 			"required_prompt_forms": ["E: Enter - Harbor Mercantile", "E: Talk - Edrin Vale", "E: Talk - Bess Armitage", "E: Inspect - Dock Storehouse"],
 			"objective_guidance": "Find Edrin Vale at the Counting House; then follow the tavern whisper.",
 			"forbidden_normal_play_markers": ["debug boxes", "Press E to in-world prompt copy", "oversized labels", "primitive quest markers"],
+		},
+		"g9a_journal_objective_state_contract": {
+			"phase": STARTER_VILLAGE_G9A_QUEST_STATE_FOUNDATION_PASS,
+			"target_score_this_phase": STARTER_VILLAGE_G9A_QUEST_STATE_SCORE,
+			"quest_id": "first_light_whispers_before_dawn",
+			"required_runtime_systems": ["QuestState.gd", "FirstLightQuest.gd", "HUD.apply_quest_snapshot", "Player.interaction_triggered"],
+			"required_objective_flow": ["make_landfall", "report_to_counting_house", "investigate_missing_line", "follow_tavern_whisper", "choose_next_lead"],
+			"required_feedback": ["Journal", "Objective updated", "Whisper", "Rumor", "Reward"],
+			"session_persistence": "in_memory_runtime_state_for_current_session",
 		},
 		"movement_loop": [
 			"waterfront_avenue",

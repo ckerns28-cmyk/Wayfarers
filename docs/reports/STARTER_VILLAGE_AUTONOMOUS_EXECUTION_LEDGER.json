@@ -464,10 +464,11 @@
       "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
       "branch": "codex/g-9-interaction-ux-prompts",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#468"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "670a952e3763b0c3aa18a33976d08c08a2930d17",
+        "a31ca2d6249902d5d1611fdbf739da4a364e41de"
       ],
       "files_changed": [
         "wayfarer_godot_vertical_slice/scenes/buildings/Building.gd",
@@ -542,16 +543,88 @@
     {
       "phase_id": "G-9A",
       "phase_name": "Journal, Objective, and Quest State Foundation",
-      "branch": "pending",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "branch": "codex/g-9a-journal-objective-state",
       "implementing_prs": [
-        "pending"
+        "pending_current_phase_pr"
       ],
       "commits": [
-        "pending"
+        "pending_current_phase_commit"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "Quest state not implemented for SV-1 opening.",
-      "next_required_action": "Add objective state and feedback."
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.gd",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.tscn",
+        "wayfarer_godot_vertical_slice/scripts/QuestState.gd",
+        "wayfarer_godot_vertical_slice/scripts/QuestState.gd.uid",
+        "wayfarer_godot_vertical_slice/scripts/quests/FirstLightQuest.gd",
+        "wayfarer_godot_vertical_slice/scripts/quests/FirstLightQuest.gd.uid",
+        "wayfarer_godot_vertical_slice/data/quests/first_light_whispers_before_dawn.json",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g9a_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g9a_runtime_screenshots.gd.uid",
+        "wayfarer_godot_vertical_slice/tools/capture_g9a_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "wayfarer_godot_vertical_slice/tools/validate_opening_quest_arc.py",
+        "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
+        "tools/wayfarer_agent_council.py",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/G9A_JOURNAL_OBJECTIVE_QUEST_STATE_FOUNDATION.md",
+        "docs/reports/G9A_JOURNAL_OBJECTIVE_AGENT_COUNCIL_REPORT.md",
+        "docs/WAYFARER_GODOT_ROADMAP.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_03_player_on_route_to_counting_house.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_04_player_near_tavern_inn.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_05_player_on_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_06_player_at_dock_wharf_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_07_player_near_npc_movement_path.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_08_npc_idle_and_walking_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_09_player_interacting_with_counting_house_clerk.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_10_player_interacting_at_tavern_rumor_location.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_11_quest_prompt_journal_objective_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_12_signs_markers_interaction_ux_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_13_y_sort_layering_near_buildings_props.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_15_contact_sheet_provenance_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9a_runtime_screenshots/g9a_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g9a_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_quest_arc.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-9A runtime screenshot capture and PNG verification; PASS: opening quest arc validator; PASS: interaction UX validator; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G9A_JOURNAL_OBJECTIVE_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.5,
+      "art_direction_score": 8.5,
+      "world_layout_score": 8.5,
+      "npc_animation_score": 8.5,
+      "narrative_score": 8.6,
+      "gameplay_hook_score": 8.5,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.8,
+      "performance_build_score": 8.7,
+      "town_cohesion_score": 8.0,
+      "provenance_atelier_result": "PASS: G-9A adds no visible raster assets; quest state, HUD text, and data files do not alter atelier-visible sprite provenance.",
+      "north_star_result": "PASS for G-9A: First Light now has runtime objective state, journal feedback, NPC-driven progression, optional clue support, and a Resolve reward. It is not SV-1 complete.",
+      "current_status": "PASS",
+      "reason_for_status": "The opening loop now has in-session quest state with objective completion, journal/objective updates, dialogue-driven advancement, session persistence, and reward/progression proof.",
+      "next_required_action": "Start G-10 Opening Quest Arc: First Light / Whispers Before Dawn."
     },
     {
       "phase_id": "G-10",

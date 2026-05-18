@@ -2244,12 +2244,11 @@ The required autonomous phase sequence is:
 - G-13 Browser Build, Performance, and Regression Hardening,
 - G-14 SV-1 Starter Village Playable Obsession Gate.
 
-Current SV-1 autonomous status after G-9: Newport now has compact
-`E: Action - Name` prompts for buildings and NPCs, smaller in-world prompt
-presentation, a first objective that names the Counting House and tavern
-whisper route, and runtime proof for counting-house dialogue, tavern rumor
-dialogue, objective-update feedback, and debug-off normal play. The next active
-phase is G-9A Journal, Objective, and Quest State Foundation.
+Current SV-1 autonomous status after G-9A: Newport now has compact interaction
+prompts plus runtime First Light quest state, a Journal - First Light HUD
+surface, objective completion, NPC-driven progression, optional clue-source
+support, session persistence, and a Resolve reward/progression update. The next
+active phase is G-10 Opening Quest Arc: First Light / Whispers Before Dawn.
 
 Ordinary roadmap-bound autonomous PRs before SV-1 may be merged by Codex when
 branch/PR preflight is current, required validators pass, runtime proof passes

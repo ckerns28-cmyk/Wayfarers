@@ -113,16 +113,17 @@ theme_override_constants/separation = 5
 
 [node name="QuestTitle" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 15
-text = "First Light"
+text = "Journal - First Light"
 
 [node name="QuestBody" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 13
-text = "Find Edrin Vale at the Counting House; then follow the tavern whisper."
+text = "Find Edrin Vale at the Counting House."
 autowrap_mode = 3
 
 [node name="QuestRegion" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
-theme_override_font_sizes/font_size = 11
-text = "Newport Harbor - Counting House to Tavern"
+theme_override_font_sizes/font_size = 10
+text = "Objective 1/5 - Newport Harbor"
+autowrap_mode = 3
 
 [node name="DialoguePanel" type="PanelContainer" parent="."]
 offset_left = 400.0

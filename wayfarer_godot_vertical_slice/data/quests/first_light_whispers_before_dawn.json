@@ -1,0 +1,41 @@
+{
+  "schema_id": "wayfarer.quest.first_light_whispers_before_dawn.v1",
+  "phase": "G-9A",
+  "quest_id": "first_light_whispers_before_dawn",
+  "title": "First Light / Whispers Before Dawn",
+  "theme": "A missing ledger line pulls the player from Newport Harbor into counting-house pressure, tavern whisper culture, harbor rumors, and pre-Revolution unrest.",
+  "objectives": [
+    {
+      "id": "make_landfall",
+      "text": "Make landfall at Newport Harbor and get your bearings."
+    },
+    {
+      "id": "report_to_counting_house",
+      "text": "Find Edrin Vale at the Counting House."
+    },
+    {
+      "id": "investigate_missing_line",
+      "text": "Ask the dockworkers, merchant row, or notice board about the missing ledger line."
+    },
+    {
+      "id": "follow_tavern_whisper",
+      "text": "Bring the missing-line rumor to Bess Armitage at the Tavern/Inn."
+    },
+    {
+      "id": "choose_next_lead",
+      "text": "Choose a next lead: Edrin, the wharf, or the rear gate."
+    }
+  ],
+  "progression": {
+    "objective_update_feedback": true,
+    "session_persistence": "in_memory_runtime_state_for_current_session",
+    "reward": "Resolve +5 for following the tavern whisper",
+    "multiple_advancement_sources": [
+      "dockworker",
+      "merchant_shopkeeper",
+      "rumor_carrier",
+      "tavern_keeper",
+      "suspicious_patron"
+    ]
+  }
+}

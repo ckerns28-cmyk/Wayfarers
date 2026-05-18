@@ -16,6 +16,9 @@ from starter_village_validator_common import (
     G9_COUNCIL_REPORT,
     G9_REPORT,
     G9_SCREENSHOT_MANIFEST,
+    G9A_COUNCIL_REPORT,
+    G9A_REPORT,
+    G9A_SCREENSHOT_MANIFEST,
     HUD_GD,
     HUD_SCENE,
     LEDGER_JSON,
@@ -82,7 +85,7 @@ def main() -> int:
         ],
         failures,
     )
-    hud_scene = require_text(HUD_SCENE, ["First Light", "Counting House", "tavern whisper"], failures)
+    hud_scene = require_text(HUD_SCENE, ["First Light", "Counting House"], failures)
     edrin_source = require_text(EDRIN_GD, ["get_prompt_text", "Talk -", "prompt_ux_contract"], failures)
     atelier_npc_source = require_text(ATELIER_NPC_GD, ["get_prompt_text", "Talk -", "prompt_ux_contract"], failures)
     if 'prompt_label.text = "Press E' in player_source:
@@ -152,6 +155,46 @@ def main() -> int:
             for required in ["Journal", "Objective updated", "Whisper", "Rumor"]:
                 if required not in hud_source and required not in hud_scene:
                     failures.append(f"G-9A not complete: HUD or UX surface missing {required}")
+            require_text(
+                G9A_REPORT,
+                [
+                    "G-9A Journal, Objective, and Quest State Foundation",
+                    "QuestState.gd",
+                    "FirstLightQuest.gd",
+                    "Objective updated",
+                    "Reward",
+                ],
+                failures,
+            )
+            require_text(
+                G9A_COUNCIL_REPORT,
+                [
+                    "COUNCIL_PASS_READY_FOR_PR",
+                    "UX Designer",
+                    "G-9A Journal Objective Result",
+                    "UX/readability score",
+                    "runtime screenshots",
+                ],
+                failures,
+            )
+            manifest = load_json(G9A_SCREENSHOT_MANIFEST, failures)
+            if isinstance(manifest, dict):
+                screenshots = manifest.get("screenshots")
+                if manifest.get("status") != "PASS":
+                    failures.append("G-9A screenshot manifest must be PASS")
+                if manifest.get("phase") != "G-9A":
+                    failures.append("G-9A screenshot manifest phase mismatch")
+                final_contract = manifest.get("quest_contract_final", {})
+                if not isinstance(final_contract, dict) or not final_contract.get("reward_log"):
+                    failures.append("G-9A manifest must prove a reward/progression update")
+                if not isinstance(screenshots, list) or len(screenshots) < 15:
+                    failures.append("G-9A screenshot manifest must include 15 proof views")
+                else:
+                    for shot in screenshots:
+                        if isinstance(shot, dict):
+                            raw_path = str(shot.get("path", ""))
+                            if raw_path and not repo_path(raw_path).exists():
+                                failures.append(f"G-9A screenshot path missing: {raw_path}")
     if "g7c_tavern_inn_warm_entry_landmark" not in map_layer or "g7c_landmark_identity_contract" not in blueprint:
         failures.append("G-7C landmark identity contract must be runtime-backed")
     return print_result("interaction ux", failures)

@@ -5,6 +5,7 @@ const ATELIER_TOWN_NPC_SCENE := preload("res://scenes/npc/AtelierTownNpc.tscn")
 const BUILDING_CATALOG := preload("res://scripts/BuildingCatalog.gd")
 const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
+const FIRST_LIGHT_QUEST := preload("res://scripts/quests/FirstLightQuest.gd")
 const GAMEPLAY_KEYCODES := [
 	KEY_W,
 	KEY_A,
@@ -29,6 +30,7 @@ var _debug_overlay_enabled := false
 var _seating_debug_enabled := false
 var _review_screenshot_mode := false
 var _green_origin_lab_enabled := false
+var _first_light_quest = null
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -44,12 +46,15 @@ func _ready() -> void:
 			edrin.call("configure_population", NEWPORT_TOWN.starter_village_npc_spec("edrin_vale_counting_house_clerk"))
 	_place_starter_village_npcs()
 	_place_buildings()
+	_configure_first_light_quest()
 	_set_debug_overlay(false)
 	_set_building_seating_overlay(false)
 	set_green_origin_lab_mode(_should_start_in_green_origin_lab_mode())
 	if _should_start_in_review_screenshot_mode():
 		set_review_screenshot_mode(true)
 	player.dialogue_triggered.connect(hud.show_dialogue)
+	if player.has_signal("interaction_triggered"):
+		player.interaction_triggered.connect(_on_player_interaction_triggered)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
@@ -121,6 +126,32 @@ func set_green_origin_lab_mode(enabled: bool) -> void:
 func is_green_origin_lab_mode() -> bool:
 	return _green_origin_lab_enabled
 
+func starter_village_quest_contract() -> Dictionary:
+	if _first_light_quest == null:
+		return {
+			"phase": "G-9A",
+			"quest_available": false,
+		}
+	var snapshot: Dictionary = _first_light_quest.snapshot()
+	return {
+		"phase": "G-9A",
+		"quest_available": true,
+		"quest_id": String(snapshot.get("quest_id", "")),
+		"quest_title": String(snapshot.get("quest_title", "")),
+		"current_objective_id": String(snapshot.get("current_objective_id", "")),
+		"completed_objectives": (snapshot.get("completed_objectives", []) as Array).duplicate(),
+		"reward_log": (snapshot.get("reward_log", []) as Array).duplicate(),
+		"journal_visible": hud != null and hud.has_method("journal_objective_contract"),
+	}
+
+func debug_apply_first_light_quest_events(events: Array) -> Dictionary:
+	if _first_light_quest == null:
+		return {}
+	var latest: Dictionary = _first_light_quest.snapshot()
+	for raw_event in events:
+		latest = _first_light_quest.debug_apply_event(String(raw_event))
+	return latest
+
 func _should_start_in_review_screenshot_mode() -> bool:
 	for arg in OS.get_cmdline_args():
 		var normalized := String(arg).to_lower()
@@ -134,6 +165,21 @@ func _should_start_in_green_origin_lab_mode() -> bool:
 		if normalized == BUILD_INFO.GREEN_ORIGIN_LAB_FLAG or normalized.find("show_green_origin_lab=1") >= 0:
 			return true
 	return false
+
+func _configure_first_light_quest() -> void:
+	_first_light_quest = FIRST_LIGHT_QUEST.new()
+	if _first_light_quest.has_signal("quest_updated"):
+		_first_light_quest.quest_updated.connect(_on_first_light_quest_updated)
+	_on_first_light_quest_updated(_first_light_quest.start())
+
+func _on_player_interaction_triggered(target: Node, dialogue_text: String) -> void:
+	if _first_light_quest == null:
+		return
+	_first_light_quest.handle_interaction(target, dialogue_text)
+
+func _on_first_light_quest_updated(snapshot: Dictionary) -> void:
+	if hud and hud.has_method("apply_quest_snapshot"):
+		hud.apply_quest_snapshot(snapshot)
 
 func _set_debug_overlay(enabled: bool) -> void:
 	var effective_enabled := enabled and BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED

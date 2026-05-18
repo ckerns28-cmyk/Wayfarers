@@ -216,6 +216,8 @@ def find_latest_screenshots(root: Path) -> list[Path]:
 
 def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
+    if normalized.startswith("G-9A"):
+        return "G-9A", "g9a"
     if normalized.startswith("G-9"):
         return "G-9", "g9"
     if normalized.startswith("G-8A"):
@@ -302,6 +304,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     interaction_ux_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_interaction_ux.py"
+    )
+    opening_quest_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_opening_quest_arc.py"
     )
     pre_g5_ledger_text = (
         f"& {powershell_quote(python_bin)} "
@@ -505,6 +511,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     args=[python_bin, str(game_root / "tools" / "validate_interaction_ux.py")],
                     cwd=root,
                     required_paths=[game_root / "tools" / "validate_interaction_ux.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-9A"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Opening quest arc validation",
+                    command_text=opening_quest_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_opening_quest_arc.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_opening_quest_arc.py"],
                 ),
             )
         commands[diff_index:diff_index] = starter_commands
@@ -732,7 +749,29 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ("G-8A generic town NPC scene", game_root / "scenes" / "npc" / "AtelierTownNpc.tscn"),
             ]
         )
-    if phase.upper().strip().startswith("G-9"):
+    if phase.upper().strip().startswith("G-9A"):
+        required.extend(
+            [
+                (
+                    "G-9A opening quest arc validator",
+                    game_root / "tools" / "validate_opening_quest_arc.py",
+                ),
+                (
+                    "G-9A interaction UX validator",
+                    game_root / "tools" / "validate_interaction_ux.py",
+                ),
+                (
+                    "G-9A runtime screenshot manifest",
+                    game_root / "artifacts" / "review" / "g9a_runtime_screenshots" / "g9a_runtime_screenshot_manifest.json",
+                ),
+                ("G-9A quest state script", game_root / "scripts" / "QuestState.gd"),
+                ("G-9A first light quest script", game_root / "scripts" / "quests" / "FirstLightQuest.gd"),
+                ("G-9A quest data", game_root / "data" / "quests" / "first_light_whispers_before_dawn.json"),
+                ("G-9A HUD journal script", game_root / "scenes" / "ui" / "HUD.gd"),
+                ("G-9A Main quest integration", game_root / "scenes" / "Main.gd"),
+            ]
+        )
+    elif phase.upper().strip().startswith("G-9"):
         required.extend(
             [
                 (
@@ -1018,6 +1057,8 @@ def build_report(
         scrum_scope = "Scope check: this council pass reopens the false-positive G-5 readiness gate, verifies the pre-G-5 roadmap ledger, and repairs visible player/NPC/marker/world sprite consistency before G-5 can be recommended."
     elif phase.upper().strip().startswith("G-4.22"):
         scrum_scope = "Scope check: this council pass is the formal G-4 visual foundation gate; it records acceptance authority and may recommend G-5 only if screenshots, provenance, validators, and council scores clear the gate."
+    elif phase.upper().strip().startswith("G-9A"):
+        scrum_scope = "Scope check: this council pass adds the journal/objective quest-state foundation for First Light only; it must prove objective completion, feedback, and reward state without claiming the full G-10 opening quest arc is complete."
     elif phase.upper().strip().startswith("G-9"):
         scrum_scope = "Scope check: this council pass changes interaction prompt copy, HUD objective guidance, runtime prompt proof capture, validators, and SV-1 ledger only; it must improve clarity without starting G-9A quest-state scope."
     elif phase.upper().strip().startswith("G-8"):
@@ -1299,6 +1340,20 @@ def build_report(
             ),
             *(
                 [
+                    "## G-9A Journal Objective Result",
+                    "",
+                    f"UX/readability score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime screenshots inspected: G-9A proof frames show Journal state, objective completion, missing-ledger update feedback, tavern whisper progression, reward feedback, and debug-off normal play.",
+                    "",
+                    "- G-9A accepted proof: First Light now has in-session quest state, HUD journal/objective updates, dialogue-driven advancement, optional clue sources, and a Resolve reward/progression update.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-9A")
+                else []
+            ),
+            *(
+                [
                     "## G-9 Interaction UX Result",
                     "",
                     f"UX/readability score: {gameplay_readability_score:.1f}",
@@ -1308,7 +1363,7 @@ def build_report(
                     "- G-9 accepted proof: normal-play prompts use compact action/name copy, avoid Press E debug phrasing, preserve HUD objective clarity, and do not introduce crude world markers.",
                     "",
                 ]
-                if phase.upper().strip().startswith("G-9")
+                if phase.upper().strip().startswith("G-9") and not phase.upper().strip().startswith("G-9A")
                 else []
             ),
             "## Required Tooling And Validator Paths",
