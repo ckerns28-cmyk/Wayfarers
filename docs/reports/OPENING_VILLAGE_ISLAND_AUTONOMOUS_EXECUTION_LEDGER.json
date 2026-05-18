@@ -409,7 +409,7 @@
       "phase_name": "Opening Quest Extension: From Whispers to the Island",
       "branch": "codex/g-18-opening-quest-village-to-island",
       "implementing_prs": ["pending_pre_pr"],
-      "commits": ["pending_pre_pr_metadata"],
+      "commits": ["9526ea0133c93190f80695e1d83995d018f2d81f"],
       "merge_status": "pending",
       "current_status": "PASS",
       "reason_for_status": "G-18 extends Whispers Before Dawn from Newport arrival, counting house, harbor ledger clue, tavern Third Toast, and wharf lantern rumor into an authored island lead, old-road coded whisper, optional signal clue, hidden landing physical evidence, Annelise return/report choice, Edrin reward/progression update, and a renewed reason-to-continue hook.",
