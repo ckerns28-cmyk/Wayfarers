@@ -14,6 +14,7 @@ var progress_updates: Array[String] = []
 var reward_log: Array[String] = []
 var reward_resolve := 0
 var last_feedback := ""
+var last_response := ""
 
 
 func configure(id: String, title: String, objective_rows: Array) -> void:
@@ -43,7 +44,7 @@ func complete_objective(objective_id: String, feedback := "") -> Dictionary:
 	return snapshot()
 
 
-func set_flag(flag_id: String, value := true, feedback := "") -> Dictionary:
+func set_flag(flag_id: String, value: Variant = true, feedback := "") -> Dictionary:
 	if not flag_id.is_empty():
 		flags[flag_id] = value
 	_record_feedback(feedback)
@@ -58,6 +59,11 @@ func add_reward(label: String, resolve_amount := 0) -> Dictionary:
 		reward_resolve += max(0, resolve_amount)
 	if is_new_reward and resolve_amount > 0:
 		_record_feedback("Reward: +" + str(resolve_amount) + " Resolve")
+	return snapshot()
+
+
+func set_response(text: String) -> Dictionary:
+	last_response = text
 	return snapshot()
 
 
@@ -94,6 +100,7 @@ func snapshot() -> Dictionary:
 		"reward_log": reward_log.duplicate(),
 		"reward_resolve": reward_resolve,
 		"feedback": last_feedback,
+		"response_text": last_response,
 		"session_persistence": "in_memory_runtime_state_for_current_session",
 	}
 

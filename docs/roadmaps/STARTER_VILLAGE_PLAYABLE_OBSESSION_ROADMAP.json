@@ -309,7 +309,7 @@
         "validate_tavern_whisper_system.py",
         "validate_first_session_playability.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-10A",

@@ -115,6 +115,7 @@ func _validate_scene(main: Node) -> void:
 	_validate_building_entity_contract(player, hud)
 	_validate_g9_interaction_ux_foundation(main, player, hud)
 	_validate_g9a_quest_state_foundation(main, hud)
+	_validate_g10_opening_quest_arc(main, hud)
 	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
 	_validate_g415_layout_rules()
@@ -648,6 +649,55 @@ func _validate_g9a_quest_state_foundation(main: Node, hud: CanvasLayer) -> void:
 		_expect(bool(journal_contract.get("has_objective_update", false)) == true, "g9a_objective_update_visible")
 		_expect(bool(journal_contract.get("has_whisper", false)) == true, "g9a_whisper_visible")
 		_expect(bool(journal_contract.get("has_rumor", false)) == true, "g9a_rumor_visible")
+
+func _validate_g10_opening_quest_arc(main: Node, hud: CanvasLayer) -> void:
+	var first_light_source := FileAccess.get_file_as_string("res://scripts/quests/FirstLightQuest.gd")
+	var quest_data := _load_json_dictionary("res://data/quests/first_light_whispers_before_dawn.json")
+	_expect(first_light_source.find("G10_OPENING_QUEST_ARC_PASS") >= 0, "g10_first_light_phase_constant")
+	_expect(first_light_source.find("lantern_at_wharf") >= 0, "g10_lantern_objective_source")
+	_expect(first_light_source.find("secure_contact") >= 0, "g10_secure_contact_objective_source")
+	_expect(first_light_source.find("hook_to_continue") >= 0, "g10_continue_hook_objective_source")
+	_expect(String(quest_data.get("phase", "")) == "G-10", "g10_quest_data_phase")
+	_expect((quest_data.get("objectives", []) as Array).size() >= 8, "g10_quest_data_objective_count")
+	var opening_arc := quest_data.get("opening_arc", {}) as Dictionary
+	_expect(not opening_arc.is_empty(), "g10_opening_arc_data")
+	if not opening_arc.is_empty():
+		_expect(int(opening_arc.get("playable_minutes_estimate", 0)) >= 10, "g10_playable_minutes_estimate")
+		_expect((opening_arc.get("named_or_role_npcs", []) as Array).size() >= 3, "g10_named_npc_count")
+		_expect((opening_arc.get("branch_choices", []) as Array).size() >= 2, "g10_branch_choice_count")
+		_expect(String(opening_arc.get("optional_discovery", "")) != "", "g10_optional_discovery_data")
+		_expect(String(opening_arc.get("hook_to_continue", "")) != "", "g10_hook_to_continue_data")
+
+	var quest_script := load("res://scripts/quests/FirstLightQuest.gd")
+	_expect(quest_script != null, "g10_quest_script_loads")
+	if quest_script != null:
+		var quest = quest_script.new()
+		_expect(quest != null and quest.has_method("debug_playthrough_contract"), "g10_debug_playthrough_contract_api")
+		if quest != null and quest.has_method("debug_playthrough_contract"):
+			var playthrough: Dictionary = quest.call("debug_playthrough_contract") as Dictionary
+			_expect(String(playthrough.get("phase", "")) == "G-10", "g10_debug_playthrough_phase")
+			_expect(int(playthrough.get("playable_minutes_estimate", 0)) >= 10, "g10_debug_playthrough_minutes")
+			_expect((playthrough.get("named_npc_roles", []) as Array).size() >= 3, "g10_debug_named_npc_roles")
+			_expect((playthrough.get("branch_choices", []) as Array).size() >= 2, "g10_debug_branch_choices")
+			_expect(String(playthrough.get("optional_discovery", "")) != "", "g10_debug_optional_discovery")
+			_expect(String(playthrough.get("hook_to_continue", "")) != "", "g10_debug_hook_to_continue")
+			_expect(bool(playthrough.get("supports_multiple_advancement_sources", false)) == true, "g10_debug_multiple_sources")
+			var completed := playthrough.get("completed_objectives", []) as Array
+			for objective_id in ["report_to_counting_house", "investigate_missing_line", "follow_tavern_whisper", "choose_next_lead", "lantern_at_wharf", "secure_contact"]:
+				_expect(completed.has(objective_id), "g10_debug_completed_" + objective_id)
+
+	if main.has_method("debug_apply_first_light_quest_events"):
+		main.call("debug_apply_first_light_quest_events", ["jonah", "edrin"])
+	var final_contract: Dictionary = main.call("starter_village_quest_contract") if main.has_method("starter_village_quest_contract") else {}
+	_expect(String(final_contract.get("opening_arc_phase", "")) == "G-10", "g10_main_opening_arc_phase")
+	_expect(String(final_contract.get("current_objective_id", "")) == "hook_to_continue", "g10_main_hook_objective_active")
+	_expect((final_contract.get("reward_log", []) as Array).size() >= 2, "g10_main_reward_and_contact_progression")
+	_expect(((final_contract.get("flags", {}) as Dictionary).get("chosen_path", "")) == "ask_the_wharf", "g10_main_wharf_path_chosen")
+	if hud and hud.has_method("journal_objective_contract"):
+		var journal_contract: Dictionary = hud.call("journal_objective_contract") as Dictionary
+		var session_state := journal_contract.get("session_state", {}) as Dictionary
+		_expect(String(journal_contract.get("current_objective", "")).find("dawn") >= 0, "g10_journal_reason_to_continue_visible")
+		_expect(String(session_state.get("response_text", "")).find("Keep the missing line") >= 0, "g10_dialogue_response_contract")
 
 func _validate_g419_player_identity_foundation() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json")

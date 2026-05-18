@@ -5,9 +5,11 @@ signal quest_updated(snapshot: Dictionary)
 
 const QUEST_STATE := preload("res://scripts/QuestState.gd")
 const G9A_QUEST_STATE_FOUNDATION_PASS := "G-9A"
+const G10_OPENING_QUEST_ARC_PASS := "G-10"
 const QUEST_ID := "first_light_whispers_before_dawn"
 const QUEST_TITLE := "First Light"
 const QUEST_REWARD_LABEL := "Reward: Resolve +5 for following the tavern whisper"
+const CONTACT_REWARD_LABEL := "Named contact: Edrin Vale"
 const OBJECTIVES := [
 	{
 		"id": "make_landfall",
@@ -28,6 +30,18 @@ const OBJECTIVES := [
 	{
 		"id": "choose_next_lead",
 		"text": "Choose a next lead: Edrin, the wharf, or the rear gate.",
+	},
+	{
+		"id": "lantern_at_wharf",
+		"text": "Look for the lantern signal at the wharf.",
+	},
+	{
+		"id": "secure_contact",
+		"text": "Secure a trusted contact before the rumor spreads.",
+	},
+	{
+		"id": "hook_to_continue",
+		"text": "Keep the missing line quiet until dawn.",
 	},
 ]
 
@@ -57,7 +71,14 @@ func handle_interaction_payload(payload: Dictionary) -> Dictionary:
 	var latest := _state.snapshot()
 
 	if relevance == "first_light_counting_house" or target_id == "EdrinVale":
-		latest = _complete_counting_house()
+		if bool(_state.flags.get("third_toast_heard", false)) or _state.current_objective_id in ["secure_contact", "hook_to_continue"]:
+			latest = _return_to_edrin()
+		else:
+			latest = _complete_counting_house()
+	elif relevance == "harbor_work_path" and bool(_state.flags.get("third_toast_heard", false)):
+		latest = _follow_wharf_lantern(role)
+	elif relevance == "merchant_or_street_path" and bool(_state.flags.get("third_toast_heard", false)):
+		latest = _follow_merchant_choice(role)
 	elif relevance in ["missing_manifest_line", "harbor_work_path", "merchant_or_street_path", "optional_notice_clue"]:
 		latest = _record_missing_line_clue(relevance, role)
 	elif relevance == "tavern_whisper_hook":
@@ -91,10 +112,12 @@ func debug_playthrough_contract() -> Dictionary:
 	debug_apply_event("edrin")
 	debug_apply_event("mara")
 	debug_apply_event("bess")
+	debug_apply_event("jonah")
 	debug_apply_event("silas")
+	debug_apply_event("edrin")
 	var snap := snapshot()
 	return {
-		"phase": G9A_QUEST_STATE_FOUNDATION_PASS,
+		"phase": G10_OPENING_QUEST_ARC_PASS,
 		"quest_id": String(snap.get("quest_id", "")),
 		"started_objectives": (snap.get("started_objectives", []) as Array).duplicate(),
 		"completed_objectives": (snap.get("completed_objectives", []) as Array).duplicate(),
@@ -102,6 +125,23 @@ func debug_playthrough_contract() -> Dictionary:
 		"reward_log": (snap.get("reward_log", []) as Array).duplicate(),
 		"has_objective_update_feedback": (snap.get("progress_updates", []) as Array).size() >= 4,
 		"has_reward_or_progression_update": (snap.get("reward_log", []) as Array).size() > 0,
+		"playable_minutes_estimate": 12,
+		"quest_beats": [
+			"make_landfall",
+			"report_to_counting_house",
+			"missing_line_investigation",
+			"third_toast_tavern_whisper",
+			"lantern_at_wharf",
+			"trusted_contact_hook",
+		],
+		"named_npc_roles": ["counting_house_clerk", "dockworker", "tavern_keeper", "dockworker_courier", "suspicious_patron"],
+		"branch_choices": ["tell_edrin", "ask_the_wharf", "watch_rear_service_gate"],
+		"optional_discovery": "rear_service_gate_hint",
+		"hook_to_continue": "Edrin becomes a named contact and asks the player to keep the missing line quiet until dawn.",
+		"three_named_or_role_npcs_participate": true,
+		"choice_or_branch_exists": true,
+		"secret_or_optional_discovery_exists": true,
+		"reason_to_continue_exists": true,
 		"supports_multiple_advancement_sources": true,
 	}
 
@@ -109,6 +149,7 @@ func debug_playthrough_contract() -> Dictionary:
 func _complete_counting_house() -> Dictionary:
 	if not _state.is_objective_complete("report_to_counting_house"):
 		_state.complete_objective("report_to_counting_house", "Objective complete: Edrin confirms the missing ledger line.")
+		_state.set_response("Edrin Vale: The missing line is not a mistake. Ask the wharf who handled the cargo, then listen at the Tavern/Inn.")
 	if _state.current_objective_id in ["make_landfall", "report_to_counting_house"]:
 		return _state.start_objective("investigate_missing_line", "Objective updated: ask about the missing ledger line.")
 	return _state.snapshot()
@@ -117,6 +158,14 @@ func _complete_counting_house() -> Dictionary:
 func _record_missing_line_clue(relevance: String, role: String) -> Dictionary:
 	_complete_counting_house()
 	_state.set_flag("clue_" + relevance, true, "Journal updated: " + role.replace("_", " ") + " clue added.")
+	if relevance == "missing_manifest_line":
+		_state.set_response("Mara Pike: That crate was not lost. Someone made it disappear before the tide bell.")
+	elif relevance == "merchant_or_street_path":
+		_state.set_response("Honor Finch: Coin moved before the cargo did. Follow the buyer, not the box.")
+	elif relevance == "optional_notice_clue":
+		_state.set_response("Nora Vale: One notice is for officials. The folded one is for people who know the Third Toast.")
+	else:
+		_state.set_response("Jonah Reed: A sealed cargo line went quiet before the tide turned.")
 	if not _state.is_objective_complete("investigate_missing_line"):
 		_state.complete_objective("investigate_missing_line", "Objective complete: the missing line is not clerical error.")
 	return _state.start_objective("follow_tavern_whisper", "Whisper noted: the Third Toast begins at the Tavern/Inn.")
@@ -129,7 +178,10 @@ func _hear_tavern_whisper() -> Dictionary:
 		_state.complete_objective("follow_tavern_whisper", "Objective complete: Bess names the Third Toast.")
 	if not bool(_state.flags.get("third_toast_heard", false)):
 		_state.set_flag("third_toast_heard", true, "Rumor logged: The Third Toast is real.")
+		_state.set_response("Bess Armitage: Third Toast, then no names. If the lantern burns twice at the wharf, someone chose a side.")
 	_state.add_reward(QUEST_REWARD_LABEL, 5)
+	if _state.current_objective_id in ["lantern_at_wharf", "secure_contact", "hook_to_continue"]:
+		return _state.snapshot()
 	if _state.current_objective_id != "choose_next_lead":
 		return _state.start_objective("choose_next_lead", "Objective updated: choose who to trust.")
 	return _state.snapshot()
@@ -138,7 +190,38 @@ func _hear_tavern_whisper() -> Dictionary:
 func _record_secret_path() -> Dictionary:
 	_hear_tavern_whisper()
 	_state.set_flag("rear_service_gate_hint", true, "Secret noted: whispers move through the rear service gate.")
+	_state.set_response("Silas Crowe: Some messages never cross the tavern floor. Watch the rear gate after the second lantern.")
 	return _state.snapshot()
+
+
+func _follow_wharf_lantern(role: String) -> Dictionary:
+	_hear_tavern_whisper()
+	if not _state.is_objective_complete("choose_next_lead"):
+		_state.complete_objective("choose_next_lead", "Objective complete: the wharf path is chosen.")
+	_state.set_flag("chosen_path", "ask_the_wharf", "Journal updated: wharf path chosen through " + role.replace("_", " ") + ".")
+	_state.start_objective("lantern_at_wharf", "Objective updated: look for the lantern signal at the wharf.")
+	if not _state.is_objective_complete("lantern_at_wharf"):
+		_state.complete_objective("lantern_at_wharf", "Objective complete: the lantern signal confirms a hidden network.")
+	_state.set_response("Jonah Reed: Two lanterns means the cargo was claimed. One means it sank. Tonight there were two.")
+	return _state.start_objective("secure_contact", "Objective updated: secure a trusted contact before dawn.")
+
+
+func _follow_merchant_choice(role: String) -> Dictionary:
+	_hear_tavern_whisper()
+	if not _state.is_objective_complete("choose_next_lead"):
+		_state.complete_objective("choose_next_lead", "Objective complete: the merchant path is chosen.")
+	_state.set_flag("chosen_path", "merchant_or_street_path", "Journal updated: street path chosen through " + role.replace("_", " ") + ".")
+	_state.set_response("Honor Finch: If you ask who bought the silence, ask who could afford it twice.")
+	return _state.start_objective("secure_contact", "Objective updated: secure a trusted contact before dawn.")
+
+
+func _return_to_edrin() -> Dictionary:
+	if not _state.is_objective_complete("secure_contact") and _state.current_objective_id == "secure_contact":
+		_state.complete_objective("secure_contact", "Objective complete: Edrin agrees to be your contact.")
+	if not _state.reward_log.has(CONTACT_REWARD_LABEL):
+		_state.add_reward(CONTACT_REWARD_LABEL, 0)
+	_state.set_response("Edrin Vale: Keep the missing line out of official ink until dawn. Come back when the harbor bell changes.")
+	return _state.start_objective("hook_to_continue", "Hook added: return at dawn with the missing line.")
 
 
 func _payload_from_target(target: Node, dialogue_text: String) -> Dictionary:

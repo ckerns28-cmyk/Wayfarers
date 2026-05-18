@@ -36,8 +36,8 @@ Deprecated final states are forbidden.
 | G-8 | Atelier Character and NPC Movement Foundation | `codex/g-8-character-motion-foundation` | #466 merged | PASS | `docs/reports/G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_FOUNDATION.md`, G-8 council report, runtime screenshot manifest, vertical-slice validator, character motion validator, and atelier runtime validator. |
 | G-8A | Living NPC Population Pass | `codex/g-8a-living-npc-population` | #467 merged | PASS | `docs/reports/G8A_LIVING_NPC_POPULATION_PASS.md`, G-8A council report, runtime screenshot manifest, vertical-slice validator, NPC population/route validator, character motion validator, and atelier runtime validator. |
 | G-9 | Interaction UX and Diegetic Prompt Pass | `codex/g-9-interaction-ux-prompts` | #468 merged | PASS | `docs/reports/G9_INTERACTION_UX_DIEGETIC_PROMPT_PASS.md`, G-9 council report, runtime screenshot manifest, vertical-slice validator, interaction UX validator, and atelier runtime validator. |
-| G-9A | Journal, Objective, and Quest State Foundation | `codex/g-9a-journal-objective-state` | pending current phase PR | PASS | `docs/reports/G9A_JOURNAL_OBJECTIVE_QUEST_STATE_FOUNDATION.md`, G-9A council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
-| G-10 | Opening Quest Arc: First Light / Whispers Before Dawn | pending | pending | PENDING | Must make the opening quest playable for 10-15 meaningful minutes. |
+| G-9A | Journal, Objective, and Quest State Foundation | `codex/g-9a-journal-objective-state` | #469 merged | PASS | `docs/reports/G9A_JOURNAL_OBJECTIVE_QUEST_STATE_FOUNDATION.md`, G-9A council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
+| G-10 | Opening Quest Arc: First Light / Whispers Before Dawn | `codex/g-10-opening-quest-arc` | pending current phase PR | PASS | `docs/reports/G10_OPENING_QUEST_ARC_FIRST_LIGHT_WHISPERS_BEFORE_DAWN.md`, G-10 council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
 | G-10A | Tavern Whisper System | pending | pending | PENDING | Must make Tavern/Inn a social gameplay hub with rumor content. |
 | G-10B | Multi-Path Starter Choice Foundation | pending | pending | PENDING | Must support at least two NPC advancement paths and optional clue discovery. |
 | G-11 | Living Town Rhythm Pass | pending | pending | PENDING | Must add believable town rhythm, barks, pauses, and route behavior. |
@@ -48,10 +48,11 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after G-9A: `G-10 Opening Quest Arc: First Light / Whispers Before Dawn`.
+Current phase after G-10: `G-10A Tavern Whisper System`.
 
-G-9A adds runtime First Light quest state, journal/objective HUD updates,
-interaction-driven advancement, optional clue source support, session
-persistence for the current play session, and a Resolve reward/progression
-update. G-10 must now expand that foundation into a richer playable opening arc
-with meaningful 10-15 minute content.
+G-10 expands First Light into a richer playable opening arc with Edrin Vale,
+Mara Pike, Bess Armitage, Jonah Reed, and Silas Crowe participating in the
+missing-ledger mystery. The player now has a wharf-lantern branch, an optional
+rear-gate discovery, a Resolve reward, a named-contact progression beat, and a
+reason to keep the missing line quiet until dawn. G-10A must now make the
+Tavern/Inn itself a deeper rumor gameplay hub.

@@ -130,17 +130,24 @@ func starter_village_quest_contract() -> Dictionary:
 	if _first_light_quest == null:
 		return {
 			"phase": "G-9A",
+			"opening_arc_phase": "G-10",
 			"quest_available": false,
 		}
 	var snapshot: Dictionary = _first_light_quest.snapshot()
 	return {
-		"phase": "G-9A",
+		"phase": String(snapshot.get("phase", "G-9A")),
+		"opening_arc_phase": "G-10",
 		"quest_available": true,
 		"quest_id": String(snapshot.get("quest_id", "")),
 		"quest_title": String(snapshot.get("quest_title", "")),
 		"current_objective_id": String(snapshot.get("current_objective_id", "")),
+		"current_objective_text": String(snapshot.get("current_objective_text", "")),
+		"started_objectives": (snapshot.get("started_objectives", []) as Array).duplicate(),
 		"completed_objectives": (snapshot.get("completed_objectives", []) as Array).duplicate(),
+		"flags": (snapshot.get("flags", {}) as Dictionary).duplicate(true),
+		"progress_updates": (snapshot.get("progress_updates", []) as Array).duplicate(),
 		"reward_log": (snapshot.get("reward_log", []) as Array).duplicate(),
+		"response_text": String(snapshot.get("response_text", "")),
 		"journal_visible": hud != null and hud.has_method("journal_objective_contract"),
 	}
 
@@ -175,7 +182,10 @@ func _configure_first_light_quest() -> void:
 func _on_player_interaction_triggered(target: Node, dialogue_text: String) -> void:
 	if _first_light_quest == null:
 		return
-	_first_light_quest.handle_interaction(target, dialogue_text)
+	var snapshot: Dictionary = _first_light_quest.handle_interaction(target, dialogue_text)
+	var response := String(snapshot.get("response_text", ""))
+	if not response.is_empty() and hud and hud.has_method("show_dialogue"):
+		hud.show_dialogue(response)
 
 func _on_first_light_quest_updated(snapshot: Dictionary) -> void:
 	if hud and hud.has_method("apply_quest_snapshot"):
