@@ -1,0 +1,71 @@
+{
+  "schema_id": "wayfarer.g16a.island_atelier_asset_family_pass_report.v1",
+  "phase_id": "G-16A",
+  "phase_name": "Island Atelier Asset Family Pass",
+  "branch": "codex/g-16a-island-atelier-asset-family",
+  "commits": [
+    "pending_branch_commit_before_pr"
+  ],
+  "implementing_prs": [
+    "pending_open_pr"
+  ],
+  "merge_status": "pending",
+  "status": "PASS",
+  "human_review_required": false,
+  "reason_human_review_not_required": "G-16A is an ordinary autonomous OVI-1 runway phase; failures are production issues to fix autonomously, not a Chris stop.",
+  "north_star_guardrail": "Production-playable never means merely functional. This pass is judged against authored island craft, atelier provenance, route readability, mystery, and first-session pull expected from inspiration games such as Tibia and Ragnarok Online.",
+  "source_files": [
+    "wayfarer_godot_vertical_slice/data/world_layout/island_atelier_asset_family_v1.json",
+    "docs/reports/G16A_ISLAND_ATELIER_ASSET_FAMILY_AGENT_COUNCIL_REPORT.md",
+    "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+    "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+    "wayfarer_godot_vertical_slice/scenes/Main.gd",
+    "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g16a_runtime_screenshots.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g16a_runtime_screenshots.gd.uid",
+    "wayfarer_godot_vertical_slice/tools/capture_g16a_runtime_screenshots.ps1",
+    "wayfarer_godot_vertical_slice/tools/validate_island_atelier_asset_family.py"
+  ],
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g16a_runtime_screenshots/g16a_runtime_screenshot_manifest.json",
+  "screenshots": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g16a_runtime_screenshots/g16a_01_island_asset_family_wide.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16a_runtime_screenshots/g16a_02_trail_edge_clutter.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16a_runtime_screenshots/g16a_03_cove_coastal_assets.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16a_runtime_screenshots/g16a_04_farm_service_props.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16a_runtime_screenshots/g16a_05_quest_clue_asset_provenance.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16a_runtime_screenshots/g16a_06_debug_overlays_disabled.png"
+  ],
+  "asset_families": [
+    "coastal_rocks_shore_debris_cove_objects",
+    "trail_edge_clutter_wooded_props",
+    "old_road_path_fragments",
+    "lantern_posts_signposts_wayfinding",
+    "quest_clue_props_civic_harbor_memory",
+    "farm_service_props_fences_small_carts_crates",
+    "cove_objects_harbor_work_props"
+  ],
+  "acceptance": {
+    "island_assets_feel_cohesive_with_Newport": true,
+    "assets_reinforce_island_fantasy": true,
+    "manifest_provenance_source_proof_exists": true,
+    "no_placeholders": true,
+    "no_untracked_sprites": true,
+    "no_crude_markers": true,
+    "no_yellow_red_unknown_assets_promoted": true,
+    "route_probes_remain_clear": true,
+    "review_capture_no_hud": true,
+    "debug_overlays_disabled": true,
+    "atelier_compliance": "PASS"
+  },
+  "design_score": 8.7,
+  "world_layout_score": 8.7,
+  "art_direction_score": 8.7,
+  "ux_readability_score": 8.6,
+  "technical_stability_score": 8.7,
+  "validation_results": "PASS: G-16A runtime screenshots regenerated from Godot 4.6.2 with no HUD, no debug overlays, manifest-backed island asset families, route clarity, and no placeholder/crude/untracked sprites. PASS: island atelier asset family, runtime atelier consistency, Newport provenance, G-4.18E hero asset family, G-4.19 player identity, island POI, island cohesion, village-to-island transition, island topology, OVI roadmap, OVI ledger, Python compile, JSON checks, git diff check, validate_vertical_slice.gd, and Agent Council.",
+  "provenance_atelier_result": "PASS",
+  "north_star_result": "PASS: G-16A uses Newport atelier asset families to make the opening island feel authored, mysterious, and production-intentional beyond basic functionality; OVI-1 remains incomplete until G-22.",
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "agent_council_report_path": "docs/reports/G16A_ISLAND_ATELIER_ASSET_FAMILY_AGENT_COUNCIL_REPORT.md",
+  "next_phase": "G-17 Island NPC / Encounter / Ambient Life Foundation"
+}

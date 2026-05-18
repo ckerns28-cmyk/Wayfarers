@@ -4,11 +4,11 @@ Phase ID: G-16
 
 Branch: `codex/g-16-island-poi-landmarks`
 
-Commit: `pending_branch_commit_before_pr`
+Commit: `e693a4b2eb641b17948af143809d6c727e4d185e`
 
-PR number: `pending_open_pr`
+PR number: `#484`
 
-Merge status: `pending`
+Merge status: `merged`
 
 Status: PASS
 

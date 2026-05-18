@@ -260,7 +260,7 @@
         "validate_runtime_atelier_asset_consistency.py",
         "validate_newport_asset_provenance.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-17",

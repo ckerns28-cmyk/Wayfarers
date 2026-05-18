@@ -4,12 +4,12 @@
   "phase_name": "Island Landmark and Point-of-Interest Pass",
   "branch": "codex/g-16-island-poi-landmarks",
   "commits": [
-    "pending_branch_commit_before_pr"
+    "e693a4b2eb641b17948af143809d6c727e4d185e"
   ],
   "implementing_prs": [
-    "pending_open_pr"
+    "#484"
   ],
-  "merge_status": "pending",
+  "merge_status": "merged",
   "status": "PASS",
   "human_review_required": false,
   "reason_human_review_not_required": "G-16 is an ordinary autonomous OVI-1 runway phase; failures are production issues to fix autonomously, not a Chris stop.",

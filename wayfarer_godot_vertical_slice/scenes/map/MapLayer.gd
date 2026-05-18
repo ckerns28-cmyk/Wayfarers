@@ -2011,6 +2011,7 @@ func _draw_g410_props() -> void:
 	_draw_g15a_transition_props()
 	_draw_g15b_island_world_props()
 	_draw_g16_island_poi_landmarks()
+	_draw_g16a_island_atelier_asset_family()
 	for pos in [Vector2(238, 612), Vector2(1028, 594), Vector2(1346, 624)]:
 		_draw_barrels(pos, 2)
 	for pos in [Vector2(454, 688), Vector2(1030, 688)]:
@@ -2680,6 +2681,44 @@ func _draw_g16_island_poi_landmarks() -> void:
 		"alpha": 0.90,
 		"contact_shadow": true,
 	})
+
+func _draw_g16a_island_atelier_asset_family() -> void:
+	for placement in [
+		{"asset_id": "atelier_terrain_dirt_path_border_01", "dest": Rect2(1748, 588, 190, 34), "purpose": "g16a_trail_edge_clutter_pasture_lane", "alpha": 0.24},
+		{"asset_id": "atelier_terrain_broken_grassy_shoulder_01", "dest": Rect2(1948, 512, 214, 38), "purpose": "g16a_wooded_path_ground_cohesion", "alpha": 0.24},
+		{"asset_id": "atelier_terrain_dirt_path_border_01", "dest": Rect2(2128, 654, 210, 34), "purpose": "g16a_clue_site_trail_edge", "alpha": 0.22},
+	]:
+		_draw_environmental_atelier_placement(_newport_atelier_terrain_edge_atlas, NEWPORT_ATELIER_TERRAIN_EDGE_ATLAS_REGIONS, placement)
+	for placement in [
+		{"asset_id": "atelier_path_dirt_worn_section_01", "dest": Rect2(2068, 416, 180, 36), "purpose": "g16a_old_road_worn_path_surface", "alpha": 0.22},
+		{"asset_id": "atelier_path_loose_paving_fragments_01", "dest": Rect2(2124, 442, 122, 26), "purpose": "g16a_old_road_path_fragments_source_proof", "alpha": 0.24},
+	]:
+		_draw_environmental_atelier_placement(_newport_atelier_cobble_path_atlas, NEWPORT_ATELIER_COBBLE_PATH_ATLAS_REGIONS, placement)
+	for placement in [
+		{"asset_id": "atelier_shore_shell_pebble_cluster_01", "dest": Rect2(2104, 734, 148, 30), "purpose": "g16a_coastal_rocks_cove_threshold", "alpha": 0.34},
+		{"asset_id": "atelier_shore_wet_rocks_sand_01", "dest": Rect2(2238, 742, 160, 34), "purpose": "g16a_coastal_rocks_hidden_landing_edge", "alpha": 0.34},
+		{"asset_id": "atelier_shore_harbor_debris_slats_rope_01", "dest": Rect2(2294, 704, 122, 32), "purpose": "g16a_shore_debris_hidden_landing", "alpha": 0.38},
+		{"asset_id": "atelier_shore_eelgrass_reeds_cluster_01", "dest": Rect2(2008, 718, 140, 32), "purpose": "g16a_shore_debris_cove_life", "alpha": 0.30},
+		{"asset_id": "atelier_shore_driftwood_log_cluster_01", "dest": Rect2(2168, 760, 152, 32), "purpose": "g16a_shore_debris_coastal_story", "alpha": 0.26},
+	]:
+		_draw_environmental_atelier_placement(_newport_atelier_shoreline_atlas, NEWPORT_ATELIER_SHORELINE_ATLAS_REGIONS, placement)
+	for placement in [
+		{"asset_id": "atelier_wayfinding_multi_arrow_signpost_01", "dest": Rect2(2026, 448, 42, 54), "purpose": "g16a_signposts_old_road_choice_without_debug_ui", "alpha": 0.88, "contact_shadow": true},
+		{"asset_id": "atelier_wayfinding_coastal_waystone_01", "dest": Rect2(2324, 704, 38, 46), "purpose": "g16a_signposts_cove_waystone", "alpha": 0.86, "contact_shadow": true},
+	]:
+		_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, placement)
+	for placement in [
+		{"asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(1736, 528, 82, 38), "purpose": "g16a_fences_farm_service_threshold", "alpha": 0.84, "contact_shadow": true},
+		{"asset_id": "atelier_g418e_service_utility_barrels_01", "dest": Rect2(1872, 594, 62, 34), "purpose": "g16a_farm_service_props_worked_edge", "alpha": 0.84, "contact_shadow": true},
+		{"asset_id": "atelier_g418e_service_stone_edge_01", "dest": Rect2(1818, 628, 108, 24), "purpose": "g16a_farm_service_props_lot_edge", "alpha": 0.72, "contact_shadow": true},
+	]:
+		_draw_g418e_hero_family_placement(_newport_g418e_rear_service_connector_atlas, NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS, placement)
+	for placement in [
+		{"asset_id": "atelier_g418e_harbor_fishing_crate_net_stack_01", "dest": Rect2(2166, 696, 78, 44), "purpose": "g16a_cove_objects_harbor_work_read", "alpha": 0.86, "contact_shadow": true},
+		{"asset_id": "atelier_g418e_harbor_service_post_lantern_01", "dest": Rect2(2274, 662, 40, 58), "purpose": "g16a_lantern_posts_hidden_landing_orientation", "alpha": 0.88, "contact_shadow": true},
+		{"asset_id": "atelier_g418e_harbor_fish_baskets_tub_01", "dest": Rect2(2306, 622, 82, 40), "purpose": "g16a_small_carts_crates_clue_site_work_props", "alpha": 0.82, "contact_shadow": true},
+	]:
+		_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
 
 func _draw_g423a_expanded_town_ground() -> void:
 	_draw_newport_grass_swale(PackedVector2Array([
