@@ -36,10 +36,10 @@
       "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
       "branch": "codex/sv1-autonomous-roadmap",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#462"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "1834f448072a43c394614759eb9661e43616ba91"
       ],
       "files_changed": [
         "AGENTS.md",
@@ -88,16 +88,68 @@
       "phase_id": "G-7A",
       "phase_name": "Street, Lot, and Ground Cohesion Reconstruction",
       "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
-      "branch": "pending",
+      "branch": "codex/g-7a-street-lot-ground-cohesion",
       "implementing_prs": [
-        "pending"
+        "pending_current_phase_pr"
       ],
       "commits": [
-        "pending"
+        "pending_current_phase_commit"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "Not started; current screenshot baseline remains patchy and must be fixed autonomously.",
-      "next_required_action": "Author runtime street, lot, and ground reconstruction and generate screenshot proof."
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g7a_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g7a_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/validate_newport_world_cohesion.py",
+        "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
+        "docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md",
+        "docs/reports/G7A_STREET_LOT_GROUND_COHESION_AGENT_COUNCIL_REPORT.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_03_route_to_counting_house.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_04_player_near_tavern_inn.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_05_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_06_dock_wharf_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_07_npc_movement_path_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_08_npc_idle_and_walking_proof_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_09_counting_house_interaction_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_10_tavern_rumor_location_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_11_objective_route_readability_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_12_signs_markers_interaction_ux_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_13_y_sort_layering_near_buildings.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_15_provenance_no_new_assets_contact_sheet_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g7a_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_world_cohesion.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-7A runtime screenshot capture and PNG verification; PASS: Newport world cohesion; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G7A_STREET_LOT_GROUND_COHESION_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 7.7,
+      "art_direction_score": 7.6,
+      "world_layout_score": 7.6,
+      "npc_animation_score": 0.0,
+      "narrative_score": 7.4,
+      "ux_readability_score": 7.6,
+      "technical_stability_score": 8.8,
+      "performance_build_score": 8.7,
+      "town_cohesion_score": 7.6,
+      "provenance_atelier_result": "PASS: no new raster assets were added; visible runtime assets remain covered by existing atelier/provenance validators.",
+      "north_star_result": "PASS for G-7A: the town now reads as a connected harborfront, wharf apron, back street, uphill connector, and lot-foundation plan. It is not SV-1 complete.",
+      "current_status": "PASS",
+      "reason_for_status": "Runtime map reconstruction replaced the worst patchwork planning read with a connected street/lot/ground layer and 15 screenshot proof views.",
+      "next_required_action": "Start G-7B Harbor, Wharf, and Commercial Spine Cohesion."
     },
     {
       "phase_id": "G-7B",
