@@ -148,7 +148,7 @@
       "branch": "codex/g-7a-street-lot-ground-cohesion; corrective subpass codex/g-7a-tool-backed-layout-repair",
       "implementing_prs": [
         "#463",
-        "pending_g7a_sv0_corrective_pr"
+        "#474"
       ],
       "commits": [
         "3e2ae7ac2e2853f46917caabd8113ba9049f6293",
@@ -217,7 +217,7 @@
       "north_star_result": "PASS for G-7A: the town now reads as a connected harborfront, wharf apron, back street, uphill connector, and lot-foundation plan. It is not SV-1 complete.",
       "current_status": "PASS",
       "reason_for_status": "Runtime map reconstruction replaced the worst patchwork planning read with a connected street/lot/ground layer and 15 screenshot proof views. Chris screenshot QA later required G-7A-SV0 to repair false tavern-stable reads, overlap/cutoff risks, scale mismatch, and source-of-truth bypasses.",
-      "next_required_action": "Complete G-7A-SV0 corrective layout repair, merge if green, then continue the Starter Village roadmap from the next weakest foundation pass."
+      "next_required_action": "Merge G-7A-SV0 corrective PR #474 if green, then continue the Starter Village roadmap from the next weakest foundation pass."
     },
     {
       "phase_id": "G-7B",
