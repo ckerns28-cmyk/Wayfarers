@@ -44,6 +44,11 @@ ambition. The opening should make a first-time player want to keep playing.
 The world must feel authored, alive, mysterious, readable, and
 production-intentional.
 
+Production-playable never means merely functional. Each phase must be judged
+against the pull and craft discipline of inspiration games such as Tibia and
+Ragnarok Online: readable routes, memorable places, grounded NPC life, mystery,
+reward, social texture, and a world that feels worth returning to.
+
 OVI-1 passes only when the player can sit down, arrive in the Newport-inspired
 village, feel tavern whispers and pre-Revolution tension, move through a
 cohesive harbor town, follow a playable quest out into the island, discover a

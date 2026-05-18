@@ -124,6 +124,7 @@ func set_review_screenshot_mode(enabled: bool) -> void:
 	if enabled:
 		_set_debug_overlay(false)
 		_set_building_seating_overlay(false)
+		set_starter_village_ambient_barks_enabled(false)
 	if hud and hud.has_method("set_review_screenshot_mode"):
 		hud.set_review_screenshot_mode(enabled)
 
@@ -255,6 +256,9 @@ func starter_village_first_session_readability_contract() -> Dictionary:
 
 func opening_island_transition_contract() -> Dictionary:
 	return NEWPORT_TOWN.opening_island_transition_contract().duplicate(true)
+
+func opening_island_world_cohesion_contract() -> Dictionary:
+	return NEWPORT_TOWN.opening_island_world_cohesion_contract().duplicate(true)
 
 func debug_apply_starter_village_audio_hooks() -> Dictionary:
 	for hook_id in STARTER_VILLAGE_AUDIO_HOOKS.REQUIRED_HOOK_IDS:
@@ -423,6 +427,10 @@ func set_starter_village_ambient_barks_enabled(enabled: bool) -> void:
 			npc.call("set_town_rhythm_bark_visible", false)
 
 func _update_starter_village_bark_readability() -> void:
+	if _review_screenshot_mode:
+		if _starter_village_ambient_barks_enabled:
+			set_starter_village_ambient_barks_enabled(false)
+		return
 	var should_enable := not _starter_village_player_focus_blocks_barks()
 	if should_enable != _starter_village_ambient_barks_enabled:
 		set_starter_village_ambient_barks_enabled(should_enable)

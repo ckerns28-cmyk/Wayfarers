@@ -1443,6 +1443,18 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     ),
                 ]
             )
+        if phase.upper().strip().startswith("G-15B"):
+            required.extend(
+                [
+                    ("G-15B island world cohesion source", game_root / "data" / "world_layout" / "island_world_cohesion_v1.json"),
+                    ("G-15B phase report", root / "docs" / "reports" / "G15B_ISLAND_TERRAIN_GROUND_ROUTE_COHESION.md"),
+                    ("G-15B phase report JSON", root / "docs" / "reports" / "G15B_ISLAND_TERRAIN_GROUND_ROUTE_COHESION.json"),
+                    (
+                        "G-15B runtime screenshot manifest",
+                        game_root / "artifacts" / "review" / "g15b_runtime_screenshots" / "g15b_runtime_screenshot_manifest.json",
+                    ),
+                ]
+            )
         if phase.upper().strip().startswith("G-16"):
             required.extend(
                 [
@@ -2194,6 +2206,7 @@ def build_report(
             "- Fail if the village-to-island quest chain is not playable.",
             "- Fail if NPCs hover, glide, or lack required movement proof.",
             "- Fail if normal-play assets are non-atelier, untracked, or placeholder-like.",
+            "- Fail if the phase is merely functional but does not feel authored, mysterious, readable, and worthy of Wayfarer's Tibia/Ragnarok-inspired North Star.",
             "- Fail if the first-session loop is boring, confusing, incomplete, or unrewarded.",
             "- Fail if browser/review package identity is stale.",
             "",
