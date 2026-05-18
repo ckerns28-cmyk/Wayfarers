@@ -9,7 +9,7 @@
   "implementing_prs": [
     "#486"
   ],
-  "merge_status": "pending",
+  "merge_status": "merged",
   "status": "PASS",
   "human_review_required": false,
   "reason_human_review_not_required": "G-17 is an ordinary autonomous OVI-1 runway phase; failures are production issues to fix autonomously, not a Chris stop.",

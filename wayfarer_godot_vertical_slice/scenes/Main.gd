@@ -177,10 +177,12 @@ func starter_village_quest_contract() -> Dictionary:
 		"flags": (snapshot.get("flags", {}) as Dictionary).duplicate(true),
 		"progress_updates": (snapshot.get("progress_updates", []) as Array).duplicate(),
 		"reward_log": (snapshot.get("reward_log", []) as Array).duplicate(),
+		"reward_resolve": int(snapshot.get("reward_resolve", 0)),
 		"response_text": String(snapshot.get("response_text", "")),
 		"journal_visible": hud != null and hud.has_method("journal_objective_contract"),
 		"tavern_whisper_contract": starter_village_tavern_whisper_contract(),
 		"multi_path_choice_contract": starter_village_multi_path_choice_contract(),
+		"village_to_island_quest_contract": opening_village_to_island_quest_contract(),
 	}
 
 func starter_village_tavern_whisper_contract() -> Dictionary:
@@ -200,6 +202,15 @@ func starter_village_multi_path_choice_contract() -> Dictionary:
 		"system_id": "first_light_multi_path_choice_foundation",
 		"path_count": 0,
 		"not_single_railroad": false,
+	}
+
+func opening_village_to_island_quest_contract() -> Dictionary:
+	if _first_light_quest != null and _first_light_quest.has_method("debug_village_to_island_playthrough_contract"):
+		return _first_light_quest.debug_village_to_island_playthrough_contract()
+	return {
+		"phase": "G-18",
+		"quest_available": false,
+		"village_to_island_chain_playable_end_to_end": false,
 	}
 
 func starter_village_town_rhythm_contract() -> Dictionary:

@@ -8,7 +8,7 @@ Commit: `50b4f16a6d32590613126c111334d53ff2e45d4d`
 
 PR number: `#486`
 
-Merge status: `pending`
+Merge status: `merged`
 
 Status: PASS
 

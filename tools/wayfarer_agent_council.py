@@ -308,8 +308,14 @@ def is_g15_topology_planning_phase(phase: str) -> bool:
 def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase: str) -> list[ValidatorCommand]:
     game_root = root / "wayfarer_godot_vertical_slice"
     capture_label, capture_prefix = screenshot_prefix_for_phase(phase)
-    capture_ps1 = game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"
-    capture_log = game_root / "artifacts" / "review" / f"{capture_prefix}_runtime_screenshots" / "godot_capture.log"
+    normalized_capture_phase = phase.upper().strip()
+    capture_script_name = f"capture_{capture_prefix}_runtime_screenshots.ps1"
+    capture_artifact_dir = f"{capture_prefix}_runtime_screenshots"
+    if normalized_capture_phase.startswith("G-18") and not normalized_capture_phase.startswith("G-18A"):
+        capture_script_name = "capture_g18_quest_playthrough.ps1"
+        capture_artifact_dir = "g18_runtime_screenshots"
+    capture_ps1 = game_root / "tools" / capture_script_name
+    capture_log = game_root / "artifacts" / "review" / capture_artifact_dir / "godot_capture.log"
     validator_log_dir = game_root / "artifacts" / "review" / "validator_logs"
     validator_log_dir.mkdir(parents=True, exist_ok=True)
     godot_import_log = validator_log_dir / f"{capture_prefix}_godot_import.log"
@@ -469,12 +475,12 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     )
     screenshot_text = (
         "powershell.exe -NoProfile -ExecutionPolicy Bypass -File "
-        rf".\wayfarer_godot_vertical_slice\tools\capture_{capture_prefix}_runtime_screenshots.ps1 "
+        rf".\wayfarer_godot_vertical_slice\tools\{capture_script_name} "
         f"-GodotBin {powershell_quote(godot_bin)}"
     )
     capture_log_text = (
         r"Get-Content -Path wayfarer_godot_vertical_slice\artifacts\review"
-        rf"\{capture_prefix}_runtime_screenshots\godot_capture.log -TotalCount 120"
+        rf"\{capture_artifact_dir}\godot_capture.log -TotalCount 120"
     )
 
     commands = [
@@ -1245,10 +1251,15 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
             ("OVI-1 ledger validator", game_root / "tools" / "validate_opening_village_island_execution_ledger.py"),
         ]
         return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
+    required_capture_script_name = f"capture_{capture_prefix}_runtime_screenshots"
+    required_capture_label = f"{capture_label} runtime screenshot"
+    if phase.upper().strip().startswith("G-18") and not phase.upper().strip().startswith("G-18A"):
+        required_capture_script_name = "capture_g18_quest_playthrough"
+        required_capture_label = f"{capture_label} quest playthrough capture"
     required = [
         ("Vertical slice validator", game_root / "tools" / "validate_vertical_slice.gd"),
-        (f"{capture_label} runtime screenshot wrapper", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"),
-        (f"{capture_label} runtime screenshot script", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.gd"),
+        (f"{required_capture_label} wrapper", game_root / "tools" / f"{required_capture_script_name}.ps1"),
+        (f"{required_capture_label} script", game_root / "tools" / f"{required_capture_script_name}.gd"),
         (
             "Newport asset provenance validator",
             game_root / "art_pipeline" / "newport" / "scripts" / "validate_newport_asset_provenance.py",
@@ -1503,11 +1514,35 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     ),
                 ]
             )
-        if phase.upper().strip().startswith("G-18"):
+        if phase.upper().strip().startswith("G-18A"):
             required.extend(
                 [
-                    ("G-18 village-to-island quest validator", game_root / "tools" / "validate_opening_quest_village_to_island.py"),
                     ("G-18A multi-path rumor choice validator", game_root / "tools" / "validate_multipath_rumor_choice_foundation.py"),
+                ]
+            )
+        elif phase.upper().strip().startswith("G-18"):
+            required.extend(
+                [
+                    ("G-18 village-to-island quest source", game_root / "data" / "quests" / "whispers_before_dawn_village_to_island_v1.json"),
+                    ("G-18 village-to-island quest validator", game_root / "tools" / "validate_opening_quest_village_to_island.py"),
+                    ("G-18 phase report", root / "docs" / "reports" / "G18_OPENING_QUEST_VILLAGE_TO_ISLAND.md"),
+                    ("G-18 phase report JSON", root / "docs" / "reports" / "G18_OPENING_QUEST_VILLAGE_TO_ISLAND.json"),
+                    (
+                        "G-18 runtime screenshot manifest",
+                        game_root / "artifacts" / "review" / "g18_runtime_screenshots" / "g18_runtime_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-18 quest playthrough state trace",
+                        game_root / "artifacts" / "review" / "g18_quest_playthrough" / "quest_playthrough_state_trace.json",
+                    ),
+                    (
+                        "G-18 quest playthrough screenshot manifest",
+                        game_root / "artifacts" / "review" / "g18_quest_playthrough" / "quest_playthrough_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-18 quest playthrough log",
+                        game_root / "artifacts" / "review" / "g18_quest_playthrough" / "quest_playthrough_log.md",
+                    ),
                 ]
             )
         if phase.upper().strip().startswith(("G-19", "G-20")):
