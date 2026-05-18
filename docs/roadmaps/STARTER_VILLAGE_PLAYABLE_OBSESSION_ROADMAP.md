@@ -85,11 +85,16 @@ when the autonomous merge rule in `AGENTS.md` and
 | G-13 | Browser Build, Performance, and Regression Hardening | Hardens Godot import, vertical slice, screenshots, review build, input, performance, assets, and route stability. |
 | G-14 | SV-1 Starter Village Playable Obsession Gate | Produces the final review package and stops for Chris. |
 
-Current execution status after G-10: First Light now has a playable opening arc
-around landfall, the Counting House missing ledger line, the Third Toast tavern
-whisper, a wharf-lantern branch, optional rear-gate secrecy, a Resolve reward,
-and Edrin Vale as a named contact with a dawn hook. G-10A is next and must make
-the Tavern/Inn itself a deeper rumor gameplay hub.
+Current execution status after G-10A: First Light now has a playable opening
+arc and the Tavern/Inn has a runtime-backed rumor system with Bess, Silas, Nora,
+Jonah, the Third Toast, rear-gate secrecy, wharf-lantern ties, and rotating
+ambient barks. G-10B is next and must make the opening mystery support multiple
+advancement paths instead of relying on a single linear click path.
+
+G-10A also adds a standing visual-order review gate after screenshot QA caught
+road/building order problems around the Tavern/Inn and commercial row. Future
+phase councils must fail when screenshots show route corridors under visible
+building bodies, even if every required screenshot file exists.
 
 ## G-7 Masterplan Contract
 

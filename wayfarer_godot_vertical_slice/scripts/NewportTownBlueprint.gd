@@ -44,6 +44,9 @@ const STARTER_VILLAGE_G9_INTERACTION_UX_PASS := "G-9"
 const STARTER_VILLAGE_G9_UX_SCORE := 8.5
 const STARTER_VILLAGE_G9A_QUEST_STATE_FOUNDATION_PASS := "G-9A"
 const STARTER_VILLAGE_G9A_QUEST_STATE_SCORE := 8.5
+const STARTER_VILLAGE_G10A_TAVERN_WHISPER_SYSTEM_PASS := "G-10A"
+const STARTER_VILLAGE_G10A_TAVERN_SOCIAL_SCORE := 8.5
+const STARTER_VILLAGE_VISUAL_ORDER_REVIEW_SCORE := 8.6
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -346,6 +349,84 @@ static func route_rects() -> Array:
 	for pier in pier_rects():
 		rects.append(pier["rect"])
 	return rects
+
+static func starter_village_route_order_specs() -> Array:
+	if not G410_STARTER_HARBOR_TOWN:
+		return []
+	return [
+		_route_order_spec(
+			"west_upland_gap_between_tavern_and_clerk",
+			"primary_upland_connector",
+			50.0,
+			0.78,
+			[
+				Rect2(361, 386, 50, 152),
+				Rect2(361, 638, 50, 42),
+			],
+			["b_inn_tavern", "b_clerk_townhouse"],
+			"The west uphill road must read in the gap beside the tavern, never underneath the tavern or the clerk rowhouse."
+		),
+		_route_order_spec(
+			"central_civic_connector_between_commercial_blocks",
+			"primary_upland_connector",
+			60.0,
+			0.86,
+			[
+				Rect2(790, 404, 60, 148),
+				Rect2(790, 638, 60, 52),
+			],
+			["b_mercantile", "b_chandlery_front"],
+			"The counting-house approach must occupy the open commercial-block break and stop at civic frontage instead of running under the building body."
+		),
+		_route_order_spec(
+			"east_shop_market_connector_gap",
+			"market_connector",
+			30.0,
+			0.78,
+			[
+				Rect2(1245, 426, 30, 126),
+				Rect2(1245, 642, 30, 48),
+			],
+			["b_shop_house", "b_market_shed"],
+			"The east market connector must stay in the shop-to-market breathing room and not clip either storefront."
+		),
+		_route_order_spec(
+			"market_printer_corner_gap",
+			"market_connector",
+			30.0,
+			0.68,
+			[
+				Rect2(1443, 430, 30, 124),
+				Rect2(1443, 646, 30, 44),
+			],
+			["b_market_shed", "b_printer_rowhouse"],
+			"The far-east corner road must define the market/printer edge without becoming a road slab under the buildings."
+		),
+	]
+
+static func starter_village_visual_order_review_contract() -> Dictionary:
+	return {
+		"phase": STARTER_VILLAGE_G10A_TAVERN_WHISPER_SYSTEM_PASS,
+		"target_score_this_phase": STARTER_VILLAGE_VISUAL_ORDER_REVIEW_SCORE,
+		"trigger": "Chris screenshot QA caught route/building order problems around the tavern and nearby commercial buildings.",
+		"hard_gate": "Council must fail if visible route corridors run beneath tavern, commercial, civic, or market building bodies in normal play.",
+		"route_source": "starter_village_route_order_specs",
+		"required_reviews": [
+			"wide screenshot visual order",
+			"tavern-to-clerk street gap",
+			"commercial-block road break",
+			"counting-house approach",
+			"market connector gaps",
+			"y-sort/layering screenshot",
+			"debug overlays disabled screenshot",
+		],
+		"forbidden_false_passes": [
+			"proof screenshot exists but road order is wrong",
+			"validator checks text only while composition contradicts it",
+			"route corridor appears under a building footprint",
+			"tavern props or prompts hide broken district order",
+		],
+	}
 
 static func route_tiles() -> Array:
 	return _tiles_from_rects(route_rects())
@@ -864,6 +945,15 @@ static func starter_district_plan() -> Dictionary:
 			"required_feedback": ["Journal", "Objective updated", "Whisper", "Rumor", "Reward"],
 			"session_persistence": "in_memory_runtime_state_for_current_session",
 		},
+		"g10a_tavern_whisper_system_contract": {
+			"phase": STARTER_VILLAGE_G10A_TAVERN_WHISPER_SYSTEM_PASS,
+			"target_score_this_phase": STARTER_VILLAGE_G10A_TAVERN_SOCIAL_SCORE,
+			"runtime_system": "TavernWhisperSystem.gd",
+			"data_source": "res://data/dialogue/tavern_whispers.json",
+			"required_npcs": ["Bess Armitage", "Silas Crowe", "Nora Vale", "Jonah Reed"],
+			"required_content": ["Third Toast", "harbor ledger rumor", "rear service gate secret", "wharf lantern tie", "rotating ambient barks"],
+			"hub_rule": "The Tavern/Inn must deliver quest-relevant rumors and ambient whisper culture without debug markers.",
+		},
 		"movement_loop": [
 			"waterfront_avenue",
 			"west_upland_road",
@@ -1315,6 +1405,17 @@ static func _anchor(id: String, anchor_type: String, district: String, position:
 		"district": district,
 		"position": position,
 		"notes": notes,
+	}
+
+static func _route_order_spec(id: String, route_type: String, width: float, alpha: float, segments: Array, expected_gap_between: Array, review_note: String) -> Dictionary:
+	return {
+		"id": id,
+		"route_type": route_type,
+		"width": width,
+		"alpha": alpha,
+		"segments": segments,
+		"expected_gap_between": expected_gap_between,
+		"review_note": review_note,
 	}
 
 static func _infill_slot(id: String, district: String, role: String, rect: Rect2i, guardrail: String, status := "planned_g413b", building_id := "", future_hook := "") -> Dictionary:

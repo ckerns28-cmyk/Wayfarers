@@ -1501,7 +1501,7 @@ func _draw_g410_street_plan() -> void:
 	_draw_street_wear(Rect2(250, 398, 1198, 42), 38)
 	_draw_street_wear(Rect2(320, 276, 902, 34), 22)
 	_draw_g7a_route_curbs_and_material_transitions()
-	for p in [Vector2(386, 578), Vector2(704, 574), Vector2(1156, 576), Vector2(1404, 582), Vector2(704, 398), Vector2(1156, 400)]:
+	for p in [Vector2(386, 578), Vector2(820, 574), Vector2(1260, 576), Vector2(1458, 582), Vector2(704, 398), Vector2(1260, 430)]:
 		_draw_edge_grime(p, 92.0)
 	_draw_g420a_terrain_and_path_transitions()
 	_draw_g423a_lot_threshold_overlays()
@@ -1682,13 +1682,21 @@ func _draw_g7a_continuous_street_base() -> void:
 		Vector2(956, 728), Vector2(706, 718), Vector2(480, 726), Vector2(210, 716)
 	]), 88, 0.86)
 
-	for spec in [
-		{"center": Vector2(386, 502), "width": 50.0, "top": 300.0, "bottom": 664.0, "count": 50, "alpha": 0.78},
-		{"center": Vector2(704, 500), "width": 60.0, "top": 306.0, "bottom": 708.0, "count": 62, "alpha": 0.86},
-		{"center": Vector2(1156, 514), "width": 54.0, "top": 326.0, "bottom": 708.0, "count": 50, "alpha": 0.78},
-		{"center": Vector2(1402, 558), "width": 48.0, "top": 420.0, "bottom": 704.0, "count": 40, "alpha": 0.68},
-	]:
-		_draw_newport_uphill_street(spec["center"], spec["width"], spec["top"], spec["bottom"], spec["count"], spec["alpha"])
+	_draw_g7a_authored_visual_order_streets()
+
+func _draw_g7a_authored_visual_order_streets() -> void:
+	for raw_spec in NEWPORT_TOWN.starter_village_route_order_specs():
+		var spec: Dictionary = raw_spec
+		var width := float(spec.get("width", 32.0))
+		var alpha := float(spec.get("alpha", 0.70))
+		var segments: Array = spec.get("segments", [])
+		for raw_segment in segments:
+			var segment: Rect2 = raw_segment
+			if segment.size.x <= 0.0 or segment.size.y <= 0.0:
+				continue
+			var center := Vector2(segment.get_center().x, segment.get_center().y)
+			var detail_count := maxi(14, int(segment.size.y / 7.0))
+			_draw_newport_uphill_street(center, width, segment.position.y, segment.end.y, detail_count, alpha)
 
 func _draw_g7a_route_curbs_and_material_transitions() -> void:
 	for raw_curb in [
@@ -1715,12 +1723,13 @@ func _draw_g7a_route_curbs_and_material_transitions() -> void:
 
 	for raw_lane in [
 		[Vector2(386, 372), Vector2(386, 548), 13.0],
-		[Vector2(704, 394), Vector2(704, 548), 14.0],
-		[Vector2(1156, 404), Vector2(1156, 548), 13.0],
-		[Vector2(526, 458), Vector2(526, 568), 9.0],
+		[Vector2(820, 430), Vector2(820, 548), 14.0],
+		[Vector2(820, 430), Vector2(704, 398), 9.0],
+		[Vector2(1260, 426), Vector2(1260, 548), 11.0],
+		[Vector2(1458, 500), Vector2(1458, 626), 9.0],
+		[Vector2(588, 458), Vector2(588, 568), 8.0],
 		[Vector2(926, 458), Vector2(926, 568), 9.0],
 		[Vector2(1024, 604), Vector2(1024, 704), 10.0],
-		[Vector2(1402, 500), Vector2(1402, 626), 10.0],
 	]:
 		var lane: Array = raw_lane
 		_draw_g7a_soft_service_trace(lane[0], lane[1], lane[2], 0.34)
@@ -1730,8 +1739,9 @@ func _draw_g7a_route_curbs_and_material_transitions() -> void:
 		[Vector2(240, 422), Vector2(1444, 414), 0.09],
 		[Vector2(230, 686), Vector2(1428, 684), 0.08],
 		[Vector2(386, 324), Vector2(392, 630), 0.08],
-		[Vector2(704, 322), Vector2(704, 686), 0.09],
-		[Vector2(1156, 344), Vector2(1150, 688), 0.08],
+		[Vector2(820, 430), Vector2(820, 686), 0.08],
+		[Vector2(1260, 430), Vector2(1260, 688), 0.07],
+		[Vector2(1458, 500), Vector2(1458, 688), 0.06],
 	]:
 		var rut: Array = raw_rut
 		draw_line(rut[0], rut[1], Color(0.07, 0.055, 0.035, float(rut[2])), 2.0, true)

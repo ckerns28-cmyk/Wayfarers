@@ -1,0 +1,60 @@
+{
+  "schema_id": "wayfarer.dialogue.tavern_whispers.v1",
+  "phase": "G-10A",
+  "system_id": "newport_tavern_whisper_system",
+  "location": "Inn & Tavern",
+  "purpose": "Make the Tavern/Inn a gameplay rumor hub where harbor commerce, ledger pressure, and quiet pre-Revolution tension reach the player through trusted speech.",
+  "rumor_cycle_policy": "rotating_lines_no_debug_markers",
+  "quest_relevant_npcs": [
+    "Bess Armitage - tavern keeper",
+    "Silas Crowe - suspicious patron",
+    "Nora Vale - rumor carrier",
+    "Jonah Reed - dock courier"
+  ],
+  "quest_relevant_interactions": [
+    {
+      "id": "third_toast",
+      "speaker": "Bess Armitage",
+      "line": "Bess Armitage: Third Toast, then no names. If the lantern burns twice at the wharf, someone chose a side.",
+      "tags": ["toast", "whisper", "harbor", "ledger", "rumor", "pre_revolution_pressure"],
+      "quest_effect": "Completes follow_tavern_whisper and opens the choice of who to trust."
+    },
+    {
+      "id": "rear_service_gate",
+      "speaker": "Silas Crowe",
+      "line": "Silas Crowe: Some messages never cross the tavern floor. Watch the rear gate after the second lantern.",
+      "tags": ["secret", "tavern", "rear_gate", "whisper", "rumor"],
+      "quest_effect": "Records the optional rear service gate discovery."
+    },
+    {
+      "id": "folded_notice",
+      "speaker": "Nora Vale",
+      "line": "Nora Vale: The folded notice is not for officials. It is for people who know what the Third Toast means.",
+      "tags": ["notice", "toast", "whisper", "ledger", "rumor"],
+      "quest_effect": "Connects civic notice-board rumor traffic back to the Tavern/Inn."
+    },
+    {
+      "id": "dock_lanterns",
+      "speaker": "Jonah Reed",
+      "line": "Jonah Reed: When the tavern shutters close early, count the lanterns on the wharf, not the cups on the bar.",
+      "tags": ["harbor", "lantern", "wharf", "whisper", "rumor"],
+      "quest_effect": "Connects tavern rumor culture to the wharf lantern branch."
+    }
+  ],
+  "ambient_barks": [
+    "A sailor says the Customs man drinks alone now.",
+    "Someone bought silence before the cargo changed hands.",
+    "No names after the Third Toast.",
+    "The harbor bell rang twice, but only one clerk wrote it down.",
+    "A merchant paid in coin clean enough to look dirty."
+  ],
+  "hub_contract": {
+    "has_tavern_npcs": true,
+    "has_rumor_dialogue": true,
+    "has_quest_relevant_interaction": true,
+    "has_rotating_rumor_lines": true,
+    "ties_to_harbor_commerce": true,
+    "ties_to_political_tension": true,
+    "normal_play_debug_marker_free": true
+  }
+}

@@ -311,9 +311,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_interaction_ux.py"
     )
+    visual_order_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_newport_visual_ordering.py"
+    )
     opening_quest_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_opening_quest_arc.py"
+    )
+    tavern_whisper_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_tavern_whisper_system.py"
     )
     pre_g5_ledger_text = (
         f"& {powershell_quote(python_bin)} "
@@ -485,6 +493,13 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 cwd=root,
                 required_paths=[game_root / "tools" / "validate_runtime_atelier_asset_consistency.py"],
             ),
+            ValidatorCommand(
+                name="Newport visual ordering validation",
+                command_text=visual_order_text,
+                args=[python_bin, str(game_root / "tools" / "validate_newport_visual_ordering.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_newport_visual_ordering.py"],
+            ),
         ]
         if normalized_phase.startswith("G-8"):
             starter_commands.insert(
@@ -528,6 +543,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     args=[python_bin, str(game_root / "tools" / "validate_opening_quest_arc.py")],
                     cwd=root,
                     required_paths=[game_root / "tools" / "validate_opening_quest_arc.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-10A"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Tavern whisper system validation",
+                    command_text=tavern_whisper_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_tavern_whisper_system.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_tavern_whisper_system.py"],
                 ),
             )
         commands[diff_index:diff_index] = starter_commands
@@ -773,6 +799,21 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 (f"{capture_label} Main quest integration", game_root / "scenes" / "Main.gd"),
             ]
         )
+        if phase.upper().strip().startswith("G-10A"):
+            required.extend(
+                [
+                    (
+                        "G-10A tavern whisper validator",
+                        game_root / "tools" / "validate_tavern_whisper_system.py",
+                    ),
+                    (
+                        "G-10A Newport visual ordering validator",
+                        game_root / "tools" / "validate_newport_visual_ordering.py",
+                    ),
+                    ("G-10A tavern whisper system", game_root / "scripts" / "dialogue" / "TavernWhisperSystem.gd"),
+                    ("G-10A tavern whisper data", game_root / "data" / "dialogue" / "tavern_whispers.json"),
+                ]
+            )
     elif phase.upper().strip().startswith("G-9A"):
         required.extend(
             [
@@ -1081,6 +1122,8 @@ def build_report(
         scrum_scope = "Scope check: this council pass reopens the false-positive G-5 readiness gate, verifies the pre-G-5 roadmap ledger, and repairs visible player/NPC/marker/world sprite consistency before G-5 can be recommended."
     elif phase.upper().strip().startswith("G-4.22"):
         scrum_scope = "Scope check: this council pass is the formal G-4 visual foundation gate; it records acceptance authority and may recommend G-5 only if screenshots, provenance, validators, and council scores clear the gate."
+    elif phase.upper().strip().startswith("G-10A"):
+        scrum_scope = "Scope check: this council pass makes the Tavern/Inn a rumor gameplay hub with Bess, Silas, Nora, Jonah, rotating barks, and quest-relevant whisper data; it must not claim the broader multi-path starter foundation is complete."
     elif phase.upper().strip().startswith("G-10") and not phase.upper().strip().startswith(("G-10A", "G-10B")):
         scrum_scope = "Scope check: this council pass expands First Light into a playable opening quest arc with named NPCs, branch choice, optional discovery, reward/progression, and a reason to continue; it must not claim the later dedicated tavern-system or multi-path foundation phases are complete."
     elif phase.upper().strip().startswith("G-9A"):
@@ -1362,6 +1405,26 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-8A")
+                else []
+            ),
+            *(
+                [
+                    "## G-10A Tavern Whisper System Result",
+                    "",
+                    f"UX/readability score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime screenshots inspected: G-10A proof frames show Bess as a quest-relevant tavern keeper, the Third Toast rumor, Silas's rear-gate secret, the tavern whisper contract, rotating ambient barks, and debug-off normal play.",
+                    "",
+                    "- G-10A accepted proof: the Tavern/Inn now has structured rumor dialogue, ambient bark data, quest-relevant interactions, and explicit ties to harbor commerce and pre-Revolution pressure.",
+                    "",
+                    "## Visual Order QA Repair",
+                    "",
+                    "- Council failure mode added: proof screenshots cannot pass when route corridors render beneath tavern, commercial, civic, or market building bodies.",
+                    "",
+                    "- New validation source: Newport route corridors are drawn from `starter_village_route_order_specs()` and checked against runtime building visual bounds before G-10A can pass.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-10A")
                 else []
             ),
             *(

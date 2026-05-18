@@ -326,12 +326,14 @@
         "tavern_meaningful_gameplay_location",
         "player_can_hear_or_discover_rumor",
         "tavern_supports_opening_arc",
-        "tavern_feels_social_center"
+        "tavern_feels_social_center",
+        "route_building_visual_order_gate_passes_after_screenshot_review"
       ],
       "primary_validators": [
-        "validate_tavern_whisper_system.py"
+        "validate_tavern_whisper_system.py",
+        "validate_newport_visual_ordering.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-10B",

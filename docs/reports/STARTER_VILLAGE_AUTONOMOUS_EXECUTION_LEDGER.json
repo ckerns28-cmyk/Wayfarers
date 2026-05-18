@@ -632,10 +632,11 @@
       "phase_name": "Opening Quest Arc: First Light / Whispers Before Dawn",
       "branch": "codex/g-10-opening-quest-arc",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#470"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "539690221ce3f44435f8452519bc279bc816df26",
+        "052d223aec38f265e8961e66c6576bdee8b2c242"
       ],
       "current_status": "PASS",
       "reason_for_status": "The opening quest arc now supports 10-15 minutes of meaningful first-session content through Edrin, Mara, Bess, Jonah, Silas, a branch choice, optional rear-gate discovery, Resolve reward, and a reason to continue.",
@@ -709,16 +710,87 @@
     {
       "phase_id": "G-10A",
       "phase_name": "Tavern Whisper System",
-      "branch": "pending",
+      "branch": "codex/g-10a-tavern-whisper-system",
       "implementing_prs": [
-        "pending"
+        "pending_current_phase_pr"
       ],
       "commits": [
-        "pending"
+        "pending_current_phase_commit"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "Tavern rumor gameplay is not yet implemented.",
-      "next_required_action": "Make Tavern/Inn a rumor gameplay hub."
+      "current_status": "PASS",
+      "reason_for_status": "The Tavern/Inn now acts as a rumor gameplay hub through structured Third Toast, rear-gate, notice-board, dock-lantern, and ambient bark content wired into First Light runtime responses. Chris screenshot QA also forced a stricter visual-order gate so route corridors can no longer pass while rendering under tavern/commercial/civic building bodies.",
+      "next_required_action": "Start G-10B Multi-Path Starter Choice Foundation.",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/scripts/dialogue/TavernWhisperSystem.gd",
+        "wayfarer_godot_vertical_slice/scripts/dialogue/TavernWhisperSystem.gd.uid",
+        "wayfarer_godot_vertical_slice/data/dialogue/tavern_whispers.json",
+        "wayfarer_godot_vertical_slice/scripts/quests/FirstLightQuest.gd",
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g10a_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g10a_runtime_screenshots.gd.uid",
+        "wayfarer_godot_vertical_slice/tools/capture_g10a_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "wayfarer_godot_vertical_slice/tools/validate_tavern_whisper_system.py",
+        "wayfarer_godot_vertical_slice/tools/validate_newport_visual_ordering.py",
+        "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
+        "tools/wayfarer_agent_council.py",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/G10A_TAVERN_WHISPER_SYSTEM.md",
+        "docs/reports/G10A_TAVERN_WHISPER_AGENT_COUNCIL_REPORT.md",
+        "docs/WAYFARER_GODOT_ROADMAP.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_03_player_on_route_to_counting_house.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_04_player_near_tavern_inn.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_05_player_on_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_06_player_at_dock_wharf_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_07_player_near_npc_movement_path.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_08_npc_idle_and_walking_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_09_player_interacting_with_counting_house_clerk.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_10_player_interacting_at_tavern_rumor_location.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_11_quest_prompt_journal_objective_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_12_signs_markers_interaction_ux_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_13_y_sort_layering_near_buildings_props.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_15_contact_sheet_provenance_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g10a_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_tavern_whisper_system.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_visual_ordering.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_quest_arc.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-10A runtime screenshot capture and PNG verification; PASS: tavern whisper system validator; PASS: Newport visual ordering validator; PASS: opening quest arc validator; PASS: interaction UX validator; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G10A_TAVERN_WHISPER_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "art_direction_score": 8.5,
+      "world_layout_score": 8.6,
+      "npc_animation_score": 8.5,
+      "narrative_score": 8.6,
+      "gameplay_hook_score": 8.6,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.8,
+      "performance_build_score": 8.7,
+      "town_cohesion_score": 8.1,
+      "provenance_atelier_result": "PASS: G-10A adds no visible raster assets; tavern whisper content and contracts reuse existing atelier-compliant NPC/building/world assets.",
+      "north_star_result": "PASS for G-10A: the Tavern/Inn now has runtime-backed rumor dialogue, rotating ambient barks, quest-relevant NPC ties, and harbor/pre-Revolution pressure as gameplay. It is not SV-1 complete."
     },
     {
       "phase_id": "G-10B",
