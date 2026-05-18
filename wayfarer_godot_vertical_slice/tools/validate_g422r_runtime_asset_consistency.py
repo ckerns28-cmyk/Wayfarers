@@ -165,8 +165,10 @@ def validate_runtime_references(failures: list[str]) -> None:
         failures.append("Player.gd still references the superseded G-4.19 player atlas")
     if "newport_npc_atelier_g422r_v1.png" not in edrin_source:
         failures.append("EdrinVale.gd must use the G-4.22R NPC atlas")
-    if 'node name="Visual" type="Sprite2D"' not in edrin_scene:
-        failures.append("EdrinVale.tscn must have a Sprite2D visual child")
+    if 'node name="Visual" type="AnimatedSprite2D"' not in edrin_scene:
+        failures.append("EdrinVale.tscn must have an AnimatedSprite2D visual child after G-8")
+    if 'node name="GroundShadow" type="Polygon2D"' not in edrin_scene:
+        failures.append("EdrinVale.tscn must include a grounded shadow treatment after G-8")
     for forbidden in ["func _draw()", "draw_circle", "draw_rect", "draw_line"]:
         if forbidden in edrin_source:
             failures.append(f"EdrinVale.gd still contains primitive placeholder drawing: {forbidden}")

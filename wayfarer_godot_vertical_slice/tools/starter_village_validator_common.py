@@ -27,10 +27,17 @@ G7B_SCREENSHOT_MANIFEST = PROJECT_ROOT / "artifacts" / "review" / "g7b_runtime_s
 G7C_REPORT = REPO_ROOT / "docs" / "reports" / "G7C_LANDMARK_DISTRICT_IDENTITY_PASS.md"
 G7C_COUNCIL_REPORT = REPO_ROOT / "docs" / "reports" / "G7C_LANDMARK_DISTRICT_IDENTITY_AGENT_COUNCIL_REPORT.md"
 G7C_SCREENSHOT_MANIFEST = PROJECT_ROOT / "artifacts" / "review" / "g7c_runtime_screenshots" / "g7c_runtime_screenshot_manifest.json"
+G8_REPORT = REPO_ROOT / "docs" / "reports" / "G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_FOUNDATION.md"
+G8_COUNCIL_REPORT = REPO_ROOT / "docs" / "reports" / "G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_AGENT_COUNCIL_REPORT.md"
+G8_SCREENSHOT_MANIFEST = PROJECT_ROOT / "artifacts" / "review" / "g8_runtime_screenshots" / "g8_runtime_screenshot_manifest.json"
 BLUEPRINT = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 MAP_LAYER = PROJECT_ROOT / "scenes" / "map" / "MapLayer.gd"
 HUD_SCENE = PROJECT_ROOT / "scenes" / "ui" / "HUD.tscn"
 CHARACTER_MANIFEST = PROJECT_ROOT / "art_pipeline" / "player_identity" / "manifests" / "newport_atelier_characters_g422r_manifest.json"
+PLAYER_GD = PROJECT_ROOT / "scenes" / "player" / "Player.gd"
+PLAYER_TSCN = PROJECT_ROOT / "scenes" / "player" / "Player.tscn"
+EDRIN_GD = PROJECT_ROOT / "scenes" / "npc" / "EdrinVale.gd"
+EDRIN_TSCN = PROJECT_ROOT / "scenes" / "npc" / "EdrinVale.tscn"
 
 REQUIRED_PHASES = [
     "G-7",

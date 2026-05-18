@@ -230,10 +230,11 @@
       "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
       "branch": "codex/g-7c-landmark-district-identity",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#465"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "9e28ac4e929663cef7ff14ec9cd103d6b729cf50",
+        "45e93710ae1b7356ace9c95bd7fccde8fb4ef25d"
       ],
       "files_changed": [
         "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
@@ -298,16 +299,80 @@
     {
       "phase_id": "G-8",
       "phase_name": "Atelier Character and NPC Movement Foundation",
-      "branch": "pending",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "branch": "codex/g-8-character-motion-foundation",
       "implementing_prs": [
-        "pending"
+        "pending_current_phase_pr"
       ],
       "commits": [
-        "pending"
+        "pending_current_phase_commit"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "Current NPC movement is a known failure risk.",
-      "next_required_action": "Replace hover/glide behavior with grounded idle/walk/facing states."
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+        "wayfarer_godot_vertical_slice/scenes/player/Player.tscn",
+        "wayfarer_godot_vertical_slice/scenes/npc/EdrinVale.gd",
+        "wayfarer_godot_vertical_slice/scenes/npc/EdrinVale.tscn",
+        "wayfarer_godot_vertical_slice/art_pipeline/player_identity/manifests/newport_atelier_characters_g422r_manifest.json",
+        "wayfarer_godot_vertical_slice/tools/capture_g8_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g8_runtime_screenshots.gd.uid",
+        "wayfarer_godot_vertical_slice/tools/capture_g8_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "wayfarer_godot_vertical_slice/tools/validate_character_motion_foundation.py",
+        "wayfarer_godot_vertical_slice/tools/validate_g422r_runtime_asset_consistency.py",
+        "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
+        "tools/wayfarer_agent_council.py",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_FOUNDATION.md",
+        "docs/reports/G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_AGENT_COUNCIL_REPORT.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_03_player_route_to_counting_house_walk_up.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_04_player_walk_down_grounded.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_05_player_walk_left_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_06_player_walk_right_dock_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_07_npc_movement_path_stationary_no_drift.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_08_npc_idle_and_stationary_walk_request_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_09_counting_house_interaction_grounding.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_10_tavern_rumor_location_grounding.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_11_objective_route_readability_motion.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_12_signs_markers_interaction_ux_grounded.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_13_y_sort_layering_character_feet.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_15_provenance_character_motion_contract.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g8_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_character_motion_foundation.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_g422r_runtime_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-8 runtime screenshot capture and PNG verification; PASS: character motion foundation; PASS: G-4.22R runtime asset consistency; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.5,
+      "art_direction_score": 8.5,
+      "world_layout_score": 8.5,
+      "npc_animation_score": 8.5,
+      "narrative_score": 8.3,
+      "ux_readability_score": 8.5,
+      "technical_stability_score": 8.8,
+      "performance_build_score": 8.7,
+      "town_cohesion_score": 8.0,
+      "provenance_atelier_result": "PASS: player and Edrin use manifest-backed G-4.22R atelier atlases; no new raster assets or untracked visible runtime sprites were added.",
+      "north_star_result": "PASS for G-8: static-sprite NPC glide is removed from normal play by grounding characters and disabling NPC route walking until dedicated walk sheets ship. It is not SV-1 complete.",
+      "current_status": "PASS",
+      "reason_for_status": "Player movement now has documented idle/walk directional states, foot/shadow grounding, and speed-cadence sync. Edrin is an AnimatedSprite2D with a motion contract and remains stationary in normal play until proper NPC walk sheets exist, preventing the prior hover/glide failure.",
+      "next_required_action": "Start G-8A Living NPC Population Pass."
     },
     {
       "phase_id": "G-8A",
