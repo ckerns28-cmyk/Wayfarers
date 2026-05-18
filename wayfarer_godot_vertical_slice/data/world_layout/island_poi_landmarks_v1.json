@@ -1,0 +1,110 @@
+{
+  "schema_id": "wayfarer.g16.island_poi_landmarks.v1",
+  "phase": "G-16",
+  "topology_source": "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+  "world_cohesion_source": "wayfarer_godot_vertical_slice/data/world_layout/island_world_cohesion_v1.json",
+  "purpose": "Give the opening island memorable destinations that support exploration, quest purpose, route memory, mystery, and return-path readability.",
+  "required_poi_ids": [
+    "signal_overlook",
+    "old_road_marker",
+    "cove_hidden_landing",
+    "wooded_grove_path",
+    "farm_service_outbuilding",
+    "quest_clue_site",
+    "optional_secret_cache",
+    "return_landmark"
+  ],
+  "points_of_interest": [
+    {
+      "id": "signal_overlook",
+      "type": "harbor_overlook_or_signal_point",
+      "position": {"x": 2288, "y": 332},
+      "route_role": "high-side route destination and long-view island landmark",
+      "exploration_purpose": "Shows the player the island has authored elevation and a watch point beyond town.",
+      "quest_purpose": "Future signal clue can connect tavern whispers to the island warning line.",
+      "recognizable_destination": true
+    },
+    {
+      "id": "old_road_marker",
+      "type": "old_road_marker",
+      "position": {"x": 2150, "y": 420},
+      "route_role": "fork marker between the signal rise, wooded path, and cove route",
+      "exploration_purpose": "Makes the old road legible without debug signage.",
+      "quest_purpose": "Points toward the first physical trace beyond Newport.",
+      "recognizable_destination": true
+    },
+    {
+      "id": "cove_hidden_landing",
+      "type": "cove_wharf_remnant_hidden_landing",
+      "position": {"x": 2220, "y": 714},
+      "route_role": "shoreline destination on the lower island loop",
+      "exploration_purpose": "Gives the coast a named-feeling place rather than empty shoreline.",
+      "quest_purpose": "Supports smuggling, missing manifest, and coded-whisper evidence.",
+      "recognizable_destination": true
+    },
+    {
+      "id": "wooded_grove_path",
+      "type": "wooded_path_or_grove",
+      "position": {"x": 2048, "y": 520},
+      "route_role": "sheltered path transition between pasture and rise",
+      "exploration_purpose": "Adds a natural landmark and privacy beat to the route.",
+      "quest_purpose": "Can hide a rumor contact or observation point in later phases.",
+      "recognizable_destination": true
+    },
+    {
+      "id": "farm_service_outbuilding",
+      "type": "small_farm_service_outbuilding_or_edge_settlement",
+      "position": {"x": 1886, "y": 572},
+      "route_role": "human-scale service edge after leaving Newport",
+      "exploration_purpose": "Prevents the first island stretch from feeling empty or decorative.",
+      "quest_purpose": "Supports farmhand, courier, or supply clue beats in G-17/G-18.",
+      "recognizable_destination": true
+    },
+    {
+      "id": "quest_clue_site",
+      "type": "quest_clue_site",
+      "position": {"x": 2208, "y": 642},
+      "route_role": "physical evidence node between cove and return lane",
+      "exploration_purpose": "Gives island exploration a concrete reason before the quest extension lands.",
+      "quest_purpose": "Staged clue site for Whispers Before Dawn.",
+      "recognizable_destination": true
+    },
+    {
+      "id": "optional_secret_cache",
+      "type": "optional_secret_location",
+      "position": {"x": 2330, "y": 270},
+      "route_role": "off-route discovery above the signal rise",
+      "exploration_purpose": "Rewards curiosity with a tucked-away visible cache.",
+      "quest_purpose": "Optional clue can enrich the journal in G-18A.",
+      "recognizable_destination": true,
+      "optional_discovery": true
+    },
+    {
+      "id": "return_landmark",
+      "type": "return_landmark_visible_from_multiple_routes",
+      "position": {"x": 1780, "y": 642},
+      "route_role": "visual anchor back toward Newport",
+      "exploration_purpose": "Keeps the player oriented when looping back from cove or pasture.",
+      "quest_purpose": "Supports the return/report beat and next-hook routing.",
+      "recognizable_destination": true
+    }
+  ],
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g16_runtime_screenshots/g16_runtime_screenshot_manifest.json",
+  "required_screenshots": [
+    "g16_01_signal_overlook_landmark.png",
+    "g16_02_old_road_marker_and_grove.png",
+    "g16_03_cove_hidden_landing.png",
+    "g16_04_farm_service_edge_settlement.png",
+    "g16_05_quest_clue_optional_secret.png",
+    "g16_06_return_landmark_debug_disabled.png"
+  ],
+  "acceptance": {
+    "player_can_name_or_recognize_destinations": true,
+    "each_poi_supports_exploration_or_quest_purpose": true,
+    "pois_are_not_random_props": true,
+    "at_least_one_optional_discovery_exists": true,
+    "return_landmark_visible_from_multiple_routes": true,
+    "art_world_score": 8.6,
+    "world_layout_score": 8.6
+  }
+}
