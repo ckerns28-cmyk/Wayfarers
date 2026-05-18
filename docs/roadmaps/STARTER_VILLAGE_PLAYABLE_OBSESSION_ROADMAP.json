@@ -353,10 +353,12 @@
         "quest_state_supports_future_expansion"
       ],
       "primary_validators": [
+        "validate_multi_path_starter_choice.py",
         "validate_opening_quest_arc.py",
-        "validate_tavern_whisper_system.py"
+        "validate_tavern_whisper_system.py",
+        "validate_newport_visual_ordering.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-11",

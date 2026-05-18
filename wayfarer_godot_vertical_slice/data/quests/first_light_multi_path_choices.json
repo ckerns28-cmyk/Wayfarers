@@ -1,0 +1,72 @@
+{
+  "schema_id": "wayfarer.quest.first_light_multi_path_choices.v1",
+  "phase": "G-10B",
+  "system_id": "first_light_multi_path_choice_foundation",
+  "purpose": "Let the opening mystery advance through harbor work, tavern rumor, counting-house pressure, merchant street gossip, and optional secret clues without becoming a single railroaded click path.",
+  "choice_policy": {
+    "minimum_advancement_sources": 2,
+    "supports_optional_clue": true,
+    "supports_future_expansion": true,
+    "not_single_railroad": true
+  },
+  "paths": [
+    {
+      "id": "counting_house_clerk_path",
+      "style": "official_pressure",
+      "advancement_npcs": ["Edrin Vale"],
+      "quest_relevance": ["first_light_counting_house"],
+      "advances_objectives": ["report_to_counting_house", "secure_contact", "hook_to_continue"],
+      "response": "Edrin Vale can begin the investigation, become the trusted contact, and carry the dawn hook."
+    },
+    {
+      "id": "harbor_work_path",
+      "style": "labor_and_manifest",
+      "advancement_npcs": ["Mara Pike", "Jonah Reed"],
+      "quest_relevance": ["missing_manifest_line", "harbor_work_path"],
+      "advances_objectives": ["investigate_missing_line", "choose_next_lead", "lantern_at_wharf"],
+      "response": "Dockworkers reveal that the missing line is deliberate and that wharf lanterns are part of the signal network."
+    },
+    {
+      "id": "tavern_rumor_path",
+      "style": "social_trust",
+      "advancement_npcs": ["Bess Armitage"],
+      "quest_relevance": ["tavern_whisper_hook"],
+      "advances_objectives": ["follow_tavern_whisper", "choose_next_lead"],
+      "response": "Bess turns the missing line into the Third Toast rumor and opens the choice of who to trust."
+    },
+    {
+      "id": "merchant_street_path",
+      "style": "money_and_street_pressure",
+      "advancement_npcs": ["Honor Finch"],
+      "quest_relevance": ["merchant_or_street_path"],
+      "advances_objectives": ["investigate_missing_line", "choose_next_lead", "secure_contact"],
+      "response": "Honor lets players approach the mystery through money, buyers, and street commerce."
+    },
+    {
+      "id": "optional_secret_path",
+      "style": "hidden_rear_gate",
+      "advancement_npcs": ["Nora Vale", "Silas Crowe"],
+      "quest_relevance": ["optional_notice_clue", "optional_secret_path"],
+      "advances_objectives": ["investigate_missing_line", "choose_next_lead"],
+      "optional_clues": ["folded_notice", "rear_service_gate_hint"],
+      "response": "Nora and Silas expose optional clues that route the player from civic notice language to the tavern rear gate."
+    }
+  ],
+  "branch_matrix": [
+    {
+      "route": "harbor_first",
+      "sequence": ["Edrin Vale", "Mara Pike", "Bess Armitage", "Jonah Reed", "Edrin Vale"],
+      "result_flag": "chosen_path=ask_the_wharf"
+    },
+    {
+      "route": "merchant_first",
+      "sequence": ["Edrin Vale", "Honor Finch", "Bess Armitage", "Honor Finch", "Edrin Vale"],
+      "result_flag": "chosen_path=merchant_or_street_path"
+    },
+    {
+      "route": "secret_first",
+      "sequence": ["Edrin Vale", "Nora Vale", "Bess Armitage", "Silas Crowe", "Edrin Vale"],
+      "result_flag": "rear_service_gate_hint=true"
+    }
+  ]
+}

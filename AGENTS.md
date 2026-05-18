@@ -18,6 +18,7 @@ This repository uses Codex as a production collaborator, not as an automatic app
   is the default QA and acceptance authority for ordinary roadmap-bound
   autonomous phases.
 - Visual, gameplay, world-design, UX, and art-direction passes require screenshot evidence inspected by the Agent Council, or a true `BLOCKED_REQUIRES_HUMAN_ESCALATION` blocker.
+- Screenshot evidence can overrule a written report. If captured proof shows route/building confusion, tavern/commercial/civic ordering problems, phase-blocking ground patchwork, hovering or sliding NPCs, debug artifacts, unclear objective state, or non-atelier runtime sprites, the council must fail the phase and Codex must repair the branch.
 - Do not use `NEEDS_HUMAN_REVIEW`, `READY_FOR_HUMAN_VISUAL_REVIEW`, `AWAITING_CHRIS_REVIEW`, or `TECHNICAL_PASS_ONLY` as final states for ordinary pre-G-5 phases.
 - PR summaries must separate technical validation from design acceptance.
 - All visible normal-play hero-slice sprites must be atelier-standard and provenance-traceable unless hidden behind debug-only behavior.

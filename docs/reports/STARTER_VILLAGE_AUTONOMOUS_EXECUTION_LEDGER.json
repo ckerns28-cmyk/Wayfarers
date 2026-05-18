@@ -712,10 +712,11 @@
       "phase_name": "Tavern Whisper System",
       "branch": "codex/g-10a-tavern-whisper-system",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#471"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "300183cb150315d85d827aa566844409c1ed1d04",
+        "0e3ff8d759a17007e931fcaa1f20809d52e24bf3"
       ],
       "current_status": "PASS",
       "reason_for_status": "The Tavern/Inn now acts as a rumor gameplay hub through structured Third Toast, rear-gate, notice-board, dock-lantern, and ambient bark content wired into First Light runtime responses. Chris screenshot QA also forced a stricter visual-order gate so route corridors can no longer pass while rendering under tavern/commercial/civic building bodies.",
@@ -795,16 +796,91 @@
     {
       "phase_id": "G-10B",
       "phase_name": "Multi-Path Starter Choice Foundation",
-      "branch": "pending",
+      "branch": "codex/g-10b-multi-path-starter-choice",
       "implementing_prs": [
-        "pending"
+        "pending_current_phase_pr"
       ],
       "commits": [
-        "pending"
+        "pending_current_phase_commit"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "Opening mystery is not yet multi-path.",
-      "next_required_action": "Add alternate advancement and optional clue foundation."
+      "current_status": "PASS",
+      "reason_for_status": "First Light now has a runtime-backed multi-path choice foundation: counting-house, harbor-work, tavern-rumor, merchant-street, and optional secret routes can advance the opening mystery without a single railroaded click path. Chris screenshot feedback also produced a stronger screenshot-contradiction review process for future councils.",
+      "next_required_action": "Start G-11 Living Town Rhythm Pass.",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/data/quests/first_light_multi_path_choices.json",
+        "wayfarer_godot_vertical_slice/data/quests/first_light_whispers_before_dawn.json",
+        "wayfarer_godot_vertical_slice/scripts/quests/FirstLightChoiceRouter.gd",
+        "wayfarer_godot_vertical_slice/scripts/quests/FirstLightChoiceRouter.gd.uid",
+        "wayfarer_godot_vertical_slice/scripts/quests/FirstLightQuest.gd",
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g10b_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g10b_runtime_screenshots.gd.uid",
+        "wayfarer_godot_vertical_slice/tools/capture_g10b_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/validate_multi_path_starter_choice.py",
+        "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "tools/wayfarer_agent_council.py",
+        "docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md",
+        "docs/agents/05_QA_AGENT.md",
+        "docs/checklists/NEWPORT_CITY_REVIEW_CHECKLIST.md",
+        "docs/templates/WAYFARER_COUNCIL_REPORT_TEMPLATE.md",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/G10B_MULTI_PATH_STARTER_CHOICE_FOUNDATION.md",
+        "docs/reports/G10B_MULTI_PATH_STARTER_CHOICE_AGENT_COUNCIL_REPORT.md",
+        "docs/WAYFARER_GODOT_ROADMAP.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_03_player_on_route_to_counting_house.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_04_player_near_tavern_inn.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_05_player_on_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_06_player_at_dock_wharf_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_07_player_near_npc_movement_path.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_08_npc_idle_and_walking_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_09_player_interacting_with_counting_house_clerk.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_10_player_interacting_at_tavern_rumor_location.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_11_quest_prompt_journal_objective_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_12_signs_markers_interaction_ux_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_13_y_sort_layering_near_buildings_props.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_15_contact_sheet_provenance_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g10b_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_multi_path_starter_choice.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_quest_arc.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_tavern_whisper_system.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_visual_ordering.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-10B runtime screenshot capture and PNG verification; PASS: multi-path starter choice validator; PASS: opening quest arc validator; PASS: tavern whisper system validator; PASS: Newport visual ordering validator; PASS: interaction UX validator; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G10B_MULTI_PATH_STARTER_CHOICE_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "art_direction_score": 8.5,
+      "world_layout_score": 8.6,
+      "npc_animation_score": 8.5,
+      "narrative_score": 8.7,
+      "gameplay_hook_score": 8.7,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.8,
+      "performance_build_score": 8.7,
+      "town_cohesion_score": 8.1,
+      "provenance_atelier_result": "PASS: G-10B adds no visible raster assets; the multi-path choice foundation uses data/scripts, existing atelier-compliant NPC/building/world assets, and runtime screenshots with debug overlays disabled.",
+      "north_star_result": "PASS for G-10B: First Light now supports multiple play styles through harbor work, tavern rumor, counting-house pressure, merchant street pressure, and optional rear-gate secrecy. It is not SV-1 complete; broad ground-material patchwork remains owned by G-11/G-12 review."
     },
     {
       "phase_id": "G-11",

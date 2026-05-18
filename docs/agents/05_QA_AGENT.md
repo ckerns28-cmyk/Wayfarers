@@ -67,3 +67,5 @@ git diff --cached --check
 - Every skipped command must include the exact command.
 - QA may report technical pass, but must not decide art/design approval.
 - QA must fail G-5 readiness if the ledger has any non-PASS row or if normal-play screenshots show non-atelier or untracked player/NPC/world sprites.
+- QA must compare the written report against the screenshots. If screenshots show unresolved route/building ordering confusion, patchy ground that breaks the current phase target, visible debug artifacts, hovering/sliding NPCs, unclear objective state, or non-atelier runtime sprites, QA marks the phase `FAIL` even when validators pass.
+- QA must record which next roadmap phase owns any visible concern that is not a blocker for the current phase.

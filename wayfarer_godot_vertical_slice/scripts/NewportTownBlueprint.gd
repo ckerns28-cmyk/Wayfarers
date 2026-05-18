@@ -46,6 +46,8 @@ const STARTER_VILLAGE_G9A_QUEST_STATE_FOUNDATION_PASS := "G-9A"
 const STARTER_VILLAGE_G9A_QUEST_STATE_SCORE := 8.5
 const STARTER_VILLAGE_G10A_TAVERN_WHISPER_SYSTEM_PASS := "G-10A"
 const STARTER_VILLAGE_G10A_TAVERN_SOCIAL_SCORE := 8.5
+const STARTER_VILLAGE_G10B_MULTI_PATH_CHOICE_PASS := "G-10B"
+const STARTER_VILLAGE_G10B_MULTI_PATH_SCORE := 8.6
 const STARTER_VILLAGE_VISUAL_ORDER_REVIEW_SCORE := 8.6
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -953,6 +955,15 @@ static func starter_district_plan() -> Dictionary:
 			"required_npcs": ["Bess Armitage", "Silas Crowe", "Nora Vale", "Jonah Reed"],
 			"required_content": ["Third Toast", "harbor ledger rumor", "rear service gate secret", "wharf lantern tie", "rotating ambient barks"],
 			"hub_rule": "The Tavern/Inn must deliver quest-relevant rumors and ambient whisper culture without debug markers.",
+		},
+		"g10b_multi_path_starter_choice_contract": {
+			"phase": STARTER_VILLAGE_G10B_MULTI_PATH_CHOICE_PASS,
+			"target_score_this_phase": STARTER_VILLAGE_G10B_MULTI_PATH_SCORE,
+			"runtime_system": "FirstLightChoiceRouter.gd",
+			"data_source": "res://data/quests/first_light_multi_path_choices.json",
+			"required_paths": ["harbor_work_path", "tavern_rumor_path", "counting_house_clerk_path", "merchant_street_path", "optional_secret_path"],
+			"advancement_rule": "At least two different NPCs must be able to advance the opening mystery, with an optional clue path and future expansion hooks.",
+			"not_single_railroad": true,
 		},
 		"movement_loop": [
 			"waterfront_avenue",

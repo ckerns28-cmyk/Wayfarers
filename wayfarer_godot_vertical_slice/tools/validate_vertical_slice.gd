@@ -117,6 +117,7 @@ func _validate_scene(main: Node) -> void:
 	_validate_g9a_quest_state_foundation(main, hud)
 	_validate_g10_opening_quest_arc(main, hud)
 	_validate_g10a_tavern_whisper_system(main)
+	_validate_g10b_multi_path_starter_choice(main)
 	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
 	_validate_g415_layout_rules()
@@ -736,6 +737,59 @@ func _validate_g10a_tavern_whisper_system(main: Node) -> void:
 		_expect(String(runtime_contract.get("phase", "")) == "G-10A", "g10a_main_contract_phase")
 		_expect(bool(runtime_contract.get("has_rumor_dialogue", false)) == true, "g10a_main_has_rumor_dialogue")
 		_expect(bool(runtime_contract.get("has_rotating_rumor_lines", false)) == true, "g10a_main_has_rotating_lines")
+
+func _validate_g10b_multi_path_starter_choice(main: Node) -> void:
+	var router_source := FileAccess.get_file_as_string("res://scripts/quests/FirstLightChoiceRouter.gd")
+	var first_light_source := FileAccess.get_file_as_string("res://scripts/quests/FirstLightQuest.gd")
+	var blueprint_source := FileAccess.get_file_as_string("res://scripts/NewportTownBlueprint.gd")
+	var choice_data := _load_json_dictionary("res://data/quests/first_light_multi_path_choices.json")
+	_expect(router_source.find("class_name FirstLightChoiceRouter") >= 0, "g10b_choice_router_class")
+	_expect(router_source.find("choice_for_payload") >= 0, "g10b_choice_router_payload_api")
+	_expect(router_source.find("choice_contract") >= 0, "g10b_choice_router_contract_api")
+	_expect(first_light_source.find("CHOICE_ROUTER") >= 0, "g10b_first_light_uses_choice_router")
+	_expect(first_light_source.find("debug_multi_path_branch_contract") >= 0, "g10b_first_light_branch_contract")
+	_expect(blueprint_source.find("g10b_multi_path_starter_choice_contract") >= 0, "g10b_blueprint_contract")
+	_expect(String(choice_data.get("phase", "")) == "G-10B", "g10b_data_phase")
+	var paths := choice_data.get("paths", []) as Array
+	var branch_matrix := choice_data.get("branch_matrix", []) as Array
+	_expect(paths.size() >= 5, "g10b_path_count")
+	_expect(branch_matrix.size() >= 3, "g10b_branch_matrix_count")
+	var router_script := load("res://scripts/quests/FirstLightChoiceRouter.gd")
+	_expect(router_script != null, "g10b_choice_router_loads")
+	if router_script != null:
+		var router = router_script.new()
+		var contract: Dictionary = router.call("choice_contract") as Dictionary
+		_expect(String(contract.get("phase", "")) == "G-10B", "g10b_contract_phase")
+		_expect(int(contract.get("path_count", 0)) >= 5, "g10b_contract_path_count")
+		_expect(int(contract.get("advancement_source_count", 0)) >= 6, "g10b_contract_advancement_sources")
+		_expect(bool(contract.get("supports_optional_clue", false)), "g10b_contract_optional_clue")
+		_expect(bool(contract.get("not_single_railroad", false)), "g10b_contract_not_single_railroad")
+		for required_path in ["harbor_work_path", "tavern_rumor_path", "counting_house_clerk_path", "merchant_street_path", "optional_secret_path"]:
+			_expect((contract.get("required_paths", []) as Array).has(required_path), "g10b_contract_required_path_" + required_path)
+	if main.has_method("starter_village_multi_path_choice_contract"):
+		var runtime_contract: Dictionary = main.call("starter_village_multi_path_choice_contract") as Dictionary
+		_expect(String(runtime_contract.get("phase", "")) == "G-10B", "g10b_main_contract_phase")
+		_expect(int(runtime_contract.get("path_count", 0)) >= 5, "g10b_main_path_count")
+		_expect(bool(runtime_contract.get("not_single_railroad", false)), "g10b_main_not_single_railroad")
+	_validate_g10b_branch_simulation()
+
+func _validate_g10b_branch_simulation() -> void:
+	var quest_script := load("res://scripts/quests/FirstLightQuest.gd")
+	_expect(quest_script != null, "g10b_branch_quest_loads")
+	if quest_script == null:
+		return
+	var quest = quest_script.new()
+	_expect(quest != null and quest.has_method("debug_multi_path_branch_contract"), "g10b_branch_contract_api")
+	if quest == null or not quest.has_method("debug_multi_path_branch_contract"):
+		return
+	var contract: Dictionary = quest.call("debug_multi_path_branch_contract") as Dictionary
+	_expect(String(contract.get("phase", "")) == "G-10B", "g10b_branch_contract_phase")
+	_expect(bool(contract.get("at_least_two_different_npcs_advance_mystery", false)), "g10b_two_npcs_advance_mystery")
+	_expect(bool(contract.get("optional_clue_exists", false)), "g10b_optional_clue_exists")
+	var branch_results := contract.get("branch_results", {}) as Dictionary
+	_expect(String((branch_results.get("harbor_first", {}) as Dictionary).get("chosen_path", "")) == "ask_the_wharf", "g10b_harbor_branch_sets_path")
+	_expect(String((branch_results.get("merchant_first", {}) as Dictionary).get("chosen_path", "")) == "merchant_or_street_path", "g10b_merchant_branch_sets_path")
+	_expect(bool((branch_results.get("secret_first", {}) as Dictionary).get("rear_service_gate_hint", false)), "g10b_secret_branch_sets_optional_hint")
 
 func _validate_g419_player_identity_foundation() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json")

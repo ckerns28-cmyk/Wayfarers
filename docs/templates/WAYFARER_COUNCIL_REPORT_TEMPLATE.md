@@ -76,6 +76,13 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 - Visible failures fixed:
 - Debug overlays disabled proof:
 
+## Screenshot Contradiction Review
+
+- What the screenshots prove:
+- What visible concerns remain:
+- Blocker status for current phase:
+- Next roadmap phase owning non-blocking concerns:
+
 ## North Star Result
 
 ## 8.5+/10 Visual Bar Result
