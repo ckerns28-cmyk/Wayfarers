@@ -4,11 +4,11 @@ Phase ID: G-16A
 
 Branch: `codex/g-16a-island-atelier-asset-family`
 
-Commit: `pending_branch_commit_before_pr`
+Commit: `69d30029972b4c7901ee1a17c5a7a5a018a8edaf`
 
-PR number: `pending_open_pr`
+PR number: `#485`
 
-Merge status: `pending`
+Merge status: `merged`
 
 Status: PASS
 

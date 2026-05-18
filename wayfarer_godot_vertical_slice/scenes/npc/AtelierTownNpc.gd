@@ -47,9 +47,7 @@ var _ambient_barks_enabled := true
 
 
 func _ready() -> void:
-	add_to_group("interactable")
-	add_to_group("starter_village_npc")
-	add_to_group("starter_village_town_rhythm_actor")
+	_configure_runtime_groups()
 	_configure_ground_shadow()
 	_configure_visual_sprite()
 	_configure_ambient_bark_label()
@@ -141,18 +139,28 @@ func is_route_walking_enabled() -> bool:
 
 func npc_population_contract() -> Dictionary:
 	return {
-		"phase": G8A_LIVING_NPC_POPULATION_PASS,
+		"phase": String(_config.get("phase", G8A_LIVING_NPC_POPULATION_PASS)),
 		"id": String(_config.get("id", "")),
 		"display_name": String(_config.get("display_name", "")),
 		"role": String(_config.get("role", "")),
 		"district": String(_config.get("district", "")),
 		"station": String(_config.get("station", "")),
+		"route_or_station": String(_config.get("route_or_station", _config.get("station", ""))),
 		"route_intent": String(_config.get("route_intent", "")),
 		"idle_behavior": String(_config.get("idle_behavior", "")),
 		"dialogue_seed": String(_config.get("dialogue_seed", "")),
 		"quest_relevance": String(_config.get("quest_relevance", "")),
+		"world_flavor": String(_config.get("world_flavor", "")),
+		"encounter_type": String(_config.get("encounter_type", "")),
+		"group_namespace": String(_config.get("group_namespace", "starter_village")),
 		"movement_policy": String(_config.get("movement_policy", NPC_PAUSE_BEHAVIOR)),
 		"atelier_asset_id": String(_config.get("asset_id", "")),
+		"provenance": String(_config.get("provenance", "newport_atelier_characters_g422r_manifest.json")),
+		"atelier_standard_sprite": bool(_config.get("atelier_standard_sprite", true)),
+		"grounded_movement": bool(_config.get("grounded_movement", true)),
+		"ground_shadow_visible": ground_shadow != null and ground_shadow.visible,
+		"route_walking_enabled": NPC_ROUTE_WALKING_ENABLED,
+		"no_static_sprite_translation": true,
 	}
 
 
@@ -164,12 +172,13 @@ func town_rhythm_contract() -> Dictionary:
 		if not String(stage.get("bark", "")).is_empty():
 			bark_count += 1
 	return {
-		"phase": G11_LIVING_TOWN_RHYTHM_PASS,
+		"phase": String(_rhythm_config.get("phase", G11_LIVING_TOWN_RHYTHM_PASS)),
 		"npc_id": String(_config.get("id", name)),
 		"display_name": String(_config.get("display_name", "Newporter")),
 		"role": String(_config.get("role", "")),
 		"district": String(_config.get("district", "")),
 		"station": String(_config.get("station", "")),
+		"group_namespace": String(_config.get("group_namespace", "starter_village")),
 		"rhythm_id": String(_rhythm_config.get("id", "")),
 		"behavior_tag": String(_rhythm_config.get("behavior_tag", "")),
 		"station_points": (_rhythm_config.get("station_points", []) as Array).duplicate(),
@@ -181,7 +190,7 @@ func town_rhythm_contract() -> Dictionary:
 		"route_walking_enabled": NPC_ROUTE_WALKING_ENABLED,
 		"stationary_until_walk_sheet": NPC_STATIONARY_UNTIL_WALK_SHEET,
 		"movement_speed": NPC_MOVEMENT_SPEED,
-		"movement_policy": NPC_TOWN_RHYTHM_POLICY,
+		"movement_policy": String(_rhythm_config.get("movement_policy", NPC_TOWN_RHYTHM_POLICY)),
 		"global_position": global_position,
 		"ground_shadow_visible": ground_shadow != null and ground_shadow.visible,
 		"ambient_barks_enabled": _ambient_barks_enabled,
@@ -216,6 +225,7 @@ func _apply_config() -> void:
 	if _config.is_empty():
 		return
 	name = String(_config.get("id", name))
+	_configure_runtime_groups()
 	if _config.has("position"):
 		global_position = _config["position"]
 	if visual_sprite != null:
@@ -341,3 +351,22 @@ func _play_visual_animation(animation_name: String) -> void:
 	visual_sprite.play(animation_name)
 	if NPC_STATIONARY_UNTIL_WALK_SHEET:
 		visual_sprite.pause()
+
+
+func _configure_runtime_groups() -> void:
+	add_to_group("interactable")
+	var group_namespace := String(_config.get("group_namespace", "starter_village"))
+	if group_namespace == "opening_island":
+		remove_from_group("starter_village_npc")
+		remove_from_group("starter_village_town_rhythm_actor")
+		add_to_group("opening_island_npc")
+		add_to_group("opening_island_ambient_actor")
+	else:
+		remove_from_group("opening_island_npc")
+		remove_from_group("opening_island_ambient_actor")
+		add_to_group("starter_village_npc")
+		add_to_group("starter_village_town_rhythm_actor")
+	for raw_group in _config.get("extra_groups", []):
+		var group_name := String(raw_group)
+		if not group_name.is_empty():
+			add_to_group(group_name)

@@ -1487,7 +1487,22 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ]
             )
         if phase.upper().strip().startswith("G-17"):
-            required.append(("G-17 island NPC encounter validator", game_root / "tools" / "validate_island_npc_encounter_foundation.py"))
+            required.extend(
+                [
+                    ("G-17 island NPC encounter source", game_root / "data" / "world_layout" / "island_npc_encounter_foundation_v1.json"),
+                    ("G-17 island NPC encounter validator", game_root / "tools" / "validate_island_npc_encounter_foundation.py"),
+                    ("G-17 phase report", root / "docs" / "reports" / "G17_ISLAND_NPC_ENCOUNTER_FOUNDATION.md"),
+                    ("G-17 phase report JSON", root / "docs" / "reports" / "G17_ISLAND_NPC_ENCOUNTER_FOUNDATION.json"),
+                    (
+                        "G-17 runtime screenshot manifest",
+                        game_root / "artifacts" / "review" / "g17_runtime_screenshots" / "g17_runtime_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-17 motion proof trace",
+                        game_root / "artifacts" / "review" / "g17_motion_proof" / "g17_island_npc_motion_trace.json",
+                    ),
+                ]
+            )
         if phase.upper().strip().startswith("G-18"):
             required.extend(
                 [

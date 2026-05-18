@@ -66,6 +66,10 @@ const G16_ISLAND_POI_LANDMARKS_SCORE := 8.6
 const G16A_ISLAND_ATELIER_ASSET_FAMILY_PASS := "G-16A"
 const G16A_ISLAND_ATELIER_ASSET_FAMILY_SOURCE_PATH := "res://data/world_layout/island_atelier_asset_family_v1.json"
 const G16A_ISLAND_ATELIER_ASSET_FAMILY_SCORE := 8.7
+const G17_ISLAND_NPC_ENCOUNTER_PASS := "G-17"
+const G17_ISLAND_NPC_ENCOUNTER_SOURCE_PATH := "res://data/world_layout/island_npc_encounter_foundation_v1.json"
+const G17_ISLAND_NPC_AMBIENT_SCORE := 8.6
+const G17_ISLAND_NPC_MOVEMENT_POLICY := "stationary_grounded_facing_bark_until_dedicated_walk_sheets"
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -1049,6 +1053,223 @@ static func opening_island_atelier_asset_family_contract() -> Dictionary:
 		],
 	}
 
+static func opening_island_npc_encounter_source_path() -> String:
+	return G17_ISLAND_NPC_ENCOUNTER_SOURCE_PATH
+
+static func opening_island_npc_specs() -> Array:
+	return [
+		_island_npc_spec(
+			"isla_brooke_farmhand",
+			"Isla Brooke",
+			"farmhand",
+			"farm_service_edge",
+			"npc_market_vendor_atelier_g422r",
+			Vector2(1886.0, 572.0),
+			"farms_pastures_service_lands",
+			"pasture_crossing_fence",
+			"pasture_crossing_to_return_lane",
+			"checks the fence break and keeps one eye on the old road",
+			"The hill lantern was not lit by a farmer. It was lit by someone who knew the tide.",
+			"farmhand confirms the island lead and points toward the signal rise",
+			"worked borderland life outside Newport"
+		),
+		_island_npc_spec(
+			"tomas_reed_dock_runner",
+			"Tomas Reed",
+			"dock_runner",
+			"hidden_landing_watch",
+			"npc_dockworker_atelier_g422r",
+			Vector2(2220.0, 704.0),
+			"rocky_coast_cove",
+			"hidden_landing_cargo_mark",
+			"cove_loop_to_quest_clue_site",
+			"watches the cove cargo mark without admitting why",
+			"If the manifest lost a line, the cove kept the ink.",
+			"links harbor rumors to the hidden landing evidence",
+			"harbor labor pulled into island smuggling mystery"
+		),
+		_island_npc_spec(
+			"elias_ward_suspicious_courier",
+			"Elias Ward",
+			"suspicious_courier",
+			"old_road_marker",
+			"npc_civic_clerk_atelier_g422r",
+			Vector2(2150.0, 420.0),
+			"old_road_signal_point_ruin_lookout",
+			"old_road_marker_shadow",
+			"old_road_marker_to_quest_clue_site",
+			"keeps a sealed slip folded under a cuff",
+			"The old road remembers kings better than clerks remember cargo.",
+			"carries the coded whisper forward from the tavern path",
+			"pre-Revolutionary suspicion at an older island marker"
+		),
+		_island_npc_spec(
+			"mara_oren_coast_patrol",
+			"Mara Oren",
+			"coast_patrol",
+			"signal_overlook_watch",
+			"npc_dockworker_atelier_g422r",
+			Vector2(2238.0, 342.0),
+			"old_road_signal_point_ruin_lookout",
+			"signal_overlook_watch",
+			"signal_rise_to_optional_secret_cache",
+			"counts distant sails and pauses when the player approaches",
+			"One lantern for weather, two for warning, three for men who should not be ashore.",
+			"turns the signal point into a living threat instead of scenery",
+			"coastal vigilance and quiet colonial tension"
+		),
+		_island_npc_spec(
+			"annelise_crow_rumor_contact",
+			"Annelise Crow",
+			"rumor_contact",
+			"return_landmark_contact",
+			"npc_civic_clerk_atelier_g422r",
+			Vector2(1780.0, 642.0),
+			"return_path",
+			"return_landmark_wait",
+			"return_lane_to_newport_east_gate",
+			"waits where the island path bends back toward Newport",
+			"Bring proof home, not just a story. Newport has enough stories.",
+			"sets up the return/report beat for Whispers Before Dawn",
+			"social return pressure that pulls the player back to town"
+		),
+	]
+
+static func opening_island_npc_spec(id: String) -> Dictionary:
+	for raw_spec in opening_island_npc_specs():
+		var spec: Dictionary = raw_spec
+		if String(spec.get("id", "")) == id:
+			return spec.duplicate(true)
+	return {}
+
+static func opening_island_ambient_rhythm_specs() -> Array:
+	return [
+		_island_ambient_rhythm_spec(
+			"island_farmhand_threshold_watch",
+			"farms_pastures_service_lands",
+			["isla_brooke_farmhand"],
+			["pasture_crossing_fence", "return_landmark", "old_service_track"],
+			20.0,
+			[
+				{"at": 0.0, "duration": 6.0, "action": "check_fence_break", "facing": "right", "bark": "Fence was open before dawn."},
+				{"at": 6.0, "duration": 6.0, "action": "watch_signal_rise", "facing": "up", "bark": "That lantern is no farm light."},
+				{"at": 12.0, "duration": 8.0, "action": "return_to_work_pose", "facing": "left", "bark": "Mind the old road after rain."},
+			],
+			"farmhand_grounded_service_edge"
+		),
+		_island_ambient_rhythm_spec(
+			"island_cove_runner_watch",
+			"rocky_coast_cove",
+			["tomas_reed_dock_runner"],
+			["hidden_landing_cargo_mark", "cove_descent", "quest_clue_site"],
+			18.0,
+			[
+				{"at": 0.0, "duration": 5.0, "action": "guard_cove_mark", "facing": "left", "bark": "Not every landing wants a wharf."},
+				{"at": 5.0, "duration": 6.0, "action": "listen_to_hidden_landing", "facing": "down", "bark": "Low tide tells on careless men."},
+				{"at": 11.0, "duration": 7.0, "action": "watch_return_lane", "facing": "up", "bark": "A missing line came through here."},
+			],
+			"dock_runner_cove_tension"
+		),
+		_island_ambient_rhythm_spec(
+			"island_old_road_courier_pause",
+			"old_road_signal_point_ruin_lookout",
+			["elias_ward_suspicious_courier"],
+			["old_road_marker_shadow", "quest_clue_site", "optional_secret_cache"],
+			24.0,
+			[
+				{"at": 0.0, "duration": 8.0, "action": "hide_sealed_slip", "facing": "down", "bark": "You did not hear that from me."},
+				{"at": 8.0, "duration": 7.0, "action": "check_old_marker", "facing": "right", "bark": "The mark is older than the town."},
+				{"at": 15.0, "duration": 9.0, "action": "watch_quest_clue_path", "facing": "left", "bark": "Follow proof, not rumor."},
+			],
+			"suspicious_courier_old_road"
+		),
+		_island_ambient_rhythm_spec(
+			"island_signal_patrol_watch",
+			"old_road_signal_point_ruin_lookout",
+			["mara_oren_coast_patrol"],
+			["signal_overlook_watch", "optional_secret_cache", "old_road_marker"],
+			26.0,
+			[
+				{"at": 0.0, "duration": 8.0, "action": "scan_harbor_mouth", "facing": "left", "bark": "One lantern for weather."},
+				{"at": 8.0, "duration": 8.0, "action": "listen_for_branch_crack", "facing": "down", "bark": "Two for warning."},
+				{"at": 16.0, "duration": 10.0, "action": "hold_signal_post", "facing": "right", "bark": "Three means run."},
+			],
+			"coast_patrol_signal_tension"
+		),
+		_island_ambient_rhythm_spec(
+			"island_return_contact_watch",
+			"return_path",
+			["annelise_crow_rumor_contact"],
+			["return_landmark_wait", "pasture_crossing_fence", "newport_east_gate"],
+			22.0,
+			[
+				{"at": 0.0, "duration": 7.0, "action": "watch_for_returning_player", "facing": "right", "bark": "Newport will ask what you found."},
+				{"at": 7.0, "duration": 6.0, "action": "listen_toward_town", "facing": "left", "bark": "Proof travels safer than rumor."},
+				{"at": 13.0, "duration": 9.0, "action": "hold_return_landmark", "facing": "down", "bark": "Bring it home before bells."},
+			],
+			"rumor_contact_return_momentum"
+		),
+	]
+
+static func opening_island_ambient_rhythm_spec_for_npc(npc_id: String) -> Dictionary:
+	for raw_spec in opening_island_ambient_rhythm_specs():
+		var spec: Dictionary = raw_spec
+		var participants: Array = spec.get("participants", [])
+		if participants.has(npc_id):
+			return spec.duplicate(true)
+	return {}
+
+static func opening_island_npc_encounter_contract() -> Dictionary:
+	var npc_specs := opening_island_npc_specs()
+	var rhythm_specs := opening_island_ambient_rhythm_specs()
+	var role_ids := {}
+	var station_ids := {}
+	var bark_count := 0
+	for raw_spec in npc_specs:
+		var spec: Dictionary = raw_spec
+		role_ids[String(spec.get("role", ""))] = true
+		station_ids[String(spec.get("station", ""))] = true
+	for raw_rhythm in rhythm_specs:
+		var rhythm: Dictionary = raw_rhythm
+		for raw_station in rhythm.get("station_points", []):
+			station_ids[String(raw_station)] = true
+		for raw_stage in rhythm.get("stages", []):
+			var stage: Dictionary = raw_stage
+			if not String(stage.get("bark", "")).is_empty():
+				bark_count += 1
+	return {
+		"phase": G17_ISLAND_NPC_ENCOUNTER_PASS,
+		"source": G17_ISLAND_NPC_ENCOUNTER_SOURCE_PATH,
+		"topology_source": OPENING_ISLAND_TOPOLOGY_SOURCE_PATH,
+		"atelier_asset_family_source": G16A_ISLAND_ATELIER_ASSET_FAMILY_SOURCE_PATH,
+		"npc_ambient_score": G17_ISLAND_NPC_AMBIENT_SCORE,
+		"npc_count": npc_specs.size(),
+		"encounter_count": npc_specs.size(),
+		"ambient_rhythm_count": rhythm_specs.size(),
+		"ambient_bark_count": bark_count,
+		"role_count": role_ids.size(),
+		"station_count": station_ids.size(),
+		"required_role_ids": [
+			"farmhand",
+			"dock_runner",
+			"suspicious_courier",
+			"coast_patrol",
+			"rumor_contact",
+		],
+		"island_does_not_feel_empty": true,
+		"npcs_do_not_hover_or_glide": true,
+		"npcs_reinforce_opening_mystery": true,
+		"movement_proof_exists_where_applicable": true,
+		"atelier_standard_sprite": true,
+		"provenance": "newport_atelier_characters_g422r_manifest.json",
+		"route_walking_enabled": false,
+		"no_static_sprite_translation": true,
+		"movement_policy": G17_ISLAND_NPC_MOVEMENT_POLICY,
+		"north_star_guardrail": "Island life must make the player feel Newport's mystery spreading into a real place, not prove that NPC sprites can spawn.",
+		"npcs": npc_specs,
+		"ambient_rhythms": rhythm_specs,
+	}
+
 static func _atelier_asset_proof(asset_id: String, family_id: String, manifest_name: String) -> Dictionary:
 	return {
 		"asset_id": asset_id,
@@ -1963,6 +2184,32 @@ static func _npc_spec(id: String, display_name: String, role: String, asset_id: 
 		"provenance": "newport_atelier_characters_g422r_manifest.json",
 	}
 
+static func _island_npc_spec(id: String, display_name: String, role: String, encounter_type: String, asset_id: String, position: Vector2, district: String, station: String, route_intent: String, idle_behavior: String, dialogue_seed: String, quest_relevance: String, world_flavor: String) -> Dictionary:
+	return {
+		"phase": G17_ISLAND_NPC_ENCOUNTER_PASS,
+		"id": id,
+		"display_name": display_name,
+		"role": role,
+		"encounter_type": encounter_type,
+		"asset_id": asset_id,
+		"position": position,
+		"district": district,
+		"station": station,
+		"route_or_station": station,
+		"route_intent": route_intent,
+		"idle_behavior": idle_behavior,
+		"dialogue_seed": dialogue_seed,
+		"quest_relevance": quest_relevance,
+		"world_flavor": world_flavor,
+		"movement_policy": G17_ISLAND_NPC_MOVEMENT_POLICY,
+		"runtime_node": "AtelierTownNpc",
+		"group_namespace": "opening_island",
+		"extra_groups": ["g17_island_npc_encounter_actor"],
+		"provenance": "newport_atelier_characters_g422r_manifest.json",
+		"atelier_standard_sprite": true,
+		"grounded_movement": true,
+	}
+
 static func _town_rhythm_spec(id: String, district: String, participants: Array, station_points: Array, cycle_seconds: float, stages: Array, behavior_tag: String) -> Dictionary:
 	return {
 		"id": id,
@@ -1978,6 +2225,24 @@ static func _town_rhythm_spec(id: String, district: String, participants: Array,
 		"stationary_until_walk_sheet": true,
 		"pause_behavior": "idle_pause_with_facing_and_bark_no_translation",
 		"proof_requirement": "timestamped screenshot sequence must show facing or bark state changes with stable ground anchors",
+	}
+
+static func _island_ambient_rhythm_spec(id: String, district: String, participants: Array, station_points: Array, cycle_seconds: float, stages: Array, behavior_tag: String) -> Dictionary:
+	return {
+		"phase": G17_ISLAND_NPC_ENCOUNTER_PASS,
+		"id": id,
+		"district": district,
+		"participants": participants,
+		"station_points": station_points,
+		"route_intent": id + "_route_intent",
+		"cycle_seconds": cycle_seconds,
+		"stages": stages,
+		"behavior_tag": behavior_tag,
+		"movement_policy": G17_ISLAND_NPC_MOVEMENT_POLICY,
+		"route_walking_enabled": false,
+		"stationary_until_walk_sheet": true,
+		"pause_behavior": "grounded_idle_pause_with_facing_and_bark_no_translation",
+		"proof_requirement": "G-17 motion proof must show facing or bark state changes with stable ground anchors and no hover/glide.",
 	}
 
 static func _anchor(id: String, anchor_type: String, district: String, position: Vector2, notes: String) -> Dictionary:
