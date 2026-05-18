@@ -30,8 +30,8 @@ Deprecated final states are forbidden.
 | Phase | Roadmap Item | Branch | PR | Current Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | G-7 | Newport Living Origin Village Masterplan Lock | `codex/sv1-autonomous-roadmap` | #462 merged | PASS | `docs/reports/G7_NEWPORT_LIVING_ORIGIN_VILLAGE_MASTERPLAN_LOCK.md`, roadmap JSON, ledger JSON, G-7 council report, and G-7 validators. |
-| G-7A | Street, Lot, and Ground Cohesion Reconstruction | `codex/g-7a-street-lot-ground-cohesion` | pending current phase PR | PASS | `docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md`, G-7A council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, and atelier runtime validator. |
-| G-7B | Harbor, Wharf, and Commercial Spine Cohesion | pending | pending | PENDING | Must make harbor work and commercial spine readable. |
+| G-7A | Street, Lot, and Ground Cohesion Reconstruction | `codex/g-7a-street-lot-ground-cohesion` | #463 merged | PASS | `docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md`, G-7A council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, and atelier runtime validator. |
+| G-7B | Harbor, Wharf, and Commercial Spine Cohesion | `codex/g-7b-harbor-commercial-spine` | pending current phase PR | PASS | `docs/reports/G7B_HARBOR_WHARF_COMMERCIAL_SPINE_COHESION.md`, G-7B council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, NPC route validator, and atelier runtime validator. |
 | G-7C | Landmark and District Identity Pass | pending | pending | PENDING | Must make Tavern/Inn, counting house, commerce, harbor, rear lane, residential edge, and civic notice point memorable. |
 | G-8 | Atelier Character and NPC Movement Foundation | pending | pending | PENDING | Must eliminate static-sprite glide/hover and add grounded movement states. |
 | G-8A | Living NPC Population Pass | pending | pending | PENDING | Must add purposeful NPC roles, routes/stations, dialogue seeds, and provenance. |
@@ -48,9 +48,10 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after G-7A: `G-7B Harbor, Wharf, and Commercial Spine Cohesion`.
+Current phase after G-7B: `G-7C Landmark and District Identity Pass`.
 
-G-7A changed the runtime map so wide screenshots now read as a connected
-harborfront avenue, wharf apron, back street, uphill connectors, and major lot
-foundations. G-7B must now make the harbor/commercial economy itself feel like
-the engine of the town.
+G-7B changed the runtime map so the wharf now has distinct fish offload,
+manifest cargo, rope/mooring, market transfer, and storehouse work zones tied
+to the commercial avenue and counting-house route. G-7C must now make the
+Tavern/Inn, counting house, commercial row, harbor work, rear service lane,
+residential edge, and civic notice point read as memorable landmarks.

@@ -1895,6 +1895,8 @@ func _validate_starter_harbor_plan() -> void:
 	_expect(plan.get("authored_street_harbor_immersion_pass", "") == "G-4.23B", "starter_plan_authored_street_harbor_immersion_pass_g_4_23b")
 	_expect(plan.get("street_lot_ground_cohesion_reconstruction_pass", "") == "G-7A", "starter_plan_street_lot_ground_cohesion_reconstruction_pass_g_7a")
 	_expect(float(plan.get("g7a_town_cohesion_score", 0.0)) >= 7.5, "starter_plan_g7a_town_cohesion_score")
+	_expect(plan.get("harbor_commercial_spine_cohesion_pass", "") == "G-7B", "starter_plan_harbor_commercial_spine_cohesion_pass_g_7b")
+	_expect(float(plan.get("g7b_harbor_world_score", 0.0)) >= 8.5, "starter_plan_g7b_harbor_world_score")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("atlas") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("atelier cargo") >= 0 and String(plan.get("hero_street_atlas_proof", "")).find("G-4.19A") >= 0, "starter_plan_hero_street_atlas_proof")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20A") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20a")
 	_expect(String(plan.get("hero_street_atlas_proof", "")).find("G-4.20B") >= 0, "starter_plan_hero_street_atlas_proof_g_4_20b")
@@ -1933,11 +1935,16 @@ func _validate_starter_harbor_plan() -> void:
 		_expect(street_grammar.has(grammar_id), "g423b_street_grammar_" + grammar_id)
 	for grammar_id in ["g7a_continuous_harborfront_avenue_binds_the_wide_view", "g7a_back_street_and_service_lane_read_as_connected_routes", "g7a_uphill_connectors_join_harbor_commerce_to_civic_residential_blocks", "g7a_lot_foundations_ground_every_major_visible_building", "g7a_dock_to_road_transition_replaces_random_green_empty_blocks", "g7a_no_debug_like_road_planning_artifacts_in_normal_play"]:
 		_expect(street_grammar.has(grammar_id), "g7a_street_grammar_" + grammar_id)
+	for grammar_id in ["g7b_fish_offload_manifest_chandlery_market_work_zones", "g7b_commercial_avenue_goods_visibly_flow_to_wharf", "g7b_counting_house_route_reads_as_harbor_commerce", "g7b_dock_objects_group_by_function_without_blocking_navigation"]:
+		_expect(street_grammar.has(grammar_id), "g7b_street_grammar_" + grammar_id)
 	_expect(FileAccess.file_exists("res://tools/capture_g423b_runtime_screenshots.gd"), "g423b_runtime_screenshot_script_exists")
 	_expect(FileAccess.file_exists("res://tools/capture_g7a_runtime_screenshots.gd"), "g7a_runtime_screenshot_script_exists")
 	var g7a_contract: Dictionary = plan.get("g7a_runtime_cohesion_contract", {})
 	_expect(g7a_contract.get("phase", "") == "G-7A", "g7a_contract_phase")
 	_expect(String(g7a_contract.get("harborfront_avenue", "")).find("continuous") >= 0, "g7a_contract_harborfront_avenue_continuous")
+	var g7b_contract: Dictionary = plan.get("g7b_harbor_commercial_spine_contract", {})
+	_expect(g7b_contract.get("phase", "") == "G-7B", "g7b_contract_phase")
+	_expect(String(g7b_contract.get("quest_support", "")).find("cargo manifest") >= 0, "g7b_contract_supports_manifest_quest")
 	var walking_loops: Array = plan.get("walking_loops", [])
 	for loop_id in ["harbor_loop", "market_loop", "civic_residential_loop"]:
 		_expect(walking_loops.has(loop_id), "g422a_plan_loop_" + loop_id)
