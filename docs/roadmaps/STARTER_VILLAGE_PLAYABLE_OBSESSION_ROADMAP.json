@@ -433,7 +433,7 @@
         "validate_npc_population_and_routes.py",
         "validate_character_motion_foundation.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-11A",

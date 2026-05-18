@@ -248,7 +248,7 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     if normalized.startswith("G-15"):
         return "G-15", "g15"
     if normalized.startswith("G-14"):
-        return "G-14", "g14"
+        return "G-14 internal village proof", "g12"
     if normalized.startswith("G-11A"):
         return "G-11A", "g11"
     if normalized.startswith("G-11"):
@@ -875,6 +875,59 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     required_paths=[game_root / "tools" / "validate_audio_atmosphere_hooks.py"],
                 ),
             )
+        if normalized_phase.startswith("G-14"):
+            for command in [
+                ValidatorCommand(
+                    name="G-13 browser build hardening validation",
+                    command_text=browser_build_hardening_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_browser_build_hardening.py"],
+                ),
+                ValidatorCommand(
+                    name="First-session playability validation",
+                    command_text=first_session_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_first_session_playability.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_first_session_playability.py"],
+                ),
+                ValidatorCommand(
+                    name="Opening quest arc validation",
+                    command_text=opening_quest_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_opening_quest_arc.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_opening_quest_arc.py"],
+                ),
+                ValidatorCommand(
+                    name="Tavern whisper system validation",
+                    command_text=tavern_whisper_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_tavern_whisper_system.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_tavern_whisper_system.py"],
+                ),
+                ValidatorCommand(
+                    name="Interaction UX validation",
+                    command_text=interaction_ux_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_interaction_ux.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_interaction_ux.py"],
+                ),
+                ValidatorCommand(
+                    name="G-8 character motion foundation validation",
+                    command_text=character_motion_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_character_motion_foundation.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_character_motion_foundation.py"],
+                ),
+                ValidatorCommand(
+                    name="NPC population and routes validation",
+                    command_text=npc_population_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_npc_population_and_routes.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_npc_population_and_routes.py"],
+                ),
+            ]:
+                starter_commands.insert(0, command)
         if normalized_phase.startswith("G-9"):
             starter_commands.insert(
                 0,

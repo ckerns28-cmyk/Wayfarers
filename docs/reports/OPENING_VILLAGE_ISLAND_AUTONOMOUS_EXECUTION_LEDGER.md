@@ -43,7 +43,7 @@ Agent Council pass verdict for merge-ready phases: `COUNCIL_PASS_READY_FOR_PR`
 
 | Phase | Roadmap Item | Branch | PR | Current Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| G-14 | Internal Starter Village Proof Gate | pending | pending | PENDING | Must prove village cohesion, NPC motion, opening village quest, tavern whisper hook, UX/readability, browser identity, and atelier/provenance compliance; then merge and continue. |
+| G-14 | Internal Starter Village Proof Gate | `codex/g-14-internal-starter-village-proof` | pending open PR | PASS | `docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md`, structured proof JSON, G-14 Agent Council report, village screenshots, motion proof manifests, quest proof manifests, browser-review ZIPs, and validators. Human review required: no. |
 | G-15 | Opening Island Masterplan + World Topology | pending | pending | PENDING | Must create the island masterplan, safe-to-danger gradient, roads/trails/coastline, quest routes, exploration loops, and screenshot viewpoints. |
 | G-15A | Village-to-Island Transition Pass | pending | pending | PENDING | Must make leaving Newport readable, natural, and mysterious. |
 | G-15B | Island Terrain, Ground, and Route Cohesion | pending | pending | PENDING | Must remove patchwork terrain, disconnected paths, empty sprawl, and unreadable transitions. |

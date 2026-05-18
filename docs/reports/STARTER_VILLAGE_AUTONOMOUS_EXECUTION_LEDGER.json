@@ -12,6 +12,17 @@
     "reason": "G-14 is now an internal checkpoint inside the larger OVI-1 autonomous runway.",
     "next_phase": "G-15 Opening Island Masterplan + World Topology"
   },
+  "g14_internal_review_package": {
+    "status": "PASS",
+    "human_review_required": false,
+    "reason": "G-14 is now an internal checkpoint inside the larger OVI-1 autonomous runway.",
+    "next_phase": "G-15 Opening Island Masterplan + World Topology",
+    "package_markdown": "docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md",
+    "package_json": "docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.json",
+    "agent_council_report": "docs/reports/G14_INTERNAL_STARTER_VILLAGE_AGENT_COUNCIL_REPORT.md",
+    "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json",
+    "browser_review_zip": "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-g-13-browser-build-performance-and-regression-hardening.zip"
+  },
   "starting_main_after_g6_merge": "a6ec338f795f7f61c9974af5a3338a37e165aa11",
   "pr_461_merge_result": {
     "state": "MERGED",
@@ -1257,16 +1268,78 @@
     {
       "phase_id": "G-14",
       "phase_name": "SV-1 Internal Starter Village Proof Gate",
-      "branch": "pending",
+      "branch": "codex/g-14-internal-starter-village-proof",
       "implementing_prs": [
-        "pending"
+        "pending_open_pr"
       ],
       "commits": [
-        "pending"
+        "pending_branch_commit_before_pr"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "G-14 internal village proof is not complete.",
-      "next_required_action": "Produce the internal G-14 village proof package with Human review required: no; if it passes, merge and continue to G-15 Opening Island Masterplan + World Topology."
+      "current_status": "PASS",
+      "reason_for_status": "G-14 proves the starter village is cohesive, quest-readable, browser-reviewable, NPC-grounded, and atelier/provenance compliant enough to support opening island production. Human review required: no.",
+      "next_required_action": "Open and merge the G-14 PR when green, then continue immediately to G-15 Opening Island Masterplan + World Topology.",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "files_changed": [
+        "docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md",
+        "docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.json",
+        "docs/reports/G14_INTERNAL_STARTER_VILLAGE_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
+        "tools/wayfarer_agent_council.py",
+        "wayfarer_godot_vertical_slice/tools/validate_sv1_gate.py"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_03_player_on_route_to_counting_house.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_04_player_near_tavern_inn.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_09_player_interacting_with_counting_house_clerk.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_10_player_interacting_at_tavern_rumor_location.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_11_quest_prompt_journal_objective_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json"
+      ],
+      "motion_proof_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8a_runtime_screenshots/g8a_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_runtime_screenshot_manifest.json"
+      ],
+      "quest_proof_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g10_runtime_screenshots/g10_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json"
+      ],
+      "review_zip_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip",
+        "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-g-13-browser-build-performance-and-regression-hardening.zip"
+      ],
+      "validation_commands": [
+        "tools/wayfarer_agent_council.py --phase \"G-14 Internal Starter Village Proof Gate\" --run-validators",
+        "python wayfarer_godot_vertical_slice/tools/validate_sv1_gate.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
+        "git diff --check",
+        "git diff --cached --check"
+      ],
+      "validation_results": "PASS: Agent Council G-14 validator run; PASS: SV-1 internal gate validator; PASS: OVI ledger validator; PASS: Starter Village roadmap and ledger validators; PASS: browser build hardening, first-session, opening quest, tavern whisper, interaction UX, character motion, NPC route, runtime atelier, layout source, Newport visual ordering, Godot import, vertical slice, and whitespace checks.",
+      "agent_council_report_path": "docs/reports/G14_INTERNAL_STARTER_VILLAGE_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "art_direction_score": 8.6,
+      "world_layout_score": 8.6,
+      "npc_animation_score": 8.6,
+      "narrative_score": 8.7,
+      "gameplay_hook_score": 8.7,
+      "ux_readability_score": 8.7,
+      "technical_stability_score": 8.8,
+      "performance_build_score": 8.8,
+      "town_cohesion_score": 8.6,
+      "provenance_atelier_result": "PASS: G-14 adds no visible runtime sprites and preserves the G-4.22R atelier runtime asset gate, Newport provenance validation, and Starter Village visible-asset discipline.",
+      "north_star_result": "PASS for G-14: the starter village is internally proven as a cohesive, quest-readable, tavern/harbor/counting-house-ready origin village. It is not OVI-1 complete; opening island production begins at G-15."
     }
   ]
 }

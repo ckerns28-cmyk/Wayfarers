@@ -25,13 +25,59 @@
     {
       "phase_id": "G-14",
       "phase_name": "Internal Starter Village Proof Gate",
-      "branch": "pending",
-      "implementing_prs": ["pending"],
-      "commits": ["pending"],
+      "branch": "codex/g-14-internal-starter-village-proof",
+      "implementing_prs": ["pending_open_pr"],
+      "commits": ["pending_branch_commit_before_pr"],
       "merge_status": "pending",
-      "current_status": "PENDING",
-      "reason_for_status": "G-14 is pending. It must prove village cohesion, NPC motion, opening tavern/counter-house/harbor quest, interaction UX, browser/review identity, and atelier/provenance compliance.",
-      "next_required_action": "Run G-14 as an internal checkpoint. If it passes, merge and continue to G-15 without stopping for Chris."
+      "current_status": "PASS",
+      "reason_for_status": "G-14 internally proves village cohesion, NPC motion/grounding, opening tavern/counter-house/harbor quest clarity, interaction UX, browser/review identity, and atelier/provenance compliance. Human review required: no.",
+      "next_required_action": "Open and merge the G-14 PR when green, sync main, and continue to G-15 Opening Island Masterplan + World Topology.",
+      "files_changed": [
+        "docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.md",
+        "docs/reports/G14_INTERNAL_STARTER_VILLAGE_PROOF_GATE.json",
+        "docs/reports/G14_INTERNAL_STARTER_VILLAGE_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
+        "tools/wayfarer_agent_council.py",
+        "wayfarer_godot_vertical_slice/tools/validate_sv1_gate.py"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json"
+      ],
+      "motion_proof_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g8_runtime_screenshots/g8_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g8a_runtime_screenshots/g8a_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g11_runtime_screenshots/g11_runtime_screenshot_manifest.json"
+      ],
+      "quest_proof_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g10_runtime_screenshots/g10_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10a_runtime_screenshots/g10a_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g10b_runtime_screenshots/g10b_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "tools/wayfarer_agent_council.py --phase \"G-14 Internal Starter Village Proof Gate\" --run-validators",
+        "python wayfarer_godot_vertical_slice/tools/validate_sv1_gate.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
+        "git diff --check",
+        "git diff --cached --check"
+      ],
+      "validation_results": "PASS: Agent Council G-14 validator run; PASS: SV-1 internal gate validator; PASS: OVI ledger validator; PASS: required Starter Village and village proof validators.",
+      "agent_council_report_path": "docs/reports/G14_INTERNAL_STARTER_VILLAGE_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "world_layout_score": 8.6,
+      "art_direction_score": 8.6,
+      "npc_motion_score": 8.6,
+      "quest_narrative_score": 8.7,
+      "ux_readability_score": 8.7,
+      "technical_stability_score": 8.8,
+      "provenance_atelier_result": "PASS",
+      "north_star_result": "PASS: the village is ready to support the opening island runway; OVI-1 remains incomplete until G-22."
     },
     {
       "phase_id": "G-15",
