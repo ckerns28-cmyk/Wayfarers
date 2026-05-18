@@ -349,7 +349,7 @@
       "phase_id": "G-17",
       "phase_name": "Island NPC / Encounter / Ambient Life Foundation",
       "branch": "codex/g-17-island-npc-encounter-foundation",
-      "implementing_prs": ["pending_open_pr"],
+      "implementing_prs": ["#486"],
       "commits": ["50b4f16a6d32590613126c111334d53ff2e45d4d"],
       "merge_status": "pending",
       "current_status": "PASS",

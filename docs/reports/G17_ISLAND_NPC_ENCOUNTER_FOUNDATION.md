@@ -6,7 +6,7 @@ Branch: `codex/g-17-island-npc-encounter-foundation`
 
 Commit: `50b4f16a6d32590613126c111334d53ff2e45d4d`
 
-PR number: `pending_open_pr`
+PR number: `#486`
 
 Merge status: `pending`
 
