@@ -37,8 +37,8 @@ Deprecated final states are forbidden.
 | G-8A | Living NPC Population Pass | `codex/g-8a-living-npc-population` | #467 merged | PASS | `docs/reports/G8A_LIVING_NPC_POPULATION_PASS.md`, G-8A council report, runtime screenshot manifest, vertical-slice validator, NPC population/route validator, character motion validator, and atelier runtime validator. |
 | G-9 | Interaction UX and Diegetic Prompt Pass | `codex/g-9-interaction-ux-prompts` | #468 merged | PASS | `docs/reports/G9_INTERACTION_UX_DIEGETIC_PROMPT_PASS.md`, G-9 council report, runtime screenshot manifest, vertical-slice validator, interaction UX validator, and atelier runtime validator. |
 | G-9A | Journal, Objective, and Quest State Foundation | `codex/g-9a-journal-objective-state` | #469 merged | PASS | `docs/reports/G9A_JOURNAL_OBJECTIVE_QUEST_STATE_FOUNDATION.md`, G-9A council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
-| G-10 | Opening Quest Arc: First Light / Whispers Before Dawn | `codex/g-10-opening-quest-arc` | pending current phase PR | PASS | `docs/reports/G10_OPENING_QUEST_ARC_FIRST_LIGHT_WHISPERS_BEFORE_DAWN.md`, G-10 council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
-| G-10A | Tavern Whisper System | pending | pending | PENDING | Must make Tavern/Inn a social gameplay hub with rumor content. |
+| G-10 | Opening Quest Arc: First Light / Whispers Before Dawn | `codex/g-10-opening-quest-arc` | #470 merged | PASS | `docs/reports/G10_OPENING_QUEST_ARC_FIRST_LIGHT_WHISPERS_BEFORE_DAWN.md`, G-10 council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
+| G-10A | Tavern Whisper System | `codex/g-10a-tavern-whisper-system` | pending current phase PR | PASS | `docs/reports/G10A_TAVERN_WHISPER_SYSTEM.md`, G-10A council report, runtime screenshot manifest, vertical-slice validator, tavern whisper validator, Newport visual-order validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
 | G-10B | Multi-Path Starter Choice Foundation | pending | pending | PENDING | Must support at least two NPC advancement paths and optional clue discovery. |
 | G-11 | Living Town Rhythm Pass | pending | pending | PENDING | Must add believable town rhythm, barks, pauses, and route behavior. |
 | G-11A | Audio/Atmosphere Placeholder-Free Foundation | pending | pending | PENDING | Must add safe hooks or document non-blocking integration points. |
@@ -48,11 +48,16 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after G-10: `G-10A Tavern Whisper System`.
+Current phase after G-10A: `G-10B Multi-Path Starter Choice Foundation`.
 
-G-10 expands First Light into a richer playable opening arc with Edrin Vale,
-Mara Pike, Bess Armitage, Jonah Reed, and Silas Crowe participating in the
-missing-ledger mystery. The player now has a wharf-lantern branch, an optional
-rear-gate discovery, a Resolve reward, a named-contact progression beat, and a
-reason to keep the missing line quiet until dawn. G-10A must now make the
-Tavern/Inn itself a deeper rumor gameplay hub.
+G-10A makes the Tavern/Inn a runtime-backed rumor gameplay hub through Bess,
+Silas, Nora, Jonah, the Third Toast, rear-gate secrecy, wharf-lantern rumor
+ties, and rotating ambient barks. G-10B must now make the broader opening
+mystery support multiple advancement paths instead of only proving the tavern
+hub.
+
+Chris screenshot QA also exposed that the prior process let route/building
+order pass as long as proof screenshots existed. G-10A now adds a hard
+visual-order gate: route corridors are drawn from an explicit contract and are
+validated against runtime building visual bounds so tavern/commercial/civic
+building bodies cannot sit under visible road corridors without failing.

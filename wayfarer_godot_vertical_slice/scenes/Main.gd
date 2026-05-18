@@ -149,6 +149,16 @@ func starter_village_quest_contract() -> Dictionary:
 		"reward_log": (snapshot.get("reward_log", []) as Array).duplicate(),
 		"response_text": String(snapshot.get("response_text", "")),
 		"journal_visible": hud != null and hud.has_method("journal_objective_contract"),
+		"tavern_whisper_contract": starter_village_tavern_whisper_contract(),
+	}
+
+func starter_village_tavern_whisper_contract() -> Dictionary:
+	if _first_light_quest != null and _first_light_quest.has_method("tavern_whisper_contract"):
+		return _first_light_quest.tavern_whisper_contract()
+	return {
+		"phase": "G-10A",
+		"system_id": "newport_tavern_whisper_system",
+		"has_rumor_dialogue": false,
 	}
 
 func debug_apply_first_light_quest_events(events: Array) -> Dictionary:

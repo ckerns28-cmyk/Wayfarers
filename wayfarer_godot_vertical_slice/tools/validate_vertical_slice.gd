@@ -116,11 +116,13 @@ func _validate_scene(main: Node) -> void:
 	_validate_g9_interaction_ux_foundation(main, player, hud)
 	_validate_g9a_quest_state_foundation(main, hud)
 	_validate_g10_opening_quest_arc(main, hud)
+	_validate_g10a_tavern_whisper_system(main)
 	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
 	_validate_g415_layout_rules()
 	_validate_proof_street(main)
 	_validate_visual_composition_spacing()
+	_validate_starter_village_visual_order_review()
 	_validate_lived_in_details()
 	_validate_reachability()
 	_validate_building_walkability_gate()
@@ -698,6 +700,42 @@ func _validate_g10_opening_quest_arc(main: Node, hud: CanvasLayer) -> void:
 		var session_state := journal_contract.get("session_state", {}) as Dictionary
 		_expect(String(journal_contract.get("current_objective", "")).find("dawn") >= 0, "g10_journal_reason_to_continue_visible")
 		_expect(String(session_state.get("response_text", "")).find("Keep the missing line") >= 0, "g10_dialogue_response_contract")
+
+func _validate_g10a_tavern_whisper_system(main: Node) -> void:
+	var tavern_source := FileAccess.get_file_as_string("res://scripts/dialogue/TavernWhisperSystem.gd")
+	var tavern_data := _load_json_dictionary("res://data/dialogue/tavern_whispers.json")
+	var first_light_source := FileAccess.get_file_as_string("res://scripts/quests/FirstLightQuest.gd")
+	var blueprint_source := FileAccess.get_file_as_string("res://scripts/NewportTownBlueprint.gd")
+	_expect(tavern_source.find("class_name TavernWhisperSystem") >= 0, "g10a_tavern_system_class")
+	_expect(tavern_source.find("debug_whisper_contract") >= 0, "g10a_debug_whisper_contract_api")
+	_expect(first_light_source.find("TAVERN_WHISPER_SYSTEM") >= 0, "g10a_first_light_uses_tavern_system")
+	_expect(first_light_source.find("tavern_whisper_contract") >= 0, "g10a_first_light_contract")
+	_expect(blueprint_source.find("g10a_tavern_whisper_system_contract") >= 0, "g10a_blueprint_contract")
+	_expect(String(tavern_data.get("phase", "")) == "G-10A", "g10a_data_phase")
+	var interactions := tavern_data.get("quest_relevant_interactions", []) as Array
+	var barks := tavern_data.get("ambient_barks", []) as Array
+	var hub := tavern_data.get("hub_contract", {}) as Dictionary
+	_expect(interactions.size() >= 4, "g10a_interaction_count")
+	_expect(barks.size() >= 5, "g10a_ambient_bark_count")
+	for key in ["has_tavern_npcs", "has_rumor_dialogue", "has_quest_relevant_interaction", "has_rotating_rumor_lines", "ties_to_harbor_commerce", "ties_to_political_tension", "normal_play_debug_marker_free"]:
+		_expect(bool(hub.get(key, false)) == true, "g10a_hub_" + key)
+	var tavern_script := load("res://scripts/dialogue/TavernWhisperSystem.gd")
+	_expect(tavern_script != null, "g10a_tavern_script_loads")
+	if tavern_script != null:
+		var system = tavern_script.new()
+		_expect(system != null and system.has_method("debug_whisper_contract"), "g10a_tavern_debug_contract_api")
+		if system != null and system.has_method("debug_whisper_contract"):
+			var contract: Dictionary = system.call("debug_whisper_contract") as Dictionary
+			_expect(String(contract.get("phase", "")) == "G-10A", "g10a_contract_phase")
+			_expect(int(contract.get("quest_relevant_interaction_count", 0)) >= 4, "g10a_contract_interactions")
+			_expect(int(contract.get("ambient_bark_count", 0)) >= 5, "g10a_contract_ambient_barks")
+			_expect(String(contract.get("third_toast_line", "")).find("Third Toast") >= 0, "g10a_contract_third_toast")
+			_expect((contract.get("sample_cycle", []) as Array).size() >= 3, "g10a_contract_sample_cycle")
+	if main.has_method("starter_village_tavern_whisper_contract"):
+		var runtime_contract: Dictionary = main.call("starter_village_tavern_whisper_contract") as Dictionary
+		_expect(String(runtime_contract.get("phase", "")) == "G-10A", "g10a_main_contract_phase")
+		_expect(bool(runtime_contract.get("has_rumor_dialogue", false)) == true, "g10a_main_has_rumor_dialogue")
+		_expect(bool(runtime_contract.get("has_rotating_rumor_lines", false)) == true, "g10a_main_has_rotating_lines")
 
 func _validate_g419_player_identity_foundation() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json")
@@ -2303,6 +2341,74 @@ func _validate_visual_composition_spacing() -> void:
 			_expect(clerk_to_mercantile_gap >= 8.0, "clerk_townhouse_not_cut_off_by_mercantile")
 			_expect(clerk_to_mercantile_gap <= 40.0, "clerk_townhouse_keeps_readable_mercantile_gutter")
 
+func _validate_starter_village_visual_order_review() -> void:
+	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
+		return
+
+	var contract: Dictionary = NEWPORT_TOWN.starter_village_visual_order_review_contract()
+	_expect(String(contract.get("phase", "")) == "G-10A", "g10a_visual_order_contract_phase")
+	_expect(float(contract.get("target_score_this_phase", 0.0)) >= 8.5, "g10a_visual_order_score_floor")
+	_expect(String(contract.get("hard_gate", "")).find("Council must fail") >= 0, "g10a_visual_order_hard_gate")
+	var forbidden_false_passes: Array = contract.get("forbidden_false_passes", [])
+	_expect(forbidden_false_passes.size() >= 4, "g10a_visual_order_forbidden_false_passes")
+
+	var route_specs: Array = NEWPORT_TOWN.starter_village_route_order_specs()
+	_expect(route_specs.size() >= 4, "g10a_visual_order_route_spec_count")
+	var seen_routes := {}
+	for raw_spec in route_specs:
+		var spec: Dictionary = raw_spec
+		var route_id := String(spec.get("id", ""))
+		seen_routes[route_id] = true
+		var segments: Array = spec.get("segments", [])
+		var gap_pair: Array = spec.get("expected_gap_between", [])
+		_expect(not route_id.is_empty(), "g10a_visual_order_route_id_present")
+		_expect(segments.size() >= 2, "g10a_visual_order_route_segments_" + route_id)
+		_expect(gap_pair.size() == 2, "g10a_visual_order_gap_pair_" + route_id)
+		_expect(float(spec.get("width", 0.0)) > 0.0 and float(spec.get("width", 0.0)) <= 64.0, "g10a_visual_order_route_not_slab_" + route_id)
+		for raw_segment in segments:
+			var segment: Rect2 = raw_segment
+			_expect(segment.size.x > 0.0 and segment.size.y > 0.0, "g10a_visual_order_segment_has_area_" + route_id)
+			_validate_route_segment_clear_of_building_bodies(route_id, segment)
+		if gap_pair.size() == 2:
+			_validate_route_lives_between_pair(route_id, segments, String(gap_pair[0]), String(gap_pair[1]))
+
+	for required_route in [
+		"west_upland_gap_between_tavern_and_clerk",
+		"central_civic_connector_between_commercial_blocks",
+		"east_shop_market_connector_gap",
+		"market_printer_corner_gap",
+	]:
+		_expect(seen_routes.has(required_route), "g10a_visual_order_required_route_" + required_route)
+
+func _validate_route_segment_clear_of_building_bodies(route_id: String, segment: Rect2) -> void:
+	for raw_building in get_nodes_in_group("buildings"):
+		var building := raw_building as Node2D
+		if building == null:
+			continue
+		var building_id := String(building.name)
+		var visual_rect := _building_visual_world_rect(building)
+		if visual_rect.size.x <= 0.0 or visual_rect.size.y <= 0.0:
+			continue
+		var overlap_area := _rect_overlap_area(segment, visual_rect)
+		var allowed_touch := 2.0
+		_expect(overlap_area <= allowed_touch, "g10a_visual_order_route_corridor_does_not_run_under_building_body_" + route_id + "_" + building_id)
+
+func _validate_route_lives_between_pair(route_id: String, segments: Array, left_id: String, right_id: String) -> void:
+	var left := _building_by_name(left_id)
+	var right := _building_by_name(right_id)
+	_expect(left != null and right != null, "g10a_visual_order_gap_pair_buildings_present_" + route_id)
+	if left == null or right == null:
+		return
+	var left_rect := _building_visual_world_rect(left)
+	var right_rect := _building_visual_world_rect(right)
+	var left_edge := minf(left_rect.end.x, right_rect.end.x)
+	var right_edge := maxf(left_rect.position.x, right_rect.position.x)
+	_expect(right_edge - left_edge >= 20.0, "g10a_visual_order_gap_has_readable_width_" + route_id)
+	for raw_segment in segments:
+		var segment: Rect2 = raw_segment
+		if segment.get_center().y < 600.0:
+			_expect(segment.position.x >= left_edge - 2.0 and segment.end.x <= right_edge + 2.0, "g10a_visual_order_route_centered_in_gap_" + route_id)
+
 func _validate_g422a_avenue_block_breaks() -> void:
 	var tavern_to_clerk_gap := _visual_gap_between("b_inn_tavern", "b_clerk_townhouse")
 	var mercantile_to_chandlery_gap := _visual_gap_between("b_mercantile", "b_chandlery_front")
@@ -2651,6 +2757,15 @@ func _building_visual_world_rect(building: Node2D) -> Rect2:
 		return Rect2()
 	var local_rect: Rect2 = building.get_visual_bounds()
 	return Rect2(building.global_position + local_rect.position, local_rect.size)
+
+func _rect_overlap_area(a: Rect2, b: Rect2) -> float:
+	var left := maxf(a.position.x, b.position.x)
+	var top := maxf(a.position.y, b.position.y)
+	var right := minf(a.end.x, b.end.x)
+	var bottom := minf(a.end.y, b.end.y)
+	if right <= left or bottom <= top:
+		return 0.0
+	return (right - left) * (bottom - top)
 
 func _flood_route_tiles(start: Vector2i, route_set: Dictionary) -> Dictionary:
 	var reached := {}

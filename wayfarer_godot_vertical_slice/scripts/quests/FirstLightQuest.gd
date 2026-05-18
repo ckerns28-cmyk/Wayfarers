@@ -4,8 +4,10 @@ class_name FirstLightQuest
 signal quest_updated(snapshot: Dictionary)
 
 const QUEST_STATE := preload("res://scripts/QuestState.gd")
+const TAVERN_WHISPER_SYSTEM := preload("res://scripts/dialogue/TavernWhisperSystem.gd")
 const G9A_QUEST_STATE_FOUNDATION_PASS := "G-9A"
 const G10_OPENING_QUEST_ARC_PASS := "G-10"
+const G10A_TAVERN_WHISPER_SYSTEM_PASS := "G-10A"
 const QUEST_ID := "first_light_whispers_before_dawn"
 const QUEST_TITLE := "First Light"
 const QUEST_REWARD_LABEL := "Reward: Resolve +5 for following the tavern whisper"
@@ -46,6 +48,7 @@ const OBJECTIVES := [
 ]
 
 var _state: WayfarerQuestState = QUEST_STATE.new()
+var _tavern_whispers: TavernWhisperSystem = TAVERN_WHISPER_SYSTEM.new()
 
 
 func _init() -> void:
@@ -107,6 +110,10 @@ func snapshot() -> Dictionary:
 	return _state.snapshot()
 
 
+func tavern_whisper_contract() -> Dictionary:
+	return _tavern_whispers.rumor_contract()
+
+
 func debug_playthrough_contract() -> Dictionary:
 	start()
 	debug_apply_event("edrin")
@@ -138,6 +145,7 @@ func debug_playthrough_contract() -> Dictionary:
 		"branch_choices": ["tell_edrin", "ask_the_wharf", "watch_rear_service_gate"],
 		"optional_discovery": "rear_service_gate_hint",
 		"hook_to_continue": "Edrin becomes a named contact and asks the player to keep the missing line quiet until dawn.",
+		"tavern_whisper_contract": tavern_whisper_contract(),
 		"three_named_or_role_npcs_participate": true,
 		"choice_or_branch_exists": true,
 		"secret_or_optional_discovery_exists": true,
@@ -178,7 +186,7 @@ func _hear_tavern_whisper() -> Dictionary:
 		_state.complete_objective("follow_tavern_whisper", "Objective complete: Bess names the Third Toast.")
 	if not bool(_state.flags.get("third_toast_heard", false)):
 		_state.set_flag("third_toast_heard", true, "Rumor logged: The Third Toast is real.")
-		_state.set_response("Bess Armitage: Third Toast, then no names. If the lantern burns twice at the wharf, someone chose a side.")
+		_state.set_response(_tavern_whispers.opening_rumor_response())
 	_state.add_reward(QUEST_REWARD_LABEL, 5)
 	if _state.current_objective_id in ["lantern_at_wharf", "secure_contact", "hook_to_continue"]:
 		return _state.snapshot()
@@ -190,7 +198,7 @@ func _hear_tavern_whisper() -> Dictionary:
 func _record_secret_path() -> Dictionary:
 	_hear_tavern_whisper()
 	_state.set_flag("rear_service_gate_hint", true, "Secret noted: whispers move through the rear service gate.")
-	_state.set_response("Silas Crowe: Some messages never cross the tavern floor. Watch the rear gate after the second lantern.")
+	_state.set_response(_tavern_whispers.optional_secret_response())
 	return _state.snapshot()
 
 

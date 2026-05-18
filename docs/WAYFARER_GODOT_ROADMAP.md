@@ -2244,13 +2244,19 @@ The required autonomous phase sequence is:
 - G-13 Browser Build, Performance, and Regression Hardening,
 - G-14 SV-1 Starter Village Playable Obsession Gate.
 
-Current SV-1 autonomous status after G-10: Newport now has compact interaction
-prompts plus a playable First Light opening arc. The player can make landfall,
-report to Edrin Vale at the Counting House, investigate the missing ledger line,
-hear the Third Toast at the Tavern/Inn, follow Jonah Reed's wharf-lantern clue,
-discover Silas Crowe's optional rear-gate secret, earn Resolve, and gain Edrin
-as a named contact with a dawn hook. The next active phase is G-10A Tavern
-Whisper System.
+Current SV-1 autonomous status after G-10A: Newport now has compact interaction
+prompts, a playable First Light opening arc, and a runtime-backed Tavern/Inn
+rumor system. The player can make landfall, report to Edrin Vale, investigate
+the missing ledger line, hear the Third Toast from Bess, follow Jonah Reed's
+wharf-lantern clue, discover Silas Crowe's optional rear-gate secret, and hear
+ambient tavern barks tied to Customs, cargo, coin, bells, and silence. The next
+active phase is G-10B Multi-Path Starter Choice Foundation.
+
+G-10A also tightens the review process after screenshot QA exposed route and
+building ordering problems around the tavern/commercial row. Future councils
+must fail if screenshots show route corridors under visible building bodies,
+and `validate_newport_visual_ordering.py` now backs that judgment with runtime
+building-bound checks.
 
 Ordinary roadmap-bound autonomous PRs before SV-1 may be merged by Codex when
 branch/PR preflight is current, required validators pass, runtime proof passes
