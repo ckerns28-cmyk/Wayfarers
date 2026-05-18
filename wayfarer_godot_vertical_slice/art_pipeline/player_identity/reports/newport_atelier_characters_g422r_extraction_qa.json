@@ -1,0 +1,17 @@
+{
+  "schema_id": "wayfarer.player_identity.g422r.extraction_qa.v2",
+  "phase": "G-4.22R",
+  "family_id": "newport_atelier_characters_g422r",
+  "status": "PASS",
+  "generated_at": "2026-05-18T01:16:59Z",
+  "source_image": "art_pipeline/player_identity/source_generated/g422r_atelier_characters_source_imagegen.png",
+  "component_count": 4,
+  "frame_size": 256,
+  "chroma_key_removed": true,
+  "transparent_corners": true,
+  "source_pixels_from_yellow_uncertain_assets": false,
+  "source_pixels_from_third_party_material": false,
+  "web_scraped_source_pixels": false,
+  "prior_scratch_pack_rejected": true,
+  "notes": "Accepted G-4.22R extraction replaces crude player/NPC placeholder styling with painterly source-sheet sprites."
+}

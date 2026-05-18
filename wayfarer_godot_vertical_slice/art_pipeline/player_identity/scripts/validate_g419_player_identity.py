@@ -169,12 +169,18 @@ def check_registry(failures: list[str]) -> None:
     registry = load_json(REGISTRY_PATH, failures)
     if not isinstance(registry, dict):
         return
-    if registry.get("phase") != PHASE:
-        failures.append("visual production registry phase must be G-4.19")
+    registry_phase = str(registry.get("phase", ""))
+    if registry_phase not in {PHASE, "G-4.22R"}:
+        failures.append("visual production registry phase must be G-4.19 or a documented G-4.22R supersession")
     policy = str(registry.get("policy", ""))
-    for required in ["G-4.19", "Player Visual Identity Foundation", "not final-commercial promoted", "old drawn player placeholder is deprecated"]:
-        if required not in policy:
-            failures.append(f"visual production registry G-4.19 policy missing: {required}")
+    if registry_phase == PHASE:
+        for required in ["G-4.19", "Player Visual Identity Foundation", "not final-commercial promoted", "old drawn player placeholder is deprecated"]:
+            if required not in policy:
+                failures.append(f"visual production registry G-4.19 policy missing: {required}")
+    else:
+        for required in ["G-4.22R", "manifest-backed", "player/NPC/marker/world sprites"]:
+            if required not in policy:
+                failures.append(f"visual production registry G-4.22R supersession policy missing: {required}")
     entries = registry.get("asset_entries", [])
     if not isinstance(entries, list):
         failures.append("visual production registry entries must be list")
@@ -185,10 +191,12 @@ def check_registry(failures: list[str]) -> None:
         failures.append("G-4.19 player asset missing from visual production registry")
         return
     usage = player.get("current_usage", {})
-    if not isinstance(usage, dict) or usage.get("normal_review") is not True:
+    expected_normal_review = registry_phase == PHASE
+    if not isinstance(usage, dict) or usage.get("normal_review") is not expected_normal_review:
         failures.append("G-4.19 player asset must be active for normal review")
-    if player.get("rebuild_status") != "APPROVED_TEMPORARY":
-        failures.append("G-4.19 player rebuild status must be APPROVED_TEMPORARY")
+    expected_statuses = {"APPROVED_TEMPORARY"} if registry_phase == PHASE else {"APPROVED_TEMPORARY", "DEPRECATED_DO_NOT_USE"}
+    if player.get("rebuild_status") not in expected_statuses:
+        failures.append("G-4.19 player rebuild status must be APPROVED_TEMPORARY or documented as superseded")
     provenance = player.get("provenance_detail", {})
     if not isinstance(provenance, dict):
         failures.append("G-4.19 player provenance detail missing")
@@ -207,6 +215,13 @@ def check_registry(failures: list[str]) -> None:
             failures.append("drawn player placeholder must not remain normal-review")
         if placeholder.get("rebuild_status") != "DEPRECATED_DO_NOT_USE":
             failures.append("drawn player placeholder must be deprecated")
+    if registry_phase == "G-4.22R":
+        g422r_player = by_id.get("player_wayfarer_atelier_g422r")
+        g422r_npc = by_id.get("newport_npc_atelier_g422r")
+        if not isinstance(g422r_player, dict):
+            failures.append("G-4.22R player supersession entry missing")
+        if not isinstance(g422r_npc, dict):
+            failures.append("G-4.22R NPC supersession entry missing")
 
 
 def check_runtime_integration(failures: list[str]) -> None:
@@ -220,13 +235,14 @@ def check_runtime_integration(failures: list[str]) -> None:
         script = PLAYER_SCRIPT_PATH.read_text(encoding="utf-8")
         for required in [
             "PLAYER_SPRITE_ATLAS_PATH",
-            "player_wayfarer_foundation_g419_v1.png",
             "func set_review_visual_state",
             "_configure_visual_sprite",
             "_update_visual_animation",
         ]:
             if required not in script:
                 failures.append(f"Player.gd missing {required}")
+        if "player_wayfarer_foundation_g419_v1.png" not in script and "player_wayfarer_atelier_g422r_v1.png" not in script:
+            failures.append("Player.gd must use the G-4.19 foundation atlas or its G-4.22R atelier supersession")
         for forbidden in ["draw_circle(", "draw_rect(", "draw_line("]:
             if forbidden in script:
                 failures.append(f"Player.gd still uses drawn placeholder primitive: {forbidden}")

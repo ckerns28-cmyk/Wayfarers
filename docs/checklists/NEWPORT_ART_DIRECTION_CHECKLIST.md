@@ -25,3 +25,6 @@
 - [ ] Old/prototype art under new buildings.
 - [ ] Random prop scatter.
 - [ ] Scene does not approach the current 8.5+/10 visual target.
+- [ ] Player or NPC sprite reads as a placeholder beside atelier environment art.
+- [ ] Beige/tan humanoid, crude hand-drawn character, primitive sign/marker, debug box/circle, or untracked sprite appears in normal play.
+- [ ] Visible player/NPC/marker/sign/world sprite cannot be traced to approved manifest/provenance and screenshot proof.

@@ -1,0 +1,339 @@
+{
+  "schema_id": "wayfarer.player_identity.g422r.character_manifest.v2",
+  "phase": "G-4.22R",
+  "family_id": "newport_atelier_characters_g422r",
+  "status": "APPROVED_TEMPORARY_FOR_PRE_G5_REVIEW",
+  "origin_classification": "ai_assisted_green_origin_candidate_pending_license_review",
+  "provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+  "commercial_use_status": "not_final_commercial_promoted",
+  "generated_at": "2026-05-18T01:16:59Z",
+  "runtime_assets": {
+    "player_atlas": "art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png",
+    "npc_atlas": "art_pipeline/player_identity/atlases/newport_npc_atelier_g422r_v1.png"
+  },
+  "source_image": "art_pipeline/player_identity/source_generated/g422r_atelier_characters_source_imagegen.png",
+  "source_prompt": "art_pipeline/player_identity/source_generated/g422r_atelier_characters_prompt.txt",
+  "source_grid": "art_pipeline/player_identity/generated/newport_atelier_characters_g422r_source_grid.png",
+  "contact_sheet": "art_pipeline/player_identity/contact_sheets/newport_atelier_characters_g422r_contact_sheet.png",
+  "style_tokens": "art_pipeline/player_identity/source_authored/g422r_atelier_character_style_tokens.json",
+  "brief": "art_pipeline/player_identity/source_authored/g422r_atelier_character_visual_brief.md",
+  "generation_script": "art_pipeline/player_identity/scripts/generate_g422r_atelier_character_assets.py",
+  "validation_script": "tools/validate_g422r_runtime_asset_consistency.py",
+  "frame_size": {
+    "w": 256,
+    "h": 256
+  },
+  "runtime_scale": {
+    "player": 0.32,
+    "npc": 0.32
+  },
+  "rejected_prior_attempt": "The deterministic geometric G-4.22R scratch pack was rejected as below atelier standard and is not a source for this manifest.",
+  "required_visual_standard": "High-detail painterly/pixel-painted colonial harbor RPG character sprites coherent beside Newport atelier buildings and props.",
+  "provenance_assertions": {
+    "source_pixels_from_yellow_uncertain_assets": false,
+    "source_pixels_from_third_party_material": false,
+    "web_scraped_source_pixels": false,
+    "normal_review_eligible": true,
+    "final_commercial_candidate": false,
+    "final_commercial_eligible": false,
+    "placeholder": false
+  },
+  "deprecated_runtime_targets": [
+    "drawn humanoid placeholders",
+    "simple beige/tan NPC figures",
+    "primitive sign markers in normal play",
+    "G-4.19 player foundation as normal pre-G-5 gate player art"
+  ],
+  "player": {
+    "asset_id": "player_wayfarer_atelier_g422r",
+    "atlas": "art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png",
+    "frames": [
+      {
+        "id": "idle_down",
+        "animation": "idle_down",
+        "direction": "down",
+        "kind": "idle",
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "walk_a_down",
+        "animation": "walk_down",
+        "direction": "down",
+        "kind": "walk_a",
+        "region": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "walk_b_down",
+        "animation": "walk_down",
+        "direction": "down",
+        "kind": "walk_b",
+        "region": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "idle_up",
+        "animation": "idle_up",
+        "direction": "up",
+        "kind": "idle",
+        "region": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "walk_a_up",
+        "animation": "walk_up",
+        "direction": "up",
+        "kind": "walk_a",
+        "region": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "walk_b_up",
+        "animation": "walk_up",
+        "direction": "up",
+        "kind": "walk_b",
+        "region": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "idle_left",
+        "animation": "idle_left",
+        "direction": "left",
+        "kind": "idle",
+        "region": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "walk_a_left",
+        "animation": "walk_left",
+        "direction": "left",
+        "kind": "walk_a",
+        "region": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "walk_b_left",
+        "animation": "walk_left",
+        "direction": "left",
+        "kind": "walk_b",
+        "region": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "idle_right",
+        "animation": "idle_right",
+        "direction": "right",
+        "kind": "idle",
+        "region": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "walk_a_right",
+        "animation": "walk_right",
+        "direction": "right",
+        "kind": "walk_a",
+        "region": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      },
+      {
+        "id": "walk_b_right",
+        "animation": "walk_right",
+        "direction": "right",
+        "kind": "walk_b",
+        "region": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "foot_anchor": {
+          "x": 128,
+          "y": 244
+        },
+        "note": "G-4.22R repeats accepted down-facing source art for directional contract until full motion-sheet production."
+      }
+    ]
+  },
+  "npcs": [
+    {
+      "asset_id": "npc_dockworker_atelier_g422r",
+      "label": "npc_dockworker",
+      "role": "Dock Worker",
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 256,
+        "h": 256
+      },
+      "foot_anchor": {
+        "x": 128,
+        "y": 244
+      },
+      "gameplay_role": "Working-wharf pedestrian and harbor-life proof."
+    },
+    {
+      "asset_id": "npc_market_vendor_atelier_g422r",
+      "label": "npc_market_vendor",
+      "role": "Market Vendor",
+      "region": {
+        "x": 256,
+        "y": 0,
+        "w": 256,
+        "h": 256
+      },
+      "foot_anchor": {
+        "x": 128,
+        "y": 244
+      },
+      "gameplay_role": "Commercial avenue pedestrian and market-life proof."
+    },
+    {
+      "asset_id": "npc_civic_clerk_atelier_g422r",
+      "label": "npc_civic_clerk",
+      "role": "Civic Clerk",
+      "region": {
+        "x": 512,
+        "y": 0,
+        "w": 256,
+        "h": 256
+      },
+      "foot_anchor": {
+        "x": 128,
+        "y": 244
+      },
+      "gameplay_role": "Interactable Edrin Vale visual and civic district proof."
+    }
+  ],
+  "source_component_boxes": [
+    {
+      "x": 103,
+      "y": 66,
+      "w": 303,
+      "h": 734
+    },
+    {
+      "x": 519,
+      "y": 63,
+      "w": 334,
+      "h": 734
+    },
+    {
+      "x": 911,
+      "y": 98,
+      "w": 315,
+      "h": 693
+    },
+    {
+      "x": 1355,
+      "y": 71,
+      "w": 304,
+      "h": 730
+    }
+  ],
+  "sha256": {
+    "source_image": "c2ca0dbf4e03c6b7e926fa0cc65ce49e629f903334989a3e805b985e07d4c682",
+    "player_atlas": "d1f8203ac000a2ca05dcd9af1800dd23fc6abdcd1fddbf57bd8cd24135835f66",
+    "npc_atlas": "436653bcb17f05b36dabfe0b280dd2090293ca4756e917397b02c552967c395a",
+    "contact_sheet": "fc98902d8ef5b542414525bd0809d54ecd186f2e0c30cff30588ace82fbbbfdb"
+  }
+}

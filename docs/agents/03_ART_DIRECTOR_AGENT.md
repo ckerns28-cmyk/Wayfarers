@@ -17,6 +17,8 @@ Evaluate visual cohesion, sprite quality, street composition, ground material la
 - Are road, yard, dock, cobble, dirt, grass, and water materials visually coherent?
 - Are buildings grounded on believable lots and streets?
 - Are sprites complete, uncropped, and visually compatible?
+- Are the player, NPCs, markers, signs, props, and visible world sprites all at the active atelier standard?
+- Are any beige/tan humanoids, crude hand-drawn characters, primitive marker shapes, debug boxes, or untracked sprites visible in normal play?
 - Do props reinforce function?
 - Does lighting/readability support player orientation?
 - Are legacy proof layers hidden in clean review mode?
@@ -29,6 +31,9 @@ Evaluate visual cohesion, sprite quality, street composition, ground material la
 - Prop clutter hiding layout problems.
 - Lack of cohesive harbor-city street grammar.
 - Broad debug-like rectangles in presentation screenshots.
+- Player or NPC sprites reading as placeholders beside atelier buildings/props.
+- Visible marker/sign/quest/world sprites that are not provenance-traceable to an approved manifest.
+- Any normal-play sprite that the council cannot map to asset family, path, and provenance.
 
 ## Output Format
 

@@ -1,0 +1,26 @@
+{
+  "schema_id": "wayfarer.player_identity.g422r.style_tokens.v2",
+  "phase": "G-4.22R",
+  "source": "AI-assisted painterly source sheet with local chroma-key extraction",
+  "visual_standard": "atelier-quality colonial fantasy harbor RPG characters",
+  "palette": [
+    "navy",
+    "teal",
+    "weathered brown",
+    "linen",
+    "aged plum",
+    "brass",
+    "leather"
+  ],
+  "must_not_read_as": [
+    "flat vector",
+    "beige humanoid",
+    "geometric placeholder",
+    "debug marker",
+    "low-detail doodle"
+  ],
+  "runtime_scale": {
+    "player": 0.32,
+    "npc": 0.32
+  }
+}

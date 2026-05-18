@@ -10,10 +10,13 @@ This repository uses Codex as a production collaborator, not as an automatic app
 - Preserve the G-4.21B/G-4.22A runtime screenshot automation and keep clean no-HUD/no-debug capture available.
 - Preserve the Newport atelier asset pipeline, provenance validation, and asset quarantine rules.
 - Validators passing does not equal design approval.
+- Preserve the pre-G-5 roadmap execution ledger and fail G-5 readiness if any required row is missing or not `PASS`.
 - Until the G-5 readiness gate, follow `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`: the Wayfarer Agent Council is the default QA and acceptance authority for ordinary pre-G-5 phases.
 - Visual, gameplay, world-design, UX, and art-direction passes require screenshot evidence inspected by the Agent Council, or a true `BLOCKED_REQUIRES_HUMAN_ESCALATION` blocker.
 - Do not use `NEEDS_HUMAN_REVIEW`, `READY_FOR_HUMAN_VISUAL_REVIEW`, `AWAITING_CHRIS_REVIEW`, or `TECHNICAL_PASS_ONLY` as final states for ordinary pre-G-5 phases.
 - PR summaries must separate technical validation from design acceptance.
+- All visible normal-play hero-slice sprites must be atelier-standard and provenance-traceable unless hidden behind debug-only behavior.
+- Player and NPC sprites must always be atelier-standard; crude humanoid placeholders, beige/tan stand-ins, primitive sign/marker shapes, debug boxes, and untracked runtime sprites may not appear in normal screenshots.
 - Do not solve layout problems with random prop scatter.
 - Do not hide ground or street problems with clutter.
 - Buildings must sit on believable streets, lots, yards, docks, alleys, or civic spaces.

@@ -9,9 +9,9 @@ const G49_STREET_VIGNETTE := false
 const G48_PROOF_STREET := false
 const G46_PROOF_FRAME := false
 const G47_CALIBRATION_MODE := false
-const NPCS_ENABLED := false
+const NPCS_ENABLED := true
 const PLAYER_SPAWN := Vector2(675, 612)
-const EDRIN_SPAWN := Vector2(-800, -800)
+const EDRIN_SPAWN := Vector2(792, 570)
 const G414A_STREET_WALL_CURB_DATUM_Y := 17.77
 const G415_VISUAL_ACCEPTANCE_SCORE_TARGET := 8.5
 const G416_SURFACE_KIT_PASS := "G-4.16"
@@ -30,6 +30,7 @@ const G420B_TOWN_IDENTITY_PASS := "G-4.20B"
 const G422A_WALKABLE_CITY_RECONSTRUCTION_PASS := "G-4.22A"
 const G423A_STREET_GRAMMAR_GROUND_REPAIR_PASS := "G-4.23A"
 const G423B_AUTHORED_STREET_HARBOR_IMMERSION_PASS := "G-4.23B"
+const G422R_ATELIER_CONSISTENCY_GATE_REPAIR_PASS := "G-4.22R"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -859,9 +860,9 @@ static func interaction_anchors() -> Array:
 		_anchor("shop_house_entrance", "shop", "harborfront_commercial", Vector2(1170.0, 596.0), "Shop House entrance marker."),
 		_anchor("town_notice_board", "notice_board", "inland_residential_civic", Vector2(760.0, 390.0), "Civic notice board near Town Hall / Counting House."),
 		_anchor("dock_rules_board", "notice_board", "working_wharf", Vector2(1238.0, 690.0), "Dock rules and harbor bulletin board."),
-		_anchor("dock_worker_west", "npc_placeholder", "working_wharf", Vector2(420.0, 690.0), "Dock worker placeholder near west cargo."),
-		_anchor("dock_worker_east", "npc_placeholder", "working_wharf", Vector2(1218.0, 690.0), "Dock worker placeholder near east storehouse."),
-		_anchor("market_vendor", "npc_placeholder", "harborfront_commercial", Vector2(1364.0, 636.0), "Market vendor placeholder on the east avenue pocket."),
+		_anchor("dock_worker_west", "npc_atelier", "working_wharf", Vector2(420.0, 690.0), "Atelier dock worker near west cargo."),
+		_anchor("dock_worker_east", "npc_atelier", "working_wharf", Vector2(1218.0, 690.0), "Atelier dock worker near east storehouse."),
+		_anchor("market_vendor", "npc_atelier", "harborfront_commercial", Vector2(1364.0, 636.0), "Atelier market vendor on the east avenue pocket."),
 		_anchor("harbor_cargo_inspection_west", "cargo_inspection", "working_wharf", Vector2(486.0, 736.0), "Warehouse cargo inspection spot."),
 		_anchor("harbor_cargo_inspection_center", "cargo_inspection", "working_wharf", Vector2(824.0, 710.0), "Central wharf cargo inspection spot."),
 		_anchor("west_pier_mooring_point", "cargo_inspection", "working_wharf", Vector2(390.0, 812.0), "West pier mooring and loading proof marker."),
