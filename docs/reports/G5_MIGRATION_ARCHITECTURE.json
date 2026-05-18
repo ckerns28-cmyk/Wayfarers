@@ -1,0 +1,351 @@
+{
+  "schema_id": "wayfarer.g5.migration_architecture.v1",
+  "phase_id": "G-5",
+  "phase_name": "Migration Architecture",
+  "generated": "2026-05-18",
+  "planning_only": true,
+  "production_route_change": false,
+  "worker_route_remains_reference": true,
+  "g6_cutover_required_before_replacing_worker": true,
+  "starting_main_commit": "fcfca18c17d4d7b0de05f31d82fba7e18ceca811",
+  "source_evidence": {
+    "roadmap": "docs/WAYFARER_GODOT_ROADMAP.md",
+    "systems_overview": "docs/SYSTEMS_OVERVIEW.md",
+    "save_schema": "docs/SAVE_SCHEMA.md",
+    "multiplayer_architecture": "docs/MULTIPLAYER_ARCHITECTURE.md",
+    "game_design_bible": "docs/GAME_DESIGN_BIBLE.md",
+    "javascript_worker": "wayfarer_v7_github_ready/worker/src/index.js",
+    "godot_main_scene": "wayfarer_godot_vertical_slice/scenes/Main.gd",
+    "godot_player": "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+    "godot_hud": "wayfarer_godot_vertical_slice/scenes/ui/HUD.gd",
+    "godot_newport_blueprint": "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd"
+  },
+  "architecture_principles": [
+    "Do not port gameplay by copying Worker blobs into Godot scenes.",
+    "Extract behavioral contracts from the JavaScript Worker before implementation.",
+    "Keep JavaScript Phase 35.13R as the production and regression reference until G-6 explicitly changes deployment policy.",
+    "Migrate systems through small, validator-backed Godot services with save/schema compatibility tests.",
+    "Any player-facing or visual migration still requires screenshot evidence and council inspection.",
+    "Server-authoritative multiplayer remains a future trust-boundary target, not a G-5 implementation task."
+  ],
+  "target_godot_boundaries": [
+    {
+      "module": "GameState",
+      "responsibility": "Own canonical player, quest, world, creature, inventory, and progression state in Godot without binding to rendering nodes."
+    },
+    {
+      "module": "SaveService",
+      "responsibility": "Read, migrate, repair, validate, and write Wayfarer save payloads through adapters for local browser storage, Godot storage, and future server persistence."
+    },
+    {
+      "module": "ZoneService",
+      "responsibility": "Own zone ids, transitions, spawn safety, region membership, and future network zone assignment."
+    },
+    {
+      "module": "InteractionService",
+      "responsibility": "Resolve proximity/click/key interactions against stable entity ids and dispatch dialogue, vendor, object, and transition commands."
+    },
+    {
+      "module": "DialogueQuestService",
+      "responsibility": "Run dialogue roots, quest lifecycle, objective updates, rewards, and branch conditions from data contracts."
+    },
+    {
+      "module": "InventoryEconomyService",
+      "responsibility": "Own item registry, stacking, equip validation, vendor pricing, buy/sell accounting, consumables, and reward application."
+    },
+    {
+      "module": "CombatService",
+      "responsibility": "Own deterministic combat formulas, hit validation, enemy defeat, cooldowns, and reward outcome production."
+    },
+    {
+      "module": "EntityRegistry",
+      "responsibility": "Normalize stable ids for players, NPCs, enemies, props, chests, signs, doors, and persistent objects."
+    },
+    {
+      "module": "PresentationAdapters",
+      "responsibility": "Keep sprites, HUD, prompts, Chronicle text, animations, camera, and VFX as subscribers to domain events rather than owners of canonical mutations."
+    },
+    {
+      "module": "MigrationQA",
+      "responsibility": "Run parity fixtures, save compatibility checks, Godot vertical slice validation, screenshots where applicable, and council acceptance reports."
+    }
+  ],
+  "migration_systems": [
+    {
+      "system_id": "movement_camera_zone",
+      "status": "PLANNED_CONTRACT_ONLY",
+      "current_javascript_evidence": "Grid movement, smooth interpolation, camera tile clamping, region detection, transition locks, and spawn repair live in worker/src/index.js.",
+      "current_godot_surface": "Player.gd handles free 2D movement, camera limits, and interaction prompts for the Newport slice.",
+      "source_files": [
+        "wayfarer_v7_github_ready/worker/src/index.js",
+        "docs/SYSTEMS_OVERVIEW.md"
+      ],
+      "current_godot_files": [
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scenes/map/CollisionNavigationLayer.gd",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd"
+      ],
+      "migration_owner_module": "ZoneService",
+      "data_contract": "Zone id, world position, facing, velocity/input intent, safe spawn, transition lock, and camera bounds.",
+      "migration_order": "G-5.2",
+      "validation_gates": [
+        "Movement parity fixtures for blocked/open route samples",
+        "Godot reachability validation",
+        "Runtime screenshot proof when camera or player presentation changes"
+      ],
+      "risk": "Grid-to-continuous movement semantics can change quest/combat reachability if not fixture-locked."
+    },
+    {
+      "system_id": "interaction_dialogue_quest",
+      "status": "PLANNED_CONTRACT_ONLY",
+      "current_javascript_evidence": "InteractionManager, DialogueFramework, QuestStateSystem, quest event hooks, branch conditions, and reward turn-ins are embedded in worker/src/index.js.",
+      "current_godot_surface": "EdrinVale.gd and Player.gd provide one interactable dialogue prompt in Newport.",
+      "source_files": [
+        "wayfarer_v7_github_ready/worker/src/index.js",
+        "docs/GAME_DESIGN_BIBLE.md",
+        "docs/SYSTEMS_OVERVIEW.md"
+      ],
+      "current_godot_files": [
+        "wayfarer_godot_vertical_slice/scenes/npc/EdrinVale.gd",
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.gd"
+      ],
+      "migration_owner_module": "DialogueQuestService",
+      "data_contract": "NPC id, object id, prompt text, dialogue node id, condition query, quest state, objective id, reward command, and idempotency token.",
+      "migration_order": "G-5.4",
+      "validation_gates": [
+        "Quest lifecycle fixtures for Hunter's Request and The Still Water",
+        "Dialogue branch fixtures by quest/equipment state",
+        "No duplicate reward tests",
+        "Screenshot proof for dialogue UI changes"
+      ],
+      "risk": "Hardcoded quest and NPC paths can duplicate rewards or lose branch reactivity during migration."
+    },
+    {
+      "system_id": "inventory_equipment_economy",
+      "status": "PLANNED_CONTRACT_ONLY",
+      "current_javascript_evidence": "ITEM_REGISTRY, inventory normalization, equipment slots, vendor buy/sell, consumable use, skill healing bonus, and coin accounting live in worker/src/index.js.",
+      "current_godot_surface": "Godot HUD shows placeholder level/vitals but does not own inventory, equipment, vendor, or consumable behavior yet.",
+      "source_files": [
+        "wayfarer_v7_github_ready/worker/src/index.js",
+        "docs/SAVE_SCHEMA.md",
+        "docs/SYSTEMS_OVERVIEW.md"
+      ],
+      "current_godot_files": [
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.gd"
+      ],
+      "migration_owner_module": "InventoryEconomyService",
+      "data_contract": "Item registry entry, stack quantity, equipment slot, vendor offer, coin delta, consumable effect, and inventory mutation result.",
+      "migration_order": "G-5.5",
+      "validation_gates": [
+        "Stacking and equip-safe sale tests",
+        "Vendor buy/sell accounting fixtures",
+        "Consumable HP cap and Survival XP fixtures",
+        "Save/load compatibility checks"
+      ],
+      "risk": "Direct UI/save side effects in the Worker can hide mutation-order bugs if not isolated first."
+    },
+    {
+      "system_id": "combat_enemy_loot_progression",
+      "status": "PLANNED_CONTRACT_ONLY",
+      "current_javascript_evidence": "Enemy spawn tables, wolf/bandit/Rook/cave-wolf loops, cooldowns, damage, death, loot rolls, XP, levels, skills, recoil, and combat feedback live in worker/src/index.js.",
+      "current_godot_surface": "Godot Newport currently has player movement and visual presentation only; combat and enemies are not ported.",
+      "source_files": [
+        "wayfarer_v7_github_ready/worker/src/index.js",
+        "docs/GAME_DESIGN_BIBLE.md",
+        "docs/SYSTEMS_OVERVIEW.md"
+      ],
+      "current_godot_files": [
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.gd"
+      ],
+      "migration_owner_module": "CombatService",
+      "data_contract": "Actor id, faction, HP, attack range, cooldown, damage formula inputs, hit result, defeat result, loot roll seed/outcome, XP and skill XP deltas.",
+      "migration_order": "G-5.6",
+      "validation_gates": [
+        "Formula parity fixtures for damage and defense",
+        "Loot table deterministic seed tests",
+        "Enemy respawn and defeat-state tests",
+        "Combat feedback screenshot/video proof after visual integration"
+      ],
+      "risk": "Client-authoritative combat cannot become multiplayer-safe until formulas and outcome mutations are pure and server-reusable."
+    },
+    {
+      "system_id": "save_load_persistence",
+      "status": "PLANNED_CONTRACT_ONLY",
+      "current_javascript_evidence": "saveSchemaVersion 2, migrateSave, repairSave, validateSaveData, createSaveData, saveGame, loadGame, backup slot protection, and localStorage ownership live in worker/src/index.js.",
+      "current_godot_surface": "Godot Newport has no production save system yet.",
+      "source_files": [
+        "wayfarer_v7_github_ready/worker/src/index.js",
+        "docs/SAVE_SCHEMA.md",
+        "docs/MULTIPLAYER_ARCHITECTURE.md"
+      ],
+      "current_godot_files": [
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd"
+      ],
+      "migration_owner_module": "SaveService",
+      "data_contract": "Save schema version, canonical player payload, quest payload, world payload, systems payload, migration result, repair warnings, adapter result, and idempotent write result.",
+      "migration_order": "G-5.3",
+      "validation_gates": [
+        "Golden JS save payload load fixtures",
+        "Missing-field repair fixtures",
+        "Invalid/corrupt save recovery fixtures",
+        "Godot-to-JS compatibility export fixture before production cutover"
+      ],
+      "risk": "Save compatibility is the highest player-trust risk; Godot must read and preserve legacy progress before replacing the Worker route."
+    },
+    {
+      "system_id": "world_objects_dungeons_persistence",
+      "status": "PLANNED_CONTRACT_ONLY",
+      "current_javascript_evidence": "Persistent object ids, Mirror Cave chest states, Echo Fragment state, Abandoned Tollhouse/Rook/chest clear states, dungeon transitions, and POI discovery are implemented in worker/src/index.js.",
+      "current_godot_surface": "Godot Newport has collision/detail blockers and one NPC; dungeons and persistent object state are not ported.",
+      "source_files": [
+        "wayfarer_v7_github_ready/worker/src/index.js",
+        "docs/SAVE_SCHEMA.md",
+        "docs/GAME_DESIGN_BIBLE.md"
+      ],
+      "current_godot_files": [
+        "wayfarer_godot_vertical_slice/scenes/map/CollisionNavigationLayer.gd",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd"
+      ],
+      "migration_owner_module": "EntityRegistry",
+      "data_contract": "Persistent object id, object type, state enum, discovered/opened/defeated/cleared flags, transition request, safe return point, and one-time reward lock.",
+      "migration_order": "G-5.7",
+      "validation_gates": [
+        "Mirror Cave chest sealed/closed/open fixtures",
+        "Tollhouse Rook plus chest clear-state fixtures",
+        "Save/reload no-duplicate reward fixtures",
+        "Transition safety fixtures"
+      ],
+      "risk": "Object and dungeon state is reward-sensitive and must be idempotent before shared or server-backed play."
+    },
+    {
+      "system_id": "ui_hud_chronicle_feedback",
+      "status": "PLANNED_CONTRACT_ONLY",
+      "current_javascript_evidence": "DOM HUD, sidebar tabs, Chronicle/chat log, dialogue/vendor panels, reward toasts, floating text, HP/stat labels, and QA overlays live in worker/src/index.js.",
+      "current_godot_surface": "HUD.gd provides Newport player-facing status, quest panel, dialogue panel, metadata toggle, and no-HUD review mode.",
+      "source_files": [
+        "wayfarer_v7_github_ready/worker/src/index.js",
+        "docs/REGRESSION_TEST_CHECKLIST.md",
+        "docs/GAME_DESIGN_BIBLE.md"
+      ],
+      "current_godot_files": [
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.gd",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.tscn"
+      ],
+      "migration_owner_module": "PresentationAdapters",
+      "data_contract": "HUD state snapshot, dialogue surface state, vendor surface state, Chronicle event, toast event, floating text event, and review metadata mode.",
+      "migration_order": "G-5.8",
+      "validation_gates": [
+        "HUD contract validator",
+        "Dialogue/vendor screenshot proof",
+        "No-HUD capture preservation",
+        "Chronicle reward-feedback parity fixtures"
+      ],
+      "risk": "UI polish can regress player trust if domain events do not surface rewards, damage, quest state, and save outcomes clearly."
+    },
+    {
+      "system_id": "deployment_qa_multiplayer_boundary",
+      "status": "PLANNED_CONTRACT_ONLY",
+      "current_javascript_evidence": "Cloudflare Worker serves the JS route, runtime QA reports live in the browser bundle, and the multiplayer plan selects Worker router plus Durable Objects plus D1 for future authority.",
+      "current_godot_surface": "Godot exports to a separate browser review path and uses headless validators plus screenshot capture.",
+      "source_files": [
+        "wayfarer_v7_github_ready/worker/wrangler.toml",
+        "wayfarer_v7_github_ready/worker/package.json",
+        "docs/MULTIPLAYER_ARCHITECTURE.md",
+        "docs/REGRESSION_TEST_CHECKLIST.md"
+      ],
+      "current_godot_files": [
+        "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
+        "wayfarer_godot_vertical_slice/tools/validate_g422r_runtime_asset_consistency.py",
+        "wayfarer_godot_vertical_slice/tools/validate_pre_g5_roadmap_ledger.py"
+      ],
+      "migration_owner_module": "MigrationQA",
+      "data_contract": "Deployment target, route owner, validation command, screenshot packet, PR check result, rollback trigger, and authority boundary classification.",
+      "migration_order": "G-5.9",
+      "validation_gates": [
+        "G-5 migration architecture validator",
+        "Godot vertical slice validator",
+        "Pre-G-5 ledger validator retained as prerequisite",
+        "G-6 cutover plan before any production route replacement"
+      ],
+      "risk": "Replacing hosting before system parity and rollback criteria would strand the mature JS route and violate roadmap safety."
+    }
+  ],
+  "migration_sequence": [
+    {
+      "sequence_id": "G-5.1",
+      "name": "Contract Extraction And Golden Fixtures",
+      "objective": "Extract JS behavior contracts, golden save payloads, and parity fixtures before writing gameplay ports.",
+      "entry_gate": "G-5 architecture package merged.",
+      "exit_gate": "Contracts and fixtures exist for movement, save, quest, inventory, combat, objects, and UI feedback."
+    },
+    {
+      "sequence_id": "G-5.2",
+      "name": "Godot State Kernel Skeleton",
+      "objective": "Create service boundaries and data models without enabling player-facing gameplay regressions.",
+      "entry_gate": "G-5.1 contracts pass.",
+      "exit_gate": "GameState, EntityRegistry, ZoneService, and QA harness load fixtures headlessly."
+    },
+    {
+      "sequence_id": "G-5.3",
+      "name": "Save Compatibility Bridge",
+      "objective": "Teach Godot to read, repair, preserve, and export Wayfarer save schema v2 before progression systems arrive.",
+      "entry_gate": "State kernel exists.",
+      "exit_gate": "Golden JS saves round-trip in Godot without player data loss."
+    },
+    {
+      "sequence_id": "G-5.4",
+      "name": "Interaction Dialogue Quest Foundation",
+      "objective": "Migrate NPC/object interaction, dialogue branches, quest objectives, and reward commands through data services.",
+      "entry_gate": "Save bridge can persist quest/world state.",
+      "exit_gate": "Hunter's Request and The Still Water fixtures pass without duplicate rewards."
+    },
+    {
+      "sequence_id": "G-5.5",
+      "name": "Inventory Equipment Economy Foundation",
+      "objective": "Migrate item registry, stack rules, equipment, vendor accounting, consumables, and save persistence.",
+      "entry_gate": "Quest rewards have a service target.",
+      "exit_gate": "Buy, sell, equip, consume, and save/reload fixtures pass."
+    },
+    {
+      "sequence_id": "G-5.6",
+      "name": "Combat Enemy Loot Foundation",
+      "objective": "Migrate deterministic combat formulas, enemies, defeat, loot, XP, skills, respawn, and feedback events.",
+      "entry_gate": "Inventory/equipment and save services are stable.",
+      "exit_gate": "Wolf, bandit, cave wolf, and Rook fixture outcomes match accepted balance contracts."
+    },
+    {
+      "sequence_id": "G-5.7",
+      "name": "Dungeon Persistent Object Foundation",
+      "objective": "Migrate Mirror Cave, Abandoned Tollhouse, chests, Echo Fragment, Rook cleared state, and transition safety.",
+      "entry_gate": "Combat and object command services exist.",
+      "exit_gate": "Dungeon rewards and clear states are idempotent across save/reload."
+    },
+    {
+      "sequence_id": "G-5.8",
+      "name": "Player-Facing Feedback Integration",
+      "objective": "Bind domain events to Godot HUD, dialogue, Chronicle, toasts, floating text, and screenshot-validated player feedback.",
+      "entry_gate": "Core systems emit events rather than mutating UI directly.",
+      "exit_gate": "Combat, rewards, quest, save, and vendor feedback clears visual/UX QA."
+    },
+    {
+      "sequence_id": "G-5.9",
+      "name": "Parity And Cutover Readiness Evidence",
+      "objective": "Produce side-by-side JS/Godot parity validation, performance evidence, screenshots, and unresolved gap register for G-6.",
+      "entry_gate": "All migrated foundations pass fixtures.",
+      "exit_gate": "G-6 has concrete cutover inputs, rollback triggers, and no hidden parity gaps."
+    }
+  ],
+  "g6_inputs": [
+    "Production route ownership decision matrix",
+    "Rollback plan from Godot route back to JavaScript Worker route",
+    "Save migration and downgrade policy",
+    "Remote check and served-validation gate",
+    "Human-facing release criteria for replacing the Worker route"
+  ],
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "next_recommended_roadmap_phase": "G-6 Production Cutover Planning"
+}

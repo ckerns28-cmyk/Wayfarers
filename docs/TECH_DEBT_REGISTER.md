@@ -20,3 +20,6 @@
 | localStorage-only canonical save path | high | Persistence architecture | 30 (blocker) | Save/load currently assumes browser-local canonical ownership; needs persistence adapter for D1/server writes + reconnect safety. |
 | Entity identity normalization gaps | medium | Networking/state sync | 30 (recommended) | Player/enemy/object identity is not yet normalized for network snapshots and event reconciliation. |
 | Quest/object mutation idempotency under concurrency | high | Multiplayer rewards/state | 30 (blocker) | Chest/object/quest rewards need idempotency keys + transactional writes before shared-zone concurrent interaction. |
+| Godot migration contract suite missing | high | Godot migration architecture | G-5.1 | G-5 defines the required contract extraction and golden fixture pass before any gameplay system is ported from the Worker into Godot. |
+| Save compatibility bridge not implemented in Godot | high | Save/load migration | G-5.3 | Godot must read, repair, preserve, and export Worker save schema v2 before quest, combat, inventory, reward, dungeon, or cutover work. |
+| Presentation owns too much gameplay feedback in Worker | medium | UI/HUD/Chronicle migration | G-5.8 | HUD, Chronicle, reward toasts, floating text, and dialogue must become subscribers to domain events rather than mutation owners during Godot migration. |
