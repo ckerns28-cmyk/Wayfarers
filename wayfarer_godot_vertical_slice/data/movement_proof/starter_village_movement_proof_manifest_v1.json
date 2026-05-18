@@ -1,0 +1,59 @@
+{
+  "schema_id": "wayfarer.starter_village.movement_proof_manifest.v1",
+  "phase": "SV-0",
+  "policy": "Movement phases require motion proof. Static screenshots alone cannot pass NPC walking or grounding claims.",
+  "adopted_method": "Godot timestamped frame sequence",
+  "fallback_methods": [
+    {"method": "GIF/video via FFmpeg", "decision": "SPIKE_ONLY"},
+    {"method": "OBS manual capture", "decision": "DEFER"}
+  ],
+  "required_for_phases": [
+    "G-8",
+    "G-8A",
+    "G-11",
+    "G-12",
+    "G-14"
+  ],
+  "required_sequences": [
+    {
+      "id": "player_directional_walk",
+      "frames": ["idle_down", "walk_down", "walk_left", "walk_right", "walk_up"],
+      "proof": "feet remain grounded and movement cadence matches frame changes"
+    },
+    {
+      "id": "npc_idle_station",
+      "frames": ["idle_down", "idle_left", "idle_right"],
+      "proof": "NPC does not drift or slide when stationary"
+    },
+    {
+      "id": "npc_route_walk_when_enabled",
+      "frames": ["walk_down", "walk_left", "walk_right", "walk_up"],
+      "proof": "NPC movement follows route points, pauses at stations, and never glides as a static cutout"
+    },
+    {
+      "id": "interaction_prompt_priority",
+      "frames": ["approach", "prompt_visible", "dialogue_visible"],
+      "proof": "ambient bark text suppresses near interaction range and does not overlap dialogue"
+    }
+  ],
+  "minimum_capture_metadata": [
+    "phase",
+    "npc_id_or_player",
+    "route_id",
+    "frame_index",
+    "timestamp_msec",
+    "position",
+    "facing_direction",
+    "animation_state",
+    "ground_shadow_visible",
+    "screenshot_path"
+  ],
+  "council_fail_conditions": [
+    "no_motion_proof_for_movement_phase",
+    "static_portrait_sprite_moves_between_frames",
+    "feet_or_anchor_float_above_ground",
+    "animation_state_does_not_change_while_position_changes",
+    "route_motion_jitters_or_teleports",
+    "bark_prompt_dialogue_overlap"
+  ]
+}

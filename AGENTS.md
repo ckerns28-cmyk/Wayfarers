@@ -13,11 +13,18 @@ This repository uses Codex as a production collaborator, not as an automatic app
 - Preserve the Newport atelier asset pipeline, provenance validation, and asset quarantine rules.
 - Validators passing does not equal design approval.
 - Preserve the pre-G-5 roadmap execution ledger and fail G-5 readiness if any required row is missing or not `PASS`.
+- SV-0 locks the production tooling stack for Starter Village work. Future
+  phases must use the locked SV-0 tooling stack where applicable, or explain
+  the exception in the Agent Council report and fail if the exception creates
+  an unvalidated one-off system.
 - Until the SV-1 Starter Village Playable Obsession Gate, follow
   `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`: the Wayfarer Agent Council
   is the default QA and acceptance authority for ordinary roadmap-bound
   autonomous phases.
 - Visual, gameplay, world-design, UX, and art-direction passes require screenshot evidence inspected by the Agent Council, or a true `BLOCKED_REQUIRES_HUMAN_ESCALATION` blocker.
+- Movement phases require movement proof: timestamped frame sequences, GIF,
+  or video showing idle/walk/facing changes, grounded anchors, and no
+  static-sprite glide.
 - Screenshot evidence can overrule a written report. If captured proof shows route/building confusion, tavern/commercial/civic ordering problems, phase-blocking ground patchwork, hovering or sliding NPCs, debug artifacts, unclear objective state, or non-atelier runtime sprites, the council must fail the phase and Codex must repair the branch.
 - Do not use `NEEDS_HUMAN_REVIEW`, `READY_FOR_HUMAN_VISUAL_REVIEW`, `AWAITING_CHRIS_REVIEW`, or `TECHNICAL_PASS_ONLY` as final states for ordinary pre-G-5 phases.
 - PR summaries must separate technical validation from design acceptance.

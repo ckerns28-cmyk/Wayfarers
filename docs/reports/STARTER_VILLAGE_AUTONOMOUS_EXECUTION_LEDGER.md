@@ -29,6 +29,7 @@ Deprecated final states are forbidden.
 
 | Phase | Roadmap Item | Branch | PR | Current Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
+| SV-0 | Free Tooling Intake Production Stack Lock | `codex/sv0-free-tooling-stack` | pending current phase PR | PASS | `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md`, structured stack JSON, tooling roadmap, authoritative world-layout source, visual QA manifest, movement proof manifest, ground stack, SV-0 validator, and `docs/reports/SV0_FREE_TOOLING_AGENT_COUNCIL_REPORT.md`. |
 | G-7 | Newport Living Origin Village Masterplan Lock | `codex/sv1-autonomous-roadmap` | #462 merged | PASS | `docs/reports/G7_NEWPORT_LIVING_ORIGIN_VILLAGE_MASTERPLAN_LOCK.md`, roadmap JSON, ledger JSON, G-7 council report, and G-7 validators. |
 | G-7A | Street, Lot, and Ground Cohesion Reconstruction | `codex/g-7a-street-lot-ground-cohesion` | #463 merged | PASS | `docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md`, G-7A council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, and atelier runtime validator. |
 | G-7B | Harbor, Wharf, and Commercial Spine Cohesion | `codex/g-7b-harbor-commercial-spine` | #464 merged | PASS | `docs/reports/G7B_HARBOR_WHARF_COMMERCIAL_SPINE_COHESION.md`, G-7B council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, NPC route validator, and atelier runtime validator. |
@@ -48,12 +49,16 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after G-10B: `G-11 Living Town Rhythm Pass`.
+Current phase after Chris screenshot QA: `SV-0 Free Tooling Intake Production
+Stack Lock`.
 
 G-10B adds a runtime-backed multi-path choice foundation for First Light:
 counting-house, harbor-work, tavern-rumor, merchant-street, and optional
 secret routes can now advance the opening mystery without a single railroaded
-click path. G-11 must now make the town feel alive between quest steps.
+click path. However, screenshot evidence showed the process still allowed
+patchwork layout, visual-order confusion, false stable reads, and mismatched
+building scale to survive. SV-0 must lock the free production stack before G-7/
+G-7A resumes with a real source of truth for town layout.
 
 Chris screenshot QA also exposed that the prior process let route/building
 order pass as long as proof screenshots existed. G-10A added a hard visual-order

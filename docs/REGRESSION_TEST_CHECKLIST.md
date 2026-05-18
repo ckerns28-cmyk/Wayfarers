@@ -307,3 +307,12 @@ the JavaScript Worker route by accident.
 - [ ] G-5.1 through G-5.9 parity evidence exists before any future replacement.
 - [ ] Worker save schema v2 round-trips through Godot without progress loss before any future replacement.
 - [ ] Served Godot Web export validation, runtime visual QA, performance/browser matrix, rollback rehearsal, and Agent Council release authority are all required before any future replacement.
+
+## U. SV-0 Starter Village Tooling Stack
+
+- [ ] `wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py` reports `PASS`.
+- [ ] The authoritative world-layout source identifies districts, lots, roads, alleys, dock paths, NPC routes, interaction zones, quest beats, and screenshot viewpoints before new placement work begins.
+- [ ] The visual regression manifest covers the recurring Newport views and is treated as a warning system, not automatic art approval.
+- [ ] Runtime movement proof is produced for NPC/player movement phases before the Agent Council can pass them.
+- [ ] Ground/material cohesion follows the locked Godot-native material stack before props or clutter are used.
+- [ ] No paid, unknown-license, admin-only, or external-drive-modifying tool is required for the Starter Village path.

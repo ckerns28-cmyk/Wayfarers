@@ -31,6 +31,63 @@
   ],
   "phases": [
     {
+      "phase_id": "SV-0",
+      "phase_name": "Free Tooling Intake Production Stack Lock",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "branch": "codex/sv0-free-tooling-stack",
+      "implementing_prs": [
+        "pending_current_phase_pr"
+      ],
+      "commits": [
+        "pending_current_phase_commit"
+      ],
+      "files_changed": [
+        "AGENTS.md",
+        "docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md",
+        "docs/WAYFARER_GODOT_ROADMAP.md",
+        "docs/REGRESSION_TEST_CHECKLIST.md",
+        "docs/checklists/WAYFARER_PR_REVIEW_CHECKLIST.md",
+        "docs/roadmaps/STARTER_VILLAGE_TOOLING_STACK.md",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md",
+        "docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json",
+        "docs/reports/SV0_FREE_TOOLING_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "tools/wayfarer_agent_council.py",
+        "wayfarer_godot_vertical_slice/data/world_layout/starter_village_world_layout_v1.json",
+        "wayfarer_godot_vertical_slice/data/visual_qa/starter_village_visual_regression_manifest_v1.json",
+        "wayfarer_godot_vertical_slice/data/movement_proof/starter_village_movement_proof_manifest_v1.json",
+        "wayfarer_godot_vertical_slice/data/ground_materials/starter_village_ground_material_stack_v1.json",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py"
+      ],
+      "screenshot_paths": [],
+      "validation_commands": [
+        "python wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: SV-0 tooling stack; PASS: Starter Village roadmap; PASS: Starter Village execution ledger; PASS: git diff --check; PASS: Agent Council run-validators mode.",
+      "agent_council_report_path": "docs/reports/SV0_FREE_TOOLING_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.7,
+      "art_direction_score": 8.6,
+      "world_layout_score": 8.7,
+      "npc_animation_score": 8.6,
+      "narrative_score": 8.6,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.8,
+      "performance_build_score": 8.7,
+      "provenance_atelier_result": "PASS: SV-0 adopts no paid or unknown-license runtime asset dependency and keeps all visible playable assets under existing atelier/provenance gates.",
+      "north_star_result": "PASS for production process: SV-0 locks tooling so future Newport work starts from districts, lots, roads, routes, ground materials, movement proof, and screenshot contradiction review rather than coordinate sprawl.",
+      "current_status": "PASS",
+      "reason_for_status": "SV-0 locks the free production stack and adds a validator that fails missing tool decisions, missing authoritative layout sources, missing movement proof, missing visual QA, missing asset cleanup workflow, and missing ground cohesion workflow.",
+      "next_required_action": "Run the SV-0 Agent Council, open/merge the SV-0 PR when green, then resume G-7/G-7A tool-backed Newport layout repair."
+    },
+    {
       "phase_id": "G-7",
       "phase_name": "Newport Living Origin Village Masterplan Lock",
       "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",

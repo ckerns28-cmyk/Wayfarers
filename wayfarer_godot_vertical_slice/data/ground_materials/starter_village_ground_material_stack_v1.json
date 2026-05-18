@@ -1,0 +1,60 @@
+{
+  "schema_id": "wayfarer.starter_village.ground_material_stack.v1",
+  "phase": "SV-0",
+  "purpose": "Lock a cohesive ground/material authoring vocabulary before G-7A rebuilds streets, lots, dock edges, and transitions.",
+  "decision": "ADOPT_NOW_GODOT_NATIVE_MATERIAL_STACK",
+  "material_families": [
+    {
+      "id": "harbor_dock_plank",
+      "use": "wharf boardwalks, piers, landing platforms",
+      "must_transition_to": ["water_edge", "wharf_cobble_apron"]
+    },
+    {
+      "id": "wharf_cobble_apron",
+      "use": "cargo work edge between dock and street",
+      "must_transition_to": ["harbor_dock_plank", "waterfront_road"]
+    },
+    {
+      "id": "waterfront_road",
+      "use": "primary east-west player route",
+      "must_transition_to": ["frontage_lot_stone", "uphill_road", "wharf_cobble_apron"]
+    },
+    {
+      "id": "uphill_road",
+      "use": "roads climbing from harbor to civic/residential districts",
+      "must_transition_to": ["waterfront_road", "civic_square_stone", "residential_grass_edge"]
+    },
+    {
+      "id": "frontage_lot_stone",
+      "use": "building bases, stoops, shop frontage, tavern threshold",
+      "must_transition_to": ["waterfront_road", "service_yard_gravel"]
+    },
+    {
+      "id": "service_yard_gravel",
+      "use": "rear lane, cooperage, barrels, delivery edges",
+      "must_transition_to": ["frontage_lot_stone", "residential_grass_edge"]
+    },
+    {
+      "id": "residential_grass_edge",
+      "use": "upper home yards and soft lot boundaries",
+      "must_transition_to": ["uphill_road", "service_yard_gravel"]
+    },
+    {
+      "id": "water_edge",
+      "use": "harbor shoreline and under-pier water interface",
+      "must_transition_to": ["harbor_dock_plank", "wharf_cobble_apron"]
+    }
+  ],
+  "cohesion_rules": [
+    "No large translucent road rectangles in normal gameplay proof.",
+    "Every building base must touch a lot material family.",
+    "Every road must connect to at least two destinations.",
+    "Every dock path must have a water/wood/stone transition.",
+    "Ground patches may be irregular, but not disconnected editor-looking slabs.",
+    "Props cannot be used to hide ground seams."
+  ],
+  "future_spikes": [
+    {"tool": "Material Maker", "decision": "SPIKE_ONLY", "reason": "Possible generated ground textures after material taxonomy is locked."},
+    {"tool": "Godot TileSet/TileMapLayer", "decision": "SPIKE_ONLY", "reason": "Possible structured replacement for hand-drawn ground patches after G-7A."}
+  ]
+}

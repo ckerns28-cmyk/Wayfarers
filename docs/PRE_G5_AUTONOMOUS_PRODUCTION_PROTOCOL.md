@@ -30,6 +30,31 @@ where applicable, validation evidence, Agent Council judgment, PR/merge
 evidence, and an authoritative row in the active execution ledger before its
 milestone gate can pass.
 
+## SV-0 Tooling Stack Gate
+
+Before continuing Starter Village production, SV-0 locks the free, safe
+production stack in `docs/roadmaps/STARTER_VILLAGE_TOOLING_STACK.md` and
+`docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json`.
+
+Future SV phases must use the locked SV-0 tooling stack where applicable:
+
+- the Godot-native world layout source of truth for districts, lots, roads,
+  paths, NPC routes, interaction zones, quest beats, and camera viewpoints,
+- data-driven quest/dialogue sources and validators for First Light,
+- built-in Godot movement/animation foundations plus route data before any
+  heavier behavior tooling,
+- screenshot visual-regression manifests as warnings that the council must
+  inspect, not as automatic art approval,
+- runtime movement proof for NPC/player motion phases,
+- command-line validators for quest, route, interaction, asset, and SV gates,
+- the existing asset contact-sheet/provenance pipeline,
+- the Godot-native ground/material cohesion stack.
+
+If a phase bypasses the locked stack or creates a new one-off production
+system, the Agent Council must explain why. If the bypass weakens validation,
+provenance, screenshot review, movement proof, or web/review safety, the phase
+must return `COUNCIL_FAIL_NEEDS_CODE_FIX`.
+
 ## Authority
 
 The Agent Council is the default QA and acceptance gate for ordinary pre-SV-1

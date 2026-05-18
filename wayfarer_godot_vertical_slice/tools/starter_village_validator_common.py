@@ -48,6 +48,14 @@ G10A_SCREENSHOT_MANIFEST = PROJECT_ROOT / "artifacts" / "review" / "g10a_runtime
 G10B_REPORT = REPO_ROOT / "docs" / "reports" / "G10B_MULTI_PATH_STARTER_CHOICE_FOUNDATION.md"
 G10B_COUNCIL_REPORT = REPO_ROOT / "docs" / "reports" / "G10B_MULTI_PATH_STARTER_CHOICE_AGENT_COUNCIL_REPORT.md"
 G10B_SCREENSHOT_MANIFEST = PROJECT_ROOT / "artifacts" / "review" / "g10b_runtime_screenshots" / "g10b_runtime_screenshot_manifest.json"
+SV0_REPORT = REPO_ROOT / "docs" / "reports" / "SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md"
+SV0_REPORT_JSON = REPO_ROOT / "docs" / "reports" / "SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json"
+SV0_TOOLING_ROADMAP = REPO_ROOT / "docs" / "roadmaps" / "STARTER_VILLAGE_TOOLING_STACK.md"
+SV0_VALIDATOR = PROJECT_ROOT / "tools" / "validate_sv0_tooling_stack.py"
+SV0_WORLD_LAYOUT = PROJECT_ROOT / "data" / "world_layout" / "starter_village_world_layout_v1.json"
+SV0_VISUAL_QA = PROJECT_ROOT / "data" / "visual_qa" / "starter_village_visual_regression_manifest_v1.json"
+SV0_MOVEMENT_PROOF = PROJECT_ROOT / "data" / "movement_proof" / "starter_village_movement_proof_manifest_v1.json"
+SV0_GROUND_STACK = PROJECT_ROOT / "data" / "ground_materials" / "starter_village_ground_material_stack_v1.json"
 QUEST_STATE_GD = PROJECT_ROOT / "scripts" / "QuestState.gd"
 FIRST_LIGHT_QUEST_GD = PROJECT_ROOT / "scripts" / "quests" / "FirstLightQuest.gd"
 FIRST_LIGHT_QUEST_JSON = PROJECT_ROOT / "data" / "quests" / "first_light_whispers_before_dawn.json"
@@ -71,6 +79,7 @@ ATELIER_NPC_GD = PROJECT_ROOT / "scenes" / "npc" / "AtelierTownNpc.gd"
 ATELIER_NPC_TSCN = PROJECT_ROOT / "scenes" / "npc" / "AtelierTownNpc.tscn"
 
 REQUIRED_PHASES = [
+    "SV-0",
     "G-7",
     "G-7A",
     "G-7B",

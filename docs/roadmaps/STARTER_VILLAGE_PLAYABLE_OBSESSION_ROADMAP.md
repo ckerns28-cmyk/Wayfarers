@@ -64,10 +64,16 @@ Ordinary roadmap-bound autonomous PRs before SV-1 are pre-authorized to merge
 when the autonomous merge rule in `AGENTS.md` and
 `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md` is satisfied.
 
+SV-0 now precedes renewed layout work. The Starter Village Tooling Stack locks
+the source-of-truth map schema, runtime movement proof, screenshot visual
+regression warnings, dialogue/quest authoring approach, asset cleanup workflow,
+and ground/material cohesion rules before G-7/G-7A continues.
+
 ## Phase Sequence
 
 | Phase | Title | Required Result |
 | --- | --- | --- |
+| SV-0 | Free Tooling Intake Production Stack Lock | Locks the free, safe production stack, authoritative world-layout source, visual QA warnings, movement proof, quest/dialogue authoring, asset cleanup, and ground-cohesion workflows. |
 | G-7 | Newport Living Origin Village Masterplan Lock | Defines the authored town grammar, districts, first route, opening quest locations, and NPC work/life routes. |
 | G-7A | Street, Lot, and Ground Cohesion Reconstruction | Rebuilds Newport into one coherent physical town with connected streets, real lots, unified materials, and no debug-like patchwork. |
 | G-7B | Harbor, Wharf, and Commercial Spine Cohesion | Makes the harbor the economic engine with purposeful work zones, connected commerce, and readable wharf movement. |
@@ -85,12 +91,13 @@ when the autonomous merge rule in `AGENTS.md` and
 | G-13 | Browser Build, Performance, and Regression Hardening | Hardens Godot import, vertical slice, screenshots, review build, input, performance, assets, and route stability. |
 | G-14 | SV-1 Starter Village Playable Obsession Gate | Produces the final review package and stops for Chris. |
 
-Current execution status after G-10B: First Light now has a playable opening
-arc, a runtime-backed Tavern/Inn rumor system, and a multi-path starter choice
-foundation. Counting-house, harbor-work, tavern-rumor, merchant-street, and
-optional secret routes can advance the opening mystery without relying on a
-single linear click path. G-11 is next and must make Newport feel alive between
-quest steps.
+Current execution status after G-10B and Chris screenshot QA: the next pass is
+SV-0, not more placement work. First Light has a playable opening arc, a
+runtime-backed Tavern/Inn rumor system, and a multi-path starter choice
+foundation, but screenshot evidence shows the review process still lets
+patchwork layout, mismatched buildings, false stable reads, and overlapping
+visual order escape. SV-0 locks the tooling and QA process before the next
+G-7/G-7A tool-backed layout repair continues.
 
 G-10A added a standing visual-order review gate after screenshot QA caught
 road/building order problems around the Tavern/Inn and commercial row. G-10B

@@ -216,6 +216,8 @@ def find_latest_screenshots(root: Path) -> list[Path]:
 
 def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
+    if normalized.startswith("SV-0"):
+        return "SV-0", "sv0"
     if normalized.startswith("G-10B"):
         return "G-10B", "g10b"
     if normalized.startswith("G-10A"):
@@ -327,6 +329,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_multi_path_starter_choice.py"
     )
+    sv0_tooling_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_sv0_tooling_stack.py"
+    )
     pre_g5_ledger_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_pre_g5_roadmap_ledger.py"
@@ -423,6 +429,44 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         ),
     ]
     normalized_phase = phase.upper().strip()
+    if normalized_phase.startswith("SV-0"):
+        return [
+            ValidatorCommand(
+                name="SV-0 Tooling Stack validation",
+                command_text=sv0_tooling_text,
+                args=[python_bin, str(game_root / "tools" / "validate_sv0_tooling_stack.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_sv0_tooling_stack.py"],
+            ),
+            ValidatorCommand(
+                name="Starter Village roadmap validation",
+                command_text=starter_village_roadmap_text,
+                args=[python_bin, str(game_root / "tools" / "validate_starter_village_roadmap.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_starter_village_roadmap.py"],
+            ),
+            ValidatorCommand(
+                name="Starter Village execution ledger validation",
+                command_text=starter_village_ledger_text,
+                args=[python_bin, str(game_root / "tools" / "validate_starter_village_execution_ledger.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_starter_village_execution_ledger.py"],
+            ),
+            ValidatorCommand(
+                name="git diff --check",
+                command_text="git diff --check",
+                args=["git", "diff", "--check"],
+                cwd=root,
+                required_paths=[],
+            ),
+            ValidatorCommand(
+                name="git diff --cached --check",
+                command_text="git diff --cached --check",
+                args=["git", "diff", "--cached", "--check"],
+                cwd=root,
+                required_paths=[],
+            ),
+        ]
     if normalized_phase.startswith("G-4.18E") or normalized_phase.startswith("G-4.20") or normalized_phase.startswith("G-4.21") or normalized_phase.startswith("G-4.22"):
         commands.insert(
             3,
@@ -476,6 +520,13 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     if normalized_phase.startswith(("G-7", "G-8", "G-9", "G-10", "G-11", "G-12", "G-13", "G-14")):
         diff_index = max(0, len(commands) - 2)
         starter_commands = [
+            ValidatorCommand(
+                name="SV-0 Tooling Stack validation",
+                command_text=sv0_tooling_text,
+                args=[python_bin, str(game_root / "tools" / "validate_sv0_tooling_stack.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_sv0_tooling_stack.py"],
+            ),
             ValidatorCommand(
                 name="Starter Village roadmap validation",
                 command_text=starter_village_roadmap_text,
@@ -614,6 +665,20 @@ def run_or_list_validators(commands: list[ValidatorCommand], should_run: bool) -
 def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
     game_root = root / "wayfarer_godot_vertical_slice"
     capture_label, capture_prefix = screenshot_prefix_for_phase(phase)
+    if phase.upper().strip().startswith("SV-0"):
+        required = [
+            ("SV-0 Tooling Stack report", root / "docs" / "reports" / "SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md"),
+            ("SV-0 Tooling Stack JSON", root / "docs" / "reports" / "SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json"),
+            ("SV-0 Tooling Stack roadmap", root / "docs" / "roadmaps" / "STARTER_VILLAGE_TOOLING_STACK.md"),
+            ("SV-0 Tooling Stack validator", game_root / "tools" / "validate_sv0_tooling_stack.py"),
+            ("SV-0 world layout source", game_root / "data" / "world_layout" / "starter_village_world_layout_v1.json"),
+            ("SV-0 visual QA manifest", game_root / "data" / "visual_qa" / "starter_village_visual_regression_manifest_v1.json"),
+            ("SV-0 movement proof manifest", game_root / "data" / "movement_proof" / "starter_village_movement_proof_manifest_v1.json"),
+            ("SV-0 ground material stack", game_root / "data" / "ground_materials" / "starter_village_ground_material_stack_v1.json"),
+            ("Starter Village roadmap", root / "docs" / "roadmaps" / "STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md"),
+            ("Starter Village execution ledger", root / "docs" / "reports" / "STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md"),
+        ]
+        return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
     required = [
         ("Vertical slice validator", game_root / "tools" / "validate_vertical_slice.gd"),
         (f"{capture_label} runtime screenshot wrapper", game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"),
@@ -924,6 +989,13 @@ def yes_no(value: bool) -> str:
     return "YES" if value else "NO"
 
 
+def phase_requires_screenshots(phase: str) -> bool:
+    normalized = phase.upper().strip()
+    if normalized.startswith("SV-0"):
+        return False
+    return True
+
+
 def final_pr_number(pr_state: dict[str, object], target_pr: int) -> str:
     target_pr_data = pr_state.get("target_pr")
     if isinstance(target_pr_data, dict) and target_pr_data.get("number"):
@@ -946,6 +1018,7 @@ def derive_authority_verdict(
     gameplay_readability_score: float,
     technical_stability_score: float,
     human_escalation_blocker: str,
+    phase: str,
 ) -> str:
     if requested_verdict:
         return requested_verdict
@@ -957,7 +1030,7 @@ def derive_authority_verdict(
         return AUTHORITY_FAIL
     if not all(status == "FOUND" for _, status, _ in paths):
         return AUTHORITY_FAIL
-    if not screenshots or screenshot_review != "inspected":
+    if phase_requires_screenshots(phase) and (not screenshots or screenshot_review != "inspected"):
         return AUTHORITY_FAIL
     phase_scores = [
         design_score,
@@ -1019,6 +1092,7 @@ def build_report(
         gameplay_readability_score=gameplay_readability_score,
         technical_stability_score=technical_stability_score,
         human_escalation_blocker=human_escalation_blocker,
+        phase=phase,
     )
     if known_449:
         final_verdict = AUTHORITY_FAIL
@@ -1046,7 +1120,10 @@ def build_report(
         ux_status = score_status(gameplay_readability_score)
         technical_artist_status = "FAIL" if technical_stability_score < 8.5 else "PASS"
 
-    screenshots_inspected = bool(screenshots) and screenshot_review == "inspected"
+    screenshots_required = phase_requires_screenshots(phase)
+    screenshots_inspected = (not screenshots_required and screenshot_review in {"not-applicable", "not_applicable", "missing", "not-inspected"}) or (
+        bool(screenshots) and screenshot_review == "inspected"
+    )
     meets_bar = min(
         design_score,
         art_direction_score,
@@ -1138,6 +1215,8 @@ def build_report(
     ]
     if phase.upper().strip().startswith("G-4.18E"):
         scrum_scope = "Scope check: this council pass produced a coherent G-4.18E asset family and controlled runtime placements; it must not scatter random props or hide layout problems."
+    elif phase.upper().strip().startswith("SV-0"):
+        scrum_scope = "Scope check: this SV-0 Tooling Stack gate locks free, safe production tooling, source-of-truth layout data, visual-regression warnings, runtime movement proof, asset cleanup, and ground cohesion before more Newport placement work."
     elif phase.upper().strip().startswith("G-4.19"):
         scrum_scope = "Scope check: this council pass replaces the drawn player placeholder with a directional runtime sprite foundation while preserving Newport layout, collision, camera, spawn, and interaction behavior."
     elif phase.upper().strip().startswith("G-4.20"):
@@ -1243,9 +1322,13 @@ def build_report(
         ["Primitive normal-play sign path", "MapLayer.gd _draw_g410_props", "G-4.22R validator requires no primitive sign posts in normal G410 props", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
     ]
     screenshot_inspection_rows = [
-        ["Screenshots found", str(len(screenshots)), "PASS" if screenshots else "FAIL"],
+        ["Screenshots found", str(len(screenshots)), "PASS" if screenshots or not screenshots_required else "FAIL"],
         ["Screenshot review flag", screenshot_review, "PASS" if screenshots_inspected else "FAIL"],
-        ["Debug overlays disabled proof", f"{screenshot_prefix_for_phase(phase)[1]}_14_debug_overlays_disabled.png", "PASS" if screenshots_inspected else "CHECK"],
+        [
+            "Debug overlays disabled proof",
+            f"{screenshot_prefix_for_phase(phase)[1]}_14_debug_overlays_disabled.png" if screenshots_required else "Not required for SV-0 docs/tooling gate",
+            "PASS" if screenshots_inspected else "CHECK",
+        ],
         ["Visible failures found/fixed", "Non-atelier player/NPC/marker placeholders replaced or hidden by G-4.22R", "PASS" if final_verdict == AUTHORITY_PASS else "CHECK"],
     ]
     north_star_rows = [
@@ -1407,6 +1490,20 @@ def build_report(
             "",
             md_table(["Discipline", "Score", "Status"], visual_bar_rows),
             "",
+            *(
+                [
+                    "## SV-0 Tooling Stack Result",
+                    "",
+                    "- Report: `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md`",
+                    "- Structured report: `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json`",
+                    "- Tooling roadmap: `docs/roadmaps/STARTER_VILLAGE_TOOLING_STACK.md`",
+                    "- Validator: `wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py`",
+                    "- Council rule: future SV phases must use the locked stack where applicable, including runtime movement proof and screenshot visual-regression warnings.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("SV-0")
+                else []
+            ),
             *(
                 [
                     "## G-8 Character Motion Result",
@@ -1719,7 +1816,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--authority-verdict", choices=AUTHORITY_VERDICTS, default="", help="Optional explicit final authority verdict after council review.")
     parser.add_argument(
         "--screenshot-review",
-        choices=["inspected", "not-inspected", "missing"],
+        choices=["inspected", "not-inspected", "missing", "not-applicable", "not_applicable"],
         default="not-inspected",
         help="Whether required screenshot evidence was inspected by the council.",
     )
