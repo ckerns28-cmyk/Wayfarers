@@ -1,0 +1,81 @@
+{
+  "schema_id": "wayfarer.opening_island.world_topology.v1",
+  "phase": "G-15",
+  "authoring_mode": "godot_native_repo_local_json",
+  "purpose": "Design the opening island as one authored playable region that extends Newport into exploration, mystery, and return momentum.",
+  "world_size": {"w": 2400, "h": 1600},
+  "north_star": "handcrafted fantasy/colonial harbor RPG opening island with MMORPG ambition",
+  "structure": [
+    {"id": "safe_village_core", "order": 1, "safety": "safe", "purpose": "Newport remains the orientation, social, quest, and return hub."},
+    {"id": "harbor_edge", "order": 2, "safety": "safe", "purpose": "The wharf road and east harbor gate teach the player how to leave town."},
+    {"id": "outskirts", "order": 3, "safety": "low_tension", "purpose": "Fence lines, service yards, and pasture lanes transition from settlement to island."},
+    {"id": "farms_pastures_service_lands", "order": 4, "safety": "low_tension", "purpose": "Human use of the island reads before wilderness begins."},
+    {"id": "wooded_paths", "order": 5, "safety": "uncertain", "purpose": "The old trail bends the view and hides the first mystery."},
+    {"id": "rocky_coast_cove", "order": 6, "safety": "uncertain", "purpose": "Shoreline, cove, and hidden landing support smuggling and missing-manifest clues."},
+    {"id": "old_road_signal_point_ruin_lookout", "order": 7, "safety": "danger_edge", "purpose": "A visible height goal gives the island a memorable silhouette and return landmark."},
+    {"id": "quest_destination", "order": 8, "safety": "danger_edge", "purpose": "The physical clue site proves the tavern whisper was real."},
+    {"id": "optional_secret", "order": 9, "safety": "hidden", "purpose": "A non-critical discovery enriches journal and suspicion without blocking the main route."},
+    {"id": "return_path", "order": 10, "safety": "safe_return", "purpose": "A loop carries the player back toward Newport without backtracking fatigue."}
+  ],
+  "zones": [
+    {"id": "newport_east_gate", "type": "settlement_threshold", "connects": ["waterfront_avenue_main", "outskirt_lane"], "read": "clear town exit with lantern, fence break, and harbor-road sign"},
+    {"id": "outskirt_lane", "type": "road", "connects": ["newport_east_gate", "pasture_crossing", "old_service_track"], "read": "dirt lane narrows from city stone into island soil"},
+    {"id": "pasture_crossing", "type": "farm_service", "connects": ["outskirt_lane", "wooded_switchback", "return_lane"], "read": "small farm/service outbuilding proves human use"},
+    {"id": "wooded_switchback", "type": "wooded_path", "connects": ["pasture_crossing", "signal_rise", "cove_descent"], "read": "trees compress the camera and turn the player toward mystery"},
+    {"id": "signal_rise", "type": "overlook", "connects": ["wooded_switchback", "old_road_marker", "quest_clue_site"], "read": "harbor overlook or signal point visible from town exit and return path"},
+    {"id": "old_road_marker", "type": "ruin_marker", "connects": ["signal_rise", "quest_clue_site", "optional_secret_cache"], "read": "old road marker ties the island to a prior power"},
+    {"id": "cove_descent", "type": "coastal_path", "connects": ["wooded_switchback", "hidden_landing", "return_lane"], "read": "rocky coast or cove path with blocked water edge"},
+    {"id": "hidden_landing", "type": "cove", "connects": ["cove_descent", "quest_clue_site"], "read": "wharf remnant or hidden landing supports the missing manifest clue"},
+    {"id": "quest_clue_site", "type": "quest_destination", "connects": ["signal_rise", "old_road_marker", "hidden_landing", "return_lane"], "read": "physical evidence site for Whispers Before Dawn"},
+    {"id": "optional_secret_cache", "type": "optional_secret", "connects": ["old_road_marker"], "read": "optional discovery enriches the journal but does not block progression"},
+    {"id": "return_lane", "type": "return_path", "connects": ["quest_clue_site", "cove_descent", "pasture_crossing", "newport_east_gate"], "read": "visible return landmark leads back toward the village"}
+  ],
+  "primary_routes": [
+    {"id": "village_to_signal_route", "beats": ["newport_east_gate", "outskirt_lane", "pasture_crossing", "wooded_switchback", "signal_rise"], "purpose": "First authored route out of town; ends at the visible signal/overlook."},
+    {"id": "signal_to_clue_route", "beats": ["signal_rise", "old_road_marker", "quest_clue_site"], "purpose": "Converts mystery into physical evidence."},
+    {"id": "cove_loop_route", "beats": ["wooded_switchback", "cove_descent", "hidden_landing", "quest_clue_site", "return_lane"], "purpose": "Optional coastal loop creates exploration without empty sprawl."},
+    {"id": "return_to_newport_route", "beats": ["quest_clue_site", "return_lane", "pasture_crossing", "newport_east_gate"], "purpose": "Clean return/report path after the clue."}
+  ],
+  "exploration_loops": [
+    {"id": "starter_island_main_loop", "entry": "newport_east_gate", "turning_point": "quest_clue_site", "return": "return_lane", "optional_branch": "hidden_landing"},
+    {"id": "old_road_secret_loop", "entry": "signal_rise", "turning_point": "optional_secret_cache", "return": "old_road_marker", "optional_branch": "quest_clue_site"}
+  ],
+  "landmarks": [
+    {"id": "harbor_overlook_signal_point", "zone": "signal_rise", "visible_from": ["newport_east_gate", "return_lane"], "quest_role": "first long-view island goal"},
+    {"id": "old_road_marker", "zone": "old_road_marker", "visible_from": ["signal_rise"], "quest_role": "ties coded whisper to island history"},
+    {"id": "hidden_landing", "zone": "hidden_landing", "visible_from": ["cove_descent"], "quest_role": "missing manifest smuggling clue"},
+    {"id": "return_landmark", "zone": "pasture_crossing", "visible_from": ["quest_clue_site", "return_lane"], "quest_role": "guides return to Newport"}
+  ],
+  "quest_beats": [
+    {"id": "island_lead", "source": "tavern_or_counting_house_or_harbor", "target_zone": "newport_east_gate"},
+    {"id": "threshold_mystery", "source": "newport_east_gate", "target_zone": "wooded_switchback"},
+    {"id": "coded_whisper_confirmed", "source": "old_road_marker", "target_zone": "quest_clue_site"},
+    {"id": "physical_evidence_found", "source": "quest_clue_site", "target_zone": "return_lane"},
+    {"id": "optional_journal_enrichment", "source": "optional_secret_cache", "target_zone": "return_lane"},
+    {"id": "return_or_report_choice", "source": "return_lane", "target_zone": "newport_east_gate"}
+  ],
+  "screenshot_viewpoints": [
+    {"id": "07_village_exit_to_island", "zone": "newport_east_gate", "purpose": "prove readable town exit"},
+    {"id": "08_island_entry_transition", "zone": "outskirt_lane", "purpose": "prove settlement-to-island boundary"},
+    {"id": "09_island_main_trail", "zone": "wooded_switchback", "purpose": "prove main trail readability"},
+    {"id": "10_island_landmark_signal_or_overlook", "zone": "signal_rise", "purpose": "prove landmark destination"},
+    {"id": "11_island_cove_or_hidden_landing", "zone": "hidden_landing", "purpose": "prove coastal/cove POI"},
+    {"id": "12_island_optional_discovery", "zone": "optional_secret_cache", "purpose": "prove optional secret"},
+    {"id": "17_return_to_town_or_next_hook", "zone": "return_lane", "purpose": "prove return momentum"}
+  ],
+  "terrain_rules": [
+    "No patchwork terrain.",
+    "Roads and trails must lead somewhere.",
+    "Grass, dirt, stone, shore, and water transitions must follow route purpose.",
+    "Blocked space must be visually obvious before collision.",
+    "Props support function and cannot hide layout problems."
+  ],
+  "g15_acceptance": {
+    "island_reads_as_one_authored_place": true,
+    "player_understands_how_to_leave_town_and_explore": true,
+    "routes_loop_naturally": true,
+    "no_patchwork_terrain": true,
+    "no_meaningless_empty_sprawl": true,
+    "world_layout_score": 8.6
+  }
+}
