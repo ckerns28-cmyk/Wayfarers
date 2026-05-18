@@ -1,0 +1,70 @@
+{
+  "schema_id": "wayfarer.g18a.multipath_rumor_choice_report.v1",
+  "phase_id": "G-18A",
+  "phase_name": "Multi-Path Rumor and Choice Foundation",
+  "branch": "codex/g-18a-multipath-rumor-choice-foundation",
+  "commits": [
+    "pending"
+  ],
+  "implementing_prs": [
+    "pending"
+  ],
+  "merge_status": "pending",
+  "status": "PASS",
+  "human_review_required": false,
+  "reason_human_review_not_required": "G-18A is an ordinary autonomous OVI-1 runway phase. It hardens village-to-island agency and does not stop for Chris unless a true blocker occurs.",
+  "working_title": "Whispers Before Dawn",
+  "north_star_guardrail": "Production-playable never means merely functional. G-18A is judged on whether Newport feels like a social RPG origin where rumors, labor, official pressure, and optional island discovery change the player's route and momentum.",
+  "source_files": [
+    "wayfarer_godot_vertical_slice/data/quests/first_light_whispers_before_dawn.json",
+    "wayfarer_godot_vertical_slice/data/quests/whispers_before_dawn_multipath_rumor_choice_v1.json",
+    "wayfarer_godot_vertical_slice/scripts/quests/FirstLightQuest.gd",
+    "wayfarer_godot_vertical_slice/scenes/Main.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g18a_multipath_choice_proof.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g18a_multipath_choice_proof.gd.uid",
+    "wayfarer_godot_vertical_slice/tools/capture_g18a_multipath_choice_proof.ps1",
+    "wayfarer_godot_vertical_slice/tools/validate_multipath_rumor_choice_foundation.py",
+    "tools/wayfarer_agent_council.py"
+  ],
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g18a_runtime_screenshots/g18a_runtime_screenshot_manifest.json",
+  "screenshots": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g18a_runtime_screenshots/g18a_01_counting_house_path.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g18a_runtime_screenshots/g18a_02_tavern_rumor_path.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g18a_runtime_screenshots/g18a_03_dockworker_harbor_path.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g18a_runtime_screenshots/g18a_04_optional_island_clue_path.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g18a_runtime_screenshots/g18a_05_return_report_choice.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g18a_runtime_screenshots/g18a_06_branch_contract_journal.png"
+  ],
+  "quest_branch_log": "wayfarer_godot_vertical_slice/artifacts/review/g18a_quest_branch_proof/multipath_branch_log.md",
+  "quest_branch_trace": "wayfarer_godot_vertical_slice/artifacts/review/g18a_quest_branch_proof/multipath_branch_trace.json",
+  "quest_branch_screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g18a_quest_branch_proof/multipath_branch_screenshot_manifest.json",
+  "required_paths": [
+    "counting_house_path",
+    "tavern_rumor_path",
+    "dockworker_harbor_path",
+    "optional_island_clue_path"
+  ],
+  "acceptance": {
+    "player_agency_exists": true,
+    "quest_state_supports_branching": true,
+    "two_npcs_can_advance_main_thread": true,
+    "optional_discovery_enriches_journal": true,
+    "choice_changes_dialogue_route_or_next_objective_text": true,
+    "no_broken_branches": true,
+    "no_unclear_progression": true,
+    "review_capture_hud_journal_visible": true,
+    "debug_overlays_disabled": true
+  },
+  "design_score": 8.6,
+  "world_layout_score": 8.6,
+  "art_direction_score": 8.6,
+  "quest_narrative_score": 8.6,
+  "ux_readability_score": 8.6,
+  "technical_stability_score": 8.7,
+  "validation_results": "PASS: G-18A runtime multi-path branch proof regenerates six screenshots, branch trace, screenshot manifest, and branch log. PASS: multi-path rumor choice, opening quest village-to-island, starter multi-path, opening quest arc, tavern whisper system, OVI roadmap, OVI ledger, interaction UX, first-session playability, runtime atelier consistency, Python compile, validate_vertical_slice.gd, git diff checks, and Agent Council.",
+  "provenance_atelier_result": "PASS",
+  "north_star_result": "PASS",
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "agent_council_report_path": "docs/reports/G18A_MULTIPATH_RUMOR_CHOICE_AGENT_COUNCIL_REPORT.md",
+  "next_phase": "G-19 Player Guidance, Map, Journal, and Interaction Polish"
+}

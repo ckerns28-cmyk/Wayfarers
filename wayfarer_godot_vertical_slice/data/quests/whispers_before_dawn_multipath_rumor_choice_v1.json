@@ -1,0 +1,71 @@
+{
+  "schema_id": "wayfarer.quest.whispers_before_dawn_multipath_rumor_choice.v1",
+  "phase": "G-18A",
+  "working_title": "Whispers Before Dawn",
+  "purpose": "The village-to-island opening must feel like an RPG investigation, not a single railroaded click path. Counting-house pressure, tavern rumor, harbor work, and optional island clue discovery all need to advance or enrich the main thread.",
+  "runtime_contract": "FirstLightQuest.debug_village_to_island_multipath_choice_contract",
+  "main_contract": "Main.opening_village_to_island_multipath_choice_contract",
+  "screenshot_manifest": "res://artifacts/review/g18a_runtime_screenshots/g18a_runtime_screenshot_manifest.json",
+  "branch_trace": "res://artifacts/review/g18a_quest_branch_proof/multipath_branch_trace.json",
+  "required_paths": [
+    {
+      "id": "counting_house_path",
+      "start": "Edrin Vale confirms the missing manifest line and frames the investigation as official pressure.",
+      "events": ["edrin", "mara", "bess", "edrin", "isla", "tomas", "edrin"],
+      "expected_state": "old_road_farm_path or hidden_landing_harbor_path opens from town pressure into island evidence",
+      "player_value": "The player can begin as a clerk/investigator and still reach island proof."
+    },
+    {
+      "id": "tavern_rumor_path",
+      "start": "Bess Armitage makes the Third Toast a social password before the road opens.",
+      "events": ["bess", "elias", "tomas", "annelise"],
+      "expected_state": "coded_old_road_path turns tavern speech into island direction",
+      "player_value": "The player can trust rumor culture instead of needing the official route first."
+    },
+    {
+      "id": "dockworker_harbor_path",
+      "start": "Mara Pike and Jonah Reed let harbor labor expose the missing line and lantern signal.",
+      "events": ["edrin", "mara", "bess", "jonah", "isla", "tomas", "edrin"],
+      "expected_state": "hidden_landing_harbor_path links wharf work to physical cove evidence",
+      "player_value": "The player can follow working-harbor knowledge into the island clue."
+    },
+    {
+      "id": "optional_island_clue_path",
+      "start": "Mara Oren turns the signal rise into an optional clue that changes the journal without blocking progress.",
+      "events": ["bess", "elias", "mara_oren", "tomas", "annelise"],
+      "expected_state": "signal_cache_optional_path and optional_clue_enriched_journal become true",
+      "player_value": "The player who explores gets a richer read of the conspiracy, not just the same quest text."
+    }
+  ],
+  "minimums": {
+    "minimum_advancement_npcs": 2,
+    "minimum_distinct_route_choices": 3,
+    "requires_optional_journal_enrichment": true,
+    "requires_return_or_report_choice": true
+  },
+  "choice_effect_flags": [
+    "island_route_choice",
+    "island_route_choice_locked",
+    "optional_clue_enriched_journal",
+    "return_report_route_choice"
+  ],
+  "dialogue_and_objective_effects": [
+    "Elias Ward changes the route language to the coded old-road marker.",
+    "Mara Oren changes the route language to the signal cache and adds a journal enrichment.",
+    "Tomas Reed changes the route language to the hidden landing harbor path.",
+    "Annelise Crow changes the return/report route choice before the town handoff."
+  ],
+  "acceptance": {
+    "player_agency_exists": true,
+    "quest_state_supports_branching": true,
+    "two_npcs_can_advance_main_thread": true,
+    "optional_discovery_enriches_journal": true,
+    "choice_changes_dialogue_route_or_next_objective_text": true,
+    "no_broken_branches": true,
+    "no_unclear_progression": true,
+    "design_score": 8.6,
+    "quest_narrative_score": 8.6,
+    "ux_readability_score": 8.6
+  },
+  "north_star_note": "G-18A preserves Newport as a social origin point for a larger pre-Revolutionary island mystery. The player should feel like they are following people, rumors, labor, and geography instead of completing a mechanical checklist."
+}

@@ -311,7 +311,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     normalized_capture_phase = phase.upper().strip()
     capture_script_name = f"capture_{capture_prefix}_runtime_screenshots.ps1"
     capture_artifact_dir = f"{capture_prefix}_runtime_screenshots"
-    if normalized_capture_phase.startswith("G-18") and not normalized_capture_phase.startswith("G-18A"):
+    if normalized_capture_phase.startswith("G-18A"):
+        capture_script_name = "capture_g18a_multipath_choice_proof.ps1"
+        capture_artifact_dir = "g18a_runtime_screenshots"
+    elif normalized_capture_phase.startswith("G-18"):
         capture_script_name = "capture_g18_quest_playthrough.ps1"
         capture_artifact_dir = "g18_runtime_screenshots"
     capture_ps1 = game_root / "tools" / capture_script_name
@@ -1253,7 +1256,10 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
         return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
     required_capture_script_name = f"capture_{capture_prefix}_runtime_screenshots"
     required_capture_label = f"{capture_label} runtime screenshot"
-    if phase.upper().strip().startswith("G-18") and not phase.upper().strip().startswith("G-18A"):
+    if phase.upper().strip().startswith("G-18A"):
+        required_capture_script_name = "capture_g18a_multipath_choice_proof"
+        required_capture_label = f"{capture_label} multi-path choice proof"
+    elif phase.upper().strip().startswith("G-18"):
         required_capture_script_name = "capture_g18_quest_playthrough"
         required_capture_label = f"{capture_label} quest playthrough capture"
     required = [
@@ -1517,7 +1523,26 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
         if phase.upper().strip().startswith("G-18A"):
             required.extend(
                 [
+                    ("G-18A multi-path rumor choice source", game_root / "data" / "quests" / "whispers_before_dawn_multipath_rumor_choice_v1.json"),
                     ("G-18A multi-path rumor choice validator", game_root / "tools" / "validate_multipath_rumor_choice_foundation.py"),
+                    ("G-18A phase report", root / "docs" / "reports" / "G18A_MULTIPATH_RUMOR_CHOICE_FOUNDATION.md"),
+                    ("G-18A phase report JSON", root / "docs" / "reports" / "G18A_MULTIPATH_RUMOR_CHOICE_FOUNDATION.json"),
+                    (
+                        "G-18A runtime screenshot manifest",
+                        game_root / "artifacts" / "review" / "g18a_runtime_screenshots" / "g18a_runtime_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-18A multi-path branch trace",
+                        game_root / "artifacts" / "review" / "g18a_quest_branch_proof" / "multipath_branch_trace.json",
+                    ),
+                    (
+                        "G-18A multi-path branch screenshot manifest",
+                        game_root / "artifacts" / "review" / "g18a_quest_branch_proof" / "multipath_branch_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-18A multi-path branch log",
+                        game_root / "artifacts" / "review" / "g18a_quest_branch_proof" / "multipath_branch_log.md",
+                    ),
                 ]
             )
         elif phase.upper().strip().startswith("G-18"):
@@ -2390,6 +2415,22 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-11")
+                else []
+            ),
+            *(
+                [
+                    "## G-18A Multi-Path Rumor and Choice Result",
+                    "",
+                    f"Narrative/gameplay hook score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime screenshots inspected: G-18A proof frames show counting-house pressure, tavern-rumor direction, dockworker/harbor evidence, optional signal-cache discovery, return/report choice, and the branch contract journal state.",
+                    "",
+                    "- G-18A accepted proof: Whispers Before Dawn can advance into the island through counting-house, tavern, harbor, and optional island clue routes without reducing Newport's mystery to one railroaded path.",
+                    "",
+                    "- QA guardrail: the council must fail if any branch has unclear progression, unchanged route state, missing optional journal enrichment, debug-looking proof, or merely functional checklist play.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-18A")
                 else []
             ),
             *(
