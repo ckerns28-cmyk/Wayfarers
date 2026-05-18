@@ -23,6 +23,7 @@
 - [ ] G-4.21A extraction validation when Newport core building pipeline could be affected.
 - [ ] Screenshot capture/PNG verification for visual passes.
 - [ ] Capture log check for screenshot passes.
+- [ ] G-5 migration architecture validator when the PR touches migration planning or post-G-5 roadmap direction.
 - [ ] `git diff --check`.
 - [ ] `git diff --cached --check`.
 

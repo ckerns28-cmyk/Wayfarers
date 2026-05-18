@@ -2155,6 +2155,23 @@ Design how future gameplay systems will move from the JavaScript codebase to
 Godot. This is a planning phase, not a porting phase. It may begin only after
 G-4.22 accepts the 8.0+ origin city visual foundation review gate.
 
+Current G-5 result: the migration architecture is defined as a planning-only
+bridge from the JavaScript Phase 35.13R Worker route to the accepted Godot
+Newport runtime. The Worker remains the production/reference route; no
+production hosting or gameplay cutover occurs in G-5. The architecture package
+maps movement/camera/zone, interaction/dialogue/quest, inventory/equipment/
+economy, combat/enemy/loot/progression, save/load/persistence, world objects/
+dungeons, UI/HUD/Chronicle feedback, deployment/QA, and multiplayer-boundary
+systems to future Godot service owners. Save compatibility and golden Worker
+fixtures are ordered before quest, combat, inventory, reward, dungeon, or
+cutover work. The G-5 package consists of
+`docs/reports/G5_MIGRATION_ARCHITECTURE.md`,
+`docs/reports/G5_MIGRATION_ARCHITECTURE.json`,
+`docs/reports/G5_MIGRATION_ARCHITECTURE_AGENT_COUNCIL_REPORT.md`, and
+`wayfarer_godot_vertical_slice/tools/validate_g5_migration_architecture.py`.
+The Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`; the next roadmap
+phase is G-6 Production Cutover Planning.
+
 ## G-6: Production Cutover Planning
 
 Define the eventual production-hosting decision, rollback plan, QA gates, and

@@ -264,3 +264,24 @@ must not replace the live JavaScript site. Until that pass is approved,
 - [ ] Visit the published `https://wayfarers-godot-slice.pages.dev` (or equivalent preview URL) and confirm: canvas renders, player walks, Edrin Vale prompt appears, F3 toggles the debug overlay.
 - [ ] Confirm the existing JavaScript site served by the `wayfarers` Worker is still unchanged (no visual or behavioral regression at the production URL).
 
+## S. G-5 Migration Architecture
+
+G-5 is a planning architecture phase. It must not replace the JavaScript Worker
+route or port gameplay systems by copying Worker code into Godot scene scripts.
+
+### A. Architecture package
+- [ ] `docs/reports/G5_MIGRATION_ARCHITECTURE.md` exists and states G-5 is planning-only.
+- [ ] `docs/reports/G5_MIGRATION_ARCHITECTURE.json` includes all required migration system rows.
+- [ ] `docs/reports/G5_MIGRATION_ARCHITECTURE_AGENT_COUNCIL_REPORT.md` records `COUNCIL_PASS_READY_FOR_PR`.
+- [ ] `wayfarer_godot_vertical_slice/tools/validate_g5_migration_architecture.py` reports `PASS`.
+
+### B. Worker reference protection
+- [ ] The JavaScript Worker route remains the production/reference route.
+- [ ] `wayfarer_v7_github_ready/worker/src/index.js` remains source evidence, not copied gameplay port material.
+- [ ] G-6 is still required before any production route replacement.
+
+### C. Migration readiness
+- [ ] Golden Worker save fixtures are listed as the first implementation dependency.
+- [ ] Save compatibility bridge is ordered before quest, combat, inventory, reward, dungeon, or cutover work.
+- [ ] Movement/camera/zone, interaction/dialogue/quest, inventory/equipment/economy, combat/enemy/loot/progression, save/load/persistence, world objects/dungeons, UI/HUD/Chronicle, and deployment/QA systems all have future Godot owners and validation gates.
+- [ ] Future player-facing migration work still requires screenshot proof and Agent Council inspection.
