@@ -254,7 +254,7 @@
       "primary_validators": [
         "validate_interaction_ux.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-9A",

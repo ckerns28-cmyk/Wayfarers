@@ -17,6 +17,10 @@ const PLAYER_GROUND_SHADOW_SIZE := Vector2(34.0, 8.0)
 const PLAYER_GROUND_SHADOW_ALPHA := 0.17
 const PLAYER_WALK_ANIMATION_FPS := 7.0
 const PLAYER_MOVEMENT_SPEED_SYNC := 185.0
+const G9_INTERACTION_UX_PASS := "G-9"
+const PROMPT_MAX_WIDTH := 160.0
+const PROMPT_FONT_SIZE := 12
+const PROMPT_STYLE := "compact_diegetic_action_name_no_debug_marker"
 const PLAYER_DIRECTIONS := ["down", "up", "left", "right"]
 const PLAYER_FRAME_VARIANTS := ["idle", "walk_a", "walk_b"]
 const PLAYER_MOTION_STATE_NAMES := [
@@ -52,13 +56,16 @@ func _ready() -> void:
 	prompt_label.z_as_relative = false
 	prompt_label.z_index = 100
 	prompt_label.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	prompt_label.offset_left = -92.0
-	prompt_label.offset_top = -72.0
-	prompt_label.offset_right = 92.0
+	prompt_label.offset_left = -PROMPT_MAX_WIDTH * 0.5
+	prompt_label.offset_top = -66.0
+	prompt_label.offset_right = PROMPT_MAX_WIDTH * 0.5
 	prompt_label.offset_bottom = -50.0
 	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	prompt_label.clip_text = false
-	prompt_label.add_theme_font_size_override("font_size", 15)
+	prompt_label.add_theme_font_size_override("font_size", PROMPT_FONT_SIZE)
+	prompt_label.add_theme_color_override("font_color", Color(0.98, 0.86, 0.58, 0.96))
+	prompt_label.add_theme_color_override("font_outline_color", Color(0.055, 0.035, 0.018, 0.94))
+	prompt_label.add_theme_constant_override("outline_size", 2)
 
 func _physics_process(_delta: float) -> void:
 	var input := _movement_axis()
@@ -105,6 +112,17 @@ func character_motion_contract() -> Dictionary:
 		"movement_speed_synced_to_animation": absf(speed - PLAYER_MOVEMENT_SPEED_SYNC) < 0.01,
 		"walk_animation_fps": PLAYER_WALK_ANIMATION_FPS,
 		"pause_behavior": "idle state holds the last facing direction when movement input stops",
+	}
+
+func prompt_ux_contract() -> Dictionary:
+	return {
+		"phase": G9_INTERACTION_UX_PASS,
+		"style": PROMPT_STYLE,
+		"max_width": PROMPT_MAX_WIDTH,
+		"font_size": PROMPT_FONT_SIZE,
+		"forbidden_prefix": "Press E",
+		"normal_play_debug_marker_free": true,
+		"targeting_rule": "nearest_interactable_with_compact_action_name_copy",
 	}
 
 func _configure_ground_shadow() -> void:

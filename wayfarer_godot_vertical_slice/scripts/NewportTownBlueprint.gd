@@ -40,6 +40,8 @@ const STARTER_VILLAGE_G7C_ART_WORLD_SCORE := 8.5
 const STARTER_VILLAGE_G8A_LIVING_NPC_POPULATION_PASS := "G-8A"
 const STARTER_VILLAGE_G8A_NPC_POPULATION_SCORE := 8.5
 const STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY := "stationary_work_pose_until_dedicated_walk_sheets"
+const STARTER_VILLAGE_G9_INTERACTION_UX_PASS := "G-9"
+const STARTER_VILLAGE_G9_UX_SCORE := 8.5
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -842,6 +844,14 @@ static func starter_district_plan() -> Dictionary:
 			"movement_policy": STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY,
 			"placement_rule": "NPCs must be named, stationed in a district, tied to a route intent, and never glide as static cutouts.",
 			"opening_theme_support": "tavern whispers, harbor labor, counting-house pressure, market gossip, and optional secret-path clues",
+		},
+		"g9_interaction_ux_contract": {
+			"phase": STARTER_VILLAGE_G9_INTERACTION_UX_PASS,
+			"target_score_this_phase": STARTER_VILLAGE_G9_UX_SCORE,
+			"prompt_style": "compact_diegetic_action_name_no_debug_marker",
+			"required_prompt_forms": ["E: Enter - Harbor Mercantile", "E: Talk - Edrin Vale", "E: Talk - Bess Armitage", "E: Inspect - Dock Storehouse"],
+			"objective_guidance": "Find Edrin Vale at the Counting House; then follow the tavern whisper.",
+			"forbidden_normal_play_markers": ["debug boxes", "Press E to in-world prompt copy", "oversized labels", "primitive quest markers"],
 		},
 		"movement_loop": [
 			"waterfront_avenue",

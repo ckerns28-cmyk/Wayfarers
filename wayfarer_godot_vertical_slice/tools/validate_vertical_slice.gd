@@ -113,6 +113,7 @@ func _validate_scene(main: Node) -> void:
 	_validate_g422_visual_foundation_review_gate(hud)
 	_validate_review_screenshot_mode(main, hud)
 	_validate_building_entity_contract(player, hud)
+	_validate_g9_interaction_ux_foundation(main, player, hud)
 	_validate_g414a_street_wall_curb_datum()
 	_validate_starter_harbor_plan()
 	_validate_g415_layout_rules()
@@ -547,6 +548,66 @@ func _validate_g8a_living_npc_population() -> void:
 	for required_name in ["Edrin Vale", "Bess Armitage", "Mara Pike", "Honor Finch", "Nora Vale", "Silas Crowe"]:
 		_expect(names.has(required_name), "g8a_population_name_" + required_name.replace(" ", "_").to_lower())
 
+func _validate_g9_interaction_ux_foundation(main: Node, player: CharacterBody2D, hud: CanvasLayer) -> void:
+	var blueprint_source := FileAccess.get_file_as_string("res://scripts/NewportTownBlueprint.gd")
+	_expect(blueprint_source.find("STARTER_VILLAGE_G9_INTERACTION_UX_PASS") >= 0, "g9_blueprint_interaction_ux_pass")
+	_expect(blueprint_source.find("g9_interaction_ux_contract") >= 0, "g9_blueprint_interaction_ux_contract")
+	_expect(blueprint_source.find("compact_diegetic_action_name_no_debug_marker") >= 0, "g9_blueprint_compact_prompt_style")
+	if player == null:
+		return
+	_expect(player.has_method("prompt_ux_contract"), "g9_player_prompt_ux_contract_api")
+	var prompt_label := player.get_node_or_null("PromptLabel") as Label
+	_expect(prompt_label != null, "g9_prompt_label_exists")
+	if prompt_label:
+		_expect(prompt_label.get_theme_font_size("font_size") <= 14, "g9_prompt_label_compact_font")
+		_expect((prompt_label.offset_right - prompt_label.offset_left) <= 176.0, "g9_prompt_label_compact_width")
+	if player.has_method("prompt_ux_contract"):
+		var prompt_contract: Dictionary = player.call("prompt_ux_contract") as Dictionary
+		_expect(String(prompt_contract.get("phase", "")) == "G-9", "g9_prompt_contract_phase")
+		_expect(bool(prompt_contract.get("normal_play_debug_marker_free", false)) == true, "g9_prompt_contract_no_debug_marker")
+		_expect(String(prompt_contract.get("style", "")).find("compact_diegetic") >= 0, "g9_prompt_contract_style")
+	var hud_contract: Dictionary = {}
+	if hud and hud.has_method("interaction_ux_contract"):
+		var raw_hud_contract: Variant = hud.call("interaction_ux_contract")
+		if raw_hud_contract is Dictionary:
+			hud_contract = raw_hud_contract
+	_expect(not hud_contract.is_empty(), "g9_hud_interaction_ux_contract")
+	if not hud_contract.is_empty():
+		_expect(String(hud_contract.get("phase", "")) == "G-9", "g9_hud_contract_phase")
+		_expect(bool(hud_contract.get("quest_panel_names_first_goal", false)) == true, "g9_hud_names_first_goal")
+		_expect(bool(hud_contract.get("quest_panel_names_tavern_whisper", false)) == true, "g9_hud_names_tavern_whisper")
+	var mercantile := main.get_node_or_null("World/b_mercantile") as Node2D
+	var tavern := main.get_node_or_null("World/b_inn_tavern") as Node2D
+	var storehouse := main.get_node_or_null("World/b_dock_storehouse") as Node2D
+	var edrin := main.get_node_or_null("World/EdrinVale") as Node2D
+	var bess := main.get_node_or_null("World/bess_armitage_tavern_keeper") as Node2D
+	_validate_g9_prompt_for_target(player, mercantile, "E: Enter - Harbor Mercantile", "mercantile")
+	_validate_g9_prompt_for_target(player, tavern, "E: Enter - Inn & Tavern", "tavern")
+	_validate_g9_prompt_for_target(player, storehouse, "E: Inspect - Dock Storehouse", "dock_storehouse")
+	_validate_g9_prompt_for_target(player, edrin, "E: Talk - Edrin Vale", "edrin")
+	_validate_g9_prompt_for_target(player, bess, "E: Talk - Bess Armitage", "bess")
+
+func _validate_g9_prompt_for_target(player: CharacterBody2D, target: Node2D, expected_text: String, label: String) -> void:
+	_expect(target != null, "g9_prompt_target_" + label)
+	if target == null:
+		return
+	var prompt_label := player.get_node_or_null("PromptLabel") as Label
+	_expect(prompt_label != null, "g9_prompt_label_for_" + label)
+	if prompt_label == null:
+		return
+	var target_position := target.global_position
+	if target.has_method("get_interaction_position"):
+		var raw_position: Variant = target.call("get_interaction_position")
+		if raw_position is Vector2:
+			target_position = raw_position
+	player.global_position = target_position
+	if player.has_method("_update_interaction_target"):
+		player.call("_update_interaction_target")
+	_expect(prompt_label.visible, "g9_prompt_visible_" + label)
+	_expect(prompt_label.text == expected_text, "g9_prompt_copy_" + label)
+	_expect(prompt_label.text.find("Press E") < 0, "g9_prompt_no_press_e_" + label)
+	_expect(prompt_label.text.length() <= 30, "g9_prompt_length_" + label)
+
 func _validate_g419_player_identity_foundation() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json")
 	_expect(not manifest.is_empty(), "g419_player_manifest_json")
@@ -608,7 +669,7 @@ func _validate_g420_hud_ui_visual_redesign(hud: CanvasLayer) -> void:
 	_expect(objective_label != null and not objective_label.visible, "g420_hud_objective_hidden_default")
 	_expect(health_bar != null and not health_bar.show_percentage and health_bar.value > 0.0, "g420_hud_health_bar_contract")
 	_expect(resolve_bar != null and not resolve_bar.show_percentage and resolve_bar.value > 0.0, "g420_hud_resolve_bar_contract")
-	_expect(quest_body != null and quest_body.text.find("counting house") >= 0, "g420_hud_player_facing_objective")
+	_expect(quest_body != null and quest_body.text.to_lower().find("counting house") >= 0, "g420_hud_player_facing_objective")
 	if hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
 		_expect(["G-4.20", "G-4.21", "G-4.22", "G-4.22R"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")

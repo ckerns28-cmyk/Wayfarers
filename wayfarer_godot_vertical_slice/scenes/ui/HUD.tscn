@@ -117,12 +117,12 @@ text = "First Light"
 
 [node name="QuestBody" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 13
-text = "Make landfall, find the counting house, and listen for work by the harbor."
+text = "Find Edrin Vale at the Counting House; then follow the tavern whisper."
 autowrap_mode = 3
 
 [node name="QuestRegion" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 11
-text = "Newport - Harbor Ward"
+text = "Newport Harbor - Counting House to Tavern"
 
 [node name="DialoguePanel" type="PanelContainer" parent="."]
 offset_left = 400.0

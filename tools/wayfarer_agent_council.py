@@ -216,6 +216,8 @@ def find_latest_screenshots(root: Path) -> list[Path]:
 
 def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
+    if normalized.startswith("G-9"):
+        return "G-9", "g9"
     if normalized.startswith("G-8A"):
         return "G-8A", "g8a"
     if normalized.startswith("G-8"):
@@ -296,6 +298,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     npc_population_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_npc_population_and_routes.py"
+    )
+    interaction_ux_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_interaction_ux.py"
     )
     pre_g5_ledger_text = (
         f"& {powershell_quote(python_bin)} "
@@ -488,6 +494,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     args=[python_bin, str(game_root / "tools" / "validate_npc_population_and_routes.py")],
                     cwd=root,
                     required_paths=[game_root / "tools" / "validate_npc_population_and_routes.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-9"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Interaction UX validation",
+                    command_text=interaction_ux_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_interaction_ux.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_interaction_ux.py"],
                 ),
             )
         commands[diff_index:diff_index] = starter_commands
@@ -713,6 +730,21 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ),
                 ("G-8A generic town NPC script", game_root / "scenes" / "npc" / "AtelierTownNpc.gd"),
                 ("G-8A generic town NPC scene", game_root / "scenes" / "npc" / "AtelierTownNpc.tscn"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-9"):
+        required.extend(
+            [
+                (
+                    "G-9 interaction UX validator",
+                    game_root / "tools" / "validate_interaction_ux.py",
+                ),
+                (
+                    "G-9 runtime screenshot manifest",
+                    game_root / "artifacts" / "review" / "g9_runtime_screenshots" / "g9_runtime_screenshot_manifest.json",
+                ),
+                ("G-9 player prompt script", game_root / "scenes" / "player" / "Player.gd"),
+                ("G-9 HUD script", game_root / "scenes" / "ui" / "HUD.gd"),
             ]
         )
     return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
@@ -986,6 +1018,8 @@ def build_report(
         scrum_scope = "Scope check: this council pass reopens the false-positive G-5 readiness gate, verifies the pre-G-5 roadmap ledger, and repairs visible player/NPC/marker/world sprite consistency before G-5 can be recommended."
     elif phase.upper().strip().startswith("G-4.22"):
         scrum_scope = "Scope check: this council pass is the formal G-4 visual foundation gate; it records acceptance authority and may recommend G-5 only if screenshots, provenance, validators, and council scores clear the gate."
+    elif phase.upper().strip().startswith("G-9"):
+        scrum_scope = "Scope check: this council pass changes interaction prompt copy, HUD objective guidance, runtime prompt proof capture, validators, and SV-1 ledger only; it must improve clarity without starting G-9A quest-state scope."
     elif phase.upper().strip().startswith("G-8"):
         scrum_scope = "Scope check: this council pass changes the player/NPC motion foundation, runtime proof capture, validators, and SV-1 ledger only; it must eliminate static-sprite glide without expanding the quest scope."
     else:
@@ -1261,6 +1295,20 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-8A")
+                else []
+            ),
+            *(
+                [
+                    "## G-9 Interaction UX Result",
+                    "",
+                    f"UX/readability score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime screenshots inspected: G-9 proof frames show compact building, NPC, counting-house, tavern, dock, objective, dialogue, and debug-off prompt states.",
+                    "",
+                    "- G-9 accepted proof: normal-play prompts use compact action/name copy, avoid Press E debug phrasing, preserve HUD objective clarity, and do not introduce crude world markers.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-9")
                 else []
             ),
             "## Required Tooling And Validator Paths",

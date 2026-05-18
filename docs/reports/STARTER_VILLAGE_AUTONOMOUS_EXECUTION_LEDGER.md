@@ -34,8 +34,8 @@ Deprecated final states are forbidden.
 | G-7B | Harbor, Wharf, and Commercial Spine Cohesion | `codex/g-7b-harbor-commercial-spine` | #464 merged | PASS | `docs/reports/G7B_HARBOR_WHARF_COMMERCIAL_SPINE_COHESION.md`, G-7B council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, NPC route validator, and atelier runtime validator. |
 | G-7C | Landmark and District Identity Pass | `codex/g-7c-landmark-district-identity` | #465 merged | PASS | `docs/reports/G7C_LANDMARK_DISTRICT_IDENTITY_PASS.md`, G-7C council report, runtime screenshot manifest, vertical-slice validator, world-cohesion validator, interaction UX validator, and atelier runtime validator. |
 | G-8 | Atelier Character and NPC Movement Foundation | `codex/g-8-character-motion-foundation` | #466 merged | PASS | `docs/reports/G8_ATELIER_CHARACTER_AND_NPC_MOVEMENT_FOUNDATION.md`, G-8 council report, runtime screenshot manifest, vertical-slice validator, character motion validator, and atelier runtime validator. |
-| G-8A | Living NPC Population Pass | `codex/g-8a-living-npc-population` | pending current phase PR | PASS | `docs/reports/G8A_LIVING_NPC_POPULATION_PASS.md`, G-8A council report, runtime screenshot manifest, vertical-slice validator, NPC population/route validator, character motion validator, and atelier runtime validator. |
-| G-9 | Interaction UX and Diegetic Prompt Pass | pending | pending | PENDING | Must remove debug-like prompts/markers and clarify interactables. |
+| G-8A | Living NPC Population Pass | `codex/g-8a-living-npc-population` | #467 merged | PASS | `docs/reports/G8A_LIVING_NPC_POPULATION_PASS.md`, G-8A council report, runtime screenshot manifest, vertical-slice validator, NPC population/route validator, character motion validator, and atelier runtime validator. |
+| G-9 | Interaction UX and Diegetic Prompt Pass | `codex/g-9-interaction-ux-prompts` | pending current phase PR | PASS | `docs/reports/G9_INTERACTION_UX_DIEGETIC_PROMPT_PASS.md`, G-9 council report, runtime screenshot manifest, vertical-slice validator, interaction UX validator, and atelier runtime validator. |
 | G-9A | Journal, Objective, and Quest State Foundation | pending | pending | PENDING | Must add real quest state, journal/objective feedback, and progression update. |
 | G-10 | Opening Quest Arc: First Light / Whispers Before Dawn | pending | pending | PENDING | Must make the opening quest playable for 10-15 meaningful minutes. |
 | G-10A | Tavern Whisper System | pending | pending | PENDING | Must make Tavern/Inn a social gameplay hub with rumor content. |
@@ -48,11 +48,11 @@ Deprecated final states are forbidden.
 
 ## Current Phase
 
-Current phase after G-8A: `G-9 Interaction UX and Diegetic Prompt Pass`.
+Current phase after G-9: `G-9A Journal, Objective, and Quest State Foundation`.
 
-G-8A adds seven grounded, named, role-bearing NPC contracts for the tavern,
-dock, counting house, market, civic notice board, rear service lane, and
-storehouse queue. All visible NPCs use the manifest-backed G-4.22R atelier
-NPC atlas and follow the `stationary_work_pose_until_dedicated_walk_sheets`
-policy until real walk sheets exist. G-9 must now make interaction prompts,
-labels, signs, and objective guidance tasteful and player-facing.
+G-9 replaces debug-like in-world prompt copy with compact
+`E: Action - Name` prompts, tightens prompt presentation, points the HUD first
+objective from the Counting House to the tavern whisper, and records runtime
+screenshot proof for route, dialogue, objective-update, and debug-off states.
+G-9A must now turn that guidance into real quest state, objective completion,
+journal feedback, session persistence, and a reward/progression beat.

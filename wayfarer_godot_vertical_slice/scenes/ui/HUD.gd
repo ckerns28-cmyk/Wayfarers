@@ -7,6 +7,10 @@ const STATUS_MAX_WIDTH := 330.0
 const STATUS_EXPANDED_MAX_WIDTH := 382.0
 const QUEST_MIN_WIDTH := 308.0
 const QUEST_MAX_WIDTH := 430.0
+const G9_INTERACTION_UX_PASS := "G-9"
+const G9_OBJECTIVE_LINE := "Find Edrin Vale at the Counting House; then follow the tavern whisper."
+const G9_OBJECTIVE_UPDATE_COPY := "Objective updated: ask about the missing ledger line."
+const G9_RUMOR_GUIDANCE_COPY := "Rumor: the Third Toast begins at the Tavern/Inn."
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
 const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png"
@@ -79,8 +83,8 @@ func _apply_build_identity() -> void:
 	resolve_bar.show_percentage = false
 	objective_label.text = BUILD_INFO.PLAYER_STYLE_ROADMAP_NOTE
 	quest_title.text = "First Light"
-	quest_body.text = "Make landfall, find the counting house, and listen for work by the harbor."
-	quest_region.text = "Newport - Harbor Ward"
+	quest_body.text = G9_OBJECTIVE_LINE
+	quest_region.text = "Newport Harbor - Counting House to Tavern"
 
 func toggle_review_metadata() -> void:
 	if _review_screenshot_mode:
@@ -239,6 +243,17 @@ func get_hud_visual_contract() -> Dictionary:
 		"health_bar_show_percentage": health_bar.show_percentage,
 		"resolve_bar_show_percentage": resolve_bar.show_percentage,
 		"palette": "charcoal_brass_parchment_burgundy_teal",
+	}
+
+func interaction_ux_contract() -> Dictionary:
+	return {
+		"phase": G9_INTERACTION_UX_PASS,
+		"objective_line": G9_OBJECTIVE_LINE,
+		"objective_update_copy": G9_OBJECTIVE_UPDATE_COPY,
+		"rumor_guidance_copy": G9_RUMOR_GUIDANCE_COPY,
+		"quest_panel_names_first_goal": quest_body.text.find("Counting House") >= 0,
+		"quest_panel_names_tavern_whisper": quest_body.text.find("tavern whisper") >= 0,
+		"dialogue_panel_available": dialogue_panel != null,
 	}
 
 func _style_label(label: Label, color: Color, font_size: int) -> void:
