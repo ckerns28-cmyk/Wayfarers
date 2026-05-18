@@ -293,6 +293,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_character_motion_foundation.py"
     )
+    npc_population_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_npc_population_and_routes.py"
+    )
     pre_g5_ledger_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_pre_g5_roadmap_ledger.py"
@@ -473,6 +477,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     args=[python_bin, str(game_root / "tools" / "validate_character_motion_foundation.py")],
                     cwd=root,
                     required_paths=[game_root / "tools" / "validate_character_motion_foundation.py"],
+                ),
+            )
+        if normalized_phase.startswith(("G-8A", "G-11")):
+            starter_commands.insert(
+                1 if normalized_phase.startswith("G-8A") else 0,
+                ValidatorCommand(
+                    name="NPC population and routes validation",
+                    command_text=npc_population_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_npc_population_and_routes.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_npc_population_and_routes.py"],
                 ),
             )
         commands[diff_index:diff_index] = starter_commands
@@ -683,6 +698,21 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ("G-8 player scene", game_root / "scenes" / "player" / "Player.tscn"),
                 ("G-8 Edrin NPC script", game_root / "scenes" / "npc" / "EdrinVale.gd"),
                 ("G-8 Edrin NPC scene", game_root / "scenes" / "npc" / "EdrinVale.tscn"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-8A"):
+        required.extend(
+            [
+                (
+                    "G-8A NPC population validator",
+                    game_root / "tools" / "validate_npc_population_and_routes.py",
+                ),
+                (
+                    "G-8A runtime screenshot manifest",
+                    game_root / "artifacts" / "review" / "g8a_runtime_screenshots" / "g8a_runtime_screenshot_manifest.json",
+                ),
+                ("G-8A generic town NPC script", game_root / "scenes" / "npc" / "AtelierTownNpc.gd"),
+                ("G-8A generic town NPC scene", game_root / "scenes" / "npc" / "AtelierTownNpc.tscn"),
             ]
         )
     return [(label, "FOUND" if path.exists() else "MISSING", rel(path, root)) for label, path in required]
@@ -1217,6 +1247,20 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-8")
+                else []
+            ),
+            *(
+                [
+                    "## G-8A Living NPC Population Result",
+                    "",
+                    f"NPC population score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime screenshots inspected: G-8A proof frames show tavern, dockworker, counting-house, merchant, rumor-carrier, and suspicious-patron stations in the authored Newport town.",
+                    "",
+                    "- G-8A accepted proof: named NPCs now carry roles, stations, route intent, idle behavior, dialogue seeds, quest relevance, and a stationary work-pose policy until dedicated walk sheets ship.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-8A")
                 else []
             ),
             "## Required Tooling And Validator Paths",

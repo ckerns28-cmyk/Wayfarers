@@ -20,6 +20,8 @@ REGISTRY_PATH = PROJECT_ROOT / "art_pipeline" / "newport" / "manifests" / "newpo
 PLAYER_GD = PROJECT_ROOT / "scenes" / "player" / "Player.gd"
 EDRIN_GD = PROJECT_ROOT / "scenes" / "npc" / "EdrinVale.gd"
 EDRIN_TSCN = PROJECT_ROOT / "scenes" / "npc" / "EdrinVale.tscn"
+ATELIER_NPC_GD = PROJECT_ROOT / "scenes" / "npc" / "AtelierTownNpc.gd"
+ATELIER_NPC_TSCN = PROJECT_ROOT / "scenes" / "npc" / "AtelierTownNpc.tscn"
 MAP_LAYER_GD = PROJECT_ROOT / "scenes" / "map" / "MapLayer.gd"
 BLUEPRINT_GD = PROJECT_ROOT / "scripts" / "NewportTownBlueprint.gd"
 SCREENSHOT_MANIFEST = PROJECT_ROOT / "artifacts" / "review" / "g422r_runtime_screenshots" / "g422r_runtime_screenshot_manifest.json"
@@ -151,11 +153,13 @@ def validate_registry(failures: list[str]) -> None:
 
 
 def validate_runtime_references(failures: list[str]) -> None:
-    for path in [PLAYER_GD, EDRIN_GD, EDRIN_TSCN, MAP_LAYER_GD, BLUEPRINT_GD]:
+    for path in [PLAYER_GD, EDRIN_GD, EDRIN_TSCN, ATELIER_NPC_GD, ATELIER_NPC_TSCN, MAP_LAYER_GD, BLUEPRINT_GD]:
         require_path(path, failures)
     player_source = PLAYER_GD.read_text(encoding="utf-8") if PLAYER_GD.exists() else ""
     edrin_source = EDRIN_GD.read_text(encoding="utf-8") if EDRIN_GD.exists() else ""
     edrin_scene = EDRIN_TSCN.read_text(encoding="utf-8") if EDRIN_TSCN.exists() else ""
+    atelier_npc_source = ATELIER_NPC_GD.read_text(encoding="utf-8") if ATELIER_NPC_GD.exists() else ""
+    atelier_npc_scene = ATELIER_NPC_TSCN.read_text(encoding="utf-8") if ATELIER_NPC_TSCN.exists() else ""
     map_source = MAP_LAYER_GD.read_text(encoding="utf-8") if MAP_LAYER_GD.exists() else ""
     blueprint_source = BLUEPRINT_GD.read_text(encoding="utf-8") if BLUEPRINT_GD.exists() else ""
 
@@ -172,10 +176,23 @@ def validate_runtime_references(failures: list[str]) -> None:
     for forbidden in ["func _draw()", "draw_circle", "draw_rect", "draw_line"]:
         if forbidden in edrin_source:
             failures.append(f"EdrinVale.gd still contains primitive placeholder drawing: {forbidden}")
+        if forbidden in atelier_npc_source:
+            failures.append(f"AtelierTownNpc.gd contains primitive placeholder drawing: {forbidden}")
+    if "newport_npc_atelier_g422r_v1.png" not in atelier_npc_source:
+        failures.append("AtelierTownNpc.gd must use the G-4.22R NPC atlas")
+    if "npc_population_contract" not in atelier_npc_source or "stationary_work_pose_until_dedicated_walk_sheets" not in atelier_npc_source:
+        failures.append("AtelierTownNpc.gd must expose the G-8A population/no-glide contract")
+    if 'node name="Visual" type="AnimatedSprite2D"' not in atelier_npc_scene:
+        failures.append("AtelierTownNpc.tscn must have an AnimatedSprite2D visual child")
+    if 'node name="GroundShadow" type="Polygon2D"' not in atelier_npc_scene:
+        failures.append("AtelierTownNpc.tscn must include a grounded shadow treatment")
     if "npc_placeholder" in blueprint_source:
         failures.append("NewportTownBlueprint.gd must not expose npc_placeholder anchors in normal play")
     if "npc_atelier" not in blueprint_source:
         failures.append("NewportTownBlueprint.gd must expose npc_atelier anchors")
+    for token in ["starter_village_npc_specs", "tavern_keeper", "dockworker", "counting_house_clerk", "merchant_shopkeeper", "rumor_carrier", "suspicious_patron"]:
+        if token not in blueprint_source:
+            failures.append(f"NewportTownBlueprint.gd missing G-8A NPC token: {token}")
     if "_draw_newport_npc_placeholder" in map_source:
         failures.append("MapLayer.gd must not keep the NPC placeholder draw path")
     g410_start = map_source.find("func _draw_g410_props")

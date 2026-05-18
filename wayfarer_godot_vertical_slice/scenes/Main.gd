@@ -1,6 +1,7 @@
 extends Node2D
 
 const BUILDING_SCENE := preload("res://scenes/buildings/Building.tscn")
+const ATELIER_TOWN_NPC_SCENE := preload("res://scenes/npc/AtelierTownNpc.tscn")
 const BUILDING_CATALOG := preload("res://scripts/BuildingCatalog.gd")
 const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
@@ -39,6 +40,9 @@ func _ready() -> void:
 		edrin.queue_free()
 	elif edrin:
 		edrin.global_position = NEWPORT_TOWN.EDRIN_SPAWN
+		if edrin.has_method("configure_population"):
+			edrin.call("configure_population", NEWPORT_TOWN.starter_village_npc_spec("edrin_vale_counting_house_clerk"))
+	_place_starter_village_npcs()
 	_place_buildings()
 	_set_debug_overlay(false)
 	_set_building_seating_overlay(false)
@@ -177,6 +181,18 @@ func _atlas_image(path: String) -> Texture2D:
 
 	_atlas_cache[path] = atlas_texture
 	return atlas_texture
+
+func _place_starter_village_npcs() -> void:
+	if not NEWPORT_TOWN.NPCS_ENABLED or NEWPORT_TOWN.G46_PROOF_FRAME or NEWPORT_TOWN.G47_CALIBRATION_MODE or NEWPORT_TOWN.G48_PROOF_STREET or NEWPORT_TOWN.G49_STREET_VIGNETTE:
+		return
+	for raw_spec in NEWPORT_TOWN.starter_village_npc_specs():
+		var spec := (raw_spec as Dictionary).duplicate(true)
+		if String(spec.get("runtime_node", "")) == "EdrinVale":
+			continue
+		var npc := ATELIER_TOWN_NPC_SCENE.instantiate()
+		if npc.has_method("configure"):
+			npc.call("configure", spec)
+		world.add_child(npc)
 
 func _place_buildings() -> void:
 	for blueprint_config in NEWPORT_TOWN.building_specs():
