@@ -60,6 +60,9 @@ const G15A_VILLAGE_TO_ISLAND_TRANSITION_SCORE := 8.6
 const G15B_ISLAND_WORLD_COHESION_PASS := "G-15B"
 const G15B_ISLAND_WORLD_COHESION_SOURCE_PATH := "res://data/world_layout/island_world_cohesion_v1.json"
 const G15B_ISLAND_WORLD_COHESION_SCORE := 8.6
+const G16_ISLAND_POI_LANDMARKS_PASS := "G-16"
+const G16_ISLAND_POI_LANDMARKS_SOURCE_PATH := "res://data/world_layout/island_poi_landmarks_v1.json"
+const G16_ISLAND_POI_LANDMARKS_SCORE := 8.6
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -362,6 +365,7 @@ static func route_rects() -> Array:
 	rects.append_array(service_lanes())
 	rects.append_array(opening_island_transition_route_rects())
 	rects.append_array(opening_island_world_cohesion_route_rects())
+	rects.append_array(opening_island_poi_landmark_route_rects())
 	for pier in pier_rects():
 		rects.append(pier["rect"])
 	return rects
@@ -388,6 +392,13 @@ static func opening_island_world_cohesion_route_rects() -> Array:
 		Rect2i(68, 12, 5, 3),
 		Rect2i(70, 8, 4, 5),
 		Rect2i(54, 19, 5, 3),
+	]
+
+static func opening_island_poi_landmark_route_rects() -> Array:
+	if not G410_STARTER_HARBOR_TOWN:
+		return []
+	return [
+		Rect2i(68, 20, 5, 2),
 	]
 
 static func starter_village_route_order_specs() -> Array:
@@ -519,6 +530,14 @@ static func reachability_targets() -> Dictionary:
 			"g15b_signal_rise_route": Vector2i(72, 10),
 			"g15b_cove_edge_path": Vector2i(67, 22),
 			"g15b_return_lane": Vector2i(55, 20),
+			"g16_signal_overlook": Vector2i(72, 10),
+			"g16_old_road_marker": Vector2i(67, 13),
+			"g16_cove_hidden_landing": Vector2i(69, 22),
+			"g16_wooded_grove_path": Vector2i(64, 16),
+			"g16_farm_service_outbuilding": Vector2i(58, 18),
+			"g16_quest_clue_site": Vector2i(69, 20),
+			"g16_optional_secret_cache": Vector2i(72, 8),
+			"g16_return_landmark": Vector2i(55, 20),
 		}
 	if G49_STREET_VIGNETTE:
 		return {
@@ -637,6 +656,14 @@ static func route_debug_probes() -> Array:
 			_route_probe("g15b_signal_rise_route", Vector2(2288.0, 332.0), "G-15B signal-rise route remains a reachable island landmark path", "rise"),
 			_route_probe("g15b_cove_edge_path", Vector2(2132.0, 714.0), "G-15B cove-edge route reads as walkable shore path above blocked water", "cove"),
 			_route_probe("g15b_return_lane", Vector2(1780.0, 642.0), "G-15B return lane loops back to Newport instead of dead-ending", "ret"),
+			_route_probe("g16_signal_overlook", Vector2(2288.0, 332.0), "G-16 signal overlook is a recognizable island destination", "sig"),
+			_route_probe("g16_old_road_marker", Vector2(2150.0, 420.0), "G-16 old road marker makes the island fork readable", "old"),
+			_route_probe("g16_cove_hidden_landing", Vector2(2220.0, 714.0), "G-16 cove landing gives the lower coast a memorable destination", "cove"),
+			_route_probe("g16_wooded_grove_path", Vector2(2048.0, 520.0), "G-16 wooded path reads as a natural privacy beat", "grove"),
+			_route_probe("g16_farm_service_outbuilding", Vector2(1886.0, 572.0), "G-16 service outbuilding makes the island edge inhabited", "farm"),
+			_route_probe("g16_quest_clue_site", Vector2(2208.0, 642.0), "G-16 clue site gives island exploration purpose", "clue"),
+			_route_probe("g16_optional_secret_cache", Vector2(2370.0, 318.0), "G-16 optional cache rewards off-route curiosity", "sec"),
+			_route_probe("g16_return_landmark", Vector2(1780.0, 642.0), "G-16 return landmark keeps the loop oriented back to Newport", "ret"),
 		]
 	return []
 
@@ -691,6 +718,14 @@ static func detail_blockers() -> Array:
 			_blocker("g15b_cove_rock_break", Rect2(2184, 742, 150, 34)),
 			_blocker("g15b_return_lane_fence", Rect2(1768, 678, 178, 18)),
 			_blocker("g15b_pasture_service_stack", Rect2(1876, 604, 48, 26)),
+			_blocker("g16_signal_overlook_posts", Rect2(2312, 290, 34, 48)),
+			_blocker("g16_old_road_marker", Rect2(2104, 424, 28, 10)),
+			_blocker("g16_cove_landing_remnant", Rect2(2242, 706, 70, 22)),
+			_blocker("g16_wooded_grove_trees", Rect2(1988, 466, 110, 24)),
+			_blocker("g16_farm_service_outbuilding", Rect2(1924, 554, 50, 30)),
+			_blocker("g16_quest_clue_site", Rect2(2238, 626, 54, 30)),
+			_blocker("g16_optional_secret_cache", Rect2(2314, 250, 62, 36)),
+			_blocker("g16_return_landmark", Rect2(1868, 626, 20, 28)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -828,6 +863,123 @@ static func opening_island_world_cohesion_contract() -> Dictionary:
 			"return_lane",
 			"newport_east_gate",
 		],
+	}
+
+static func opening_island_poi_landmarks_source_path() -> String:
+	return G16_ISLAND_POI_LANDMARKS_SOURCE_PATH
+
+static func opening_island_poi_landmark_specs() -> Array:
+	return [
+		{
+			"id": "signal_overlook",
+			"type": "harbor_overlook_or_signal_point",
+			"position": Vector2(2288.0, 332.0),
+			"target_final_screenshot": "10_island_landmark_signal_or_overlook.png",
+			"purpose": "high-side route destination and visible island signal point",
+			"quest_relevance": "future signal clue for the missing-manifest whisper",
+			"recognizable_destination": true,
+		},
+		{
+			"id": "old_road_marker",
+			"type": "old_road_marker",
+			"position": Vector2(2150.0, 420.0),
+			"target_final_screenshot": "09_island_main_trail.png",
+			"purpose": "route fork marker between signal rise, wooded path, and cove",
+			"quest_relevance": "points toward the first physical trace beyond town",
+			"recognizable_destination": true,
+		},
+		{
+			"id": "cove_hidden_landing",
+			"type": "cove_wharf_remnant_hidden_landing",
+			"position": Vector2(2220.0, 714.0),
+			"target_final_screenshot": "11_island_cove_or_hidden_landing.png",
+			"purpose": "shoreline destination with a hidden landing read",
+			"quest_relevance": "supports smuggling, missing manifest, and coded whisper evidence",
+			"recognizable_destination": true,
+		},
+		{
+			"id": "wooded_grove_path",
+			"type": "wooded_path_or_grove",
+			"position": Vector2(2048.0, 520.0),
+			"target_final_screenshot": "09_island_main_trail.png",
+			"purpose": "natural privacy beat on the island trail",
+			"quest_relevance": "future rumor contact or observation point",
+			"recognizable_destination": true,
+		},
+		{
+			"id": "farm_service_outbuilding",
+			"type": "small_farm_service_outbuilding_or_edge_settlement",
+			"position": Vector2(1886.0, 572.0),
+			"target_final_screenshot": "09_island_main_trail.png",
+			"purpose": "inhabited service edge after leaving Newport",
+			"quest_relevance": "future farmhand, courier, or supply clue beat",
+			"recognizable_destination": true,
+		},
+		{
+			"id": "quest_clue_site",
+			"type": "quest_clue_site",
+			"position": Vector2(2208.0, 642.0),
+			"target_final_screenshot": "12_island_optional_discovery.png",
+			"purpose": "physical evidence node between cove and return lane",
+			"quest_relevance": "staged clue site for Whispers Before Dawn",
+			"recognizable_destination": true,
+		},
+		{
+			"id": "optional_secret_cache",
+			"type": "optional_secret_location",
+			"position": Vector2(2330.0, 270.0),
+			"target_final_screenshot": "12_island_optional_discovery.png",
+			"purpose": "off-route discovery above the signal rise",
+			"quest_relevance": "optional clue can enrich the journal in G-18A",
+			"recognizable_destination": true,
+			"optional_discovery": true,
+		},
+		{
+			"id": "return_landmark",
+			"type": "return_landmark_visible_from_multiple_routes",
+			"position": Vector2(1780.0, 642.0),
+			"target_final_screenshot": "17_return_to_town_or_next_hook.png",
+			"purpose": "visible anchor back toward Newport",
+			"quest_relevance": "supports return/report and next-hook routing",
+			"recognizable_destination": true,
+		},
+	]
+
+static func opening_island_poi_landmarks_viewpoints() -> Array:
+	var viewpoints: Array = []
+	for poi in opening_island_poi_landmark_specs():
+		viewpoints.append({
+			"id": poi["id"],
+			"position": poi["position"],
+			"target_final_screenshot": poi["target_final_screenshot"],
+		})
+	return viewpoints
+
+static func opening_island_poi_landmarks_contract() -> Dictionary:
+	return {
+		"phase": G16_ISLAND_POI_LANDMARKS_PASS,
+		"source": G16_ISLAND_POI_LANDMARKS_SOURCE_PATH,
+		"topology_source": OPENING_ISLAND_TOPOLOGY_SOURCE_PATH,
+		"world_cohesion_source": G15B_ISLAND_WORLD_COHESION_SOURCE_PATH,
+		"art_world_score": G16_ISLAND_POI_LANDMARKS_SCORE,
+		"world_layout_score": G16_ISLAND_POI_LANDMARKS_SCORE,
+		"player_can_name_or_recognize_destinations": true,
+		"each_poi_supports_exploration_or_quest_purpose": true,
+		"pois_are_not_random_props": true,
+		"at_least_one_optional_discovery_exists": true,
+		"return_landmark_visible_from_multiple_routes": true,
+		"required_poi_ids": [
+			"signal_overlook",
+			"old_road_marker",
+			"cove_hidden_landing",
+			"wooded_grove_path",
+			"farm_service_outbuilding",
+			"quest_clue_site",
+			"optional_secret_cache",
+			"return_landmark",
+		],
+		"points_of_interest": opening_island_poi_landmark_specs(),
+		"viewpoints": opening_island_poi_landmarks_viewpoints(),
 	}
 
 static func starter_village_runtime_lot_assignments() -> Dictionary:

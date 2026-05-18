@@ -227,7 +227,7 @@
         "validate_island_poi_landmarks.py",
         "validate_island_world_cohesion.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-16A",

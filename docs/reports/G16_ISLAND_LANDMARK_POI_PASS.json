@@ -1,0 +1,68 @@
+{
+  "schema_id": "wayfarer.g16.island_landmark_poi_pass_report.v1",
+  "phase_id": "G-16",
+  "phase_name": "Island Landmark and Point-of-Interest Pass",
+  "branch": "codex/g-16-island-poi-landmarks",
+  "commits": [
+    "pending_branch_commit_before_pr"
+  ],
+  "implementing_prs": [
+    "pending_open_pr"
+  ],
+  "merge_status": "pending",
+  "status": "PASS",
+  "human_review_required": false,
+  "reason_human_review_not_required": "G-16 is an ordinary autonomous OVI-1 runway phase; failures are production issues to fix autonomously, not a Chris stop.",
+  "north_star_guardrail": "Production-playable never means merely functional. This pass is judged against authored place memory, quest affordance, route readability, mystery, atelier discipline, and the craft pull expected from inspiration games such as Tibia and Ragnarok Online.",
+  "source_files": [
+    "wayfarer_godot_vertical_slice/data/world_layout/island_poi_landmarks_v1.json",
+    "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+    "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+    "wayfarer_godot_vertical_slice/scenes/Main.gd",
+    "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g16_runtime_screenshots.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g16_runtime_screenshots.gd.uid",
+    "wayfarer_godot_vertical_slice/tools/capture_g16_runtime_screenshots.ps1",
+    "wayfarer_godot_vertical_slice/tools/validate_island_poi_landmarks.py"
+  ],
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g16_runtime_screenshots/g16_runtime_screenshot_manifest.json",
+  "screenshots": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g16_runtime_screenshots/g16_01_signal_overlook_landmark.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16_runtime_screenshots/g16_02_old_road_marker_and_grove.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16_runtime_screenshots/g16_03_cove_hidden_landing.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16_runtime_screenshots/g16_04_farm_service_edge_settlement.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16_runtime_screenshots/g16_05_quest_clue_optional_secret.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g16_runtime_screenshots/g16_06_return_landmark_debug_disabled.png"
+  ],
+  "points_of_interest": [
+    "signal_overlook",
+    "old_road_marker",
+    "cove_hidden_landing",
+    "wooded_grove_path",
+    "farm_service_outbuilding",
+    "quest_clue_site",
+    "optional_secret_cache",
+    "return_landmark"
+  ],
+  "acceptance": {
+    "player_can_name_or_recognize_destinations": true,
+    "each_poi_supports_exploration_or_quest_purpose": true,
+    "pois_are_not_random_props": true,
+    "at_least_one_optional_discovery_exists": true,
+    "return_landmark_visible_from_multiple_routes": true,
+    "review_capture_no_hud": true,
+    "debug_overlays_disabled": true
+  },
+  "design_score": 8.6,
+  "world_layout_score": 8.6,
+  "art_direction_score": 8.6,
+  "ux_readability_score": 8.6,
+  "technical_stability_score": 8.7,
+  "validation_results": "PASS: G-16 runtime screenshots regenerated from Godot 4.6.2; PASS: island POI, world cohesion, village-to-island transition, island topology, OVI roadmap, OVI ledger, Python compile, git diff check, and validate_vertical_slice.gd. Route-probe collision repair verified after moving landmark collision footprints off walk/debug probes.",
+  "art_world_score": 8.6,
+  "provenance_atelier_result": "PASS",
+  "north_star_result": "PASS: G-16 gives the opening island named-feeling destinations, quest affordance, optional discovery, and return-path memory while preserving the Newport pre-Revolutionary mystery tone; OVI-1 remains incomplete until G-22.",
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "agent_council_report_path": "docs/reports/G16_ISLAND_LANDMARK_POI_AGENT_COUNCIL_REPORT.md",
+  "next_phase": "G-16A Island Atelier Asset Family Pass"
+}

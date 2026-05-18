@@ -89,5 +89,11 @@
     "source": "wayfarer_godot_vertical_slice/data/world_layout/island_world_cohesion_v1.json",
     "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_world_cohesion_contract",
     "status": "PASS"
+  },
+  "g16_poi_landmarks_implementation": {
+    "phase": "G-16",
+    "source": "wayfarer_godot_vertical_slice/data/world_layout/island_poi_landmarks_v1.json",
+    "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_poi_landmarks_contract",
+    "status": "PASS"
   }
 }

@@ -1462,6 +1462,18 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     ("G-16A island atelier asset family validator", game_root / "tools" / "validate_island_atelier_asset_family.py"),
                 ]
             )
+        if phase.upper().strip().startswith("G-16 "):
+            required.extend(
+                [
+                    ("G-16 island POI source", game_root / "data" / "world_layout" / "island_poi_landmarks_v1.json"),
+                    ("G-16 phase report", root / "docs" / "reports" / "G16_ISLAND_LANDMARK_POI_PASS.md"),
+                    ("G-16 phase report JSON", root / "docs" / "reports" / "G16_ISLAND_LANDMARK_POI_PASS.json"),
+                    (
+                        "G-16 runtime screenshot manifest",
+                        game_root / "artifacts" / "review" / "g16_runtime_screenshots" / "g16_runtime_screenshot_manifest.json",
+                    ),
+                ]
+            )
         if phase.upper().strip().startswith("G-17"):
             required.append(("G-17 island NPC encounter validator", game_root / "tools" / "validate_island_npc_encounter_foundation.py"))
         if phase.upper().strip().startswith("G-18"):
