@@ -1,8 +1,10 @@
 # Pre-G-5 Autonomous Production Protocol
 
-This protocol governs ordinary Wayfarer roadmap work until the G-5 readiness
-gate. It changes the default acceptance authority from Chris to the Wayfarer
-Agent Council for pre-G-5 production phases.
+This protocol governed ordinary Wayfarer roadmap work until the G-5 readiness
+gate. After G-6, Chris extended the same autonomous production model through
+the `SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE`. It changes the default
+acceptance authority from Chris to the Wayfarer Agent Council for ordinary
+roadmap-bound autonomous production phases before SV-1.
 
 ## Operating Model
 
@@ -15,23 +17,24 @@ The default loop is:
    the phase's 8.5+/10 visual/world/layout bar.
 5. Codex fixes failures on the same branch until the council reaches a final
    authority verdict.
-6. Passing phases produce a PR-ready result and the next roadmap phase is
-   selected.
+6. Passing phases produce a PR-ready result, a green/mergeable PR is merged by
+   Codex under the autonomous authorization, main is synced, and the next
+   roadmap phase is selected.
 
-Chris is not the default QA gate for ordinary pre-G-5 work. A normal visual QA
-pass is not a valid escalation reason by itself.
+Chris is not the default QA gate for ordinary pre-SV-1 roadmap work. A normal
+visual QA pass is not a valid escalation reason by itself.
 
 The roadmap must be executed as visible phase evidence, not as a compressed
-summary. Each pre-G-5 item needs implementation evidence, screenshot evidence
+summary. Each pre-SV-1 item needs implementation evidence, screenshot evidence
 where applicable, validation evidence, Agent Council judgment, PR/merge
-evidence, and a `PASS` row in
-`docs/reports/PRE_G5_ROADMAP_EXECUTION_LEDGER.md` before the G-5 readiness gate
-can pass.
+evidence, and an authoritative row in the active execution ledger before its
+milestone gate can pass.
 
 ## Authority
 
-The Agent Council is the default QA and acceptance gate for pre-G-5 work. The
-council verdict is authoritative for ordinary phases once it has reviewed:
+The Agent Council is the default QA and acceptance gate for ordinary pre-SV-1
+roadmap work. The council verdict is authoritative for ordinary phases once it
+has reviewed:
 
 - branch and PR preflight,
 - relevant diffs and roadmap scope,
@@ -43,6 +46,26 @@ council verdict is authoritative for ordinary phases once it has reviewed:
 
 Validators passing remains required, but a technical pass is not enough. The
 council must explicitly accept or reject the player-facing result.
+
+## Autonomous Merge Rule
+
+For roadmap-bound autonomous phases before the SV-1 gate, Codex is
+pre-authorized to merge the PR when:
+
+- branch/PR preflight is current,
+- the required validators pass,
+- screenshot/runtime proof exists and has been inspected when applicable,
+- the Agent Council final authority verdict is `COUNCIL_PASS_READY_FOR_PR`,
+- the PR is green,
+- the PR is mergeable,
+- no hard stop condition exists.
+
+Chris merge approval remains required only for destructive operations, unsafe
+file operations, budget/tool purchase decisions, unresolvable GitHub
+authentication or permission problems, major creative forks with multiple valid
+directions, asset licensing/provenance blockers, and the formal SV-1 review.
+Do not leave ordinary green council-passing autonomous PRs open solely for
+per-PR human merge approval.
 
 ## Pre-G-5 Roadmap Ledger Gate
 
@@ -113,7 +136,7 @@ review before moving on.
 
 `BLOCKED_REQUIRES_HUMAN_ESCALATION` is reserved for true blockers only:
 
-- G-5 readiness gate,
+- formal SV-1 milestone review,
 - major creative fork with multiple valid directions,
 - legal/licensing/provenance blocker,
 - GitHub permission/authentication blocker,
@@ -124,7 +147,7 @@ review before moving on.
 
 ## Deprecated Statuses
 
-These are deprecated as final states for ordinary pre-G-5 work:
+These are deprecated as final states for ordinary pre-SV-1 work:
 
 - `NEEDS_HUMAN_REVIEW`
 - `READY_FOR_HUMAN_VISUAL_REVIEW`
@@ -160,7 +183,11 @@ Every final council report must include:
 - art direction score,
 - world/layout score,
 - gameplay/readability score,
+- NPC/animation score where applicable,
+- narrative score where applicable,
+- UX/readability score,
 - technical stability score,
+- performance/build score,
 - QA regression result,
 - build/release result,
 - final recommended next phase.

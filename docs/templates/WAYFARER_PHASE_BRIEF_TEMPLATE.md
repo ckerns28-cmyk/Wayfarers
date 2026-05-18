@@ -30,7 +30,8 @@ Explain how this phase advances Wayfarer as a handcrafted fantasy/colonial harbo
 
 - Technical commands:
 - Screenshot proof:
-- Human review required:
+- Human escalation blocker, if any:
+- Autonomous merge rule applies:
 
 ## Acceptance Bar
 

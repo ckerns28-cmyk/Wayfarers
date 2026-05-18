@@ -1,0 +1,299 @@
+{
+  "schema_id": "wayfarer.sv1.autonomous_execution_ledger.v1",
+  "milestone_id": "SV-1",
+  "milestone_name": "Starter Village Playable Obsession Gate",
+  "generated_at": "2026-05-18",
+  "starting_main_after_g6_merge": "a6ec338f795f7f61c9974af5a3338a37e165aa11",
+  "pr_461_merge_result": {
+    "state": "MERGED",
+    "head_oid": "9a46df19dca4e5e74403230aa779e32c60dff1ba",
+    "contained_in_main": true,
+    "local_main_after_sync": "a6ec338f795f7f61c9974af5a3338a37e165aa11"
+  },
+  "autonomous_merge_governance": {
+    "ordinary_roadmap_prs_before_sv1_may_merge": true,
+    "per_pr_chris_approval_removed_as_recurring_blocker": true,
+    "hard_stop_conditions_still_require_escalation": true
+  },
+  "allowed_statuses": [
+    "PASS",
+    "IN_PROGRESS",
+    "PENDING",
+    "FAIL_NEEDS_CODE_FIX",
+    "BLOCKED_REQUIRES_HUMAN_ESCALATION"
+  ],
+  "deprecated_final_statuses": [
+    "NEEDS_HUMAN_REVIEW",
+    "READY_FOR_HUMAN_VISUAL_REVIEW",
+    "AWAITING_CHRIS_REVIEW",
+    "VISUAL_REVIEW_REQUIRED",
+    "TECHNICAL_PASS_ONLY"
+  ],
+  "phases": [
+    {
+      "phase_id": "G-7",
+      "phase_name": "Newport Living Origin Village Masterplan Lock",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "branch": "codex/sv1-autonomous-roadmap",
+      "implementing_prs": [
+        "pending_current_phase_pr"
+      ],
+      "commits": [
+        "pending_current_phase_commit"
+      ],
+      "files_changed": [
+        "AGENTS.md",
+        "docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md",
+        "docs/WAYFARER_GODOT_ROADMAP.md",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/G7_NEWPORT_LIVING_ORIGIN_VILLAGE_MASTERPLAN_LOCK.md",
+        "docs/reports/G7_NEWPORT_LIVING_ORIGIN_VILLAGE_MASTERPLAN_AGENT_COUNCIL_REPORT.md",
+        "wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "wayfarer_godot_vertical_slice/tools/validate_newport_world_cohesion.py"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g422r_runtime_screenshots/g422r_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g422r_runtime_screenshots/g422r_05_player_near_npcs.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g422r_runtime_screenshots/g422r_12_wider_town_cohesion_no_placeholder_mix.png"
+      ],
+      "validation_commands": [
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_world_cohesion.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_g6_production_cutover.py"
+      ],
+      "validation_results": "PASS: starter village roadmap; PASS: starter village execution ledger; PASS: Newport world-cohesion masterplan; PASS: runtime atelier asset consistency; PASS: G-6 production cutover planning.",
+      "agent_council_report_path": "docs/reports/G7_NEWPORT_LIVING_ORIGIN_VILLAGE_MASTERPLAN_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "art_direction_score": 8.5,
+      "world_layout_score": 8.7,
+      "npc_animation_score": 0.0,
+      "narrative_score": 8.6,
+      "ux_readability_score": 8.5,
+      "technical_stability_score": 8.6,
+      "performance_build_score": 8.5,
+      "provenance_atelier_result": "PASS for masterplan; runtime atlas compliance remains guarded by G-4.22R and future phase validators.",
+      "north_star_result": "PASS for masterplan lock; current runtime town remains failing baseline assigned to G-7A.",
+      "current_status": "PASS",
+      "reason_for_status": "G-7 locks the authored settlement plan, route grammar, building-purpose ledger, quest beat locations, and NPC work/life route contract. Runtime reconstruction starts in G-7A.",
+      "next_required_action": "Start G-7A Street, Lot, and Ground Cohesion Reconstruction."
+    },
+    {
+      "phase_id": "G-7A",
+      "phase_name": "Street, Lot, and Ground Cohesion Reconstruction",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Not started; current screenshot baseline remains patchy and must be fixed autonomously.",
+      "next_required_action": "Author runtime street, lot, and ground reconstruction and generate screenshot proof."
+    },
+    {
+      "phase_id": "G-7B",
+      "phase_name": "Harbor, Wharf, and Commercial Spine Cohesion",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Awaiting G-7A.",
+      "next_required_action": "Make the harbor/commercial economy readable after ground reconstruction."
+    },
+    {
+      "phase_id": "G-7C",
+      "phase_name": "Landmark and District Identity Pass",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Awaiting G-7A/G-7B.",
+      "next_required_action": "Strengthen landmark and district identity."
+    },
+    {
+      "phase_id": "G-8",
+      "phase_name": "Atelier Character and NPC Movement Foundation",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Current NPC movement is a known failure risk.",
+      "next_required_action": "Replace hover/glide behavior with grounded idle/walk/facing states."
+    },
+    {
+      "phase_id": "G-8A",
+      "phase_name": "Living NPC Population Pass",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Awaiting G-8 motion foundation.",
+      "next_required_action": "Add purposeful NPC roles and routes."
+    },
+    {
+      "phase_id": "G-9",
+      "phase_name": "Interaction UX and Diegetic Prompt Pass",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Awaiting world and NPC foundations.",
+      "next_required_action": "Replace debug-like prompts and markers."
+    },
+    {
+      "phase_id": "G-9A",
+      "phase_name": "Journal, Objective, and Quest State Foundation",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Quest state not implemented for SV-1 opening.",
+      "next_required_action": "Add objective state and feedback."
+    },
+    {
+      "phase_id": "G-10",
+      "phase_name": "Opening Quest Arc: First Light / Whispers Before Dawn",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Opening quest is not yet playable.",
+      "next_required_action": "Implement playable opening arc."
+    },
+    {
+      "phase_id": "G-10A",
+      "phase_name": "Tavern Whisper System",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Tavern rumor gameplay is not yet implemented.",
+      "next_required_action": "Make Tavern/Inn a rumor gameplay hub."
+    },
+    {
+      "phase_id": "G-10B",
+      "phase_name": "Multi-Path Starter Choice Foundation",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Opening mystery is not yet multi-path.",
+      "next_required_action": "Add alternate advancement and optional clue foundation."
+    },
+    {
+      "phase_id": "G-11",
+      "phase_name": "Living Town Rhythm Pass",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Town rhythm is not yet implemented.",
+      "next_required_action": "Add ambient town-life loops."
+    },
+    {
+      "phase_id": "G-11A",
+      "phase_name": "Audio/Atmosphere Placeholder-Free Foundation",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "Audio hooks not audited for SV-1.",
+      "next_required_action": "Add safe atmosphere hooks or document integration points."
+    },
+    {
+      "phase_id": "G-12",
+      "phase_name": "First-Session Fun, Pacing, and Readability Pass",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "First-session playthrough proof does not exist.",
+      "next_required_action": "Playtest and tune first-session readability and pacing."
+    },
+    {
+      "phase_id": "G-13",
+      "phase_name": "Browser Build, Performance, and Regression Hardening",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "SV-1 hardening is not started.",
+      "next_required_action": "Run browser/review build and regression hardening."
+    },
+    {
+      "phase_id": "G-14",
+      "phase_name": "SV-1 Starter Village Playable Obsession Gate",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "current_status": "PENDING",
+      "reason_for_status": "SV-1 is not complete.",
+      "next_required_action": "Complete all prior phases, produce review package, and stop for Chris."
+    }
+  ]
+}
