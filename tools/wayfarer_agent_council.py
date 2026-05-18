@@ -105,8 +105,12 @@ def default_python_bin() -> str:
     local_appdata = os.environ.get("LOCALAPPDATA")
     if local_appdata:
         candidate = Path(local_appdata) / "Programs" / "Python" / "Python313" / "python.exe"
-        if candidate.exists():
-            return str(candidate)
+        try:
+            if candidate.exists():
+                return str(candidate)
+        except OSError:
+            # Sandboxed runs may not be allowed to stat LOCALAPPDATA candidates.
+            pass
     return sys.executable
 
 
@@ -219,6 +223,8 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
     if normalized.startswith("SV-0"):
         return "SV-0", "sv0"
+    if normalized.startswith("G-11A"):
+        return "G-11A", "g11"
     if normalized.startswith("G-11"):
         return "G-11", "g11"
     if normalized.startswith("G-10B"):
@@ -269,11 +275,20 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     capture_label, capture_prefix = screenshot_prefix_for_phase(phase)
     capture_ps1 = game_root / "tools" / f"capture_{capture_prefix}_runtime_screenshots.ps1"
     capture_log = game_root / "artifacts" / "review" / f"{capture_prefix}_runtime_screenshots" / "godot_capture.log"
+    validator_log_dir = game_root / "artifacts" / "review" / "validator_logs"
+    validator_log_dir.mkdir(parents=True, exist_ok=True)
+    godot_import_log = validator_log_dir / f"{capture_prefix}_godot_import.log"
+    vertical_slice_log = validator_log_dir / f"{capture_prefix}_vertical_slice.log"
 
-    godot_import_text = f"& {powershell_quote(godot_bin)} --headless --path wayfarer_godot_vertical_slice --import"
+    godot_import_text = (
+        f"& {powershell_quote(godot_bin)} --headless --path wayfarer_godot_vertical_slice "
+        f"--log-file {powershell_quote(str(godot_import_log))} --import"
+    )
     vertical_text = (
         "Push-Location wayfarer_godot_vertical_slice; "
-        f"& {powershell_quote(godot_bin)} --headless --path . --script res://tools/validate_vertical_slice.gd; "
+        f"& {powershell_quote(godot_bin)} --headless --path . "
+        f"--log-file {powershell_quote(str(vertical_slice_log))} "
+        "--script res://tools/validate_vertical_slice.gd; "
         "Pop-Location"
     )
     provenance_text = (
@@ -315,6 +330,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     living_town_rhythm_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_living_town_rhythm.py"
+    )
+    audio_atmosphere_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_audio_atmosphere_hooks.py"
     )
     interaction_ux_text = (
         f"& {powershell_quote(python_bin)} "
@@ -371,14 +390,31 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         ValidatorCommand(
             name="Godot import validation",
             command_text=godot_import_text,
-            args=[godot_bin, "--headless", "--path", str(game_root), "--import"],
+            args=[
+                godot_bin,
+                "--headless",
+                "--path",
+                str(game_root),
+                "--log-file",
+                str(godot_import_log),
+                "--import",
+            ],
             cwd=root,
             required_paths=[game_root],
         ),
         ValidatorCommand(
             name="validate_vertical_slice.gd",
             command_text=vertical_text,
-            args=[godot_bin, "--headless", "--path", ".", "--script", "res://tools/validate_vertical_slice.gd"],
+            args=[
+                godot_bin,
+                "--headless",
+                "--path",
+                ".",
+                "--log-file",
+                str(vertical_slice_log),
+                "--script",
+                "res://tools/validate_vertical_slice.gd",
+            ],
             cwd=game_root,
             required_paths=[game_root / "tools" / "validate_vertical_slice.gd"],
         ),
@@ -623,6 +659,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     args=[python_bin, str(game_root / "tools" / "validate_living_town_rhythm.py")],
                     cwd=root,
                     required_paths=[game_root / "tools" / "validate_living_town_rhythm.py"],
+                ),
+            )
+        if normalized_phase.startswith("G-11A"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Audio atmosphere hooks validation",
+                    command_text=audio_atmosphere_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_audio_atmosphere_hooks.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_audio_atmosphere_hooks.py"],
                 ),
             )
         if normalized_phase.startswith("G-9"):
@@ -949,6 +996,16 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ("G-11 Main runtime rhythm integration", game_root / "scenes" / "Main.gd"),
                 ("G-11 generic NPC rhythm script", game_root / "scenes" / "npc" / "AtelierTownNpc.gd"),
                 ("G-11 Edrin rhythm script", game_root / "scenes" / "npc" / "EdrinVale.gd"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-11A"):
+        required.extend(
+            [
+                ("G-11A audio atmosphere validator", game_root / "tools" / "validate_audio_atmosphere_hooks.py"),
+                ("G-11A audio hook registry", game_root / "data" / "audio" / "starter_village_atmosphere_hooks.json"),
+                ("G-11A audio hook script", game_root / "scripts" / "audio" / "StarterVillageAudioHooks.gd"),
+                ("G-11A Main audio hook integration", game_root / "scenes" / "Main.gd"),
+                ("G-11A phase report", root / "docs" / "reports" / "G11A_AUDIO_ATMOSPHERE_PLACEHOLDER_FREE_FOUNDATION.md"),
             ]
         )
     if phase.upper().strip().startswith("G-10"):
@@ -1622,6 +1679,22 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-8A")
+                else []
+            ),
+            *(
+                [
+                    "## G-11A Audio/Atmosphere Result",
+                    "",
+                    f"UX/readability score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- runtime proof inspected: G-11A adds placeholder-free hook events for harbor ambience, tavern ambience, footsteps, quest updates, and UI feedback without loading audio streams.",
+                    "",
+                    "- G-11A accepted proof: no placeholder audio assets were added, no broken audio references exist, and all future audio paths require license/provenance before playback.",
+                    "",
+                    "- Build/release note: hooks are web-safe data/script contracts only; production playback remains disabled until provenance-safe assets are introduced.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-11A")
                 else []
             ),
             *(

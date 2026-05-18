@@ -1,0 +1,75 @@
+{
+  "schema_id": "wayfarer.starter_village.audio_atmosphere_hooks.v1",
+  "phase": "G-11A",
+  "policy": "Placeholder-free audio foundation. Hooks may emit runtime events, but no production route loads an audio stream until a license-safe asset is documented.",
+  "no_audio_assets_loaded": true,
+  "no_broken_audio_references": true,
+  "no_licensing_unsafe_audio": true,
+  "web_export_safe": true,
+  "hooks": [
+    {
+      "id": "harbor_ambience_hook",
+      "hook_type": "ambient_loop",
+      "district": "working_wharf",
+      "event": "district_entered_working_wharf",
+      "future_bus": "Ambience",
+      "asset_reference": "",
+      "license_status": "none_needed_hook_only",
+      "purpose": "Future gulls, water, rope, and dock labor bed for the working harbor."
+    },
+    {
+      "id": "tavern_ambience_hook",
+      "hook_type": "ambient_loop",
+      "district": "harborfront_commercial",
+      "event": "tavern_threshold_or_rumor_state",
+      "future_bus": "Ambience",
+      "asset_reference": "",
+      "license_status": "none_needed_hook_only",
+      "purpose": "Future low room murmur and hearth bed for the Tavern/Inn rumor hub."
+    },
+    {
+      "id": "footstep_event_hook",
+      "hook_type": "one_shot_surface",
+      "district": "all_walkable_routes",
+      "event": "player_surface_step",
+      "future_bus": "SFX",
+      "asset_reference": "",
+      "license_status": "none_needed_hook_only",
+      "purpose": "Future surface-aware footsteps for road, dock, stone, and grass materials."
+    },
+    {
+      "id": "quest_update_sound_hook",
+      "hook_type": "one_shot_ui",
+      "district": "global",
+      "event": "first_light_quest_updated",
+      "future_bus": "UI",
+      "asset_reference": "",
+      "license_status": "none_needed_hook_only",
+      "purpose": "Future subtle quest update cue for journal/objective progress."
+    },
+    {
+      "id": "ui_feedback_sound_hook",
+      "hook_type": "one_shot_ui",
+      "district": "global",
+      "event": "interaction_prompt_confirmed",
+      "future_bus": "UI",
+      "asset_reference": "",
+      "license_status": "none_needed_hook_only",
+      "purpose": "Future quiet interaction confirmation without breaking immersion."
+    }
+  ],
+  "rejected_shortcuts": [
+    "No generated placeholder beeps in normal play.",
+    "No unlicensed web-downloaded audio.",
+    "No broken AudioStream references.",
+    "No paid audio packs or subscriptions."
+  ],
+  "future_asset_requirements": [
+    "source URL or source prompt",
+    "license",
+    "manifest entry",
+    "contact sheet or waveform/provenance note as applicable",
+    "web export validation",
+    "rollback path"
+  ]
+}

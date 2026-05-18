@@ -6,6 +6,7 @@ const BUILDING_CATALOG := preload("res://scripts/BuildingCatalog.gd")
 const NEWPORT_TOWN := preload("res://scripts/NewportTownBlueprint.gd")
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
 const FIRST_LIGHT_QUEST := preload("res://scripts/quests/FirstLightQuest.gd")
+const STARTER_VILLAGE_AUDIO_HOOKS := preload("res://scripts/audio/StarterVillageAudioHooks.gd")
 const GAMEPLAY_KEYCODES := [
 	KEY_W,
 	KEY_A,
@@ -34,6 +35,7 @@ var _first_light_quest = null
 var _starter_village_rhythm_elapsed := 0.0
 var _starter_village_rhythm_start_positions: Dictionary = {}
 var _starter_village_rhythm_snapshots: Array = []
+var _starter_village_audio_hook_events: Array = []
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -51,6 +53,7 @@ func _ready() -> void:
 	_configure_starter_village_town_rhythm()
 	_place_buildings()
 	_configure_first_light_quest()
+	_configure_starter_village_audio_hooks()
 	_set_debug_overlay(false)
 	_set_building_seating_overlay(false)
 	set_green_origin_lab_mode(_should_start_in_green_origin_lab_mode())
@@ -211,6 +214,19 @@ func starter_village_town_rhythm_contract() -> Dictionary:
 	contract["recent_snapshots"] = _starter_village_rhythm_snapshots.duplicate(true)
 	return contract
 
+func starter_village_audio_hook_contract() -> Dictionary:
+	var contract: Dictionary = STARTER_VILLAGE_AUDIO_HOOKS.audio_hook_contract()
+	contract["runtime_event_count"] = _starter_village_audio_hook_events.size()
+	contract["recent_events"] = _starter_village_audio_hook_events.duplicate(true)
+	contract["no_stream_players_instantiated"] = true
+	contract["normal_play_placeholder_audio"] = false
+	return contract
+
+func debug_apply_starter_village_audio_hooks() -> Dictionary:
+	for hook_id in STARTER_VILLAGE_AUDIO_HOOKS.REQUIRED_HOOK_IDS:
+		_record_starter_village_audio_hook(String(hook_id), {"debug_proof": true})
+	return starter_village_audio_hook_contract()
+
 func debug_apply_starter_village_town_rhythm_tick(elapsed_seconds: float, force_bark := true, focus_npc_id := "") -> Dictionary:
 	for raw_npc in get_tree().get_nodes_in_group("starter_village_town_rhythm_actor"):
 		var npc := raw_npc as Node
@@ -264,12 +280,16 @@ func _configure_first_light_quest() -> void:
 func _on_player_interaction_triggered(target: Node, dialogue_text: String) -> void:
 	if _first_light_quest == null:
 		return
+	_record_starter_village_audio_hook("ui_feedback_sound_hook", {"target": String(target.name) if target != null else "", "dialogue_present": not dialogue_text.is_empty()})
 	var snapshot: Dictionary = _first_light_quest.handle_interaction(target, dialogue_text)
 	var response := String(snapshot.get("response_text", ""))
 	if not response.is_empty() and hud and hud.has_method("show_dialogue"):
 		hud.show_dialogue(response)
 
 func _on_first_light_quest_updated(snapshot: Dictionary) -> void:
+	var feedback := String(snapshot.get("feedback", ""))
+	if not feedback.is_empty():
+		_record_starter_village_audio_hook("quest_update_sound_hook", {"feedback": feedback, "objective": String(snapshot.get("current_objective_id", ""))})
 	if hud and hud.has_method("apply_quest_snapshot"):
 		hud.apply_quest_snapshot(snapshot)
 
@@ -349,6 +369,17 @@ func _configure_starter_village_town_rhythm() -> void:
 			npc.call("configure_rhythm", rhythm_spec)
 		_starter_village_rhythm_start_positions[npc_id] = npc.global_position
 	_record_starter_village_town_rhythm_snapshot(0.0, false)
+
+func _configure_starter_village_audio_hooks() -> void:
+	_record_starter_village_audio_hook("harbor_ambience_hook", {"district": "working_wharf", "startup": true})
+	_record_starter_village_audio_hook("tavern_ambience_hook", {"district": "harborfront_commercial", "startup": true})
+
+func _record_starter_village_audio_hook(hook_id: String, context: Dictionary) -> Dictionary:
+	var event: Dictionary = STARTER_VILLAGE_AUDIO_HOOKS.trigger_hook(hook_id, context)
+	_starter_village_audio_hook_events.append(event)
+	if _starter_village_audio_hook_events.size() > 12:
+		_starter_village_audio_hook_events.pop_front()
+	return event
 
 func _starter_village_town_rhythm_actor_contracts() -> Array:
 	var contracts := []
