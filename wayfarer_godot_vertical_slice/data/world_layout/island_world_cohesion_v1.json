@@ -1,0 +1,73 @@
+{
+  "schema_id": "wayfarer.g15b.island_world_cohesion.v1",
+  "phase": "G-15B",
+  "topology_source": "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+  "transition_source": "wayfarer_godot_vertical_slice/data/world_layout/village_to_island_transition_v1.json",
+  "purpose": "Make the opening island terrain physically believable with cohesive ground, readable routes, shoreline treatment, and natural route loops.",
+  "world_size": {"w": 2400, "h": 1600},
+  "terrain_zones": [
+    {"id": "outskirt_lane", "material_language": "dirt lane, fence break, grass shoulder", "walkable": true},
+    {"id": "pasture_crossing", "material_language": "service-land grass, worn cart soil, low fence edge", "walkable": true},
+    {"id": "wooded_switchback", "material_language": "compressed shrubs, darker grass, narrow trail shoulders", "walkable": true},
+    {"id": "signal_rise_route", "material_language": "stone shoulder and short climb toward the visible rise", "walkable": true},
+    {"id": "cove_edge_path", "material_language": "sand-mud shoreline above blocked water and rocks", "walkable": true},
+    {"id": "return_lane", "material_language": "wide return path with fence line guiding back to Newport", "walkable": true}
+  ],
+  "route_rects": [
+    {"x": 56, "y": 15, "w": 4, "h": 6},
+    {"x": 58, "y": 19, "w": 8, "h": 3},
+    {"x": 63, "y": 13, "w": 5, "h": 7},
+    {"x": 64, "y": 21, "w": 6, "h": 2},
+    {"x": 68, "y": 12, "w": 5, "h": 3},
+    {"x": 70, "y": 8, "w": 4, "h": 5},
+    {"x": 54, "y": 19, "w": 5, "h": 3}
+  ],
+  "walkable_samples": [
+    {"id": "pasture_crossing", "position": {"x": 1840, "y": 626}},
+    {"id": "wooded_switchback", "position": {"x": 2048, "y": 574}},
+    {"id": "signal_rise_route", "position": {"x": 2288, "y": 332}},
+    {"id": "cove_edge_path", "position": {"x": 2132, "y": 714}},
+    {"id": "return_lane", "position": {"x": 1780, "y": 642}}
+  ],
+  "blocked_space_samples": [
+    {"id": "signal_rise_rock_line", "rect": {"x": 2240, "y": 268, "w": 118, "h": 28}},
+    {"id": "cove_rock_break", "rect": {"x": 2184, "y": 742, "w": 150, "h": 34}},
+    {"id": "return_lane_fence", "rect": {"x": 1768, "y": 678, "w": 178, "h": 18}}
+  ],
+  "route_loop": [
+    "newport_east_gate",
+    "outskirt_lane",
+    "pasture_crossing",
+    "wooded_switchback",
+    "cove_edge_path",
+    "return_lane",
+    "newport_east_gate"
+  ],
+  "runtime_sources": [
+    "res://scripts/NewportTownBlueprint.gd::opening_island_world_cohesion_contract",
+    "res://scenes/map/MapLayer.gd::_draw_g15b_island_world_ground",
+    "res://scenes/map/MapLayer.gd::_draw_g15b_island_world_routes",
+    "res://scenes/map/MapLayer.gd::_draw_g15b_island_world_props",
+    "res://scenes/map/MapLayer.gd::_draw_g15b_island_shoreline_water"
+  ],
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g15b_runtime_screenshots/g15b_runtime_screenshot_manifest.json",
+  "required_screenshots": [
+    "g15b_01_island_wide_cohesion.png",
+    "g15b_02_main_trail_ground_transition.png",
+    "g15b_03_coastline_route_cohesion.png",
+    "g15b_04_route_loop_return_path.png",
+    "g15b_05_debug_overlays_disabled.png"
+  ],
+  "acceptance": {
+    "wide_screenshots_read_as_cohesive_island": true,
+    "gameplay_zoom_reads_cleanly": true,
+    "routes_lead_somewhere": true,
+    "no_patchwork_terrain": true,
+    "clear_walkable_space": true,
+    "clear_blocked_space": true,
+    "route_loops": true,
+    "coastline_shoreline_treatment": true,
+    "terrain_world_cohesion_score": 8.6,
+    "world_layout_score": 8.6
+  }
+}

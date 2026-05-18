@@ -6,6 +6,7 @@
   "source_authorization": "Chris May 2026 live steering addendum: do not stop at G-14; continue autonomously to OVI-1.",
   "next_human_review_milestone": "OVI-1 Opening Village + Island Production Playable Gate",
   "autonomous_merge_authorized_until": "OVI-1",
+  "north_star_guardrail": "Production-playable never means merely functional. Each phase must be judged against the pull and craft discipline of inspiration games such as Tibia and Ragnarok Online: readable routes, memorable places, grounded NPC life, mystery, reward, social texture, and a world that feels worth returning to.",
   "g14_policy": {
     "phase_id": "G-14",
     "role": "Internal Starter Village Proof Gate",
@@ -199,7 +200,7 @@
         "validate_island_world_cohesion.py",
         "validate_village_to_island_transition.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-16",

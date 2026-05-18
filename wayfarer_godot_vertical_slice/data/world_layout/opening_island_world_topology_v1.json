@@ -83,5 +83,11 @@
     "source": "wayfarer_godot_vertical_slice/data/world_layout/village_to_island_transition_v1.json",
     "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_transition_contract",
     "status": "PASS"
+  },
+  "g15b_world_cohesion_implementation": {
+    "phase": "G-15B",
+    "source": "wayfarer_godot_vertical_slice/data/world_layout/island_world_cohesion_v1.json",
+    "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_world_cohesion_contract",
+    "status": "PASS"
   }
 }

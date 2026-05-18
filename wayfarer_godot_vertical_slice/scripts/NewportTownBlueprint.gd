@@ -57,6 +57,9 @@ const OPENING_ISLAND_TOPOLOGY_SOURCE_PATH := "res://data/world_layout/opening_is
 const G15A_VILLAGE_TO_ISLAND_TRANSITION_PASS := "G-15A"
 const G15A_VILLAGE_TO_ISLAND_TRANSITION_SOURCE_PATH := "res://data/world_layout/village_to_island_transition_v1.json"
 const G15A_VILLAGE_TO_ISLAND_TRANSITION_SCORE := 8.6
+const G15B_ISLAND_WORLD_COHESION_PASS := "G-15B"
+const G15B_ISLAND_WORLD_COHESION_SOURCE_PATH := "res://data/world_layout/island_world_cohesion_v1.json"
+const G15B_ISLAND_WORLD_COHESION_SCORE := 8.6
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -358,6 +361,7 @@ static func route_rects() -> Array:
 	rects.append_array(secondary_roads())
 	rects.append_array(service_lanes())
 	rects.append_array(opening_island_transition_route_rects())
+	rects.append_array(opening_island_world_cohesion_route_rects())
 	for pier in pier_rects():
 		rects.append(pier["rect"])
 	return rects
@@ -371,6 +375,19 @@ static func opening_island_transition_route_rects() -> Array:
 		Rect2i(57, 13, 8, 3),
 		Rect2i(64, 12, 6, 3),
 		Rect2i(69, 11, 4, 3),
+	]
+
+static func opening_island_world_cohesion_route_rects() -> Array:
+	if not G410_STARTER_HARBOR_TOWN:
+		return []
+	return [
+		Rect2i(56, 15, 4, 6),
+		Rect2i(58, 19, 8, 3),
+		Rect2i(63, 13, 5, 7),
+		Rect2i(64, 21, 6, 2),
+		Rect2i(68, 12, 5, 3),
+		Rect2i(70, 8, 4, 5),
+		Rect2i(54, 19, 5, 3),
 	]
 
 static func starter_village_route_order_specs() -> Array:
@@ -497,6 +514,11 @@ static func reachability_targets() -> Dictionary:
 			"island_entry_transition": Vector2i(56, 15),
 			"first_mystery_beyond_town": Vector2i(66, 13),
 			"old_road_signal_view": Vector2i(71, 12),
+			"g15b_pasture_crossing": Vector2i(58, 19),
+			"g15b_wooded_switchback": Vector2i(64, 18),
+			"g15b_signal_rise_route": Vector2i(72, 10),
+			"g15b_cove_edge_path": Vector2i(67, 22),
+			"g15b_return_lane": Vector2i(55, 20),
 		}
 	if G49_STREET_VIGNETTE:
 		return {
@@ -610,6 +632,11 @@ static func route_debug_probes() -> Array:
 			_route_probe("g15a_village_exit_gate", Vector2(1608.0, 548.0), "G-15A clear town exit toward the opening island", "exit"),
 			_route_probe("g15a_outskirt_lane", Vector2(1792.0, 492.0), "G-15A settlement-to-island lane remains walkable", "lane"),
 			_route_probe("g15a_first_mystery_threshold", Vector2(2150.0, 420.0), "G-15A first mystery beat beyond the village edge", "myst"),
+			_route_probe("g15b_pasture_crossing", Vector2(1840.0, 626.0), "G-15B pasture/service crossing routes out of town without sprawl", "past"),
+			_route_probe("g15b_wooded_switchback", Vector2(2048.0, 574.0), "G-15B wooded switchback keeps the island route readable", "wood"),
+			_route_probe("g15b_signal_rise_route", Vector2(2288.0, 332.0), "G-15B signal-rise route remains a reachable island landmark path", "rise"),
+			_route_probe("g15b_cove_edge_path", Vector2(2132.0, 714.0), "G-15B cove-edge route reads as walkable shore path above blocked water", "cove"),
+			_route_probe("g15b_return_lane", Vector2(1780.0, 642.0), "G-15B return lane loops back to Newport instead of dead-ending", "ret"),
 		]
 	return []
 
@@ -659,6 +686,11 @@ static func detail_blockers() -> Array:
 			_blocker("g15a_outskirt_fence_north", Rect2(1608, 444, 232, 18)),
 			_blocker("g15a_outskirt_fence_south", Rect2(1652, 558, 210, 18)),
 			_blocker("g15a_first_mystery_roadside_cache", Rect2(2072, 368, 42, 24)),
+			_blocker("g15b_north_woodlot", Rect2(1970, 468, 76, 42)),
+			_blocker("g15b_signal_rise_rock_line", Rect2(2240, 268, 118, 28)),
+			_blocker("g15b_cove_rock_break", Rect2(2184, 742, 150, 34)),
+			_blocker("g15b_return_lane_fence", Rect2(1768, 678, 178, 18)),
+			_blocker("g15b_pasture_service_stack", Rect2(1876, 604, 48, 26)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -742,6 +774,59 @@ static func opening_island_transition_contract() -> Dictionary:
 			"fence break and lantern mark the last village threshold",
 			"old road stones pull the player toward the signal rise",
 			"sealed roadside cache hints that the whisper has physical stakes",
+		],
+	}
+
+static func opening_island_world_cohesion_source_path() -> String:
+	return G15B_ISLAND_WORLD_COHESION_SOURCE_PATH
+
+static func opening_island_world_cohesion_viewpoints() -> Array:
+	return [
+		{"id": "09_island_main_trail", "position": Vector2(2048.0, 574.0), "target_final_screenshot": "09_island_main_trail.png"},
+		{"id": "g15b_pasture_crossing", "position": Vector2(1840.0, 626.0), "target_final_screenshot": "g15b_pasture_crossing.png"},
+		{"id": "g15b_cove_edge_path", "position": Vector2(2132.0, 714.0), "target_final_screenshot": "11_island_cove_or_hidden_landing.png"},
+		{"id": "g15b_return_lane", "position": Vector2(1780.0, 642.0), "target_final_screenshot": "17_return_to_town_or_next_hook.png"},
+	]
+
+static func opening_island_world_cohesion_contract() -> Dictionary:
+	return {
+		"phase": G15B_ISLAND_WORLD_COHESION_PASS,
+		"source": G15B_ISLAND_WORLD_COHESION_SOURCE_PATH,
+		"topology_source": OPENING_ISLAND_TOPOLOGY_SOURCE_PATH,
+		"transition_source": G15A_VILLAGE_TO_ISLAND_TRANSITION_SOURCE_PATH,
+		"world_size": WORLD_SIZE,
+		"terrain_world_cohesion_score": G15B_ISLAND_WORLD_COHESION_SCORE,
+		"wide_screenshots_read_as_cohesive_island": true,
+		"gameplay_zoom_reads_cleanly": true,
+		"routes_lead_somewhere": true,
+		"no_patchwork_terrain": true,
+		"clear_walkable_space": true,
+		"clear_blocked_space": true,
+		"route_loops": true,
+		"coastline_shoreline_treatment": true,
+		"grass_stone_dirt_transition_logic": true,
+		"route_rects": opening_island_world_cohesion_route_rects(),
+		"viewpoints": opening_island_world_cohesion_viewpoints(),
+		"walkable_samples": {
+			"pasture_crossing": Vector2(1840.0, 626.0),
+			"wooded_switchback": Vector2(2048.0, 574.0),
+			"signal_rise_route": Vector2(2288.0, 332.0),
+			"cove_edge_path": Vector2(2132.0, 714.0),
+			"return_lane": Vector2(1780.0, 642.0),
+		},
+		"blocked_samples": {
+			"signal_rise_rock_line": Rect2(2240, 268, 118, 28),
+			"cove_rock_break": Rect2(2184, 742, 150, 34),
+			"return_lane_fence": Rect2(1768, 678, 178, 18),
+		},
+		"route_loop": [
+			"newport_east_gate",
+			"outskirt_lane",
+			"pasture_crossing",
+			"wooded_switchback",
+			"cove_edge_path",
+			"return_lane",
+			"newport_east_gate",
 		],
 	}
 

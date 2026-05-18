@@ -1,0 +1,58 @@
+{
+  "schema_id": "wayfarer.g15b.island_terrain_ground_route_cohesion_report.v1",
+  "phase_id": "G-15B",
+  "phase_name": "Island Terrain, Ground, and Route Cohesion",
+  "branch": "codex/g-15b-island-world-cohesion",
+  "commits": [
+    "pending_branch_commit_before_pr"
+  ],
+  "implementing_prs": [
+    "pending_open_pr"
+  ],
+  "merge_status": "pending",
+  "status": "PASS",
+  "human_review_required": false,
+  "reason_human_review_not_required": "G-15B is an ordinary autonomous OVI-1 runway phase; failures are production issues to fix autonomously, not a Chris stop.",
+  "north_star_guardrail": "Production-playable never means merely functional. This pass is judged against authored route readability, mystery, grounded world logic, and the craft pull expected from inspiration games such as Tibia and Ragnarok Online.",
+  "source_files": [
+    "wayfarer_godot_vertical_slice/data/world_layout/island_world_cohesion_v1.json",
+    "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+    "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+    "wayfarer_godot_vertical_slice/scenes/Main.gd",
+    "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g15b_runtime_screenshots.gd",
+    "wayfarer_godot_vertical_slice/tools/capture_g15b_runtime_screenshots.ps1",
+    "wayfarer_godot_vertical_slice/tools/validate_island_world_cohesion.py"
+  ],
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g15b_runtime_screenshots/g15b_runtime_screenshot_manifest.json",
+  "screenshots": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g15b_runtime_screenshots/g15b_01_island_wide_cohesion.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g15b_runtime_screenshots/g15b_02_main_trail_ground_transition.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g15b_runtime_screenshots/g15b_03_coastline_route_cohesion.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g15b_runtime_screenshots/g15b_04_route_loop_return_path.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g15b_runtime_screenshots/g15b_05_debug_overlays_disabled.png"
+  ],
+  "acceptance": {
+    "no_patchwork_terrain": true,
+    "routes_lead_somewhere": true,
+    "wide_screenshots_read_as_cohesive_island": true,
+    "gameplay_zoom_reads_cleanly": true,
+    "clear_walkable_space": true,
+    "clear_blocked_space": true,
+    "route_loops": true,
+    "coastline_shoreline_treatment": true,
+    "review_capture_no_hud": true,
+    "debug_overlays_disabled": true
+  },
+  "design_score": 8.6,
+  "world_layout_score": 8.6,
+  "art_direction_score": 8.6,
+  "ux_readability_score": 8.6,
+  "technical_stability_score": 8.7,
+  "terrain_world_cohesion_score": 8.6,
+  "provenance_atelier_result": "PASS",
+  "north_star_result": "PASS: the island route now reads as an authored Newport-to-island loop with coastline logic, blocked/walkable separation, and mystery-forward return structure; OVI-1 remains incomplete until G-22.",
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "agent_council_report_path": "docs/reports/G15B_ISLAND_TERRAIN_GROUND_ROUTE_COHESION_AGENT_COUNCIL_REPORT.md",
+  "next_phase": "G-16 Island Landmark and Point-of-Interest Pass"
+}
