@@ -380,10 +380,11 @@
       "phase_name": "Living NPC Population Pass",
       "branch": "codex/g-8a-living-npc-population",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#467"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "2eda7a85e505e6b175c6c0e50e9a7c36e5c2f9fd",
+        "5ecabff0680e702ff0b0db7b54a9695c4b983b5d"
       ],
       "current_status": "PASS",
       "reason_for_status": "Runtime living population pass adds seven purposeful NPC contracts and six required role categories, all grounded with shadows and route walking disabled until dedicated walk sheets ship.",
@@ -460,16 +461,83 @@
     {
       "phase_id": "G-9",
       "phase_name": "Interaction UX and Diegetic Prompt Pass",
-      "branch": "pending",
+      "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+      "branch": "codex/g-9-interaction-ux-prompts",
       "implementing_prs": [
-        "pending"
+        "pending_current_phase_pr"
       ],
       "commits": [
-        "pending"
+        "pending_current_phase_commit"
       ],
-      "current_status": "PENDING",
-      "reason_for_status": "Awaiting world and NPC foundations.",
-      "next_required_action": "Replace debug-like prompts and markers."
+      "files_changed": [
+        "wayfarer_godot_vertical_slice/scenes/buildings/Building.gd",
+        "wayfarer_godot_vertical_slice/scenes/npc/AtelierTownNpc.gd",
+        "wayfarer_godot_vertical_slice/scenes/npc/EdrinVale.gd",
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+        "wayfarer_godot_vertical_slice/scenes/player/Player.tscn",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.gd",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.tscn",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g9_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g9_runtime_screenshots.gd.uid",
+        "wayfarer_godot_vertical_slice/tools/capture_g9_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/starter_village_validator_common.py",
+        "wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
+        "tools/wayfarer_agent_council.py",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json",
+        "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/G9_INTERACTION_UX_DIEGETIC_PROMPT_PASS.md",
+        "docs/reports/G9_INTERACTION_UX_AGENT_COUNCIL_REPORT.md",
+        "docs/WAYFARER_GODOT_ROADMAP.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_01_wide_newport_normal_gameplay_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_02_player_arrival_at_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_03_player_on_route_to_counting_house.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_04_player_near_tavern_inn.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_05_player_on_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_06_player_at_dock_wharf_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_07_player_near_npc_movement_path.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_08_npc_idle_and_walking_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_09_player_interacting_with_counting_house_clerk.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_10_player_interacting_at_tavern_rumor_location.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_11_quest_prompt_journal_objective_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_12_signs_markers_interaction_ux_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_13_y_sort_layering_near_buildings_props.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_14_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_15_contact_sheet_provenance_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g9_runtime_screenshots/g9_runtime_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
+        "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g9_runtime_screenshots.ps1",
+        "python wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-9 runtime screenshot capture and PNG verification; PASS: interaction UX validator; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "agent_council_report_path": "docs/reports/G9_INTERACTION_UX_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.5,
+      "art_direction_score": 8.5,
+      "world_layout_score": 8.5,
+      "npc_animation_score": 8.5,
+      "narrative_score": 8.5,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.8,
+      "performance_build_score": 8.7,
+      "town_cohesion_score": 8.0,
+      "provenance_atelier_result": "PASS: G-9 adds no new visible raster assets; prompts, HUD text, and dialogue proof reuse existing runtime nodes and atelier-compliant interactables.",
+      "north_star_result": "PASS for G-9: Newport now gives a first-time player cleaner interaction prompts, a clear Counting House objective, and a tavern-whisper direction without debug-like normal-play markers. It is not SV-1 complete.",
+      "current_status": "PASS",
+      "reason_for_status": "Runtime interaction prompts now use compact E: Action - Name copy, objective guidance names the Counting House and tavern whisper, and debug-like Press E prompt language is absent from normal play.",
+      "next_required_action": "Start G-9A Journal, Objective, and Quest State Foundation."
     },
     {
       "phase_id": "G-9A",

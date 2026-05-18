@@ -148,10 +148,19 @@ func get_prompt_text() -> String:
 	var enter_prefix := "Press E to enter "
 	var inspect_prefix := "Press E to inspect "
 	if label.begins_with(enter_prefix):
-		return "E: " + label.substr(enter_prefix.length())
+		return "E: Enter - " + label.substr(enter_prefix.length())
 	if label.begins_with(inspect_prefix):
-		return "E: Inspect " + label.substr(inspect_prefix.length())
+		return "E: Inspect - " + label.substr(inspect_prefix.length())
 	return label
+
+func prompt_ux_contract() -> Dictionary:
+	return {
+		"phase": "G-9",
+		"prompt_style": "compact_diegetic_action_name_no_debug_marker",
+		"get_interaction_label_keeps_validator_compatibility": get_interaction_label().begins_with("Press E"),
+		"get_prompt_text_hides_press_e_copy": get_prompt_text().find("Press E") < 0,
+		"prompt_text": get_prompt_text(),
+	}
 
 func is_player_in_interaction_area(world_position: Vector2) -> bool:
 	if _interaction_zone.size.x <= 0.0 or _interaction_zone.size.y <= 0.0:

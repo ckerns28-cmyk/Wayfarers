@@ -85,9 +85,11 @@ when the autonomous merge rule in `AGENTS.md` and
 | G-13 | Browser Build, Performance, and Regression Hardening | Hardens Godot import, vertical slice, screenshots, review build, input, performance, assets, and route stability. |
 | G-14 | SV-1 Starter Village Playable Obsession Gate | Produces the final review package and stops for Chris. |
 
-Current execution status after G-8A: the living NPC population pass is complete,
-with seven named, grounded, role-bearing NPCs stationed across the tavern, dock,
-counting-house, market, civic, rear-service, and storehouse beats. G-9 is next.
+Current execution status after G-9: interaction prompts now use compact
+`E: Action - Name` copy, the first objective names the Counting House and
+tavern whisper route, and runtime proof covers counting-house dialogue, tavern
+rumor dialogue, objective-update feedback, and debug-off normal play. G-9A is
+next.
 
 ## G-7 Masterplan Contract
 

@@ -2244,13 +2244,12 @@ The required autonomous phase sequence is:
 - G-13 Browser Build, Performance, and Regression Hardening,
 - G-14 SV-1 Starter Village Playable Obsession Gate.
 
-Current SV-1 autonomous status after G-8A: Newport now has grounded, named,
-role-bearing NPCs for the tavern, docks, counting house, merchant row, civic
-notice board, rear service lane, and storehouse queue. The pass preserves the
-no-hover/no-glide rule by keeping NPC route walking disabled until dedicated
-walk sheets exist and by recording role, station, idle behavior, dialogue seed,
-quest relevance, and atelier provenance for each visible NPC. The next active
-phase is G-9 Interaction UX and Diegetic Prompt Pass.
+Current SV-1 autonomous status after G-9: Newport now has compact
+`E: Action - Name` prompts for buildings and NPCs, smaller in-world prompt
+presentation, a first objective that names the Counting House and tavern
+whisper route, and runtime proof for counting-house dialogue, tavern rumor
+dialogue, objective-update feedback, and debug-off normal play. The next active
+phase is G-9A Journal, Objective, and Quest State Foundation.
 
 Ordinary roadmap-bound autonomous PRs before SV-1 may be merged by Codex when
 branch/PR preflight is current, required validators pass, runtime proof passes

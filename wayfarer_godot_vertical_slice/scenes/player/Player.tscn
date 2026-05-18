@@ -35,16 +35,16 @@ enabled = true
 
 [node name="PromptLabel" type="Label" parent="."]
 visible = false
-offset_left = -92.0
-offset_top = -72.0
-offset_right = 92.0
+offset_left = -80.0
+offset_top = -66.0
+offset_right = 80.0
 offset_bottom = -50.0
 theme_override_colors/font_color = Color(1, 0.92, 0.68, 1)
 theme_override_colors/font_outline_color = Color(0.09, 0.055, 0.025, 0.95)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
-theme_override_constants/outline_size = 3
+theme_override_constants/outline_size = 2
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 15
-text = "E: Speak"
+theme_override_font_sizes/font_size = 12
+text = "E: Talk"
 horizontal_alignment = 1

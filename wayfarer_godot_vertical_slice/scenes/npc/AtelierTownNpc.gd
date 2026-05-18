@@ -2,6 +2,7 @@ extends Node2D
 
 const NPC_ATLAS_PATH := "res://art_pipeline/player_identity/atlases/newport_npc_atelier_g422r_v1.png"
 const G8A_LIVING_NPC_POPULATION_PASS := "G-8A"
+const G9_INTERACTION_UX_PASS := "G-9"
 const NPC_FRAME_SIZE := Vector2i(256, 256)
 const NPC_VISUAL_SCALE := 0.32
 const NPC_FOOT_ANCHOR := Vector2(128.0, 244.0)
@@ -53,11 +54,11 @@ func configure(config: Dictionary) -> void:
 
 
 func get_interaction_label() -> String:
-	return "E: " + String(_config.get("display_name", "Newporter"))
+	return "Talk - " + String(_config.get("display_name", "Newporter"))
 
 
 func get_prompt_text() -> String:
-	return get_interaction_label()
+	return "E: " + get_interaction_label()
 
 
 func interact() -> String:
@@ -116,6 +117,15 @@ func motion_foundation_contract() -> Dictionary:
 		"movement_speed": NPC_MOVEMENT_SPEED,
 		"walk_animation_fps": NPC_WALK_ANIMATION_FPS,
 		"pause_behavior": NPC_PAUSE_BEHAVIOR,
+	}
+
+func prompt_ux_contract() -> Dictionary:
+	return {
+		"phase": G9_INTERACTION_UX_PASS,
+		"prompt_style": "compact_diegetic_action_name_no_debug_marker",
+		"prompt_text": get_prompt_text(),
+		"dialogue_seed": String(_config.get("dialogue_seed", "")),
+		"quest_relevance": String(_config.get("quest_relevance", "")),
 	}
 
 

@@ -5,6 +5,7 @@ extends Node2D
 
 const NPC_ATLAS_PATH := "res://art_pipeline/player_identity/atlases/newport_npc_atelier_g422r_v1.png"
 const G8_CHARACTER_MOTION_FOUNDATION_PASS := "G-8"
+const G9_INTERACTION_UX_PASS := "G-9"
 const NPC_FRAME_SIZE := Vector2i(256, 256)
 const EDRIN_FRAME_INDEX := 2
 const NPC_VISUAL_SCALE := 0.32
@@ -53,7 +54,10 @@ func _ready() -> void:
 	_configure_visual_sprite()
 
 func get_interaction_label() -> String:
-	return "E: Speak with " + npc_name
+	return "Talk - " + npc_name
+
+func get_prompt_text() -> String:
+	return "E: " + get_interaction_label()
 
 func interact() -> String:
 	return "%s: %s" % [String(_population_config.get("display_name", "Edrin Vale")), String(_population_config.get("dialogue_seed", dialogue))]
@@ -105,6 +109,15 @@ func motion_foundation_contract() -> Dictionary:
 		"movement_speed": NPC_MOVEMENT_SPEED,
 		"walk_animation_fps": NPC_WALK_ANIMATION_FPS,
 		"pause_behavior": NPC_PAUSE_BEHAVIOR,
+	}
+
+func prompt_ux_contract() -> Dictionary:
+	return {
+		"phase": G9_INTERACTION_UX_PASS,
+		"prompt_style": "compact_diegetic_action_name_no_debug_marker",
+		"prompt_text": get_prompt_text(),
+		"dialogue_seed": String(_population_config.get("dialogue_seed", "")),
+		"quest_relevance": String(_population_config.get("quest_relevance", "")),
 	}
 
 func get_interaction_position() -> Vector2:
