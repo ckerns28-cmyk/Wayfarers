@@ -53,9 +53,9 @@ func _validate_scene(main: Node) -> void:
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-4.22", "build_phase_g_4_22")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.22 Visual Foundation Review Gate", "build_label_g_4_22")
-	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-22-visual-foundation-review-gate", "source_branch_g_4_22")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-4.22R", "build_phase_g_4_22r")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-4.22R Pre-G-5 Atelier Consistency Gate Repair", "build_label_g_4_22r")
+	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-4-22r-roadmap-execution-ledger-and-pre-g5-gate-repair", "source_branch_g_4_22r")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -66,6 +66,11 @@ func _validate_scene(main: Node) -> void:
 	_expect(map != null, "map_exists")
 	if not NEWPORT_TOWN.NPCS_ENABLED:
 		_expect(main.get_node_or_null("World/EdrinVale") == null, "npcs_disabled_for_g_4_11")
+	else:
+		var edrin := main.get_node_or_null("World/EdrinVale") as Node2D
+		_expect(edrin != null, "g422r_edrin_enabled")
+		if edrin:
+			_expect(edrin.get_node_or_null("Visual") is Sprite2D, "g422r_edrin_sprite_visual")
 
 	if player:
 		_expect(player.get_node_or_null("Camera2D") != null, "player_camera_exists")
@@ -94,6 +99,8 @@ func _validate_scene(main: Node) -> void:
 			_expect(not collision_layer.visible, "collision_probe_debug_layer_hidden_by_default")
 			_expect(collision_layer.get("_debug_overlay_enabled") == false, "collision_probe_debug_flag_off_by_default")
 			_validate_detail_blockers(collision_layer)
+		if player:
+			_validate_g422r_atelier_runtime_asset_consistency(main, player, map)
 
 	_validate_buildings()
 	_validate_g420_hud_ui_visual_redesign(hud)
@@ -415,9 +422,9 @@ func _validate_g419_player_runtime_visual(player: Node) -> void:
 	_expect(visual != null, "g419_player_visual_node_exists")
 	if visual == null:
 		return
-	_expect(visual.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST, "g419_player_visual_nearest_filter")
-	_expect(absf(visual.scale.x - 0.82) < 0.01 and absf(visual.scale.y - 0.82) < 0.01, "g419_player_visual_scale")
-	_expect(visual.position.distance_to(Vector2(0.0, -20.0)) < 0.5, "g419_player_visual_foot_anchor_offset")
+	_expect(visual.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR, "g422r_player_visual_linear_filter")
+	_expect(absf(visual.scale.x - 0.32) < 0.01 and absf(visual.scale.y - 0.32) < 0.01, "g422r_player_visual_scale")
+	_expect(visual.position.distance_to(Vector2(0.0, -33.0)) < 0.5, "g422r_player_visual_foot_anchor_offset")
 	var frames := visual.sprite_frames
 	_expect(frames != null, "g419_player_sprite_frames")
 	if frames == null:
@@ -428,6 +435,71 @@ func _validate_g419_player_runtime_visual(player: Node) -> void:
 			var expected_count := 1 if animation_name.begins_with("idle_") else 4
 			_expect(frames.get_frame_count(animation_name) == expected_count, "g419_player_animation_frame_count_" + animation_name)
 	_expect(player.has_method("set_review_visual_state"), "g419_player_review_pose_hook")
+
+func _validate_g422r_atelier_runtime_asset_consistency(main: Node, player: Node, map: Node) -> void:
+	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/newport_atelier_characters_g422r_manifest.json")
+	_expect(not manifest.is_empty(), "g422r_character_manifest_json")
+	_expect(String(manifest.get("schema_id", "")) == "wayfarer.player_identity.g422r.character_manifest.v2", "g422r_character_manifest_schema")
+	_expect(String(manifest.get("phase", "")) == "G-4.22R", "g422r_character_manifest_phase")
+	_expect(String(manifest.get("family_id", "")) == "newport_atelier_characters_g422r", "g422r_character_manifest_family")
+	_expect(String(manifest.get("required_visual_standard", "")).find("atelier") >= 0, "g422r_character_manifest_visual_standard")
+	var provenance: Dictionary = manifest.get("provenance_assertions", {})
+	for key in ["source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels", "placeholder"]:
+		_expect(bool(provenance.get(key, true)) == false, "g422r_character_manifest_provenance_" + key)
+	_expect(bool(provenance.get("normal_review_eligible", false)) == true, "g422r_character_manifest_normal_review")
+	for required_path in [
+		"res://art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png",
+		"res://art_pipeline/player_identity/atlases/newport_npc_atelier_g422r_v1.png",
+		"res://art_pipeline/player_identity/source_generated/g422r_atelier_characters_source_imagegen.png",
+		"res://art_pipeline/player_identity/source_generated/g422r_atelier_characters_prompt.txt",
+		"res://art_pipeline/player_identity/contact_sheets/newport_atelier_characters_g422r_contact_sheet.png",
+		"res://art_pipeline/player_identity/reports/newport_atelier_characters_g422r_extraction_qa.json",
+		"res://art_pipeline/player_identity/scripts/generate_g422r_atelier_character_assets.py",
+	]:
+		_expect(FileAccess.file_exists(required_path), "g422r_character_artifact_exists_" + required_path.get_file())
+	var runtime_assets: Dictionary = manifest.get("runtime_assets", {})
+	_expect(String(runtime_assets.get("player_atlas", "")).find("player_wayfarer_atelier_g422r") >= 0, "g422r_manifest_player_atlas")
+	_expect(String(runtime_assets.get("npc_atlas", "")).find("newport_npc_atelier_g422r") >= 0, "g422r_manifest_npc_atlas")
+	var npcs: Array = manifest.get("npcs", [])
+	_expect(npcs.size() >= 3, "g422r_manifest_npc_count")
+
+	var player_source := FileAccess.get_file_as_string("res://scenes/player/Player.gd")
+	_expect(player_source.find("player_wayfarer_atelier_g422r_v1.png") >= 0, "g422r_player_runtime_uses_atelier_atlas")
+	_expect(player_source.find("player_wayfarer_foundation_g419_v1.png") < 0, "g422r_player_runtime_not_g419_atlas")
+	var edrin_source := FileAccess.get_file_as_string("res://scenes/npc/EdrinVale.gd")
+	_expect(edrin_source.find("newport_npc_atelier_g422r_v1.png") >= 0, "g422r_edrin_runtime_uses_npc_atlas")
+	for primitive in ["func _draw()", "draw_circle", "draw_rect", "draw_line"]:
+		_expect(edrin_source.find(primitive) < 0, "g422r_edrin_no_primitive_" + primitive.replace(" ", "_").replace("(", "").replace(")", ""))
+	var blueprint_source := FileAccess.get_file_as_string("res://scripts/NewportTownBlueprint.gd")
+	_expect(blueprint_source.find("npc_placeholder") < 0, "g422r_blueprint_no_npc_placeholder")
+	_expect(blueprint_source.find("npc_atelier") >= 0, "g422r_blueprint_has_npc_atelier")
+	var map_source := FileAccess.get_file_as_string("res://scenes/map/MapLayer.gd")
+	_expect(map_source.find("NEWPORT_ATELIER_CHARACTER_PLACEMENTS") >= 0, "g422r_map_character_placements")
+	for token in ["G422R_SUPPRESS_PRIMITIVE_WORLD_PROPS", "G422R_HIDE_NORMAL_PLAY_LAYOUT_GUIDES", "G422R_HIDDEN_NORMAL_PLAY_MARKER_ASSETS", "g422r_hidden_normal_play_marker_assets", "_is_g422r_hidden_normal_play_marker"]:
+		_expect(map_source.find(token) >= 0, "g422r_map_hidden_marker_gate_" + token)
+	for asset_id in ["atelier_sign_tavern_inn_placeholder_01", "atelier_sign_painted_shop_plaque_01", "atelier_g418e_tavern_hanging_inn_sign_01", "atelier_g418e_commercial_mercantile_sign_01", "atelier_g418e_commercial_fishmonger_sign_01"]:
+		_expect(map_source.find(asset_id) >= 0, "g422r_hidden_low_bar_marker_" + asset_id)
+	for func_name in ["func _draw_g415_lane_connections", "func _draw_g423a_lot_threshold_overlays"]:
+		var guide_start := map_source.find(func_name)
+		var guide_end := map_source.find("\nfunc ", guide_start + 1)
+		if guide_start >= 0:
+			var guide_body := map_source.substr(guide_start, guide_end - guide_start if guide_end > guide_start else map_source.length() - guide_start)
+			_expect(guide_body.find("G422R_HIDE_NORMAL_PLAY_LAYOUT_GUIDES") >= 0, "g422r_layout_guides_hidden_" + func_name.replace("func ", ""))
+	var g410_start := map_source.find("func _draw_g410_props")
+	var g423a_start := map_source.find("func _draw_g423a_city_ground_washes")
+	if g410_start >= 0 and g423a_start > g410_start:
+		var g410_props := map_source.substr(g410_start, g423a_start - g410_start)
+		_expect(g410_props.find("_draw_newport_npc_placeholder") < 0, "g422r_g410_no_npc_placeholder_draw")
+		_expect(g410_props.find("_draw_sign_post") < 0, "g422r_g410_no_primitive_sign_post")
+	var decorative_layer := map.get_node_or_null("DecorativePropsLayer")
+	_expect(decorative_layer != null, "g422r_decorative_props_layer")
+	if decorative_layer:
+		_expect(decorative_layer.has_method("newport_atelier_character_version"), "g422r_map_character_version_api")
+		_expect(decorative_layer.call("newport_atelier_character_version") == "G-4.22R", "g422r_map_character_version")
+		var materials: Array = decorative_layer.call("newport_atelier_character_materials")
+		var placements: Array = decorative_layer.call("newport_atelier_character_placements")
+		_expect(materials.size() >= 3, "g422r_map_character_materials")
+		_expect(placements.size() >= 5, "g422r_map_character_placements_count")
 
 func _validate_g419_player_identity_foundation() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json")
@@ -493,7 +565,7 @@ func _validate_g420_hud_ui_visual_redesign(hud: CanvasLayer) -> void:
 	_expect(quest_body != null and quest_body.text.find("counting house") >= 0, "g420_hud_player_facing_objective")
 	if hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.20", "G-4.21", "G-4.22"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")
+		_expect(["G-4.20", "G-4.21", "G-4.22", "G-4.22R"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g420_hud_contract_player_facing_default")
 		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g420_hud_contract_metadata_hidden")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g420_hud_contract_no_hud_available")
@@ -516,7 +588,7 @@ func _validate_g421_origin_city_hero_slice(hud: CanvasLayer) -> void:
 	_expect(hud != null and hud.has_method("get_hud_visual_contract"), "g421_hud_contract_available")
 	if hud != null and hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.21", "G-4.22"].has(String(contract.get("phase", ""))), "g421_hud_contract_phase")
+		_expect(["G-4.21", "G-4.22", "G-4.22R"].has(String(contract.get("phase", ""))), "g421_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g421_hud_contract_player_facing")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g421_no_hud_capture_available")
 
@@ -530,7 +602,7 @@ func _validate_g422_visual_foundation_review_gate(hud: CanvasLayer) -> void:
 	_expect(hud != null and hud.has_method("get_hud_visual_contract"), "g422_hud_contract_available")
 	if hud != null and hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(String(contract.get("phase", "")) == "G-4.22", "g422_hud_contract_phase")
+		_expect(["G-4.22", "G-4.22R"].has(String(contract.get("phase", ""))), "g422_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g422_hud_contract_player_facing")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g422_no_hud_capture_available")
 		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g422_review_metadata_hidden_default")
@@ -540,7 +612,7 @@ func _validate_g419b_visual_production_registry() -> void:
 	_expect(not registry.is_empty(), "g419b_visual_registry_json")
 	_expect(String(registry.get("schema_id", "")) == "wayfarer.newport.visual_production_registry.v1", "g419b_visual_registry_schema")
 	var registry_phase := String(registry.get("phase", ""))
-	_expect(["G-4.21A", "G-4.18E", "G-4.19"].has(registry_phase), "g419_visual_registry_phase_current")
+	_expect(["G-4.21A", "G-4.18E", "G-4.19", "G-4.22R"].has(registry_phase), "g419_visual_registry_phase_current")
 	_expect(String(registry.get("north_star", "")).find("starting town/village") >= 0, "g419b_visual_registry_north_star")
 	var registry_policy := String(registry.get("policy", "")).to_lower()
 	if registry_phase == "G-4.18E":
@@ -552,6 +624,10 @@ func _validate_g419b_visual_production_registry() -> void:
 		_expect(registry_policy.find("player visual identity foundation") >= 0, "g419_visual_registry_policy_player_identity")
 		_expect(registry_policy.find("not final-commercial promoted") >= 0, "g419_visual_registry_policy_not_final_promoted")
 		_expect(registry_policy.find("old drawn player placeholder is deprecated") >= 0, "g419_visual_registry_policy_placeholder_deprecated")
+	elif registry_phase == "G-4.22R":
+		_expect(registry_policy.find("g-4.22r") >= 0, "g422r_visual_registry_policy_phase")
+		_expect(registry_policy.find("player/npc/marker/world sprites") >= 0, "g422r_visual_registry_policy_runtime_sprites")
+		_expect(registry_policy.find("manifest-backed") >= 0, "g422r_visual_registry_policy_manifest_backed")
 	else:
 		_expect(registry_policy.find("core building atelier rebuild") >= 0, "g421a_visual_registry_core_building_policy")
 		_expect(registry_policy.find("tavern/inn is the required hero centerpiece asset") >= 0, "g421a_visual_registry_tavern_hero_policy")
@@ -665,16 +741,18 @@ func _validate_g419b_visual_production_registry() -> void:
 		"atelier_g418e_harbor_net_drying_frame_01",
 		"atelier_g418e_service_fence_gate_01",
 		"player_placeholder_drawn",
-		"player_wayfarer_foundation_g419"
+		"player_wayfarer_foundation_g419",
+		"player_wayfarer_atelier_g422r",
+		"newport_npc_atelier_g422r"
 	]:
 		_expect(by_id.has(required_id), "g419b_visual_registry_required_entry_" + required_id)
 
 	if by_id.has("player_wayfarer_foundation_g419"):
 		var player_asset: Dictionary = by_id["player_wayfarer_foundation_g419"]
 		_expect(String(player_asset.get("category", "")) == "CHARACTER_PLAYER_SPRITE_FOUNDATION", "g419_player_registry_category")
-		_expect(String(player_asset.get("rebuild_status", "")) == "APPROVED_TEMPORARY", "g419_player_registry_rebuild_status")
+		_expect(["APPROVED_TEMPORARY", "DEPRECATED_DO_NOT_USE"].has(String(player_asset.get("rebuild_status", ""))), "g419_player_registry_rebuild_status")
 		var usage: Dictionary = player_asset.get("current_usage", {})
-		_expect(bool(usage.get("normal_review", false)) == true, "g419_player_registry_normal_review")
+		_expect(bool(usage.get("normal_review", false)) == (registry_phase != "G-4.22R"), "g419_player_registry_normal_review")
 		var provenance: Dictionary = player_asset.get("provenance_detail", {})
 		_expect(bool(provenance.get("project_owned_deterministic_source", false)) == true, "g419_player_registry_project_owned")
 		for key in ["source_pixels_from_yellow_uncertain_assets", "source_pixels_from_third_party_material", "web_scraped_source_pixels", "final_commercial_promoted"]:
@@ -684,6 +762,18 @@ func _validate_g419b_visual_production_registry() -> void:
 			_expect(artifacts.has(artifact_key), "g419_player_registry_artifact_" + artifact_key)
 			var artifact_path := String(artifacts.get(artifact_key, ""))
 			_expect(artifact_path != "" and FileAccess.file_exists("res://" + artifact_path), "g419_player_registry_artifact_exists_" + artifact_key)
+	if by_id.has("player_wayfarer_atelier_g422r"):
+		var g422r_player: Dictionary = by_id["player_wayfarer_atelier_g422r"]
+		_expect(String(g422r_player.get("category", "")) == "CHARACTER_PLAYER_SPRITE_ATELIER", "g422r_player_registry_category")
+		var g422r_player_usage: Dictionary = g422r_player.get("current_usage", {})
+		_expect(bool(g422r_player_usage.get("normal_review", false)) == true, "g422r_player_registry_normal_review")
+		_expect(String(g422r_player.get("source_provenance_status", "")).find("green_origin_candidate") >= 0, "g422r_player_registry_provenance")
+	if by_id.has("newport_npc_atelier_g422r"):
+		var g422r_npc: Dictionary = by_id["newport_npc_atelier_g422r"]
+		_expect(String(g422r_npc.get("category", "")) == "CHARACTER_NPC_SPRITE_ATELIER", "g422r_npc_registry_category")
+		var g422r_npc_usage: Dictionary = g422r_npc.get("current_usage", {})
+		_expect(bool(g422r_npc_usage.get("normal_review", false)) == true, "g422r_npc_registry_normal_review")
+		_expect(String(g422r_npc.get("source_provenance_status", "")).find("green_origin_candidate") >= 0, "g422r_npc_registry_provenance")
 	if by_id.has("player_placeholder_drawn"):
 		var placeholder: Dictionary = by_id["player_placeholder_drawn"]
 		var placeholder_usage: Dictionary = placeholder.get("current_usage", {})
@@ -1890,7 +1980,7 @@ func _validate_g422a_walkable_city_contract() -> void:
 		_expect(position.x > 0.0 and position.y > 0.0, "g422a_anchor_position_" + anchor_id)
 	for required_id in ["tavern_inn_entrance", "town_hall_entrance", "mercantile_entrance", "town_notice_board", "dock_worker_west", "market_vendor", "harbor_cargo_inspection_west", "well_bench_civic_square"]:
 		_expect(anchor_ids.has(required_id), "g422a_anchor_present_" + required_id)
-	for required_type in ["entrance", "shop", "notice_board", "npc_placeholder", "cargo_inspection", "small_interaction"]:
+	for required_type in ["entrance", "shop", "notice_board", "npc_atelier", "cargo_inspection", "small_interaction"]:
 		_expect(anchor_types.has(required_type), "g422a_anchor_type_" + required_type)
 
 	var route_rects: Array = NEWPORT_TOWN.route_rects()

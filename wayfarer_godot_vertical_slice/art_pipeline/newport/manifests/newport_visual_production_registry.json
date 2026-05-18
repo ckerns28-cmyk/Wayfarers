@@ -1,10 +1,10 @@
 {
   "schema_id": "wayfarer.newport.visual_production_registry.v1",
-  "phase": "G-4.19",
-  "generated_at": "2026-05-17",
+  "phase": "G-4.22R",
+  "generated_at": "2026-05-18",
   "registry_role": "Newport visual production registry and core asset trust audit.",
   "north_star": "Newport is the starting town/village for Wayfarer: a believable, enjoyable, navigable opening location with coastal identity, readable harbor/market/civic/residential organization, emotional invitation to explore, gameplay readiness, and visual consistency with the G-4.18D/G-4.19A atelier standard.",
-  "policy": "G-4.19 establishes the Player Visual Identity Foundation under the autonomous pre-G-5 protocol. The active player sprite family is project-owned deterministic source-authored art, not final-commercial promoted, with preserved script, style tokens, manifest, contact sheet, QA, and runtime integration. The old drawn player placeholder is deprecated from normal review.",
+  "policy": "G-4.22R reopens the previous G-5 readiness claim after runtime screenshot evidence showed visible non-atelier humanoid and marker placeholders. The playable Newport hero slice now requires all visible player/NPC/marker/world sprites to be manifest-backed, provenance-classified, and atelier-consistent or hidden behind debug-only flags.",
   "status_taxonomy": [
     "APPROVED_FINAL",
     "APPROVED_TEMPORARY",
@@ -81,7 +81,7 @@
     {
       "wave_id": "wave_5_character_npc_standard",
       "title": "Character/NPC standard",
-      "status": "in_progress_g419_player_visual_identity_foundation",
+      "status": "complete_g422r_player_npc_atelier_consistency_repair",
       "atelier_required": true,
       "scope": [
         "player sprite standard",
@@ -89,9 +89,9 @@
         "scale and perspective lock",
         "equipment readability preparation"
       ],
-      "acceptance_note": "G-4.19 establishes the player visual identity foundation first: directional idle/walk contract, human-scale Newport grounding, and a repeatable provenance-safe character asset path. NPC variants remain future work.",
-      "accepted_pack_count": 1,
-      "accepted_asset_count": 1
+      "acceptance_note": "G-4.22R supersedes the G-4.19 player foundation for normal runtime review and adds manifest-backed NPC sprites so no drawn humanoid placeholder appears in the playable hero slice.",
+      "accepted_pack_count": 2,
+      "accepted_asset_count": 5
     }
   ],
   "asset_entries": [
@@ -4724,14 +4724,14 @@
       "path": "art_pipeline/player_identity/atlases/player_wayfarer_foundation_g419_v1.png",
       "source_provenance_status": "green_origin_project_authored_deterministic",
       "current_usage": {
-        "normal_review": true,
+        "normal_review": false,
         "lab_only": false,
-        "runtime_target": "Player AnimatedSprite2D Visual node",
-        "usage_notes": "Active normal-review player sprite foundation for G-4.19; final-commercial promotion remains a later art/legal gate."
+        "runtime_target": "Superseded in normal review by player_wayfarer_atelier_g422r",
+        "usage_notes": "Historical G-4.19 player foundation retained for provenance and comparison; no longer the normal hero-slice runtime target after G-4.22R."
       },
-      "visual_quality_status": "APPROVED_TEMPORARY",
+      "visual_quality_status": "DEPRECATED_DO_NOT_USE",
       "gameplay_role": "Readable human-scale player identity, directional idle/walk foundation, collision/camera/interaction compatible.",
-      "rebuild_status": "APPROVED_TEMPORARY",
+      "rebuild_status": "DEPRECATED_DO_NOT_USE",
       "player_identity_artifacts": {
         "manifest": "art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json",
         "style_tokens": "art_pipeline/player_identity/source_authored/g419_player_identity_style_tokens.json",
@@ -4759,7 +4759,76 @@
         "web_scraped_source_pixels": false,
         "final_commercial_promoted": false
       },
-      "notes": "G-4.19 staged character foundation. It belongs with Newport at gameplay zoom and preserves future outfit/equipment/NPC expansion hooks without claiming final-commercial art status."
+      "notes": "G-4.19 staged character foundation. It belongs with Newport at gameplay zoom and preserves future outfit/equipment/NPC expansion hooks without claiming final-commercial art status. Superseded for normal review by the G-4.22R atelier character repair.",
+      "superseded_by": "player_wayfarer_atelier_g422r",
+      "deprecated_visual_target": true,
+      "superseded_by_g422r_asset": "player_wayfarer_atelier_g422r"
+    },
+    {
+      "asset_id": "player_wayfarer_atelier_g422r",
+      "name": "G-4.22R Atelier Player Wayfarer",
+      "category": "CHARACTER_PLAYER_SPRITE_ATELIER",
+      "path": "art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "Player.gd PLAYER_SPRITE_ATLAS_PATH",
+        "usage_notes": "Supersedes the G-4.19 player foundation for the reopened pre-G-5 visual gate."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Primary player avatar in normal Newport hero-slice screenshots.",
+      "notes": "G-4.22R painterly player sprite extracted from source-generated sheet after the deterministic scratch pack was rejected as below atelier standard.",
+      "provenance_detail": {
+        "ai_generated": true,
+        "human_selected": true,
+        "source_pixels_from_yellow_uncertain_assets": false,
+        "source_pixels_from_third_party_material": false,
+        "web_scraped_source_pixels": false,
+        "final_commercial_candidate": false
+      },
+      "player_identity_artifacts": {
+        "manifest": "art_pipeline/player_identity/manifests/newport_atelier_characters_g422r_manifest.json",
+        "source_image": "art_pipeline/player_identity/source_generated/g422r_atelier_characters_source_imagegen.png",
+        "source_prompt": "art_pipeline/player_identity/source_generated/g422r_atelier_characters_prompt.txt",
+        "contact_sheet": "art_pipeline/player_identity/contact_sheets/newport_atelier_characters_g422r_contact_sheet.png",
+        "validation_report": "art_pipeline/player_identity/reports/newport_atelier_characters_g422r_extraction_qa.json",
+        "atlas": "art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png"
+      }
+    },
+    {
+      "asset_id": "newport_npc_atelier_g422r",
+      "name": "G-4.22R Newport Atelier NPC Atlas",
+      "category": "CHARACTER_NPC_SPRITE_ATELIER",
+      "path": "art_pipeline/player_identity/atlases/newport_npc_atelier_g422r_v1.png",
+      "source_provenance_status": "ai_assisted_green_origin_candidate_pending_license_review",
+      "current_usage": {
+        "normal_review": true,
+        "lab_only": false,
+        "runtime_target": "EdrinVale.tscn and MapLayer atelier character placements",
+        "usage_notes": "Replaces primitive NPC placeholder drawing in normal runtime screenshots."
+      },
+      "visual_quality_status": "APPROVED_TEMPORARY",
+      "rebuild_status": "APPROVED_TEMPORARY",
+      "gameplay_role": "Visible harbor workers, market/civic figures, and interactable Edrin Vale.",
+      "notes": "G-4.22R NPC atlas replaces primitive humanoid placeholder drawing in normal Newport runtime screenshots.",
+      "provenance_detail": {
+        "ai_generated": true,
+        "human_selected": true,
+        "source_pixels_from_yellow_uncertain_assets": false,
+        "source_pixels_from_third_party_material": false,
+        "web_scraped_source_pixels": false,
+        "final_commercial_candidate": false
+      },
+      "npc_identity_artifacts": {
+        "manifest": "art_pipeline/player_identity/manifests/newport_atelier_characters_g422r_manifest.json",
+        "source_image": "art_pipeline/player_identity/source_generated/g422r_atelier_characters_source_imagegen.png",
+        "source_prompt": "art_pipeline/player_identity/source_generated/g422r_atelier_characters_prompt.txt",
+        "contact_sheet": "art_pipeline/player_identity/contact_sheets/newport_atelier_characters_g422r_contact_sheet.png",
+        "validation_report": "art_pipeline/player_identity/reports/newport_atelier_characters_g422r_extraction_qa.json",
+        "atlas": "art_pipeline/player_identity/atlases/newport_npc_atelier_g422r_v1.png"
+      }
     }
   ]
 }

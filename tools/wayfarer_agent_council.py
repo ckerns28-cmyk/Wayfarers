@@ -190,6 +190,7 @@ def compact_output(result: CommandResult, limit: int = 600) -> str:
 
 def find_latest_screenshots(root: Path) -> list[Path]:
     patterns = [
+        "wayfarer_godot_vertical_slice/artifacts/review/g422r_runtime_screenshots/g422r_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g422_runtime_screenshots/g422_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g421_runtime_screenshots/g421_*.png",
         "wayfarer_godot_vertical_slice/artifacts/review/g420_runtime_screenshots/g420_*.png",
@@ -212,6 +213,8 @@ def find_latest_screenshots(root: Path) -> list[Path]:
 
 def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
     normalized = phase.upper().strip()
+    if normalized.startswith("G-4.22R"):
+        return "G-4.22R", "g422r"
     if normalized.startswith("G-4.22A"):
         return "G-4.22A", "g422a"
     if normalized.startswith("G-4.22"):
@@ -254,6 +257,14 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     g419_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\art_pipeline\player_identity\scripts\validate_g419_player_identity.py"
+    )
+    g422r_runtime_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g422r_runtime_asset_consistency.py"
+    )
+    pre_g5_ledger_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_pre_g5_roadmap_ledger.py"
     )
     extraction_text = (
         f"& {powershell_quote(python_bin)} "
@@ -373,6 +384,28 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 ],
                 cwd=root,
                 required_paths=[game_root / "art_pipeline" / "player_identity" / "scripts" / "validate_g419_player_identity.py"],
+            ),
+        )
+    if normalized_phase.startswith("G-4.22R"):
+        diff_index = max(0, len(commands) - 2)
+        commands.insert(
+            diff_index,
+            ValidatorCommand(
+                name="G-4.22R runtime asset consistency validation",
+                command_text=g422r_runtime_text,
+                args=[python_bin, str(game_root / "tools" / "validate_g422r_runtime_asset_consistency.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_g422r_runtime_asset_consistency.py"],
+            ),
+        )
+        commands.insert(
+            diff_index + 1,
+            ValidatorCommand(
+                name="Pre-G-5 roadmap execution ledger validation",
+                command_text=pre_g5_ledger_text,
+                args=[python_bin, str(game_root / "tools" / "validate_pre_g5_roadmap_ledger.py")],
+                cwd=root,
+                required_paths=[game_root / "tools" / "validate_pre_g5_roadmap_ledger.py"],
             ),
         )
     return commands
@@ -514,6 +547,53 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ("G-4.21 council report", root / "docs" / "reports" / "G421_ORIGIN_CITY_HERO_SLICE_AGENT_COUNCIL_REPORT.md"),
                 ("G-4.22 gate screenshot wrapper", game_root / "tools" / "capture_g422_runtime_screenshots.ps1"),
                 ("G-4.22 gate screenshot script", game_root / "tools" / "capture_g422_runtime_screenshots.gd"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-4.22R"):
+        required.extend(
+            [
+                ("Pre-G-5 roadmap execution ledger", root / "docs" / "reports" / "PRE_G5_ROADMAP_EXECUTION_LEDGER.md"),
+                ("Pre-G-5 roadmap execution ledger JSON", root / "docs" / "reports" / "PRE_G5_ROADMAP_EXECUTION_LEDGER.json"),
+                (
+                    "Pre-G-5 roadmap ledger validator",
+                    game_root / "tools" / "validate_pre_g5_roadmap_ledger.py",
+                ),
+                (
+                    "G-4.22R runtime asset consistency validator",
+                    game_root / "tools" / "validate_g422r_runtime_asset_consistency.py",
+                ),
+                (
+                    "G-4.22R character manifest",
+                    game_root / "art_pipeline" / "player_identity" / "manifests" / "newport_atelier_characters_g422r_manifest.json",
+                ),
+                (
+                    "G-4.22R player atlas",
+                    game_root / "art_pipeline" / "player_identity" / "atlases" / "player_wayfarer_atelier_g422r_v1.png",
+                ),
+                (
+                    "G-4.22R NPC atlas",
+                    game_root / "art_pipeline" / "player_identity" / "atlases" / "newport_npc_atelier_g422r_v1.png",
+                ),
+                (
+                    "G-4.22R player/NPC contact sheet",
+                    game_root / "art_pipeline" / "player_identity" / "contact_sheets" / "newport_atelier_characters_g422r_contact_sheet.png",
+                ),
+                (
+                    "G-4.22R source prompt",
+                    game_root / "art_pipeline" / "player_identity" / "source_generated" / "g422r_atelier_characters_prompt.txt",
+                ),
+                (
+                    "G-4.22R source image",
+                    game_root / "art_pipeline" / "player_identity" / "source_generated" / "g422r_atelier_characters_source_imagegen.png",
+                ),
+                (
+                    "G-4.22R runtime screenshot manifest",
+                    game_root / "artifacts" / "review" / "g422r_runtime_screenshots" / "g422r_runtime_screenshot_manifest.json",
+                ),
+                (
+                    "G-4.22R gate reopen report",
+                    root / "docs" / "reports" / "G422R_PRE_G5_ROADMAP_EXECUTION_AND_GATE_REOPEN_REPORT.md",
+                ),
             ]
         )
     if capture_prefix != "g422a":
@@ -786,10 +866,107 @@ def build_report(
         scrum_scope = "Scope check: this council pass redesigns HUD/UI presentation only; it keeps no-HUD capture, review metadata, Newport runtime layout, player movement, collision, camera, and interaction behavior intact."
     elif phase.upper().strip().startswith("G-4.21"):
         scrum_scope = "Scope check: this council pass composes the accepted Newport street/dock layout, G-4.18E props, G-4.19 player, and G-4.20 HUD into a hero-slice screenshot packet without changing core gameplay systems."
+    elif phase.upper().strip().startswith("G-4.22R"):
+        scrum_scope = "Scope check: this council pass reopens the false-positive G-5 readiness gate, verifies the pre-G-5 roadmap ledger, and repairs visible player/NPC/marker/world sprite consistency before G-5 can be recommended."
     elif phase.upper().strip().startswith("G-4.22"):
         scrum_scope = "Scope check: this council pass is the formal G-4 visual foundation gate; it records acceptance authority and may recommend G-5 only if screenshots, provenance, validators, and council scores clear the gate."
     else:
         scrum_scope = "Scope check: this council pass changes production documentation and tooling only; it must not change Newport runtime layout."
+
+    game_root = root / "wayfarer_godot_vertical_slice"
+    ledger_validator_status = next(
+        (item["status"] for item in validator_results if item["name"] == "Pre-G-5 roadmap execution ledger validation"),
+        "NOT_RUN_FOR_PHASE",
+    )
+    runtime_asset_validator_status = next(
+        (item["status"] for item in validator_results if item["name"] == "G-4.22R runtime asset consistency validation"),
+        "NOT_RUN_FOR_PHASE",
+    )
+    g422r_consistency_fields = [
+        ["Is the previous G-5 readiness declaration reopened?", "YES"],
+        ["Does the roadmap execution ledger have no non-PASS rows?", "PASS" if ledger_validator_status == "PASS" else "CHECK"],
+        ["Are player sprites atelier-standard and manifest-backed?", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Are NPC sprites atelier-standard and manifest-backed?", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Are crude humanoid placeholders removed from normal play?", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Are marker/sign/quest/world objects traceable or hidden/debug-only?", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Were G-4.22R screenshots inspected by the council?", "PASS" if screenshots_inspected else "FAIL"],
+        ["May true G-5 readiness be recommended after this repair?", "YES" if final_verdict == AUTHORITY_PASS else "NO"],
+    ]
+    ledger_result_rows = [
+        ["Ledger markdown", "FOUND" if (root / "docs" / "reports" / "PRE_G5_ROADMAP_EXECUTION_LEDGER.md").exists() else "MISSING", "docs/reports/PRE_G5_ROADMAP_EXECUTION_LEDGER.md"],
+        ["Ledger JSON", "FOUND" if (root / "docs" / "reports" / "PRE_G5_ROADMAP_EXECUTION_LEDGER.json").exists() else "MISSING", "docs/reports/PRE_G5_ROADMAP_EXECUTION_LEDGER.json"],
+        ["Ledger validator", ledger_validator_status, "wayfarer_godot_vertical_slice/tools/validate_pre_g5_roadmap_ledger.py"],
+        ["Runtime asset consistency validator", runtime_asset_validator_status, "wayfarer_godot_vertical_slice/tools/validate_g422r_runtime_asset_consistency.py"],
+    ]
+    runtime_asset_audit_rows = [
+        [
+            "Player",
+            "wayfarer_godot_vertical_slice/art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png",
+            "newport_atelier_characters_g422r_manifest.json / player_wayfarer_atelier_g422r",
+            "PASS" if runtime_asset_validator_status == "PASS" else "CHECK",
+        ],
+        [
+            "NPCs",
+            "wayfarer_godot_vertical_slice/art_pipeline/player_identity/atlases/newport_npc_atelier_g422r_v1.png",
+            "newport_atelier_characters_g422r_manifest.json / three approved NPC variants",
+            "PASS" if runtime_asset_validator_status == "PASS" else "CHECK",
+        ],
+        [
+            "Visible marker/sign/quest/world objects",
+            "wayfarer_godot_vertical_slice/art_pipeline/newport_atelier/contact_sheets",
+            "Newport visual production registry and G-4.18E/G-4.20B atelier manifests",
+            "PASS" if runtime_asset_validator_status == "PASS" else "CHECK",
+        ],
+        [
+            "Hidden debug-only placeholders",
+            "Debug overlay/capture toggles only",
+            "Normal G-4.22R screenshots require debug_overlay=false except explicit proof metadata",
+            "PASS" if screenshots_inspected else "CHECK",
+        ],
+        [
+            "Removed/replaced placeholders",
+            "Player.gd, EdrinVale.gd, MapLayer.gd, NewportTownBlueprint.gd",
+            "G-4.22R validator scans primitive draw paths and npc_placeholder anchors",
+            "PASS" if runtime_asset_validator_status == "PASS" else "CHECK",
+        ],
+    ]
+    player_asset_audit_rows = [
+        ["Runtime atlas", "player_wayfarer_atelier_g422r_v1.png", "Manifest-backed", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Source image", "g422r_atelier_characters_source_imagegen.png", "Repo-local generated source", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Source prompt", "g422r_atelier_characters_prompt.txt", "Prompt retained", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Contact sheet", "newport_atelier_characters_g422r_contact_sheet.png", "Reviewed in screenshot proof", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Runtime integration", "Player.gd / Player.tscn", "G-4.22R atlas, scale, y-sort grounding", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+    ]
+    npc_asset_audit_rows = [
+        ["Runtime atlas", "newport_npc_atelier_g422r_v1.png", "Manifest-backed three-variant NPC sheet", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Interactable NPC", "scenes/npc/EdrinVale.gd / EdrinVale.tscn", "Sprite2D atlas visual, primitive draw removed", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Ambient NPC placements", "MapLayer.gd NEWPORT_ATELIER_CHARACTER_PLACEMENTS", "Manifest-backed dockworker/vendor/clerk variants", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Blueprint anchors", "NewportTownBlueprint.gd", "npc_atelier anchors, no npc_placeholder normal-play anchors", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+    ]
+    marker_sign_audit_rows = [
+        ["Shop/sign markers", "newport_atelier_sign_shop_markers_contact_sheet.png", "G-4.20B/G-4.18E atelier registry evidence", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Lamps/wayfinding", "newport_atelier_lamps_wayfinding_contact_sheet.png", "G-4.20B atelier registry evidence", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+        ["Primitive normal-play sign path", "MapLayer.gd _draw_g410_props", "G-4.22R validator requires no primitive sign posts in normal G410 props", "PASS" if runtime_asset_validator_status == "PASS" else "CHECK"],
+    ]
+    screenshot_inspection_rows = [
+        ["Screenshots found", str(len(screenshots)), "PASS" if screenshots else "FAIL"],
+        ["Screenshot review flag", screenshot_review, "PASS" if screenshots_inspected else "FAIL"],
+        ["Debug overlays disabled proof", "g422r_09_debug_overlays_disabled_proof.png", "PASS" if screenshots_inspected else "CHECK"],
+        ["Visible failures found/fixed", "Non-atelier player/NPC/marker placeholders replaced or hidden by G-4.22R", "PASS" if final_verdict == AUTHORITY_PASS else "CHECK"],
+    ]
+    north_star_rows = [
+        ["Harbor RPG believability", "Newport remains a coherent harbor city rather than an asset board.", "PASS" if advances_north_star else "CHECK"],
+        ["Player-facing wonder/readability", "Player/NPC art no longer breaks the atelier environment language.", "PASS" if art_direction_score >= 8.5 else "FAIL"],
+        ["Autonomous QA integrity", "Ledger, validators, screenshots, and council sections prevent silent phase compression.", "PASS" if ledger_validator_status in {"PASS", "NOT_RUN_FOR_PHASE"} else "FAIL"],
+    ]
+    visual_bar_rows = [
+        ["Design", score_text(design_score), score_status(design_score)],
+        ["Art direction", score_text(art_direction_score), score_status(art_direction_score)],
+        ["World/layout", score_text(world_layout_score), score_status(world_layout_score)],
+        ["Gameplay/readability", score_text(gameplay_readability_score), score_status(gameplay_readability_score)],
+        ["Technical stability", score_text(technical_stability_score), score_status(technical_stability_score)],
+        ["Minimum score", score_text(min(design_score, art_direction_score, world_layout_score, gameplay_readability_score, technical_stability_score)), "PASS" if meets_bar else "FAIL"],
+    ]
 
     screenshot_rows = []
     for path in screenshots[:16]:
@@ -904,6 +1081,38 @@ def build_report(
                 ],
             ),
             "",
+            "## Roadmap Execution Ledger Result",
+            "",
+            md_table(["Item", "Status", "Evidence"], ledger_result_rows),
+            "",
+            "## Visible Runtime Asset Consistency Audit",
+            "",
+            md_table(["Runtime Element", "Asset Path", "Provenance/Manifest", "Status"], runtime_asset_audit_rows),
+            "",
+            "## Player Asset Audit",
+            "",
+            md_table(["Item", "Path", "Evidence", "Status"], player_asset_audit_rows),
+            "",
+            "## NPC Asset Audit",
+            "",
+            md_table(["Item", "Path", "Evidence", "Status"], npc_asset_audit_rows),
+            "",
+            "## Marker/Sign/Quest Object Audit",
+            "",
+            md_table(["Item", "Path", "Evidence", "Status"], marker_sign_audit_rows),
+            "",
+            "## Screenshot Inspection Result",
+            "",
+            md_table(["Item", "Evidence", "Status"], screenshot_inspection_rows),
+            "",
+            "## North Star Result",
+            "",
+            md_table(["Area", "Judgment", "Status"], north_star_rows),
+            "",
+            "## 8.5+/10 Visual Bar Result",
+            "",
+            md_table(["Discipline", "Score", "Status"], visual_bar_rows),
+            "",
             "## Required Tooling And Validator Paths",
             "",
             md_table(["Item", "Status", "Path"], paths),
@@ -950,6 +1159,16 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-4.21")
+                else []
+            ),
+            *(
+                [
+                    "## G-4.22R Pre-G-5 Atelier Consistency Gate Authority Questions",
+                    "",
+                    md_table(["Question", "Council Answer"], g422r_consistency_fields),
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-4.22R")
                 else []
             ),
             *(
@@ -1075,7 +1294,7 @@ def build_report(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the Wayfarer Agent Council report generator.")
     parser.add_argument("--phase", default="G-4.22P", help="Phase label to print in the report.")
-    parser.add_argument("--target-pr", type=int, default=449, help="PR number to inspect for Newport classification context.")
+    parser.add_argument("--target-pr", type=int, default=0, help="PR number to inspect for Newport classification context.")
     parser.add_argument("--run-validators", action="store_true", help="Run validators instead of listing SKIPPED_WITH_COMMAND entries.")
     parser.add_argument("--godot-bin", default=default_godot_bin(), help="Path to Godot console executable.")
     parser.add_argument("--python-bin", default=default_python_bin(), help="Path to Python executable.")

@@ -21,6 +21,13 @@ The default loop is:
 Chris is not the default QA gate for ordinary pre-G-5 work. A normal visual QA
 pass is not a valid escalation reason by itself.
 
+The roadmap must be executed as visible phase evidence, not as a compressed
+summary. Each pre-G-5 item needs implementation evidence, screenshot evidence
+where applicable, validation evidence, Agent Council judgment, PR/merge
+evidence, and a `PASS` row in
+`docs/reports/PRE_G5_ROADMAP_EXECUTION_LEDGER.md` before the G-5 readiness gate
+can pass.
+
 ## Authority
 
 The Agent Council is the default QA and acceptance gate for pre-G-5 work. The
@@ -36,6 +43,57 @@ council verdict is authoritative for ordinary phases once it has reviewed:
 
 Validators passing remains required, but a technical pass is not enough. The
 council must explicitly accept or reject the player-facing result.
+
+## Pre-G-5 Roadmap Ledger Gate
+
+`wayfarer_godot_vertical_slice/tools/validate_pre_g5_roadmap_ledger.py` is part
+of the readiness gate. It must fail G-5 readiness if any required pre-G-5
+roadmap phase is missing from the ledger, has a status other than `PASS`, lacks
+PR/commit evidence, lacks screenshot evidence for visual/player-facing work,
+lacks Agent Council art/world/player-facing judgment, lacks provenance evidence
+for asset/player/NPC/world work, or cannot trace visible runtime sprites through
+the approved asset/provenance manifests.
+
+A merged PR is evidence, not acceptance by itself. A later gate cannot silently
+substitute for the proof package of an earlier roadmap phase.
+
+## Atelier-Only Playable Hero-Slice Rule
+
+All visible playable hero-slice world sprites must meet the active atelier
+standard unless explicitly hidden behind debug-only behavior.
+
+This includes:
+
+- player,
+- NPCs,
+- buildings,
+- props,
+- signs,
+- street objects,
+- harbor objects,
+- market objects,
+- roadside objects,
+- quest/world markers,
+- interaction markers,
+- character-like objects,
+- any visible normal-play runtime sprite.
+
+Hard requirements:
+
+- Player sprites must always be atelier-standard.
+- NPC sprites must always be atelier-standard.
+- No hand-drawn placeholder characters are allowed in normal play.
+- No beige/tan humanoid placeholders are allowed in normal play.
+- No crude debug boxes, circles, or simple sign markers are allowed in normal
+  play.
+- No unknown or untracked runtime sprite may appear in the playable hero slice.
+- No red/yellow/unknown-provenance sprite may be promoted into the playable
+  hero slice.
+- If a placeholder is required for debugging, it must be hidden behind a debug
+  flag and absent from normal screenshots.
+
+If a validator cannot prove a visible world sprite is approved and
+provenance-classified, the gate fails.
 
 ## Required Status Taxonomy
 
@@ -106,6 +164,18 @@ Every final council report must include:
 - QA regression result,
 - build/release result,
 - final recommended next phase.
+
+For pre-G-5 readiness and visual/player-facing gates, every final council report
+must also include:
+
+- Roadmap Execution Ledger Result,
+- Visible Runtime Asset Consistency Audit,
+- Player Asset Audit,
+- NPC Asset Audit,
+- Marker/Sign/Quest Object Audit,
+- Screenshot Inspection Result,
+- North Star Result,
+- 8.5+/10 Visual Bar Result.
 
 For visual/world/layout phases, the report must explicitly answer:
 

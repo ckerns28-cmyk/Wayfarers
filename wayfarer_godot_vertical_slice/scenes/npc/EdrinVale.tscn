@@ -8,6 +8,10 @@ radius = 52.0
 [node name="EdrinVale" type="Node2D"]
 script = ExtResource("1_edrin")
 
+[node name="Visual" type="Sprite2D" parent="."]
+position = Vector2(0, -33)
+scale = Vector2(0.32, 0.32)
+
 [node name="InteractionArea" type="Area2D" parent="."]
 collision_layer = 4
 collision_mask = 0

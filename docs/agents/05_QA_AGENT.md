@@ -36,6 +36,18 @@ Screenshot capture and PNG verification:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\wayfarer_godot_vertical_slice\tools\capture_g422a_runtime_screenshots.ps1 -GodotBin 'C:\Users\Chris\Downloads\Godot_v4.6.2-stable_win64.exe\Godot_v4.6.2-stable_win64_console.exe'
 ```
 
+Pre-G-5 runtime sprite consistency:
+
+```powershell
+& "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe" wayfarer_godot_vertical_slice\tools\validate_g422r_runtime_asset_consistency.py
+```
+
+Pre-G-5 roadmap execution ledger:
+
+```powershell
+& "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe" wayfarer_godot_vertical_slice\tools\validate_pre_g5_roadmap_ledger.py
+```
+
 Capture log check:
 
 ```powershell
@@ -54,3 +66,4 @@ git diff --cached --check
 - Use `PASS`, `FAIL`, or `SKIPPED_WITH_COMMAND`.
 - Every skipped command must include the exact command.
 - QA may report technical pass, but must not decide art/design approval.
+- QA must fail G-5 readiness if the ledger has any non-PASS row or if normal-play screenshots show non-atelier or untracked player/NPC/world sprites.

@@ -2146,8 +2146,8 @@ def validate_visual_production_registry(failures: list[str]) -> None:
     else:
         pass_check("visual production registry schema id")
     registry_phase = str(registry.get("phase", ""))
-    if registry_phase not in {"G-4.21A", "G-4.18E", "G-4.19"}:
-        fail("visual production registry phase must be G-4.21A, G-4.18E, or G-4.19", failures)
+    if registry_phase not in {"G-4.21A", "G-4.18E", "G-4.19", "G-4.22R"}:
+        fail("visual production registry phase must be G-4.21A, G-4.18E, G-4.19, or G-4.22R", failures)
     if "starting town/village" not in str(registry.get("north_star", "")):
         fail("visual production registry must restore the Newport starting town/village North Star", failures)
     registry_policy = str(registry.get("policy", ""))
@@ -2169,6 +2169,18 @@ def validate_visual_production_registry(failures: list[str]) -> None:
         ]:
             if required_text not in registry_policy:
                 fail(f"visual production registry G-4.19 policy missing: {required_text}", failures)
+    elif registry_phase == "G-4.22R":
+        for required_text in [
+            "G-4.22R",
+            "G-5 readiness",
+            "visible player/NPC/marker/world sprites",
+            "manifest-backed",
+            "provenance-classified",
+            "atelier-consistent",
+            "hidden behind debug-only flags",
+        ]:
+            if required_text not in registry_policy:
+                fail(f"visual production registry G-4.22R policy missing: {required_text}", failures)
     else:
         if "core building atelier rebuild" not in registry_policy or "Tavern/Inn is the required hero centerpiece asset" not in registry_policy:
             fail("visual production registry must record the G-4.21A core building atelier rebuild policy", failures)
@@ -2420,24 +2432,62 @@ def validate_visual_production_registry(failures: list[str]) -> None:
             fail("old inn_tavern_v1 must not remain normal-review after G-4.21A replacement", failures)
 
     player_foundation = by_id.get("player_wayfarer_foundation_g419", {})
+    player_atelier = by_id.get("player_wayfarer_atelier_g422r", {})
+    npc_atelier = by_id.get("newport_npc_atelier_g422r", {})
     if not player_foundation:
         fail("G-4.19 player visual identity foundation missing from visual production registry", failures)
     elif isinstance(player_foundation, dict):
         usage = player_foundation.get("current_usage", {})
+        g422r_player_active = (
+            isinstance(player_atelier, dict)
+            and isinstance(player_atelier.get("current_usage", {}), dict)
+            and player_atelier.get("current_usage", {}).get("normal_review") is True
+        )
+        if g422r_player_active:
+            if usage.get("normal_review") is True:
+                fail("G-4.19 player foundation must not remain normal-review after G-4.22R supersession", failures)
+            if player_foundation.get("rebuild_status") != "DEPRECATED_DO_NOT_USE":
+                fail("G-4.19 player foundation must be deprecated after G-4.22R supersession", failures)
+            if player_foundation.get("superseded_by") != "player_wayfarer_atelier_g422r":
+                fail("G-4.19 player foundation must record G-4.22R supersession", failures)
+        else:
+            if not isinstance(usage, dict) or usage.get("normal_review") is not True:
+                fail("G-4.19 player visual identity foundation must be active for normal review", failures)
+            if player_foundation.get("rebuild_status") != "APPROVED_TEMPORARY":
+                fail("G-4.19 player visual identity foundation must be approved temporary", failures)
+            if player_foundation.get("visual_quality_status") != "APPROVED_TEMPORARY":
+                fail("G-4.19 player visual identity foundation visual status must be approved temporary", failures)
+
+    for asset_id, entry in [
+        ("player_wayfarer_atelier_g422r", player_atelier),
+        ("newport_npc_atelier_g422r", npc_atelier),
+    ]:
+        if not isinstance(entry, dict) or not entry:
+            fail(f"G-4.22R character registry entry missing: {asset_id}", failures)
+            continue
+        usage = entry.get("current_usage", {})
         if not isinstance(usage, dict) or usage.get("normal_review") is not True:
-            fail("G-4.19 player visual identity foundation must be active for normal review", failures)
-        if player_foundation.get("rebuild_status") != "APPROVED_TEMPORARY":
-            fail("G-4.19 player visual identity foundation must be approved temporary")
-        if player_foundation.get("visual_quality_status") != "APPROVED_TEMPORARY":
-            fail("G-4.19 player visual identity foundation visual status must be approved temporary")
+            fail(f"G-4.22R character registry entry must be normal-review active: {asset_id}", failures)
+        if entry.get("rebuild_status") != "APPROVED_TEMPORARY":
+            fail(f"G-4.22R character registry entry must be approved temporary: {asset_id}", failures)
+        if entry.get("visual_quality_status") != "APPROVED_TEMPORARY":
+            fail(f"G-4.22R character registry visual status must be approved temporary: {asset_id}", failures)
+        artifacts_key = "npc_identity_artifacts" if asset_id == "newport_npc_atelier_g422r" else "player_identity_artifacts"
+        artifacts = entry.get(artifacts_key, {})
+        if not isinstance(artifacts, dict):
+            fail(f"G-4.22R character registry entry must include {artifacts_key}: {asset_id}", failures)
+            artifacts = {}
+        for required_key in ["manifest", "contact_sheet", "source_prompt", "source_image", "atlas"]:
+            if not artifacts.get(required_key):
+                fail(f"G-4.22R character registry artifacts missing {required_key}: {asset_id}", failures)
 
     player_placeholder = by_id.get("player_placeholder_drawn", {})
     if isinstance(player_placeholder, dict) and player_placeholder:
         placeholder_usage = player_placeholder.get("current_usage", {})
         if player_placeholder.get("rebuild_status") != "DEPRECATED_DO_NOT_USE":
-            fail("drawn player placeholder must be deprecated after G-4.19")
+            fail("drawn player placeholder must be deprecated after G-4.19", failures)
         if isinstance(placeholder_usage, dict) and placeholder_usage.get("normal_review") is True:
-            fail("drawn player placeholder must not remain normal-review after G-4.19")
+            fail("drawn player placeholder must not remain normal-review after G-4.19", failures)
 
     if VISUAL_PRODUCTION_AUDIT_PATH.exists():
         report = VISUAL_PRODUCTION_AUDIT_PATH.read_text(encoding="utf-8")

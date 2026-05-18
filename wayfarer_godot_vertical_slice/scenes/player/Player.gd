@@ -7,10 +7,10 @@ const WORLD_LIMIT_LEFT := 0
 const WORLD_LIMIT_TOP := 0
 const WORLD_LIMIT_RIGHT := 1600
 const WORLD_LIMIT_BOTTOM := 1024
-const PLAYER_SPRITE_ATLAS_PATH := "res://art_pipeline/player_identity/atlases/player_wayfarer_foundation_g419_v1.png"
-const PLAYER_FRAME_SIZE := Vector2i(64, 64)
-const PLAYER_VISUAL_SCALE := 0.82
-const PLAYER_VISUAL_OFFSET := Vector2(0.0, -20.0)
+const PLAYER_SPRITE_ATLAS_PATH := "res://art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png"
+const PLAYER_FRAME_SIZE := Vector2i(256, 256)
+const PLAYER_VISUAL_SCALE := 0.32
+const PLAYER_VISUAL_OFFSET := Vector2(0.0, -33.0)
 const PLAYER_DIRECTIONS := ["down", "up", "left", "right"]
 const PLAYER_FRAME_VARIANTS := ["idle", "walk_a", "walk_b"]
 
@@ -83,7 +83,7 @@ func _configure_visual_sprite() -> void:
 
 	var atlas := ResourceLoader.load(PLAYER_SPRITE_ATLAS_PATH, "Texture2D") as Texture2D
 	if atlas == null:
-		push_error("Failed to load G-4.19 player sprite atlas: " + PLAYER_SPRITE_ATLAS_PATH)
+		push_error("Failed to load G-4.22R player sprite atlas: " + PLAYER_SPRITE_ATLAS_PATH)
 		return
 
 	var sprite_frames := SpriteFrames.new()
@@ -109,7 +109,7 @@ func _configure_visual_sprite() -> void:
 	visual_sprite.position = PLAYER_VISUAL_OFFSET
 	visual_sprite.scale = Vector2.ONE * PLAYER_VISUAL_SCALE
 	visual_sprite.centered = true
-	visual_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	visual_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	visual_sprite.z_as_relative = true
 	visual_sprite.z_index = 1
 	_play_visual_animation("idle_down")
