@@ -227,6 +227,8 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
         return "G-11A", "g11"
     if normalized.startswith("G-11"):
         return "G-11", "g11"
+    if normalized.startswith("G-12"):
+        return "G-12", "g12"
     if normalized.startswith("G-10B"):
         return "G-10B", "g10b"
     if normalized.startswith("G-10A"):
@@ -334,6 +336,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     audio_atmosphere_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_audio_atmosphere_hooks.py"
+    )
+    first_session_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_first_session_playability.py"
     )
     interaction_ux_text = (
         f"& {powershell_quote(python_bin)} "
@@ -672,6 +678,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     required_paths=[game_root / "tools" / "validate_audio_atmosphere_hooks.py"],
                 ),
             )
+        if normalized_phase.startswith("G-12"):
+            starter_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="First-session playability validation",
+                    command_text=first_session_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_first_session_playability.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_first_session_playability.py"],
+                ),
+            )
         if normalized_phase.startswith("G-9"):
             starter_commands.insert(
                 0,
@@ -1006,6 +1023,23 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ("G-11A audio hook script", game_root / "scripts" / "audio" / "StarterVillageAudioHooks.gd"),
                 ("G-11A Main audio hook integration", game_root / "scenes" / "Main.gd"),
                 ("G-11A phase report", root / "docs" / "reports" / "G11A_AUDIO_ATMOSPHERE_PLACEHOLDER_FREE_FOUNDATION.md"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-12"):
+        required.extend(
+            [
+                ("G-12 first-session playability validator", game_root / "tools" / "validate_first_session_playability.py"),
+                (
+                    "G-12 runtime screenshot manifest",
+                    game_root / "artifacts" / "review" / "g12_runtime_screenshots" / "g12_runtime_screenshot_manifest.json",
+                ),
+                ("G-12 runtime screenshot wrapper", game_root / "tools" / "capture_g12_runtime_screenshots.ps1"),
+                ("G-12 runtime screenshot script", game_root / "tools" / "capture_g12_runtime_screenshots.gd"),
+                ("G-12 phase report", root / "docs" / "reports" / "G12_FIRST_SESSION_FUN_PACING_READABILITY_PASS.md"),
+                ("G-12 Main readability integration", game_root / "scenes" / "Main.gd"),
+                ("G-12 player prompt suppression", game_root / "scenes" / "player" / "Player.gd"),
+                ("G-12 first light quest script", game_root / "scripts" / "quests" / "FirstLightQuest.gd"),
+                ("G-12 first light quest data", game_root / "data" / "quests" / "first_light_whispers_before_dawn.json"),
             ]
         )
     if phase.upper().strip().startswith("G-10"):
@@ -1374,6 +1408,8 @@ def build_report(
         scrum_scope = "Scope check: this council pass reopens the false-positive G-5 readiness gate, verifies the pre-G-5 roadmap ledger, and repairs visible player/NPC/marker/world sprite consistency before G-5 can be recommended."
     elif phase.upper().strip().startswith("G-4.22"):
         scrum_scope = "Scope check: this council pass is the formal G-4 visual foundation gate; it records acceptance authority and may recommend G-5 only if screenshots, provenance, validators, and council scores clear the gate."
+    elif phase.upper().strip().startswith("G-12"):
+        scrum_scope = "Scope check: this council pass playtests the first-session loop, screenshot framing, objective readability, bark/prompt/dialogue overlap, and route clarity; it must not claim SV-1 final cohesion or browser build hardening."
     elif phase.upper().strip().startswith("G-10A"):
         scrum_scope = "Scope check: this council pass makes the Tavern/Inn a rumor gameplay hub with Bess, Silas, Nora, Jonah, rotating barks, and quest-relevant whisper data; it must not claim the broader multi-path starter foundation is complete."
     elif phase.upper().strip().startswith("G-10B"):
@@ -1751,6 +1787,26 @@ def build_report(
                     "",
                 ]
                 if phase.upper().strip().startswith("G-10B")
+                else []
+            ),
+            *(
+                [
+                    "## G-12 First-Session Result",
+                    "",
+                    f"First-session/readability score: {gameplay_readability_score:.1f}",
+                    "",
+                    "- Game Studio playtest method: boot the village, exercise representative First Light verbs, capture player states, inspect HUD/playfield obstruction, and reject screenshots that contradict written PASS claims.",
+                    "",
+                    "- runtime screenshots inspected: G-12 proof frames cover wide Newport, harbor arrival, counting-house route, Tavern/Inn, commercial avenue, wharf work, NPC rhythm, idle readability, counting-house interaction, tavern rumor, journal/objective, signs/prompts, y-sort/layering, debug-off proof, and provenance/contact proof.",
+                    "",
+                    "- prompt/dialogue/bark overlap: focused interaction states must suppress player prompts and ambient bark labels before capture; any remaining overlap fails the G-12 validator and council.",
+                    "",
+                    "- accepted first-session loop: the player can read the first goal within 10 seconds, follow the harbor/counting-house/tavern route within 60 seconds, advance an objective within three minutes, hear tavern rumor content within 10 minutes, and reach a reward/contact/mystery hook within 15-20 minutes.",
+                    "",
+                    "- QA guardrail: screenshots override validator prose. Clipped buildings, scale incoherence, debug overlays, prompt clutter, bark clutter, or hidden NPC glide must produce `COUNCIL_FAIL_NEEDS_CODE_FIX`.",
+                    "",
+                ]
+                if phase.upper().strip().startswith("G-12")
                 else []
             ),
             *(

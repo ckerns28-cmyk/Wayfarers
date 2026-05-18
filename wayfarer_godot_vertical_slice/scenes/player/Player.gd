@@ -48,6 +48,7 @@ var _interact_was_down := false
 var _world_limits := Rect2(Vector2(WORLD_LIMIT_LEFT, WORLD_LIMIT_TOP), Vector2(WORLD_LIMIT_RIGHT, WORLD_LIMIT_BOTTOM))
 var _facing_direction := "down"
 var _current_visual_animation := ""
+var _prompt_suppressed := false
 
 func _ready() -> void:
 	add_to_group("player")
@@ -125,8 +126,14 @@ func prompt_ux_contract() -> Dictionary:
 		"font_size": PROMPT_FONT_SIZE,
 		"forbidden_prefix": "Press E",
 		"normal_play_debug_marker_free": true,
+		"prompt_suppression_available": has_method("set_prompt_suppressed"),
 		"targeting_rule": "nearest_interactable_with_compact_action_name_copy",
 	}
+
+func set_prompt_suppressed(enabled: bool) -> void:
+	_prompt_suppressed = enabled
+	if prompt_label != null and enabled:
+		prompt_label.visible = false
 
 func _configure_ground_shadow() -> void:
 	if ground_shadow == null:
@@ -296,7 +303,7 @@ func _update_interaction_target() -> void:
 			nearest_dist = dist
 
 	_current_target = nearest
-	prompt_label.visible = _current_target != null
+	prompt_label.visible = _current_target != null and not _prompt_suppressed
 	if _current_target and _current_target.has_method("get_prompt_text"):
 		prompt_label.text = _current_target.call("get_prompt_text")
 	elif _current_target and _current_target.has_method("get_interaction_label"):

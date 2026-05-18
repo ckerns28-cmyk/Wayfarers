@@ -40,16 +40,23 @@ Deprecated final states are forbidden.
 | G-9A | Journal, Objective, and Quest State Foundation | `codex/g-9a-journal-objective-state` | #469 merged | PASS | `docs/reports/G9A_JOURNAL_OBJECTIVE_QUEST_STATE_FOUNDATION.md`, G-9A council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
 | G-10 | Opening Quest Arc: First Light / Whispers Before Dawn | `codex/g-10-opening-quest-arc` | #470 merged | PASS | `docs/reports/G10_OPENING_QUEST_ARC_FIRST_LIGHT_WHISPERS_BEFORE_DAWN.md`, G-10 council report, runtime screenshot manifest, vertical-slice validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
 | G-10A | Tavern Whisper System | `codex/g-10a-tavern-whisper-system` | #471 merged | PASS | `docs/reports/G10A_TAVERN_WHISPER_SYSTEM.md`, G-10A council report, runtime screenshot manifest, vertical-slice validator, tavern whisper validator, Newport visual-order validator, opening quest validator, interaction UX validator, and atelier runtime validator. |
-| G-10B | Multi-Path Starter Choice Foundation | `codex/g-10b-multi-path-starter-choice` | pending current phase PR | PASS | `docs/reports/G10B_MULTI_PATH_STARTER_CHOICE_FOUNDATION.md`, G-10B council report, runtime screenshot manifest, vertical-slice validator, multi-path starter choice validator, opening quest validator, tavern whisper validator, Newport visual-order validator, interaction UX validator, and atelier runtime validator. |
-| G-11 | Living Town Rhythm Pass | `codex/g-11-living-town-rhythm-pass` | pending current phase PR | PASS | `docs/reports/G11_LIVING_TOWN_RHYTHM_PASS.md`, G-11 council report, runtime screenshot manifest, living town rhythm validator, NPC route validator, vertical-slice validator, and atelier runtime validator. |
-| G-11A | Audio/Atmosphere Placeholder-Free Foundation | `codex/g-11a-audio-atmosphere-hooks` | pending current phase PR | PASS | `docs/reports/G11A_AUDIO_ATMOSPHERE_PLACEHOLDER_FREE_FOUNDATION.md`, G-11A council report, placeholder-free audio hook registry, hook-only runtime contract, audio atmosphere validator, vertical-slice validator, screenshot capture baseline, and atelier runtime validator. |
-| G-12 | First-Session Fun, Pacing, and Readability Pass | pending | pending | PENDING | Must prove the first 15-20 minutes are readable, paced, and fun. |
+| G-10B | Multi-Path Starter Choice Foundation | `codex/g-10b-multi-path-starter-choice` | #472 merged | PASS | `docs/reports/G10B_MULTI_PATH_STARTER_CHOICE_FOUNDATION.md`, G-10B council report, runtime screenshot manifest, vertical-slice validator, multi-path starter choice validator, opening quest validator, tavern whisper validator, Newport visual-order validator, interaction UX validator, and atelier runtime validator. |
+| G-11 | Living Town Rhythm Pass | `codex/g-11-living-town-rhythm-pass` | #475 merged | PASS | `docs/reports/G11_LIVING_TOWN_RHYTHM_PASS.md`, G-11 council report, runtime screenshot manifest, living town rhythm validator, NPC route validator, vertical-slice validator, and atelier runtime validator. |
+| G-11A | Audio/Atmosphere Placeholder-Free Foundation | `codex/g-11a-audio-atmosphere-hooks` | #476 merged | PASS | `docs/reports/G11A_AUDIO_ATMOSPHERE_PLACEHOLDER_FREE_FOUNDATION.md`, G-11A council report, placeholder-free audio hook registry, hook-only runtime contract, audio atmosphere validator, vertical-slice validator, screenshot capture baseline, and atelier runtime validator. |
+| G-12 | First-Session Fun, Pacing, and Readability Pass | `codex/g-12-first-session-playability` | #477 open | PASS | `docs/reports/G12_FIRST_SESSION_FUN_PACING_READABILITY_PASS.md`, `docs/reports/G12_FIRST_SESSION_AGENT_COUNCIL_REPORT.md`, G-12 runtime screenshot manifest, first-session playability validator, prompt/dialogue/bark overlap suppression, Game Studio playtest method, vertical-slice validator, opening quest validator, interaction UX validator, living town rhythm validator, and atelier runtime validator. |
 | G-13 | Browser Build, Performance, and Regression Hardening | pending | pending | PENDING | Must harden import, vertical slice, screenshots, review build, input, performance, and assets. |
 | G-14 | SV-1 Starter Village Playable Obsession Gate | pending | pending | PENDING | Must produce final SV-1 review package and stop for Chris. |
 
 ## Current Phase
 
-Current phase after G-11A: `G-12 First-Session Fun, Pacing, and Readability Pass`.
+Current phase after G-12: `G-13 Browser Build, Performance, and Regression Hardening`.
+
+G-12 adds a runtime-backed first-session playability gate. The new capture
+set proves harbor arrival, route readability, Tavern/Inn rumor interaction,
+quest objective progress, reward/contact hook, debug-off normal play, and
+camera focus safety. The validator now fails if dialogue and interaction
+prompts overlap, if focused prompts/dialogue are cluttered by ambient barks,
+or if required player-facing targets are clipped in proof screenshots.
 
 G-11A adds a placeholder-free audio/atmosphere foundation without loading,
 referencing, or bundling any audio assets. Harbor ambience, Tavern/Inn ambience,

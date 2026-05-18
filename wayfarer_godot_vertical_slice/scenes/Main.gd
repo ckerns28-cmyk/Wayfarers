@@ -36,6 +36,7 @@ var _starter_village_rhythm_elapsed := 0.0
 var _starter_village_rhythm_start_positions: Dictionary = {}
 var _starter_village_rhythm_snapshots: Array = []
 var _starter_village_audio_hook_events: Array = []
+var _starter_village_ambient_barks_enabled := true
 
 func _ready() -> void:
 	world.y_sort_enabled = true
@@ -71,6 +72,7 @@ func _process(delta: float) -> void:
 	if _starter_village_rhythm_start_positions.is_empty():
 		return
 	_starter_village_rhythm_elapsed += delta
+	_update_starter_village_bark_readability()
 	if _starter_village_rhythm_elapsed >= 2.0:
 		_record_starter_village_town_rhythm_snapshot(_starter_village_rhythm_elapsed, false)
 		_starter_village_rhythm_elapsed = 0.0
@@ -222,12 +224,42 @@ func starter_village_audio_hook_contract() -> Dictionary:
 	contract["normal_play_placeholder_audio"] = false
 	return contract
 
+func starter_village_first_session_readability_contract() -> Dictionary:
+	var quest := starter_village_quest_contract()
+	var journal := {}
+	if hud != null and hud.has_method("journal_objective_contract"):
+		journal = hud.call("journal_objective_contract")
+	var rhythm := starter_village_town_rhythm_contract()
+	var prompt_label: Label = null
+	if player != null:
+		prompt_label = player.get_node_or_null("PromptLabel") as Label
+	var dialogue_panel: Control = null
+	if hud != null:
+		dialogue_panel = hud.get_node_or_null("DialoguePanel") as Control
+	return {
+		"phase": "G-12",
+		"first_goal_names_counting_house": String(quest.get("current_objective_text", "")).find("Counting House") >= 0 or String(journal.get("current_objective", "")).find("Counting House") >= 0,
+		"journal_visible": bool(quest.get("journal_visible", false)) and bool(journal.get("has_journal", false)),
+		"quest_available": bool(quest.get("quest_available", false)),
+		"current_objective_id": String(quest.get("current_objective_id", "")),
+		"completed_objectives": (quest.get("completed_objectives", []) as Array).duplicate(),
+		"reward_log": (quest.get("reward_log", []) as Array).duplicate(),
+		"tavern_whisper_available": bool((quest.get("tavern_whisper_contract", {}) as Dictionary).get("has_rumor_dialogue", false)),
+		"multi_path_available": bool((quest.get("multi_path_choice_contract", {}) as Dictionary).get("not_single_railroad", false)),
+		"ambient_barks_suppressed_when_focused": not _starter_village_player_focus_blocks_barks() or not _starter_village_ambient_barks_enabled,
+		"prompt_visible": prompt_label != null and prompt_label.visible,
+		"dialogue_visible": dialogue_panel != null and dialogue_panel.visible,
+		"npc_position_drift_detected": bool(rhythm.get("position_drift_detected", true)),
+		"npc_route_walking_policy": "stationary_no_glide_until_dedicated_walk_sheets",
+	}
+
 func debug_apply_starter_village_audio_hooks() -> Dictionary:
 	for hook_id in STARTER_VILLAGE_AUDIO_HOOKS.REQUIRED_HOOK_IDS:
 		_record_starter_village_audio_hook(String(hook_id), {"debug_proof": true})
 	return starter_village_audio_hook_contract()
 
 func debug_apply_starter_village_town_rhythm_tick(elapsed_seconds: float, force_bark := true, focus_npc_id := "") -> Dictionary:
+	_update_starter_village_bark_readability()
 	for raw_npc in get_tree().get_nodes_in_group("starter_village_town_rhythm_actor"):
 		var npc := raw_npc as Node
 		if npc == null:
@@ -280,7 +312,9 @@ func _configure_first_light_quest() -> void:
 func _on_player_interaction_triggered(target: Node, dialogue_text: String) -> void:
 	if _first_light_quest == null:
 		return
+	set_starter_village_ambient_barks_enabled(false)
 	_record_starter_village_audio_hook("ui_feedback_sound_hook", {"target": String(target.name) if target != null else "", "dialogue_present": not dialogue_text.is_empty()})
+	_suppress_player_prompt_for(4.0)
 	var snapshot: Dictionary = _first_light_quest.handle_interaction(target, dialogue_text)
 	var response := String(snapshot.get("response_text", ""))
 	if not response.is_empty() and hud and hud.has_method("show_dialogue"):
@@ -373,6 +407,41 @@ func _configure_starter_village_town_rhythm() -> void:
 func _configure_starter_village_audio_hooks() -> void:
 	_record_starter_village_audio_hook("harbor_ambience_hook", {"district": "working_wharf", "startup": true})
 	_record_starter_village_audio_hook("tavern_ambience_hook", {"district": "harborfront_commercial", "startup": true})
+
+func set_starter_village_ambient_barks_enabled(enabled: bool) -> void:
+	_starter_village_ambient_barks_enabled = enabled
+	for raw_npc in get_tree().get_nodes_in_group("starter_village_town_rhythm_actor"):
+		var npc := raw_npc as Node
+		if npc == null:
+			continue
+		if npc.has_method("set_town_rhythm_barks_enabled"):
+			npc.call("set_town_rhythm_barks_enabled", enabled)
+		elif not enabled and npc.has_method("set_town_rhythm_bark_visible"):
+			npc.call("set_town_rhythm_bark_visible", false)
+
+func _update_starter_village_bark_readability() -> void:
+	var should_enable := not _starter_village_player_focus_blocks_barks()
+	if should_enable != _starter_village_ambient_barks_enabled:
+		set_starter_village_ambient_barks_enabled(should_enable)
+
+func _starter_village_player_focus_blocks_barks() -> bool:
+	var prompt_label: Label = null
+	if player != null:
+		prompt_label = player.get_node_or_null("PromptLabel") as Label
+	if prompt_label != null and prompt_label.visible:
+		return true
+	var dialogue_panel: Control = null
+	if hud != null:
+		dialogue_panel = hud.get_node_or_null("DialoguePanel") as Control
+	return dialogue_panel != null and dialogue_panel.visible
+
+func _suppress_player_prompt_for(seconds: float) -> void:
+	if player != null and player.has_method("set_prompt_suppressed"):
+		player.call("set_prompt_suppressed", true)
+	await get_tree().create_timer(maxf(0.1, seconds)).timeout
+	if player != null and player.has_method("set_prompt_suppressed"):
+		player.call("set_prompt_suppressed", false)
+	_update_starter_village_bark_readability()
 
 func _record_starter_village_audio_hook(hook_id: String, context: Dictionary) -> Dictionary:
 	var event: Dictionary = STARTER_VILLAGE_AUDIO_HOOKS.trigger_hook(hook_id, context)
