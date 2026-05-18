@@ -408,7 +408,7 @@
       "phase_id": "G-18",
       "phase_name": "Opening Quest Extension: From Whispers to the Island",
       "branch": "codex/g-18-opening-quest-village-to-island",
-      "implementing_prs": ["pending_pre_pr"],
+      "implementing_prs": ["#487"],
       "commits": ["9526ea0133c93190f80695e1d83995d018f2d81f"],
       "merge_status": "pending",
       "current_status": "PASS",

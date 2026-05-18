@@ -6,7 +6,7 @@ Branch: `codex/g-18-opening-quest-village-to-island`
 
 Commit: `9526ea0133c93190f80695e1d83995d018f2d81f`
 
-PR number: `pending_pre_pr`
+PR number: `#487`
 
 Merge status: `pending`
 

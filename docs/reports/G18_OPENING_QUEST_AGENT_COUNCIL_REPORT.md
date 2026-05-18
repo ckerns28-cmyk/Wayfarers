@@ -12,9 +12,9 @@ For ordinary roadmap-bound work before OVI-1, this report is the council authori
 - Branch: `codex/g-18-opening-quest-village-to-island`
 - Commit: `9526ea0133c93190f80695e1d83995d018f2d81f`
 - origin/main: `5b9141f0ae1b3a1653e3d2677513cd5d0869142e`
-- Current branch PR: No open PR detected for current branch.
-- Target PR check: Not detected
-- PR number if available: Not available yet
+- Current branch PR: #487
+- Target PR check: #487
+- PR number if available: #487
 - Final Authority Verdict: COUNCIL_PASS_READY_FOR_PR
 - Final recommended next phase: G-18A Multi-Path Rumor and Choice Foundation
 - Human escalation required: NO
@@ -29,7 +29,7 @@ Final Authority Verdict: `COUNCIL_PASS_READY_FOR_PR`
 | Phase ID | G-18 Opening Quest Extension: From Whispers to the Island |
 | Branch | codex/g-18-opening-quest-village-to-island |
 | Commit | 9526ea0133c93190f80695e1d83995d018f2d81f |
-| PR number if available | Not available yet |
+| PR number if available | #487 |
 | Screenshot review | inspected |
 | Design score | 8.6/10 |
 | Art direction score | 8.6/10 |
