@@ -231,7 +231,7 @@
         "validate_npc_population_and_routes.py",
         "validate_runtime_atelier_asset_consistency.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-9",

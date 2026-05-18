@@ -486,8 +486,11 @@ func _validate_g422r_atelier_runtime_asset_consistency(main: Node, player: Node,
 	var blueprint_source := FileAccess.get_file_as_string("res://scripts/NewportTownBlueprint.gd")
 	_expect(blueprint_source.find("npc_placeholder") < 0, "g422r_blueprint_no_npc_placeholder")
 	_expect(blueprint_source.find("npc_atelier") >= 0, "g422r_blueprint_has_npc_atelier")
+	_expect(blueprint_source.find("STARTER_VILLAGE_G8A_LIVING_NPC_POPULATION_PASS") >= 0, "g8a_blueprint_population_pass")
+	_expect(blueprint_source.find("starter_village_npc_specs") >= 0, "g8a_blueprint_npc_specs")
 	var map_source := FileAccess.get_file_as_string("res://scenes/map/MapLayer.gd")
 	_expect(map_source.find("NEWPORT_ATELIER_CHARACTER_PLACEMENTS") >= 0, "g422r_map_character_placements")
+	_expect(map_source.find("G8A_RUNTIME_NPC_NODES_ENABLED := true") >= 0, "g8a_runtime_npc_nodes_enabled")
 	for token in ["G422R_SUPPRESS_PRIMITIVE_WORLD_PROPS", "G422R_HIDE_NORMAL_PLAY_LAYOUT_GUIDES", "G422R_HIDDEN_NORMAL_PLAY_MARKER_ASSETS", "g422r_hidden_normal_play_marker_assets", "_is_g422r_hidden_normal_play_marker"]:
 		_expect(map_source.find(token) >= 0, "g422r_map_hidden_marker_gate_" + token)
 	for asset_id in ["atelier_sign_tavern_inn_placeholder_01", "atelier_sign_painted_shop_plaque_01", "atelier_g418e_tavern_hanging_inn_sign_01", "atelier_g418e_commercial_mercantile_sign_01", "atelier_g418e_commercial_fishmonger_sign_01"]:
@@ -513,6 +516,36 @@ func _validate_g422r_atelier_runtime_asset_consistency(main: Node, player: Node,
 		var placements: Array = decorative_layer.call("newport_atelier_character_placements")
 		_expect(materials.size() >= 3, "g422r_map_character_materials")
 		_expect(placements.size() >= 5, "g422r_map_character_placements_count")
+	_validate_g8a_living_npc_population()
+
+func _validate_g8a_living_npc_population() -> void:
+	var npc_nodes := get_nodes_in_group("starter_village_npc")
+	_expect(npc_nodes.size() >= 6, "g8a_starter_village_npc_node_count")
+	var roles := {}
+	var names := {}
+	for raw_npc in npc_nodes:
+		var npc := raw_npc as Node
+		if npc == null:
+			continue
+		_expect(npc.has_method("npc_population_contract"), String(npc.name) + "_g8a_population_contract")
+		_expect(npc.has_method("motion_foundation_contract"), String(npc.name) + "_g8a_motion_contract")
+		_expect(npc.get_node_or_null("GroundShadow") is Polygon2D, String(npc.name) + "_g8a_ground_shadow")
+		_expect(npc.get_node_or_null("Visual") is AnimatedSprite2D, String(npc.name) + "_g8a_animated_visual")
+		if npc.has_method("is_route_walking_enabled"):
+			_expect(npc.call("is_route_walking_enabled") == false, String(npc.name) + "_g8a_route_walking_disabled")
+		if npc.has_method("npc_population_contract"):
+			var contract: Dictionary = npc.call("npc_population_contract")
+			var role := String(contract.get("role", ""))
+			var display_name := String(contract.get("display_name", ""))
+			roles[role] = true
+			names[display_name] = true
+			for key in ["district", "station", "route_intent", "idle_behavior", "dialogue_seed", "quest_relevance", "movement_policy", "atelier_asset_id"]:
+				_expect(String(contract.get(key, "")) != "", String(npc.name) + "_g8a_contract_" + key)
+			_expect(String(contract.get("movement_policy", "")).find("stationary") >= 0, String(npc.name) + "_g8a_stationary_policy")
+	for required_role in ["tavern_keeper", "dockworker", "counting_house_clerk", "merchant_shopkeeper", "rumor_carrier", "suspicious_patron"]:
+		_expect(roles.has(required_role), "g8a_population_role_" + required_role)
+	for required_name in ["Edrin Vale", "Bess Armitage", "Mara Pike", "Honor Finch", "Nora Vale", "Silas Crowe"]:
+		_expect(names.has(required_name), "g8a_population_name_" + required_name.replace(" ", "_").to_lower())
 
 func _validate_g419_player_identity_foundation() -> void:
 	var manifest := _load_json_dictionary("res://art_pipeline/player_identity/manifests/player_wayfarer_foundation_g419_manifest.json")

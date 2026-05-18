@@ -37,6 +37,9 @@ const STARTER_VILLAGE_G7B_HARBOR_COMMERCIAL_SPINE_PASS := "G-7B"
 const STARTER_VILLAGE_G7B_HARBOR_WORLD_SCORE := 8.5
 const STARTER_VILLAGE_G7C_LANDMARK_DISTRICT_IDENTITY_PASS := "G-7C"
 const STARTER_VILLAGE_G7C_ART_WORLD_SCORE := 8.5
+const STARTER_VILLAGE_G8A_LIVING_NPC_POPULATION_PASS := "G-8A"
+const STARTER_VILLAGE_G8A_NPC_POPULATION_SCORE := 8.5
+const STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY := "stationary_work_pose_until_dedicated_walk_sheets"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -741,6 +744,8 @@ static func starter_district_plan() -> Dictionary:
 		"g7b_harbor_world_score": STARTER_VILLAGE_G7B_HARBOR_WORLD_SCORE,
 		"landmark_district_identity_pass": STARTER_VILLAGE_G7C_LANDMARK_DISTRICT_IDENTITY_PASS,
 		"g7c_art_world_score": STARTER_VILLAGE_G7C_ART_WORLD_SCORE,
+		"living_npc_population_pass": STARTER_VILLAGE_G8A_LIVING_NPC_POPULATION_PASS,
+		"g8a_npc_population_score": STARTER_VILLAGE_G8A_NPC_POPULATION_SCORE,
 		"hero_street_atlas_proof": "central commercial avenue uses G-4.18 temporary yellow generated atlas pieces for review composition; cargo proof placement uses the G-4.18D Newport atelier cargo sprites; G-4.18E adds the Newport Harbor Commercial + Tavern District green-origin hero-quality asset family as controlled Tavern/Inn, commercial avenue, harbor edge, and rear-service dressing; G-4.19 establishes the source-authored player visual identity foundation with directional idle/walk hooks; G-4.20 redesigns the default HUD/UI into restrained fantasy/MMORPG presentation while hiding review metadata by default; G-4.21 composes those accepted street, dock, player, prop, camera, and HUD elements into the first origin city hero-slice screenshot packet; G-4.22 formally reviews that visual foundation packet against the G-4 exit gate before any G-5 recommendation; dock clutter proof placement uses the G-4.19A atelier pack as the first city rollout pack from that standard; G-4.19B audits all current visual targets and moves future work to production waves; G-4.20A is the first mass environmental believability atelier wave for terrain edges, path transitions, shoreline dressing, and non-centerpiece building grounding; G-4.20B is the Town Identity atelier wave for signage, lamps, wayfinding, civic markers, market identity, and shopfront support; G-4.21A begins the core building atelier rebuild with a controlled proof subset led by the brick Tavern/Inn hero asset; G-4.22A recomposes those gains into a coherent harbor avenue, uphill roads, civic square, service alleys, and three walkable loops; G-4.23A repairs street grammar and ground cohesion by narrowing old slab-like road reads, exposing a back street behind the waterfront road, suppressing oversized cargo/dock dressing in clean review, and reusing provenance-safe atelier terrain/grounding transitions only where they reinforce ordered parcels; G-4.23B converts the remaining blockout read into authored street, harbor, and frontage immersion with irregular terrain edges, working pier/economy clusters, Tavern/Inn social grounding, and review screenshots for visual judgment; the failed G-4.18B green-origin dock proof is lab-only after G-4.18C",
 		"green_origin_pipeline_pass": "G-4.18B",
 		"green_origin_lab_mode": "F6 or --show-green-origin-lab; lab-only provenance proof, not normal review art",
@@ -802,6 +807,9 @@ static func starter_district_plan() -> Dictionary:
 			"g7c_counting_house_civic_notice_anchor_is_memorable",
 			"g7c_commercial_row_and_harbor_work_have_distinct_identity",
 			"g7c_rear_service_lane_and_residential_edges_are_distinct",
+			"g8a_named_npcs_have_roles_stations_dialogue_and_quest_relevance",
+			"g8a_stationary_work_pose_until_dedicated_walk_sheets_prevents_glide",
+			"g8a_npc_population_reinforces_tavern_harbor_counting_house_and_market",
 		],
 		"g7a_runtime_cohesion_contract": {
 			"phase": STARTER_VILLAGE_G7A_STREET_LOT_GROUND_COHESION_PASS,
@@ -827,6 +835,14 @@ static func starter_district_plan() -> Dictionary:
 			"first_quest_read_order": ["harbor landfall", "manifest cargo and counting house", "Tavern/Inn rumor threshold"],
 			"placement_rule": "landmark props must strengthen district identity and must not be random scatter or crude markers",
 		},
+		"g8a_living_npc_population_contract": {
+			"phase": STARTER_VILLAGE_G8A_LIVING_NPC_POPULATION_PASS,
+			"target_score_this_phase": STARTER_VILLAGE_G8A_NPC_POPULATION_SCORE,
+			"required_roles": ["tavern_keeper", "dockworker", "counting_house_clerk", "merchant_shopkeeper", "rumor_carrier", "suspicious_patron"],
+			"movement_policy": STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY,
+			"placement_rule": "NPCs must be named, stationed in a district, tied to a route intent, and never glide as static cutouts.",
+			"opening_theme_support": "tavern whispers, harbor labor, counting-house pressure, market gossip, and optional secret-path clues",
+		},
 		"movement_loop": [
 			"waterfront_avenue",
 			"west_upland_road",
@@ -843,6 +859,12 @@ static func starter_district_plan() -> Dictionary:
 			"g7b_chandlery_rope_service_to_storehouse",
 			"g7c_harbor_to_counting_house_to_tavern_landmark_read",
 			"g7c_rear_lane_to_residential_edge_identity_read",
+			"g8a_tavern_keeper_station_to_rumor_path",
+			"g8a_dockworker_station_to_harbor_work_path",
+			"g8a_counting_house_clerk_station_to_first_objective",
+			"g8a_merchant_shopkeeper_station_to_street_path",
+			"g8a_rumor_carrier_station_to_optional_notice_clue",
+			"g8a_suspicious_patron_station_to_secret_path",
 		],
 		"walking_loops": [
 			"harbor_loop",
@@ -908,6 +930,109 @@ static func walking_loop_specs() -> Array:
 		},
 	]
 
+static func starter_village_npc_specs() -> Array:
+	return [
+		_npc_spec(
+			"edrin_vale_counting_house_clerk",
+			"Edrin Vale",
+			"counting_house_clerk",
+			"npc_civic_clerk_atelier_g422r",
+			EDRIN_SPAWN,
+			"inland_residential_civic",
+			"counting_house_records_route",
+			"counting_house_clerk_path",
+			"holds the records route and watches the wharf",
+			"The ledger is missing a line, and no honest clerk misplaces ink by accident.",
+			"first_light_counting_house",
+			"EdrinVale"
+		),
+		_npc_spec(
+			"bess_armitage_tavern_keeper",
+			"Bess Armitage",
+			"tavern_keeper",
+			"npc_market_vendor_atelier_g422r",
+			Vector2(302.0, 604.0),
+			"harborfront_commercial",
+			"tavern_front_threshold",
+			"tavern_rumor_path",
+			"keeps the door warm and hears the room before it speaks",
+			"Ask for the third toast only if you mean to hear the answer.",
+			"tavern_whisper_hook"
+		),
+		_npc_spec(
+			"mara_pike_dockworker",
+			"Mara Pike",
+			"dockworker",
+			"npc_dockworker_atelier_g422r",
+			Vector2(420.0, 690.0),
+			"working_wharf",
+			"west_fish_offload",
+			"harbor_loop",
+			"checks rope and fish baskets",
+			"Crates do not forget hands. Ledgers do.",
+			"missing_manifest_line"
+		),
+		_npc_spec(
+			"honor_finch_merchant_shopkeeper",
+			"Honor Finch",
+			"merchant_shopkeeper",
+			"npc_market_vendor_atelier_g422r",
+			Vector2(1364.0, 636.0),
+			"harborfront_commercial",
+			"east_market_cart",
+			"market_loop",
+			"counts parcels and watches the avenue",
+			"The missing line cost someone coin, and coin leaves footprints.",
+			"merchant_or_street_path"
+		),
+		_npc_spec(
+			"nora_vale_rumor_carrier",
+			"Nora Vale",
+			"rumor_carrier",
+			"npc_civic_clerk_atelier_g422r",
+			Vector2(748.0, 394.0),
+			"inland_residential_civic",
+			"civic_notice_board",
+			"notice_board_to_tavern",
+			"reads the notices and folds one into a sleeve",
+			"One notice was posted for officials; one was posted for people who know where to look.",
+			"optional_notice_clue"
+		),
+		_npc_spec(
+			"silas_crowe_suspicious_patron",
+			"Silas Crowe",
+			"suspicious_patron",
+			"npc_civic_clerk_atelier_g422r",
+			Vector2(386.0, 438.0),
+			"support_lane",
+			"tavern_rear_service_gate",
+			"secret_path_tavern_to_rear_lane",
+			"lingers near the rear gate with sealed notes",
+			"Some whispers arrive by the back door, not the bar.",
+			"optional_secret_path"
+		),
+		_npc_spec(
+			"jonah_reed_dock_courier",
+			"Jonah Reed",
+			"dockworker_courier",
+			"npc_dockworker_atelier_g422r",
+			Vector2(1218.0, 690.0),
+			"working_wharf",
+			"east_storehouse_queue",
+			"east_storehouse_to_counting_house",
+			"waits by the storehouse barrels",
+			"A sealed cargo line went quiet before the tide turned.",
+			"harbor_work_path"
+		),
+	]
+
+static func starter_village_npc_spec(id: String) -> Dictionary:
+	for raw_spec in starter_village_npc_specs():
+		var spec: Dictionary = raw_spec
+		if String(spec.get("id", "")) == id:
+			return spec.duplicate(true)
+	return {}
+
 static func interaction_anchors() -> Array:
 	return [
 		_anchor("tavern_inn_entrance", "entrance", "harborfront_commercial", Vector2(244.0, 596.0), "Tavern/Inn entrance marker on the west avenue anchor."),
@@ -921,6 +1046,10 @@ static func interaction_anchors() -> Array:
 		_anchor("dock_worker_west", "npc_atelier", "working_wharf", Vector2(420.0, 690.0), "Atelier dock worker near west cargo."),
 		_anchor("dock_worker_east", "npc_atelier", "working_wharf", Vector2(1218.0, 690.0), "Atelier dock worker near east storehouse."),
 		_anchor("market_vendor", "npc_atelier", "harborfront_commercial", Vector2(1364.0, 636.0), "Atelier market vendor on the east avenue pocket."),
+		_anchor("tavern_keeper", "npc_atelier", "harborfront_commercial", Vector2(302.0, 604.0), "Bess Armitage holds the Tavern/Inn rumor threshold."),
+		_anchor("rumor_carrier", "npc_atelier", "inland_residential_civic", Vector2(748.0, 394.0), "Nora Vale carries the notice-board rumor thread."),
+		_anchor("suspicious_patron", "npc_atelier", "support_lane", Vector2(386.0, 438.0), "Silas Crowe marks the rear-lane optional secret path."),
+		_anchor("merchant_shopkeeper", "npc_atelier", "harborfront_commercial", Vector2(1364.0, 636.0), "Honor Finch grounds the market/merchant opening path."),
 		_anchor("harbor_cargo_inspection_west", "cargo_inspection", "working_wharf", Vector2(486.0, 736.0), "Warehouse cargo inspection spot."),
 		_anchor("harbor_cargo_inspection_center", "cargo_inspection", "working_wharf", Vector2(824.0, 710.0), "Central wharf cargo inspection spot."),
 		_anchor("west_pier_mooring_point", "cargo_inspection", "working_wharf", Vector2(390.0, 812.0), "West pier mooring and loading proof marker."),
@@ -1138,6 +1267,24 @@ static func _lot(id: String, status: String, district: String, role: String, rec
 		"role": role,
 		"rect": rect,
 		"building_id": building_id,
+	}
+
+static func _npc_spec(id: String, display_name: String, role: String, asset_id: String, position: Vector2, district: String, station: String, route_intent: String, idle_behavior: String, dialogue_seed: String, quest_relevance: String, runtime_node := "AtelierTownNpc") -> Dictionary:
+	return {
+		"id": id,
+		"display_name": display_name,
+		"role": role,
+		"asset_id": asset_id,
+		"position": position,
+		"district": district,
+		"station": station,
+		"route_intent": route_intent,
+		"idle_behavior": idle_behavior,
+		"dialogue_seed": dialogue_seed,
+		"quest_relevance": quest_relevance,
+		"movement_policy": STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY,
+		"runtime_node": runtime_node,
+		"provenance": "newport_atelier_characters_g422r_manifest.json",
 	}
 
 static func _anchor(id: String, anchor_type: String, district: String, position: Vector2, notes: String) -> Dictionary:

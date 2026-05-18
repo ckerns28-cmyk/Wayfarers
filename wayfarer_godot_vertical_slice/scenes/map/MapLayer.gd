@@ -43,6 +43,10 @@ const STARTER_VILLAGE_G7B_HARBOR_SPINE_PASS := "G-7B"
 const G7B_HARBOR_WORLD_SCORE := 8.5
 const STARTER_VILLAGE_G7C_LANDMARK_IDENTITY_PASS := "G-7C"
 const G7C_ART_WORLD_SCORE := 8.5
+const STARTER_VILLAGE_G8A_LIVING_NPC_POPULATION_PASS := "G-8A"
+const G8A_NPC_POPULATION_SCORE := 8.5
+const G8A_RUNTIME_NPC_NODES_ENABLED := true
+const G8A_NPC_MOVEMENT_POLICY := "stationary_work_pose_until_dedicated_walk_sheets"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -710,11 +714,13 @@ const NEWPORT_G7C_LANDMARK_IDENTITY_PLACEMENTS := [
 	{"family": "grounding", "asset_id": "atelier_ground_wash_tub_buckets_01", "dest": Rect2(1320, 386, 62, 31), "purpose": "g7c_residential_edge_lived_in_yard_identity", "alpha": 0.40, "contact_shadow": true},
 ]
 const NEWPORT_ATELIER_CHARACTER_PLACEMENTS := [
-	{"asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(420, 690), "size": Vector2(82, 82), "purpose": "west_dock_worker_replaces_placeholder", "contact_shadow": true},
-	{"asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(1218, 690), "size": Vector2(82, 82), "purpose": "east_storehouse_dock_worker_replaces_placeholder", "contact_shadow": true},
-	{"asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(1364, 636), "size": Vector2(82, 82), "purpose": "east_market_vendor_replaces_placeholder", "contact_shadow": true},
-	{"asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(704, 388), "size": Vector2(80, 80), "purpose": "civic_square_pedestrian_replaces_placeholder", "contact_shadow": true},
-	{"asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(386, 438), "size": Vector2(80, 80), "purpose": "tavern_market_pedestrian_replaces_placeholder", "contact_shadow": true},
+	{"id": "mara_pike_dockworker", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(420, 690), "size": Vector2(82, 82), "role": "dockworker", "district": "working_wharf", "station": "west_fish_offload", "route_intent": "harbor_loop", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "checks rope and fish baskets", "dialogue_seed": "Crates do not forget hands. Ledgers do.", "quest_relevance": "missing_manifest_line", "purpose": "g8a_west_dockworker_station_supports_harbor_labor", "contact_shadow": true},
+	{"id": "jonah_reed_dock_courier", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(1218, 690), "size": Vector2(82, 82), "role": "dockworker_courier", "district": "working_wharf", "station": "east_storehouse_queue", "route_intent": "east_storehouse_to_counting_house", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "waits by the storehouse barrels", "dialogue_seed": "A sealed cargo line went quiet before the tide turned.", "quest_relevance": "harbor_work_path", "purpose": "g8a_east_dock_courier_station_supports_storehouse_route", "contact_shadow": true},
+	{"id": "honor_finch_merchant_shopkeeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(1364, 636), "size": Vector2(82, 82), "role": "merchant_shopkeeper", "district": "harborfront_commercial", "station": "east_market_cart", "route_intent": "market_loop", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "counts parcels and watches the avenue", "dialogue_seed": "The missing line cost someone coin, and coin leaves footprints.", "quest_relevance": "merchant_or_street_path", "purpose": "g8a_merchant_shopkeeper_station_supports_commercial_spine", "contact_shadow": true},
+	{"id": "bess_armitage_tavern_keeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(302, 604), "size": Vector2(80, 80), "role": "tavern_keeper", "district": "harborfront_commercial", "station": "tavern_front_threshold", "route_intent": "tavern_rumor_path", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "keeps the door warm and hears the room before it speaks", "dialogue_seed": "Ask for the third toast only if you mean to hear the answer.", "quest_relevance": "tavern_whisper_hook", "purpose": "g8a_tavern_keeper_station_supports_rumor_hub", "contact_shadow": true},
+	{"id": "silas_crowe_suspicious_patron", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(386, 438), "size": Vector2(80, 80), "role": "suspicious_patron", "district": "support_lane", "station": "tavern_rear_service_gate", "route_intent": "secret_path_tavern_to_rear_lane", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "lingers near the rear gate with sealed notes", "dialogue_seed": "Some whispers arrive by the back door, not the bar.", "quest_relevance": "optional_secret_path", "purpose": "g8a_suspicious_patron_station_supports_secret_path", "contact_shadow": true},
+	{"id": "edrin_vale_counting_house_clerk", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(792, 570), "size": Vector2(80, 80), "role": "counting_house_clerk", "district": "inland_residential_civic", "station": "counting_house_records_route", "route_intent": "counting_house_clerk_path", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "holds the records route and watches the wharf", "dialogue_seed": "The ledger is missing a line, and no honest clerk misplaces ink by accident.", "quest_relevance": "first_light_counting_house", "purpose": "g8a_counting_house_clerk_station_supports_first_objective", "contact_shadow": true},
+	{"id": "nora_vale_rumor_carrier", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(748, 394), "size": Vector2(78, 78), "role": "rumor_carrier", "district": "inland_residential_civic", "station": "civic_notice_board", "route_intent": "notice_board_to_tavern", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "reads the notices and folds one into a sleeve", "dialogue_seed": "One notice was posted for officials; one was posted for people who know where to look.", "quest_relevance": "optional_notice_clue", "purpose": "g8a_rumor_carrier_station_supports_civic_to_tavern_whisper", "contact_shadow": true},
 ]
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
@@ -2032,11 +2038,11 @@ func _draw_g410_props() -> void:
 	for anchor in NEWPORT_TOWN.interaction_anchors():
 		var anchor_pos: Vector2 = anchor.get("position", Vector2.ZERO)
 		var anchor_type := String(anchor.get("type", ""))
-		if anchor_type == "npc_atelier":
+		if anchor_type == "npc_atelier" and not G8A_RUNTIME_NPC_NODES_ENABLED:
 			var asset_id := "npc_market_vendor_atelier_g422r" if String(anchor.get("id", "")) == "market_vendor" else "npc_dockworker_atelier_g422r"
 			_draw_atelier_character_placement({"asset_id": asset_id, "position": anchor_pos, "size": Vector2(82, 82), "contact_shadow": true})
 	for placement in NEWPORT_ATELIER_CHARACTER_PLACEMENTS:
-		if String(placement.get("purpose", "")).find("_replaces_placeholder") < 0:
+		if not G8A_RUNTIME_NPC_NODES_ENABLED and String(placement.get("purpose", "")).find("_replaces_placeholder") < 0:
 			_draw_atelier_character_placement(placement)
 	if NEWPORT_TOWN.G422A_SHOW_LEGACY_PROOF_OVERLAYS:
 		_draw_g418_hero_non_cargo_prop_clusters()
