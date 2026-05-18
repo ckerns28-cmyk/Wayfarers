@@ -85,11 +85,11 @@ when the autonomous merge rule in `AGENTS.md` and
 | G-13 | Browser Build, Performance, and Regression Hardening | Hardens Godot import, vertical slice, screenshots, review build, input, performance, assets, and route stability. |
 | G-14 | SV-1 Starter Village Playable Obsession Gate | Produces the final review package and stops for Chris. |
 
-Current execution status after G-9A: First Light now has in-session quest
-state, a Journal - First Light HUD surface, objective completion, NPC-driven
-progression, optional clue-source support, session persistence, and a Resolve
-reward. G-10 is next and must turn the foundation into richer 10-15 minute
-opening content.
+Current execution status after G-10: First Light now has a playable opening arc
+around landfall, the Counting House missing ledger line, the Third Toast tavern
+whisper, a wharf-lantern branch, optional rear-gate secrecy, a Resolve reward,
+and Edrin Vale as a named contact with a dawn hook. G-10A is next and must make
+the Tavern/Inn itself a deeper rumor gameplay hub.
 
 ## G-7 Masterplan Contract
 

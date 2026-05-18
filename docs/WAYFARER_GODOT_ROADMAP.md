@@ -2244,11 +2244,13 @@ The required autonomous phase sequence is:
 - G-13 Browser Build, Performance, and Regression Hardening,
 - G-14 SV-1 Starter Village Playable Obsession Gate.
 
-Current SV-1 autonomous status after G-9A: Newport now has compact interaction
-prompts plus runtime First Light quest state, a Journal - First Light HUD
-surface, objective completion, NPC-driven progression, optional clue-source
-support, session persistence, and a Resolve reward/progression update. The next
-active phase is G-10 Opening Quest Arc: First Light / Whispers Before Dawn.
+Current SV-1 autonomous status after G-10: Newport now has compact interaction
+prompts plus a playable First Light opening arc. The player can make landfall,
+report to Edrin Vale at the Counting House, investigate the missing ledger line,
+hear the Third Toast at the Tavern/Inn, follow Jonah Reed's wharf-lantern clue,
+discover Silas Crowe's optional rear-gate secret, earn Resolve, and gain Edrin
+as a named contact with a dawn hook. The next active phase is G-10A Tavern
+Whisper System.
 
 Ordinary roadmap-bound autonomous PRs before SV-1 may be merged by Codex when
 branch/PR preflight is current, required validators pass, runtime proof passes
