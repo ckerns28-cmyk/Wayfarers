@@ -27,7 +27,9 @@
 - [ ] G-6 production cutover validator when the PR touches deployment, cutover policy, route ownership, or post-G-5 release planning.
 - [ ] Starter Village roadmap validator when the PR touches SV-1 planning or phase sequencing.
 - [ ] Starter Village execution ledger validator when the PR touches SV-1 evidence/status.
+- [ ] SV-0 tooling stack validator when the PR touches Starter Village layout, quest/dialogue, NPC movement, screenshots, runtime proof, asset cleanup, ground cohesion, or council process.
 - [ ] Phase-specific Starter Village validator(s) when the PR touches world cohesion, runtime atelier assets, character motion, NPC population, interaction UX, quest arc, tavern whispers, first-session playability, or SV-1 gate readiness.
+- [ ] Runtime movement proof manifest/frames for NPC or player movement phases.
 - [ ] `git diff --check`.
 - [ ] `git diff --cached --check`.
 

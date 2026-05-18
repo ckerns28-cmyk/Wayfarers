@@ -28,6 +28,15 @@
       "formal_sv1_milestone_review"
     ]
   },
+  "tooling_stack_gate": {
+    "phase_id": "SV-0",
+    "roadmap": "docs/roadmaps/STARTER_VILLAGE_TOOLING_STACK.md",
+    "report": "docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md",
+    "structured_report": "docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json",
+    "validator": "wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py",
+    "required_before_next_layout_pass": true,
+    "future_sv_phases_must_use_locked_stack_where_applicable": true
+  },
   "baseline": {
     "town_cohesion_score": 2.0,
     "art_asset_quality_when_applied_correctly": "excellent",
@@ -75,6 +84,39 @@
     "15 contact sheet/provenance proof for new assets"
   ],
   "phases": [
+    {
+      "phase_id": "SV-0",
+      "title": "Free Tooling Intake Production Stack Lock",
+      "purpose": "Create a free, safe, validated production stack so Starter Village layout, QA, movement proof, quest authoring, asset cleanup, and ground cohesion cannot pass by documentation alone.",
+      "objectives": [
+        "evaluate_world_map_district_authoring_tools",
+        "evaluate_dialogue_quest_authoring_tools",
+        "lock_npc_movement_animation_foundation",
+        "lock_visual_screenshot_regression_warning_process",
+        "lock_runtime_movement_proof_method",
+        "lock_godot_unit_integration_testing_strategy",
+        "lock_asset_cleanup_contact_sheet_workflow",
+        "lock_ground_material_cohesion_workflow",
+        "lock_camera_first_impression_strategy"
+      ],
+      "acceptance": [
+        "free_safe_tooling_stack_exists",
+        "authoritative_world_layout_source_exists",
+        "dialogue_quest_authoring_decision_exists",
+        "movement_proof_method_exists",
+        "visual_regression_method_exists",
+        "asset_cleanup_workflow_exists",
+        "ground_cohesion_workflow_exists",
+        "validators_pass",
+        "agent_council_final_verdict_COUNCIL_PASS_READY_FOR_PR"
+      ],
+      "primary_validators": [
+        "validate_sv0_tooling_stack.py",
+        "validate_starter_village_roadmap.py",
+        "validate_starter_village_execution_ledger.py"
+      ],
+      "status": "PASS"
+    },
     {
       "phase_id": "G-7",
       "title": "Newport Living Origin Village Masterplan Lock",

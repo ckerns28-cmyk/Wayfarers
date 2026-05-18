@@ -2207,6 +2207,14 @@ The execution ledger is
 source in
 `docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json`.
 
+SV-0 now locks the free Starter Village production tooling stack before more
+layout work continues. The stack is documented in
+`docs/roadmaps/STARTER_VILLAGE_TOOLING_STACK.md` and validated by
+`wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py`; it covers
+authoritative town layout data, visual-regression warning views, runtime
+movement proof, data-driven quest/dialogue, asset cleanup/provenance, and
+ground/material cohesion.
+
 The production objective is a Newport-inspired 1700s harbor starting village
 that a first-time player can load into, understand, navigate, investigate, and
 want to keep playing. Newport must become a cohesive authored origin town with
@@ -2227,6 +2235,7 @@ Current screenshot QA baseline after G-6:
 
 The required autonomous phase sequence is:
 
+- SV-0 Free Tooling Intake Production Stack Lock,
 - G-7 Newport Living Origin Village Masterplan Lock,
 - G-7A Street, Lot, and Ground Cohesion Reconstruction,
 - G-7B Harbor, Wharf, and Commercial Spine Cohesion,
@@ -2244,14 +2253,18 @@ The required autonomous phase sequence is:
 - G-13 Browser Build, Performance, and Regression Hardening,
 - G-14 SV-1 Starter Village Playable Obsession Gate.
 
-Current SV-1 autonomous status after G-10B: Newport now has compact interaction
-prompts, a playable First Light opening arc, a runtime-backed Tavern/Inn rumor
-system, and a multi-path starter choice foundation. The player can make
-landfall, report to Edrin Vale, investigate the missing ledger line, hear the
-Third Toast from Bess, follow harbor-work pressure, pursue Honor Finch's
-merchant-street angle, discover Silas Crowe's optional rear-gate secret, and
-secure a named contact hook. The next active phase is G-11 Living Town Rhythm
-Pass.
+Current SV-1 autonomous status after G-10B and Chris screenshot QA: Newport
+has compact interaction prompts, a playable First Light opening arc, a
+runtime-backed Tavern/Inn rumor system, and a multi-path starter choice
+foundation. The player can make landfall, report to Edrin Vale, investigate
+the missing ledger line, hear the Third Toast from Bess, follow harbor-work
+pressure, pursue Honor Finch's merchant-street angle, discover Silas Crowe's
+optional rear-gate secret, and secure a named contact hook. However, the latest
+screenshots exposed that the town-layout QA process is still not strict enough:
+patchy streets, false stable reads, overlap/cutoff errors, mismatched building
+scale, and screenshot/report contradictions must be prevented before more
+production placement continues. The next active phase is SV-0, then G-7/G-7A
+tool-backed layout repair resumes under the locked stack.
 
 G-10A tightened the review process after screenshot QA exposed route and
 building ordering problems around the tavern/commercial row.

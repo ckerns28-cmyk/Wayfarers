@@ -1,0 +1,52 @@
+{
+  "schema_id": "wayfarer.starter_village.visual_regression_manifest.v1",
+  "phase": "SV-0",
+  "policy": "Visual diff is a warning system. Agent Council art/world/design judgment remains authoritative.",
+  "comparison_mode": "golden_master_or_previous_phase_warning",
+  "diff_status": "warning_not_final_verdict",
+  "capture_source": "Godot runtime screenshot wrappers under wayfarer_godot_vertical_slice/tools",
+  "baseline_storage": "wayfarer_godot_vertical_slice/artifacts/review/baselines/starter_village",
+  "minimum_required_views": [
+    "wide_newport_normal_gameplay_view",
+    "player_arrival_at_harbor",
+    "player_on_route_to_counting_house",
+    "player_near_tavern_inn",
+    "player_on_commercial_avenue",
+    "player_at_dock_wharf_work_area",
+    "player_near_npc_movement_path",
+    "npc_idle_and_walking_proof",
+    "player_interacting_with_counting_house_clerk",
+    "player_interacting_at_tavern_rumor_location",
+    "quest_prompt_journal_objective_proof",
+    "signs_markers_interaction_ux_proof",
+    "y_sort_layering_near_buildings_props",
+    "debug_overlays_disabled",
+    "contact_sheet_provenance_proof"
+  ],
+  "automatic_warning_checks": [
+    "image_exists",
+    "image_dimensions_match_expected",
+    "image_not_blank",
+    "debug_overlay_absent_in_normal_views",
+    "large_layout_pixel_change_requires_council_note",
+    "hud_occlusion_change_requires_council_note",
+    "tavern_view_change_requires_council_note",
+    "commercial_avenue_scale_change_requires_council_note",
+    "npc_motion_view_change_requires_council_note"
+  ],
+  "council_fail_conditions": [
+    "screenshot_contradicts_written_pass",
+    "town_reads_as_random_asset_board",
+    "roads_or_ground_are_patchy_editor_rectangles",
+    "building_overlap_or_clipped_building_visible",
+    "tavern_rear_false_stable_or_fake_service_collage",
+    "npc_static_sprite_glide",
+    "prompt_or_bark_text_overlaps_dialogue",
+    "debug_marker_visible_in_normal_play",
+    "non_atelier_sprite_visible_in_normal_play"
+  ],
+  "future_comparison_tools": [
+    {"tool": "pixelmatch", "decision": "SPIKE_ONLY", "role": "pixel threshold diff"},
+    {"tool": "SSIM/scikit-image", "decision": "DEFER", "role": "perceptual diff"}
+  ]
+}

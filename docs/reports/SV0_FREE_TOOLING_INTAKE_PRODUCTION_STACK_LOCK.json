@@ -1,0 +1,531 @@
+{
+  "schema_id": "wayfarer.sv0.free_tooling_stack_lock.v1",
+  "phase_id": "SV-0",
+  "title": "SV-0 Free Tooling Intake Production Stack Lock",
+  "generated_at": "2026-05-18",
+  "branch": "codex/sv0-free-tooling-stack",
+  "scope": "Lock a free, safe, validated production stack before continuing Starter Village implementation.",
+  "cost_policy": "free_only_no_paid_dependencies",
+  "safety_policy": {
+    "do_not_delete_old_files_or_photos": true,
+    "do_not_move_external_drive_contents": true,
+    "do_not_reformat_drives": true,
+    "do_not_overwrite_non_wayfarer_folders": true,
+    "preferred_portable_tool_root": "D:/Wayfarer/tools",
+    "preferred_repo_addon_root": "wayfarer_godot_vertical_slice/addons",
+    "repo_local_data_roots": [
+      "wayfarer_godot_vertical_slice/data/world_layout",
+      "wayfarer_godot_vertical_slice/data/visual_qa",
+      "wayfarer_godot_vertical_slice/data/movement_proof",
+      "wayfarer_godot_vertical_slice/data/ground_materials"
+    ]
+  },
+  "council_roles": [
+    "Scrum Master",
+    "Game Designer",
+    "World/Layout Designer",
+    "Art Director",
+    "Animation/NPC Behavior Director",
+    "Narrative Designer",
+    "UX Designer",
+    "Game Programmer",
+    "QA Analyst",
+    "Build/Release Engineer"
+  ],
+  "authoritative_sources": {
+    "town_layout_source": "wayfarer_godot_vertical_slice/data/world_layout/starter_village_world_layout_v1.json",
+    "visual_regression_manifest": "wayfarer_godot_vertical_slice/data/visual_qa/starter_village_visual_regression_manifest_v1.json",
+    "movement_proof_manifest": "wayfarer_godot_vertical_slice/data/movement_proof/starter_village_movement_proof_manifest_v1.json",
+    "ground_material_stack": "wayfarer_godot_vertical_slice/data/ground_materials/starter_village_ground_material_stack_v1.json",
+    "dialogue_quest_sources": [
+      "wayfarer_godot_vertical_slice/data/dialogue/tavern_whispers.json",
+      "wayfarer_godot_vertical_slice/data/quests/first_light_whispers_before_dawn.json",
+      "wayfarer_godot_vertical_slice/data/quests/first_light_multi_path_choices.json"
+    ]
+  },
+  "required_outcomes": {
+    "map_source_of_truth_decision_made": true,
+    "dialogue_quest_authoring_decision_made": true,
+    "npc_movement_animation_decision_made": true,
+    "visual_regression_method_decision_made": true,
+    "movement_proof_method_decision_made": true,
+    "unit_integration_testing_decision_made": true,
+    "asset_cleanup_workflow_decision_made": true,
+    "ground_cohesion_workflow_decision_made": true,
+    "camera_first_impression_decision_made": true
+  },
+  "decision_statuses": [
+    "ADOPT_NOW",
+    "SPIKE_ONLY",
+    "DEFER",
+    "REJECT",
+    "ALREADY_COVERED"
+  ],
+  "tool_categories": [
+    {
+      "category_id": "1",
+      "category_name": "World / Map / District Authoring",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Wayfarer Godot-native StarterVillageWorldLayout v1",
+        "purpose": "Author districts, lots, roads, alleys, dock paths, NPC routes, interactable zones, quest beat locations, and camera viewpoints as the source of truth before runtime placement.",
+        "license": "Project-owned repo-local JSON/GDScript schema",
+        "cost_free_status": "Free; no external install",
+        "godot_version_compatibility": "Godot 4.6.2 compatible data schema consumed by project scripts and validators",
+        "web_review_build_risk": "Low; JSON data only, no export dependency",
+        "ci_automation_compatibility": "High; parsed by Python validators and Godot command-line validators",
+        "installation_path": "wayfarer_godot_vertical_slice/data/world_layout/starter_village_world_layout_v1.json",
+        "rollback_path": "Revert the JSON/schema files and restore NewportTownBlueprint-only placement on the affected branch",
+        "helps_sv1": "Stops coordinate sprawl by forcing district/lot/road/NPC/quest/camera assignments before buildings and props are placed.",
+        "provenance_safety": "No third-party pixels or external asset imports; data describes project-owned layout only",
+        "validation_proof": "wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py checks the source exists and contains districts, roads, lots, routes, interaction zones, quest beats, and viewpoints."
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "LDtk",
+          "decision": "SPIKE_ONLY",
+          "license": "MIT",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "Potentially usable through importers, but not locked for this build without a Godot 4.6.2 importer spike",
+          "web_review_build_risk": "Unknown until importer output and export behavior are validated",
+          "ci_automation_compatibility": "Likely good after export-to-JSON/import validation, but not proven in this repo",
+          "installation_path": "D:/Wayfarer/tools/ldtk if spiked; not installed by SV-0",
+          "rollback_path": "Delete the portable LDtk folder and any spike-only import artifacts",
+          "helps_sv1": "Strong visual object-layer authoring candidate for districts, lots, roads, and metadata once importer proof exists.",
+          "provenance_safety": "Editor only; no asset provenance impact if used only for project-authored layout metadata",
+          "source_url": "https://github.com/deepnight/ldtk"
+        },
+        {
+          "tool_name": "Tiled",
+          "decision": "DEFER",
+          "license": "GPL-2.0-or-later",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "Possible through custom import/export, but not adopted until GPL/toolchain and importer behavior are isolated from runtime code",
+          "web_review_build_risk": "Unknown until export-only workflow is tested",
+          "ci_automation_compatibility": "Possible through exported JSON/TMX validation, not proven here",
+          "installation_path": "D:/Wayfarer/tools/tiled if later spiked; not installed by SV-0",
+          "rollback_path": "Delete portable Tiled folder and remove any spike-only exported files",
+          "helps_sv1": "Good mature map editor, but not needed before the repo-local source-of-truth schema is established.",
+          "provenance_safety": "Editor only; no asset provenance impact if used only for metadata",
+          "source_url": "https://github.com/mapeditor/tiled"
+        },
+        {
+          "tool_name": "Current NewportTownBlueprint approach",
+          "decision": "ALREADY_COVERED",
+          "license": "Project-owned code",
+          "cost_free_status": "Free",
+          "godot_version_compatibility": "Godot 4.6.2 compatible",
+          "web_review_build_risk": "Low, already in runtime",
+          "ci_automation_compatibility": "High, already exercised by validators",
+          "installation_path": "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+          "rollback_path": "Revert branch changes",
+          "helps_sv1": "Runtime blueprint remains the placement/runtime integration layer, but it is no longer allowed to be the only planning source.",
+          "provenance_safety": "Project-owned code only"
+        }
+      ]
+    },
+    {
+      "category_id": "2",
+      "category_name": "Dialogue / Quest Authoring",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Wayfarer data-driven quest and dialogue JSON",
+        "purpose": "Author tavern whispers, branching leads, objective updates, rewards, and NPC rumor content in diffable repo-local data.",
+        "license": "Project-owned JSON/GDScript",
+        "cost_free_status": "Free; no external install",
+        "godot_version_compatibility": "Godot 4.6.2 compatible through existing QuestState, FirstLightQuest, ChoiceRouter, and TavernWhisperSystem scripts",
+        "web_review_build_risk": "Low; data and in-project scripts only",
+        "ci_automation_compatibility": "High; current validators can parse and simulate quest/dialogue states",
+        "installation_path": "wayfarer_godot_vertical_slice/data/quests/first_light_whispers_before_dawn.json",
+        "rollback_path": "Revert data/schema/script changes on the branch",
+        "helps_sv1": "Keeps First Light, tavern rumors, optional clues, and objective changes inspectable and testable.",
+        "provenance_safety": "Text authored in repo; no asset provenance impact",
+        "validation_proof": "validate_opening_quest_arc.py, validate_tavern_whisper_system.py, validate_multi_path_starter_choice.py, and validate_sv0_tooling_stack.py"
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "Dialogue Manager",
+          "decision": "SPIKE_ONLY",
+          "license": "MIT",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "Godot 4 compatible, but not adopted until web export and CI validation are proven in this project",
+          "web_review_build_risk": "Unknown until addon export behavior is tested",
+          "ci_automation_compatibility": "Potentially good, not proven here",
+          "installation_path": "wayfarer_godot_vertical_slice/addons/dialogue_manager if spiked; not installed by SV-0",
+          "rollback_path": "Delete addon folder and remove plugin/project settings entries from the spike branch",
+          "helps_sv1": "Could improve authoring if custom JSON becomes too limiting.",
+          "provenance_safety": "Text tooling only; no sprite or asset provenance impact",
+          "source_url": "https://github.com/nathanhoad/godot_dialogue_manager"
+        },
+        {
+          "tool_name": "Dialogic",
+          "decision": "DEFER",
+          "license": "MIT",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "Godot 4 branch available, but the feature surface is larger than current SV-1 needs",
+          "web_review_build_risk": "Unknown until addon export and save-state behavior are tested",
+          "ci_automation_compatibility": "Not adopted until command-line validation strategy is proven",
+          "installation_path": "wayfarer_godot_vertical_slice/addons/dialogic if later spiked",
+          "rollback_path": "Delete addon folder and remove plugin/project settings entries from the spike branch",
+          "helps_sv1": "Could support cinematic dialogue later, but current first-session loop benefits more from simple testable data.",
+          "provenance_safety": "Text/tooling only when used correctly",
+          "source_url": "https://github.com/dialogic-godot/dialogic"
+        }
+      ]
+    },
+    {
+      "category_id": "3",
+      "category_name": "NPC Movement / Animation Foundation",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Godot built-in NavigationAgent2D, NavigationRegion2D, AnimationPlayer, AnimationTree, and route JSON",
+        "purpose": "Use engine-native navigation and animation state foundations for grounded idle/walk/facing/pausing NPC movement.",
+        "license": "Godot Engine MIT license and project-owned data",
+        "cost_free_status": "Free; bundled with Godot",
+        "godot_version_compatibility": "Godot 4.6.2 native classes",
+        "web_review_build_risk": "Low; engine-native runtime features",
+        "ci_automation_compatibility": "High; command-line tests can inspect routes, animation states, and no-glide contracts",
+        "installation_path": "Built into Godot; route data under wayfarer_godot_vertical_slice/data/world_layout",
+        "rollback_path": "Disable route walking in NPC configs and revert route data/animation state changes",
+        "helps_sv1": "Prevents static cutout movement by requiring route intent, facing states, animation cadence, pauses, and movement proof.",
+        "provenance_safety": "Uses existing manifest-backed character sprites and project-owned motion data",
+        "validation_proof": "validate_character_motion_foundation.py, validate_npc_population_and_routes.py, future movement proof manifest"
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "LimboAI",
+          "decision": "DEFER",
+          "license": "MIT",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "Godot 4 compatible addon, but behavior trees are not needed for SV-1 movement proof",
+          "web_review_build_risk": "Unknown until addon export is tested",
+          "ci_automation_compatibility": "Not adopted until behavior-tree tests are needed",
+          "installation_path": "wayfarer_godot_vertical_slice/addons/limboai if later spiked",
+          "rollback_path": "Delete addon and remove plugin/project settings entries from the spike branch",
+          "helps_sv1": "Could help later NPC AI, but SV-1 needs reliable grounded route/idle behavior first.",
+          "provenance_safety": "Code addon only; no asset provenance impact",
+          "source_url": "https://github.com/limbonaut/limboai"
+        }
+      ]
+    },
+    {
+      "category_id": "4",
+      "category_name": "Automated Visual QA",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Godot screenshot capture plus repo-local visual regression manifest",
+        "purpose": "Capture recurring gameplay viewpoints and compare them against locked baseline manifests as warning gates before council review.",
+        "license": "Project-owned scripts and JSON",
+        "cost_free_status": "Free; no new install",
+        "godot_version_compatibility": "Godot 4.6.2 windowed capture scripts already used by the project",
+        "web_review_build_risk": "Low; capture tooling is outside exported gameplay",
+        "ci_automation_compatibility": "Medium now, high when CI can run windowed capture; command-line manifest checks are available now",
+        "installation_path": "wayfarer_godot_vertical_slice/data/visual_qa/starter_village_visual_regression_manifest_v1.json",
+        "rollback_path": "Revert visual QA manifest and screenshot-regression script changes",
+        "helps_sv1": "Prevents reports from claiming PASS when wide, tavern, commercial, harbor, NPC, and interaction screenshots show obvious regressions.",
+        "provenance_safety": "Compares project-rendered screenshots only; no asset import or license change",
+        "validation_proof": "validate_sv0_tooling_stack.py checks required recurring viewpoints and warning-only visual diff policy"
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "Playwright",
+          "decision": "SPIKE_ONLY",
+          "license": "Apache-2.0",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "Useful for browser/review route after web export is stable",
+          "web_review_build_risk": "Low as test tooling, but browser build route must be stable first",
+          "ci_automation_compatibility": "High once review build is automated",
+          "installation_path": "repo dev dependency only if later spiked; not installed by SV-0",
+          "rollback_path": "Remove package-lock/dev dependency and test scripts from spike branch",
+          "helps_sv1": "Will catch review-route HUD/canvas regressions once browser export is in G-13 scope.",
+          "provenance_safety": "Test runner only",
+          "source_url": "https://github.com/microsoft/playwright"
+        },
+        {
+          "tool_name": "pixelmatch / pixelmatch-py",
+          "decision": "SPIKE_ONLY",
+          "license": "ISC for pixelmatch",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "External image comparison only; no runtime dependency",
+          "web_review_build_risk": "None if used only in tooling",
+          "ci_automation_compatibility": "High if dependency is pinned",
+          "installation_path": "repo-local test dependency if spiked; not installed by SV-0",
+          "rollback_path": "Remove dependency and visual-diff script from spike branch",
+          "helps_sv1": "Can flag large screenshot changes but cannot replace art-direction judgment.",
+          "provenance_safety": "Screenshot comparison only",
+          "source_url": "https://github.com/mapbox/pixelmatch"
+        },
+        {
+          "tool_name": "SSIM / scikit-image",
+          "decision": "DEFER",
+          "license": "BSD-3-Clause",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "External image comparison only",
+          "web_review_build_risk": "None if used only in tooling",
+          "ci_automation_compatibility": "Good but heavier than current need",
+          "installation_path": "Not installed by SV-0",
+          "rollback_path": "Remove dependency and comparison script if later adopted",
+          "helps_sv1": "Useful for perceptual comparison later; not required before baseline screenshot warnings exist.",
+          "provenance_safety": "Screenshot comparison only",
+          "source_url": "https://scikit-image.org/docs/stable/license.html"
+        }
+      ]
+    },
+    {
+      "category_id": "5",
+      "category_name": "Runtime Movement Proof",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Godot frame-sequence capture manifest",
+        "purpose": "Require timestamped frame sequences for NPC/player movement phases when video/GIF tooling is unavailable.",
+        "license": "Project-owned scripts and JSON",
+        "cost_free_status": "Free; no new install",
+        "godot_version_compatibility": "Godot 4.6.2 screenshot capture compatible",
+        "web_review_build_risk": "Low; review artifact generation only",
+        "ci_automation_compatibility": "Medium now, high when capture runner is stable in CI",
+        "installation_path": "wayfarer_godot_vertical_slice/data/movement_proof/starter_village_movement_proof_manifest_v1.json",
+        "rollback_path": "Revert movement proof manifest and capture scripts on the branch",
+        "helps_sv1": "Makes hover/glide impossible to hide behind still screenshots; council must inspect motion proof for movement phases.",
+        "provenance_safety": "Captures existing runtime sprites only",
+        "validation_proof": "validate_sv0_tooling_stack.py requires G-8+ movement proof method and phase coverage"
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "FFmpeg",
+          "decision": "SPIKE_ONLY",
+          "license": "LGPL/GPL depending build configuration",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "External post-processing only; no runtime dependency",
+          "web_review_build_risk": "None if kept out of export",
+          "ci_automation_compatibility": "Good if a portable build is pinned and license mode is documented",
+          "installation_path": "D:/Wayfarer/tools/ffmpeg if spiked; not installed by SV-0",
+          "rollback_path": "Delete portable FFmpeg folder and remove script calls",
+          "helps_sv1": "Can turn frame sequences into GIF/video after frame proof already exists.",
+          "provenance_safety": "Transforms project-generated review captures only",
+          "source_url": "https://ffmpeg.org/legal.html"
+        },
+        {
+          "tool_name": "OBS Studio",
+          "decision": "DEFER",
+          "license": "GPL-2.0-or-later",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "External GUI capture only",
+          "web_review_build_risk": "None if external, but not automation-friendly",
+          "ci_automation_compatibility": "Low for this project",
+          "installation_path": "Not installed by SV-0",
+          "rollback_path": "No repo change; remove any local capture notes if later tried",
+          "helps_sv1": "Manual fallback only; frame sequence capture is more reproducible.",
+          "provenance_safety": "Captures runtime output only",
+          "source_url": "https://github.com/obsproject/obs-studio"
+        }
+      ]
+    },
+    {
+      "category_id": "6",
+      "category_name": "Godot Unit / Integration Testing",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Godot command-line integration validators",
+        "purpose": "Test quest state, dialogue state, route data, interaction triggers, animation contracts, and session persistence without adding a plugin.",
+        "license": "Project-owned scripts",
+        "cost_free_status": "Free; no new install",
+        "godot_version_compatibility": "Godot 4.6.2 command-line compatible",
+        "web_review_build_risk": "Low; tools are outside export",
+        "ci_automation_compatibility": "High; already used by local and remote checks",
+        "installation_path": "wayfarer_godot_vertical_slice/tools",
+        "rollback_path": "Revert validator changes on the branch",
+        "helps_sv1": "Keeps core gameplay state testable even before a GDScript unit-test addon is installed.",
+        "provenance_safety": "Code/tests only; no asset provenance impact",
+        "validation_proof": "validate_vertical_slice.gd and phase-specific Python validators"
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "GUT for Godot 4",
+          "decision": "SPIKE_ONLY",
+          "license": "MIT",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "Godot 4 compatible, but not installed until a repo-local addon spike proves CLI and web export safety",
+          "web_review_build_risk": "Low if disabled from export, but must be proven",
+          "ci_automation_compatibility": "Likely high once installed and pinned",
+          "installation_path": "wayfarer_godot_vertical_slice/addons/gut if spiked; not installed by SV-0",
+          "rollback_path": "Delete addon folder and remove plugin/project settings entries from the spike branch",
+          "helps_sv1": "Could improve GDScript unit coverage later; current integration validators cover the immediate SV-1 contracts.",
+          "provenance_safety": "Test addon only",
+          "source_url": "https://github.com/bitwes/Gut"
+        }
+      ]
+    },
+    {
+      "category_id": "7",
+      "category_name": "Art Cleanup / Animation Tools",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Current Python/Pillow extraction and contact-sheet pipeline",
+        "purpose": "Generate, clean, audit, and review sprite sheets/contact sheets with manifest/provenance enforcement.",
+        "license": "Project-owned scripts plus Pillow dependency already used locally",
+        "cost_free_status": "Free; no new install for SV-0",
+        "godot_version_compatibility": "Outputs PNG atlases and manifests used by Godot 4.6.2",
+        "web_review_build_risk": "Low; build consumes approved runtime assets only",
+        "ci_automation_compatibility": "High where Python/Pillow is available",
+        "installation_path": "wayfarer_godot_vertical_slice/art_pipeline",
+        "rollback_path": "Revert generated-art pipeline changes and quarantine affected assets",
+        "helps_sv1": "Prevents placeholder sprites, untracked character art, and provenance gaps from entering normal play.",
+        "provenance_safety": "Requires source image, prompt, manifest, contact sheet, extraction QA, and no unknown runtime sprites",
+        "validation_proof": "asset provenance validators, runtime atelier consistency validators, and SV-0 tool stack validator"
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "Pixelorama",
+          "decision": "SPIKE_ONLY",
+          "license": "MIT",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "External sprite editor only",
+          "web_review_build_risk": "None if used only for source editing",
+          "ci_automation_compatibility": "Low as manual editor, useful for contact-sheet inspection",
+          "installation_path": "D:/Wayfarer/tools/pixelorama if spiked; not installed by SV-0",
+          "rollback_path": "Delete portable editor folder; no runtime rollback needed",
+          "helps_sv1": "Could help manual cleanup of sprite sheets and animation frames.",
+          "provenance_safety": "Must only edit manifest-backed project-owned source assets",
+          "source_url": "https://github.com/Orama-Interactive/Pixelorama"
+        },
+        {
+          "tool_name": "LibreSprite",
+          "decision": "DEFER",
+          "license": "GPL-3.0",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "External editor only",
+          "web_review_build_risk": "None if external",
+          "ci_automation_compatibility": "Low as manual editor",
+          "installation_path": "Not installed by SV-0",
+          "rollback_path": "No repo change; delete portable editor if later tried",
+          "helps_sv1": "Useful but redundant with existing pipeline and Pixelorama spike option.",
+          "provenance_safety": "Manual edits must remain manifest-backed",
+          "source_url": "https://github.com/LibreSprite/LibreSprite"
+        },
+        {
+          "tool_name": "Krita",
+          "decision": "DEFER",
+          "license": "GPL-family free/open-source application",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "External editor only",
+          "web_review_build_risk": "None if external",
+          "ci_automation_compatibility": "Low as manual editor",
+          "installation_path": "Not installed by SV-0",
+          "rollback_path": "No repo change; remove local notes if later tried",
+          "helps_sv1": "Powerful painting tool, but too broad for immediate sprite-sheet QA gates.",
+          "provenance_safety": "Manual edits must remain manifest-backed",
+          "source_url": "https://krita.org/en/about/krita-and-open-source/"
+        }
+      ]
+    },
+    {
+      "category_id": "8",
+      "category_name": "Ground / Material Cohesion",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Wayfarer Godot-native ground material stack",
+        "purpose": "Define cohesive reusable grass, road, cobble, dock, lot-foundation, and transition materials before G-7A reconstruction.",
+        "license": "Project-owned data and current atelier assets",
+        "cost_free_status": "Free; no external install",
+        "godot_version_compatibility": "Godot 4.6.2 compatible data and drawing/TileSet-ready material taxonomy",
+        "web_review_build_risk": "Low; project data and approved runtime materials only",
+        "ci_automation_compatibility": "High; validators can parse required material families and transitions",
+        "installation_path": "wayfarer_godot_vertical_slice/data/ground_materials/starter_village_ground_material_stack_v1.json",
+        "rollback_path": "Revert material-stack data and affected map drawing changes",
+        "helps_sv1": "Targets the patchy road/grass/stone/dock transitions called out by screenshot QA.",
+        "provenance_safety": "Uses project-authored material taxonomy and existing manifest-backed atelier ground assets",
+        "validation_proof": "validate_sv0_tooling_stack.py checks required material families and transition rules"
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "Material Maker",
+          "decision": "SPIKE_ONLY",
+          "license": "MIT",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "External material authoring tool; export path to 2D Godot assets must be proven",
+          "web_review_build_risk": "Low if baked textures are manifest-backed; unknown until spike",
+          "ci_automation_compatibility": "Medium if outputs are deterministic and validated",
+          "installation_path": "D:/Wayfarer/tools/material_maker if spiked; not installed by SV-0",
+          "rollback_path": "Delete portable tool folder and quarantine generated textures from spike branch",
+          "helps_sv1": "Could improve cohesive procedural ground materials after G-7A taxonomy is locked.",
+          "provenance_safety": "Generated outputs must receive source files, manifests, contact sheets, and license notes",
+          "source_url": "https://github.com/RodZill4/material-maker"
+        },
+        {
+          "tool_name": "Godot TileSet / TileMapLayer",
+          "decision": "SPIKE_ONLY",
+          "license": "Godot Engine MIT license and project-owned tiles",
+          "cost_free_status": "Free; bundled with Godot",
+          "godot_version_compatibility": "Godot 4.6.2 native",
+          "web_review_build_risk": "Low if used normally",
+          "ci_automation_compatibility": "High after tile source is generated and validated",
+          "installation_path": "Built into Godot; no addon install",
+          "rollback_path": "Revert TileSet/TileMap scene changes on the spike branch",
+          "helps_sv1": "Potential replacement for hand-drawn patch rectangles after ground-material taxonomy is proven.",
+          "provenance_safety": "Must use manifest-backed project-owned tiles only",
+          "source_url": "https://docs.godotengine.org/en/stable/classes/class_tilemaplayer.html"
+        }
+      ]
+    },
+    {
+      "category_id": "9",
+      "category_name": "Camera / First Impression Polish",
+      "decision": "ADOPT_NOW",
+      "selected_tool": {
+        "tool_name": "Godot-native Camera2D plus authored viewpoint data",
+        "purpose": "Use Camera2D framing, smoothing, limits, and SV-0 viewpoint definitions for first impression and screenshot proof.",
+        "license": "Godot Engine MIT license and project-owned data",
+        "cost_free_status": "Free; no external install",
+        "godot_version_compatibility": "Godot 4.6.2 native",
+        "web_review_build_risk": "Low; engine-native",
+        "ci_automation_compatibility": "High for deterministic screenshot viewpoints",
+        "installation_path": "Built into Godot; viewpoint data in wayfarer_godot_vertical_slice/data/world_layout/starter_village_world_layout_v1.json",
+        "rollback_path": "Revert camera/viewpoint data changes",
+        "helps_sv1": "Makes arrival, tavern, counting-house, commercial, harbor, NPC, quest, and debug-disabled proof views intentional.",
+        "provenance_safety": "No asset import; presentation data only",
+        "validation_proof": "validate_sv0_tooling_stack.py checks required camera/screenshot viewpoints"
+      },
+      "evaluated_tools": [
+        {
+          "tool_name": "Phantom Camera",
+          "decision": "DEFER",
+          "license": "MIT",
+          "cost_free_status": "Free/open source",
+          "godot_version_compatibility": "Godot 4 addon, but not needed until core town cohesion and NPC movement are stronger",
+          "web_review_build_risk": "Unknown until addon export is tested",
+          "ci_automation_compatibility": "Not adopted until deterministic camera tests are needed",
+          "installation_path": "wayfarer_godot_vertical_slice/addons/phantom_camera if later spiked",
+          "rollback_path": "Delete addon folder and remove plugin/project settings entries from the spike branch",
+          "helps_sv1": "Could improve cinematic framing later; current Camera2D is enough for SV-0.",
+          "provenance_safety": "Code addon only",
+          "source_url": "https://github.com/ramokz/phantom-camera"
+        }
+      ]
+    }
+  ],
+  "phase_gate_policy": {
+    "all_future_sv_phases_must_reference_sv0_stack": true,
+    "if_phase_bypasses_required_tool": "council_must_record_why_or_fail",
+    "visual_diff_is_warning_not_art_direction_pass": true,
+    "screenshot_evidence_can_override_written_pass": true,
+    "movement_phases_require_motion_proof": true,
+    "new_unvalidated_one_off_systems_are_failures": true
+  },
+  "validators": [
+    "wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py",
+    "wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
+    "wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py"
+  ],
+  "council_acceptance": {
+    "locked_production_stack_exists": true,
+    "stack_improves_roadmap_execution": true,
+    "no_unsafe_dependencies_introduced": true,
+    "map_world_source_of_truth_exists": true,
+    "dialogue_quest_authoring_decision_exists": true,
+    "movement_proof_method_exists": true,
+    "visual_regression_method_exists": true,
+    "asset_cleanup_workflow_exists": true,
+    "ground_cohesion_workflow_exists": true,
+    "final_verdict": "COUNCIL_PASS_READY_FOR_PR"
+  }
+}

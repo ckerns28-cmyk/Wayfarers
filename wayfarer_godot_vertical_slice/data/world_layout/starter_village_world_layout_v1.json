@@ -1,0 +1,106 @@
+{
+  "schema_id": "wayfarer.starter_village.world_layout.v1",
+  "phase": "SV-0",
+  "authoring_mode": "godot_native_repo_local_json",
+  "purpose": "Author Newport as districts, roads, lots, routes, interaction zones, quest beats, NPC stations, and screenshot viewpoints before runtime placement.",
+  "world_size": {"w": 1600, "h": 1024},
+  "planning_order": [
+    "districts",
+    "roads",
+    "alleys",
+    "dock_paths",
+    "lots",
+    "building_anchors",
+    "npc_routes",
+    "interaction_zones",
+    "quest_beat_locations",
+    "camera_viewpoints",
+    "props_last"
+  ],
+  "districts": [
+    {"id": "harbor_waterfront", "rect": {"x": 0, "y": 670, "w": 1600, "h": 300}, "purpose": "arrival, wharf labor, cargo movement, lantern clues"},
+    {"id": "waterfront_avenue", "rect": {"x": 110, "y": 520, "w": 1390, "h": 150}, "purpose": "first readable east-west route from tavern to commerce and wharf"},
+    {"id": "tavern_social", "rect": {"x": 120, "y": 390, "w": 330, "h": 270}, "purpose": "Inn/Tavern landmark, Bess, Silas, Third Toast rumors"},
+    {"id": "commercial_spine", "rect": {"x": 500, "y": 500, "w": 980, "h": 210}, "purpose": "mercantile, chandlery, market, street gossip"},
+    {"id": "civic_counting", "rect": {"x": 580, "y": 270, "w": 600, "h": 230}, "purpose": "Counting House, Customs pressure, notices, first objective"},
+    {"id": "rear_service_lane", "rect": {"x": 300, "y": 390, "w": 1050, "h": 130}, "purpose": "back doors, service traffic, secret path"},
+    {"id": "residential_edge", "rect": {"x": 110, "y": 60, "w": 1390, "h": 250}, "purpose": "upper homes, class texture, boarding and clerks"}
+  ],
+  "roads": [
+    {"id": "waterfront_avenue_main", "kind": "primary", "polyline": [{"x": 120, "y": 596}, {"x": 1490, "y": 596}], "width": 88, "connects": ["tavern_social", "commercial_spine", "harbor_waterfront"]},
+    {"id": "west_uphill_connector", "kind": "secondary", "polyline": [{"x": 386, "y": 596}, {"x": 386, "y": 420}, {"x": 420, "y": 290}], "width": 42, "connects": ["waterfront_avenue", "residential_edge"]},
+    {"id": "central_counting_connector", "kind": "secondary", "polyline": [{"x": 704, "y": 626}, {"x": 704, "y": 392}], "width": 44, "connects": ["harbor_waterfront", "waterfront_avenue", "civic_counting"]},
+    {"id": "east_market_connector", "kind": "secondary", "polyline": [{"x": 1248, "y": 638}, {"x": 1248, "y": 430}], "width": 36, "connects": ["commercial_spine", "civic_counting", "rear_service_lane"]},
+    {"id": "residential_backstreet", "kind": "tertiary", "polyline": [{"x": 160, "y": 288}, {"x": 1500, "y": 288}], "width": 38, "connects": ["residential_edge", "civic_counting"]}
+  ],
+  "alleys": [
+    {"id": "tavern_to_rear_gate_alley", "polyline": [{"x": 360, "y": 590}, {"x": 540, "y": 450}], "width": 28},
+    {"id": "market_service_alley", "polyline": [{"x": 1364, "y": 636}, {"x": 1412, "y": 500}], "width": 30}
+  ],
+  "dock_paths": [
+    {"id": "wharf_boardwalk_west", "polyline": [{"x": 280, "y": 710}, {"x": 620, "y": 710}], "width": 60},
+    {"id": "wharf_boardwalk_center", "polyline": [{"x": 690, "y": 710}, {"x": 1030, "y": 710}], "width": 60},
+    {"id": "wharf_boardwalk_east", "polyline": [{"x": 1120, "y": 710}, {"x": 1460, "y": 710}], "width": 60}
+  ],
+  "lots": [
+    {"id": "lot_tavern_inn", "district": "tavern_social", "building_id": "b_inn_tavern", "anchor": {"x": 244, "y": 596}, "frontage": "waterfront_avenue_main"},
+    {"id": "lot_clerk_townhouse", "district": "waterfront_avenue", "building_id": "b_clerk_townhouse", "anchor": {"x": 500, "y": 596}, "frontage": "waterfront_avenue_main"},
+    {"id": "lot_mercantile", "district": "commercial_spine", "building_id": "b_mercantile", "anchor": {"x": 680, "y": 596}, "frontage": "waterfront_avenue_main"},
+    {"id": "lot_chandlery", "district": "commercial_spine", "building_id": "b_chandlery_front", "anchor": {"x": 1018, "y": 596}, "frontage": "waterfront_avenue_main"},
+    {"id": "lot_shop_house", "district": "commercial_spine", "building_id": "b_shop_house", "anchor": {"x": 1180, "y": 596}, "frontage": "waterfront_avenue_main"},
+    {"id": "lot_market_shed", "district": "commercial_spine", "building_id": "b_market_shed", "anchor": {"x": 1364, "y": 636}, "frontage": "waterfront_avenue_main"},
+    {"id": "lot_counting_house", "district": "civic_counting", "building_id": "b_counting_house", "anchor": {"x": 704, "y": 392}, "frontage": "central_counting_connector"},
+    {"id": "lot_customs_house", "district": "civic_counting", "building_id": "b_custom_house", "anchor": {"x": 970, "y": 402}, "frontage": "central_counting_connector"},
+    {"id": "lot_small_residence", "district": "residential_edge", "building_id": "b_res_small", "anchor": {"x": 300, "y": 275}, "frontage": "residential_backstreet"},
+    {"id": "lot_large_residence", "district": "residential_edge", "building_id": "b_large_residence", "anchor": {"x": 980, "y": 275}, "frontage": "residential_backstreet"},
+    {"id": "lot_boarding_house", "district": "rear_service_lane", "building_id": "b_boarding_house", "anchor": {"x": 1160, "y": 430}, "frontage": "rear_service_lane"},
+    {"id": "lot_dockworker_rowhouse", "district": "rear_service_lane", "building_id": "b_dockworker_rowhouse", "anchor": {"x": 1320, "y": 430}, "frontage": "rear_service_lane"},
+    {"id": "lot_cooperage_wharf", "district": "harbor_waterfront", "building_id": "b_cooperage_shed", "anchor": {"x": 1165, "y": 705}, "frontage": "wharf_boardwalk_east"}
+  ],
+  "building_anchors": [
+    {"building_id": "b_inn_tavern", "landmark_priority": 1, "must_not_overlap": ["rear_service_stable_false_read"]},
+    {"building_id": "b_counting_house", "landmark_priority": 2, "must_face": "central_counting_connector"},
+    {"building_id": "b_mercantile", "landmark_priority": 3, "scale_peer": "b_clerk_townhouse"}
+  ],
+  "npc_routes": [
+    {"npc_id": "edrin_vale_counting_house_clerk", "station": {"x": 792, "y": 570}, "route": ["lot_counting_house", "central_counting_connector"], "movement_policy": "idle_until_walk_sheet"},
+    {"npc_id": "bess_armitage_tavern_keeper", "station": {"x": 302, "y": 604}, "route": ["lot_tavern_inn"], "movement_policy": "station_idle_bark"},
+    {"npc_id": "silas_crowe_suspicious_patron", "station": {"x": 386, "y": 438}, "route": ["tavern_to_rear_gate_alley"], "movement_policy": "station_idle_bark"},
+    {"npc_id": "mara_pike_dockworker", "station": {"x": 420, "y": 690}, "route": ["wharf_boardwalk_west"], "movement_policy": "idle_until_walk_sheet"},
+    {"npc_id": "jonah_reed_dock_courier", "station": {"x": 1218, "y": 690}, "route": ["wharf_boardwalk_east"], "movement_policy": "idle_until_walk_sheet"},
+    {"npc_id": "honor_finch_merchant_shopkeeper", "station": {"x": 1364, "y": 636}, "route": ["lot_market_shed"], "movement_policy": "station_idle_bark"},
+    {"npc_id": "nora_vale_rumor_carrier", "station": {"x": 748, "y": 394}, "route": ["central_counting_connector", "residential_backstreet"], "movement_policy": "idle_until_walk_sheet"}
+  ],
+  "interaction_zones": [
+    {"id": "interact_tavern", "target_id": "b_inn_tavern", "rect": {"x": 210, "y": 570, "w": 120, "h": 70}},
+    {"id": "interact_counting_house", "target_id": "edrin_vale_counting_house_clerk", "rect": {"x": 750, "y": 530, "w": 90, "h": 90}},
+    {"id": "interact_merchant", "target_id": "honor_finch_merchant_shopkeeper", "rect": {"x": 1320, "y": 600, "w": 100, "h": 90}},
+    {"id": "interact_rear_gate", "target_id": "silas_crowe_suspicious_patron", "rect": {"x": 350, "y": 405, "w": 105, "h": 90}}
+  ],
+  "quest_beat_locations": [
+    {"beat": "make_landfall", "location": {"x": 805, "y": 710}, "district": "harbor_waterfront"},
+    {"beat": "report_to_counting_house", "location": {"x": 792, "y": 570}, "district": "civic_counting"},
+    {"beat": "inspect_manifest_gap", "location": {"x": 1030, "y": 704}, "district": "harbor_waterfront"},
+    {"beat": "hear_third_toast", "location": {"x": 302, "y": 604}, "district": "tavern_social"},
+    {"beat": "choose_trusted_contact", "location": {"x": 675, "y": 600}, "district": "commercial_spine"},
+    {"beat": "optional_rear_gate_secret", "location": {"x": 386, "y": 438}, "district": "rear_service_lane"}
+  ],
+  "camera_viewpoints": [
+    {"id": "wide_town", "purpose": "wide Newport normal gameplay view", "center": {"x": 800, "y": 512}, "zoom": 1.0},
+    {"id": "arrival_harbor", "purpose": "player arrival at harbor", "center": {"x": 805, "y": 710}, "zoom": 1.32},
+    {"id": "counting_house_route", "purpose": "player route to counting house", "center": {"x": 792, "y": 570}, "zoom": 1.36},
+    {"id": "tavern", "purpose": "player near Tavern/Inn", "center": {"x": 244, "y": 596}, "zoom": 1.50},
+    {"id": "commercial_avenue", "purpose": "player on commercial avenue", "center": {"x": 651, "y": 596}, "zoom": 1.30},
+    {"id": "harbor_wharf", "purpose": "player at dock/wharf work area", "center": {"x": 1030, "y": 704}, "zoom": 1.34},
+    {"id": "npc_movement", "purpose": "player near NPC movement path", "center": {"x": 748, "y": 394}, "zoom": 1.42},
+    {"id": "quest_interaction", "purpose": "quest prompt/journal/objective proof", "center": {"x": 675, "y": 600}, "zoom": 1.44},
+    {"id": "debug_disabled", "purpose": "debug overlays disabled proof", "center": {"x": 800, "y": 512}, "zoom": 1.18}
+  ],
+  "authoring_rules": [
+    "Props are assigned only after district, route, lot, and building anchors are valid.",
+    "No building may be placed without a lot assignment.",
+    "No NPC may be placed without a station and route intent.",
+    "No normal-play prop may hide broken road, lot, or ground composition.",
+    "Screenshot contradictions override written PASS claims."
+  ]
+}
