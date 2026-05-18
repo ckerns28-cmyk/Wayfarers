@@ -10,6 +10,8 @@ WEB_BUILD_DIR="$PROJECT_ROOT/web_build"
 ARTIFACT_DIR="$PROJECT_ROOT/artifacts"
 ZIP_PATH="$ARTIFACT_DIR/wayfarers-tale-godot-web.zip"
 BUILD_INFO="$PROJECT_ROOT/scripts/BuildInfo.gd"
+EXPECTED_REVIEW_PHASE="${WAYFARER_EXPECTED_BUILD_PHASE:-G-13}"
+EXPECTED_SOURCE_BRANCH="${WAYFARER_EXPECTED_SOURCE_BRANCH:-codex/g-13-browser-build-hardening}"
 
 fail() {
     echo "FAIL: $*" >&2
@@ -154,6 +156,13 @@ with zipfile.ZipFile(sys.argv[1], "r") as archive:
 PY
 }
 
+read_build_info_const() {
+    local const_name="$1"
+    awk -v const_name="$const_name" -F'"' '
+        $0 ~ ("const " const_name " :=") { print $2; exit }
+    ' "$BUILD_INFO"
+}
+
 "$EXPORT_SCRIPT"
 
 rm -f "$ZIP_PATH"
@@ -198,13 +207,29 @@ fi
 
 file_count="$(printf "%s\n" "$zip_entries" | sed '/^$/d' | wc -l | tr -d ' ')"
 zip_size="$(du -h "$ZIP_PATH" | awk '{print $1}')"
-build_phase="$(awk -F'"' '/BUILD_PHASE/ {print $2; exit}' "$BUILD_INFO")"
-build_label="$(awk -F'"' '/BUILD_LABEL/ {print $2; exit}' "$BUILD_INFO")"
-version_slug="$(
-    printf "%s %s\n" "$build_phase" "$build_label" \
+build_phase="$(read_build_info_const BUILD_PHASE)"
+build_label="$(read_build_info_const BUILD_LABEL)"
+source_branch="$(read_build_info_const SOURCE_BRANCH)"
+
+[ -n "$build_phase" ] || fail "BuildInfo.gd is missing BUILD_PHASE."
+[ -n "$build_label" ] || fail "BuildInfo.gd is missing BUILD_LABEL."
+[ -n "$source_branch" ] || fail "BuildInfo.gd is missing SOURCE_BRANCH."
+[ "$build_phase" = "$EXPECTED_REVIEW_PHASE" ] || fail "Review build phase is '$build_phase'; expected '$EXPECTED_REVIEW_PHASE'."
+[ "$source_branch" = "$EXPECTED_SOURCE_BRANCH" ] || fail "Review build source branch is '$source_branch'; expected '$EXPECTED_SOURCE_BRANCH'."
+printf "%s\n" "$build_label" | grep -q "$EXPECTED_REVIEW_PHASE" || fail "Review build label must include $EXPECTED_REVIEW_PHASE."
+
+phase_slug="$(
+    printf "%s\n" "$build_phase" \
         | tr '[:upper:]' '[:lower:]' \
-        | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//; s/-godot-g-[0-9]+-[0-9]+//'
+        | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
 )"
+label_slug="$(
+    printf "%s\n" "$build_label" \
+        | tr '[:upper:]' '[:lower:]' \
+        | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
+)"
+label_slug="${label_slug#godot-$phase_slug-}"
+version_slug="$phase_slug-$label_slug"
 VERSIONED_ZIP_PATH="$ARTIFACT_DIR/wayfarers-tale-godot-$version_slug.zip"
 cp -p "$ZIP_PATH" "$VERSIONED_ZIP_PATH"
 
