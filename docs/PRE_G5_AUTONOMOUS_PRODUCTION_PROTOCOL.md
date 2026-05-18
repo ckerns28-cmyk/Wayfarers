@@ -35,11 +35,23 @@ milestone gate can pass.
 Before continuing Starter Village production, SV-0 locks the free, safe
 production stack in `docs/roadmaps/STARTER_VILLAGE_TOOLING_STACK.md` and
 `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json`.
+Free tool intake is separately audited in
+`docs/reports/SV0_TOOL_ACQUISITION_MANIFEST.json` and validated by
+`wayfarer_godot_vertical_slice/tools/validate_sv0_tool_acquisition_manifest.py`.
+This is the `SV-0 Tool Acquisition Manifest` gate for free, license-safe, reversible tools.
+Codex may download, install, configure, and use free, license-safe, reversible
+tools for autonomous roadmap execution when they support SV-1 production or QA,
+are documented in the manifest, install only in approved project/tool folders,
+require no payment or paid trial, store no credentials/secrets, and include a
+rollback path.
 
 Future SV phases must use the locked SV-0 tooling stack where applicable:
 
 - the Godot-native world layout source of truth for districts, lots, roads,
   paths, NPC routes, interaction zones, quest beats, and camera viewpoints,
+- `validate_starter_village_layout_source_usage.py` for Newport layout passes
+  so active buildings cannot bypass lot assignments or reintroduce overlap,
+  cutoff, false tavern-stable, or scale-regression failures,
 - data-driven quest/dialogue sources and validators for First Light,
 - built-in Godot movement/animation foundations plus route data before any
   heavier behavior tooling,
@@ -86,9 +98,10 @@ pre-authorized to merge the PR when:
 - no hard stop condition exists.
 
 Chris merge approval remains required only for destructive operations, unsafe
-file operations, budget/tool purchase decisions, unresolvable GitHub
-authentication or permission problems, major creative forks with multiple valid
-directions, asset licensing/provenance blockers, and the formal SV-1 review.
+file operations, budget/tool purchase decisions, any paid tool or subscription
+action, unresolvable GitHub authentication or permission problems, major
+creative forks with multiple valid directions, asset licensing/provenance
+blockers, and the formal SV-1 review.
 Do not leave ordinary green council-passing autonomous PRs open solely for
 per-PR human merge approval.
 

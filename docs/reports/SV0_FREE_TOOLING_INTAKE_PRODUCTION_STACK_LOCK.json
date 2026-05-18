@@ -37,6 +37,7 @@
     "visual_regression_manifest": "wayfarer_godot_vertical_slice/data/visual_qa/starter_village_visual_regression_manifest_v1.json",
     "movement_proof_manifest": "wayfarer_godot_vertical_slice/data/movement_proof/starter_village_movement_proof_manifest_v1.json",
     "ground_material_stack": "wayfarer_godot_vertical_slice/data/ground_materials/starter_village_ground_material_stack_v1.json",
+    "tool_acquisition_manifest": "docs/reports/SV0_TOOL_ACQUISITION_MANIFEST.json",
     "dialogue_quest_sources": [
       "wayfarer_godot_vertical_slice/data/dialogue/tavern_whispers.json",
       "wayfarer_godot_vertical_slice/data/quests/first_light_whispers_before_dawn.json",
@@ -513,6 +514,7 @@
   },
   "validators": [
     "wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py",
+    "wayfarer_godot_vertical_slice/tools/validate_sv0_tool_acquisition_manifest.py",
     "wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
     "wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py"
   ],

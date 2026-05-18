@@ -25,6 +25,13 @@ Primary locked sources:
 - `wayfarer_godot_vertical_slice/data/movement_proof/starter_village_movement_proof_manifest_v1.json`
 - `wayfarer_godot_vertical_slice/data/ground_materials/starter_village_ground_material_stack_v1.json`
 - `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json`
+- `docs/reports/SV0_TOOL_ACQUISITION_MANIFEST.json`
+
+Free tool acquisition is governed by the `SV-0 Tool Acquisition Manifest`.
+Codex may use free, license-safe, reversible tools during the autonomous
+Starter Village roadmap only when the manifest records the source, license,
+free status, install path, rollback path, export risk, credential status, and
+validation proof.
 
 ## Category Decisions
 
@@ -78,6 +85,10 @@ Primary locked sources:
 SV-0 validator:
 
 `wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py`
+
+Tool acquisition validator:
+
+`wayfarer_godot_vertical_slice/tools/validate_sv0_tool_acquisition_manifest.py`
 
 The validator checks that each tool category has a decision, adopted tools have
 license/cost/version/install/rollback/provenance fields, deferred tools are not

@@ -651,8 +651,6 @@ const NEWPORT_G418E_TAVERN_INN_PLACEMENTS := [
 	{"asset_id": "atelier_g418e_tavern_threshold_planters_01", "dest": Rect2(160, 574, 72, 40), "purpose": "tavern_social_frontage_planters", "alpha": 0.97, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_tavern_service_barrel_crate_01", "dest": Rect2(332, 592, 68, 39), "purpose": "tavern_delivery_edge_service_cluster", "alpha": 0.96, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_tavern_brick_threshold_01", "dest": Rect2(184, 558, 126, 36), "purpose": "tavern_entry_brick_threshold_grounding", "alpha": 0.88},
-	{"asset_id": "atelier_g418e_tavern_stable_tack_rack_01", "dest": Rect2(244, 436, 76, 38), "purpose": "tavern_rear_stable_service_yard", "alpha": 0.92, "contact_shadow": true},
-	{"asset_id": "atelier_g418e_tavern_firewood_coal_scuttle_01", "dest": Rect2(168, 432, 82, 38), "purpose": "tavern_rear_hearth_service_detail", "alpha": 0.92, "contact_shadow": true},
 ]
 const NEWPORT_G418E_COMMERCIAL_AVENUE_PLACEMENTS := [
 	{"asset_id": "atelier_g418e_commercial_mercantile_sign_01", "dest": Rect2(616, 506, 60, 53), "purpose": "mercantile_avenue_hero_shop_sign", "alpha": 0.98, "contact_shadow": true},
@@ -675,14 +673,14 @@ const NEWPORT_G418E_HARBOR_DOCK_EDGE_PLACEMENTS := [
 	{"asset_id": "atelier_g418e_harbor_fish_baskets_tub_01", "dest": Rect2(1250, 714, 86, 41), "purpose": "fish_market_dock_transition_goods", "alpha": 0.95, "contact_shadow": true},
 ]
 const NEWPORT_G418E_REAR_SERVICE_CONNECTOR_PLACEMENTS := [
-	{"asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(286, 404, 112, 51), "purpose": "west_rear_service_connector_fence_gate", "alpha": 0.92, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(1076, 416, 112, 51), "purpose": "east_rear_service_connector_fence_gate", "alpha": 0.92, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_service_utility_barrels_01", "dest": Rect2(1248, 402, 80, 45), "purpose": "east_rear_service_utility_barrels", "alpha": 0.92, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_service_alley_crates_01", "dest": Rect2(462, 430, 76, 43), "purpose": "central_alley_storage_without_blocking_route", "alpha": 0.92, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_service_firewood_barrow_01", "dest": Rect2(1080, 416, 76, 44), "purpose": "rear_lane_firewood_service_motion", "alpha": 0.92, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_service_stone_edge_01", "dest": Rect2(592, 420, 112, 34), "purpose": "service_path_stone_edge_grounding", "alpha": 0.82},
 	{"asset_id": "atelier_g418e_service_wash_tub_linen_01", "dest": Rect2(1268, 454, 74, 35), "purpose": "rear_yard_domestic_service_life", "alpha": 0.90, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_service_rain_barrel_01", "dest": Rect2(1438, 414, 58, 50), "purpose": "building_back_rain_barrel_grounding", "alpha": 0.90, "contact_shadow": true},
-	{"asset_id": "atelier_g418e_service_repair_sawhorse_01", "dest": Rect2(214, 402, 70, 52), "purpose": "west_service_yard_repair_sawhorse", "alpha": 0.90, "contact_shadow": true},
+	{"asset_id": "atelier_g418e_service_repair_sawhorse_01", "dest": Rect2(1192, 646, 70, 52), "purpose": "cooperage_wharf_repair_sawhorse", "alpha": 0.90, "contact_shadow": true},
 ]
 const NEWPORT_G7B_HARBOR_WORK_ZONE_PLACEMENTS := [
 	{"family": "harbor", "asset_id": "atelier_g418e_harbor_fishing_crate_net_stack_01", "dest": Rect2(334, 690, 84, 49), "purpose": "g7b_west_fish_offload_zone_net_crates", "alpha": 0.98, "contact_shadow": true},
@@ -708,7 +706,7 @@ const NEWPORT_G7C_LANDMARK_IDENTITY_PLACEMENTS := [
 	{"family": "lamps", "asset_id": "atelier_wayfinding_street_lamp_post_01", "dest": Rect2(894, 516, 30, 83), "purpose": "g7c_commercial_avenue_lamp_rhythm_landmark", "alpha": 0.94, "contact_shadow": true},
 	{"family": "harbor", "asset_id": "atelier_g418e_harbor_service_post_lantern_01", "dest": Rect2(720, 660, 52, 66), "purpose": "g7c_harbor_work_lantern_landmark_at_manifest_route", "alpha": 0.98, "contact_shadow": true},
 	{"family": "civic", "asset_id": "atelier_civic_anchor_plaque_01", "dest": Rect2(1136, 674, 46, 41), "purpose": "g7c_harbor_work_area_anchor_plaque_memory_point", "alpha": 0.88, "contact_shadow": true},
-	{"family": "service", "asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(300, 396, 118, 54), "purpose": "g7c_rear_service_lane_gate_identity", "alpha": 0.93, "contact_shadow": true},
+	{"family": "service", "asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(1088, 414, 118, 54), "purpose": "g7c_rear_service_lane_gate_identity_east_connector", "alpha": 0.93, "contact_shadow": true},
 	{"family": "service", "asset_id": "atelier_g418e_service_wash_tub_linen_01", "dest": Rect2(1218, 454, 78, 37), "purpose": "g7c_rear_service_lane_domestic_work_identity", "alpha": 0.92, "contact_shadow": true},
 	{"family": "grounding", "asset_id": "atelier_ground_low_fence_weeds_01", "dest": Rect2(116, 330, 148, 54), "purpose": "g7c_residential_edge_small_yard_landmark", "alpha": 0.42, "contact_shadow": true},
 	{"family": "grounding", "asset_id": "atelier_ground_wash_tub_buckets_01", "dest": Rect2(1320, 386, 62, 31), "purpose": "g7c_residential_edge_lived_in_yard_identity", "alpha": 0.40, "contact_shadow": true},
@@ -1286,6 +1284,7 @@ func _draw_g410_ground() -> void:
 		Vector2(1394, 744), Vector2(916, 754), Vector2(540, 736), Vector2(156, 758)
 	]), Color("#5b6350", 0.10), Color("#454f3d", 0.06), 28)
 	_draw_g7a_cohesive_ground_foundation()
+	_draw_g423a_expanded_town_ground()
 	_draw_g410_background_depth()
 	_draw_g422a_town_edge_boundaries()
 	if NEWPORT_TOWN.G422A_SHOW_BLOCKOUT_GUIDES:
@@ -1496,6 +1495,7 @@ func _g415_threshold_width_for(id: String, band: String) -> float:
 			return 46.0 if band == "commercial" else 52.0
 
 func _draw_g410_street_plan() -> void:
+	_draw_g423a_expanded_town_streets()
 	_draw_g7a_continuous_street_base()
 	_draw_street_wear(Rect2(178, 580, 1328, 58), 58)
 	_draw_street_wear(Rect2(250, 398, 1198, 42), 38)
@@ -1520,28 +1520,34 @@ func _draw_g410_street_plan() -> void:
 			draw_circle(p + Vector2(0, -6), 3, Color("#d8b56f"))
 
 func _draw_g7a_cohesive_ground_foundation() -> void:
+	# G-7A-SV0: one authored town terrace sits under the lots and streets so
+	# individual surfaces stop reading as loose editor slabs in wide screenshots.
+	draw_rect(Rect2(70, 170, 1468, 574), Color("#4f6849", 0.055), true)
+	draw_rect(Rect2(96, 314, 1410, 146), Color("#53664a", 0.050), true)
+	draw_rect(Rect2(92, 500, 1438, 170), Color("#555f4a", 0.065), true)
+	draw_rect(Rect2(206, 650, 1242, 94), Color("#5c5748", 0.055), true)
 	_draw_newport_grass_swale(PackedVector2Array([
 		Vector2(52, 302), Vector2(254, 286), Vector2(550, 300), Vector2(820, 288),
 		Vector2(1120, 298), Vector2(1506, 306), Vector2(1538, 462), Vector2(1350, 486),
 		Vector2(1078, 474), Vector2(830, 488), Vector2(550, 474), Vector2(274, 486),
 		Vector2(74, 462)
-	]), Color("#5e7653", 0.18), Color("#3f5f3e", 0.08), 62)
+	]), Color("#5e7653", 0.10), Color("#3f5f3e", 0.05), 50)
 	_draw_newport_grass_swale(PackedVector2Array([
 		Vector2(96, 482), Vector2(410, 462), Vector2(706, 474), Vector2(1014, 462),
 		Vector2(1328, 476), Vector2(1532, 506), Vector2(1514, 662), Vector2(1268, 672),
 		Vector2(960, 666), Vector2(664, 676), Vector2(350, 664), Vector2(110, 652)
-	]), Color("#596a4f", 0.18), Color("#3f5640", 0.075), 64)
+	]), Color("#596a4f", 0.11), Color("#3f5640", 0.050), 52)
 	_draw_newport_grass_swale(PackedVector2Array([
 		Vector2(88, 650), Vector2(320, 642), Vector2(620, 654), Vector2(920, 644),
 		Vector2(1224, 650), Vector2(1500, 660), Vector2(1510, 734), Vector2(1208, 746),
 		Vector2(930, 740), Vector2(642, 750), Vector2(340, 738), Vector2(94, 728)
-	]), Color("#5a604d", 0.18), Color("#3e493a", 0.075), 46)
+	]), Color("#5a604d", 0.12), Color("#3e493a", 0.050), 36)
 
 	for raw_band in [
-		{"rect": Rect2(142, 516, 1240, 28), "kind": "frontage", "alpha": 0.18},
-		{"rect": Rect2(228, 456, 1128, 18), "kind": "support", "alpha": 0.14},
-		{"rect": Rect2(304, 340, 932, 20), "kind": "civic", "alpha": 0.15},
-		{"rect": Rect2(198, 652, 1178, 20), "kind": "support", "alpha": 0.18},
+		{"rect": Rect2(132, 516, 1394, 22), "kind": "frontage", "alpha": 0.13},
+		{"rect": Rect2(220, 456, 1258, 16), "kind": "support", "alpha": 0.10},
+		{"rect": Rect2(294, 340, 970, 18), "kind": "civic", "alpha": 0.11},
+		{"rect": Rect2(198, 652, 1252, 18), "kind": "support", "alpha": 0.13},
 	]:
 		var band: Dictionary = raw_band
 		_draw_newport_frontage_threshold(band["rect"], String(band["kind"]), float(band["alpha"]))
@@ -1566,10 +1572,10 @@ func _draw_g7a_lot_foundation_overlays() -> void:
 		{"id": "g7a_market_lot_foundation", "rect": Rect2(1274, 520, 236, 124), "kind": "market", "front": "south", "anchor": Vector2(1364, 636)},
 		{"id": "g7a_counting_house_civic_lot_foundation", "rect": Rect2(574, 300, 280, 128), "kind": "civic", "front": "south", "anchor": Vector2(704, 392)},
 		{"id": "g7a_custom_house_civic_lot_foundation", "rect": Rect2(846, 300, 292, 128), "kind": "civic", "front": "south", "anchor": Vector2(1010, 394)},
-		{"id": "g7a_west_residential_lot_foundation", "rect": Rect2(236, 294, 244, 120), "kind": "residential", "front": "south", "anchor": Vector2(386, 406)},
-		{"id": "g7a_east_residential_lot_foundation", "rect": Rect2(1118, 306, 272, 122), "kind": "residential", "front": "south", "anchor": Vector2(1302, 418)},
-		{"id": "g7a_cooperage_service_lot_foundation", "rect": Rect2(146, 410, 232, 124), "kind": "support", "front": "east", "anchor": Vector2(264, 476)},
-		{"id": "g7a_backstreet_service_lot_foundation", "rect": Rect2(1378, 414, 176, 126), "kind": "support", "front": "west", "anchor": Vector2(1450, 474)},
+		{"id": "g7a_west_residential_lot_foundation", "rect": Rect2(204, 178, 230, 126), "kind": "residential", "front": "south", "anchor": Vector2(300, 275)},
+		{"id": "g7a_east_residential_lot_foundation", "rect": Rect2(870, 176, 250, 124), "kind": "residential", "front": "south", "anchor": Vector2(980, 275)},
+		{"id": "g7a_cooperage_service_lot_foundation", "rect": Rect2(1084, 626, 210, 96), "kind": "support", "front": "north", "anchor": Vector2(1165, 705)},
+		{"id": "g7a_backstreet_service_lot_foundation", "rect": Rect2(1086, 350, 330, 126), "kind": "support", "front": "south", "anchor": Vector2(1240, 430)},
 		{"id": "g7a_west_wharf_lot_foundation", "rect": Rect2(268, 682, 278, 62), "kind": "wharf", "front": "north", "anchor": Vector2(486, 736)},
 		{"id": "g7a_central_wharf_lot_foundation", "rect": Rect2(668, 682, 262, 62), "kind": "wharf", "front": "north", "anchor": Vector2(824, 710)},
 		{"id": "g7a_east_wharf_lot_foundation", "rect": Rect2(1104, 684, 276, 62), "kind": "wharf", "front": "north", "anchor": Vector2(1218, 708)},
@@ -1584,8 +1590,10 @@ func _draw_g7a_lot_foundation_overlays() -> void:
 		[Vector2(1364, 636), Vector2(1364, 612), 10.0],
 		[Vector2(704, 392), Vector2(704, 424), 12.0],
 		[Vector2(1010, 394), Vector2(1010, 424), 11.0],
-		[Vector2(264, 476), Vector2(336, 514), 9.0],
-		[Vector2(1450, 474), Vector2(1386, 520), 9.0],
+		[Vector2(300, 275), Vector2(330, 334), 8.0],
+		[Vector2(980, 275), Vector2(1010, 334), 8.0],
+		[Vector2(1165, 705), Vector2(1165, 675), 9.0],
+		[Vector2(1240, 430), Vector2(1240, 458), 9.0],
 		[Vector2(486, 736), Vector2(486, 700), 10.0],
 		[Vector2(824, 710), Vector2(824, 700), 10.0],
 		[Vector2(1218, 708), Vector2(1218, 700), 10.0],
@@ -1659,28 +1667,14 @@ func _draw_g7a_soft_service_trace(a: Vector2, b: Vector2, width: float, alpha :=
 		draw_line(p + normal * side - dir * 6.0, p + normal * side + dir * 7.0, Color(0.10, 0.075, 0.045, 0.08 * alpha), 1.0)
 
 func _draw_g7a_continuous_street_base() -> void:
-	_draw_newport_street_polygon(PackedVector2Array([
-		Vector2(124, 560), Vector2(320, 548), Vector2(532, 552), Vector2(742, 544),
-		Vector2(962, 550), Vector2(1188, 546), Vector2(1518, 560), Vector2(1528, 638),
-		Vector2(1258, 646), Vector2(1016, 638), Vector2(812, 648), Vector2(594, 640),
-		Vector2(388, 646), Vector2(132, 632)
-	]), 142, 1.0)
-	_draw_newport_street_polygon(PackedVector2Array([
-		Vector2(220, 386), Vector2(470, 376), Vector2(694, 384), Vector2(944, 376),
-		Vector2(1186, 384), Vector2(1474, 398), Vector2(1464, 450), Vector2(1198, 444),
-		Vector2(960, 456), Vector2(706, 444), Vector2(476, 454), Vector2(218, 444)
-	]), 96, 0.96)
-	_draw_newport_street_polygon(PackedVector2Array([
-		Vector2(178, 458), Vector2(402, 452), Vector2(610, 464), Vector2(820, 456),
-		Vector2(1042, 462), Vector2(1260, 456), Vector2(1486, 468), Vector2(1478, 506),
-		Vector2(1258, 502), Vector2(1044, 510), Vector2(822, 502), Vector2(610, 510),
-		Vector2(402, 502), Vector2(178, 494)
-	]), 68, 0.74)
-	_draw_newport_street_polygon(PackedVector2Array([
-		Vector2(206, 646), Vector2(480, 642), Vector2(706, 650), Vector2(950, 642),
-		Vector2(1210, 650), Vector2(1448, 646), Vector2(1440, 724), Vector2(1210, 718),
-		Vector2(956, 728), Vector2(706, 718), Vector2(480, 726), Vector2(210, 716)
-	]), 88, 0.86)
+	for raw_street in [
+		{"rect": Rect2(118, 548, 1410, 98), "detail": 170, "alpha": 0.96},
+		{"rect": Rect2(218, 378, 1260, 76), "detail": 116, "alpha": 0.90},
+		{"rect": Rect2(176, 456, 1312, 54), "detail": 84, "alpha": 0.70},
+		{"rect": Rect2(206, 648, 1242, 78), "detail": 108, "alpha": 0.82},
+	]:
+		var street: Dictionary = raw_street
+		_draw_newport_commercial_street(street["rect"], int(street["detail"]), float(street["alpha"]))
 
 	_draw_g7a_authored_visual_order_streets()
 
@@ -1688,15 +1682,14 @@ func _draw_g7a_authored_visual_order_streets() -> void:
 	for raw_spec in NEWPORT_TOWN.starter_village_route_order_specs():
 		var spec: Dictionary = raw_spec
 		var width := float(spec.get("width", 32.0))
-		var alpha := float(spec.get("alpha", 0.70))
 		var segments: Array = spec.get("segments", [])
 		for raw_segment in segments:
 			var segment: Rect2 = raw_segment
 			if segment.size.x <= 0.0 or segment.size.y <= 0.0:
 				continue
 			var center := Vector2(segment.get_center().x, segment.get_center().y)
-			var detail_count := maxi(14, int(segment.size.y / 7.0))
-			_draw_newport_uphill_street(center, width, segment.position.y, segment.end.y, detail_count, alpha)
+			var path_width := maxf(7.0, width * 0.58)
+			_draw_g7a_soft_service_trace(Vector2(center.x, segment.position.y + 4.0), Vector2(center.x, segment.end.y - 4.0), path_width, 0.24)
 
 func _draw_g7a_route_curbs_and_material_transitions() -> void:
 	for raw_curb in [
@@ -1732,7 +1725,7 @@ func _draw_g7a_route_curbs_and_material_transitions() -> void:
 		[Vector2(1024, 604), Vector2(1024, 704), 10.0],
 	]:
 		var lane: Array = raw_lane
-		_draw_g7a_soft_service_trace(lane[0], lane[1], lane[2], 0.34)
+		_draw_g7a_soft_service_trace(lane[0], lane[1], lane[2], 0.18)
 
 	for raw_rut in [
 		[Vector2(154, 604), Vector2(1500, 596), 0.11],
@@ -2369,7 +2362,7 @@ func _draw_g423a_expanded_town_ground() -> void:
 		Rect2(42, 334, 142, 162),
 		Rect2(1450, 334, 124, 174),
 	]:
-		_draw_newport_lot_variation(rect, Color("#607a56"), Color("#4c6849"), 0.045, "outer_town")
+		_draw_newport_lot_variation(rect, Color("#607a56"), Color("#4c6849"), 0.018, "outer_town")
 	for rect in [
 		Rect2(92, 58, 210, 38),
 		Rect2(366, 58, 238, 38),
@@ -2403,21 +2396,21 @@ func _draw_g423a_expanded_town_streets() -> void:
 		Vector2(1080, 272), Vector2(1344, 272), Vector2(1566, 278), Vector2(1560, 306),
 		Vector2(1342, 302), Vector2(1080, 300), Vector2(814, 298), Vector2(550, 304),
 		Vector2(296, 300), Vector2(36, 306)
-	]), 54, 0.34)
+	]), 54, 0.50)
 	_draw_newport_street_polygon(PackedVector2Array([
 		Vector2(34, 126), Vector2(336, 118), Vector2(646, 122), Vector2(948, 118),
 		Vector2(1260, 122), Vector2(1564, 130), Vector2(1558, 150), Vector2(1258, 144),
 		Vector2(948, 144), Vector2(646, 148), Vector2(338, 144), Vector2(36, 150)
-	]), 32, 0.20)
+	]), 32, 0.24)
 	for spec in [
 		{"center": Vector2(210, 268), "width": 24.0, "top": 144.0, "bottom": 384.0, "count": 28, "alpha": 0.32},
 		{"center": Vector2(552, 276), "width": 24.0, "top": 146.0, "bottom": 316.0, "count": 26, "alpha": 0.30},
 		{"center": Vector2(892, 274), "width": 24.0, "top": 144.0, "bottom": 324.0, "count": 28, "alpha": 0.30},
 		{"center": Vector2(1268, 276), "width": 24.0, "top": 148.0, "bottom": 410.0, "count": 32, "alpha": 0.31},
 	]:
-		_draw_newport_uphill_street(spec["center"], spec["width"], spec["top"], spec["bottom"], spec["count"], spec["alpha"])
-	_draw_g7a_soft_service_trace(Vector2(70, 430), Vector2(206, 596), 12.0, 0.30)
-	_draw_g7a_soft_service_trace(Vector2(1518, 420), Vector2(1428, 622), 12.0, 0.30)
+		_draw_g7a_soft_service_trace(Vector2(spec["center"].x, spec["top"]), Vector2(spec["center"].x, spec["bottom"]), float(spec["width"]) * 0.70, 0.16)
+	_draw_g7a_soft_service_trace(Vector2(70, 430), Vector2(206, 596), 12.0, 0.16)
+	_draw_g7a_soft_service_trace(Vector2(1518, 420), Vector2(1428, 622), 12.0, 0.16)
 	for rect in [
 		Rect2(36, 306, 1518, 8),
 		Rect2(40, 152, 1518, 6),

@@ -840,7 +840,7 @@
       "ai_generated": true,
       "human_selected": true,
       "chroma_key_removed": true,
-      "used_in_g418e_playable_hero_slice": true,
+      "used_in_g418e_playable_hero_slice": false,
       "extraction_qa": {
         "size": {
           "w": 476,
@@ -962,7 +962,7 @@
       "ai_generated": true,
       "human_selected": true,
       "chroma_key_removed": true,
-      "used_in_g418e_playable_hero_slice": true,
+      "used_in_g418e_playable_hero_slice": false,
       "extraction_qa": {
         "size": {
           "w": 492,

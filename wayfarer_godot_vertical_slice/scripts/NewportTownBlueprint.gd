@@ -49,6 +49,8 @@ const STARTER_VILLAGE_G10A_TAVERN_SOCIAL_SCORE := 8.5
 const STARTER_VILLAGE_G10B_MULTI_PATH_CHOICE_PASS := "G-10B"
 const STARTER_VILLAGE_G10B_MULTI_PATH_SCORE := 8.6
 const STARTER_VILLAGE_VISUAL_ORDER_REVIEW_SCORE := 8.6
+const STARTER_VILLAGE_LAYOUT_SOURCE_PATH := "res://data/world_layout/starter_village_world_layout_v1.json"
+const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
 
@@ -363,7 +365,7 @@ static func starter_village_route_order_specs() -> Array:
 			0.78,
 			[
 				Rect2(361, 386, 50, 152),
-				Rect2(361, 638, 50, 42),
+				Rect2(356, 594, 46, 42),
 			],
 			["b_inn_tavern", "b_clerk_townhouse"],
 			"The west uphill road must read in the gap beside the tavern, never underneath the tavern or the clerk rowhouse."
@@ -374,8 +376,8 @@ static func starter_village_route_order_specs() -> Array:
 			60.0,
 			0.86,
 			[
-				Rect2(790, 404, 60, 148),
-				Rect2(790, 638, 60, 52),
+				Rect2(790, 404, 60, 86),
+				Rect2(790, 490, 56, 30),
 			],
 			["b_mercantile", "b_chandlery_front"],
 			"The counting-house approach must occupy the open commercial-block break and stop at civic frontage instead of running under the building body."
@@ -383,11 +385,11 @@ static func starter_village_route_order_specs() -> Array:
 		_route_order_spec(
 			"east_shop_market_connector_gap",
 			"market_connector",
-			30.0,
+			20.0,
 			0.78,
 			[
-				Rect2(1245, 426, 30, 126),
-				Rect2(1245, 642, 30, 48),
+				Rect2(1254, 426, 20, 70),
+				Rect2(1254, 496, 20, 24),
 			],
 			["b_shop_house", "b_market_shed"],
 			"The east market connector must stay in the shop-to-market breathing room and not clip either storefront."
@@ -395,11 +397,11 @@ static func starter_village_route_order_specs() -> Array:
 		_route_order_spec(
 			"market_printer_corner_gap",
 			"market_connector",
-			30.0,
+			18.0,
 			0.68,
 			[
-				Rect2(1443, 430, 30, 124),
-				Rect2(1443, 646, 30, 44),
+				Rect2(1444, 430, 16, 112),
+				Rect2(1444, 552, 16, 38),
 			],
 			["b_market_shed", "b_printer_rowhouse"],
 			"The far-east corner road must define the market/printer edge without becoming a road slab under the buildings."
@@ -567,19 +569,19 @@ static func route_debug_probes() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
 			_route_probe("waterfront_avenue_west", Vector2(292.0, 592.0), "main harbor avenue west of Tavern/Inn", "ave W"),
-			_route_probe("waterfront_avenue_center", Vector2(675.0, 600.0), "main harbor avenue center spine", "ave C"),
+			_route_probe("waterfront_avenue_center", Vector2(830.0, 600.0), "main harbor avenue center spine", "ave C"),
 			_route_probe("waterfront_avenue_east", Vector2(1248.0, 600.0), "main harbor avenue east market approach", "ave E"),
 			_route_probe("west_road_runs_up_from_avenue", Vector2(386.0, 440.0), "west uphill road from waterfront avenue to residential edge", "up W"),
 			_route_probe("central_road_runs_up_from_avenue", Vector2(704.0, 392.0), "central uphill road from docks to civic square", "up C"),
-			_route_probe("east_road_runs_up_from_avenue", Vector2(1152.0, 424.0), "east uphill road from avenue to boarding/residential edge", "up E"),
+			_route_probe("east_road_runs_up_from_avenue", Vector2(1240.0, 462.0), "east uphill road from avenue to boarding/residential edge", "up E"),
 			_route_probe("market_road_runs_up_from_avenue", Vector2(1412.0, 500.0), "far-east market road connecting printer and market edge", "up M"),
 			_route_probe("civic_cross_street", Vector2(840.0, 408.0), "civic cross street behind the commercial avenue", "civic"),
 			_route_probe("residential_backstreet", Vector2(520.0, 292.0), "upper residential/backstreet route", "back"),
 			_route_probe("service_alley_west_to_wharf", Vector2(512.0, 646.0), "narrow service alley feeding the wharf loop", "alley W"),
 			_route_probe("service_alley_central_to_wharf", Vector2(920.0, 664.0), "central goods alley between avenue and wharf", "alley C"),
-			_route_probe("dock_boardwalk_west", Vector2(420.0, 710.0), "west wharf boardwalk stays open", "dock W"),
-			_route_probe("dock_boardwalk_center", Vector2(824.0, 710.0), "central wharf boardwalk stays open", "dock C"),
-			_route_probe("dock_boardwalk_east", Vector2(1230.0, 710.0), "east wharf boardwalk stays open", "dock E"),
+			_route_probe("dock_boardwalk_west", Vector2(360.0, 704.0), "west wharf boardwalk stays open", "dock W"),
+			_route_probe("dock_boardwalk_center", Vector2(760.0, 704.0), "central wharf boardwalk stays open", "dock C"),
+			_route_probe("dock_boardwalk_east", Vector2(1450.0, 704.0), "east wharf boardwalk stays open", "dock E"),
 			_route_probe("town_hall_frontage", Vector2(704.0, 392.0), "Town Hall / Counting House civic frontage", "hall"),
 			_route_probe("custom_house_frontage", Vector2(970.0, 402.0), "Custom House civic frontage", "customs"),
 		]
@@ -671,26 +673,68 @@ static func detail_blockers() -> Array:
 static func player_spawn_tile() -> Vector2i:
 	return Vector2i(floori(PLAYER_SPAWN.x / TILE), floori(PLAYER_SPAWN.y / TILE))
 
+static func starter_village_layout_source_path() -> String:
+	return STARTER_VILLAGE_LAYOUT_SOURCE_PATH
+
+static func starter_village_runtime_lot_assignments() -> Dictionary:
+	return {
+		"b_inn_tavern": _runtime_lot("lot_tavern_inn", "tavern_social", Vector2(244, 596), 28.0),
+		"b_clerk_townhouse": _runtime_lot("lot_clerk_townhouse", "waterfront_avenue", Vector2(500, 596), 24.0),
+		"b_mercantile": _runtime_lot("lot_mercantile", "commercial_spine", Vector2(680, 596), 22.0),
+		"b_counting_house": _runtime_lot("lot_counting_house", "civic_counting", Vector2(704, 392), 25.0),
+		"b_chandlery_front": _runtime_lot("lot_chandlery", "commercial_spine", Vector2(1018, 596), 24.0),
+		"b_shop_house": _runtime_lot("lot_shop_house", "commercial_spine", Vector2(1180, 596), 24.0),
+		"b_market_shed": _runtime_lot("lot_market_shed", "commercial_spine", Vector2(1364, 636), 24.0),
+		"b_printer_rowhouse": _runtime_lot("lot_printer_rowhouse", "commercial_spine", Vector2(1522, 596), 24.0),
+		"b_custom_house": _runtime_lot("lot_customs_house", "civic_counting", Vector2(970, 402), 24.0),
+		"b_res_small": _runtime_lot("lot_small_residence", "residential_edge", Vector2(300, 275), 22.0),
+		"b_large_residence": _runtime_lot("lot_large_residence", "residential_edge", Vector2(980, 275), 23.0),
+		"b_boarding_house": _runtime_lot("lot_boarding_house", "rear_service_lane", Vector2(1160, 430), 21.0),
+		"b_dockworker_rowhouse": _runtime_lot("lot_dockworker_rowhouse", "rear_service_lane", Vector2(1320, 430), 21.0),
+		"b_cooperage_shed": _runtime_lot("lot_cooperage_wharf", "harbor_waterfront", Vector2(1165, 705), 20.0),
+		"b_dock_warehouse": _runtime_lot("lot_west_dock_warehouse", "harbor_waterfront", Vector2(486, 758), 22.0),
+		"b_wharf_boathouse": _runtime_lot("lot_wharf_boathouse", "harbor_waterfront", Vector2(898, 758), 22.0),
+		"b_dock_storehouse": _runtime_lot("lot_east_dock_storehouse", "harbor_waterfront", Vector2(1323, 758), 20.0),
+	}
+
+static func _runtime_lot_foot_tile(building_id: String, fallback: Vector2) -> Vector2:
+	var assignments := starter_village_runtime_lot_assignments()
+	if not assignments.has(building_id):
+		return fallback
+	var assignment: Dictionary = assignments[building_id]
+	return assignment.get("foot_tile", fallback)
+
+static func _runtime_lot(lot_id: String, district: String, frontage_anchor: Vector2, frontage_offset_y: float) -> Dictionary:
+	return {
+		"phase": STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS,
+		"layout_source": STARTER_VILLAGE_LAYOUT_SOURCE_PATH,
+		"lot_id": lot_id,
+		"district": district,
+		"frontage_anchor": frontage_anchor,
+		"frontage_offset_y": frontage_offset_y,
+		"foot_tile": Vector2(frontage_anchor.x / TILE, (frontage_anchor.y - frontage_offset_y) / TILE),
+	}
+
 static func building_specs() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", Vector2(7.60, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", Vector2(20.35, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_counting_house", "inland_residential_civic", "town_hall_counting_house", Vector2(22.00, 11.55)),
-			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", Vector2(31.85, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", Vector2(36.55, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", Vector2(48.00, G414A_STREET_WALL_CURB_DATUM_Y)),
-			_catalog_building("b_market_shed", "harborfront_commercial", "market", Vector2(42.60, G414A_STREET_WALL_CURB_DATUM_Y), true),
-			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", Vector2(41.35, 27.55)),
-			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", Vector2(28.05, 27.65)),
-			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", Vector2(15.20, 27.55)),
-			_catalog_building("b_custom_house", "inland_residential_civic", "customs_house", Vector2(30.20, 11.55)),
-			_catalog_building("b_clerk_townhouse", "harborfront_commercial", "rowhouse_clerk_lodging", Vector2(15.70, G414A_STREET_WALL_CURB_DATUM_Y)),
-			_catalog_building("b_res_small", "inland_residential_civic", "residential", Vector2(11.35, 11.35)),
-			_catalog_building("b_large_residence", "inland_residential_civic", "civic_residence", Vector2(34.20, 10.95)),
-			_catalog_building("b_boarding_house", "support_lane", "boarding_house", Vector2(40.60, 12.10)),
-			_catalog_building("b_dockworker_rowhouse", "support_lane", "rowhouse_dockworker_lodging", Vector2(46.00, 12.30)),
-			_catalog_building("b_cooperage_shed", "support_lane", "cooperage", Vector2(8.25, 14.25)),
+			_catalog_building("b_inn_tavern", "harborfront_commercial", "commercial", _runtime_lot_foot_tile("b_inn_tavern", Vector2(7.60, G414A_STREET_WALL_CURB_DATUM_Y)), true),
+			_catalog_building("b_mercantile", "harborfront_commercial", "commercial", _runtime_lot_foot_tile("b_mercantile", Vector2(20.35, G414A_STREET_WALL_CURB_DATUM_Y)), true),
+			_catalog_building("b_counting_house", "inland_residential_civic", "town_hall_counting_house", _runtime_lot_foot_tile("b_counting_house", Vector2(22.00, 11.55))),
+			_catalog_building("b_chandlery_front", "harborfront_commercial", "commercial", _runtime_lot_foot_tile("b_chandlery_front", Vector2(31.85, G414A_STREET_WALL_CURB_DATUM_Y)), true),
+			_catalog_building("b_shop_house", "harborfront_commercial", "commercial", _runtime_lot_foot_tile("b_shop_house", Vector2(36.55, G414A_STREET_WALL_CURB_DATUM_Y)), true),
+			_catalog_building("b_printer_rowhouse", "harborfront_commercial", "rowhouse_printer", _runtime_lot_foot_tile("b_printer_rowhouse", Vector2(48.00, G414A_STREET_WALL_CURB_DATUM_Y))),
+			_catalog_building("b_market_shed", "harborfront_commercial", "market", _runtime_lot_foot_tile("b_market_shed", Vector2(42.60, G414A_STREET_WALL_CURB_DATUM_Y)), true),
+			_catalog_building("b_dock_storehouse", "working_wharf", "dock_services", _runtime_lot_foot_tile("b_dock_storehouse", Vector2(41.35, 27.55))),
+			_catalog_building("b_wharf_boathouse", "working_wharf", "dock_services", _runtime_lot_foot_tile("b_wharf_boathouse", Vector2(28.05, 27.65))),
+			_catalog_building("b_dock_warehouse", "working_wharf", "dock_services", _runtime_lot_foot_tile("b_dock_warehouse", Vector2(15.20, 27.55))),
+			_catalog_building("b_custom_house", "inland_residential_civic", "customs_house", _runtime_lot_foot_tile("b_custom_house", Vector2(30.20, 11.55))),
+			_catalog_building("b_clerk_townhouse", "harborfront_commercial", "rowhouse_clerk_lodging", _runtime_lot_foot_tile("b_clerk_townhouse", Vector2(15.70, G414A_STREET_WALL_CURB_DATUM_Y))),
+			_catalog_building("b_res_small", "inland_residential_civic", "residential", _runtime_lot_foot_tile("b_res_small", Vector2(11.35, 11.35))),
+			_catalog_building("b_large_residence", "inland_residential_civic", "civic_residence", _runtime_lot_foot_tile("b_large_residence", Vector2(34.20, 10.95))),
+			_catalog_building("b_boarding_house", "support_lane", "boarding_house", _runtime_lot_foot_tile("b_boarding_house", Vector2(40.60, 12.10))),
+			_catalog_building("b_dockworker_rowhouse", "support_lane", "rowhouse_dockworker_lodging", _runtime_lot_foot_tile("b_dockworker_rowhouse", Vector2(46.00, 12.30))),
+			_catalog_building("b_cooperage_shed", "support_lane", "cooperage", _runtime_lot_foot_tile("b_cooperage_shed", Vector2(8.25, 14.25))),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -760,14 +804,14 @@ static func g415_layout_rules() -> Dictionary:
 		"b_counting_house": _layout_rule("parcel_town_hall_counting_house", "civic", 386.0, 44.0, 30.0, Vector2(704.0, 392.0), Rect2(648, 388, 116, 28), Rect2(610, 314, 208, 100), "civic_stone", "Town Hall / Counting House replaces the old meeting-house crop and anchors the top of the central uphill road."),
 		"b_chandlery_front": _layout_rule("parcel_chandlery", "commercial", 584.0, 22.0, 18.0, Vector2(1019.0, 596.0), Rect2(1004, 582, 62, 24), Rect2(940, 548, 170, 76), "commercial_stone", "Chandlery fronts the avenue east of the civic road break."),
 		"b_shop_house": _layout_rule("parcel_shop_house", "commercial", 584.0, 22.0, 20.0, Vector2(1170.0, 596.0), Rect2(1156, 582, 64, 24), Rect2(1120, 548, 162, 76), "shop_stone", "Shop house keeps the east block tight while leaving a readable market-road throat."),
-		"b_market_shed": _layout_rule("parcel_market_shed", "market", 584.0, 30.0, 22.0, Vector2(1364.0, 600.0), Rect2(1320, 604, 132, 34), Rect2(1288, 546, 186, 82), "market_stone", "Market shed sits on the widened east-market pocket of the avenue rather than floating as a loose prop."),
-		"b_printer_rowhouse": _layout_rule("parcel_printer_rowhouse", "commercial", 584.0, 22.0, 14.0, Vector2(1536.0, 596.0), Rect2(1488, 580, 58, 24), Rect2(1472, 540, 118, 84), "rowhouse_stone", "Printer rowhouse closes the east edge of the waterfront avenue and gives the market road a built corner."),
+		"b_market_shed": _layout_rule("parcel_market_shed", "market", 584.0, 30.0, 22.0, Vector2(1364.0, 636.0), Rect2(1320, 604, 132, 34), Rect2(1288, 546, 186, 98), "market_stone", "Market shed sits on the widened east-market pocket of the avenue rather than floating as a loose prop."),
+		"b_printer_rowhouse": _layout_rule("parcel_printer_rowhouse", "commercial", 584.0, 22.0, 14.0, Vector2(1522.0, 596.0), Rect2(1482, 580, 58, 24), Rect2(1464, 540, 126, 84), "rowhouse_stone", "Printer rowhouse closes the east edge of the waterfront avenue with a real market-corner gap and without being clipped by the review camera edge."),
 		"b_custom_house": _layout_rule("parcel_custom_house_green", "civic", 392.0, 44.0, 28.0, Vector2(966.0, 394.0), Rect2(912, 390, 124, 26), Rect2(872, 314, 220, 98), "civic_green", "Customs House sits on the civic cross street, paired with Town Hall instead of another harborfront shelf."),
-		"b_res_small": _layout_rule("parcel_harbor_cottage_yard", "residential", 382.0, 38.0, 24.0, Vector2(363.0, 386.0), Rect2(326, 350, 82, 22), Rect2(300, 304, 146, 82), "residential_yard", "Small cottage yard fronts the west road running uphill from the avenue."),
-		"b_large_residence": _layout_rule("parcel_harbor_residence_yard", "residential", 366.0, 42.0, 28.0, Vector2(1094.0, 374.0), Rect2(1040, 338, 126, 24), Rect2(1002, 292, 218, 90), "residential_yard", "Large residence belongs to the east backstreet above the market road."),
-		"b_boarding_house": _layout_rule("parcel_boarding_house_lane", "support", 400.0, 34.0, 12.0, Vector2(1299.0, 408.0), Rect2(1252, 394, 104, 26), Rect2(1228, 334, 148, 88), "support_yard", "Boarding house fronts the east support lane with a shared street material."),
-		"b_dockworker_rowhouse": _layout_rule("parcel_dockworker_rowhouse_lane", "support", 408.0, 34.0, 8.0, Vector2(1472.0, 416.0), Rect2(1430, 398, 106, 24), Rect2(1398, 348, 160, 82), "support_yard", "Dockworker rowhouse defines the far-east support street instead of reading as a loose background house."),
-		"b_cooperage_shed": _layout_rule("parcel_cooperage_yard", "support", 462.0, 30.0, 18.0, Vector2(264.0, 476.0), Rect2(230, 462, 76, 26), Rect2(204, 408, 128, 82), "support_yard", "Cooperage sits between the west road and wharf service alley as a harbor-economy waypoint."),
+		"b_res_small": _layout_rule("parcel_harbor_cottage_yard", "residential", 286.0, 38.0, 24.0, Vector2(300.0, 275.0), Rect2(258, 252, 82, 22), Rect2(216, 178, 178, 106), "residential_yard", "Small cottage yard fronts the west upland edge from the locked layout source instead of floating behind the tavern block."),
+		"b_large_residence": _layout_rule("parcel_harbor_residence_yard", "residential", 286.0, 42.0, 28.0, Vector2(980.0, 275.0), Rect2(924, 250, 126, 24), Rect2(868, 176, 232, 108), "residential_yard", "Large residence belongs to the upper east residential edge without overlapping the civic block."),
+		"b_boarding_house": _layout_rule("parcel_boarding_house_lane", "support", 430.0, 34.0, 12.0, Vector2(1160.0, 430.0), Rect2(1110, 404, 104, 26), Rect2(1088, 350, 150, 96), "support_yard", "Boarding house fronts the rear service lane at the locked lot anchor instead of crowding the far-east crop edge."),
+		"b_dockworker_rowhouse": _layout_rule("parcel_dockworker_rowhouse_lane", "support", 430.0, 34.0, 18.0, Vector2(1320.0, 430.0), Rect2(1268, 404, 106, 24), Rect2(1240, 350, 172, 96), "support_yard", "Dockworker rowhouse closes the rear service street inside the authored camera-safe town bounds."),
+		"b_cooperage_shed": _layout_rule("parcel_cooperage_wharf", "support", 704.0, 30.0, 18.0, Vector2(1165.0, 705.0), Rect2(1122, 676, 86, 26), Rect2(1084, 626, 210, 96), "support_yard", "Cooperage is a wharf-side work lot, not a fake stable yard behind the tavern."),
 		"b_dock_warehouse": _layout_rule("parcel_west_dock_warehouse", "dock", 708.0, 24.0, 28.0, Vector2(486.0, 758.0), Rect2(398, 716, 154, 48), Rect2(360, 704, 248, 154), "dock_plank", "Warehouse cargo belongs on the west pier apron."),
 		"b_wharf_boathouse": _layout_rule("parcel_wharf_boathouse", "dock", 708.0, 24.0, 30.0, Vector2(898.0, 758.0), Rect2(812, 716, 164, 48), Rect2(752, 704, 292, 162), "dock_plank", "Boathouse work zone connects directly to the center pier."),
 		"b_dock_storehouse": _layout_rule("parcel_east_dock_storehouse", "dock", 708.0, 24.0, 28.0, Vector2(1323.0, 758.0), Rect2(1238, 716, 154, 48), Rect2(1206, 704, 248, 154), "dock_plank", "East storehouse cargo stays on the wharf apron."),
@@ -1180,7 +1224,7 @@ static func interaction_anchors() -> Array:
 		_anchor("backstreet_service_gate", "small_interaction", "support_lane", Vector2(1302.0, 500.0), "Backstreet service gate proof marker."),
 		_anchor("well_bench_civic_square", "small_interaction", "inland_residential_civic", Vector2(832.0, 410.0), "Well/bench civic square interaction marker."),
 		_anchor("service_alley_barrels", "small_interaction", "support_lane", Vector2(928.0, 660.0), "Service-alley barrel/crate inspection marker."),
-		_anchor("cooperage_hoops", "small_interaction", "support_lane", Vector2(264.0, 476.0), "Cooperage hoop/barrel inspection marker."),
+		_anchor("cooperage_hoops", "small_interaction", "harbor_waterfront", Vector2(1165.0, 705.0), "Cooperage hoop/barrel inspection marker at the wharf-side work lot."),
 	]
 
 static func g413b_rowhouse_infill_slots() -> Array:

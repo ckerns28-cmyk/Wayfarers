@@ -24,11 +24,14 @@ still looked patchy, scattered, or incorrectly authored.
 
 - `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.md`
 - `docs/reports/SV0_FREE_TOOLING_INTAKE_PRODUCTION_STACK_LOCK.json`
+- `docs/reports/SV0_TOOL_ACQUISITION_MANIFEST.md`
+- `docs/reports/SV0_TOOL_ACQUISITION_MANIFEST.json`
 - `wayfarer_godot_vertical_slice/data/world_layout/starter_village_world_layout_v1.json`
 - `wayfarer_godot_vertical_slice/data/visual_qa/starter_village_visual_regression_manifest_v1.json`
 - `wayfarer_godot_vertical_slice/data/movement_proof/starter_village_movement_proof_manifest_v1.json`
 - `wayfarer_godot_vertical_slice/data/ground_materials/starter_village_ground_material_stack_v1.json`
 - `wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py`
+- `wayfarer_godot_vertical_slice/tools/validate_sv0_tool_acquisition_manifest.py`
 
 ## Production Rules
 
@@ -43,8 +46,14 @@ still looked patchy, scattered, or incorrectly authored.
 ## External Tool Policy
 
 External tools are not rejected forever. They are simply not allowed to become
-runtime or roadmap dependencies until a spike proves they are free, safe,
-portable, validateable, and reversible.
+runtime or roadmap dependencies until a spike proves they are free,
+license-safe, portable, validateable, and reversible.
+
+The Tool Acquisition Manifest is the standing intake record. Codex may
+download, install, configure, and use free, license-safe, reversible tools for
+autonomous Starter Village roadmap execution when the tool is documented in the
+manifest, requires no payment or paid trial, stores no credentials/secrets, has
+a rollback path, and installs only in approved project/tool locations.
 
 Preferred install locations if a later spike is approved:
 

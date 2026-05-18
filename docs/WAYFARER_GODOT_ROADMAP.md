@@ -2213,7 +2213,9 @@ layout work continues. The stack is documented in
 `wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py`; it covers
 authoritative town layout data, visual-regression warning views, runtime
 movement proof, data-driven quest/dialogue, asset cleanup/provenance, and
-ground/material cohesion.
+ground/material cohesion. The current corrective layout subpass is G-7A-SV0,
+documented in `docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR.md` and guarded
+by `wayfarer_godot_vertical_slice/tools/validate_starter_village_layout_source_usage.py`.
 
 The production objective is a Newport-inspired 1700s harbor starting village
 that a first-time player can load into, understand, navigate, investigate, and
@@ -2253,7 +2255,7 @@ The required autonomous phase sequence is:
 - G-13 Browser Build, Performance, and Regression Hardening,
 - G-14 SV-1 Starter Village Playable Obsession Gate.
 
-Current SV-1 autonomous status after G-10B and Chris screenshot QA: Newport
+Current SV-1 autonomous status after SV-0 and Chris screenshot QA: Newport
 has compact interaction prompts, a playable First Light opening arc, a
 runtime-backed Tavern/Inn rumor system, and a multi-path starter choice
 foundation. The player can make landfall, report to Edrin Vale, investigate
@@ -2263,8 +2265,8 @@ optional rear-gate secret, and secure a named contact hook. However, the latest
 screenshots exposed that the town-layout QA process is still not strict enough:
 patchy streets, false stable reads, overlap/cutoff errors, mismatched building
 scale, and screenshot/report contradictions must be prevented before more
-production placement continues. The next active phase is SV-0, then G-7/G-7A
-tool-backed layout repair resumes under the locked stack.
+production placement continues. SV-0 is merged; the next active phase is
+G-7A-SV0 tool-backed layout repair under the locked stack.
 
 G-10A tightened the review process after screenshot QA exposed route and
 building ordering problems around the tavern/commercial row.

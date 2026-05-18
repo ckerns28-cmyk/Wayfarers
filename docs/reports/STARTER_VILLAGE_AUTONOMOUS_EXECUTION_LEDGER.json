@@ -36,10 +36,10 @@
       "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
       "branch": "codex/sv0-free-tooling-stack",
       "implementing_prs": [
-        "pending_current_phase_pr"
+        "#473"
       ],
       "commits": [
-        "pending_current_phase_commit"
+        "09553bc50fbbe26d24cbe78e84b7e12542bf8a39"
       ],
       "files_changed": [
         "AGENTS.md",
@@ -85,7 +85,7 @@
       "north_star_result": "PASS for production process: SV-0 locks tooling so future Newport work starts from districts, lots, roads, routes, ground materials, movement proof, and screenshot contradiction review rather than coordinate sprawl.",
       "current_status": "PASS",
       "reason_for_status": "SV-0 locks the free production stack and adds a validator that fails missing tool decisions, missing authoritative layout sources, missing movement proof, missing visual QA, missing asset cleanup workflow, and missing ground cohesion workflow.",
-      "next_required_action": "Run the SV-0 Agent Council, open/merge the SV-0 PR when green, then resume G-7/G-7A tool-backed Newport layout repair."
+      "next_required_action": "SV-0 is merged. Continue G-7A-SV0 tool-backed Newport layout repair, then resume the Starter Village roadmap."
     },
     {
       "phase_id": "G-7",
@@ -145,9 +145,10 @@
       "phase_id": "G-7A",
       "phase_name": "Street, Lot, and Ground Cohesion Reconstruction",
       "roadmap_source": "docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md",
-      "branch": "codex/g-7a-street-lot-ground-cohesion",
+      "branch": "codex/g-7a-street-lot-ground-cohesion; corrective subpass codex/g-7a-tool-backed-layout-repair",
       "implementing_prs": [
-        "#463"
+        "#463",
+        "#474"
       ],
       "commits": [
         "3e2ae7ac2e2853f46917caabd8113ba9049f6293",
@@ -161,7 +162,11 @@
         "wayfarer_godot_vertical_slice/tools/validate_newport_world_cohesion.py",
         "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
         "docs/reports/G7A_STREET_LOT_GROUND_COHESION_RECONSTRUCTION.md",
-        "docs/reports/G7A_STREET_LOT_GROUND_COHESION_AGENT_COUNCIL_REPORT.md"
+        "docs/reports/G7A_STREET_LOT_GROUND_COHESION_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR.md",
+        "docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR_AGENT_COUNCIL_REPORT.md",
+        "wayfarer_godot_vertical_slice/data/world_layout/starter_village_world_layout_v1.json",
+        "wayfarer_godot_vertical_slice/tools/validate_starter_village_layout_source_usage.py"
       ],
       "screenshot_paths": [
         "wayfarer_godot_vertical_slice/artifacts/review/g7a_runtime_screenshots/g7a_01_wide_newport_normal_gameplay_view.png",
@@ -186,13 +191,18 @@
         "Godot_v4.6.2-stable_win64_console.exe --headless --path wayfarer_godot_vertical_slice --script res://tools/validate_vertical_slice.gd",
         "powershell.exe -File wayfarer_godot_vertical_slice/tools/capture_g7a_runtime_screenshots.ps1",
         "python wayfarer_godot_vertical_slice/tools/validate_newport_world_cohesion.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_visual_ordering.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_sv0_tool_acquisition_manifest.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_sv0_tooling_stack.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_starter_village_layout_source_usage.py",
         "python wayfarer_godot_vertical_slice/tools/validate_runtime_atelier_asset_consistency.py",
         "python wayfarer_godot_vertical_slice/tools/validate_starter_village_roadmap.py",
         "python wayfarer_godot_vertical_slice/tools/validate_starter_village_execution_ledger.py",
         "git diff --check"
       ],
-      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-7A runtime screenshot capture and PNG verification; PASS: Newport world cohesion; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
+      "validation_results": "PASS: Godot import; PASS: vertical slice validator; PASS: G-7A runtime screenshot capture and PNG verification; PASS: Newport world cohesion; PASS: Newport visual ordering; PASS: SV-0 tool acquisition manifest; PASS: SV-0 tooling stack; PASS: starter village layout source usage; PASS: runtime atelier asset consistency; PASS: starter village roadmap; PASS: starter village execution ledger; PASS: git diff --check.",
       "agent_council_report_path": "docs/reports/G7A_STREET_LOT_GROUND_COHESION_AGENT_COUNCIL_REPORT.md",
+      "corrective_agent_council_report_path": "docs/reports/G7A_SV0_TOOL_BACKED_LAYOUT_REPAIR_AGENT_COUNCIL_REPORT.md",
       "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
       "design_score": 7.7,
       "art_direction_score": 7.6,
@@ -206,8 +216,8 @@
       "provenance_atelier_result": "PASS: no new raster assets were added; visible runtime assets remain covered by existing atelier/provenance validators.",
       "north_star_result": "PASS for G-7A: the town now reads as a connected harborfront, wharf apron, back street, uphill connector, and lot-foundation plan. It is not SV-1 complete.",
       "current_status": "PASS",
-      "reason_for_status": "Runtime map reconstruction replaced the worst patchwork planning read with a connected street/lot/ground layer and 15 screenshot proof views.",
-      "next_required_action": "Start G-7B Harbor, Wharf, and Commercial Spine Cohesion."
+      "reason_for_status": "Runtime map reconstruction replaced the worst patchwork planning read with a connected street/lot/ground layer and 15 screenshot proof views. Chris screenshot QA later required G-7A-SV0 to repair false tavern-stable reads, overlap/cutoff risks, scale mismatch, and source-of-truth bypasses.",
+      "next_required_action": "Merge G-7A-SV0 corrective PR #474 if green, then continue the Starter Village roadmap from the next weakest foundation pass."
     },
     {
       "phase_id": "G-7B",

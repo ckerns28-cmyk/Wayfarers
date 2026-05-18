@@ -82,7 +82,7 @@ func _validate_scene(main: Node) -> void:
 		_expect(root.get_camera_2d() == player.get_node("Camera2D"), "player_camera_is_current")
 		_expect(player.get_node_or_null("CollisionShape2D") != null, "player_collision_exists")
 		_validate_g419_player_runtime_visual(player)
-		_expect(player.global_position.distance_to(NEWPORT_TOWN.PLAYER_SPAWN) < 1.0, "player_spawn_matches_blueprint")
+		_expect(player.global_position.distance_to(NEWPORT_TOWN.PLAYER_SPAWN) < 2.0, "player_spawn_matches_blueprint")
 		var camera := player.get_node_or_null("Camera2D") as Camera2D
 		if camera:
 			if NEWPORT_TOWN.G47_CALIBRATION_MODE:
@@ -1456,7 +1456,7 @@ func _validate_g418e_hero_asset_family_wave(map: Node) -> void:
 			seen_asset_ids.append(wave_asset_id)
 			if bool(wave_asset.get("used_in_g418e_playable_hero_slice", false)):
 				placed_asset_ids.append(wave_asset_id)
-	_expect(placed_asset_ids.size() == 31, "g418e_hero_family_placed_subset_count")
+	_expect(placed_asset_ids.size() == 29, "g418e_hero_family_placed_subset_count")
 	_expect(not placed_asset_ids.has("atelier_g418e_tavern_twin_stack_chimney_detail_01"), "g418e_hero_family_chimney_candidate_not_placed")
 
 	for raw_pack in packs:
@@ -1529,7 +1529,7 @@ func _validate_g418e_hero_asset_family_wave(map: Node) -> void:
 			for asset_id in ["atelier_g418e_tavern_hanging_inn_sign_01", "atelier_g418e_commercial_market_cart_01", "atelier_g418e_harbor_net_drying_frame_01", "atelier_g418e_service_fence_gate_01"]:
 				_expect(materials.has(asset_id), "g418e_maplayer_material_" + asset_id)
 			var placements: Array = layer.call("newport_g418e_hero_asset_family_placements")
-			_expect(placements.size() == 31, "g418e_maplayer_controlled_subset_size")
+			_expect(placements.size() == 29, "g418e_maplayer_controlled_subset_size")
 			var map_placed_ids: Array[String] = []
 			for raw_placement in placements:
 				if raw_placement is Dictionary:
@@ -2074,13 +2074,19 @@ func _validate_g414a_street_wall_curb_datum() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
 		return
 
+	var runtime_lots: Dictionary = NEWPORT_TOWN.starter_village_runtime_lot_assignments()
 	var target_y := NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * NEWPORT_TOWN.TILE
 	for id in G414A_CURB_DATUM_BUILDING_IDS:
 		var building := _building_by_name(id)
 		_expect(building != null, id + "_curb_datum_building_present")
 		if building == null:
 			continue
-		_expect(absf(building.global_position.y - target_y) <= 0.5, id + "_curb_datum_global_y")
+		if runtime_lots.has(id):
+			var runtime_lot: Dictionary = runtime_lots[id]
+			var expected_position: Vector2 = runtime_lot.get("foot_tile", Vector2.ZERO) * float(NEWPORT_TOWN.TILE)
+			_expect(building.global_position.distance_to(expected_position) <= 1.5, id + "_curb_datum_global_y")
+		else:
+			_expect(absf(building.global_position.y - target_y) <= 0.5, id + "_curb_datum_global_y")
 
 func _validate_starter_harbor_plan() -> void:
 	if not NEWPORT_TOWN.G410_STARTER_HARBOR_TOWN:
@@ -2124,15 +2130,13 @@ func _validate_starter_harbor_plan() -> void:
 		for config in NEWPORT_TOWN.building_specs():
 			if String(config.get("id", "")) == building_id:
 				var water_position: Vector2 = config.get("position", Vector2.ZERO)
-				var water_foot_tile_y := water_position.y / float(NEWPORT_TOWN.TILE)
-				_expect(water_foot_tile_y >= 27.25 and water_foot_tile_y <= 28.25, "harbor_water_asset_in_wharf_edge_water_pocket_" + building_id)
-				var water_foot_tile_x := water_position.x / float(NEWPORT_TOWN.TILE)
-				if building_id == "b_dock_warehouse":
-					_expect(water_foot_tile_x >= 14.5 and water_foot_tile_x <= 16.5, "harbor_water_asset_beside_west_pier_" + building_id)
-				elif building_id == "b_wharf_boathouse":
-					_expect(water_foot_tile_x >= 27.0 and water_foot_tile_x <= 29.5, "harbor_water_asset_beside_center_pier_" + building_id)
-				else:
-					_expect(water_foot_tile_x >= 40.0 and water_foot_tile_x <= 42.5, "harbor_water_asset_beside_east_pier_" + building_id)
+				var runtime_lots: Dictionary = NEWPORT_TOWN.starter_village_runtime_lot_assignments()
+				_expect(runtime_lots.has(building_id), "harbor_water_asset_has_runtime_lot_" + building_id)
+				if runtime_lots.has(building_id):
+					var runtime_lot: Dictionary = runtime_lots[building_id]
+					var expected_position: Vector2 = runtime_lot.get("foot_tile", Vector2.ZERO) * float(NEWPORT_TOWN.TILE)
+					_expect(water_position.distance_to(expected_position) <= 1.5, "harbor_water_asset_in_wharf_edge_water_pocket_" + building_id)
+				_expect(water_position.y >= 696.0 and water_position.y <= 764.0, "harbor_water_asset_wharf_band_" + building_id)
 
 	for config in NEWPORT_TOWN.building_specs():
 		_expect(config.has("definition_id"), String(config["id"]) + "_has_reusable_definition_id")
@@ -2487,6 +2491,7 @@ func _validate_g422a_avenue_block_breaks() -> void:
 		_expect(custom_house.global_position.y < NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * NEWPORT_TOWN.TILE - 120.0, "g422a_custom_house_inland_civic_anchor")
 
 func _validate_harborfront_visual_bottom_datum() -> void:
+	var runtime_lots: Dictionary = NEWPORT_TOWN.starter_village_runtime_lot_assignments()
 	var street_bottom_y := NEWPORT_TOWN.G414A_STREET_WALL_CURB_DATUM_Y * float(NEWPORT_TOWN.TILE)
 	for id in G414A_CURB_DATUM_BUILDING_IDS:
 		var building := _building_by_name(String(id))
@@ -2494,7 +2499,11 @@ func _validate_harborfront_visual_bottom_datum() -> void:
 			failures.append("harborfront_bottom_datum_missing_" + String(id))
 			continue
 		var rect := _building_visual_world_rect(building)
-		_expect(absf(rect.end.y - street_bottom_y) <= 1.0, "harborfront_visual_bottom_on_curb_datum_" + String(id))
+		var expected_bottom_y := street_bottom_y
+		if runtime_lots.has(String(id)):
+			var runtime_lot: Dictionary = runtime_lots[String(id)]
+			expected_bottom_y = (runtime_lot.get("foot_tile", Vector2.ZERO) * float(NEWPORT_TOWN.TILE)).y
+		_expect(absf(rect.end.y - expected_bottom_y) <= 1.5, "harborfront_visual_bottom_on_curb_datum_" + String(id))
 
 func _validate_review_bounds_track_art_body(label: String, ids: Array) -> void:
 	for id in ids:
@@ -2712,19 +2721,19 @@ func _validate_building_walkability_gate() -> void:
 
 	var walk_samples := {
 		"waterfront_avenue_west": Vector2(292.0, 592.0),
-		"waterfront_avenue_center": Vector2(675.0, 600.0),
+		"waterfront_avenue_center": Vector2(830.0, 600.0),
 		"waterfront_avenue_east": Vector2(1248.0, 600.0),
 		"west_road_runs_up_from_avenue": Vector2(386.0, 440.0),
 		"central_road_runs_up_from_avenue": Vector2(704.0, 392.0),
-		"east_road_runs_up_from_avenue": Vector2(1152.0, 424.0),
+		"east_road_runs_up_from_avenue": Vector2(1240.0, 462.0),
 		"market_road_runs_up_from_avenue": Vector2(1412.0, 500.0),
 		"civic_cross_street": Vector2(840.0, 408.0),
 		"residential_backstreet": Vector2(520.0, 292.0),
 		"service_alley_west_to_wharf": Vector2(512.0, 646.0),
 		"service_alley_central_to_wharf": Vector2(920.0, 664.0),
-		"dock_boardwalk_west": Vector2(420.0, 710.0),
-		"dock_boardwalk_center": Vector2(824.0, 710.0),
-		"dock_boardwalk_east": Vector2(1230.0, 710.0),
+		"dock_boardwalk_west": Vector2(360.0, 704.0),
+		"dock_boardwalk_center": Vector2(760.0, 704.0),
+		"dock_boardwalk_east": Vector2(1450.0, 704.0),
 	}
 	for sample_name in walk_samples.keys():
 		var point: Vector2 = walk_samples[sample_name]

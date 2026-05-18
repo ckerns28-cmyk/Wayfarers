@@ -17,6 +17,13 @@ This repository uses Codex as a production collaborator, not as an automatic app
   phases must use the locked SV-0 tooling stack where applicable, or explain
   the exception in the Agent Council report and fail if the exception creates
   an unvalidated one-off system.
+- SV-0 also locks the `SV-0 Tool Acquisition Manifest`. Codex may
+  download, install, configure, and use free, license-safe, reversible tools
+  for autonomous roadmap execution when the tool is documented in
+  `docs/reports/SV0_TOOL_ACQUISITION_MANIFEST.json`, validated by
+  `validate_sv0_tool_acquisition_manifest.py`, installed only in approved
+  project/tool locations, requires no payment, stores no credentials/secrets,
+  and has a rollback path.
 - Until the SV-1 Starter Village Playable Obsession Gate, follow
   `docs/PRE_G5_AUTONOMOUS_PRODUCTION_PROTOCOL.md`: the Wayfarer Agent Council
   is the default QA and acceptance authority for ordinary roadmap-bound
@@ -34,6 +41,10 @@ This repository uses Codex as a production collaborator, not as an automatic app
 - Do not hide ground or street problems with clutter.
 - Buildings must sit on believable streets, lots, yards, docks, alleys, or civic spaces.
 - Newport city passes must prove street grammar, ground cohesion, player/NPC walkability, district logic, and visual cohesion.
+- Starter Village layout passes must use the locked SV-0 world layout source
+  where applicable; `validate_starter_village_layout_source_usage.py` must
+  fail active buildings without lots, layout-source bypasses, overlap/cutoff
+  risks, false tavern-stable reads, and scale-regression tokens.
 
 ## Newport Review Bar
 
@@ -71,7 +82,7 @@ OBSESSION GATE` when all of the following are true:
 - no hard stop condition exists.
 
 Explicit Chris approval is still required only for destructive operations,
-unsafe file operations, budget/tool purchase decisions, unresolvable GitHub
-authentication or permission problems, major creative forks with multiple valid
-directions, asset licensing/provenance blockers, and the formal SV-1 milestone
-review.
+unsafe file operations, budget/tool purchase decisions, any paid tool or
+subscription action, unresolvable GitHub authentication or permission problems,
+major creative forks with multiple valid directions, asset licensing/provenance
+blockers, and the formal SV-1 milestone review.
