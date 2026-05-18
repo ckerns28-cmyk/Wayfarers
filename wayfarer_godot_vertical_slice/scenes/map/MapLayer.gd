@@ -39,6 +39,8 @@ const G422R_SUPPRESS_PRIMITIVE_WORLD_PROPS := true
 const G422R_HIDE_NORMAL_PLAY_LAYOUT_GUIDES := true
 const STARTER_VILLAGE_G7A_COHESION_PASS := "G-7A"
 const G7A_TOWN_COHESION_PHASE_SCORE := 7.6
+const STARTER_VILLAGE_G7B_HARBOR_SPINE_PASS := "G-7B"
+const G7B_HARBOR_WORLD_SCORE := 8.5
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -675,6 +677,19 @@ const NEWPORT_G418E_REAR_SERVICE_CONNECTOR_PLACEMENTS := [
 	{"asset_id": "atelier_g418e_service_wash_tub_linen_01", "dest": Rect2(1268, 454, 74, 35), "purpose": "rear_yard_domestic_service_life", "alpha": 0.90, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_service_rain_barrel_01", "dest": Rect2(1438, 414, 58, 50), "purpose": "building_back_rain_barrel_grounding", "alpha": 0.90, "contact_shadow": true},
 	{"asset_id": "atelier_g418e_service_repair_sawhorse_01", "dest": Rect2(214, 402, 70, 52), "purpose": "west_service_yard_repair_sawhorse", "alpha": 0.90, "contact_shadow": true},
+]
+const NEWPORT_G7B_HARBOR_WORK_ZONE_PLACEMENTS := [
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_fishing_crate_net_stack_01", "dest": Rect2(334, 690, 84, 49), "purpose": "g7b_west_fish_offload_zone_net_crates", "alpha": 0.98, "contact_shadow": true},
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_fish_baskets_tub_01", "dest": Rect2(432, 706, 88, 42), "purpose": "g7b_west_fish_offload_zone_baskets", "alpha": 0.97, "contact_shadow": true},
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_cargo_stack_01", "dest": Rect2(586, 684, 88, 46), "purpose": "g7b_central_manifest_cargo_waiting_for_counting_house", "alpha": 0.97, "contact_shadow": true},
+	{"family": "commercial", "asset_id": "atelier_g418e_commercial_basket_parcel_display_01", "dest": Rect2(626, 622, 76, 40), "purpose": "g7b_manifest_goods_staged_between_mercantile_and_wharf", "alpha": 0.96, "contact_shadow": true},
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_rope_coil_large_01", "dest": Rect2(792, 694, 76, 36), "purpose": "g7b_chandlery_rope_service_zone", "alpha": 0.97, "contact_shadow": true},
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_bollard_pair_01", "dest": Rect2(892, 696, 72, 39), "purpose": "g7b_chandlery_mooring_service_zone", "alpha": 0.97, "contact_shadow": true},
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_service_post_lantern_01", "dest": Rect2(1006, 640, 50, 64), "purpose": "g7b_counting_house_route_lantern_at_wharf_gate", "alpha": 0.98, "contact_shadow": true},
+	{"family": "commercial", "asset_id": "atelier_g418e_commercial_produce_crates_01", "dest": Rect2(1194, 606, 82, 57), "purpose": "g7b_market_transfer_goods_linked_to_wharf", "alpha": 0.96, "contact_shadow": true},
+	{"family": "commercial", "asset_id": "atelier_g418e_commercial_market_cart_01", "dest": Rect2(1320, 604, 94, 66), "purpose": "g7b_market_cart_clear_of_main_route", "alpha": 0.97, "contact_shadow": true},
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_dock_barrel_row_01", "dest": Rect2(1220, 696, 92, 36), "purpose": "g7b_east_storehouse_barrel_row_work_queue", "alpha": 0.97, "contact_shadow": true},
+	{"family": "harbor", "asset_id": "atelier_g418e_harbor_net_drying_frame_01", "dest": Rect2(1262, 764, 102, 56), "purpose": "g7b_east_net_drying_service_life", "alpha": 0.96, "contact_shadow": true},
 ]
 const NEWPORT_ATELIER_CHARACTER_PLACEMENTS := [
 	{"asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(420, 690), "size": Vector2(82, 82), "purpose": "west_dock_worker_replaces_placeholder", "contact_shadow": true},
@@ -1701,6 +1716,79 @@ func _draw_g7a_route_curbs_and_material_transitions() -> void:
 	draw_line(Vector2(252, 694), Vector2(1344, 694), Color(0.03, 0.035, 0.025, 0.34), 2.0)
 	draw_line(Vector2(252, 722), Vector2(1344, 722), Color("#d2b06e", 0.12), 1.0)
 
+func _draw_g7b_functional_wharf_work_zones() -> void:
+	for raw_zone in [
+		{"rect": Rect2(300, 686, 242, 52), "kind": "fish_offload", "label": "west fish offload"},
+		{"rect": Rect2(558, 676, 170, 54), "kind": "manifest_cargo", "label": "manifest cargo"},
+		{"rect": Rect2(754, 684, 228, 52), "kind": "rope_chandlery", "label": "rope and mooring"},
+		{"rect": Rect2(1114, 686, 236, 54), "kind": "storehouse_queue", "label": "storehouse queue"},
+	]:
+		var zone: Dictionary = raw_zone
+		_draw_g7b_work_zone_surface(zone["rect"], String(zone["kind"]))
+
+	for raw_route in [
+		[Vector2(392, 710), Vector2(512, 650), 0.24],
+		[Vector2(622, 702), Vector2(704, 600), 0.28],
+		[Vector2(842, 704), Vector2(1018, 596), 0.22],
+		[Vector2(1218, 704), Vector2(1364, 636), 0.26],
+	]:
+		var route: Array = raw_route
+		_draw_g7b_trade_route_trace(route[0], route[1], float(route[2]))
+
+	draw_line(Vector2(316, 690), Vector2(1330, 690), Color("#d0b06e", 0.16), 1.2, true)
+	draw_line(Vector2(316, 738), Vector2(1330, 738), Color(0.03, 0.025, 0.018, 0.28), 1.6, true)
+
+func _draw_g7b_work_zone_surface(rect: Rect2, kind: String) -> void:
+	var base := Color("#6a5741", 0.32)
+	var edge := Color("#c6a66d", 0.13)
+	if kind == "fish_offload":
+		base = Color("#665d48", 0.31)
+		edge = Color("#c9b98c", 0.12)
+	elif kind == "manifest_cargo":
+		base = Color("#615844", 0.34)
+		edge = Color("#d0b776", 0.14)
+	elif kind == "rope_chandlery":
+		base = Color("#625542", 0.30)
+		edge = Color("#c0a36a", 0.12)
+	elif kind == "storehouse_queue":
+		base = Color("#695640", 0.32)
+		edge = Color("#c8a66c", 0.13)
+	_draw_newport_lot_variation(rect, Color(base.r, base.g, base.b), Color("#4d4031"), base.a, "working_wharf")
+	draw_line(rect.position + Vector2(8.0, 4.0), Vector2(rect.end.x - 8.0, rect.position.y + 3.0), edge, 1.0)
+	draw_line(Vector2(rect.position.x + 8.0, rect.end.y - 4.0), rect.end - Vector2(8.0, 5.0), Color(0.02, 0.025, 0.018, 0.22), 1.2)
+
+func _draw_g7b_trade_route_trace(a: Vector2, b: Vector2, alpha: float) -> void:
+	draw_line(a, b, Color("#3b3328", alpha * 0.42), 12.0, true)
+	draw_line(a, b, Color("#c4a66c", alpha), 2.0, true)
+	var length := a.distance_to(b)
+	var steps := maxi(2, int(length / 38.0))
+	var dir := (b - a).normalized()
+	for i in range(steps):
+		if i % 2 != 0:
+			continue
+		var p := a.lerp(b, float(i) / float(maxi(1, steps - 1)))
+		draw_line(p - dir * 7.0, p + dir * 9.0, Color("#f0d08c", alpha * 0.28), 1.0, true)
+
+func _draw_g7b_harbor_commercial_spine_dressing() -> void:
+	for placement in NEWPORT_G7B_HARBOR_WORK_ZONE_PLACEMENTS:
+		_draw_g7b_spine_placement(placement)
+
+	for raw_marker in [
+		{"pos": Vector2(622, 668), "size": Vector2(112, 10), "alpha": 0.18},
+		{"pos": Vector2(1004, 668), "size": Vector2(92, 10), "alpha": 0.14},
+		{"pos": Vector2(1210, 664), "size": Vector2(156, 10), "alpha": 0.16},
+	]:
+		var marker: Dictionary = raw_marker
+		var rect := Rect2(marker["pos"], marker["size"])
+		_draw_surface_speckles(rect, 8, Color("#d0b06e", float(marker["alpha"])), Vector2(18, 2))
+
+func _draw_g7b_spine_placement(placement: Dictionary) -> void:
+	var family := String(placement.get("family", "harbor"))
+	if family == "commercial":
+		_draw_g418e_hero_family_placement(_newport_g418e_commercial_avenue_atlas, NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_REGIONS, placement)
+	else:
+		_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
+
 func _draw_g422a_block_boundaries() -> void:
 	for fence in [
 		[Vector2(304, 356), Vector2(444, 354)],
@@ -1847,6 +1935,7 @@ func _draw_g410_wharf_water() -> void:
 	_draw_post_line(Vector2(740, 812), Vector2(874, 812), 38.0)
 	_draw_post_line(Vector2(1214, 812), Vector2(1334, 812), 38.0)
 	_draw_g423b_harbor_working_surface()
+	_draw_g7b_functional_wharf_work_zones()
 	for p in [Vector2(266, 714), Vector2(358, 724), Vector2(526, 708), Vector2(716, 718), Vector2(934, 712), Vector2(1140, 716), Vector2(1322, 724)]:
 		_draw_shore_rocks(p)
 	for p in [Vector2(422, 846), Vector2(802, 846), Vector2(1252, 846)]:
@@ -1912,6 +2001,7 @@ func _draw_g410_props() -> void:
 	_draw_g420a_building_grounding_accents()
 	_draw_g420b_town_identity_accents()
 	_draw_g418e_hero_asset_family_accents()
+	_draw_g7b_harbor_commercial_spine_dressing()
 	if NEWPORT_TOWN.G422A_SHOW_LEGACY_PROOF_OVERLAYS:
 		_draw_g418d_atelier_cargo_clusters()
 		_draw_g419a_atelier_dock_clutter_clusters()

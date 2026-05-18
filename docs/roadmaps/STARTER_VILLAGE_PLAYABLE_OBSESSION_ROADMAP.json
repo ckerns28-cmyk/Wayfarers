@@ -152,7 +152,7 @@
         "validate_newport_world_cohesion.py",
         "validate_npc_population_and_routes.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-7C",
