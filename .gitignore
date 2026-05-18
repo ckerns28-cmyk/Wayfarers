@@ -1,6 +1,8 @@
 # Godot generated editor/import caches.
 .godot/
 **/.godot/
+__pycache__/
+**/__pycache__/
 
 # Godot browser export output. Built locally, then packaged for review.
 wayfarer_godot_vertical_slice/web_build/

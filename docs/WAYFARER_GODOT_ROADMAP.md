@@ -2191,5 +2191,63 @@ route protection is lost. The G-6 package consists of
 `docs/reports/G6_PRODUCTION_CUTOVER_PLANNING.json`,
 `docs/reports/G6_PRODUCTION_CUTOVER_AGENT_COUNCIL_REPORT.md`, and
 `wayfarer_godot_vertical_slice/tools/validate_g6_production_cutover.py`.
-The Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`. No roadmap phase is
-currently defined after G-6 in this document.
+The Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`. PR #461 has been
+merged to main and supersedes the old "no next phase" endpoint.
+
+## SV-1: Starter Village Playable Obsession Gate
+
+SV-1 is the next true human review milestone. It is not merely G-5 readiness
+and not merely the next PR. The active roadmap is
+`docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.md` with structured
+source in
+`docs/roadmaps/STARTER_VILLAGE_PLAYABLE_OBSESSION_ROADMAP.json`.
+
+The execution ledger is
+`docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.md` with structured
+source in
+`docs/reports/STARTER_VILLAGE_AUTONOMOUS_EXECUTION_LEDGER.json`.
+
+The production objective is a Newport-inspired 1700s harbor starting village
+that a first-time player can load into, understand, navigate, investigate, and
+want to keep playing. Newport must become a cohesive authored origin town with
+districts, routes, landmarks, tavern whisper culture, harbor commerce,
+pre-Revolution pressure, grounded NPC life, readable quest direction, and a
+playable 10-20 minute opening loop.
+
+Current screenshot QA baseline after G-6:
+
+- town cohesion is approximately 2/10,
+- art assets are strong when applied correctly,
+- the layout still reads patchy and scattered,
+- ground/road overlays still feel disconnected,
+- NPCs visually improved but can read as hovering/gliding when motion is
+  represented as static drift,
+- the opening quest direction exists but is not yet a world-class playable
+  hook.
+
+The required autonomous phase sequence is:
+
+- G-7 Newport Living Origin Village Masterplan Lock,
+- G-7A Street, Lot, and Ground Cohesion Reconstruction,
+- G-7B Harbor, Wharf, and Commercial Spine Cohesion,
+- G-7C Landmark and District Identity Pass,
+- G-8 Atelier Character and NPC Movement Foundation,
+- G-8A Living NPC Population Pass,
+- G-9 Interaction UX and Diegetic Prompt Pass,
+- G-9A Journal, Objective, and Quest State Foundation,
+- G-10 Opening Quest Arc: First Light / Whispers Before Dawn,
+- G-10A Tavern Whisper System,
+- G-10B Multi-Path Starter Choice Foundation,
+- G-11 Living Town Rhythm Pass,
+- G-11A Audio/Atmosphere Placeholder-Free Foundation,
+- G-12 First-Session Fun, Pacing, and Readability Pass,
+- G-13 Browser Build, Performance, and Regression Hardening,
+- G-14 SV-1 Starter Village Playable Obsession Gate.
+
+Ordinary roadmap-bound autonomous PRs before SV-1 may be merged by Codex when
+branch/PR preflight is current, required validators pass, runtime proof passes
+where applicable, the Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`,
+the PR is green and mergeable, and no hard stop condition exists. Chris merge
+approval remains required only for destructive/unsafe operations, budget/tool
+purchase decisions, GitHub permission/auth blockers, major creative forks,
+asset licensing/provenance blockers, and the formal SV-1 milestone review.

@@ -3,8 +3,11 @@
 
 This script creates a repo-local production review report. For ordinary pre-G-5
 work, the council is the acceptance authority after screenshots are inspected
-and validators pass. It still never merges, never impersonates Chris, and never
-treats a technical pass by itself as design approval.
+work, and for ordinary roadmap-bound work before SV-1, the council is the
+acceptance authority after screenshots are inspected and validators pass. This
+tool still never merges, never impersonates Chris, and never treats a technical
+pass by itself as design approval. Codex may separately merge an ordinary
+autonomous PR only after the active autonomous merge rule is satisfied.
 """
 
 from __future__ import annotations
@@ -785,15 +788,19 @@ def build_report(
     blocker_text = human_escalation_blocker.strip() or "None."
     next_phase_text = final_recommended_next_phase.strip() or "Not selected by this report."
 
+    programmer_status = "PASS" if all(status == "FOUND" for _, status, _ in paths) else "FAIL"
+    release_status = "PASS" if final_verdict == AUTHORITY_PASS else ("BLOCKED" if final_verdict == AUTHORITY_BLOCKED else "FAIL")
     agent_rows = [
-        ["Scrum Master", "PASS", "Branch/PR state gathered; no auto-merge allowed."],
-        ["Game Designer", designer_status, "Newport layout must prove street grammar, loops, and NPC/player usability."],
-        ["Art Director", art_status, "Ground/street cohesion and clipping must clear council visual review."],
-        ["Game Programmer", "PASS" if all(status == "FOUND" for _, status, _ in paths) else "FAIL", "Required automation and validator files checked."],
-        ["QA", qa_status, "Validators must pass, but technical pass is not design approval."],
-        ["World/Narrative", world_status, "Harbor economy, civic/commercial/residential logic must clear council review."],
-        ["UX", ux_status, "Navigation clarity, landmarks, and player orientation must clear council review."],
-        ["Technical Artist", technical_artist_status, "Pipeline files, layering/contact/provenance, and screenshot evidence were considered."],
+        ["Scrum Master", "PASS", "Branch/PR state gathered; autonomous merge rule must still be checked outside this report."],
+        ["Game Designer", designer_status, "Newport layout must prove street grammar, loops, first-session motivation, and NPC/player usability."],
+        ["World/Layout Designer", world_status, "Districts, lots, harbor spine, uphill roads, back street, and movement routes must read as one town."],
+        ["Art Director", art_status, "Ground/street cohesion, landmark hierarchy, sprite fit, and screenshot beauty must clear council review."],
+        ["Animation/NPC Behavior Director", ux_status, "NPCs must be grounded, idle/walk intentionally, and never glide as static cutouts in normal play."],
+        ["Narrative Designer", world_status, "Tavern whispers, harbor rumors, counting-house pressure, and opening quest stakes must be playable."],
+        ["UX Designer", ux_status, "Navigation clarity, interaction prompts, objectives, and player orientation must clear council review."],
+        ["Game Programmer", programmer_status, "Required automation and validator files checked; systems must remain maintainable."],
+        ["QA Analyst", qa_status, "Validators must pass, but technical pass is not design approval."],
+        ["Build/Release Engineer", release_status, "PR readiness requires green checks, mergeability, proof, and no hard stop condition."],
     ]
 
     visual_fields = [
@@ -998,7 +1005,7 @@ def build_report(
         "",
         "TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.",
         "",
-        "For ordinary pre-G-5 work, this report is the council authority verdict after validators and screenshot review. It never auto-merges, never impersonates Chris, and never converts technical validation alone into creative approval.",
+        "For ordinary roadmap-bound work before SV-1, this report is the council authority verdict after validators and screenshot review. This tool never merges, never impersonates Chris, and never converts technical validation alone into creative approval.",
         "",
         "## Summary",
         "",
@@ -1196,19 +1203,43 @@ def build_report(
             "- Review focus: player movement loops, purpose of space, interaction density, progression hooks, and NPC/player usability.",
             "- Fail condition: buildings or props that cannot support believable village behavior must block design acceptance.",
             "",
+            "## World/Layout Designer Review",
+            "",
+            f"- Status: {world_status}",
+            "- Required pass condition: districts, routes, landmarks, lots, wharf paths, uphill connectors, and rear streets must form one authored harbor town.",
+            "- Review focus: harborfront avenue, counting-house route, Tavern/Inn threshold, commercial spine, civic/residential/service logic, and wide-shot cohesion.",
+            "",
             "## Art Director Review",
             "",
             f"- Status: {art_status}",
             "- Required pass condition: street material, lots, building placement, and harbor/civic/commercial/residential language must feel cohesive.",
             "- Newport fail conditions: mismatched road layers, clipped transparent ground rectangles, floating buildings on old art, prop clutter hiding layout problems, or no coherent harbor-city street grammar.",
             "",
+            "## Animation/NPC Behavior Director Review",
+            "",
+            f"- Status: {ux_status}",
+            "- Required pass condition: player and NPCs must be grounded, have believable anchors/shadows, and avoid static cutout gliding in normal play.",
+            "- Review focus: idle/walk state proof, directional facing, stop/start behavior, route intent, and movement speed matching animation cadence.",
+            "",
+            "## Narrative Designer Review",
+            "",
+            f"- Status: {world_status}",
+            "- Required pass condition: opening play must expose tavern whispers, harbor rumors, counting-house pressure, and a reason to continue.",
+            "- Review focus: First Light / Whispers Before Dawn quest beats, NPC motives, optional clues, rewards, and pre-Revolution tension as gameplay.",
+            "",
+            "## UX Designer Review",
+            "",
+            f"- Status: {ux_status}",
+            "- Required pass condition: a first-time player can understand location, first goal, interactables, objective updates, and next steps without debug-like presentation.",
+            "- Review focus: navigation clarity, landmark hierarchy, prompts, journal/objective feedback, camera/capture framing, and readable interaction anchors.",
+            "",
             "## Game Programmer Review",
             "",
-            f"- Status: {'PASS' if all(status == 'FOUND' for _, status, _ in paths) else 'FAIL'}",
+            f"- Status: {programmer_status}",
             "- Required pass condition: Godot scene, sprite rendering, collision/pathing, and automation remain maintainable.",
             "- Automation files and validators were checked for presence.",
             "",
-            "## QA Review",
+            "## QA Analyst Review",
             "",
             f"- Status: {qa_status}",
             f"- Validator mode: {'RUN' if run_validators else 'LIST_ONLY'}",
@@ -1221,23 +1252,11 @@ def build_report(
                 [[item["name"], item["status"], f"`{item['command']}`", item["notes"]] for item in validator_results],
             ),
             "",
-            "## World/Narrative Review",
+            "## Build/Release Engineer Review",
             "",
-            f"- Status: {world_status}",
-            "- Required pass condition: Newport must express a lived-in harbor city with civic, commercial, residential, tavern, and working waterfront logic.",
-            "- Review focus: work/life structure, harbor economy, story hooks, class/civic relationships, and the Tavern/Inn as a social anchor.",
-            "",
-            "## UX Review",
-            "",
-            f"- Status: {ux_status}",
-            "- Required pass condition: a player can orient by landmarks, understand where paths lead, and see why spaces exist.",
-            "- Review focus: navigation clarity, landmark hierarchy, camera/capture framing, and readable interaction anchors.",
-            "",
-            "## Technical Artist Review",
-            "",
-            f"- Status: {technical_artist_status}",
-            "- Required pass condition: sprite provenance, atlas integrity, layering, shadows/contact, ground transitions, and asset pipeline compliance all hold together.",
-            "- Council authority requires screenshot inspection for layering/contact quality.",
+            f"- Status: {release_status}",
+            "- Required pass condition: green checks, mergeability, required proof, provenance/atelier compliance, and no hard stop condition.",
+            "- This report does not merge; it records whether a branch can proceed to the autonomous PR merge gate.",
         ]
     )
 
@@ -1279,7 +1298,8 @@ def build_report(
             "## Release Manager Decision",
             "",
             f"- Final Authority Verdict: {final_verdict}",
-            "- Never auto-merge.",
+            "- Council tool merge behavior: never merges from this script.",
+            "- Autonomous merge authority: Codex may merge outside this tool only after the active roadmap authorization, green checks, mergeability, proof, and hard-stop checks pass.",
             "- Never treat validator pass as design acceptance.",
             "- PR candidate conditions: validators pass, screenshots are inspected, all required discipline scores clear the phase bar, and remaining caveats are roadmap items.",
             "- Repair conditions: street grammar, ground cohesion, lot logic, player/NPC walkability, district readability, or visual cohesion fail the phase bar.",
@@ -1369,7 +1389,7 @@ def main() -> int:
     print("Validator mode:", "RUN" if args.run_validators else "LIST_ONLY")
     print("Report:", report_path)
     print("TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.")
-    print("Council authority verdict recorded; no auto-merge performed.")
+    print("Council authority verdict recorded; this tool did not merge.")
     return 0
 
 

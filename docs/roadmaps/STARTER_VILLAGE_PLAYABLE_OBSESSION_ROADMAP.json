@@ -1,0 +1,493 @@
+{
+  "schema_id": "wayfarer.sv1.starter_village_playable_obsession_roadmap.v1",
+  "milestone_id": "SV-1",
+  "milestone_name": "Starter Village Playable Obsession Gate",
+  "generated_at": "2026-05-18",
+  "starting_main_after_g6_merge": "a6ec338f795f7f61c9974af5a3338a37e165aa11",
+  "source_authorization": "Chris May 2026 autonomous Starter Village directive",
+  "next_human_review_milestone": "SV-1 STARTER VILLAGE PLAYABLE OBSESSION GATE",
+  "autonomous_merge_authorized_until": "SV-1",
+  "merge_policy": {
+    "ordinary_autonomous_prs_may_merge": true,
+    "required_conditions": [
+      "branch_pr_preflight_current",
+      "required_validators_pass",
+      "runtime_screenshots_or_proof_pass_where_applicable",
+      "agent_council_verdict_COUNCIL_PASS_READY_FOR_PR",
+      "remote_checks_green",
+      "pr_mergeable",
+      "no_hard_stop_condition"
+    ],
+    "still_requires_chris": [
+      "destructive_operations",
+      "unsafe_file_operations",
+      "budget_or_tool_purchase_decisions",
+      "unresolvable_github_auth_or_permission_problem",
+      "major_creative_fork_with_multiple_valid_directions",
+      "asset_licensing_or_provenance_blocker",
+      "formal_sv1_milestone_review"
+    ]
+  },
+  "baseline": {
+    "town_cohesion_score": 2.0,
+    "art_asset_quality_when_applied_correctly": "excellent",
+    "known_failures": [
+      "town_layout_patchy_and_scattered",
+      "ground_and_road_overlays_disconnected",
+      "player_path_not_compelling",
+      "npc_motion_can_read_as_hovering_or_gliding",
+      "opening_quest_not_world_class_yet",
+      "tavern_whispers_harbor_rumors_pre_revolution_tension_not_playable_yet"
+    ],
+    "evidence": [
+      "wayfarer_godot_vertical_slice/artifacts/review/g422r_runtime_screenshots/g422r_01_wide_newport_normal_gameplay_view.png",
+      "wayfarer_godot_vertical_slice/artifacts/review/g422r_runtime_screenshots/g422r_05_player_near_npcs.png",
+      "wayfarer_godot_vertical_slice/artifacts/review/g422r_runtime_screenshots/g422r_12_wider_town_cohesion_no_placeholder_mix.png"
+    ]
+  },
+  "required_council_roles": [
+    "Scrum Master",
+    "Game Designer",
+    "World/Layout Designer",
+    "Art Director",
+    "Animation/NPC Behavior Director",
+    "Narrative Designer",
+    "UX Designer",
+    "Game Programmer",
+    "QA Analyst",
+    "Build/Release Engineer"
+  ],
+  "recurring_screenshot_set": [
+    "01 wide Newport normal gameplay view",
+    "02 player arrival at harbor",
+    "03 player on route to counting house",
+    "04 player near Tavern/Inn",
+    "05 player on commercial avenue",
+    "06 player at dock/wharf work area",
+    "07 player near NPC movement path",
+    "08 NPC idle and walking proof",
+    "09 player interacting with counting house/clerk",
+    "10 player interacting at tavern/rumor location",
+    "11 quest prompt/journal/objective proof",
+    "12 signs/markers/interaction UX proof",
+    "13 y-sort/layering proof near buildings/props",
+    "14 debug overlays disabled proof",
+    "15 contact sheet/provenance proof for new assets"
+  ],
+  "phases": [
+    {
+      "phase_id": "G-7",
+      "title": "Newport Living Origin Village Masterplan Lock",
+      "purpose": "Transform the village from a patchy asset scene into an authored harbor-town plan.",
+      "objectives": [
+        "define_town_district_grammar",
+        "define_player_arrival_path",
+        "define_harborfront_tavern_counting_house_commercial_civic_residential_service_rear_street_zones",
+        "define_roads_alleys_docks_wharf_paths_uphill_connectors",
+        "define_major_landmarks",
+        "define_first_second_third_player_reads",
+        "define_opening_quest_beat_locations",
+        "define_npc_home_work_walk_logic"
+      ],
+      "acceptance": [
+        "town_masterplan_exists_and_is_documented",
+        "each_building_has_a_reason_to_exist",
+        "each_district_has_a_purpose",
+        "every_major_prop_cluster_supports_a_district",
+        "player_route_landfall_to_counting_house_to_tavern_is_clear",
+        "no_random_asset_collage_placement_remains_in_the_plan",
+        "council_world_layout_score_at_least_8_5_for_the_masterplan"
+      ],
+      "primary_validators": [
+        "validate_starter_village_roadmap.py",
+        "validate_starter_village_execution_ledger.py",
+        "validate_newport_world_cohesion.py"
+      ],
+      "status": "PASS"
+    },
+    {
+      "phase_id": "G-7A",
+      "title": "Street, Lot, and Ground Cohesion Reconstruction",
+      "purpose": "Make Newport read as one coherent physical place.",
+      "objectives": [
+        "repair_patchy_translucent_road_overlays",
+        "remove_disconnected_ground_patches",
+        "remove_random_green_empty_blocks",
+        "author_harborfront_road_commercial_avenue_rear_streets_uphill_connectors",
+        "add_lot_foundations_for_major_buildings",
+        "unify_road_grass_dock_stone_plaza_transitions"
+      ],
+      "acceptance": [
+        "wide_screenshot_reads_as_real_town_plan",
+        "roads_lead_somewhere",
+        "buildings_sit_on_believable_lots",
+        "ground_materials_visually_unified",
+        "town_cohesion_at_least_7_5"
+      ],
+      "primary_validators": [
+        "validate_newport_world_cohesion.py",
+        "validate_runtime_atelier_asset_consistency.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-7B",
+      "title": "Harbor, Wharf, and Commercial Spine Cohesion",
+      "purpose": "Make the harbor feel like the economic engine of the town.",
+      "objectives": [
+        "functional_wharf_work_zones",
+        "purpose_grouped_dock_props",
+        "market_and_merchant_goods_connected_to_buildings_and_roads",
+        "clear_counting_house_role_in_harbor_commerce",
+        "harborfront_paths_support_player_movement_and_quests"
+      ],
+      "acceptance": [
+        "harbor_reads_as_working_waterfront",
+        "commercial_avenue_connected_to_harbor_labor",
+        "player_understands_why_npcs_are_there",
+        "dock_objects_do_not_block_or_confuse_navigation",
+        "council_harbor_world_score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_newport_world_cohesion.py",
+        "validate_npc_population_and_routes.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-7C",
+      "title": "Landmark and District Identity Pass",
+      "purpose": "Make the village memorable.",
+      "objectives": [
+        "tavern_inn_centerpiece",
+        "counting_house_clerk_townhouse",
+        "commercial_shop_row",
+        "harbor_work_area",
+        "rear_service_lane",
+        "residential_edge",
+        "small_civic_or_notice_board_location"
+      ],
+      "acceptance": [
+        "player_identifies_tavern_at_a_glance",
+        "player_identifies_harbor_work",
+        "player_identifies_commerce",
+        "player_identifies_first_quest_route",
+        "no_landmark_randomly_placed",
+        "council_art_world_score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_newport_world_cohesion.py",
+        "validate_interaction_ux.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-8",
+      "title": "Atelier Character and NPC Movement Foundation",
+      "purpose": "Fix hovering/gliding NPCs and establish character movement quality.",
+      "objectives": [
+        "idle_down_up_left_right",
+        "walk_down_up_left_right",
+        "grounded_feet_anchor",
+        "consistent_shadow_or_grounding",
+        "movement_speed_synced_to_animation",
+        "npc_stop_start_behavior",
+        "npc_idle_pauses",
+        "npc_paths_follow_believable_town_routes"
+      ],
+      "acceptance": [
+        "no_npc_appears_to_hover",
+        "no_static_cutout_sliding",
+        "player_and_npcs_grounded",
+        "npc_paths_sensible",
+        "character_readability_strong",
+        "council_animation_score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_character_motion_foundation.py",
+        "validate_runtime_atelier_asset_consistency.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-8A",
+      "title": "Living NPC Population Pass",
+      "purpose": "Make Newport feel inhabited.",
+      "objectives": [
+        "tavern_keeper_or_inn_servant",
+        "dockworker",
+        "counting_house_clerk",
+        "merchant_or_shopkeeper",
+        "rumor_carrier_courier_or_suspicious_patron"
+      ],
+      "acceptance": [
+        "npcs_are_not_decoration_only",
+        "npcs_support_opening_theme",
+        "npcs_reinforce_district_identity",
+        "npc_placement_makes_sense",
+        "no_non_atelier_playable_characters"
+      ],
+      "primary_validators": [
+        "validate_npc_population_and_routes.py",
+        "validate_runtime_atelier_asset_consistency.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-9",
+      "title": "Interaction UX and Diegetic Prompt Pass",
+      "purpose": "Make the player know what to do without ugly debug UI or crude markers.",
+      "objectives": [
+        "clean_interaction_prompts",
+        "tasteful_readable_labels",
+        "diegetic_signs_where_appropriate",
+        "clear_objective_guidance",
+        "no_crude_placeholder_markers"
+      ],
+      "acceptance": [
+        "player_knows_interactables",
+        "prompts_do_not_break_immersion",
+        "ui_supports_world",
+        "first_quest_objective_clear",
+        "council_ux_score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_interaction_ux.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-9A",
+      "title": "Journal, Objective, and Quest State Foundation",
+      "purpose": "Give the player a real opening loop instead of a static prompt.",
+      "objectives": [
+        "quest_state_tracking",
+        "objective_completion",
+        "journal_or_quest_log_display",
+        "objective_update_feedback",
+        "npc_dialogue_driven_objective_changes",
+        "reward_or_progression_update"
+      ],
+      "acceptance": [
+        "player_can_start_advance_complete_opening_steps",
+        "quest_state_persists_during_session",
+        "hud_or_journal_tells_player_what_changed",
+        "no_broken_objective_loops",
+        "no_unclear_next_step"
+      ],
+      "primary_validators": [
+        "validate_opening_quest_arc.py",
+        "validate_interaction_ux.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-10",
+      "title": "Opening Quest Arc: First Light / Whispers Before Dawn",
+      "purpose": "Turn the start of the game into an entertaining playable hook.",
+      "objectives": [
+        "make_landfall_at_newport_harbor",
+        "find_counting_house_or_clerk",
+        "take_harbor_errand_or_ledger_task",
+        "hear_first_tavern_whisper",
+        "visit_tavern_inn",
+        "speak_to_two_npcs_with_conflicting_motives",
+        "choose_or_discover_multiple_rumor_paths",
+        "receive_reason_to_continue"
+      ],
+      "acceptance": [
+        "quest_is_playable_not_just_documented",
+        "ten_to_fifteen_minutes_of_meaningful_content",
+        "three_named_or_role_npcs_participate",
+        "one_choice_or_branch_exists",
+        "one_secret_or_optional_discovery_exists",
+        "one_reward_or_progression_beat_exists",
+        "narrative_and_gameplay_hook_scores_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_opening_quest_arc.py",
+        "validate_tavern_whisper_system.py",
+        "validate_first_session_playability.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-10A",
+      "title": "Tavern Whisper System",
+      "purpose": "Make the Tavern/Inn feel like the heart of the starter village.",
+      "objectives": [
+        "tavern_has_npcs",
+        "tavern_has_rumor_dialogue",
+        "tavern_has_quest_relevant_interaction",
+        "tavern_has_ambient_or_rotating_rumor_lines",
+        "whispers_tie_to_harbor_commerce_and_political_tension"
+      ],
+      "acceptance": [
+        "tavern_meaningful_gameplay_location",
+        "player_can_hear_or_discover_rumor",
+        "tavern_supports_opening_arc",
+        "tavern_feels_social_center"
+      ],
+      "primary_validators": [
+        "validate_tavern_whisper_system.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-10B",
+      "title": "Multi-Path Starter Choice Foundation",
+      "purpose": "Support the Wayfarer/MMORPG origin-town ambition.",
+      "objectives": [
+        "harbor_work_path",
+        "tavern_rumor_path",
+        "counting_house_clerk_path",
+        "merchant_or_street_path",
+        "optional_secret_path"
+      ],
+      "acceptance": [
+        "two_different_npcs_can_advance_mystery",
+        "one_optional_clue_exists",
+        "player_not_locked_to_one_click_path",
+        "quest_state_supports_future_expansion"
+      ],
+      "primary_validators": [
+        "validate_opening_quest_arc.py",
+        "validate_tavern_whisper_system.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-11",
+      "title": "Living Town Rhythm Pass",
+      "purpose": "Make the village feel alive between quest steps.",
+      "objectives": [
+        "npc_idle_walk_loops",
+        "ambient_barks",
+        "dock_work_behavior",
+        "tavern_social_behavior",
+        "merchant_street_behavior",
+        "repeating_town_life_rhythm",
+        "sensible_routes_and_pauses"
+      ],
+      "acceptance": [
+        "town_has_life_when_player_stands_still",
+        "npcs_not_random_moving_sprites",
+        "behavior_reinforces_town_purpose",
+        "no_movement_breaks_immersion"
+      ],
+      "primary_validators": [
+        "validate_npc_population_and_routes.py",
+        "validate_character_motion_foundation.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-11A",
+      "title": "Audio/Atmosphere Placeholder-Free Foundation",
+      "purpose": "Add safe atmosphere hooks or document future integration points.",
+      "objectives": [
+        "harbor_ambience_hook",
+        "tavern_ambience_hook",
+        "footstep_event_hook",
+        "quest_update_sound_hook",
+        "ui_feedback_sound_hook"
+      ],
+      "acceptance": [
+        "no_broken_audio_references",
+        "no_licensing_unsafe_audio",
+        "no_crude_placeholder_audio_in_production_route",
+        "future_hook_points_clear_if_not_implemented"
+      ],
+      "primary_validators": [
+        "validate_first_session_playability.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-12",
+      "title": "First-Session Fun, Pacing, and Readability Pass",
+      "purpose": "Make the start fun, not merely functional.",
+      "objectives": [
+        "first_objective_clear",
+        "counting_house_findable",
+        "tavern_findable",
+        "interactions_not_confusing",
+        "quest_rhythm_satisfying",
+        "empty_walking_reduced",
+        "prompts_readable_not_ugly",
+        "npcs_useful",
+        "world_invites_curiosity"
+      ],
+      "acceptance": [
+        "first_15_to_20_minutes_playable",
+        "no_dead_objective_states",
+        "no_unclear_progress_blocker",
+        "no_ugly_debug_presentation",
+        "gameplay_readability_score_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_first_session_playability.py",
+        "validate_interaction_ux.py",
+        "validate_opening_quest_arc.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-13",
+      "title": "Browser Build, Performance, and Regression Hardening",
+      "purpose": "Make the starter village stable enough to review.",
+      "objectives": [
+        "godot_import_validation",
+        "vertical_slice_validation",
+        "all_phase_validators_pass",
+        "runtime_screenshot_capture_passes",
+        "web_review_build_passes",
+        "no_major_input_or_performance_regressions",
+        "no_missing_assets_or_untracked_visible_runtime_sprites"
+      ],
+      "acceptance": [
+        "browser_review_route_works",
+        "godot_route_works",
+        "no_failing_remote_checks",
+        "no_open_critical_tech_debt_for_sv1"
+      ],
+      "primary_validators": [
+        "validate_first_session_playability.py",
+        "validate_runtime_atelier_asset_consistency.py",
+        "validate_sv1_gate.py"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "phase_id": "G-14",
+      "title": "SV-1 Starter Village Playable Obsession Gate",
+      "purpose": "Final review package for Chris.",
+      "objectives": [
+        "town_cohesion_score_at_least_8_5",
+        "art_direction_score_at_least_8_5",
+        "npc_motion_grounding_score_at_least_8_5",
+        "opening_quest_gameplay_score_at_least_8_5",
+        "narrative_hook_score_at_least_8_5",
+        "ux_readability_score_at_least_8_5",
+        "technical_stability_score_at_least_8_5",
+        "provenance_atelier_compliance_passes"
+      ],
+      "acceptance": [
+        "sv1_review_package_exists",
+        "current_main_commit_recorded",
+        "clean_worktree_proof_recorded",
+        "no_open_pr_proof_recorded",
+        "all_phase_prs_listed",
+        "all_screenshots_validators_council_reports_listed",
+        "runtime_asset_consistency_audit_passes",
+        "opening_quest_playthrough_proof_exists",
+        "known_caveats_separated_from_blockers",
+        "stop_for_chris_review"
+      ],
+      "primary_validators": [
+        "validate_sv1_gate.py"
+      ],
+      "status": "PENDING"
+    }
+  ]
+}
