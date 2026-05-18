@@ -2,7 +2,7 @@ extends RefCounted
 class_name NewportTownBlueprint
 
 const TILE := 32
-const MAP_TILES := Vector2i(50, 32)
+const MAP_TILES := Vector2i(75, 50)
 const WORLD_SIZE := Vector2(MAP_TILES.x * TILE, MAP_TILES.y * TILE)
 const G410_STARTER_HARBOR_TOWN := true
 const G49_STREET_VIGNETTE := false
@@ -53,6 +53,10 @@ const STARTER_VILLAGE_G11_TOWN_RHYTHM_SCORE := 8.5
 const STARTER_VILLAGE_G11_NPC_RHYTHM_POLICY := "stationary_no_glide_rhythm_until_dedicated_walk_sheets"
 const STARTER_VILLAGE_VISUAL_ORDER_REVIEW_SCORE := 8.6
 const STARTER_VILLAGE_LAYOUT_SOURCE_PATH := "res://data/world_layout/starter_village_world_layout_v1.json"
+const OPENING_ISLAND_TOPOLOGY_SOURCE_PATH := "res://data/world_layout/opening_island_world_topology_v1.json"
+const G15A_VILLAGE_TO_ISLAND_TRANSITION_PASS := "G-15A"
+const G15A_VILLAGE_TO_ISLAND_TRANSITION_SOURCE_PATH := "res://data/world_layout/village_to_island_transition_v1.json"
+const G15A_VILLAGE_TO_ISLAND_TRANSITION_SCORE := 8.6
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -353,9 +357,21 @@ static func route_rects() -> Array:
 	rects.append_array(primary_roads())
 	rects.append_array(secondary_roads())
 	rects.append_array(service_lanes())
+	rects.append_array(opening_island_transition_route_rects())
 	for pier in pier_rects():
 		rects.append(pier["rect"])
 	return rects
+
+static func opening_island_transition_route_rects() -> Array:
+	if not G410_STARTER_HARBOR_TOWN:
+		return []
+	return [
+		Rect2i(44, 15, 8, 4),
+		Rect2i(51, 14, 7, 3),
+		Rect2i(57, 13, 8, 3),
+		Rect2i(64, 12, 6, 3),
+		Rect2i(69, 11, 4, 3),
+	]
 
 static func starter_village_route_order_specs() -> Array:
 	if not G410_STARTER_HARBOR_TOWN:
@@ -477,6 +493,10 @@ static func reachability_targets() -> Dictionary:
 			"central_boathouse_landing": Vector2i(24, 25),
 			"east_storehouse_pier": Vector2i(37, 25),
 			"east_storehouse_landing": Vector2i(39, 25),
+			"village_exit_to_island": Vector2i(50, 17),
+			"island_entry_transition": Vector2i(56, 15),
+			"first_mystery_beyond_town": Vector2i(66, 13),
+			"old_road_signal_view": Vector2i(71, 12),
 		}
 	if G49_STREET_VIGNETTE:
 		return {
@@ -587,6 +607,9 @@ static func route_debug_probes() -> Array:
 			_route_probe("dock_boardwalk_east", Vector2(1450.0, 704.0), "east wharf boardwalk stays open", "dock E"),
 			_route_probe("town_hall_frontage", Vector2(704.0, 392.0), "Town Hall / Counting House civic frontage", "hall"),
 			_route_probe("custom_house_frontage", Vector2(970.0, 402.0), "Custom House civic frontage", "customs"),
+			_route_probe("g15a_village_exit_gate", Vector2(1608.0, 548.0), "G-15A clear town exit toward the opening island", "exit"),
+			_route_probe("g15a_outskirt_lane", Vector2(1792.0, 492.0), "G-15A settlement-to-island lane remains walkable", "lane"),
+			_route_probe("g15a_first_mystery_threshold", Vector2(2150.0, 420.0), "G-15A first mystery beat beyond the village edge", "myst"),
 		]
 	return []
 
@@ -631,6 +654,11 @@ static func detail_blockers() -> Array:
 			_blocker("outer_town_east_townhouse", Rect2(1457, 244, 86, 24)),
 			_blocker("outer_town_west_side_cottage", Rect2(40, 414, 112, 24)),
 			_blocker("outer_town_east_side_market_row", Rect2(1458, 428, 120, 24)),
+			_blocker("g15a_exit_signpost", Rect2(1502, 520, 28, 20)),
+			_blocker("g15a_gate_lantern_left", Rect2(1536, 498, 24, 22)),
+			_blocker("g15a_outskirt_fence_north", Rect2(1608, 444, 232, 18)),
+			_blocker("g15a_outskirt_fence_south", Rect2(1652, 558, 210, 18)),
+			_blocker("g15a_first_mystery_roadside_cache", Rect2(2072, 368, 42, 24)),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -678,6 +706,44 @@ static func player_spawn_tile() -> Vector2i:
 
 static func starter_village_layout_source_path() -> String:
 	return STARTER_VILLAGE_LAYOUT_SOURCE_PATH
+
+static func opening_island_transition_source_path() -> String:
+	return G15A_VILLAGE_TO_ISLAND_TRANSITION_SOURCE_PATH
+
+static func opening_island_transition_viewpoints() -> Array:
+	return [
+		{"id": "07_village_exit_to_island", "position": Vector2(1608.0, 548.0), "target_final_screenshot": "07_village_exit_to_island.png"},
+		{"id": "08_island_entry_transition", "position": Vector2(1792.0, 492.0), "target_final_screenshot": "08_island_entry_transition.png"},
+		{"id": "first_mystery_beyond_town", "position": Vector2(2150.0, 420.0), "target_final_screenshot": "09_island_main_trail.png"},
+	]
+
+static func opening_island_transition_contract() -> Dictionary:
+	return {
+		"phase": G15A_VILLAGE_TO_ISLAND_TRANSITION_PASS,
+		"source": G15A_VILLAGE_TO_ISLAND_TRANSITION_SOURCE_PATH,
+		"topology_source": OPENING_ISLAND_TOPOLOGY_SOURCE_PATH,
+		"world_size": WORLD_SIZE,
+		"transition_score": G15A_VILLAGE_TO_ISLAND_TRANSITION_SCORE,
+		"clear_town_exit": true,
+		"readable_trail_road_out_of_newport": true,
+		"settlement_island_boundary": true,
+		"environmental_storytelling_threshold": true,
+		"first_sense_of_mystery_beyond_town": true,
+		"no_invisible_wall_or_random_edge_feeling": true,
+		"route_rects": opening_island_transition_route_rects(),
+		"viewpoints": opening_island_transition_viewpoints(),
+		"walkable_samples": {
+			"village_exit_to_island": Vector2(1608.0, 548.0),
+			"island_entry_transition": Vector2(1792.0, 492.0),
+			"first_mystery_beyond_town": Vector2(2150.0, 420.0),
+		},
+		"story_beats": [
+			"market road becomes an outskirt lane",
+			"fence break and lantern mark the last village threshold",
+			"old road stones pull the player toward the signal rise",
+			"sealed roadside cache hints that the whisper has physical stakes",
+		],
+	}
 
 static func starter_village_runtime_lot_assignments() -> Dictionary:
 	return {
@@ -1349,6 +1415,9 @@ static func interaction_anchors() -> Array:
 		_anchor("well_bench_civic_square", "small_interaction", "inland_residential_civic", Vector2(832.0, 410.0), "Well/bench civic square interaction marker."),
 		_anchor("service_alley_barrels", "small_interaction", "support_lane", Vector2(928.0, 660.0), "Service-alley barrel/crate inspection marker."),
 		_anchor("cooperage_hoops", "small_interaction", "harbor_waterfront", Vector2(1165.0, 705.0), "Cooperage hoop/barrel inspection marker at the wharf-side work lot."),
+		_anchor("village_exit_to_island", "small_interaction", "opening_island_transition", Vector2(1608.0, 548.0), "G-15A readable Newport east gate and town-exit threshold."),
+		_anchor("island_threshold_marker", "small_interaction", "opening_island_transition", Vector2(1792.0, 492.0), "G-15A outskirt lane marker where settlement becomes island."),
+		_anchor("first_mystery_beyond_town", "small_interaction", "opening_island_transition", Vector2(2150.0, 420.0), "G-15A old-road mystery cache beyond the village edge."),
 	]
 
 static func g413b_rowhouse_infill_slots() -> Array:

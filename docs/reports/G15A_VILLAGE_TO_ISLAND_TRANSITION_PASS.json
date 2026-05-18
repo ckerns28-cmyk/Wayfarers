@@ -1,0 +1,39 @@
+{
+  "schema_id": "wayfarer.g15a.village_to_island_transition_pass.v1",
+  "phase_id": "G-15A",
+  "phase_name": "Village-to-Island Transition Pass",
+  "date": "2026-05-18",
+  "branch": "codex/g-15a-village-island-transition",
+  "starting_main_commit": "019458be2ceaba569c4b156ea397809fcb704b33",
+  "status": "PASS",
+  "transition_source": "wayfarer_godot_vertical_slice/data/world_layout/village_to_island_transition_v1.json",
+  "topology_source": "wayfarer_godot_vertical_slice/data/world_layout/opening_island_world_topology_v1.json",
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g15a_runtime_screenshots/g15a_runtime_screenshot_manifest.json",
+  "required_screenshots": [
+    "g15a_01_village_exit_to_island.png",
+    "g15a_02_island_entry_transition.png",
+    "g15a_03_first_mystery_beyond_town.png",
+    "g15a_04_debug_overlays_disabled.png"
+  ],
+  "clean_no_hud_no_debug_capture": true,
+  "acceptance": {
+    "clear_town_exit": true,
+    "readable_trail_road_out_of_newport": true,
+    "settlement_island_boundary": true,
+    "environmental_storytelling_threshold": true,
+    "first_sense_of_mystery_beyond_town": true,
+    "player_knows_where_to_go_next": true,
+    "transition_feels_natural": true,
+    "world_opens_without_confusion": true,
+    "no_invisible_wall_or_random_edge_feeling": true
+  },
+  "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "design_score": 8.6,
+  "world_layout_score": 8.6,
+  "art_direction_score": 8.6,
+  "ux_readability_score": 8.6,
+  "technical_stability_score": 8.7,
+  "provenance_atelier_result": "PASS",
+  "north_star_result": "PASS: the village now opens into the island through an authored threshold with readable route language, environmental storytelling, and runtime screenshot proof.",
+  "next_phase": "G-15B Island Terrain, Ground, and Route Cohesion"
+}

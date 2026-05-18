@@ -77,5 +77,11 @@
     "no_patchwork_terrain": true,
     "no_meaningless_empty_sprawl": true,
     "world_layout_score": 8.6
+  },
+  "g15a_transition_implementation": {
+    "phase": "G-15A",
+    "source": "wayfarer_godot_vertical_slice/data/world_layout/village_to_island_transition_v1.json",
+    "runtime_contract": "res://scripts/NewportTownBlueprint.gd::opening_island_transition_contract",
+    "status": "PASS"
   }
 }

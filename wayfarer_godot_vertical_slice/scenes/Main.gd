@@ -253,6 +253,9 @@ func starter_village_first_session_readability_contract() -> Dictionary:
 		"npc_route_walking_policy": "stationary_no_glide_until_dedicated_walk_sheets",
 	}
 
+func opening_island_transition_contract() -> Dictionary:
+	return NEWPORT_TOWN.opening_island_transition_contract().duplicate(true)
+
 func debug_apply_starter_village_audio_hooks() -> Dictionary:
 	for hook_id in STARTER_VILLAGE_AUDIO_HOOKS.REQUIRED_HOOK_IDS:
 		_record_starter_village_audio_hook(String(hook_id), {"debug_proof": true})

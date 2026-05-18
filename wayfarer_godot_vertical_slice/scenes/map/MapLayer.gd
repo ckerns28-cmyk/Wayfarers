@@ -1285,6 +1285,7 @@ func _draw_g410_ground() -> void:
 	]), Color("#5b6350", 0.10), Color("#454f3d", 0.06), 28)
 	_draw_g7a_cohesive_ground_foundation()
 	_draw_g423a_expanded_town_ground()
+	_draw_g15a_transition_ground()
 	_draw_g410_background_depth()
 	_draw_g422a_town_edge_boundaries()
 	if NEWPORT_TOWN.G422A_SHOW_BLOCKOUT_GUIDES:
@@ -1496,6 +1497,7 @@ func _g415_threshold_width_for(id: String, band: String) -> float:
 
 func _draw_g410_street_plan() -> void:
 	_draw_g423a_expanded_town_streets()
+	_draw_g15a_transition_streets()
 	_draw_g7a_continuous_street_base()
 	_draw_street_wear(Rect2(178, 580, 1328, 58), 58)
 	_draw_street_wear(Rect2(250, 398, 1198, 42), 38)
@@ -2003,6 +2005,7 @@ func _draw_g410_wharf_water() -> void:
 func _draw_g410_props() -> void:
 	# G-4.23A keeps dressing subordinate to the town grammar: props mark jobs and thresholds, not empty space.
 	_draw_g423a_expanded_town_fabric()
+	_draw_g15a_transition_props()
 	for pos in [Vector2(238, 612), Vector2(1028, 594), Vector2(1346, 624)]:
 		_draw_barrels(pos, 2)
 	for pos in [Vector2(454, 688), Vector2(1030, 688)]:
@@ -2343,6 +2346,111 @@ func _draw_g423b_polyline(points: PackedVector2Array, color: Color, width: float
 	if closed.size() > 0:
 		closed.append(closed[0])
 	draw_polyline(closed, color, width, true)
+
+func _draw_g15a_transition_ground() -> void:
+	_draw_newport_grass_swale(PackedVector2Array([
+		Vector2(1450, 318), Vector2(1690, 292), Vector2(1948, 314), Vector2(2268, 360),
+		Vector2(2318, 506), Vector2(2094, 548), Vector2(1808, 584), Vector2(1510, 634),
+		Vector2(1442, 584)
+	]), Color("#5e7653", 0.13), Color("#405d3d", 0.07), 44)
+	_draw_newport_grass_swale(PackedVector2Array([
+		Vector2(1608, 514), Vector2(1840, 486), Vector2(2100, 504), Vector2(2298, 552),
+		Vector2(2292, 660), Vector2(2008, 684), Vector2(1740, 648), Vector2(1514, 626)
+	]), Color("#586f50", 0.12), Color("#3e563c", 0.07), 38)
+	for rect in [
+		Rect2(1588, 332, 184, 104),
+		Rect2(1808, 334, 198, 108),
+		Rect2(1586, 574, 210, 78),
+	]:
+		_draw_newport_lot_variation(rect, Color("#627a55"), Color("#4f6b49"), 0.10, "opening_island_transition")
+		_draw_newport_grass_transition(Rect2(rect.position.x + 10.0, rect.end.y - 13.0, rect.size.x - 20.0, 10.0), "south", 0.13)
+	for rect in [
+		Rect2(1508, 510, 96, 24),
+		Rect2(1660, 482, 220, 18),
+		Rect2(1968, 426, 214, 18),
+	]:
+		_draw_newport_frontage_threshold(rect, "support", 0.16)
+	_draw_low_wall(Vector2(1506, 504), Vector2(1586, 498), Color("#6f7b60", 0.26))
+	_draw_low_wall(Vector2(1578, 582), Vector2(1698, 570), Color("#6f7b60", 0.22))
+
+func _draw_g15a_transition_streets() -> void:
+	_draw_newport_dirt_path(Vector2(1412, 548), Vector2(1560, 548), 23.0, true)
+	_draw_newport_dirt_path(Vector2(1560, 548), Vector2(1792, 492), 22.0, true)
+	_draw_newport_dirt_path(Vector2(1792, 492), Vector2(2150, 420), 18.0, true)
+	_draw_newport_dirt_path(Vector2(2150, 420), Vector2(2288, 394), 13.0, false)
+	for raw_dest in [
+		Rect2(1490, 536, 164, 34),
+		Rect2(1666, 492, 230, 28),
+		Rect2(1962, 430, 216, 24),
+	]:
+		var dest: Rect2 = raw_dest
+		_draw_environmental_atelier_placement(_newport_atelier_cobble_path_atlas, NEWPORT_ATELIER_COBBLE_PATH_ATLAS_REGIONS, {
+			"asset_id": "atelier_path_dirt_worn_section_01",
+			"dest": dest,
+			"purpose": "g15a_newport_to_island_road_wear",
+			"alpha": 0.42,
+		})
+	for raw_dest in [
+		Rect2(1542, 502, 148, 40),
+		Rect2(1840, 452, 176, 38),
+		Rect2(2128, 388, 128, 34),
+	]:
+		var dest: Rect2 = raw_dest
+		_draw_environmental_atelier_placement(_newport_atelier_terrain_edge_atlas, NEWPORT_ATELIER_TERRAIN_EDGE_ATLAS_REGIONS, {
+			"asset_id": "atelier_terrain_dirt_path_border_01",
+			"dest": dest,
+			"purpose": "g15a_trail_edge_no_random_green_blocks",
+			"alpha": 0.30,
+		})
+	_draw_newport_grass_transition(Rect2(1508, 574, 276, 14), "south", 0.14)
+	_draw_newport_grass_transition(Rect2(1800, 512, 280, 12), "south", 0.12)
+
+func _draw_g15a_transition_props() -> void:
+	for fence in [
+		[Vector2(1598, 458), Vector2(1768, 450)],
+		[Vector2(1660, 572), Vector2(1858, 560)],
+		[Vector2(1878, 448), Vector2(2016, 426)],
+	]:
+		_draw_fence_line(fence[0], fence[1], Color("#d7c894", 0.34))
+	_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, {
+		"asset_id": "atelier_wayfinding_harbor_road_marker_01",
+		"dest": Rect2(1496, 510, 40, 44),
+		"purpose": "g15a_town_exit_wayfinding_marker",
+		"alpha": 0.95,
+		"contact_shadow": true,
+	})
+	_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, {
+		"asset_id": "atelier_wayfinding_street_lamp_post_01",
+		"dest": Rect2(1538, 482, 30, 82),
+		"purpose": "g15a_last_village_lantern",
+		"alpha": 0.93,
+		"contact_shadow": true,
+	})
+	_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, {
+		"asset_id": "atelier_wayfinding_coastal_waystone_01",
+		"dest": Rect2(1770, 450, 42, 49),
+		"purpose": "g15a_settlement_island_boundary_waystone",
+		"alpha": 0.90,
+		"contact_shadow": true,
+	})
+	_draw_g418e_hero_family_placement(_newport_g418e_rear_service_connector_atlas, NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS, {
+		"asset_id": "atelier_g418e_service_fence_gate_01",
+		"dest": Rect2(1568, 504, 112, 50),
+		"purpose": "g15a_fence_break_threshold",
+		"alpha": 0.84,
+		"contact_shadow": true,
+	})
+	_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, {
+		"asset_id": "atelier_g418e_harbor_cargo_stack_01",
+		"dest": Rect2(2064, 364, 66, 36),
+		"purpose": "g15a_mysterious_roadside_cache",
+		"alpha": 0.92,
+		"contact_shadow": true,
+	})
+	for pos in [Vector2(1642, 430), Vector2(1748, 422), Vector2(1888, 398), Vector2(2058, 382), Vector2(2218, 370)]:
+		_draw_shrub_cluster(pos, 0.62)
+	for pos in [Vector2(1698, 540), Vector2(1868, 500), Vector2(2028, 458)]:
+		_draw_shore_rocks(pos)
 
 func _draw_g423a_expanded_town_ground() -> void:
 	_draw_newport_grass_swale(PackedVector2Array([
