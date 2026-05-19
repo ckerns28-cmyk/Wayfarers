@@ -123,7 +123,7 @@ PHASE_VALIDATORS = {
     "G-18": "validate_opening_quest_village_to_island.py",
     "G-18A": "validate_multipath_rumor_choice_foundation.py",
     "G-19R": "validate_g19r_newport_blockout_source_of_truth.py",
-    "G-19S": "validate_newport_layout_source_alignment.py",
+    "G-19S": "validate_g19s_newport_runtime_reconstruction.py",
     "G-19": "validate_first_session_gameplay_loop.py",
     "G-20": "validate_first_session_gameplay_loop.py",
     "G-21": "validate_ovi1_gate.py",
@@ -360,7 +360,7 @@ def validate_pass_row(phase_id: str, row: dict[str, Any], failures: list[str]) -
             failures.append(f"{phase_id} PASS row missing {key}")
     if row.get("agent_council_verdict") != "COUNCIL_PASS_READY_FOR_PR":
         failures.append(f"{phase_id} PASS row must have council verdict COUNCIL_PASS_READY_FOR_PR")
-    if phase_id in {"G-14", "G-15", "G-15A", "G-15B", "G-16", "G-16A", "G-17", "G-18", "G-18A", "G-19", "G-20", "G-21", "G-22"}:
+    if phase_id in {"G-14", "G-15", "G-15A", "G-15B", "G-16", "G-16A", "G-17", "G-18", "G-18A", "G-19S", "G-19", "G-20", "G-21", "G-22"}:
         if not row.get("screenshot_paths"):
             failures.append(f"{phase_id} PASS row missing screenshot_paths")
     if phase_id in {"G-14", "G-17", "G-22"} and not row.get("motion_proof_paths"):

@@ -712,13 +712,13 @@ const NEWPORT_G7C_LANDMARK_IDENTITY_PLACEMENTS := [
 	{"family": "grounding", "asset_id": "atelier_ground_wash_tub_buckets_01", "dest": Rect2(1320, 386, 62, 31), "purpose": "g7c_residential_edge_lived_in_yard_identity", "alpha": 0.40, "contact_shadow": true},
 ]
 const NEWPORT_ATELIER_CHARACTER_PLACEMENTS := [
-	{"id": "mara_pike_dockworker", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(420, 690), "size": Vector2(82, 82), "role": "dockworker", "district": "working_wharf", "station": "west_fish_offload", "route_intent": "harbor_loop", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "checks rope and fish baskets", "dialogue_seed": "Crates do not forget hands. Ledgers do.", "quest_relevance": "missing_manifest_line", "purpose": "g8a_west_dockworker_station_supports_harbor_labor", "contact_shadow": true},
-	{"id": "jonah_reed_dock_courier", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(1218, 690), "size": Vector2(82, 82), "role": "dockworker_courier", "district": "working_wharf", "station": "east_storehouse_queue", "route_intent": "east_storehouse_to_counting_house", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "waits by the storehouse barrels", "dialogue_seed": "A sealed cargo line went quiet before the tide turned.", "quest_relevance": "harbor_work_path", "purpose": "g8a_east_dock_courier_station_supports_storehouse_route", "contact_shadow": true},
-	{"id": "honor_finch_merchant_shopkeeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(1364, 636), "size": Vector2(82, 82), "role": "merchant_shopkeeper", "district": "harborfront_commercial", "station": "east_market_cart", "route_intent": "market_loop", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "counts parcels and watches the avenue", "dialogue_seed": "The missing line cost someone coin, and coin leaves footprints.", "quest_relevance": "merchant_or_street_path", "purpose": "g8a_merchant_shopkeeper_station_supports_commercial_spine", "contact_shadow": true},
-	{"id": "bess_armitage_tavern_keeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(302, 604), "size": Vector2(80, 80), "role": "tavern_keeper", "district": "harborfront_commercial", "station": "tavern_front_threshold", "route_intent": "tavern_rumor_path", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "keeps the door warm and hears the room before it speaks", "dialogue_seed": "Ask for the third toast only if you mean to hear the answer.", "quest_relevance": "tavern_whisper_hook", "purpose": "g8a_tavern_keeper_station_supports_rumor_hub", "contact_shadow": true},
-	{"id": "silas_crowe_suspicious_patron", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(386, 438), "size": Vector2(80, 80), "role": "suspicious_patron", "district": "support_lane", "station": "tavern_rear_service_gate", "route_intent": "secret_path_tavern_to_rear_lane", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "lingers near the rear gate with sealed notes", "dialogue_seed": "Some whispers arrive by the back door, not the bar.", "quest_relevance": "optional_secret_path", "purpose": "g8a_suspicious_patron_station_supports_secret_path", "contact_shadow": true},
-	{"id": "edrin_vale_counting_house_clerk", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(792, 570), "size": Vector2(80, 80), "role": "counting_house_clerk", "district": "inland_residential_civic", "station": "counting_house_records_route", "route_intent": "counting_house_clerk_path", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "holds the records route and watches the wharf", "dialogue_seed": "The ledger is missing a line, and no honest clerk misplaces ink by accident.", "quest_relevance": "first_light_counting_house", "purpose": "g8a_counting_house_clerk_station_supports_first_objective", "contact_shadow": true},
-	{"id": "nora_vale_rumor_carrier", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(748, 394), "size": Vector2(78, 78), "role": "rumor_carrier", "district": "inland_residential_civic", "station": "civic_notice_board", "route_intent": "notice_board_to_tavern", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "reads the notices and folds one into a sleeve", "dialogue_seed": "One notice was posted for officials; one was posted for people who know where to look.", "quest_relevance": "optional_notice_clue", "purpose": "g8a_rumor_carrier_station_supports_civic_to_tavern_whisper", "contact_shadow": true},
+	{"id": "mara_pike_dockworker", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(465, 1025), "size": Vector2(82, 82), "role": "dockworker", "district": "working_wharf", "station": "west_fish_offload", "route_intent": "dockworker_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "checks rope and fish baskets", "dialogue_seed": "Crates do not forget hands. Ledgers do.", "quest_relevance": "missing_manifest_line", "purpose": "g19s_west_dockworker_station_derived_from_g19r_route", "contact_shadow": true},
+	{"id": "jonah_reed_dock_courier", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(1050, 1000), "size": Vector2(82, 82), "role": "dockworker_courier", "district": "working_wharf", "station": "central_cargo_landing", "route_intent": "dockworker_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "waits by the storehouse barrels", "dialogue_seed": "A sealed cargo line went quiet before the tide turned.", "quest_relevance": "harbor_work_path", "purpose": "g19s_central_dock_courier_station_derived_from_g19r_route", "contact_shadow": true},
+	{"id": "honor_finch_merchant_shopkeeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(815, 585), "size": Vector2(82, 82), "role": "merchant_shopkeeper", "district": "harborfront_commercial", "station": "mercantile_frontage", "route_intent": "merchant_shopkeeper_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "counts parcels and watches the avenue", "dialogue_seed": "The missing line cost someone coin, and coin leaves footprints.", "quest_relevance": "merchant_or_street_path", "purpose": "g19s_merchant_station_derived_from_g19r_route", "contact_shadow": true},
+	{"id": "bess_armitage_tavern_keeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(500, 585), "size": Vector2(80, 80), "role": "tavern_keeper", "district": "harborfront_commercial", "station": "tavern_front_threshold", "route_intent": "tavern_patron_rumor_carrier_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "keeps the door warm and hears the room before it speaks", "dialogue_seed": "Ask for the third toast only if you mean to hear the answer.", "quest_relevance": "tavern_whisper_hook", "purpose": "g19s_tavern_keeper_station_derived_from_g19r_route", "contact_shadow": true},
+	{"id": "silas_crowe_suspicious_patron", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(610, 365), "size": Vector2(80, 80), "role": "suspicious_patron", "district": "support_lane", "station": "tavern_rear_service_gate", "route_intent": "tavern_patron_rumor_carrier_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "lingers near the rear gate with sealed notes", "dialogue_seed": "Some whispers arrive by the back door, not the bar.", "quest_relevance": "optional_secret_path", "purpose": "g19s_suspicious_patron_station_derived_from_g19r_route", "contact_shadow": true},
+	{"id": "edrin_vale_counting_house_clerk", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(1080, 555), "size": Vector2(80, 80), "role": "counting_house_clerk", "district": "inland_residential_civic", "station": "counting_house_records_route", "route_intent": "counting_house_clerk_runner_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "holds the records route and watches the wharf", "dialogue_seed": "The ledger is missing a line, and no honest clerk misplaces ink by accident.", "quest_relevance": "first_light_counting_house", "purpose": "g19s_counting_house_clerk_station_derived_from_g19r_route", "contact_shadow": true},
+	{"id": "nora_vale_rumor_carrier", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(1120, 620), "size": Vector2(78, 78), "role": "rumor_carrier", "district": "inland_residential_civic", "station": "civic_notice_board", "route_intent": "counting_house_clerk_runner_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "reads the notices and folds one into a sleeve", "dialogue_seed": "One notice was posted for officials; one was posted for people who know where to look.", "quest_relevance": "optional_notice_clue", "purpose": "g19s_rumor_carrier_station_derived_from_g19r_route", "contact_shadow": true},
 ]
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
@@ -1497,6 +1497,9 @@ func _g415_threshold_width_for(id: String, band: String) -> float:
 			return 46.0 if band == "commercial" else 52.0
 
 func _draw_g410_street_plan() -> void:
+	if NEWPORT_TOWN.G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS == "G-19S":
+		_draw_g19s_source_truth_street_plan()
+		return
 	_draw_g423a_expanded_town_streets()
 	_draw_g15a_transition_streets()
 	_draw_g15b_island_world_routes()
@@ -1522,6 +1525,199 @@ func _draw_g410_street_plan() -> void:
 		for p in [Vector2(332, 596), Vector2(704, 592), Vector2(1010, 596), Vector2(1150, 594), Vector2(662, 408), Vector2(1094, 416), Vector2(390, 508), Vector2(1400, 590)]:
 			draw_circle(p, 4, Color("#2f251b"))
 			draw_circle(p + Vector2(0, -6), 3, Color("#d8b56f"))
+
+func _draw_g19s_source_truth_street_plan() -> void:
+	# G-19S: runtime street grammar is reconstructed from the G-19R measured
+	# blockout instead of the earlier narrow tile-era Newport road pass.
+	_draw_g19s_source_truth_lots()
+	_draw_newport_commercial_street(Rect2(260, 542, 1525, 326), 220, 0.84)
+	_draw_newport_commercial_street(Rect2(220, 774, 1590, 272), 180, 0.72)
+	_draw_newport_commercial_street(Rect2(260, 285, 1440, 150), 118, 0.54)
+	_draw_newport_commercial_street(Rect2(958, 325, 204, 550), 76, 0.60)
+	_draw_newport_commercial_street(Rect2(422, 335, 177, 535), 68, 0.58)
+	_draw_newport_commercial_street(Rect2(1478, 360, 164, 530), 66, 0.56)
+	_draw_newport_commercial_street(Rect2(1700, 500, 640, 218), 86, 0.60)
+	_draw_g7a_soft_service_trace(Vector2(698, 420), Vector2(698, 925), 30.0, 0.42)
+	_draw_g7a_soft_service_trace(Vector2(1510, 343), Vector2(2100, 343), 22.0, 0.34)
+	for curb in [
+		Rect2(270, 542, 1505, 12),
+		Rect2(270, 854, 1505, 14),
+		Rect2(230, 774, 1570, 12),
+		Rect2(230, 1034, 1570, 14),
+		Rect2(270, 285, 1420, 10),
+		Rect2(270, 424, 1420, 10),
+	]:
+		_draw_newport_sidewalk_panel(curb, "curb", 0.22)
+	for transition in [
+		{"rect": Rect2(260, 520, 1525, 20), "edge": "north", "alpha": 0.16},
+		{"rect": Rect2(260, 866, 1525, 24), "edge": "south", "alpha": 0.15},
+		{"rect": Rect2(220, 1046, 1590, 28), "edge": "south", "alpha": 0.16},
+		{"rect": Rect2(260, 260, 1440, 22), "edge": "north", "alpha": 0.13},
+	]:
+		_draw_newport_grass_transition(transition["rect"], String(transition["edge"]), float(transition["alpha"]))
+	for p in [Vector2(500, 585), Vector2(815, 585), Vector2(1100, 600), Vector2(1420, 585), Vector2(1510, 610), Vector2(1900, 585)]:
+		_draw_edge_grime(p, 120.0)
+		_draw_door_step(p)
+	for rut in [
+		[Vector2(280, 700), Vector2(1780, 700), 0.11],
+		[Vector2(260, 930), Vector2(1770, 930), 0.10],
+		[Vector2(300, 360), Vector2(1690, 360), 0.08],
+		[Vector2(1060, 340), Vector2(1060, 850), 0.09],
+		[Vector2(1540, 380), Vector2(1540, 850), 0.08],
+	]:
+		draw_line(rut[0], rut[1], Color(0.07, 0.055, 0.035, float(rut[2])), 2.2, true)
+
+func _draw_g19s_source_truth_lots() -> void:
+	# Lot pads mirror g19r_newport_lot_plan.json: buildings now sit on blocks,
+	# frontages, wharf aprons, and service yards rather than scattered icons.
+	for raw_lot in [
+		{"rect": Rect2(300, 350, 380, 250), "kind": "tavern", "front": "south", "anchor": Vector2(500, 585)},
+		{"rect": Rect2(970, 345, 330, 225), "kind": "civic", "front": "south", "anchor": Vector2(1080, 555)},
+		{"rect": Rect2(700, 370, 230, 190), "kind": "commercial", "front": "south", "anchor": Vector2(815, 585)},
+		{"rect": Rect2(1305, 370, 230, 190), "kind": "commercial", "front": "south", "anchor": Vector2(1420, 585)},
+		{"rect": Rect2(1535, 380, 245, 180), "kind": "market", "front": "south", "anchor": Vector2(1658, 585)},
+		{"rect": Rect2(390, 900, 330, 190), "kind": "wharf", "front": "north", "anchor": Vector2(555, 985)},
+		{"rect": Rect2(950, 940, 360, 175), "kind": "wharf", "front": "north", "anchor": Vector2(1130, 1000)},
+		{"rect": Rect2(1370, 880, 260, 190), "kind": "support", "front": "north", "anchor": Vector2(1503, 985)},
+		{"rect": Rect2(620, 105, 260, 180), "kind": "residential", "front": "south", "anchor": Vector2(750, 285)},
+		{"rect": Rect2(910, 105, 300, 180), "kind": "residential", "front": "south", "anchor": Vector2(1060, 285)},
+		{"rect": Rect2(1215, 115, 270, 175), "kind": "residential", "front": "south", "anchor": Vector2(1348, 290)},
+		{"rect": Rect2(1055, 565, 195, 100), "kind": "civic", "front": "south", "anchor": Vector2(1100, 600)},
+		{"rect": Rect2(1815, 500, 300, 175), "kind": "support", "front": "south", "anchor": Vector2(1900, 585)},
+	]:
+		var lot: Dictionary = raw_lot
+		_draw_g19s_source_truth_lot_grounding(lot)
+	for raw_route in [
+		[Vector2(430, 920), Vector2(500, 585), 0.34],
+		[Vector2(500, 585), Vector2(1080, 555), 0.30],
+		[Vector2(1080, 555), Vector2(1050, 1000), 0.28],
+		[Vector2(500, 585), Vector2(610, 365), 0.24],
+		[Vector2(1100, 600), Vector2(1900, 585), 0.30],
+	]:
+		var route: Array = raw_route
+		_draw_g7b_trade_route_trace(route[0], route[1], float(route[2]))
+	for raw_zone in [
+		{"rect": Rect2(430, 970, 155, 70), "kind": "manifest_cargo"},
+		{"rect": Rect2(780, 968, 160, 64), "kind": "rope_chandlery"},
+		{"rect": Rect2(1010, 956, 180, 76), "kind": "storehouse_queue"},
+		{"rect": Rect2(1465, 948, 170, 72), "kind": "fish_offload"},
+	]:
+		var zone: Dictionary = raw_zone
+		_draw_g7b_work_zone_surface(zone["rect"], String(zone["kind"]))
+
+func _draw_g19s_source_truth_lot_grounding(lot: Dictionary) -> void:
+	var rect: Rect2 = lot["rect"]
+	var kind := String(lot.get("kind", "commercial"))
+	var fill := Color("#5f7352", 0.040)
+	var edge := Color("#c6b275", 0.050)
+	if kind == "tavern":
+		fill = Color("#5b674a", 0.055)
+		edge = Color("#d0b776", 0.060)
+	elif kind == "civic":
+		fill = Color("#666a5a", 0.050)
+		edge = Color("#d1c083", 0.052)
+	elif kind == "market":
+		fill = Color("#6a604b", 0.054)
+		edge = Color("#d0b776", 0.055)
+	elif kind == "wharf":
+		fill = Color("#665b48", 0.070)
+		edge = Color("#c6a66d", 0.060)
+	elif kind == "residential":
+		fill = Color("#647b57", 0.032)
+		edge = Color("#a8b677", 0.038)
+	elif kind == "support":
+		fill = Color("#5f674e", 0.040)
+		edge = Color("#c4ad78", 0.042)
+
+	var inset := 18.0 if kind != "wharf" else 10.0
+	var softened := rect.grow(-inset)
+	if softened.size.x <= 8.0 or softened.size.y <= 8.0:
+		softened = rect
+	_draw_newport_lot_variation(softened, fill, edge, fill.a, kind)
+	var frontage_height := 12.0 if kind != "wharf" else 10.0
+	var frontage := Rect2(rect.position.x + 20.0, rect.end.y - frontage_height - 4.0, maxf(32.0, rect.size.x - 40.0), frontage_height)
+	if String(lot.get("front", "south")) == "north":
+		frontage = Rect2(rect.position.x + 20.0, rect.position.y + 4.0, maxf(32.0, rect.size.x - 40.0), frontage_height)
+	if kind == "residential":
+		_draw_newport_grass_transition(frontage, "south", 0.11)
+	else:
+		_draw_newport_frontage_threshold(frontage, "support" if kind == "wharf" else kind, 0.14)
+	var anchor: Vector2 = lot.get("anchor", rect.get_center())
+	_draw_surface_speckles(Rect2(anchor - Vector2(42.0, 12.0), Vector2(84.0, 24.0)), 7, edge, Vector2(22, 4))
+	if kind == "residential":
+		_draw_shrub_cluster(anchor + Vector2(-40.0, -16.0), 0.26)
+	elif kind == "support":
+		_draw_g7a_soft_service_trace(anchor + Vector2(-44.0, -8.0), anchor + Vector2(42.0, 4.0), 8.0, 0.18)
+
+func _draw_g19s_source_truth_wharf_water() -> void:
+	_draw_newport_water_rect(Rect2(0, 1120, NEWPORT_TOWN.WORLD_SIZE.x, maxf(480.0, NEWPORT_TOWN.WORLD_SIZE.y - 1120.0)), 1.0)
+	_draw_soft_rect(Rect2(0, 1184, NEWPORT_TOWN.WORLD_SIZE.x, 130), Color("#28687b"), Color("#1d4d62"), 0.20, 12)
+	_draw_soft_rect(Rect2(0, 1320, NEWPORT_TOWN.WORLD_SIZE.x, 150), Color("#225c70"), Color("#193f55"), 0.20, 12)
+	var shore_poly := PackedVector2Array([
+		Vector2(0, 1092), Vector2(180, 1080), Vector2(360, 1108), Vector2(540, 1094),
+		Vector2(760, 1112), Vector2(980, 1098), Vector2(1220, 1110), Vector2(1460, 1092),
+		Vector2(1700, 1118), Vector2(1980, 1106), Vector2(2400, 1120), Vector2(2400, 1164), Vector2(0, 1164)
+	])
+	draw_colored_polygon(shore_poly, Color(0.30, 0.43, 0.36, 0.46))
+	draw_polyline(PackedVector2Array([
+		Vector2(0, 1092), Vector2(180, 1080), Vector2(360, 1108), Vector2(540, 1094),
+		Vector2(760, 1112), Vector2(980, 1098), Vector2(1220, 1110), Vector2(1460, 1092),
+		Vector2(1700, 1118), Vector2(1980, 1106), Vector2(2400, 1120)
+	]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
+	_draw_newport_pier_edge(PackedVector2Array([
+		Vector2(0, 1092), Vector2(180, 1080), Vector2(360, 1108), Vector2(540, 1094),
+		Vector2(760, 1112), Vector2(980, 1098), Vector2(1220, 1110), Vector2(1460, 1092),
+		Vector2(1700, 1118), Vector2(1980, 1106), Vector2(2400, 1120)
+	]))
+	_draw_newport_dock_planks(Rect2(360, 960, 1240, 136), 150)
+	_draw_newport_dock_planks(Rect2(420, 1056, 112, 174), 34)
+	_draw_newport_dock_planks(Rect2(980, 1060, 128, 170), 36)
+	_draw_newport_dock_planks(Rect2(1500, 1054, 112, 176), 34)
+	for rect in [Rect2(420, 1056, 112, 174), Rect2(980, 1060, 128, 170), Rect2(1500, 1054, 112, 176)]:
+		draw_rect(Rect2(rect.position.x, rect.position.y + rect.size.y - 4.0, rect.size.x, 6.0), Color(0.02, 0.035, 0.025, 0.24), true)
+	_draw_post_line(Vector2(370, 966), Vector2(1588, 966), 72.0)
+	_draw_post_line(Vector2(426, 1070), Vector2(526, 1070), 36.0)
+	_draw_post_line(Vector2(988, 1074), Vector2(1100, 1074), 38.0)
+	_draw_post_line(Vector2(1508, 1068), Vector2(1608, 1068), 36.0)
+	for p in [Vector2(360, 1108), Vector2(540, 1094), Vector2(760, 1112), Vector2(980, 1098), Vector2(1220, 1110), Vector2(1460, 1092), Vector2(1700, 1118)]:
+		_draw_shore_rocks(p)
+	for p in [Vector2(475, 1228), Vector2(1040, 1228), Vector2(1556, 1228)]:
+		_draw_waterline_scum(p, 150.0)
+	for i in range(48):
+		var x := 28.0 + float((i * 89) % 2320)
+		var y := 1170.0 + float((i * 47) % 360)
+		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
+
+func _draw_g19s_source_truth_props() -> void:
+	for placement in [
+		{"atlas": "tavern", "asset_id": "atelier_g418e_tavern_hanging_inn_sign_01", "dest": Rect2(470, 552, 74, 54), "purpose": "g19s_tavern_landmark_sign", "alpha": 0.96, "contact_shadow": true},
+		{"atlas": "commercial", "asset_id": "atelier_g418e_commercial_mercantile_sign_01", "dest": Rect2(786, 548, 74, 44), "purpose": "g19s_mercantile_frontage_sign", "alpha": 0.94, "contact_shadow": true},
+		{"atlas": "commercial", "asset_id": "atelier_g418e_commercial_fishmonger_sign_01", "dest": Rect2(1588, 552, 78, 48), "purpose": "g19s_market_edge_sign", "alpha": 0.94, "contact_shadow": true},
+		{"atlas": "harbor", "asset_id": "atelier_g418e_harbor_cargo_stack_01", "dest": Rect2(430, 980, 92, 48), "purpose": "g19s_west_dock_clue_cargo", "alpha": 0.97, "contact_shadow": true},
+		{"atlas": "harbor", "asset_id": "atelier_g418e_harbor_rope_coil_large_01", "dest": Rect2(810, 984, 76, 36), "purpose": "g19s_central_wharf_rope_work", "alpha": 0.96, "contact_shadow": true},
+		{"atlas": "harbor", "asset_id": "atelier_g418e_harbor_service_post_lantern_01", "dest": Rect2(1024, 944, 52, 66), "purpose": "g19s_harbor_lantern_rumor_marker", "alpha": 0.96, "contact_shadow": true},
+		{"atlas": "service", "asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(650, 458, 112, 51), "purpose": "g19s_hidden_rumor_gate", "alpha": 0.92, "contact_shadow": true},
+	]:
+		var atlas := String(placement.get("atlas", "commercial"))
+		match atlas:
+			"tavern":
+				_draw_g418e_hero_family_placement(_newport_g418e_tavern_inn_atlas, NEWPORT_G418E_TAVERN_INN_ATLAS_REGIONS, placement)
+			"harbor":
+				_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
+			"service":
+				_draw_g418e_hero_family_placement(_newport_g418e_rear_service_connector_atlas, NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS, placement)
+			_:
+				_draw_g418e_hero_family_placement(_newport_g418e_commercial_avenue_atlas, NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_REGIONS, placement)
+	for placement in [
+		{"asset_id": "atelier_civic_town_notice_board_01", "dest": Rect2(1086, 570, 86, 72), "purpose": "g19s_counting_house_notice_board", "alpha": 0.94, "contact_shadow": true},
+		{"asset_id": "atelier_wayfinding_multi_arrow_signpost_01", "dest": Rect2(1870, 535, 58, 60), "purpose": "g19s_village_exit_guidepost", "alpha": 0.96, "contact_shadow": true},
+		{"asset_id": "atelier_wayfinding_dock_lantern_post_01", "dest": Rect2(428, 940, 45, 68), "purpose": "g19s_arrival_harbor_lantern", "alpha": 0.94, "contact_shadow": true},
+	]:
+		var asset_id := String(placement.get("asset_id", ""))
+		if NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS.has(asset_id):
+			_draw_town_identity_atelier_placement(_newport_atelier_civic_market_atlas, NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS, placement)
+		else:
+			_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, placement)
 
 func _draw_g7a_cohesive_ground_foundation() -> void:
 	# G-7A-SV0: one authored town terrace sits under the lots and streets so
@@ -1945,6 +2141,9 @@ func _draw_lab_badge(pos: Vector2) -> void:
 	_draw_label("Not normal review art", pos + Vector2(12, 40), 11, Color("#f0b1a3"))
 
 func _draw_g410_wharf_water() -> void:
+	if NEWPORT_TOWN.G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS == "G-19S":
+		_draw_g19s_source_truth_wharf_water()
+		return
 	_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, maxf(282.0, NEWPORT_TOWN.WORLD_SIZE.y - 742.0)), 1.0)
 	_draw_water_depth_bands()
 	_draw_g15b_island_shoreline_water()
@@ -2006,6 +2205,13 @@ func _draw_g410_wharf_water() -> void:
 	_draw_g418c_green_origin_lab_proof()
 
 func _draw_g410_props() -> void:
+	if NEWPORT_TOWN.G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS == "G-19S":
+		_draw_g15a_transition_props()
+		_draw_g15b_island_world_props()
+		_draw_g16_island_poi_landmarks()
+		_draw_g16a_island_atelier_asset_family()
+		_draw_g19s_source_truth_props()
+		return
 	# G-4.23A keeps dressing subordinate to the town grammar: props mark jobs and thresholds, not empty space.
 	_draw_g423a_expanded_town_fabric()
 	_draw_g15a_transition_props()

@@ -407,10 +407,11 @@
         "source_alignment_validator_PASS"
       ],
       "primary_validators": [
+        "validate_g19s_newport_runtime_reconstruction.py",
         "validate_newport_layout_source_alignment.py",
         "validate_first_session_gameplay_loop.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-19",

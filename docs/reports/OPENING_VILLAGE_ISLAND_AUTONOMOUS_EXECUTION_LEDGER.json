@@ -568,12 +568,14 @@
         "#489"
       ],
       "commits": [
-        "7e3911cabb19e05dfb50e2691bc83dfdcda60723"
+        "7e3911cabb19e05dfb50e2691bc83dfdcda60723",
+        "935989f0d50e8158d46e88cc54137e32f3252ecc",
+        "f089baf36cb664519f0efd65824140979db4634f"
       ],
-      "merge_status": "open_pr",
+      "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-19R creates a measured, player-scale source-of-truth Newport town blockout with district, street, lot, NPC route, quest beat, camera, manifest, governance, and validator coverage before further Godot placement.",
-      "next_required_action": "Open and merge the G-19R PR when green and mergeable, sync main, then continue immediately to G-19S Newport Blockout-To-Godot Runtime Reconstruction.",
+      "next_required_action": "Complete: PR #489 merged at f089baf36cb664519f0efd65824140979db4634f; G-19S started from synced main.",
       "files_changed": [
         "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.md",
         "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
@@ -623,17 +625,80 @@
     {
       "phase_id": "G-19S",
       "phase_name": "Newport Blockout-To-Godot Runtime Reconstruction",
-      "branch": "pending",
+      "branch": "codex/g-19s-newport-blockout-to-godot-runtime-reconstruction",
       "implementing_prs": [
-        "pending"
+        "pending_pr"
       ],
       "commits": [
-        "pending"
+        "pending_commit_before_pr"
       ],
-      "merge_status": "pending",
-      "current_status": "PENDING",
-      "reason_for_status": "Runtime reconstruction has not started; it must consume or validate against the G-19R source of truth.",
-      "next_required_action": "Start after G-19R passes and main is synced."
+      "merge_status": "local_pass_pending_pr",
+      "current_status": "PASS",
+      "reason_for_status": "G-19S reconstructs Newport runtime streets, lots, wharf, NPC stations, quest geography anchors, and canonical camera proof from the approved G-19R source of truth without inventing a new layout.",
+      "next_required_action": "Open and merge the G-19S PR when green and mergeable, sync main, then continue immediately to G-19 Player Guidance, Map, Journal, and Interaction Polish.",
+      "files_changed": [
+        "docs/reports/G19S_NEWPORT_BLOCKOUT_TO_GODOT_RUNTIME_RECONSTRUCTION.md",
+        "docs/reports/G19S_NEWPORT_BLOCKOUT_TO_GODOT_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
+        "tools/wayfarer_agent_council.py",
+        "wayfarer_godot_vertical_slice/data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g19s_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g19s_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/opening_village_island_validator_common.py",
+        "wayfarer_godot_vertical_slice/tools/validate_g19s_newport_runtime_reconstruction.py",
+        "wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_01_wide_town_cohesion_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_02_arrival_harbor_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_03_counting_house_route_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_04_tavern_landmark_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_05_commercial_avenue_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_06_harbor_work_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_07_rear_service_lane_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_08_npc_route_proof_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_09_village_exit_to_island_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_10_quest_interaction_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_11_debug_disabled_view.png"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_01_wide_town_cohesion_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_02_arrival_harbor_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_03_counting_house_route_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_04_tavern_landmark_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_05_commercial_avenue_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_06_harbor_work_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_07_rear_service_lane_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_08_npc_route_proof_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_09_village_exit_to_island_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_10_quest_interaction_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_11_debug_disabled_view.png"
+      ],
+      "validation_commands": [
+        "python wayfarer_godot_vertical_slice/tools/validate_g19s_newport_runtime_reconstruction.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
+        "Godot --headless --path wayfarer_godot_vertical_slice --import",
+        "powershell -File wayfarer_godot_vertical_slice/tools/capture_g19s_runtime_screenshots.ps1",
+        "tools/wayfarer_agent_council.py --phase \"G-19S Newport Blockout-To-Godot Runtime Reconstruction\" --run-validators",
+        "git diff --check",
+        "git diff --cached --check"
+      ],
+      "validation_results": "PASS: Godot import and G-19S canonical screenshot capture passed; final validator/council commands are recorded in the G-19S report and council report.",
+      "agent_council_report_path": "docs/reports/G19S_NEWPORT_BLOCKOUT_TO_GODOT_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "world_layout_score": 8.6,
+      "art_direction_score": 8.5,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.7,
+      "provenance_atelier_result": "PASS",
+      "north_star_result": "PASS: Newport runtime now follows the measured human-scale G-19R blockout with authored streets, wharf, lots, NPC stations, and quest geography; OVI-1 remains incomplete until later guidance, quest, movement, and build gates pass."
     },
     {
       "phase_id": "G-19",

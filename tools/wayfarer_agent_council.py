@@ -435,6 +435,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_g19r_newport_blockout_source_of_truth.py"
     )
+    g19s_reconstruction_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g19s_newport_runtime_reconstruction.py"
+    )
     newport_layout_alignment_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_newport_layout_source_alignment.py"
@@ -1168,6 +1172,16 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
             ovi_commands.insert(
                 0,
                 ValidatorCommand(
+                    name="G-19S Newport runtime reconstruction validation",
+                    command_text=g19s_reconstruction_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_g19s_newport_runtime_reconstruction.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_g19s_newport_runtime_reconstruction.py"],
+                ),
+            )
+            ovi_commands.insert(
+                1,
+                ValidatorCommand(
                     name="Newport layout source alignment validation",
                     command_text=newport_layout_alignment_text,
                     args=[python_bin, str(game_root / "tools" / "validate_newport_layout_source_alignment.py")],
@@ -1611,6 +1625,39 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     (
                         "G-18 quest playthrough log",
                         game_root / "artifacts" / "review" / "g18_quest_playthrough" / "quest_playthrough_log.md",
+                    ),
+                ]
+            )
+        if phase.upper().strip().startswith("G-19S"):
+            required.extend(
+                [
+                    (
+                        "G-19S Newport runtime reconstruction validator",
+                        game_root / "tools" / "validate_g19s_newport_runtime_reconstruction.py",
+                    ),
+                    (
+                        "G-19S Newport runtime layout source",
+                        game_root / "data" / "world_layout" / "g19s_newport_runtime_reconstruction_v1.json",
+                    ),
+                    (
+                        "G-19S runtime screenshot wrapper",
+                        game_root / "tools" / "capture_g19s_runtime_screenshots.ps1",
+                    ),
+                    (
+                        "G-19S runtime screenshot script",
+                        game_root / "tools" / "capture_g19s_runtime_screenshots.gd",
+                    ),
+                    (
+                        "G-19S runtime screenshot manifest",
+                        game_root / "artifacts" / "review" / "g19s_runtime_screenshots" / "g19s_runtime_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-19S phase report",
+                        root / "docs" / "reports" / "G19S_NEWPORT_BLOCKOUT_TO_GODOT_RUNTIME_RECONSTRUCTION.md",
+                    ),
+                    (
+                        "G-19S Agent Council report",
+                        root / "docs" / "reports" / "G19S_NEWPORT_BLOCKOUT_TO_GODOT_AGENT_COUNCIL_REPORT.md",
                     ),
                 ]
             )

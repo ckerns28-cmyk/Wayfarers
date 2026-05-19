@@ -19,6 +19,7 @@ MANIFEST = ARTIFACT_DIR / "g19r_newport_blockout_manifest.json"
 SOURCE_PATH_PREFIXES = (
     "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH",
     "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/",
+    "wayfarer_godot_vertical_slice/data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
 )
 
 MAJOR_RUNTIME_LAYOUT_PATHS = (
