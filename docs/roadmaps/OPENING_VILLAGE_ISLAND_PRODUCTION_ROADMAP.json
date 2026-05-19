@@ -465,11 +465,12 @@
         "gameplay_hook_at_least_8_5"
       ],
       "primary_validators": [
+        "validate_g20_first_session_gameplay_loop_reward.py",
         "validate_first_session_gameplay_loop.py",
         "validate_opening_quest_village_to_island.py",
         "validate_first_session_playability.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-21",

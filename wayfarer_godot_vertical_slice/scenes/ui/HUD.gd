@@ -18,6 +18,7 @@ const G9A_OBJECTIVE_UPDATE_COPY := "Objective updated: ask about the missing led
 const G9A_WHISPER_OBJECTIVE_COPY := "Whisper noted: the Third Toast begins at the Tavern/Inn."
 const G19_PLAYER_GUIDANCE_POLISH_PASS := "G-19"
 const G19_INITIAL_ROUTE_HINT := "Route: harborfront road -> Counting House clerk"
+const G20_FIRST_SESSION_LOOP_REWARD_PASS := "G-20"
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
 const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png"
@@ -310,6 +311,10 @@ func set_player_world_position(world_position: Vector2) -> void:
 
 func journal_objective_contract() -> Dictionary:
 	var snapshot_text := str(_quest_snapshot)
+	var rewards := _quest_snapshot.get("reward_log", []) as Array
+	var latest_reward := ""
+	if not rewards.is_empty():
+		latest_reward = String(rewards[rewards.size() - 1])
 	return {
 		"phase": G9A_QUEST_STATE_FOUNDATION_PASS,
 		"journal_title": quest_title.text,
@@ -317,11 +322,27 @@ func journal_objective_contract() -> Dictionary:
 		"current_route_hint": quest_route.text,
 		"current_location_name": _current_location_name,
 		"objective_feedback": quest_region.text,
+		"latest_reward": latest_reward,
 		"has_journal": quest_title.text.find("Journal") >= 0,
 		"has_objective_update": quest_region.text.find("Objective") >= 0,
 		"has_whisper": quest_body.text.find("Whisper") >= 0 or quest_region.text.find("Whisper") >= 0 or snapshot_text.find("Whisper") >= 0,
 		"has_rumor": quest_region.text.find("Rumor") >= 0 or snapshot_text.find("Rumor") >= 0 or G9_RUMOR_GUIDANCE_COPY.find("Rumor") >= 0,
+		"has_reward_feedback": quest_region.text.find("Reward +") >= 0 or not latest_reward.is_empty(),
 		"session_state": _quest_snapshot.duplicate(true),
+	}
+
+func first_session_reward_loop_contract() -> Dictionary:
+	var rewards := _quest_snapshot.get("reward_log", []) as Array
+	var latest_reward := ""
+	if not rewards.is_empty():
+		latest_reward = String(rewards[rewards.size() - 1])
+	return {
+		"phase": G20_FIRST_SESSION_LOOP_REWARD_PASS,
+		"reward_feedback_visible": quest_region.visible and (quest_region.text.find("Reward +") >= 0 or not latest_reward.is_empty()),
+		"resolve_feedback_visible": quest_region.text.find("Resolve") >= 0 or resolve_bar.value > 64.0,
+		"latest_reward": latest_reward,
+		"reward_count": rewards.size(),
+		"no_oversized_labels_blocking_world": quest_panel.visible and (quest_panel.offset_bottom - quest_panel.offset_top) <= 190.0,
 	}
 
 func player_guidance_contract() -> Dictionary:
@@ -362,6 +383,12 @@ func _route_hint_for_objective(objective_id: String) -> String:
 	return String(routes.get(objective_id, G19_INITIAL_ROUTE_HINT))
 
 func _location_name_for_world_position(world_position: Vector2) -> String:
+	if world_position.x >= 2160.0 and world_position.y >= 650.0:
+		return "Hidden Landing"
+	if world_position.x >= 2220.0 and world_position.y < 540.0:
+		return "Signal Rise"
+	if world_position.x >= 2000.0:
+		return "Old Island Road"
 	if world_position.x >= 1700.0:
 		return "East Road - Island Exit"
 	if world_position.y >= 900.0:
