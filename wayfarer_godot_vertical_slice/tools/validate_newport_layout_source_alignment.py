@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+"""Guard future Newport runtime layout changes against source-of-truth bypass."""
+
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any
+
+from opening_village_island_validator_common import PROJECT_ROOT, REPO_ROOT, load_json, print_result, require_path
+
+
+SOURCE_JSON = REPO_ROOT / "docs" / "design" / "NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json"
+ARTIFACT_DIR = PROJECT_ROOT / "artifacts" / "planning" / "g19r_newport_blockout"
+MANIFEST = ARTIFACT_DIR / "g19r_newport_blockout_manifest.json"
+
+SOURCE_PATH_PREFIXES = (
+    "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH",
+    "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/",
+)
+
+MAJOR_RUNTIME_LAYOUT_PATHS = (
+    "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+    "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+    "wayfarer_godot_vertical_slice/scenes/Main.gd",
+    "wayfarer_godot_vertical_slice/data/world_layout/",
+)
+
+MINOR_DOCUMENTATION_PATHS = (
+    "docs/reports/",
+    "docs/roadmaps/",
+)
+
+
+def main() -> int:
+    failures: list[str] = []
+    require_path(SOURCE_JSON, failures, "Newport layout source of truth JSON")
+    require_path(MANIFEST, failures, "G-19R blockout manifest")
+    source = load_json(SOURCE_JSON, failures)
+    manifest = load_json(MANIFEST, failures)
+    if isinstance(source, dict):
+        validate_source(source, failures)
+    if isinstance(manifest, dict):
+        validate_manifest(manifest, failures)
+    validate_git_alignment(failures)
+    return print_result("Newport layout source alignment", failures)
+
+
+def validate_source(source: dict[str, Any], failures: list[str]) -> None:
+    if source.get("phase") != "G-19R":
+        failures.append("Newport source-of-truth phase must be G-19R")
+    governance = source.get("future_placement_governance", {})
+    if not isinstance(governance, dict):
+        failures.append("Newport source-of-truth missing future_placement_governance")
+        return
+    if governance.get("major_layout_files_guarded") in (None, []):
+        failures.append("Newport source-of-truth governance missing guarded file list")
+    if "major Newport street, lot, district, wharf, NPC route, quest beat, or camera placement changes" not in str(governance.get("rule", "")):
+        failures.append("Newport source-of-truth governance must explicitly guard major placement changes")
+    if "G-19S" not in str(governance.get("g19s_requirement", "")):
+        failures.append("Newport source-of-truth governance must name G-19S consumption requirement")
+
+
+def validate_manifest(manifest: dict[str, Any], failures: list[str]) -> None:
+    if manifest.get("future_placement_governance_present") is not True:
+        failures.append("G-19R manifest must record future_placement_governance_present=true")
+    if manifest.get("source_of_truth") != "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json":
+        failures.append("G-19R manifest source_of_truth path mismatch")
+    artifact_paths = [str(item.get("path", "")) for item in manifest.get("artifacts", []) if isinstance(item, dict)]
+    required = [
+        "g19r_newport_measured_blockout.svg",
+        "g19r_newport_measured_blockout.png",
+        "g19r_newport_street_hierarchy.json",
+        "g19r_newport_lot_plan.json",
+        "g19r_newport_camera_viewpoints.json",
+    ]
+    for name in required:
+        if not any(path.endswith(name) for path in artifact_paths):
+            failures.append(f"G-19R manifest missing source artifact for future alignment: {name}")
+
+
+def changed_paths() -> set[str]:
+    paths: set[str] = set()
+    commands = [
+        ["git", "diff", "--name-only", "origin/main...HEAD"],
+        ["git", "diff", "--name-only"],
+        ["git", "diff", "--name-only", "--cached"],
+        ["git", "ls-files", "--others", "--exclude-standard"],
+    ]
+    for args in commands:
+        result = subprocess.run(args, cwd=REPO_ROOT, text=True, capture_output=True, check=False)
+        if result.returncode != 0:
+            continue
+        paths.update(line.strip().replace("\\", "/") for line in result.stdout.splitlines() if line.strip())
+    return paths
+
+
+def matches_any(path: str, prefixes: tuple[str, ...]) -> bool:
+    return any(path == prefix or path.startswith(prefix) for prefix in prefixes)
+
+
+def validate_git_alignment(failures: list[str]) -> None:
+    changed = changed_paths()
+    if not changed:
+        return
+    major_runtime_changes = sorted(path for path in changed if matches_any(path, MAJOR_RUNTIME_LAYOUT_PATHS))
+    source_changes = sorted(path for path in changed if matches_any(path, SOURCE_PATH_PREFIXES))
+    if major_runtime_changes and not source_changes:
+        failures.append(
+            "Major Newport runtime layout changes were detected without source-of-truth updates: "
+            + ", ".join(major_runtime_changes)
+        )
+    code_layout_changes = [
+        path
+        for path in major_runtime_changes
+        if not matches_any(path, MINOR_DOCUMENTATION_PATHS)
+    ]
+    if code_layout_changes and source_changes:
+        source_names = " ".join(source_changes)
+        for required in [
+            "g19r_newport_street_hierarchy.json",
+            "g19r_newport_lot_plan.json",
+            "g19r_newport_camera_viewpoints.json",
+        ]:
+            if required not in source_names and not (ARTIFACT_DIR / required).exists():
+                failures.append(f"Major runtime layout change requires source artifact: {required}")
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,331 @@
+{
+  "schema_id": "wayfarer.g19r.newport.district_plan.v1",
+  "phase": "G-19R",
+  "generated_at": "2026-05-19",
+  "source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "districts": [
+    {
+      "id": "harbor_wharf",
+      "name": "Harbor / Wharf District",
+      "zone_rect": {
+        "x": 180,
+        "y": 860,
+        "w": 1640,
+        "h": 300
+      },
+      "purpose": "Working edge where arrival, trade, cargo, sailors, and clues physically enter Newport.",
+      "player_function": "Arrival read, dock clue, visible working harbor life, optional cargo inspection, transition from boat/wharf to town street.",
+      "npc_roles": [
+        "dockworker",
+        "sailor",
+        "warehouse hand"
+      ],
+      "quest_relevance": "Arrival harbor beat, dock clue beat, wharf lantern rumor, manifest cargo discrepancy.",
+      "landmark": "Central cargo landing and warehouse doors aligned to the harborfront road.",
+      "dominant_ground_treatment": "Weathered planks, wet cobble, mud at cargo edges, water boundary below.",
+      "prop_families": [
+        "bollards",
+        "rope coils",
+        "barrels",
+        "crates",
+        "cargo carts",
+        "lanterns"
+      ],
+      "street_path_connections": [
+        "harborfront_road",
+        "dock_paths",
+        "central_upland_counting_house_connector"
+      ],
+      "camera_viewpoint": "harbor_work_view",
+      "required_screenshots": [
+        "arrival_harbor_view",
+        "harbor_work_view",
+        "debug_disabled_view"
+      ]
+    },
+    {
+      "id": "counting_house_clerk",
+      "name": "Counting House / Clerk District",
+      "zone_rect": {
+        "x": 940,
+        "y": 330,
+        "w": 390,
+        "h": 260
+      },
+      "purpose": "Official trade-pressure node where the missing manifest becomes a concrete problem instead of a vague rumor.",
+      "player_function": "First official objective, records window interaction, clear central route target.",
+      "npc_roles": [
+        "clerk",
+        "runner",
+        "custom-house assistant"
+      ],
+      "quest_relevance": "Missing manifest beat, first objective confirmation, return/report option.",
+      "landmark": "Counting House frontage and notice board visible from the main avenue.",
+      "dominant_ground_treatment": "Drier cobble forecourt with paper/posting board and stone threshold.",
+      "prop_families": [
+        "notice board",
+        "ledger desk marker",
+        "sealed crates",
+        "wayfinding sign"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "rear_service_street",
+        "central_upland_counting_house_connector"
+      ],
+      "camera_viewpoint": "counting_house_route_view",
+      "required_screenshots": [
+        "counting_house_route_view",
+        "quest_interaction_view"
+      ]
+    },
+    {
+      "id": "tavern_inn_rumor_hub",
+      "name": "Tavern / Inn Rumor Hub",
+      "zone_rect": {
+        "x": 280,
+        "y": 335,
+        "w": 430,
+        "h": 280
+      },
+      "purpose": "Social landmark that converts harbor facts into pre-Revolution whisper network play.",
+      "player_function": "Memorable west landmark, rumor hub, route choice, safe place to hear named people and motives.",
+      "npc_roles": [
+        "tavern keeper",
+        "rumor carrier",
+        "patron"
+      ],
+      "quest_relevance": "Tavern whisper beat, two-NPC rumor beat, optional hidden clue route.",
+      "landmark": "Large Tavern/Inn lot at the west bend of the commercial avenue.",
+      "dominant_ground_treatment": "Warm cobble threshold, porch/stoop, tavern yard edge, rear gate into service lane.",
+      "prop_families": [
+        "bench",
+        "lanterns",
+        "hanging sign",
+        "stable/yard hints",
+        "barrels"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "rear_service_street",
+        "hidden_rumor_cutthrough"
+      ],
+      "camera_viewpoint": "tavern_landmark_view",
+      "required_screenshots": [
+        "tavern_landmark_view",
+        "npc_route_proof_view"
+      ]
+    },
+    {
+      "id": "commercial_avenue",
+      "name": "Commercial Avenue",
+      "zone_rect": {
+        "x": 630,
+        "y": 355,
+        "w": 1160,
+        "h": 270
+      },
+      "purpose": "Readable shop street that ties tavern, counting house, chandlery, market, and island exit into one town spine.",
+      "player_function": "Human-scale movement corridor with storefronts and repeated orientation anchors.",
+      "npc_roles": [
+        "merchant",
+        "shopkeeper",
+        "runner",
+        "courier"
+      ],
+      "quest_relevance": "Two-NPC rumor, market-route clue, guidepost to island exit.",
+      "landmark": "Shop row and market shed stepping toward the east exit.",
+      "dominant_ground_treatment": "Wide cobble/wagon street with worn pedestrian shoulders and storefront stoops.",
+      "prop_families": [
+        "shop signs",
+        "awnings",
+        "market crates",
+        "hand carts",
+        "street lamps"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "east_market_connector",
+        "village_to_island_road"
+      ],
+      "camera_viewpoint": "commercial_avenue_view",
+      "required_screenshots": [
+        "commercial_avenue_view"
+      ]
+    },
+    {
+      "id": "rear_service_lane",
+      "name": "Rear Service Lane",
+      "zone_rect": {
+        "x": 240,
+        "y": 270,
+        "w": 1500,
+        "h": 220
+      },
+      "purpose": "Back-of-house circulation for deliveries, gossip, hidden clues, and believable town operations.",
+      "player_function": "Secondary route that teaches the town is not a flat frontage board.",
+      "npc_roles": [
+        "runner",
+        "suspicious patron",
+        "courier"
+      ],
+      "quest_relevance": "Hidden rumor/clue route, return/report variant, service-gate overheard lead.",
+      "landmark": "Rear gate between Tavern/Inn and clerk lodging.",
+      "dominant_ground_treatment": "Packed dirt, broken cobble, service mud, fence/yard edges.",
+      "prop_families": [
+        "fences",
+        "barrels",
+        "wash lines",
+        "small sheds",
+        "lanterns"
+      ],
+      "street_path_connections": [
+        "rear_service_street",
+        "hidden_rumor_cutthrough",
+        "north_residential_lane"
+      ],
+      "camera_viewpoint": "rear_service_lane_view",
+      "required_screenshots": [
+        "rear_service_lane_view"
+      ]
+    },
+    {
+      "id": "residential_edge",
+      "name": "Residential Edge",
+      "zone_rect": {
+        "x": 260,
+        "y": 75,
+        "w": 1250,
+        "h": 225
+      },
+      "purpose": "Quiet lived-in town edge that gives workers and clerks homes instead of making Newport only storefronts.",
+      "player_function": "Soft boundary, optional exploration, believable life beyond the quest route.",
+      "npc_roles": [
+        "resident",
+        "dockworker family",
+        "clerk lodger"
+      ],
+      "quest_relevance": "Optional return/report flavor and worldbuilding.",
+      "landmark": "Boarding house row above the rear lane.",
+      "dominant_ground_treatment": "Grass yards, compact footpaths, garden edges, dry dirt.",
+      "prop_families": [
+        "fences",
+        "laundry",
+        "garden boxes",
+        "small carts"
+      ],
+      "street_path_connections": [
+        "north_residential_lane",
+        "rear_service_street"
+      ],
+      "camera_viewpoint": "wide_town_cohesion_view",
+      "required_screenshots": [
+        "wide_town_cohesion_view"
+      ]
+    },
+    {
+      "id": "village_to_island_exit",
+      "name": "Village-to-Island Exit",
+      "zone_rect": {
+        "x": 1710,
+        "y": 400,
+        "w": 640,
+        "h": 330
+      },
+      "purpose": "Clear eastward threshold where town composition opens into island exploration.",
+      "player_function": "Next-step orientation and first-session pull beyond Newport.",
+      "npc_roles": [
+        "courier",
+        "guidepost guard",
+        "sailor"
+      ],
+      "quest_relevance": "Island lead beat, village exit beat.",
+      "landmark": "Guidepost and narrowing road beyond the market edge.",
+      "dominant_ground_treatment": "Cobble-to-dirt transition, shoulder grass, direction sign.",
+      "prop_families": [
+        "guidepost",
+        "stone markers",
+        "fence break",
+        "lantern"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "village_to_island_road",
+        "rear_service_street"
+      ],
+      "camera_viewpoint": "village_exit_to_island_view",
+      "required_screenshots": [
+        "village_exit_to_island_view"
+      ]
+    },
+    {
+      "id": "civic_notice_board",
+      "name": "Civic / Notice Board Node",
+      "zone_rect": {
+        "x": 1010,
+        "y": 555,
+        "w": 260,
+        "h": 115
+      },
+      "purpose": "Small official public node that makes the counting-house route readable and gives the journal/objective fiction a place.",
+      "player_function": "First objective confirmation and route reassurance.",
+      "npc_roles": [
+        "clerk runner",
+        "merchant",
+        "courier"
+      ],
+      "quest_relevance": "First objective beat, missing manifest beat, return/report beat.",
+      "landmark": "Notice board at the central avenue/cross street joint.",
+      "dominant_ground_treatment": "Worn cobble node, chalk/posted-paper board, compact interaction apron.",
+      "prop_families": [
+        "notice board",
+        "bench",
+        "lamp",
+        "paper bundles"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "central_upland_counting_house_connector"
+      ],
+      "camera_viewpoint": "quest_interaction_view",
+      "required_screenshots": [
+        "quest_interaction_view"
+      ]
+    },
+    {
+      "id": "hidden_rumor_clue_route",
+      "name": "Hidden Rumor / Clue Route",
+      "zone_rect": {
+        "x": 605,
+        "y": 455,
+        "w": 330,
+        "h": 470
+      },
+      "purpose": "Optional service cut-through that lets social stealth and dock knowledge feel spatial rather than menu-driven.",
+      "player_function": "Discoverable alternate path from tavern/rear lane to wharf clue.",
+      "npc_roles": [
+        "suspicious patron",
+        "dock runner"
+      ],
+      "quest_relevance": "Optional hidden clue beat and enriched journal state.",
+      "landmark": "Narrow gate between tavern yard and wharf-side cargo stack.",
+      "dominant_ground_treatment": "Dirt/cobble service cut-through with clear clearance and no clutter hiding path.",
+      "prop_families": [
+        "gate",
+        "barrels at edge only",
+        "low fence",
+        "rope marker"
+      ],
+      "street_path_connections": [
+        "rear_service_street",
+        "dock_paths",
+        "harborfront_road"
+      ],
+      "camera_viewpoint": "npc_route_proof_view",
+      "required_screenshots": [
+        "npc_route_proof_view",
+        "rear_service_lane_view"
+      ]
+    }
+  ]
+}

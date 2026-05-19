@@ -1,0 +1,367 @@
+{
+  "schema_id": "wayfarer.g19r.newport.scale_metrics.v1",
+  "phase": "G-19R",
+  "generated_at": "2026-05-19",
+  "source_commit": "6e8c5fc59c827d1b3adf84eb90a452c7092f4e57",
+  "player_derived_scale": {
+    "player_scene": "wayfarer_godot_vertical_slice/scenes/player/Player.tscn",
+    "player_script": "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+    "player_atlas": "wayfarer_godot_vertical_slice/art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png",
+    "frame_size_px": {
+      "w": 256,
+      "h": 256
+    },
+    "runtime_visual_scale": 0.32,
+    "alpha_bbox_samples": [
+      {
+        "direction": "down",
+        "variant": "idle",
+        "alpha_bbox": [
+          85,
+          38,
+          170,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "down",
+        "variant": "walk_a",
+        "alpha_bbox": [
+          81,
+          38,
+          166,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "down",
+        "variant": "walk_b",
+        "alpha_bbox": [
+          89,
+          38,
+          174,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "up",
+        "variant": "idle",
+        "alpha_bbox": [
+          85,
+          38,
+          170,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "up",
+        "variant": "walk_a",
+        "alpha_bbox": [
+          81,
+          38,
+          166,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "up",
+        "variant": "walk_b",
+        "alpha_bbox": [
+          89,
+          38,
+          174,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "left",
+        "variant": "idle",
+        "alpha_bbox": [
+          85,
+          38,
+          170,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "left",
+        "variant": "walk_a",
+        "alpha_bbox": [
+          85,
+          38,
+          170,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "left",
+        "variant": "walk_b",
+        "alpha_bbox": [
+          85,
+          38,
+          170,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "right",
+        "variant": "idle",
+        "alpha_bbox": [
+          85,
+          38,
+          170,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "right",
+        "variant": "walk_a",
+        "alpha_bbox": [
+          85,
+          38,
+          170,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      },
+      {
+        "direction": "right",
+        "variant": "walk_b",
+        "alpha_bbox": [
+          85,
+          38,
+          170,
+          244
+        ],
+        "visible_size_px": {
+          "w": 85,
+          "h": 206
+        }
+      }
+    ],
+    "player_visual_width_world_units": 27.2,
+    "player_visual_height_world_units": 65.92,
+    "player_frame_draw_width_world_units": 81.92,
+    "player_frame_draw_height_world_units": 81.92,
+    "player_collision_body_width_world_units": 20.0,
+    "player_collision_body_height_world_units": 28.0,
+    "player_movement_speed_world_units_per_second": 185.0,
+    "camera_viewport_assumption_px": {
+      "w": 1280,
+      "h": 720
+    },
+    "gameplay_zoom_assumption": 1.38,
+    "gameplay_visible_world_rect_at_zoom": {
+      "w": 927.536,
+      "h": 521.739
+    },
+    "pixels_per_character_width": 27.2,
+    "world_units_per_character_width": 27.2,
+    "measurement_basis": "Alpha bounds of the current G-4.22R player atlas, scaled by Player.gd PLAYER_VISUAL_SCALE. Collision values are read from Player.tscn CapsuleShape2D."
+  },
+  "street_width_targets": {
+    "main_commercial_harbor_street": {
+      "target_character_widths": [
+        10,
+        15
+      ],
+      "selected_character_widths": 12.0,
+      "width_world_units": 326.4
+    },
+    "secondary_street": {
+      "target_character_widths": [
+        6,
+        9
+      ],
+      "selected_character_widths": 7.5,
+      "width_world_units": 204.0
+    },
+    "rear_service_lane": {
+      "target_character_widths": [
+        4,
+        6
+      ],
+      "selected_character_widths": 5.5,
+      "width_world_units": 149.6
+    },
+    "alley_service_cutthrough": {
+      "target_character_widths": [
+        3,
+        4
+      ],
+      "selected_character_widths": 3.5,
+      "width_world_units": 95.2
+    },
+    "wharf_working_apron": {
+      "target_character_widths": [
+        8,
+        14
+      ],
+      "selected_character_widths": 10.5,
+      "width_world_units": 285.6
+    },
+    "building_setback": {
+      "target_character_widths": [
+        1,
+        3
+      ],
+      "selected_character_widths": 2.0,
+      "width_world_units": 54.4
+    },
+    "npc_route_clearance": {
+      "target_character_widths": [
+        2,
+        3
+      ],
+      "selected_character_widths": 2.5,
+      "width_world_units": 68.0
+    },
+    "interaction_clearance": {
+      "target_character_widths": [
+        2,
+        3
+      ],
+      "selected_character_widths": 2.5,
+      "width_world_units": 68.0
+    },
+    "minimum_readable_landmark_spacing": {
+      "selected_character_widths": 12.0,
+      "width_world_units": 326.4
+    }
+  },
+  "building_frontage_ranges": {
+    "small_shop_or_rowhouse": {
+      "character_widths": [
+        5.0,
+        8.0
+      ],
+      "world_units": [
+        136.0,
+        217.6
+      ]
+    },
+    "tavern_or_counting_house_landmark": {
+      "character_widths": [
+        10.0,
+        14.0
+      ],
+      "world_units": [
+        272.0,
+        380.8
+      ]
+    },
+    "warehouse_or_boathouse": {
+      "character_widths": [
+        9.0,
+        14.0
+      ],
+      "world_units": [
+        244.8,
+        380.8
+      ]
+    }
+  },
+  "lot_depth_ranges": {
+    "commercial_lot": {
+      "character_widths": [
+        7.0,
+        11.0
+      ],
+      "world_units": [
+        190.4,
+        299.2
+      ]
+    },
+    "landmark_lot": {
+      "character_widths": [
+        9.0,
+        13.0
+      ],
+      "world_units": [
+        244.8,
+        353.6
+      ]
+    },
+    "residential_lot": {
+      "character_widths": [
+        7.0,
+        10.0
+      ],
+      "world_units": [
+        190.4,
+        272.0
+      ]
+    }
+  },
+  "dock_width_ranges": {
+    "minor_finger_pier": {
+      "character_widths": [
+        3.0,
+        4.0
+      ],
+      "world_units": [
+        81.6,
+        108.8
+      ]
+    },
+    "cargo_landing": {
+      "character_widths": [
+        5.0,
+        7.0
+      ],
+      "world_units": [
+        136.0,
+        190.4
+      ]
+    }
+  },
+  "current_runtime_scale_audit": {
+    "tile_size_world_units": 32,
+    "current_primary_road_three_tiles_world_units": 96,
+    "current_primary_road_three_tiles_character_widths": 3.529,
+    "verdict": "Current three-tile Newport roads are below the 10-15 character-width harbor/commercial target and cannot be used as proof that road scale is correct."
+  }
+}

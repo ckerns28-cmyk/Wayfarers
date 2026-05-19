@@ -27,8 +27,12 @@
       "phase_id": "G-14",
       "phase_name": "Internal Starter Village Proof Gate",
       "branch": "codex/g-14-internal-starter-village-proof",
-      "implementing_prs": ["#480"],
-      "commits": ["ab4ce3db24f038ec5fdc139b189aba83db6d60c6"],
+      "implementing_prs": [
+        "#480"
+      ],
+      "commits": [
+        "ab4ce3db24f038ec5fdc139b189aba83db6d60c6"
+      ],
       "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-14 internally proves village cohesion, NPC motion/grounding, opening tavern/counter-house/harbor quest clarity, interaction UX, browser/review identity, and atelier/provenance compliance. Human review required: no. PR #480 merged into main.",
@@ -84,8 +88,12 @@
       "phase_id": "G-15",
       "phase_name": "Opening Island Masterplan + World Topology",
       "branch": "codex/g-15-opening-island-topology",
-      "implementing_prs": ["#481"],
-      "commits": ["d06778600968b3009b9732dfa7dd301b7e502b35"],
+      "implementing_prs": [
+        "#481"
+      ],
+      "commits": [
+        "d06778600968b3009b9732dfa7dd301b7e502b35"
+      ],
       "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-15 creates the authoritative opening island topology source, safe-to-danger structure, village exit threshold, roads/trails/coastline paths, quest routes, exploration loops, landmarks, optional secret, return path, and final screenshot viewpoint manifest. PR #481 merged and main was synced before G-15A.",
@@ -130,8 +138,12 @@
       "phase_id": "G-15A",
       "phase_name": "Village-to-Island Transition Pass",
       "branch": "codex/g-15a-village-island-transition",
-      "implementing_prs": ["#482"],
-      "commits": ["cf03d68ad06bc8b592ecd5c0e7d5482064267111"],
+      "implementing_prs": [
+        "#482"
+      ],
+      "commits": [
+        "cf03d68ad06bc8b592ecd5c0e7d5482064267111"
+      ],
       "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-15A implements a readable Newport east-gate exit, authored route rectangles to the island threshold, environmental storytelling at the settlement boundary, first-mystery old-road pull beyond town, runtime screenshot automation, and validation for the village-to-island transition contract. PR #482 merged into main.",
@@ -184,8 +196,12 @@
       "phase_id": "G-15B",
       "phase_name": "Island Terrain, Ground, and Route Cohesion",
       "branch": "codex/g-15b-island-world-cohesion",
-      "implementing_prs": ["#483"],
-      "commits": ["872230e5ee02ed46097b1791dfbf3b8c40be10ac"],
+      "implementing_prs": [
+        "#483"
+      ],
+      "commits": [
+        "872230e5ee02ed46097b1791dfbf3b8c40be10ac"
+      ],
       "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-15B implements the island terrain/ground/route cohesion source of truth, runtime route rectangles, reachability probes, blocked-space samples, no-HUD runtime screenshot proof, and validator coverage. The pass explicitly rejects merely functional terrain and requires the island route to read as authored, mysterious, and coherent.",
@@ -238,8 +254,12 @@
       "phase_id": "G-16",
       "phase_name": "Island Landmark and Point-of-Interest Pass",
       "branch": "codex/g-16-island-poi-landmarks",
-      "implementing_prs": ["#484"],
-      "commits": ["e693a4b2eb641b17948af143809d6c727e4d185e"],
+      "implementing_prs": [
+        "#484"
+      ],
+      "commits": [
+        "e693a4b2eb641b17948af143809d6c727e4d185e"
+      ],
       "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-16 implements the island landmark/POI source of truth, required destination specs, runtime contract, authored MapLayer POI placement, optional secret location, return landmark, no-HUD/no-debug runtime screenshot proof, and validator coverage. The pass requires the island to gain recognizable destinations with quest affordance rather than random prop scatter.",
@@ -292,8 +312,12 @@
       "phase_id": "G-16A",
       "phase_name": "Island Atelier Asset Family Pass",
       "branch": "codex/g-16a-island-atelier-asset-family",
-      "implementing_prs": ["#485"],
-      "commits": ["69d30029972b4c7901ee1a17c5a7a5a018a8edaf"],
+      "implementing_prs": [
+        "#485"
+      ],
+      "commits": [
+        "69d30029972b4c7901ee1a17c5a7a5a018a8edaf"
+      ],
       "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-16A implements a manifest-backed island atelier asset source, runtime contract, authored MapLayer placement, no-HUD/no-debug screenshot proof, and validator coverage. The pass requires the island to use Newport atelier-standard assets with source, prompt, manifest, contact sheet, validation, and provenance proof instead of placeholders or random prop scatter.",
@@ -349,8 +373,12 @@
       "phase_id": "G-17",
       "phase_name": "Island NPC / Encounter / Ambient Life Foundation",
       "branch": "codex/g-17-island-npc-encounter-foundation",
-      "implementing_prs": ["#486"],
-      "commits": ["50b4f16a6d32590613126c111334d53ff2e45d4d"],
+      "implementing_prs": [
+        "#486"
+      ],
+      "commits": [
+        "50b4f16a6d32590613126c111334d53ff2e45d4d"
+      ],
       "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-17 adds five purposeful island NPC/encounter stations with approved Newport atelier NPC sprites, route or station intent, dialogue/barks, quest/world relevance, runtime placement, no-HUD/no-debug screenshot proof, timestamped motion frame proof, and drift detection. The pass keeps route walking disabled until dedicated walk sheets exist so island life is grounded instead of fake-gliding.",
@@ -408,8 +436,12 @@
       "phase_id": "G-18",
       "phase_name": "Opening Quest Extension: From Whispers to the Island",
       "branch": "codex/g-18-opening-quest-village-to-island",
-      "implementing_prs": ["#487"],
-      "commits": ["9526ea0133c93190f80695e1d83995d018f2d81f"],
+      "implementing_prs": [
+        "#487"
+      ],
+      "commits": [
+        "9526ea0133c93190f80695e1d83995d018f2d81f"
+      ],
       "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-18 extends Whispers Before Dawn from Newport arrival, counting house, harbor ledger clue, tavern Third Toast, and wharf lantern rumor into an authored island lead, old-road coded whisper, optional signal clue, hidden landing physical evidence, Annelise return/report choice, Edrin reward/progression update, and a renewed reason-to-continue hook.",
@@ -466,8 +498,12 @@
       "phase_id": "G-18A",
       "phase_name": "Multi-Path Rumor and Choice Foundation",
       "branch": "codex/g-18a-multipath-rumor-choice-foundation",
-      "implementing_prs": ["#488"],
-      "commits": ["1e96ba73f7af404b5bdc20806a74b61117f257d1"],
+      "implementing_prs": [
+        "#488"
+      ],
+      "commits": [
+        "1e96ba73f7af404b5bdc20806a74b61117f257d1"
+      ],
       "merge_status": "pending",
       "current_status": "PASS",
       "reason_for_status": "G-18A adds a runtime-backed multi-path village-to-island branch contract so counting-house pressure, tavern rumor, dockworker/harbor knowledge, and optional island clue discovery all advance or enrich Whispers Before Dawn without a single railroaded route.",
@@ -525,22 +561,105 @@
       "north_star_result": "PASS: G-18A makes Newport's opening mystery branch through social, official, harbor, and optional island clues while preserving the pre-Revolutionary RPG pull; OVI-1 remains incomplete until G-22."
     },
     {
+      "phase_id": "G-19R",
+      "phase_name": "Newport Scale + Street Blockout Source of Truth",
+      "branch": "codex/g-19r-newport-scale-street-blockout-source-of-truth",
+      "implementing_prs": [
+        "pending_before_pr"
+      ],
+      "commits": [
+        "pending_before_commit"
+      ],
+      "merge_status": "pending",
+      "current_status": "PASS",
+      "reason_for_status": "G-19R creates a measured, player-scale source-of-truth Newport town blockout with district, street, lot, NPC route, quest beat, camera, manifest, governance, and validator coverage before further Godot placement.",
+      "next_required_action": "Open and merge the G-19R PR when green and mergeable, sync main, then continue immediately to G-19S Newport Blockout-To-Godot Runtime Reconstruction.",
+      "files_changed": [
+        "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.md",
+        "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+        "docs/reports/G19R_NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.md",
+        "docs/reports/G19R_NEWPORT_SCALE_STREET_BLOCKOUT_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_measured_blockout.svg",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_measured_blockout.png",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_scale_metrics.json",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_district_plan.json",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_street_hierarchy.json",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_lot_plan.json",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_npc_route_plan.json",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_quest_beat_locations.json",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_camera_viewpoints.json",
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_blockout_manifest.json",
+        "wayfarer_godot_vertical_slice/tools/generate_g19r_newport_blockout_artifacts.py",
+        "wayfarer_godot_vertical_slice/tools/validate_g19r_newport_blockout_source_of_truth.py",
+        "wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_measured_blockout.png"
+      ],
+      "validation_commands": [
+        "python wayfarer_godot_vertical_slice/tools/validate_g19r_newport_blockout_source_of_truth.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
+        "tools/wayfarer_agent_council.py --phase \"G-19R Newport Scale + Street Blockout Source of Truth\" --run-validators",
+        "git diff --check",
+        "git diff --cached --check"
+      ],
+      "validation_results": "PASS: G-19R source-of-truth validator, future source-alignment validator, OVI roadmap, OVI ledger, JSON syntax, and Agent Council design review.",
+      "agent_council_report_path": "docs/reports/G19R_NEWPORT_SCALE_STREET_BLOCKOUT_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.7,
+      "world_layout_score": 8.7,
+      "art_direction_score": 8.6,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.7,
+      "provenance_atelier_result": "PASS",
+      "north_star_result": "PASS: Newport now has a measured human-scale harbor-town source of truth strong enough for G-19S runtime reconstruction; no production-playable claim is made until the runtime matches it."
+    },
+    {
+      "phase_id": "G-19S",
+      "phase_name": "Newport Blockout-To-Godot Runtime Reconstruction",
+      "branch": "pending",
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
+      "merge_status": "pending",
+      "current_status": "PENDING",
+      "reason_for_status": "Runtime reconstruction has not started; it must consume or validate against the G-19R source of truth.",
+      "next_required_action": "Start after G-19R passes and main is synced."
+    },
+    {
       "phase_id": "G-19",
       "phase_name": "Player Guidance, Map, Journal, and Interaction Polish",
       "branch": "pending",
-      "implementing_prs": ["pending"],
-      "commits": ["pending"],
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
       "merge_status": "pending",
       "current_status": "PENDING",
-      "reason_for_status": "Combined opening guidance polish has not started.",
-      "next_required_action": "Start after G-18A passes and main is synced."
+      "reason_for_status": "Guidance polish waits for the G-19R/G-19S Newport layout correction.",
+      "next_required_action": "Start after G-19S passes and main is synced."
     },
     {
       "phase_id": "G-20",
       "phase_name": "First-Session Gameplay Loop and Reward Pass",
       "branch": "pending",
-      "implementing_prs": ["pending"],
-      "commits": ["pending"],
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
       "merge_status": "pending",
       "current_status": "PENDING",
       "reason_for_status": "First-session gameplay loop and reward work has not started.",
@@ -550,8 +669,12 @@
       "phase_id": "G-21",
       "phase_name": "Opening Island Performance, Browser Build, and Regression Hardening",
       "branch": "pending",
-      "implementing_prs": ["pending"],
-      "commits": ["pending"],
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
       "merge_status": "pending",
       "current_status": "PENDING",
       "reason_for_status": "Combined village/island build hardening has not started.",
@@ -561,8 +684,12 @@
       "phase_id": "G-22",
       "phase_name": "OVI-1 Opening Village + Island Production Playable Gate",
       "branch": "pending",
-      "implementing_prs": ["pending"],
-      "commits": ["pending"],
+      "implementing_prs": [
+        "pending"
+      ],
+      "commits": [
+        "pending"
+      ],
       "merge_status": "pending",
       "current_status": "PENDING",
       "reason_for_status": "OVI-1 final review package has not started.",

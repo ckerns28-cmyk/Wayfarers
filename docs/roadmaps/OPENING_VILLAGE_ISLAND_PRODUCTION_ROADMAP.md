@@ -113,7 +113,9 @@ Do not stop for Chris between G-14 and G-22.
 | G-17 | Island NPC / Encounter / Ambient Life Foundation | Makes the island feel alive with grounded, purposeful, quest-relevant NPCs or encounters. |
 | G-18 | Opening Quest Extension: From Whispers to the Island | Extends Whispers Before Dawn from village rumors into island clue discovery, return/report, reward, and hook. |
 | G-18A | Multi-Path Rumor and Choice Foundation | Keeps the opening from becoming a single railroaded path with counting-house, tavern, harbor, and optional island clue routes. |
-| G-19 | Player Guidance, Map, Journal, and Interaction Polish | Makes the first session readable without debug UI. |
+| G-19R | Newport Scale + Street Blockout Source of Truth | Corrective layout-first gate with measured blockout, source JSON, districts, streets, lots, NPC routes, quest beats, cameras, and future governance. |
+| G-19S | Newport Blockout-To-Godot Runtime Reconstruction | Implements the approved G-19R blockout into Godot without inventing a new layout. |
+| G-19 | Player Guidance, Map, Journal, and Interaction Polish | Makes the first session readable without debug UI after G-19R/G-19S layout correction. |
 | G-20 | First-Session Gameplay Loop and Reward Pass | Makes the opening fun: arrive, orient, talk, investigate, explore, discover, return/report, reward, and continue. |
 | G-21 | Opening Island Performance, Browser Build, and Regression Hardening | Hardens the combined village/island browser review build, metadata, proof regeneration, performance, and regression gates. |
 | G-22 | OVI-1 Opening Village + Island Production Playable Gate | The next true Chris review milestone: full review package from current main. |
@@ -131,6 +133,15 @@ G-14 acceptance:
 - Atelier/provenance PASS
 - Human review required: no
 - Next phase: G-15 Opening Island Masterplan + World Topology
+
+G-19R corrective acceptance:
+
+- A measured town blockout exists as SVG, PNG, and JSON.
+- Scale is derived from the current player/camera data.
+- Street widths are defined in character widths.
+- Districts, lots, NPC routes, quest beats, and camera viewpoints are planned before runtime placement.
+- Future phases fail if major Newport layout edits bypass the source of truth.
+- G-19S must implement the approved blockout rather than inventing a new layout.
 
 G-15 through G-21 acceptance:
 

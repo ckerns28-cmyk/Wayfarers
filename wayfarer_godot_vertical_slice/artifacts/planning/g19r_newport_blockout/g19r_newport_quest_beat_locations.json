@@ -1,0 +1,108 @@
+{
+  "schema_id": "wayfarer.g19r.newport.quest_beat_locations.v1",
+  "phase": "G-19R",
+  "generated_at": "2026-05-19",
+  "source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "quest_beats": [
+    {
+      "id": "arrival_harbor_beat",
+      "location": "central cargo landing",
+      "district": "harbor_wharf",
+      "npc_involved": "Edrin / sailor handoff",
+      "interaction_object": "arrival marker and mooring post",
+      "camera_screenshot_viewpoint": "arrival_harbor_view",
+      "objective_text": "Find the Counting House above the harborfront road.",
+      "why_the_beat_belongs_there": "The player arrives through the harbor economy; the first view must explain water, wharf, and town."
+    },
+    {
+      "id": "first_objective_beat",
+      "location": "notice board at central avenue connector",
+      "district": "civic_notice_board",
+      "npc_involved": "clerk runner",
+      "interaction_object": "notice board",
+      "camera_screenshot_viewpoint": "quest_interaction_view",
+      "objective_text": "Check the posted harbor notice.",
+      "why_the_beat_belongs_there": "The board ties UI objective language to an in-world civic node."
+    },
+    {
+      "id": "counting_house_missing_manifest_beat",
+      "location": "Counting House south frontage",
+      "district": "counting_house_clerk",
+      "npc_involved": "counting house clerk",
+      "interaction_object": "records window / ledger desk",
+      "camera_screenshot_viewpoint": "counting_house_route_view",
+      "objective_text": "Ask about the missing manifest.",
+      "why_the_beat_belongs_there": "Official trade conflict belongs in the counting house, not as loose dialogue on a random street."
+    },
+    {
+      "id": "dock_clue_beat",
+      "location": "west dock warehouse cargo edge",
+      "district": "harbor_wharf",
+      "npc_involved": "dockworker",
+      "interaction_object": "cargo stack with wet-lantern mark",
+      "camera_screenshot_viewpoint": "harbor_work_view",
+      "objective_text": "Inspect the cargo that was moved before dawn.",
+      "why_the_beat_belongs_there": "Cargo evidence belongs in the working wharf where goods enter and leave town."
+    },
+    {
+      "id": "tavern_whisper_beat",
+      "location": "Tavern/Inn porch and warm threshold",
+      "district": "tavern_inn_rumor_hub",
+      "npc_involved": "tavern keeper",
+      "interaction_object": "tavern sign / porch",
+      "camera_screenshot_viewpoint": "tavern_landmark_view",
+      "objective_text": "Listen for the Third Toast rumor.",
+      "why_the_beat_belongs_there": "The tavern is the public rumor hub, matching colonial public-house function."
+    },
+    {
+      "id": "two_npc_rumor_beat",
+      "location": "main avenue between tavern and mercantile",
+      "district": "commercial_avenue",
+      "npc_involved": "rumor carrier and merchant",
+      "interaction_object": "social pocket bench",
+      "camera_screenshot_viewpoint": "npc_route_proof_view",
+      "objective_text": "Compare the dock story with the market rumor.",
+      "why_the_beat_belongs_there": "This makes NPC information spatial and social instead of a single railroaded speaker."
+    },
+    {
+      "id": "island_lead_beat",
+      "location": "market edge guidepost",
+      "district": "village_to_island_exit",
+      "npc_involved": "courier / sailor",
+      "interaction_object": "guidepost",
+      "camera_screenshot_viewpoint": "village_exit_to_island_view",
+      "objective_text": "Follow the east road toward the old island marker.",
+      "why_the_beat_belongs_there": "The town geography points the player to the island before runtime reconstruction begins."
+    },
+    {
+      "id": "village_exit_beat",
+      "location": "east cobble-to-dirt threshold",
+      "district": "village_to_island_exit",
+      "npc_involved": "courier / guide",
+      "interaction_object": "stone marker and fence break",
+      "camera_screenshot_viewpoint": "village_exit_to_island_view",
+      "objective_text": "Leave Newport by the old island road.",
+      "why_the_beat_belongs_there": "The exit is a place and threshold, not an arbitrary screen edge."
+    },
+    {
+      "id": "optional_hidden_clue_beat",
+      "location": "rear gate to wharf service cut-through",
+      "district": "hidden_rumor_clue_route",
+      "npc_involved": "suspicious patron",
+      "interaction_object": "rear gate / barrel edge",
+      "camera_screenshot_viewpoint": "rear_service_lane_view",
+      "objective_text": "Check the back way behind the tavern.",
+      "why_the_beat_belongs_there": "The optional clue uses service geography so the town gains depth."
+    },
+    {
+      "id": "return_report_beat",
+      "location": "Counting House notice board or tavern porch",
+      "district": "counting_house_clerk",
+      "npc_involved": "clerk or tavern keeper",
+      "interaction_object": "notice board / tavern sign",
+      "camera_screenshot_viewpoint": "quest_interaction_view",
+      "objective_text": "Report what you found and choose who hears it first.",
+      "why_the_beat_belongs_there": "Return/report choices use existing town nodes, strengthening memory of Newport."
+    }
+  ]
+}

@@ -349,10 +349,75 @@
       "status": "PASS"
     },
     {
+      "phase_id": "G-19R",
+      "title": "Newport Scale + Street Blockout Source of Truth",
+      "purpose": "Correct the autonomous roadmap by creating a measured source-of-truth town blockout before further Godot placement.",
+      "objectives": [
+        "layout_first_town_planning",
+        "player_derived_scale_metrics",
+        "main_harbor_commercial_street_10_to_15_character_widths",
+        "district_plan_with_gameplay_and_narrative_purpose",
+        "street_hierarchy_with_measured_widths",
+        "lot_frontage_orientation_plan",
+        "NPC route plan with no static sprite glide",
+        "opening quest beat geography",
+        "canonical camera viewpoints",
+        "future placement governance",
+        "COUNCIL_PASS_READY_FOR_PR"
+      ],
+      "acceptance": [
+        "measured_town_blockout_exists",
+        "source_of_truth_layout_json_exists",
+        "scale_derived_from_current_player_and_camera_data",
+        "street_widths_defined_by_character_scale",
+        "districts_have_gameplay_and_narrative_purpose",
+        "lots_buildings_planned_around_streets",
+        "harbor_wharf_commercial_tavern_counting_house_service_residential_island_exit_zones_exist",
+        "NPC routes planned_without_static_sprite_glide",
+        "quest_beats_mapped_to_town_geography",
+        "camera_viewpoints_defined",
+        "future_phases_block_ad_hoc_layout_edits",
+        "all_design_scores_at_least_8_5"
+      ],
+      "primary_validators": [
+        "validate_g19r_newport_blockout_source_of_truth.py",
+        "validate_newport_layout_source_alignment.py"
+      ],
+      "status": "PASS"
+    },
+    {
+      "phase_id": "G-19S",
+      "title": "Newport Blockout-To-Godot Runtime Reconstruction",
+      "purpose": "Implement the approved G-19R source-of-truth blockout into Godot without inventing a new layout.",
+      "objectives": [
+        "consume_or_validate_against_G19R_layout_JSON",
+        "reconstruct_streets_lots_districts_from_blockout",
+        "fix_patchy_ground_road_composition",
+        "place_buildings_by_lot_frontage_orientation",
+        "align_NPC_routes_to_planned_paths",
+        "align_quest_beats_to_planned_locations",
+        "generate_canonical_G19R_camera_screenshots",
+        "prove_runtime_scene_matches_blockout"
+      ],
+      "acceptance": [
+        "runtime_layout_matches_G19R_source_of_truth",
+        "no_new_layout_invented_in_Godot",
+        "major_coordinate_changes_trace_to_blockout_artifacts",
+        "canonical_viewpoints_pass_screenshot_review",
+        "source_alignment_validator_PASS"
+      ],
+      "primary_validators": [
+        "validate_newport_layout_source_alignment.py",
+        "validate_first_session_gameplay_loop.py"
+      ],
+      "status": "PENDING"
+    },
+    {
       "phase_id": "G-19",
       "title": "Player Guidance, Map, Journal, and Interaction Polish",
-      "purpose": "Make the first session readable without debug UI.",
+      "purpose": "Make the first session readable without debug UI after the G-19R/G-19S Newport layout correction has landed.",
       "objectives": [
+        "start_after_G19S_runtime_reconstruction",
         "clean_objective_display",
         "journal_updates",
         "interaction_prompts",
