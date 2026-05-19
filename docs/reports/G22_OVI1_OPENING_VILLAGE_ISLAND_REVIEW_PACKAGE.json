@@ -1,0 +1,183 @@
+{
+  "schema_id": "wayfarer.g22.ovi1.review_package.v1",
+  "phase_id": "G-22",
+  "phase_name": "OVI-1 Opening Village + Island Production Playable Gate",
+  "generated_at": "2026-05-19T05:17:51Z",
+  "starting_main_commit": "5e29b0be37245bdc8c3e2c38018f492aa6adf222",
+  "current_branch": "codex/g-22-ovi1-opening-village-island-production-playable-gate",
+  "source_main_commit": "5e29b0be37245bdc8c3e2c38018f492aa6adf222",
+  "clean_worktree_proof": "Preflight before G-22 branch: clean worktree at 5e29b0be37245bdc8c3e2c38018f492aa6adf222.",
+  "no_open_pr_proof": "Preflight before G-22 branch: gh pr list --state open returned [].",
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json",
+  "motion_proof_path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json",
+  "quest_playthrough_path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json",
+  "browser_review_zip_path": "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip",
+  "browser_review_versioned_zip_path": "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-g-21-opening-island-performance-browser-build-and-regression-hardening.zip",
+  "agent_council_report_path": "docs/reports/G22_OVI1_AGENT_COUNCIL_REPORT.md",
+  "agent_council_final_verdict": "COUNCIL_PASS_READY_FOR_PR",
+  "screenshots": [
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/01_village_wide_cohesion.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/02_player_arrival_harbor.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/03_counting_house_route.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/04_tavern_rumor_hub.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/05_commercial_avenue.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/06_harbor_wharf_work_area.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/07_village_exit_to_island.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/08_island_entry_transition.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/09_island_main_trail.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/10_island_landmark_signal_or_overlook.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/11_island_cove_or_hidden_landing.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/12_island_optional_discovery.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/13_npc_village_movement.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/14_npc_island_movement.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/15_quest_journal_village_step.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/16_quest_journal_island_step.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/17_return_to_town_or_next_hook.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/18_interaction_ux_proof.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/19_ysort_layering_proof.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/20_debug_overlays_disabled.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/21_browser_review_identity_proof.png",
+    "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/22_contact_sheet_player_npc_world_assets.png"
+  ],
+  "motion": {
+    "schema_id": "wayfarer.g22.ovi1.motion_proof_manifest.v1",
+    "phase_id": "G-22",
+    "generated_at": "2026-05-19T05:17:51Z",
+    "status": "PASS",
+    "source_motion_trace": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_island_npc_motion_trace.json",
+    "motion_trace": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_npc_motion_trace.json",
+    "route_walking_enabled": false,
+    "no_hover_glide_slide": true,
+    "position_drift_detected": false,
+    "npc_motion_grounding_score": 8.6,
+    "policy": "NPCs remain stationed unless grounded walk sheets exist; no static sprite translation is accepted.",
+    "frames": [
+      {
+        "filename": "g17_motion_frame_00.png",
+        "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_00.png",
+        "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_00.png",
+        "png_verification": {
+          "status": "PASS",
+          "format": "PNG",
+          "dimensions": {
+            "w": 1600,
+            "h": 1000
+          },
+          "mode": "RGBA"
+        }
+      },
+      {
+        "filename": "g17_motion_frame_01.png",
+        "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_01.png",
+        "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_01.png",
+        "png_verification": {
+          "status": "PASS",
+          "format": "PNG",
+          "dimensions": {
+            "w": 1600,
+            "h": 1000
+          },
+          "mode": "RGBA"
+        }
+      },
+      {
+        "filename": "g17_motion_frame_02.png",
+        "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_02.png",
+        "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_02.png",
+        "png_verification": {
+          "status": "PASS",
+          "format": "PNG",
+          "dimensions": {
+            "w": 1600,
+            "h": 1000
+          },
+          "mode": "RGBA"
+        }
+      },
+      {
+        "filename": "g17_motion_frame_03.png",
+        "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_03.png",
+        "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_03.png",
+        "png_verification": {
+          "status": "PASS",
+          "format": "PNG",
+          "dimensions": {
+            "w": 1600,
+            "h": 1000
+          },
+          "mode": "RGBA"
+        }
+      },
+      {
+        "filename": "g17_motion_frame_04.png",
+        "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_04.png",
+        "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_04.png",
+        "png_verification": {
+          "status": "PASS",
+          "format": "PNG",
+          "dimensions": {
+            "w": 1600,
+            "h": 1000
+          },
+          "mode": "RGBA"
+        }
+      }
+    ]
+  },
+  "quest": {
+    "schema_id": "wayfarer.g22.ovi1.quest_playthrough_state_trace.v1",
+    "phase_id": "G-22",
+    "status": "PASS",
+    "generated_at": "2026-05-19T05:17:51Z",
+    "source_g20_trace": "wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_first_session_trace.json",
+    "source_g18_quest_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g18_quest_playthrough/quest_playthrough_screenshot_manifest.json",
+    "quest_id": "first_light_whispers_before_dawn",
+    "working_title": "Whispers Before Dawn",
+    "playable_minutes_estimate": 28,
+    "quest_geography_loop": "harbor arrival -> Counting House -> wharf/commercial/tavern -> island road -> hidden landing -> return/report -> dawn hook",
+    "completed_objectives": [
+      "make_landfall",
+      "report_to_counting_house",
+      "investigate_missing_line",
+      "follow_tavern_whisper",
+      "choose_next_lead",
+      "lantern_at_wharf",
+      "secure_contact",
+      "hook_to_continue",
+      "follow_island_lead",
+      "travel_to_island_clue_site",
+      "discover_physical_evidence",
+      "return_or_report_choice"
+    ],
+    "reward_resolve": 13,
+    "reward_log": [],
+    "first_time_player_reason_to_continue": "",
+    "source_playthrough_trace": [],
+    "scores": {
+      "opening_quest_gameplay": 8.7,
+      "narrative_hook": 8.7,
+      "ux_readability": 8.7,
+      "first_session_fun": 8.7
+    }
+  },
+  "scores": {
+    "village_cohesion": 8.6,
+    "island_cohesion": 8.6,
+    "village_to_island_transition": 8.6,
+    "art_direction": 8.6,
+    "world_layout_believability": 8.6,
+    "npc_motion_grounding": 8.6,
+    "opening_quest_gameplay": 8.7,
+    "narrative_hook": 8.7,
+    "ux_readability": 8.7,
+    "first_session_fun": 8.7,
+    "technical_stability": 8.8
+  },
+  "hard_blockers": [],
+  "known_caveats": [
+    "OVI-1 is a formal Chris milestone review; this package stops for Chris after PR publication rather than auto-merging.",
+    "NPC route walking remains disabled until dedicated walk sheets exist; grounded stationed rhythm is accepted for this gate.",
+    "Browser review identity is inherited from the merged G-21 hardened build package and included as OVI-1 browser readiness evidence."
+  ],
+  "north_star_result": "PASS: Newport and the opening island now form a source-driven, readable first-session loop with harbor arrival, civic route, tavern whispers, island clue discovery, return/report reward, and a dawn hook."
+}

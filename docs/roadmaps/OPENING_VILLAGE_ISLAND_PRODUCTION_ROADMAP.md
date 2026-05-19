@@ -182,6 +182,8 @@ G-22 / OVI-1 acceptance:
 
 When G-22 passes, stop for Chris with the full OVI-1 review package.
 
+G-22 current status: PASS. The OVI-1 package is ready for PR publication and formal Chris milestone review.
+
 ## Required OVI-1 Proof
 
 Fresh final proof must be generated from current main.

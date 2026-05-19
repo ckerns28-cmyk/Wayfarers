@@ -1,0 +1,15 @@
+{
+  "schema_id": "wayfarer.ovi1.review_index.v1",
+  "phase_id": "G-22",
+  "status": "PASS",
+  "review_package": "docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.json",
+  "review_package_md": "docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.md",
+  "agent_council_report": "docs/reports/G22_OVI1_AGENT_COUNCIL_REPORT.md",
+  "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json",
+  "motion_proof": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json",
+  "quest_playthrough": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json",
+  "browser_review_zip": "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip",
+  "branch": "codex/g-22-ovi1-opening-village-island-production-playable-gate",
+  "starting_main_commit": "5e29b0be37245bdc8c3e2c38018f492aa6adf222",
+  "next_action": "Stop for Chris with the OVI-1 review package after PR publication."
+}

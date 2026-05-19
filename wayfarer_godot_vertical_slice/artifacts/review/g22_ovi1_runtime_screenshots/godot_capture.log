@@ -1,0 +1,6 @@
+PASS: G-22 OVI-1 screenshot package composed from refreshed current-branch proof artifacts.
+Screenshot manifest: wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json
+Screenshot count: 22
+Motion proof: wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json
+Quest proof: wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json
+Debug overlays disabled proof included: 20_debug_overlays_disabled.png
