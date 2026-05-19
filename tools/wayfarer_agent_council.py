@@ -324,6 +324,9 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     elif normalized_capture_phase.startswith("G-20"):
         capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots.ps1"
         capture_artifact_dir = "g20_first_session_gameplay_loop"
+    elif normalized_capture_phase.startswith("G-21"):
+        capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots.ps1"
+        capture_artifact_dir = "g20_first_session_gameplay_loop"
     elif normalized_capture_phase.startswith("G-19") and not normalized_capture_phase.startswith(("G-19R", "G-19S")):
         capture_script_name = "capture_g19_player_guidance_screenshots.ps1"
         capture_artifact_dir = "g19_player_guidance_screenshots"
@@ -900,7 +903,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
             starter_commands.insert(
                 0,
                 ValidatorCommand(
-                    name="G-13 browser build hardening validation",
+                    name="G-21 browser build hardening validation",
                     command_text=browser_build_hardening_text,
                     args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
                     cwd=root,
@@ -960,7 +963,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         if normalized_phase.startswith("G-14"):
             for command in [
                 ValidatorCommand(
-                    name="G-13 browser build hardening validation",
+                    name="G-21 browser build hardening validation",
                     command_text=browser_build_hardening_text,
                     args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
                     cwd=root,
@@ -1240,7 +1243,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
             ovi_commands.insert(
                 0,
                 ValidatorCommand(
-                    name="G-13 browser build hardening validation",
+                    name="G-21 browser build hardening validation",
                     command_text=browser_build_hardening_text,
                     args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
                     cwd=root,
@@ -1359,6 +1362,9 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
     elif phase.upper().strip().startswith("G-20"):
         required_capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots"
         required_capture_label = "G-20 first-session gameplay-loop screenshot"
+    elif phase.upper().strip().startswith("G-21"):
+        required_capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots"
+        required_capture_label = "G-21 regression reuse of G-20 first-session gameplay-loop screenshot"
     elif phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S")):
         required_capture_script_name = "capture_g19_player_guidance_screenshots"
         required_capture_label = "G-19 player guidance screenshot"
@@ -1882,6 +1888,23 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ("G-12 regression screenshot wrapper reused for G-13", game_root / "tools" / "capture_g12_runtime_screenshots.ps1"),
                 ("G-12 regression screenshot script reused for G-13", game_root / "tools" / "capture_g12_runtime_screenshots.gd"),
                 ("G-13 phase report", root / "docs" / "reports" / "G13_BROWSER_BUILD_PERFORMANCE_REGRESSION_HARDENING.md"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-21"):
+        required.extend(
+            [
+                ("G-21 browser build hardening validator", game_root / "tools" / "validate_browser_build_hardening.py"),
+                ("G-21 review build identity", game_root / "scripts" / "BuildInfo.gd"),
+                ("G-21 package script", game_root / "tools" / "package_itch_web.sh"),
+                ("G-21 stable review ZIP", game_root / "artifacts" / "wayfarers-tale-godot-web.zip"),
+                (
+                    "G-21 versioned review ZIP",
+                    game_root
+                    / "artifacts"
+                    / "wayfarers-tale-godot-g-21-opening-island-performance-browser-build-and-regression-hardening.zip",
+                ),
+                ("G-21 phase report", root / "docs" / "reports" / "G21_OPENING_ISLAND_BROWSER_BUILD_REGRESSION_HARDENING.md"),
+                ("G-21 Agent Council report", root / "docs" / "reports" / "G21_OPENING_ISLAND_BROWSER_BUILD_AGENT_COUNCIL_REPORT.md"),
             ]
         )
     if phase.upper().strip().startswith("G-10"):

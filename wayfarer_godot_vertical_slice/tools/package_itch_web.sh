@@ -10,8 +10,8 @@ WEB_BUILD_DIR="$PROJECT_ROOT/web_build"
 ARTIFACT_DIR="$PROJECT_ROOT/artifacts"
 ZIP_PATH="$ARTIFACT_DIR/wayfarers-tale-godot-web.zip"
 BUILD_INFO="$PROJECT_ROOT/scripts/BuildInfo.gd"
-EXPECTED_REVIEW_PHASE="${WAYFARER_EXPECTED_BUILD_PHASE:-G-13}"
-EXPECTED_SOURCE_BRANCH="${WAYFARER_EXPECTED_SOURCE_BRANCH:-codex/g-13-browser-build-hardening}"
+EXPECTED_REVIEW_PHASE="${WAYFARER_EXPECTED_BUILD_PHASE:-G-21}"
+EXPECTED_SOURCE_BRANCH="${WAYFARER_EXPECTED_SOURCE_BRANCH:-codex/g-21-opening-island-performance-browser-build-regression-hardening}"
 
 fail() {
     echo "FAIL: $*" >&2
