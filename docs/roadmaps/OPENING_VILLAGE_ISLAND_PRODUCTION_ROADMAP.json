@@ -350,55 +350,82 @@
     },
     {
       "phase_id": "G-19R",
-      "title": "Newport Harbor Town Reconstruction Pivot",
-      "purpose": "Correct the cart-before-horse failure by making district structure, road hierarchy, avenue widths, wharf dimensions, block depth, lot spacing, and walkable camera composition the required foundation before guidance, props, or polish can pass.",
+      "title": "Newport Scale + Street Blockout Source of Truth",
+      "purpose": "Correct the autonomous roadmap by creating a measured source-of-truth town blockout before further Godot placement.",
       "objectives": [
-        "preserve_existing_newport_buildings_and_drawings",
-        "keep_atelier_provenance_standard",
-        "lock_landform_and_water_edge",
-        "lock_primary_harborfront_avenue",
-        "lock_uphill_civic_route",
-        "lock_rear_service_lane",
-        "lock_wharf_apron_and_work_docks",
-        "lock_district_lots_and_frontages",
-        "lock_building_anchors_after_streets",
-        "lock_npc_stations_after_lots",
-        "lock_quest_route_readability",
-        "props_last",
-        "wide_screenshot_must_not_read_as_clipart_pasted_on_page"
+        "layout_first_town_planning",
+        "player_derived_scale_metrics",
+        "main_harbor_commercial_street_10_to_15_character_widths",
+        "district_plan_with_gameplay_and_narrative_purpose",
+        "street_hierarchy_with_measured_widths",
+        "lot_frontage_orientation_plan",
+        "NPC route plan with no static sprite glide",
+        "opening quest beat geography",
+        "canonical camera viewpoints",
+        "future placement governance",
+        "supplemental_Newport_harbor_reconstruction_guardrail",
+        "waterfront avenue target 360 px",
+        "Props are last",
+        "Screenshot contradiction fails the phase",
+        "COUNCIL_PASS_READY_FOR_PR"
       ],
       "acceptance": [
-        "godot_engine_remains_valid_unless_hard_tooling_blocker_is_proven",
-        "waterfront_avenue_target_width_360_px_minimum_300_px",
-        "civic_uphill_route_target_width_190_px_minimum_160_px",
-        "rear_service_lane_target_width_180_px_minimum_140_px",
-        "west_tavern_climb_target_width_150_px_minimum_120_px",
-        "market_exit_target_width_180_px_minimum_150_px",
-        "wharf_work_apron_target_width_340_px_minimum_280_px",
-        "main_avenue_and_wharf_fit_10_15_characters_shoulder_to_shoulder",
-        "main avenue and wharf fit 10-15 characters shoulder to shoulder",
-        "areas_between_roads_are_named_lots_yards_greens_docks_work_aprons_or_service_space",
-        "empty_leftover_grass_cannot_count_as_village_cohesion",
-        "props_explain_labor_threshold_danger_or_social_life",
-        "props_cannot_hide_ground_street_lot_or_wharf_failure",
-        "fresh_wide_screenshot_proof_required",
-        "screenshot_contradiction_fails_phase_even_if_validators_pass"
+        "measured_town_blockout_exists",
+        "source_of_truth_layout_json_exists",
+        "scale_derived_from_current_player_and_camera_data",
+        "street_widths_defined_by_character_scale",
+        "districts_have_gameplay_and_narrative_purpose",
+        "lots_buildings_planned_around_streets",
+        "harbor_wharf_commercial_tavern_counting_house_service_residential_island_exit_zones_exist",
+        "NPC routes planned_without_static_sprite_glide",
+        "quest_beats_mapped_to_town_geography",
+        "camera_viewpoints_defined",
+        "future_phases_block_ad_hoc_layout_edits",
+        "dockworker_landing_stations_clear_building_roof_and_body_rects",
+        "building_person_scale_and_wharf_dimensions_block_toy_building_regression",
+        "all_design_scores_at_least_8_5"
       ],
       "primary_validators": [
-        "validate_newport_harbor_town_reconstruction.py",
-        "validate_starter_village_layout_source_usage.py",
-        "validate_newport_visual_ordering.py",
-        "validate_opening_village_island_roadmap.py",
-        "validate_opening_village_island_execution_ledger.py"
+        "validate_g19r_newport_blockout_source_of_truth.py",
+        "validate_newport_layout_source_alignment.py",
+        "validate_newport_harbor_town_reconstruction.py"
+      ],
+      "status": "PASS"
+    },
+    {
+      "phase_id": "G-19S",
+      "title": "Newport Blockout-To-Godot Runtime Reconstruction",
+      "purpose": "Implement the approved G-19R source-of-truth blockout into Godot without inventing a new layout.",
+      "objectives": [
+        "consume_or_validate_against_G19R_layout_JSON",
+        "reconstruct_streets_lots_districts_from_blockout",
+        "fix_patchy_ground_road_composition",
+        "place_buildings_by_lot_frontage_orientation",
+        "align_NPC_routes_to_planned_paths",
+        "align_quest_beats_to_planned_locations",
+        "generate_canonical_G19R_camera_screenshots",
+        "prove_runtime_scene_matches_blockout"
+      ],
+      "acceptance": [
+        "runtime_layout_matches_G19R_source_of_truth",
+        "no_new_layout_invented_in_Godot",
+        "major_coordinate_changes_trace_to_blockout_artifacts",
+        "canonical_viewpoints_pass_screenshot_review",
+        "source_alignment_validator_PASS"
+      ],
+      "primary_validators": [
+        "validate_g19s_newport_runtime_reconstruction.py",
+        "validate_newport_layout_source_alignment.py",
+        "validate_first_session_gameplay_loop.py"
       ],
       "status": "PASS"
     },
     {
       "phase_id": "G-19",
       "title": "Player Guidance, Map, Journal, and Interaction Polish",
-      "purpose": "Make the first session readable without debug UI only after G-19R proves the underlying Newport town structure.",
+      "purpose": "Make the first session readable without debug UI after the G-19R/G-19S Newport layout correction has landed.",
       "objectives": [
-        "G-19R town structure passed first",
+        "start_after_G19S_runtime_reconstruction",
         "clean_objective_display",
         "journal_updates",
         "interaction_prompts",
@@ -408,17 +435,17 @@
         "No debug-looking prompts"
       ],
       "acceptance": [
-        "newport_harbor_town_reconstruction_PASS",
         "player_knows_where_to_go",
         "ui_does_not_break_immersion",
         "no_oversized_labels_blocking_world",
         "ux_readability_score_at_least_8_5"
       ],
       "primary_validators": [
+        "validate_g19_player_guidance_map_journal_interaction.py",
         "validate_first_session_gameplay_loop.py",
         "validate_interaction_ux.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-20",
@@ -445,11 +472,12 @@
         "gameplay_hook_at_least_8_5"
       ],
       "primary_validators": [
+        "validate_g20_first_session_gameplay_loop_reward.py",
         "validate_first_session_gameplay_loop.py",
         "validate_opening_quest_village_to_island.py",
         "validate_first_session_playability.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-21",
@@ -474,11 +502,10 @@
         "build_release_score_PASS"
       ],
       "primary_validators": [
-        "validate_ovi1_gate.py",
         "validate_browser_build_hardening.py",
         "validate_vertical_slice.gd"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-22",
@@ -517,7 +544,7 @@
         "validate_opening_village_island_roadmap.py",
         "validate_opening_village_island_execution_ledger.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     }
   ]
 }

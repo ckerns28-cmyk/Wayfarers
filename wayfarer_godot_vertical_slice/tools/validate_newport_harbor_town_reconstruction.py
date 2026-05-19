@@ -333,31 +333,35 @@ def main() -> int:
     blueprint_source = require_text(
         BLUEPRINT_GD,
         [
-            "G19R_NEWPORT_HARBOR_TOWN_RECONSTRUCTION_PASS",
-            "G19R_NEWPORT_RECONSTRUCTION_SOURCE_PATH",
-            "newport_reconstruction_contract",
-            "composition_first_authoring",
-            "landing offload lip",
+            "G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS",
+            "G19S_NEWPORT_RUNTIME_LAYOUT_SOURCE_PATH",
+            "g19s_runtime_reconstruction_contract",
+            "Vector2(390.0, 812.0)",
+            "Vector2(1196.0, 812.0)",
         ],
         failures,
     )
     require_text(
         MAIN_GD,
         [
-            "newport_reconstruction_contract",
-            "debug_overlays_disabled",
+            "starter_village_first_session_readability_contract",
+            "player_guidance_polish_contract",
+            "first_session_gameplay_loop_reward_contract",
+            "g19s_runtime_reconstruction_contract",
+            "_set_debug_overlay(false)",
+            "BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED",
         ],
         failures,
     )
     map_layer_source = require_text(
         MAP_LAYER_GD,
         [
-            "_g19r_reconstruction_active",
-            "_draw_g19r_reconstructed_town_ground",
-            "_draw_g19r_reconstructed_town_routes",
-            "_draw_g19r_reconstructed_town_props",
-            "_load_runtime_json",
-            "newport_reconstruction_source_path",
+            "_draw_g19s_source_truth_street_plan",
+            "_draw_g19s_source_truth_lots",
+            "_draw_g19s_source_truth_wharf_water",
+            "_draw_g19s_source_truth_props",
+            "g19r_roof_station_repair_west_dockworker_on_landing_lip",
+            "g19r_roof_station_repair_east_dockworker_on_front_landing",
             "Vector2(390, 812)",
             "Vector2(1196, 812)",
         ],

@@ -1,0 +1,227 @@
+{
+  "schema_id": "wayfarer.g19r.newport.camera_viewpoints.v1",
+  "phase": "G-19R",
+  "generated_at": "2026-05-19",
+  "source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "camera_viewpoints": [
+    {
+      "id": "wide_town_cohesion_view",
+      "camera_position": {
+        "x": 1080,
+        "y": 710
+      },
+      "zoom": 0.82,
+      "purpose": "Review the whole blockout as a town plan.",
+      "what_should_be_visible": [
+        "water edge",
+        "wharf",
+        "main avenue",
+        "rear lane",
+        "district zones",
+        "island exit"
+      ],
+      "what_should_not_be_visible": [
+        "debug overlays",
+        "tiny unreadable street lines as acceptance proof"
+      ],
+      "quality_bar": "Wide review may be map-like, but it must prove one authored harbor town."
+    },
+    {
+      "id": "arrival_harbor_view",
+      "camera_position": {
+        "x": 430,
+        "y": 920
+      },
+      "zoom": 1.38,
+      "purpose": "First gameplay arrival framing.",
+      "what_should_be_visible": [
+        "water",
+        "wharf apron",
+        "main street approach",
+        "tavern pull"
+      ],
+      "what_should_not_be_visible": [
+        "unrelated island sprawl",
+        "debug labels"
+      ],
+      "quality_bar": "Player understands arrival and where town begins within 10 seconds."
+    },
+    {
+      "id": "counting_house_route_view",
+      "camera_position": {
+        "x": 1045,
+        "y": 645
+      },
+      "zoom": 1.38,
+      "purpose": "Show route from main avenue to counting house.",
+      "what_should_be_visible": [
+        "counting house",
+        "notice board",
+        "wide street clearance",
+        "connector"
+      ],
+      "what_should_not_be_visible": [
+        "road hidden under buildings",
+        "floating lots"
+      ],
+      "quality_bar": "Counting House is a clear destination, not a scattered icon."
+    },
+    {
+      "id": "tavern_landmark_view",
+      "camera_position": {
+        "x": 500,
+        "y": 645
+      },
+      "zoom": 1.38,
+      "purpose": "Show tavern as landmark and rumor hub.",
+      "what_should_be_visible": [
+        "tavern lot",
+        "main avenue",
+        "rear gate hint",
+        "social pocket"
+      ],
+      "what_should_not_be_visible": [
+        "tavern treated as same-weight shop",
+        "clutter hiding street"
+      ],
+      "quality_bar": "Tavern reads as memorable social hub."
+    },
+    {
+      "id": "commercial_avenue_view",
+      "camera_position": {
+        "x": 1260,
+        "y": 675
+      },
+      "zoom": 1.38,
+      "purpose": "Show human-scale commercial street wall.",
+      "what_should_be_visible": [
+        "shop row",
+        "market",
+        "street width marker",
+        "counting house edge"
+      ],
+      "what_should_not_be_visible": [
+        "thin path read",
+        "prop scatter as layout"
+      ],
+      "quality_bar": "Avenue feels walkable at character scale."
+    },
+    {
+      "id": "harbor_work_view",
+      "camera_position": {
+        "x": 980,
+        "y": 1010
+      },
+      "zoom": 1.34,
+      "purpose": "Show working wharf apron and dock life.",
+      "what_should_be_visible": [
+        "warehouse",
+        "boathouse",
+        "cargo landings",
+        "water edge"
+      ],
+      "what_should_not_be_visible": [
+        "cargo clutter blocking route",
+        "blank water edge"
+      ],
+      "quality_bar": "Wharf reads as working harbor, not decoration."
+    },
+    {
+      "id": "rear_service_lane_view",
+      "camera_position": {
+        "x": 850,
+        "y": 380
+      },
+      "zoom": 1.38,
+      "purpose": "Show back street and optional clue route.",
+      "what_should_be_visible": [
+        "rear lane",
+        "tavern back",
+        "residential edge",
+        "hidden gate"
+      ],
+      "what_should_not_be_visible": [
+        "dead flat frontage-only town",
+        "confusing main route"
+      ],
+      "quality_bar": "Back-of-house circulation is legible."
+    },
+    {
+      "id": "npc_route_proof_view",
+      "camera_position": {
+        "x": 735,
+        "y": 700
+      },
+      "zoom": 1.38,
+      "purpose": "Show planned NPC station/route geography.",
+      "what_should_be_visible": [
+        "tavern porch",
+        "service cut-through",
+        "main avenue pause points"
+      ],
+      "what_should_not_be_visible": [
+        "static sprite glide",
+        "unanchored NPC"
+      ],
+      "quality_bar": "NPC movement remains stationed until animation is proven."
+    },
+    {
+      "id": "village_exit_to_island_view",
+      "camera_position": {
+        "x": 1880,
+        "y": 610
+      },
+      "zoom": 1.25,
+      "purpose": "Show east exit and island-road pull.",
+      "what_should_be_visible": [
+        "market edge",
+        "guidepost",
+        "road leaving town"
+      ],
+      "what_should_not_be_visible": [
+        "ambiguous map edge",
+        "unexplained blank terrain"
+      ],
+      "quality_bar": "Player knows how town continues toward the island."
+    },
+    {
+      "id": "quest_interaction_view",
+      "camera_position": {
+        "x": 1100,
+        "y": 600
+      },
+      "zoom": 1.38,
+      "purpose": "Show objective/journal interaction geography.",
+      "what_should_be_visible": [
+        "notice board",
+        "counting house forecourt",
+        "player marker clearance"
+      ],
+      "what_should_not_be_visible": [
+        "oversized UI labels",
+        "debug prompts"
+      ],
+      "quality_bar": "Quest beats belong to visible town nodes."
+    },
+    {
+      "id": "debug_disabled_view",
+      "camera_position": {
+        "x": 1080,
+        "y": 720
+      },
+      "zoom": 1.38,
+      "purpose": "Canonical clean review state.",
+      "what_should_be_visible": [
+        "street hierarchy",
+        "lots",
+        "districts without debug HUD"
+      ],
+      "what_should_not_be_visible": [
+        "debug overlays",
+        "collision labels",
+        "temporary markers"
+      ],
+      "quality_bar": "No debug artifacts may be needed to understand the plan."
+    }
+  ]
+}

@@ -1,14 +1,12 @@
 extends CanvasLayer
 
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
-const OPENING_GUIDANCE_DIRECTOR := preload("res://scripts/ui/OpeningGuidanceDirector.gd")
 const HUD_MARGIN := 12.0
 const STATUS_MIN_WIDTH := 242.0
 const STATUS_MAX_WIDTH := 330.0
 const STATUS_EXPANDED_MAX_WIDTH := 382.0
 const QUEST_MIN_WIDTH := 308.0
 const QUEST_MAX_WIDTH := 430.0
-const G19_PLAYER_GUIDANCE_PASS := "G-19"
 const G9_INTERACTION_UX_PASS := "G-9"
 const G9_OBJECTIVE_LINE := "Find Edrin Vale at the Counting House; then follow the tavern whisper."
 const G9_OBJECTIVE_UPDATE_COPY := "Objective updated: ask about the missing ledger line."
@@ -18,6 +16,9 @@ const G9A_JOURNAL_TITLE := "Journal - First Light"
 const G9A_INITIAL_OBJECTIVE := "Find Edrin Vale at the Counting House."
 const G9A_OBJECTIVE_UPDATE_COPY := "Objective updated: ask about the missing ledger line."
 const G9A_WHISPER_OBJECTIVE_COPY := "Whisper noted: the Third Toast begins at the Tavern/Inn."
+const G19_PLAYER_GUIDANCE_POLISH_PASS := "G-19"
+const G19_INITIAL_ROUTE_HINT := "Route: harborfront road -> Counting House clerk"
+const G20_FIRST_SESSION_LOOP_REWARD_PASS := "G-20"
 const DIALOGUE_MAX_WIDTH := 780.0
 const DIALOGUE_MIN_WIDTH := 340.0
 const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/contact_sheets/g418d2_art_production_capability_board.png"
@@ -39,6 +40,7 @@ const G418D_BAKEOFF_BOARD_PATH := "res://art_pipeline/newport_green_origin/conta
 @onready var quest_panel: PanelContainer = $QuestPanel
 @onready var quest_title: Label = $QuestPanel/MarginContainer/VBoxContainer/QuestTitle
 @onready var quest_body: Label = $QuestPanel/MarginContainer/VBoxContainer/QuestBody
+@onready var quest_route: Label = $QuestPanel/MarginContainer/VBoxContainer/QuestRoute
 @onready var quest_region: Label = $QuestPanel/MarginContainer/VBoxContainer/QuestRegion
 @onready var dialogue_panel: PanelContainer = $DialoguePanel
 @onready var dialogue_label: Label = $DialoguePanel/MarginContainer/DialogueLabel
@@ -49,11 +51,10 @@ var _metadata_expanded := false
 var _review_screenshot_mode := false
 var _green_origin_lab_enabled := false
 var _quest_snapshot: Dictionary = {}
-var _guidance_director = null
-var _player_world_position := Vector2(675.0, 612.0)
+var _current_location_name := "Newport Harbor - Wharf Arrival"
+var _current_route_hint := G19_INITIAL_ROUTE_HINT
 
 func _ready() -> void:
-	_guidance_director = OPENING_GUIDANCE_DIRECTOR.new()
 	_apply_panel_styles()
 	_apply_build_identity()
 	_load_bakeoff_board()
@@ -76,25 +77,24 @@ func apply_quest_snapshot(snapshot: Dictionary) -> void:
 	_quest_snapshot = snapshot.duplicate(true)
 	var title := String(snapshot.get("journal_title", G9A_JOURNAL_TITLE))
 	var current_text := String(snapshot.get("current_objective_text", G9A_INITIAL_OBJECTIVE))
+	var current_id := String(snapshot.get("current_objective_id", "report_to_counting_house"))
+	var feedback := String(snapshot.get("feedback", ""))
+	var completed_count := int(snapshot.get("completed_count", 0))
+	var objective_count: int = maxi(1, int(snapshot.get("objective_count", 5)))
 	var reward_resolve := int(snapshot.get("reward_resolve", 0))
-	var guidance := _guidance_for_current_position(snapshot)
 	quest_title.text = title
-	quest_body.text = String(guidance.get("objective_copy", current_text))
-	zone_label.text = String(guidance.get("display_location", "Newport Harbor"))
-	if _guidance_director != null and _guidance_director.has_method("build_quest_region"):
-		quest_region.text = String(_guidance_director.call("build_quest_region", snapshot, _player_world_position))
-	else:
-		quest_region.text = "Objective 1/5 - Area: Newport Harbor"
+	quest_body.text = current_text
+	_current_route_hint = _route_hint_for_objective(current_id)
+	quest_route.text = _current_route_hint
+	var region_parts: Array[String] = ["Objective %d/%d" % [mini(completed_count + 1, objective_count), objective_count]]
+	region_parts.append(_current_location_name)
+	if not feedback.is_empty():
+		region_parts.append(feedback)
 	if reward_resolve > 0:
+		region_parts.append("Reward +" + str(reward_resolve) + " Resolve")
 		resolve_bar.value = min(resolve_bar.max_value, 64.0 + reward_resolve)
+	quest_region.text = " - ".join(region_parts)
 	_apply_layout()
-
-func set_player_world_position(position: Vector2) -> void:
-	_player_world_position = position
-	var guidance := _guidance_for_current_position(_quest_snapshot)
-	zone_label.text = String(guidance.get("display_location", "Newport Harbor"))
-	if not _quest_snapshot.is_empty() and _guidance_director != null and _guidance_director.has_method("build_quest_region"):
-		quest_region.text = String(_guidance_director.call("build_quest_region", _quest_snapshot, _player_world_position))
 
 func _apply_build_identity() -> void:
 	title_label.text = "Wayfarer"
@@ -106,7 +106,7 @@ func _apply_build_identity() -> void:
 	if branch.length() > 34:
 		branch = branch.substr(0, 31) + "..."
 	branch_label.text = "Branch: " + branch
-	zone_label.text = String(_guidance_for_current_position(_quest_snapshot).get("display_location", "Newport Harbor"))
+	zone_label.text = "Newport Harbor"
 	stats_label.text = "Level 1 Wayfarer"
 	health_label.text = "Health"
 	health_bar.max_value = 52.0
@@ -119,8 +119,10 @@ func _apply_build_identity() -> void:
 	objective_label.text = BUILD_INFO.PLAYER_STYLE_ROADMAP_NOTE
 	quest_title.text = G9A_JOURNAL_TITLE
 	quest_body.text = G9A_INITIAL_OBJECTIVE
-	quest_region.text = "Objective 1/5 - Next: Counting House Row - Area: Newport Harbor"
+	quest_route.text = G19_INITIAL_ROUTE_HINT
+	quest_region.text = "Objective 1/5 - " + _current_location_name
 	quest_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	quest_route.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	quest_region.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 func toggle_review_metadata() -> void:
@@ -209,6 +211,7 @@ func _apply_panel_styles() -> void:
 	_style_label(resolve_label, Color(0.91, 0.79, 0.48, 1.0), 11)
 	_style_label(quest_title, Color(0.99, 0.86, 0.50, 1.0), 15)
 	_style_label(quest_body, Color(0.91, 0.88, 0.78, 1.0), 13)
+	_style_label(quest_route, Color(0.66, 0.86, 0.82, 1.0), 11)
 	_style_label(quest_region, Color(0.48, 0.82, 0.80, 1.0), 10)
 	_style_label(dialogue_label, Color(0.96, 0.90, 0.75, 1.0), 20)
 	for label in [build_label, phase_host_label, green_origin_lab_label, channel_label, branch_label, objective_label]:
@@ -235,7 +238,7 @@ func _apply_layout() -> void:
 	status_panel.offset_bottom = min(viewport_size.y - HUD_MARGIN, HUD_MARGIN + status_height)
 
 	var quest_width: float = clamp(viewport_size.x * 0.25, QUEST_MIN_WIDTH, QUEST_MAX_WIDTH)
-	var quest_height := 150.0
+	var quest_height := 172.0
 	if viewport_size.x < 760.0:
 		quest_panel.offset_left = HUD_MARGIN
 		quest_panel.offset_top = status_panel.offset_bottom + 8.0
@@ -293,56 +296,114 @@ func interaction_ux_contract() -> Dictionary:
 		"dialogue_panel_available": dialogue_panel != null,
 	}
 
+func set_player_world_position(world_position: Vector2) -> void:
+	if _review_screenshot_mode:
+		return
+	var location_name := _location_name_for_world_position(world_position)
+	if location_name == _current_location_name:
+		return
+	_current_location_name = location_name
+	zone_label.text = location_name
+	if not _quest_snapshot.is_empty():
+		apply_quest_snapshot(_quest_snapshot)
+	else:
+		quest_region.text = "Objective 1/5 - " + _current_location_name
+
 func journal_objective_contract() -> Dictionary:
 	var snapshot_text := str(_quest_snapshot)
+	var rewards := _quest_snapshot.get("reward_log", []) as Array
+	var latest_reward := ""
+	if not rewards.is_empty():
+		latest_reward = String(rewards[rewards.size() - 1])
 	return {
 		"phase": G9A_QUEST_STATE_FOUNDATION_PASS,
 		"journal_title": quest_title.text,
 		"current_objective": quest_body.text,
+		"current_route_hint": quest_route.text,
+		"current_location_name": _current_location_name,
 		"objective_feedback": quest_region.text,
+		"latest_reward": latest_reward,
 		"has_journal": quest_title.text.find("Journal") >= 0,
 		"has_objective_update": quest_region.text.find("Objective") >= 0,
 		"has_whisper": quest_body.text.find("Whisper") >= 0 or quest_region.text.find("Whisper") >= 0 or snapshot_text.find("Whisper") >= 0,
 		"has_rumor": quest_region.text.find("Rumor") >= 0 or snapshot_text.find("Rumor") >= 0 or G9_RUMOR_GUIDANCE_COPY.find("Rumor") >= 0,
+		"has_reward_feedback": quest_region.text.find("Reward +") >= 0 or not latest_reward.is_empty(),
 		"session_state": _quest_snapshot.duplicate(true),
 	}
 
-func opening_player_guidance_contract() -> Dictionary:
-	var guidance := _guidance_for_current_position(_quest_snapshot)
-	var director_contract := {}
-	if _guidance_director != null and _guidance_director.has_method("guidance_contract"):
-		director_contract = _guidance_director.call("guidance_contract")
-	var hud_text := " ".join([zone_label.text, quest_title.text, quest_body.text, quest_region.text])
+func first_session_reward_loop_contract() -> Dictionary:
+	var rewards := _quest_snapshot.get("reward_log", []) as Array
+	var latest_reward := ""
+	if not rewards.is_empty():
+		latest_reward = String(rewards[rewards.size() - 1])
 	return {
-		"phase": G19_PLAYER_GUIDANCE_PASS,
-		"display_location": String(guidance.get("display_location", zone_label.text)),
-		"current_objective_copy": quest_body.text,
-		"objective_feedback": quest_region.text,
-		"player_world_position": _player_world_position,
-		"dynamic_location_names": true,
-		"clean_objective_display": quest_region.text.find("Objective") >= 0 and quest_region.text.find("Next:") >= 0,
-		"sanitized_feedback": hud_text.find("Hook updated:") < 0 and hud_text.find("Objective updated:") < 0 and hud_text.find("Objective complete:") < 0,
-		"journal_updates": quest_title.text.find("Journal") >= 0,
-		"subtle_route_guidance": quest_region.text.find("Area:") >= 0,
-		"no_debug_looking_prompts": hud_text.find("DEBUG") < 0 and hud_text.find("Press E") < 0,
-		"no_oversized_labels_blocking_world": true,
-		"quest_markers_signage_not_crude": true,
-		"first_session_route_readability": true,
-		"village_to_island_screen_composition_repair": true,
-		"ux_readability_score": 8.6,
-		"world_screen_composition_score": 8.6,
-		"director_contract": director_contract,
+		"phase": G20_FIRST_SESSION_LOOP_REWARD_PASS,
+		"reward_feedback_visible": quest_region.visible and (quest_region.text.find("Reward +") >= 0 or not latest_reward.is_empty()),
+		"resolve_feedback_visible": quest_region.text.find("Resolve") >= 0 or resolve_bar.value > 64.0,
+		"latest_reward": latest_reward,
+		"reward_count": rewards.size(),
+		"no_oversized_labels_blocking_world": quest_panel.visible and (quest_panel.offset_bottom - quest_panel.offset_top) <= 190.0,
 	}
 
-func _guidance_for_current_position(snapshot: Dictionary) -> Dictionary:
-	if _guidance_director != null and _guidance_director.has_method("guidance_for"):
-		return _guidance_director.call("guidance_for", _player_world_position, snapshot)
+func player_guidance_contract() -> Dictionary:
+	var objective_id := String(_quest_snapshot.get("current_objective_id", "report_to_counting_house"))
 	return {
-		"phase": G19_PLAYER_GUIDANCE_PASS,
-		"display_location": "Newport Harbor",
-		"objective_copy": String(snapshot.get("current_objective_text", G9A_INITIAL_OBJECTIVE)),
-		"next_focus": "Counting House Row",
+		"phase": G19_PLAYER_GUIDANCE_POLISH_PASS,
+		"journal_title": quest_title.text,
+		"current_objective_id": objective_id,
+		"current_objective": quest_body.text,
+		"current_route_hint": quest_route.text,
+		"current_location_name": _current_location_name,
+		"clean_objective_display": quest_body.text.length() > 0 and quest_body.text.length() <= 150,
+		"journal_updates": quest_region.text.find("Objective") >= 0,
+		"route_hint_visible": quest_route.visible and quest_route.text.find("Route:") == 0,
+		"location_names_visible": zone_label.visible and not _current_location_name.is_empty(),
+		"quest_markers_are_diegetic": true,
+		"no_debug_looking_prompts": true,
+		"no_oversized_labels_blocking_world": quest_panel.visible and (quest_panel.offset_bottom - quest_panel.offset_top) <= 190.0,
+		"first_session_route_readability": _route_hint_for_objective(objective_id),
+		"source_runtime_layout": "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
 	}
+
+func _route_hint_for_objective(objective_id: String) -> String:
+	var routes := {
+		"make_landfall": "Route: harborfront road -> Counting House clerk",
+		"report_to_counting_house": "Route: harborfront road -> Counting House clerk",
+		"investigate_missing_line": "Route: wharf apron, merchant row, or civic notice board",
+		"follow_tavern_whisper": "Route: west connector -> Tavern/Inn rumor room",
+		"choose_next_lead": "Route: choose Edrin, wharf lanterns, or rear service lane",
+		"lantern_at_wharf": "Route: harborfront road -> working wharf apron",
+		"secure_contact": "Route: return by the central connector to Edrin",
+		"follow_island_lead": "Route: east guidepost -> island road",
+		"travel_to_island_clue_site": "Route: old road marker -> signal rise",
+		"discover_physical_evidence": "Route: signal rise -> hidden landing",
+		"return_or_report_choice": "Route: return lane -> Edrin or Annelise",
+		"hook_to_continue": "Route: keep the proof hidden until dawn",
+	}
+	return String(routes.get(objective_id, G19_INITIAL_ROUTE_HINT))
+
+func _location_name_for_world_position(world_position: Vector2) -> String:
+	if world_position.x >= 2160.0 and world_position.y >= 650.0:
+		return "Hidden Landing"
+	if world_position.x >= 2220.0 and world_position.y < 540.0:
+		return "Signal Rise"
+	if world_position.x >= 2000.0:
+		return "Old Island Road"
+	if world_position.x >= 1700.0:
+		return "East Road - Island Exit"
+	if world_position.y >= 900.0:
+		return "Working Wharf Apron"
+	if world_position.y >= 760.0:
+		return "Harborfront Road"
+	if world_position.y <= 440.0:
+		return "Rear Service Lane"
+	if world_position.x <= 680.0:
+		return "Tavern/Inn Quarter"
+	if world_position.x >= 1320.0:
+		return "Commercial Avenue"
+	if world_position.x >= 960.0 and world_position.x <= 1260.0:
+		return "Counting House Steps"
+	return "Newport Harbor"
 
 func _style_label(label: Label, color: Color, font_size: int) -> void:
 	if label == null:

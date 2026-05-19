@@ -1,0 +1,204 @@
+{
+  "schema_id": "wayfarer.g20.first_session_gameplay_loop_reward.v1",
+  "phase": "G-20",
+  "title": "First-Session Gameplay Loop and Reward Pass",
+  "north_star": "The first 20-30 minutes must feel like a handcrafted fantasy/colonial harbor RPG opening: arrive in Newport, understand the place, meet useful people, follow a tavern whisper, leave town with purpose, discover physical evidence on the island, return/report, receive reward feedback, and want to continue.",
+  "source_dependencies": {
+    "blockout_source": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+    "runtime_layout_source": "wayfarer_godot_vertical_slice/data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+    "player_guidance_source": "wayfarer_godot_vertical_slice/data/ux/g19_player_guidance_map_journal_interaction_v1.json",
+    "village_to_island_quest_source": "wayfarer_godot_vertical_slice/data/quests/whispers_before_dawn_village_to_island_v1.json",
+    "multipath_choice_source": "wayfarer_godot_vertical_slice/data/quests/whispers_before_dawn_multipath_rumor_choice_v1.json"
+  },
+  "first_session_duration_target_minutes": {
+    "minimum": 20,
+    "target": 28,
+    "maximum": 30
+  },
+  "player_experience_arc": [
+    {
+      "beat_id": "arrive",
+      "minute_target": "0-2",
+      "location": "Newport Harbor wharf arrival",
+      "player_action": "Arrive on the wharf and face inland.",
+      "design_purpose": "The player begins in a working harbor instead of a neutral map start.",
+      "reward_or_feedback": "Journal opens and names Newport Harbor.",
+      "screenshot": "g20_01_arrival_goal.png"
+    },
+    {
+      "beat_id": "orient",
+      "minute_target": "2-4",
+      "location": "Harborfront road to Counting House",
+      "player_action": "Follow the route hint and the street logic toward Edrin.",
+      "design_purpose": "The player understands where they arrived and where civic authority sits.",
+      "reward_or_feedback": "Route hint: harborfront road -> Counting House clerk.",
+      "screenshot": "g20_02_counting_house_first_talk.png"
+    },
+    {
+      "beat_id": "talk",
+      "minute_target": "4-7",
+      "location": "Counting House",
+      "player_action": "Talk to Edrin Vale.",
+      "design_purpose": "A named contact gives the missing manifest line stakes.",
+      "reward_or_feedback": "Objective updates toward wharf, merchant row, and tavern rumor.",
+      "screenshot": "g20_02_counting_house_first_talk.png"
+    },
+    {
+      "beat_id": "investigate",
+      "minute_target": "7-11",
+      "location": "Working wharf apron",
+      "player_action": "Question harbor workers about the missing cargo.",
+      "design_purpose": "The mystery becomes tied to the visible harbor economy.",
+      "reward_or_feedback": "Wharf clue confirms the missing line is not a clerical error.",
+      "screenshot": "g20_03_wharf_investigation_reward.png"
+    },
+    {
+      "beat_id": "tavern_whisper",
+      "minute_target": "11-15",
+      "location": "Tavern/Inn rumor hub",
+      "player_action": "Listen for the Third Toast.",
+      "design_purpose": "The origin town gains social mystery and pre-Revolution tension.",
+      "reward_or_feedback": "Reward: Resolve +5 for following the tavern whisper.",
+      "screenshot": "g20_04_tavern_whisper_social_hook.png"
+    },
+    {
+      "beat_id": "choose",
+      "minute_target": "15-17",
+      "location": "Wharf lanterns, commercial avenue, or rear service lane",
+      "player_action": "Choose a next lead.",
+      "design_purpose": "The opening avoids feeling like a single hallway.",
+      "reward_or_feedback": "Chosen route is logged and the player has a sense of agency.",
+      "screenshot": "g20_05_choice_branch_next_lead.png"
+    },
+    {
+      "beat_id": "explore",
+      "minute_target": "17-21",
+      "location": "Village exit and old island road",
+      "player_action": "Leave Newport toward the island road.",
+      "design_purpose": "The town edge becomes a meaningful transition from safety to mystery.",
+      "reward_or_feedback": "Access: old road island lead.",
+      "screenshot": "g20_06_island_exit_reward_hook.png"
+    },
+    {
+      "beat_id": "discover",
+      "minute_target": "21-25",
+      "location": "Signal rise and hidden landing",
+      "player_action": "Follow the old road and find physical evidence.",
+      "design_purpose": "Island exploration pays off with proof instead of scenery.",
+      "reward_or_feedback": "Reward: Resolve +8 for proving the island clue.",
+      "screenshot": "g20_08_hidden_landing_discovery.png"
+    },
+    {
+      "beat_id": "return_report",
+      "minute_target": "25-28",
+      "location": "Return lane and Counting House",
+      "player_action": "Choose who carries the proof and return it to Edrin.",
+      "design_purpose": "The loop closes through people and place, not only objective state.",
+      "reward_or_feedback": "Named contacts: Annelise Crow and Edrin Vale.",
+      "screenshot": "g20_09_return_report_choice.png"
+    },
+    {
+      "beat_id": "continue",
+      "minute_target": "28-30",
+      "location": "Newport at dawn",
+      "player_action": "Receive the next hook before the Governor's men close the harbor.",
+      "design_purpose": "The player has an unresolved threat and a reason to keep playing.",
+      "reward_or_feedback": "Dawn signal hook and Resolve total remain visible in the quest state.",
+      "screenshot": "g20_10_final_reward_next_hook.png"
+    }
+  ],
+  "reward_cadence": [
+    {
+      "reward_id": "journal_orientation",
+      "type": "feedback",
+      "when": "arrival",
+      "label": "Journal opens with a readable first objective.",
+      "player_value": "The player knows what to do immediately."
+    },
+    {
+      "reward_id": "third_toast_resolve",
+      "type": "resolve",
+      "amount": 5,
+      "when": "tavern_whisper",
+      "label": "Reward: Resolve +5 for following the tavern whisper",
+      "player_value": "The social mystery gives a measurable reward."
+    },
+    {
+      "reward_id": "edrin_contact",
+      "type": "named_contact",
+      "when": "first_return",
+      "label": "Named contact: Edrin Vale",
+      "player_value": "The player gains a town relationship, not just an objective."
+    },
+    {
+      "reward_id": "old_road_access",
+      "type": "route_unlock",
+      "when": "island_exit",
+      "label": "Access: old road island lead",
+      "player_value": "The world opens outward from Newport."
+    },
+    {
+      "reward_id": "island_evidence_resolve",
+      "type": "resolve",
+      "amount": 8,
+      "when": "hidden_landing",
+      "label": "Reward: Resolve +8 for proving the island clue",
+      "player_value": "Exploration has a concrete payoff."
+    },
+    {
+      "reward_id": "annelise_contact",
+      "type": "named_contact",
+      "when": "return_report",
+      "label": "Named contact: Annelise Crow",
+      "player_value": "The return route gains social texture."
+    },
+    {
+      "reward_id": "dawn_signal_hook",
+      "type": "next_hook",
+      "when": "final_return",
+      "label": "Hook added: meet Edrin at first light before the Governor's men close the harbor.",
+      "player_value": "The player knows the next session has urgency."
+    }
+  ],
+  "failure_modes_this_gate_blocks": [
+    "The opening is readable but boring.",
+    "The town feels like a checklist of NPCs instead of a place.",
+    "Quest rewards are hidden in code without player-facing feedback.",
+    "The player reaches the island without knowing why.",
+    "The hidden landing has no meaningful payoff.",
+    "The return/report beat does not reconnect to Newport.",
+    "The hook to continue is vague or absent.",
+    "A validator passes despite a weak first-session experience."
+  ],
+  "canonical_screenshots": [
+    "g20_01_arrival_goal.png",
+    "g20_02_counting_house_first_talk.png",
+    "g20_03_wharf_investigation_reward.png",
+    "g20_04_tavern_whisper_social_hook.png",
+    "g20_05_choice_branch_next_lead.png",
+    "g20_06_island_exit_reward_hook.png",
+    "g20_07_old_road_explore.png",
+    "g20_08_hidden_landing_discovery.png",
+    "g20_09_return_report_choice.png",
+    "g20_10_final_reward_next_hook.png",
+    "g20_11_debug_disabled_first_session.png"
+  ],
+  "acceptance": {
+    "first_session_playable": true,
+    "first_20_30_minutes_playable": true,
+    "player_receives_feedback_and_reward": true,
+    "player_has_reason_to_continue": true,
+    "no_dead_objective_states": true,
+    "arrive_orient_talk_investigate_explore_discover_return_report_reward_continue": true,
+    "quest_geography_uses_newport_and_island": true,
+    "source_layout_not_bypassed": true,
+    "npc_movement_policy_blocks_static_sprite_glide": true,
+    "gameplay_hook_score": 8.7,
+    "reward_cadence_score": 8.7,
+    "world_cohesion_score": 8.6,
+    "player_orientation_score": 8.7,
+    "quest_geography_integration_score": 8.7,
+    "implementation_readiness_score": 8.7
+  },
+  "next_phase": "G-21 Opening Island Performance, Browser Build, and Regression Hardening"
+}

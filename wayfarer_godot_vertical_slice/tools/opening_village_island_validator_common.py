@@ -50,6 +50,7 @@ REQUIRED_PHASES = [
     "G-18",
     "G-18A",
     "G-19R",
+    "G-19S",
     "G-19",
     "G-20",
     "G-21",
@@ -121,10 +122,11 @@ PHASE_VALIDATORS = {
     "G-17": "validate_island_npc_encounter_foundation.py",
     "G-18": "validate_opening_quest_village_to_island.py",
     "G-18A": "validate_multipath_rumor_choice_foundation.py",
-    "G-19R": "validate_newport_harbor_town_reconstruction.py",
+    "G-19R": "validate_g19r_newport_blockout_source_of_truth.py",
+    "G-19S": "validate_g19s_newport_runtime_reconstruction.py",
     "G-19": "validate_first_session_gameplay_loop.py",
     "G-20": "validate_first_session_gameplay_loop.py",
-    "G-21": "validate_ovi1_gate.py",
+    "G-21": "validate_browser_build_hardening.py",
     "G-22": "validate_ovi1_gate.py",
 }
 
@@ -143,7 +145,8 @@ PHASE_REQUIRED_TOKENS = {
     "G-17": ["Island NPC / Encounter / Ambient Life Foundation", "grounded movement", "NPC/ambient score"],
     "G-18": ["Whispers Before Dawn", "village-to-island quest chain", "return or report choice"],
     "G-18A": ["Multi-Path Rumor and Choice Foundation", "Counting house path", "Dockworker/harbor path"],
-    "G-19R": ["Newport Harbor Town Reconstruction Pivot", "road hierarchy", "wharf dimensions", "10-15 characters"],
+    "G-19R": ["Newport Scale + Street Blockout Source of Truth", "measured_town_blockout_exists", "future_phases_block_ad_hoc_layout_edits"],
+    "G-19S": ["Newport Blockout-To-Godot Runtime Reconstruction", "runtime_layout_matches_G19R_source_of_truth", "no_new_layout_invented_in_Godot"],
     "G-19": ["Player Guidance, Map, Journal, and Interaction Polish", "No debug-looking prompts"],
     "G-20": ["First-Session Gameplay Loop and Reward Pass", "first 20-30 minutes", "reason to continue"],
     "G-21": ["Opening Island Performance, Browser Build, and Regression Hardening", "Browser/review artifact"],
@@ -357,7 +360,7 @@ def validate_pass_row(phase_id: str, row: dict[str, Any], failures: list[str]) -
             failures.append(f"{phase_id} PASS row missing {key}")
     if row.get("agent_council_verdict") != "COUNCIL_PASS_READY_FOR_PR":
         failures.append(f"{phase_id} PASS row must have council verdict COUNCIL_PASS_READY_FOR_PR")
-    if phase_id in {"G-14", "G-15", "G-15A", "G-15B", "G-16", "G-16A", "G-17", "G-18", "G-18A", "G-19", "G-20", "G-21", "G-22"}:
+    if phase_id in {"G-14", "G-15", "G-15A", "G-15B", "G-16", "G-16A", "G-17", "G-18", "G-18A", "G-19S", "G-19", "G-20", "G-21", "G-22"}:
         if not row.get("screenshot_paths"):
             failures.append(f"{phase_id} PASS row missing screenshot_paths")
     if phase_id in {"G-14", "G-17", "G-22"} and not row.get("motion_proof_paths"):

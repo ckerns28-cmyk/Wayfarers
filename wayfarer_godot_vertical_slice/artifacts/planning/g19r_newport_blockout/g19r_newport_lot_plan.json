@@ -1,0 +1,466 @@
+{
+  "schema_id": "wayfarer.g19r.newport.lot_plan.v1",
+  "phase": "G-19R",
+  "generated_at": "2026-05-19",
+  "source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "lots": [
+    {
+      "id": "lot_tavern_inn_centerpiece",
+      "district": "tavern_inn_rumor_hub",
+      "building_role": "Tavern/Inn centerpiece landmark",
+      "frontage_street": "main_commercial_avenue",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 300,
+        "y": 350,
+        "w": 380,
+        "h": 250
+      },
+      "building_footprint_target": {
+        "x": 342,
+        "y": 390,
+        "w": 296,
+        "h": 162
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "hanging sign",
+        "bench",
+        "lantern",
+        "rear gate"
+      ],
+      "npc_use": [
+        "tavern keeper",
+        "rumor carrier",
+        "patron"
+      ],
+      "quest_use": [
+        "tavern_whisper",
+        "two_npc_rumor",
+        "optional_hidden_clue"
+      ],
+      "sightline_purpose": "West landmark visible from arrival and the central avenue.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_counting_house_clerk",
+      "district": "counting_house_clerk",
+      "building_role": "Counting House / Clerk official lot",
+      "frontage_street": "main_commercial_avenue",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 970,
+        "y": 345,
+        "w": 330,
+        "h": 225
+      },
+      "building_footprint_target": {
+        "x": 1015,
+        "y": 382,
+        "w": 240,
+        "h": 145
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "notice board",
+        "sealed crates",
+        "paper bundles"
+      ],
+      "npc_use": [
+        "clerk",
+        "runner"
+      ],
+      "quest_use": [
+        "first_objective",
+        "counting_house_missing_manifest",
+        "return_report"
+      ],
+      "sightline_purpose": "Central official target visible from harborfront and rear lane connector.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_mercantile_shop",
+      "district": "commercial_avenue",
+      "building_role": "Mercantile shop row lot",
+      "frontage_street": "main_commercial_avenue",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 700,
+        "y": 370,
+        "w": 230,
+        "h": 190
+      },
+      "building_footprint_target": {
+        "x": 725,
+        "y": 405,
+        "w": 180,
+        "h": 118
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "awning sign",
+        "crate edge",
+        "lamp"
+      ],
+      "npc_use": [
+        "merchant"
+      ],
+      "quest_use": [
+        "two_npc_rumor"
+      ],
+      "sightline_purpose": "Fills the street wall between tavern and counting house.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_chandlery_outfitter",
+      "district": "commercial_avenue",
+      "building_role": "Chandlery / outfitter shop lot",
+      "frontage_street": "main_commercial_avenue",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 1305,
+        "y": 370,
+        "w": 230,
+        "h": 190
+      },
+      "building_footprint_target": {
+        "x": 1330,
+        "y": 405,
+        "w": 180,
+        "h": 120
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "rope rack",
+        "sail cloth",
+        "shop sign"
+      ],
+      "npc_use": [
+        "shopkeeper"
+      ],
+      "quest_use": [
+        "dock_clue_support"
+      ],
+      "sightline_purpose": "Connects official trade to working wharf function.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_market_shed",
+      "district": "commercial_avenue",
+      "building_role": "Market shed and fishmonger lot",
+      "frontage_street": "east_market_connector",
+      "entry_orientation": "southwest",
+      "lot_size": {
+        "x": 1535,
+        "y": 380,
+        "w": 245,
+        "h": 180
+      },
+      "building_footprint_target": {
+        "x": 1565,
+        "y": 415,
+        "w": 185,
+        "h": 110
+      },
+      "setback_character_widths": 1.0,
+      "setback_world_units": 27.2,
+      "adjacent_props": [
+        "fish crates",
+        "hand cart",
+        "lamp"
+      ],
+      "npc_use": [
+        "merchant",
+        "courier"
+      ],
+      "quest_use": [
+        "two_npc_rumor",
+        "island_lead"
+      ],
+      "sightline_purpose": "Last commercial landmark before the island exit turn.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_west_dock_warehouse",
+      "district": "harbor_wharf",
+      "building_role": "Harbor service / storage lot",
+      "frontage_street": "harborfront_road",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 390,
+        "y": 900,
+        "w": 330,
+        "h": 190
+      },
+      "building_footprint_target": {
+        "x": 430,
+        "y": 932,
+        "w": 250,
+        "h": 120
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "cargo stack",
+        "bollards",
+        "rope"
+      ],
+      "npc_use": [
+        "dockworker"
+      ],
+      "quest_use": [
+        "dock_clue"
+      ],
+      "sightline_purpose": "Working storage visible from arrival, not a decorative warehouse.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_central_boathouse_landing",
+      "district": "harbor_wharf",
+      "building_role": "Boathouse and cargo landing lot",
+      "frontage_street": "dock_paths",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 950,
+        "y": 940,
+        "w": 360,
+        "h": 175
+      },
+      "building_footprint_target": {
+        "x": 995,
+        "y": 970,
+        "w": 270,
+        "h": 110
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "mooring post",
+        "barrels",
+        "water edge"
+      ],
+      "npc_use": [
+        "sailor",
+        "dockworker"
+      ],
+      "quest_use": [
+        "arrival_harbor",
+        "dock_clue"
+      ],
+      "sightline_purpose": "Centers the wharf as working waterfront.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_cooperage_service",
+      "district": "harbor_wharf",
+      "building_role": "Cooperage / barrel service lot",
+      "frontage_street": "harborfront_road",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 1370,
+        "y": 880,
+        "w": 260,
+        "h": 190
+      },
+      "building_footprint_target": {
+        "x": 1405,
+        "y": 915,
+        "w": 195,
+        "h": 120
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "barrel hoops",
+        "small cart",
+        "rope"
+      ],
+      "npc_use": [
+        "dockworker"
+      ],
+      "quest_use": [
+        "optional_hidden_clue"
+      ],
+      "sightline_purpose": "Shows harbor economy beyond generic crates.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_boarding_house",
+      "district": "residential_edge",
+      "building_role": "Boarding house residential lot",
+      "frontage_street": "north_residential_lane",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 620,
+        "y": 105,
+        "w": 260,
+        "h": 180
+      },
+      "building_footprint_target": {
+        "x": 650,
+        "y": 135,
+        "w": 200,
+        "h": 120
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "fence",
+        "laundry",
+        "garden"
+      ],
+      "npc_use": [
+        "dockworker family"
+      ],
+      "quest_use": [
+        "worldbuilding_return_flavor"
+      ],
+      "sightline_purpose": "Humanizes the workers who use the wharf.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_dockworker_rowhouse",
+      "district": "residential_edge",
+      "building_role": "Dockworker rowhouse lot",
+      "frontage_street": "north_residential_lane",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 910,
+        "y": 105,
+        "w": 300,
+        "h": 180
+      },
+      "building_footprint_target": {
+        "x": 940,
+        "y": 135,
+        "w": 240,
+        "h": 118
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "yard fence",
+        "bucket",
+        "lamp"
+      ],
+      "npc_use": [
+        "dockworker"
+      ],
+      "quest_use": [
+        "two_npc_rumor_support"
+      ],
+      "sightline_purpose": "Makes the rear service street feel lived in.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_clerk_lodging",
+      "district": "residential_edge",
+      "building_role": "Clerk lodging / townhouse lot",
+      "frontage_street": "rear_service_street",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 1215,
+        "y": 115,
+        "w": 270,
+        "h": 175
+      },
+      "building_footprint_target": {
+        "x": 1240,
+        "y": 145,
+        "w": 215,
+        "h": 115
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "mail crate",
+        "notice scrap",
+        "small bench"
+      ],
+      "npc_use": [
+        "clerk runner"
+      ],
+      "quest_use": [
+        "counting_house_missing_manifest"
+      ],
+      "sightline_purpose": "Connects official function to residential back street.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_civic_notice_board",
+      "district": "civic_notice_board",
+      "building_role": "Notice board civic node",
+      "frontage_street": "central_upland_counting_house_connector",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 1055,
+        "y": 565,
+        "w": 195,
+        "h": 100
+      },
+      "building_footprint_target": {
+        "x": 1100,
+        "y": 582,
+        "w": 105,
+        "h": 48
+      },
+      "setback_character_widths": 1.0,
+      "setback_world_units": 27.2,
+      "adjacent_props": [
+        "bench",
+        "lamp",
+        "posted papers"
+      ],
+      "npc_use": [
+        "runner",
+        "courier"
+      ],
+      "quest_use": [
+        "first_objective",
+        "return_report"
+      ],
+      "sightline_purpose": "Gives objective/journal fiction a spatial anchor.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_village_exit_guidepost",
+      "district": "village_to_island_exit",
+      "building_role": "Village exit / guidepost area",
+      "frontage_street": "village_to_island_road",
+      "entry_orientation": "east",
+      "lot_size": {
+        "x": 1815,
+        "y": 500,
+        "w": 300,
+        "h": 175
+      },
+      "building_footprint_target": {
+        "x": 1870,
+        "y": 535,
+        "w": 95,
+        "h": 55
+      },
+      "setback_character_widths": 1.0,
+      "setback_world_units": 27.2,
+      "adjacent_props": [
+        "guidepost",
+        "stone marker",
+        "fence break"
+      ],
+      "npc_use": [
+        "courier",
+        "sailor"
+      ],
+      "quest_use": [
+        "island_lead",
+        "village_exit"
+      ],
+      "sightline_purpose": "Makes the island route legible before the player reaches the edge.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    }
+  ]
+}

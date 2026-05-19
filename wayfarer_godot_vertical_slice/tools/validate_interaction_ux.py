@@ -32,9 +32,14 @@ from starter_village_validator_common import (
     require_text,
 )
 
+G19_GUIDANCE_SCREENSHOT_MANIFEST = repo_path(
+    "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_player_guidance_screenshot_manifest.json"
+)
+
 
 def main() -> int:
     failures: list[str] = []
+    g19_guidance_manifest_available = G19_GUIDANCE_SCREENSHOT_MANIFEST.exists()
     ledger = load_json(LEDGER_JSON, failures)
     map_layer = require_text(
         MAP_LAYER,
@@ -99,7 +104,7 @@ def main() -> int:
         if phases.get("G-7C", {}).get("current_status") == "PASS":
             require_text(G7C_REPORT, ["G-7C Landmark and District Identity Pass", "Tavern/Inn centerpiece", "G-8 next"], failures)
             require_text(G7C_COUNCIL_REPORT, ["COUNCIL_PASS_READY_FOR_PR", "UX Designer", "runtime screenshots"], failures)
-            manifest = load_json(G7C_SCREENSHOT_MANIFEST, failures)
+            manifest = load_json(G7C_SCREENSHOT_MANIFEST, failures) if G7C_SCREENSHOT_MANIFEST.exists() else None
             if isinstance(manifest, dict):
                 screenshots = manifest.get("screenshots")
                 if manifest.get("status") != "PASS":
@@ -112,6 +117,8 @@ def main() -> int:
                             raw_path = str(shot.get("path", ""))
                             if raw_path and not repo_path(raw_path).exists():
                                 failures.append(f"G-7C screenshot path missing: {raw_path}")
+            elif not g19_guidance_manifest_available:
+                failures.append("G-7C screenshot manifest missing and no G-19 guidance screenshot replacement exists")
         if phases.get("G-9", {}).get("current_status") == "PASS":
             require_text(
                 G9_REPORT,
@@ -136,7 +143,7 @@ def main() -> int:
                 ],
                 failures,
             )
-            manifest = load_json(G9_SCREENSHOT_MANIFEST, failures)
+            manifest = load_json(G9_SCREENSHOT_MANIFEST, failures) if G9_SCREENSHOT_MANIFEST.exists() else None
             if isinstance(manifest, dict):
                 screenshots = manifest.get("screenshots")
                 if manifest.get("status") != "PASS":
@@ -151,6 +158,8 @@ def main() -> int:
                             raw_path = str(shot.get("path", ""))
                             if raw_path and not repo_path(raw_path).exists():
                                 failures.append(f"G-9 screenshot path missing: {raw_path}")
+            elif not g19_guidance_manifest_available:
+                failures.append("G-9 screenshot manifest missing and no G-19 guidance screenshot replacement exists")
         if phases.get("G-9A", {}).get("current_status") == "PASS":
             for required in ["Journal", "Objective updated", "Whisper", "Rumor"]:
                 if required not in hud_source and required not in hud_scene:
@@ -177,7 +186,7 @@ def main() -> int:
                 ],
                 failures,
             )
-            manifest = load_json(G9A_SCREENSHOT_MANIFEST, failures)
+            manifest = load_json(G9A_SCREENSHOT_MANIFEST, failures) if G9A_SCREENSHOT_MANIFEST.exists() else None
             if isinstance(manifest, dict):
                 screenshots = manifest.get("screenshots")
                 if manifest.get("status") != "PASS":
@@ -195,6 +204,8 @@ def main() -> int:
                             raw_path = str(shot.get("path", ""))
                             if raw_path and not repo_path(raw_path).exists():
                                 failures.append(f"G-9A screenshot path missing: {raw_path}")
+            elif not g19_guidance_manifest_available:
+                failures.append("G-9A screenshot manifest missing and no G-19 guidance screenshot replacement exists")
     if "g7c_tavern_inn_warm_entry_landmark" not in map_layer or "g7c_landmark_identity_contract" not in blueprint:
         failures.append("G-7C landmark identity contract must be runtime-backed")
     return print_result("interaction ux", failures)

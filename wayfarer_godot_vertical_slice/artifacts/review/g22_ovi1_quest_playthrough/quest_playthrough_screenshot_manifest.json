@@ -1,0 +1,213 @@
+{
+  "schema_id": "wayfarer.g22.ovi1.quest_playthrough_screenshot_manifest.v1",
+  "phase_id": "G-22",
+  "status": "PASS",
+  "source_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g18_quest_playthrough/quest_playthrough_screenshot_manifest.json",
+  "source_manifest_status": "PASS",
+  "screenshots": [
+    {
+      "filename": "02_player_arrival_harbor.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/02_player_arrival_harbor.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_02_arrival_harbor_view.png",
+      "source_phase": "G-19S",
+      "purpose": "Player arrival at the working harbor with town route pull.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "03_counting_house_route.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/03_counting_house_route.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_03_counting_house_route_view.png",
+      "source_phase": "G-19S",
+      "purpose": "Counting House route is visible and grounded in civic harbor geography.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "04_tavern_rumor_hub.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/04_tavern_rumor_hub.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_04_tavern_landmark_view.png",
+      "source_phase": "G-19S",
+      "purpose": "Tavern/Inn reads as a west-side rumor landmark, not a loose asset.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "06_harbor_wharf_work_area.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/06_harbor_wharf_work_area.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_06_harbor_work_view.png",
+      "source_phase": "G-19S",
+      "purpose": "Wharf apron, dock paths, cargo, rope, and waterline support harbor work.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "07_village_exit_to_island.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/07_village_exit_to_island.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_09_village_exit_to_island_view.png",
+      "source_phase": "G-19S",
+      "purpose": "Village exit route is legible from the town street plan.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "09_island_main_trail.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/09_island_main_trail.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_07_old_road_explore.png",
+      "source_phase": "G-20",
+      "purpose": "Old road trail carries the player into the island route.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "10_island_landmark_signal_or_overlook.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/10_island_landmark_signal_or_overlook.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g18_runtime_screenshots/g18_09_signal_optional_clue.png",
+      "source_phase": "G-18",
+      "purpose": "Signal point functions as landmark, optional clue, and threat.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "11_island_cove_or_hidden_landing.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/11_island_cove_or_hidden_landing.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g18_runtime_screenshots/g18_10_hidden_landing_physical_evidence.png",
+      "source_phase": "G-18",
+      "purpose": "Hidden landing contains physical proof of the missing manifest.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "12_island_optional_discovery.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/12_island_optional_discovery.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_08_hidden_landing_discovery.png",
+      "source_phase": "G-20",
+      "purpose": "Optional discovery deepens the route without blocking progression.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "15_quest_journal_village_step.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/15_quest_journal_village_step.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_02_counting_house_first_talk.png",
+      "source_phase": "G-20",
+      "purpose": "Village journal/objective step advances at the Counting House.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "16_quest_journal_island_step.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/16_quest_journal_island_step.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_08_hidden_landing_discovery.png",
+      "source_phase": "G-20",
+      "purpose": "Island journal/objective step rewards evidence discovery.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "17_return_to_town_or_next_hook.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/17_return_to_town_or_next_hook.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_10_final_reward_next_hook.png",
+      "source_phase": "G-20",
+      "purpose": "Return/report and dawn hook give the player a reason to continue.",
+      "status": "PASS",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    }
+  ]
+}

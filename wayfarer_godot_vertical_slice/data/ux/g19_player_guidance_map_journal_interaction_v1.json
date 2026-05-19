@@ -1,0 +1,43 @@
+{
+  "schema_id": "wayfarer.g19.player_guidance_map_journal_interaction.v1",
+  "phase": "G-19",
+  "source_runtime_layout": "wayfarer_godot_vertical_slice/data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+  "source_blockout": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "design_goal": "Make the first session readable without debug UI after the G-19R/G-19S Newport layout correction.",
+  "ui_contract": {
+    "clean_objective_display": true,
+    "journal_updates": true,
+    "interaction_prompts": "compact diegetic action-name prompts; no Press E debug copy in normal play",
+    "location_names_or_subtle_guidance": true,
+    "quest_markers_signage": "atelier signposts, notice boards, lanterns, and route copy; no crude markers",
+    "no_debug_looking_prompts": true,
+    "no_oversized_labels_blocking_world": true
+  },
+  "location_bands": [
+    {"id": "working_wharf_apron", "label": "Working Wharf Apron", "world_rect": {"x": 220, "y": 930, "w": 1590, "h": 210}},
+    {"id": "harborfront_road", "label": "Harborfront Road", "world_rect": {"x": 220, "y": 760, "w": 1590, "h": 190}},
+    {"id": "rear_service_lane", "label": "Rear Service Lane", "world_rect": {"x": 260, "y": 285, "w": 1440, "h": 155}},
+    {"id": "tavern_inn_quarter", "label": "Tavern/Inn Quarter", "world_rect": {"x": 260, "y": 440, "w": 420, "h": 330}},
+    {"id": "counting_house_steps", "label": "Counting House Steps", "world_rect": {"x": 960, "y": 440, "w": 300, "h": 330}},
+    {"id": "commercial_avenue", "label": "Commercial Avenue", "world_rect": {"x": 1320, "y": 440, "w": 430, "h": 330}},
+    {"id": "east_road_island_exit", "label": "East Road - Island Exit", "world_rect": {"x": 1700, "y": 500, "w": 640, "h": 218}}
+  ],
+  "objective_route_hints": [
+    {"objective_id": "report_to_counting_house", "route_hint": "Route: harborfront road -> Counting House clerk", "why": "The player arrives at the wharf and must understand the first civic destination."},
+    {"objective_id": "investigate_missing_line", "route_hint": "Route: wharf apron, merchant row, or civic notice board", "why": "Multiple G-18A paths remain visible without debug arrows."},
+    {"objective_id": "follow_tavern_whisper", "route_hint": "Route: west connector -> Tavern/Inn rumor room", "why": "The tavern becomes a readable social landmark after the counting-house beat."},
+    {"objective_id": "lantern_at_wharf", "route_hint": "Route: harborfront road -> working wharf apron", "why": "Harbor work stays geographically tied to the mystery."},
+    {"objective_id": "follow_island_lead", "route_hint": "Route: east guidepost -> island road", "why": "The town-to-island transition becomes readable before G-20 fun-loop work."}
+  ],
+  "diegetic_guidance_markers": [
+    {"id": "counting_house_notice_board", "asset": "atelier_civic_town_notice_board_01", "location": {"x": 1086, "y": 570}, "purpose": "civic objective and optional notice clue"},
+    {"id": "village_exit_guidepost", "asset": "atelier_wayfinding_multi_arrow_signpost_01", "location": {"x": 1870, "y": 535}, "purpose": "island exit orientation"},
+    {"id": "arrival_harbor_lantern", "asset": "atelier_wayfinding_dock_lantern_post_01", "location": {"x": 428, "y": 940}, "purpose": "arrival and wharf work orientation"}
+  ],
+  "quality_bar": {
+    "player_knows_where_to_go": true,
+    "ui_does_not_break_immersion": true,
+    "ux_readability_score_target": 8.5,
+    "g19_assigned_score": 8.6
+  }
+}

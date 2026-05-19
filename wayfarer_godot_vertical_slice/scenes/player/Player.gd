@@ -196,7 +196,7 @@ func prompt_ux_contract() -> Dictionary:
 		"forbidden_prefix": "Press E",
 		"normal_play_debug_marker_free": true,
 		"prompt_suppression_available": has_method("set_prompt_suppressed"),
-		"targeting_rule": "nearest_interactable_with_compact_action_name_copy",
+		"targeting_rule": "nearest_interactable_with_compact_action_name_copy_and_npc_priority",
 	}
 
 func set_prompt_suppressed(enabled: bool) -> void:
@@ -414,12 +414,15 @@ func _update_interaction_target() -> void:
 			continue
 		var candidate_node := candidate as Node2D
 		var dist := global_position.distance_to(_candidate_interaction_position(candidate_node))
+		var target_score := dist
+		if candidate_node.has_method("npc_population_contract") or candidate_node.is_in_group("starter_village_npc") or candidate_node.is_in_group("opening_island_npc"):
+			target_score -= 56.0
 		var is_in_zone := dist <= interaction_radius
 		if candidate_node.has_method("is_player_in_interaction_area"):
 			is_in_zone = bool(candidate_node.call("is_player_in_interaction_area", global_position))
-		if is_in_zone and dist < nearest_dist:
+		if is_in_zone and target_score < nearest_dist:
 			nearest = candidate
-			nearest_dist = dist
+			nearest_dist = target_score
 
 	_current_target = nearest
 	prompt_label.visible = _current_target != null and not _prompt_suppressed

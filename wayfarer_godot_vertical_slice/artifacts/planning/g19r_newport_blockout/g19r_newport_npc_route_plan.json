@@ -1,0 +1,212 @@
+{
+  "schema_id": "wayfarer.g19r.newport.npc_route_plan.v1",
+  "phase": "G-19R",
+  "generated_at": "2026-05-19",
+  "source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "npc_routes": [
+    {
+      "id": "dockworker_route",
+      "npc_role": "dockworker",
+      "home_station": "lot_west_dock_warehouse",
+      "work_destination": "central cargo landing and west warehouse doors",
+      "walking_path": [
+        "west_service_pier",
+        "lot_west_dock_warehouse",
+        "central_boathouse_landing",
+        "harborfront_road"
+      ],
+      "pause_points": [
+        {
+          "x": 465,
+          "y": 1025
+        },
+        {
+          "x": 835,
+          "y": 1010
+        },
+        {
+          "x": 1050,
+          "y": 1000
+        }
+      ],
+      "facing_directions": [
+        "down",
+        "right",
+        "left"
+      ],
+      "quest_interaction_points": [
+        "dock_clue",
+        "wharf_lantern_rumor"
+      ],
+      "district_role": "Shows the harbor economy in motion once grounded walk sheets exist.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "No static sprite may translate along this route. Use grounded idle/facing now; unlock route walking only with timestamped idle/walk/facing proof."
+    },
+    {
+      "id": "counting_house_clerk_runner_route",
+      "npc_role": "counting house clerk or runner",
+      "home_station": "lot_counting_house_clerk",
+      "work_destination": "notice board, tavern porch, wharf cargo inspection",
+      "walking_path": [
+        "lot_counting_house_clerk",
+        "central_upland_counting_house_connector",
+        "lot_civic_notice_board",
+        "lot_tavern_inn_centerpiece",
+        "lot_west_dock_warehouse"
+      ],
+      "pause_points": [
+        {
+          "x": 1080,
+          "y": 555
+        },
+        {
+          "x": 1120,
+          "y": 620
+        },
+        {
+          "x": 520,
+          "y": 590
+        },
+        {
+          "x": 455,
+          "y": 985
+        }
+      ],
+      "facing_directions": [
+        "down",
+        "left",
+        "down",
+        "right"
+      ],
+      "quest_interaction_points": [
+        "first_objective",
+        "counting_house_missing_manifest",
+        "return_report"
+      ],
+      "district_role": "Official pressure thread tying the counting house to social and harbor evidence.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "Do not glide a static clerk sprite. Use idle/facing station changes only until clerk walk sheet exists."
+    },
+    {
+      "id": "tavern_patron_rumor_carrier_route",
+      "npc_role": "tavern patron / rumor carrier",
+      "home_station": "lot_tavern_inn_centerpiece",
+      "work_destination": "tavern porch, rear service gate, central avenue social pocket",
+      "walking_path": [
+        "tavern_porch",
+        "rear_service_street",
+        "hidden_rumor_cutthrough",
+        "main_commercial_avenue"
+      ],
+      "pause_points": [
+        {
+          "x": 500,
+          "y": 585
+        },
+        {
+          "x": 610,
+          "y": 365
+        },
+        {
+          "x": 690,
+          "y": 500
+        },
+        {
+          "x": 560,
+          "y": 720
+        }
+      ],
+      "facing_directions": [
+        "down",
+        "right",
+        "down",
+        "left"
+      ],
+      "quest_interaction_points": [
+        "tavern_whisper",
+        "two_npc_rumor",
+        "optional_hidden_clue"
+      ],
+      "district_role": "Social route that makes whisper-network geography readable.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "Do not glide a static patron between tavern and lane. Use stationed barks/facing until full movement proof exists."
+    },
+    {
+      "id": "merchant_shopkeeper_route",
+      "npc_role": "merchant / shopkeeper",
+      "home_station": "lot_mercantile_shop",
+      "work_destination": "market shed, mercantile door, counting-house forecourt",
+      "walking_path": [
+        "lot_mercantile_shop",
+        "main_commercial_avenue",
+        "lot_market_shed",
+        "lot_counting_house_clerk"
+      ],
+      "pause_points": [
+        {
+          "x": 815,
+          "y": 585
+        },
+        {
+          "x": 1510,
+          "y": 610
+        },
+        {
+          "x": 1115,
+          "y": 610
+        }
+      ],
+      "facing_directions": [
+        "down",
+        "left",
+        "up"
+      ],
+      "quest_interaction_points": [
+        "two_npc_rumor",
+        "island_lead"
+      ],
+      "district_role": "Commercial life and alternate rumor path.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "Do not glide a static shopkeeper sprite. Short route can animate only after grounded shopkeeper walk/facing proof."
+    },
+    {
+      "id": "courier_guard_sailor_route",
+      "npc_role": "optional guard / courier / sailor",
+      "home_station": "lot_village_exit_guidepost",
+      "work_destination": "market connector, village-to-island road, rear service lane",
+      "walking_path": [
+        "lot_village_exit_guidepost",
+        "village_to_island_road",
+        "east_market_connector",
+        "rear_service_street"
+      ],
+      "pause_points": [
+        {
+          "x": 1900,
+          "y": 585
+        },
+        {
+          "x": 1760,
+          "y": 650
+        },
+        {
+          "x": 1560,
+          "y": 520
+        }
+      ],
+      "facing_directions": [
+        "right",
+        "left",
+        "up"
+      ],
+      "quest_interaction_points": [
+        "island_lead",
+        "village_exit",
+        "return_report"
+      ],
+      "district_role": "Signals the next destination and guards against east-edge confusion.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "Do not glide a static courier or sailor sprite. Station at guidepost until movement proof can show grounded step cycle."
+    }
+  ]
+}

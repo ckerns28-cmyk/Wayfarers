@@ -1,0 +1,19 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 Core Profile Context 24.9.1.240813 - Compatibility - Using Device: ATI Technologies Inc. - AMD Radeon(TM) Graphics
+
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_01_wide_newport_normal_gameplay_view.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_02_player_arrival_at_harbor.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_03_player_on_route_to_counting_house.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_04_player_near_tavern_inn.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_05_player_on_commercial_avenue.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_06_player_at_dock_wharf_work_area.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_07_living_town_rhythm_without_prompt_clutter.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_08_npc_idle_and_readability_proof.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_09_player_interacting_with_counting_house_clerk.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_10_player_interacting_at_tavern_rumor_location.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_11_quest_prompt_journal_objective_proof.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_12_signs_markers_interaction_ux_proof.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_13_y_sort_layering_near_buildings_props.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_14_debug_overlays_disabled.png 1600x1000
+Wrote res://artifacts/review/g12_runtime_screenshots/g12_15_contact_sheet_provenance_proof.png 1600x1000
+PASS: G-12 runtime screenshots -> C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots

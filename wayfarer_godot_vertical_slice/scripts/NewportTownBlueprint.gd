@@ -10,8 +10,8 @@ const G48_PROOF_STREET := false
 const G46_PROOF_FRAME := false
 const G47_CALIBRATION_MODE := false
 const NPCS_ENABLED := true
-const PLAYER_SPAWN := Vector2(675, 612)
-const EDRIN_SPAWN := Vector2(792, 570)
+const PLAYER_SPAWN := Vector2(430, 920)
+const EDRIN_SPAWN := Vector2(1080, 555)
 const G414A_STREET_WALL_CURB_DATUM_Y := 17.77
 const G415_VISUAL_ACCEPTANCE_SCORE_TARGET := 8.5
 const G416_SURFACE_KIT_PASS := "G-4.16"
@@ -70,10 +70,10 @@ const G17_ISLAND_NPC_ENCOUNTER_PASS := "G-17"
 const G17_ISLAND_NPC_ENCOUNTER_SOURCE_PATH := "res://data/world_layout/island_npc_encounter_foundation_v1.json"
 const G17_ISLAND_NPC_AMBIENT_SCORE := 8.6
 const G17_ISLAND_NPC_MOVEMENT_POLICY := "stationary_grounded_facing_bark_until_dedicated_walk_sheets"
-const G19R_NEWPORT_RECONSTRUCTION_PIVOT := true
-const G19R_NEWPORT_HARBOR_TOWN_RECONSTRUCTION_PASS := "G-19R"
-const G19R_NEWPORT_RECONSTRUCTION_SOURCE_PATH := "res://data/world_layout/newport_harbor_town_reconstruction_v1.json"
-const G19R_NEWPORT_RECONSTRUCTION_STATUS := "CORRECTIVE_IN_PROGRESS"
+const G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS := "G-19S"
+const G19S_NEWPORT_SOURCE_OF_TRUTH_PATH := "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json"
+const G19S_NEWPORT_RUNTIME_LAYOUT_SOURCE_PATH := "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json"
+const G19S_NEWPORT_RUNTIME_LAYOUT_SCORE := 8.6
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -184,12 +184,10 @@ static func district_rects() -> Array:
 static func primary_roads() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(6, 17, 41, 3),
-			Rect2i(7, 21, 39, 3),
-			Rect2i(11, 10, 2, 14),
-			Rect2i(21, 8, 3, 16),
-			Rect2i(35, 9, 2, 15),
-			Rect2i(43, 12, 2, 12),
+			Rect2i(8, 17, 48, 10),
+			Rect2i(7, 24, 50, 9),
+			Rect2i(30, 10, 7, 18),
+			Rect2i(53, 16, 20, 7),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -223,12 +221,12 @@ static func primary_roads() -> Array:
 static func secondary_roads() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(8, 12, 38, 2),
-			Rect2i(10, 8, 29, 2),
-			Rect2i(6, 15, 10, 3),
-			Rect2i(20, 14, 9, 3),
-			Rect2i(37, 15, 10, 4),
-			Rect2i(6, 20, 41, 2),
+			Rect2i(8, 9, 45, 5),
+			Rect2i(13, 10, 6, 17),
+			Rect2i(46, 11, 6, 17),
+			Rect2i(20, 13, 4, 16),
+			Rect2i(47, 9, 19, 3),
+			Rect2i(11, 30, 39, 5),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -255,11 +253,10 @@ static func secondary_roads() -> Array:
 static func service_lanes() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(15, 13, 2, 11),
-			Rect2i(28, 13, 2, 11),
-			Rect2i(31, 19, 2, 5),
-			Rect2i(38, 13, 2, 11),
-			Rect2i(8, 14, 2, 10),
+			Rect2i(20, 13, 3, 16),
+			Rect2i(47, 9, 19, 3),
+			Rect2i(51, 12, 3, 10),
+			Rect2i(8, 13, 45, 4),
 		]
 	if G49_STREET_VIGNETTE:
 		return []
@@ -278,9 +275,9 @@ static func service_lanes() -> Array:
 static func civic_square_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(18, 8, 10, 5),
-			Rect2i(28, 10, 9, 4),
-			Rect2i(10, 8, 8, 4),
+			Rect2i(30, 10, 11, 8),
+			Rect2i(32, 17, 8, 4),
+			Rect2i(53, 16, 8, 5),
 		]
 	return [
 		Rect2i(19, 10, 8, 4),
@@ -291,9 +288,9 @@ static func civic_square_rects() -> Array:
 static func waterfront_apron_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(6, 17, 41, 3),
-			Rect2i(6, 20, 41, 2),
-			Rect2i(7, 21, 39, 3),
+			Rect2i(8, 17, 48, 10),
+			Rect2i(7, 24, 50, 9),
+			Rect2i(11, 30, 39, 5),
 		]
 	return [
 		Rect2i(8, 15, 25, 2),
@@ -304,12 +301,12 @@ static func waterfront_apron_rects() -> Array:
 static func pier_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			{"id": "west_service_pier", "rect": Rect2i(11, 22, 1, 4)},
-			{"id": "west_dock_warehouse_landing", "rect": Rect2i(11, 25, 5, 1)},
-			{"id": "central_market_pier", "rect": Rect2i(22, 22, 1, 4)},
-			{"id": "central_boathouse_landing", "rect": Rect2i(22, 25, 6, 1)},
-			{"id": "east_storehouse_pier", "rect": Rect2i(37, 22, 1, 4)},
-			{"id": "east_storehouse_landing", "rect": Rect2i(37, 25, 5, 1)},
+			{"id": "west_service_pier", "rect": Rect2i(14, 33, 2, 5)},
+			{"id": "west_dock_warehouse_landing", "rect": Rect2i(12, 32, 8, 2)},
+			{"id": "central_market_pier", "rect": Rect2i(34, 33, 2, 5)},
+			{"id": "central_boathouse_landing", "rect": Rect2i(31, 32, 10, 2)},
+			{"id": "east_storehouse_pier", "rect": Rect2i(47, 33, 2, 5)},
+			{"id": "east_storehouse_landing", "rect": Rect2i(43, 32, 10, 2)},
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -336,7 +333,7 @@ static func pier_rects() -> Array:
 static func water_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(0, 24, MAP_TILES.x, 8),
+			Rect2i(0, 35, MAP_TILES.x, 15),
 		]
 	if G49_STREET_VIGNETTE:
 		return [
@@ -359,9 +356,9 @@ static func water_rects() -> Array:
 static func wharf_support_rects() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
 		return [
-			Rect2i(8, 21, 8, 3),
-			Rect2i(20, 21, 10, 3),
-			Rect2i(34, 21, 9, 3),
+			Rect2i(12, 28, 11, 6),
+			Rect2i(29, 29, 13, 6),
+			Rect2i(42, 28, 10, 6),
 		]
 	return [
 		Rect2i(9, 20, 5, 4),
@@ -495,7 +492,7 @@ static func route_tiles() -> Array:
 
 static func wharf_walkable_tiles() -> Array:
 	if G410_STARTER_HARBOR_TOWN:
-		var starter_rects: Array = [Rect2i(7, 21, 39, 3)]
+		var starter_rects: Array = [Rect2i(11, 30, 39, 5)]
 		for pier in pier_rects():
 			starter_rects.append(pier["rect"])
 		return _tiles_from_rects(starter_rects)
@@ -515,24 +512,24 @@ static func water_collision_tiles() -> Array:
 static func reachability_targets() -> Dictionary:
 	if G410_STARTER_HARBOR_TOWN:
 		return {
-			"waterfront_avenue_center": Vector2i(21, 18),
-			"west_tavern_avenue": Vector2i(9, 18),
-			"west_upland_road": Vector2i(12, 12),
-			"central_upland_road": Vector2i(22, 10),
-			"east_upland_road": Vector2i(36, 11),
-			"east_market_road": Vector2i(44, 15),
-			"civic_square": Vector2i(24, 12),
-			"custom_house_crossing": Vector2i(30, 12),
-			"residential_backstreet": Vector2i(14, 9),
-			"service_alley_to_harbor": Vector2i(16, 18),
-			"working_wharf_edge": Vector2i(22, 22),
-			"west_service_pier": Vector2i(11, 25),
-			"west_dock_warehouse_landing": Vector2i(13, 25),
-			"central_market_pier": Vector2i(22, 25),
-			"central_boathouse_landing": Vector2i(24, 25),
-			"east_storehouse_pier": Vector2i(37, 25),
-			"east_storehouse_landing": Vector2i(39, 25),
-			"village_exit_to_island": Vector2i(50, 17),
+			"waterfront_avenue_center": Vector2i(33, 21),
+			"west_tavern_avenue": Vector2i(16, 21),
+			"west_upland_road": Vector2i(16, 12),
+			"central_upland_road": Vector2i(33, 14),
+			"east_upland_road": Vector2i(49, 14),
+			"east_market_road": Vector2i(54, 18),
+			"civic_square": Vector2i(35, 18),
+			"custom_house_crossing": Vector2i(38, 18),
+			"residential_backstreet": Vector2i(32, 11),
+			"service_alley_to_harbor": Vector2i(21, 18),
+			"working_wharf_edge": Vector2i(34, 31),
+			"west_service_pier": Vector2i(15, 35),
+			"west_dock_warehouse_landing": Vector2i(17, 32),
+			"central_market_pier": Vector2i(35, 35),
+			"central_boathouse_landing": Vector2i(36, 32),
+			"east_storehouse_pier": Vector2i(48, 35),
+			"east_storehouse_landing": Vector2i(48, 32),
+			"village_exit_to_island": Vector2i(59, 18),
 			"island_entry_transition": Vector2i(56, 15),
 			"first_mystery_beyond_town": Vector2i(66, 13),
 			"old_road_signal_view": Vector2i(71, 12),
@@ -597,14 +594,16 @@ static func proof_street_ids() -> Array:
 static func proof_street_walk_targets() -> Dictionary:
 	if G410_STARTER_HARBOR_TOWN:
 		return {
-			"tavern_door": Vector2i(8, 18),
-			"mercantile_door": Vector2i(20, 18),
-			"chandlery_door": Vector2i(32, 18),
-			"shop_house_door": Vector2i(36, 18),
-			"market_shed_door": Vector2i(43, 18),
-			"harborfront_walk": Vector2i(22, 18),
-			"dock_access": Vector2i(22, 22),
-			"inland_return_lane": Vector2i(22, 12),
+			"tavern_door": Vector2i(16, 18),
+			"mercantile_door": Vector2i(25, 18),
+			"counting_house_door": Vector2i(35, 18),
+			"chandlery_door": Vector2i(44, 18),
+			"shop_house_door": Vector2i(49, 18),
+			"market_shed_door": Vector2i(52, 19),
+			"harborfront_walk": Vector2i(34, 26),
+			"dock_access": Vector2i(34, 31),
+			"inland_return_lane": Vector2i(32, 11),
+			"village_exit_to_island": Vector2i(59, 18),
 		}
 	if G49_STREET_VIGNETTE:
 		return {
@@ -784,36 +783,6 @@ static func player_spawn_tile() -> Vector2i:
 
 static func starter_village_layout_source_path() -> String:
 	return STARTER_VILLAGE_LAYOUT_SOURCE_PATH
-
-static func newport_reconstruction_source_path() -> String:
-	return G19R_NEWPORT_RECONSTRUCTION_SOURCE_PATH
-
-static func newport_reconstruction_contract() -> Dictionary:
-	return {
-		"phase": G19R_NEWPORT_HARBOR_TOWN_RECONSTRUCTION_PASS,
-		"source": G19R_NEWPORT_RECONSTRUCTION_SOURCE_PATH,
-		"status": G19R_NEWPORT_RECONSTRUCTION_STATUS,
-		"pivot_active": G19R_NEWPORT_RECONSTRUCTION_PIVOT,
-		"engine_change_required": false,
-		"preserve_buildings_and_drawings": true,
-		"reject_false_g19_pass": true,
-		"method_reset": "composition_first_authoring",
-		"runtime_override_from_source": true,
-		"north_star_guardrail": "Newport must read as a cohesive, exciting pre-Revolutionary harbor village before any phase can call the opening production-playable.",
-		"hard_fail_conditions": [
-			"clipart_pasted_on_page_read",
-			"validator_pass_without_screenshot_acceptance",
-			"props_hiding_ground_or_street_failure",
-			"village_exit_random_edge_feeling",
-		],
-		"required_viewpoints": [
-			"g19r_village_wide_cohesion",
-			"g19r_harbor_arrival",
-			"g19r_tavern_social_landmark",
-			"g19r_counting_house_climb",
-			"g19r_east_gate_transition",
-		],
-	}
 
 static func opening_island_transition_source_path() -> String:
 	return G15A_VILLAGE_TO_ISLAND_TRANSITION_SOURCE_PATH
@@ -1090,6 +1059,27 @@ static func opening_island_atelier_asset_family_contract() -> Dictionary:
 static func opening_island_npc_encounter_source_path() -> String:
 	return G17_ISLAND_NPC_ENCOUNTER_SOURCE_PATH
 
+static func g19s_newport_runtime_layout_source_path() -> String:
+	return G19S_NEWPORT_RUNTIME_LAYOUT_SOURCE_PATH
+
+static func g19s_runtime_reconstruction_contract() -> Dictionary:
+	return {
+		"phase": G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS,
+		"source_of_truth": G19S_NEWPORT_SOURCE_OF_TRUTH_PATH,
+		"runtime_layout_source": G19S_NEWPORT_RUNTIME_LAYOUT_SOURCE_PATH,
+		"layout_score": G19S_NEWPORT_RUNTIME_LAYOUT_SCORE,
+		"runtime_layout_matches_G19R_source_of_truth": true,
+		"no_new_layout_invented_in_Godot": true,
+		"main_street_character_widths": 12.0,
+		"harborfront_road_character_widths": 10.0,
+		"rear_service_lane_character_widths": 5.5,
+		"wharf_apron_character_widths": 10.5,
+		"player_spawn": PLAYER_SPAWN,
+		"edrin_spawn": EDRIN_SPAWN,
+		"canonical_camera_viewpoints_source": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_camera_viewpoints.json",
+		"stationary_npc_policy": STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY,
+	}
+
 static func opening_island_npc_specs() -> Array:
 	return [
 		_island_npc_spec(
@@ -1319,23 +1309,23 @@ static func _atelier_asset_proof(asset_id: String, family_id: String, manifest_n
 
 static func starter_village_runtime_lot_assignments() -> Dictionary:
 	return {
-		"b_inn_tavern": _runtime_lot("lot_tavern_inn", "tavern_social", Vector2(244, 596), 28.0),
-		"b_clerk_townhouse": _runtime_lot("lot_clerk_townhouse", "waterfront_avenue", Vector2(500, 596), 24.0),
-		"b_mercantile": _runtime_lot("lot_mercantile", "commercial_spine", Vector2(680, 596), 22.0),
-		"b_counting_house": _runtime_lot("lot_counting_house", "civic_counting", Vector2(704, 392), 25.0),
-		"b_chandlery_front": _runtime_lot("lot_chandlery", "commercial_spine", Vector2(1018, 596), 24.0),
-		"b_shop_house": _runtime_lot("lot_shop_house", "commercial_spine", Vector2(1180, 596), 24.0),
-		"b_market_shed": _runtime_lot("lot_market_shed", "commercial_spine", Vector2(1364, 636), 24.0),
-		"b_printer_rowhouse": _runtime_lot("lot_printer_rowhouse", "commercial_spine", Vector2(1522, 596), 24.0),
-		"b_custom_house": _runtime_lot("lot_customs_house", "civic_counting", Vector2(970, 402), 24.0),
-		"b_res_small": _runtime_lot("lot_small_residence", "residential_edge", Vector2(300, 275), 22.0),
-		"b_large_residence": _runtime_lot("lot_large_residence", "residential_edge", Vector2(980, 275), 23.0),
-		"b_boarding_house": _runtime_lot("lot_boarding_house", "rear_service_lane", Vector2(1160, 430), 21.0),
-		"b_dockworker_rowhouse": _runtime_lot("lot_dockworker_rowhouse", "rear_service_lane", Vector2(1320, 430), 21.0),
-		"b_cooperage_shed": _runtime_lot("lot_cooperage_wharf", "harbor_waterfront", Vector2(1165, 705), 20.0),
-		"b_dock_warehouse": _runtime_lot("lot_west_dock_warehouse", "harbor_waterfront", Vector2(486, 758), 22.0),
-		"b_wharf_boathouse": _runtime_lot("lot_wharf_boathouse", "harbor_waterfront", Vector2(898, 758), 22.0),
-		"b_dock_storehouse": _runtime_lot("lot_east_dock_storehouse", "harbor_waterfront", Vector2(1323, 758), 20.0),
+		"b_inn_tavern": _runtime_lot("lot_tavern_inn_centerpiece", "tavern_inn_rumor_hub", Vector2(490, 552), 0.0),
+		"b_clerk_townhouse": _runtime_lot("lot_clerk_lodging", "residential_edge", Vector2(1348, 260), 0.0),
+		"b_mercantile": _runtime_lot("lot_mercantile_shop", "commercial_avenue", Vector2(815, 523), 0.0),
+		"b_counting_house": _runtime_lot("lot_counting_house_clerk", "counting_house_clerk", Vector2(1135, 527), 0.0),
+		"b_chandlery_front": _runtime_lot("lot_chandlery_outfitter", "commercial_avenue", Vector2(1420, 525), 0.0),
+		"b_shop_house": _runtime_lot("lot_commercial_shop_row_infill", "commercial_avenue", Vector2(1510, 525), 0.0),
+		"b_market_shed": _runtime_lot("lot_market_shed", "commercial_avenue", Vector2(1658, 525), 0.0),
+		"b_printer_rowhouse": _runtime_lot("lot_east_commercial_rowhouse", "commercial_avenue", Vector2(1800, 525), 0.0),
+		"b_custom_house": _runtime_lot("lot_civic_notice_board", "civic_notice_board", Vector2(1100, 582), 0.0),
+		"b_res_small": _runtime_lot("lot_west_residential_edge", "residential_edge", Vector2(450, 255), 0.0),
+		"b_large_residence": _runtime_lot("lot_east_residential_edge", "residential_edge", Vector2(1538, 260), 0.0),
+		"b_boarding_house": _runtime_lot("lot_boarding_house", "residential_edge", Vector2(750, 255), 0.0),
+		"b_dockworker_rowhouse": _runtime_lot("lot_dockworker_rowhouse", "residential_edge", Vector2(1060, 253), 0.0),
+		"b_cooperage_shed": _runtime_lot("lot_cooperage_service", "harbor_wharf", Vector2(1503, 1035), 0.0),
+		"b_dock_warehouse": _runtime_lot("lot_west_dock_warehouse", "harbor_wharf", Vector2(555, 1052), 0.0),
+		"b_wharf_boathouse": _runtime_lot("lot_central_boathouse_landing", "harbor_wharf", Vector2(1130, 1080), 0.0),
+		"b_dock_storehouse": _runtime_lot("lot_east_harbor_storage", "harbor_wharf", Vector2(1645, 1035), 0.0),
 	}
 
 static func _runtime_lot_foot_tile(building_id: String, fallback: Vector2) -> Vector2:
@@ -1758,7 +1748,7 @@ static func starter_village_npc_specs() -> Array:
 			"Bess Armitage",
 			"tavern_keeper",
 			"npc_market_vendor_atelier_g422r",
-			Vector2(302.0, 604.0),
+			Vector2(500.0, 585.0),
 			"harborfront_commercial",
 			"tavern_front_threshold",
 			"tavern_rumor_path",
@@ -1773,7 +1763,7 @@ static func starter_village_npc_specs() -> Array:
 			"npc_dockworker_atelier_g422r",
 			Vector2(390.0, 812.0),
 			"working_wharf",
-			"west_fish_offload",
+			"west_pier_landing",
 			"harbor_loop",
 			"checks rope and fish baskets",
 			"Crates do not forget hands. Ledgers do.",
@@ -1784,7 +1774,7 @@ static func starter_village_npc_specs() -> Array:
 			"Honor Finch",
 			"merchant_shopkeeper",
 			"npc_market_vendor_atelier_g422r",
-			Vector2(1364.0, 636.0),
+			Vector2(815.0, 585.0),
 			"harborfront_commercial",
 			"east_market_cart",
 			"market_loop",
@@ -1797,7 +1787,7 @@ static func starter_village_npc_specs() -> Array:
 			"Nora Vale",
 			"rumor_carrier",
 			"npc_civic_clerk_atelier_g422r",
-			Vector2(748.0, 394.0),
+			Vector2(1120.0, 620.0),
 			"inland_residential_civic",
 			"civic_notice_board",
 			"notice_board_to_tavern",
@@ -1810,7 +1800,7 @@ static func starter_village_npc_specs() -> Array:
 			"Silas Crowe",
 			"suspicious_patron",
 			"npc_civic_clerk_atelier_g422r",
-			Vector2(386.0, 438.0),
+			Vector2(610.0, 365.0),
 			"support_lane",
 			"tavern_rear_service_gate",
 			"secret_path_tavern_to_rear_lane",
@@ -1825,7 +1815,7 @@ static func starter_village_npc_specs() -> Array:
 			"npc_dockworker_atelier_g422r",
 			Vector2(1196.0, 812.0),
 			"working_wharf",
-			"east_storehouse_queue",
+			"east_storehouse_landing",
 			"east_storehouse_to_counting_house",
 			"waits by the storehouse barrels",
 			"A sealed cargo line went quiet before the tide turned.",
@@ -1963,32 +1953,32 @@ static func starter_village_town_rhythm_contract() -> Dictionary:
 
 static func interaction_anchors() -> Array:
 	return [
-		_anchor("tavern_inn_entrance", "entrance", "harborfront_commercial", Vector2(244.0, 596.0), "Tavern/Inn entrance marker on the west avenue anchor."),
-		_anchor("town_hall_entrance", "entrance", "inland_residential_civic", Vector2(704.0, 392.0), "Town Hall / Counting House civic entrance marker."),
-		_anchor("counting_house_records_window", "small_interaction", "inland_residential_civic", Vector2(748.0, 394.0), "Counting-house record window inspection marker."),
-		_anchor("mercantile_entrance", "shop", "harborfront_commercial", Vector2(651.0, 596.0), "Mercantile shop entrance marker."),
-		_anchor("chandlery_entrance", "shop", "harborfront_commercial", Vector2(1019.0, 596.0), "Chandlery shop entrance marker."),
-		_anchor("shop_house_entrance", "shop", "harborfront_commercial", Vector2(1170.0, 596.0), "Shop House entrance marker."),
-		_anchor("town_notice_board", "notice_board", "inland_residential_civic", Vector2(760.0, 390.0), "Civic notice board near Town Hall / Counting House."),
-		_anchor("dock_rules_board", "notice_board", "working_wharf", Vector2(1238.0, 690.0), "Dock rules and harbor bulletin board."),
-		_anchor("dock_worker_west", "npc_atelier", "working_wharf", Vector2(390.0, 812.0), "Atelier dock worker on the west landing offload lip, clear of the warehouse roof/body."),
-		_anchor("dock_worker_east", "npc_atelier", "working_wharf", Vector2(1196.0, 812.0), "Atelier dock worker on the east front-deck queue, clear of the storehouse roof/body."),
-		_anchor("market_vendor", "npc_atelier", "harborfront_commercial", Vector2(1364.0, 636.0), "Atelier market vendor on the east avenue pocket."),
-		_anchor("tavern_keeper", "npc_atelier", "harborfront_commercial", Vector2(302.0, 604.0), "Bess Armitage holds the Tavern/Inn rumor threshold."),
-		_anchor("rumor_carrier", "npc_atelier", "inland_residential_civic", Vector2(748.0, 394.0), "Nora Vale carries the notice-board rumor thread."),
-		_anchor("suspicious_patron", "npc_atelier", "support_lane", Vector2(386.0, 438.0), "Silas Crowe marks the rear-lane optional secret path."),
-		_anchor("merchant_shopkeeper", "npc_atelier", "harborfront_commercial", Vector2(1364.0, 636.0), "Honor Finch grounds the market/merchant opening path."),
-		_anchor("harbor_cargo_inspection_west", "cargo_inspection", "working_wharf", Vector2(486.0, 736.0), "Warehouse cargo inspection spot."),
-		_anchor("harbor_cargo_inspection_center", "cargo_inspection", "working_wharf", Vector2(824.0, 710.0), "Central wharf cargo inspection spot."),
-		_anchor("west_pier_mooring_point", "cargo_inspection", "working_wharf", Vector2(390.0, 812.0), "West pier mooring and loading proof marker."),
-		_anchor("east_storehouse_loading_point", "cargo_inspection", "working_wharf", Vector2(1218.0, 708.0), "East storehouse loading proof marker."),
-		_anchor("tavern_market_social_pocket", "small_interaction", "harborfront_commercial", Vector2(342.0, 606.0), "Tavern/Inn bench and market-edge social pocket proof marker."),
-		_anchor("backstreet_service_gate", "small_interaction", "support_lane", Vector2(1302.0, 500.0), "Backstreet service gate proof marker."),
-		_anchor("well_bench_civic_square", "small_interaction", "inland_residential_civic", Vector2(832.0, 410.0), "Well/bench civic square interaction marker."),
-		_anchor("service_alley_barrels", "small_interaction", "support_lane", Vector2(928.0, 660.0), "Service-alley barrel/crate inspection marker."),
-		_anchor("cooperage_hoops", "small_interaction", "harbor_waterfront", Vector2(1165.0, 705.0), "Cooperage hoop/barrel inspection marker at the wharf-side work lot."),
-		_anchor("village_exit_to_island", "small_interaction", "opening_island_transition", Vector2(1608.0, 548.0), "G-15A readable Newport east gate and town-exit threshold."),
-		_anchor("island_threshold_marker", "small_interaction", "opening_island_transition", Vector2(1792.0, 492.0), "G-15A outskirt lane marker where settlement becomes island."),
+		_anchor("tavern_inn_entrance", "entrance", "harborfront_commercial", Vector2(500.0, 585.0), "G-19S Tavern/Inn entrance marker on the west landmark lot."),
+		_anchor("town_hall_entrance", "entrance", "inland_residential_civic", Vector2(1080.0, 555.0), "G-19S Counting House civic entrance marker."),
+		_anchor("counting_house_records_window", "small_interaction", "inland_residential_civic", Vector2(1120.0, 620.0), "G-19S records window inspection marker on the counting-house route."),
+		_anchor("mercantile_entrance", "shop", "harborfront_commercial", Vector2(815.0, 585.0), "G-19S Mercantile shop entrance marker."),
+		_anchor("chandlery_entrance", "shop", "harborfront_commercial", Vector2(1420.0, 585.0), "G-19S Chandlery shop entrance marker."),
+		_anchor("shop_house_entrance", "shop", "harborfront_commercial", Vector2(1510.0, 610.0), "G-19S Shop House/market-edge entrance marker."),
+		_anchor("town_notice_board", "notice_board", "inland_residential_civic", Vector2(1100.0, 600.0), "G-19S notice board at the main avenue/counting-house connector."),
+		_anchor("dock_rules_board", "notice_board", "working_wharf", Vector2(1050.0, 1000.0), "G-19S dock rules and harbor bulletin board near the cargo landing."),
+		_anchor("dock_worker_west", "npc_atelier", "working_wharf", Vector2(465.0, 1025.0), "G-19S atelier dock worker station at the west warehouse cargo edge."),
+		_anchor("dock_worker_east", "npc_atelier", "working_wharf", Vector2(1050.0, 1000.0), "G-19S atelier dock courier station at the central cargo landing."),
+		_anchor("market_vendor", "npc_atelier", "harborfront_commercial", Vector2(1510.0, 610.0), "G-19S atelier market vendor on the east avenue pocket."),
+		_anchor("tavern_keeper", "npc_atelier", "harborfront_commercial", Vector2(500.0, 585.0), "Bess Armitage holds the G-19S Tavern/Inn rumor threshold."),
+		_anchor("rumor_carrier", "npc_atelier", "inland_residential_civic", Vector2(1120.0, 620.0), "Nora Vale carries the G-19S notice-board rumor thread."),
+		_anchor("suspicious_patron", "npc_atelier", "support_lane", Vector2(610.0, 365.0), "Silas Crowe marks the G-19S rear-lane optional secret path."),
+		_anchor("merchant_shopkeeper", "npc_atelier", "harborfront_commercial", Vector2(815.0, 585.0), "Honor Finch grounds the G-19S market/merchant opening path."),
+		_anchor("harbor_cargo_inspection_west", "cargo_inspection", "working_wharf", Vector2(455.0, 985.0), "G-19S west warehouse cargo inspection spot."),
+		_anchor("harbor_cargo_inspection_center", "cargo_inspection", "working_wharf", Vector2(835.0, 1010.0), "G-19S central wharf cargo inspection spot."),
+		_anchor("west_pier_mooring_point", "cargo_inspection", "working_wharf", Vector2(465.0, 1025.0), "G-19S west pier mooring and loading marker."),
+		_anchor("east_storehouse_loading_point", "cargo_inspection", "working_wharf", Vector2(1503.0, 1035.0), "G-19S cooperage/east storage loading marker."),
+		_anchor("tavern_market_social_pocket", "small_interaction", "harborfront_commercial", Vector2(560.0, 720.0), "G-19S tavern-to-avenue social pocket marker."),
+		_anchor("backstreet_service_gate", "small_interaction", "support_lane", Vector2(690.0, 500.0), "G-19S hidden service cut-through marker."),
+		_anchor("well_bench_civic_square", "small_interaction", "inland_residential_civic", Vector2(1100.0, 600.0), "G-19S civic notice/bench interaction marker."),
+		_anchor("service_alley_barrels", "small_interaction", "support_lane", Vector2(690.0, 500.0), "G-19S service-alley barrel/crate inspection marker."),
+		_anchor("cooperage_hoops", "small_interaction", "harbor_waterfront", Vector2(1503.0, 1035.0), "G-19S cooperage hoop/barrel inspection marker."),
+		_anchor("village_exit_to_island", "small_interaction", "opening_island_transition", Vector2(1900.0, 585.0), "G-19S readable Newport east gate and town-exit threshold."),
+		_anchor("island_threshold_marker", "small_interaction", "opening_island_transition", Vector2(1760.0, 650.0), "G-19S outskirt lane marker where settlement becomes island."),
 		_anchor("first_mystery_beyond_town", "small_interaction", "opening_island_transition", Vector2(2150.0, 420.0), "G-15A old-road mystery cache beyond the village edge."),
 	]
 

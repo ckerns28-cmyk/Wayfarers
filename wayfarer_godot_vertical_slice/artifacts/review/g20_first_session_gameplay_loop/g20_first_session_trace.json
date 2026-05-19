@@ -1,0 +1,526 @@
+{
+	"arrive": true,
+	"current_location_name": "Counting House Steps",
+	"current_route_hint": "Route: keep the proof hidden until dawn",
+	"discover": true,
+	"explore": true,
+	"first_20_30_minutes_playable": true,
+	"first_session_playable": true,
+	"first_time_player_reason_to_continue": "The missing manifest becomes a harbor conspiracy with a named contact, proof from the island, and a dawn confrontation before the Governor's men close the harbor.",
+	"gameplay_hook_score": 8.7,
+	"implementation_readiness_score": 8.7,
+	"investigate": true,
+	"journal_visible": true,
+	"loop_beats": [
+		{
+			"beat_id": "arrive",
+			"location": "Newport Harbor wharf",
+			"minute_target": "0-2",
+			"player_function": "arrival and identity",
+			"reward_feedback": "Journal opens with a place-specific objective"
+		},
+		{
+			"beat_id": "orient",
+			"location": "harborfront road to Counting House",
+			"minute_target": "2-4",
+			"player_function": "first route confidence",
+			"reward_feedback": "Counting House route is explicit"
+		},
+		{
+			"beat_id": "talk",
+			"location": "Counting House",
+			"minute_target": "4-7",
+			"player_function": "meet civic contact",
+			"reward_feedback": "Edrin becomes a named problem-giver"
+		},
+		{
+			"beat_id": "investigate",
+			"location": "wharf apron and commercial avenue",
+			"minute_target": "7-11",
+			"player_function": "turn clue into town geography",
+			"reward_feedback": "missing manifest line becomes suspicious"
+		},
+		{
+			"beat_id": "tavern_whisper",
+			"location": "Tavern/Inn",
+			"minute_target": "11-15",
+			"player_function": "discover rumor hub",
+			"reward_feedback": "Reward: Resolve +5 for following the tavern whisper"
+		},
+		{
+			"beat_id": "choose",
+			"location": "wharf lanterns or service lane",
+			"minute_target": "15-17",
+			"player_function": "agency and route ownership",
+			"reward_feedback": "chosen path is logged"
+		},
+		{
+			"beat_id": "explore",
+			"location": "village exit and old island road",
+			"minute_target": "17-21",
+			"player_function": "safe-town-to-mystery transition",
+			"reward_feedback": "Access: old road island lead"
+		},
+		{
+			"beat_id": "discover",
+			"location": "signal rise and hidden landing",
+			"minute_target": "21-25",
+			"player_function": "find physical proof",
+			"reward_feedback": "Reward: Resolve +8 for proving the island clue"
+		},
+		{
+			"beat_id": "return_report",
+			"location": "return lane and Counting House",
+			"minute_target": "25-28",
+			"player_function": "close the loop through people",
+			"reward_feedback": "Named contact: Annelise Crow"
+		},
+		{
+			"beat_id": "continue",
+			"location": "Newport at dawn",
+			"minute_target": "28-30",
+			"player_function": "forward hook",
+			"reward_feedback": "dawn signal and Governor's men hook"
+		}
+	],
+	"no_dead_objective_states": true,
+	"npc_route_policy": "NPCs are stationed for this proof unless grounded walk animation exists; no static sprite glide is accepted.",
+	"orient": true,
+	"phase": "G-20",
+	"playable_minutes_estimate": 28,
+	"player_has_reason_to_continue": true,
+	"player_orientation_score": 8.7,
+	"player_receives_feedback_and_reward": true,
+	"playthrough_trace": [
+		{
+			"completed_objectives": [],
+			"current_objective_id": "make_landfall",
+			"current_objective_text": "Make landfall at Newport Harbor; face inland from the working wharf.",
+			"events_applied": [],
+			"flags": {
+
+			},
+			"note": "Arrival at Newport Harbor frames the player as a newcomer stepping off the working wharf.",
+			"response_text": "",
+			"reward_log": [],
+			"reward_resolve": 0,
+			"step_id": "arrival_harbor"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall"
+			],
+			"current_objective_id": "report_to_counting_house",
+			"current_objective_text": "Follow the harborfront road to Edrin Vale at the Counting House.",
+			"events_applied": [],
+			"flags": {
+
+			},
+			"note": "The first objective and route hint orient the player toward Edrin at the Counting House.",
+			"response_text": "",
+			"reward_log": [],
+			"reward_resolve": 0,
+			"step_id": "orient_to_counting_house"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house"
+			],
+			"current_objective_id": "investigate_missing_line",
+			"current_objective_text": "Ask at the wharf apron, merchant row, or civic notice board about the missing ledger line.",
+			"events_applied": [
+				"edrin"
+			],
+			"flags": {
+
+			},
+			"note": "Edrin gives the missing manifest problem a civic and personal reason to care.",
+			"response_text": "Edrin Vale: The missing line is not a mistake. Ask the wharf who handled the cargo, then listen at the Tavern/Inn.",
+			"reward_log": [],
+			"reward_resolve": 0,
+			"step_id": "counting_house_first_talk"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line"
+			],
+			"current_objective_id": "follow_tavern_whisper",
+			"current_objective_text": "Take the west connector to Bess Armitage at the Tavern/Inn.",
+			"events_applied": [
+				"mara"
+			],
+			"flags": {
+				"clue_missing_manifest_line": true
+			},
+			"note": "A dockworker clue makes the mystery physical instead of abstract ledger text.",
+			"response_text": "Mara Pike: That crate was not lost. Someone made it disappear before the tide bell.",
+			"reward_log": [],
+			"reward_resolve": 0,
+			"step_id": "wharf_investigation"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper"
+			],
+			"current_objective_id": "choose_next_lead",
+			"current_objective_text": "Choose a next lead: Edrin, the wharf lanterns, or the rear service lane.",
+			"events_applied": [
+				"bess"
+			],
+			"flags": {
+				"clue_missing_manifest_line": true,
+				"third_toast_heard": true
+			},
+			"note": "The Tavern/Inn turns investigation into a pre-Revolution whisper-network fantasy.",
+			"response_text": "Bess Armitage: Third Toast, then no names. If the lantern burns twice at the wharf, someone chose a side.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper"
+			],
+			"reward_resolve": 5,
+			"step_id": "tavern_whisper_social_hook"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper",
+				"choose_next_lead",
+				"lantern_at_wharf"
+			],
+			"current_objective_id": "secure_contact",
+			"current_objective_text": "Return by the central connector and secure a trusted contact before dawn.",
+			"events_applied": [
+				"jonah"
+			],
+			"flags": {
+				"chosen_path": "ask_the_wharf",
+				"clue_missing_manifest_line": true,
+				"third_toast_heard": true
+			},
+			"note": "The wharf lantern rumor confirms that working harbor life is tied to the secret.",
+			"response_text": "Jonah Reed: Two lanterns means the cargo was claimed. One means it sank. Tonight there were two.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper"
+			],
+			"reward_resolve": 5,
+			"step_id": "dockworker_rumor_confirmation"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper",
+				"choose_next_lead",
+				"lantern_at_wharf",
+				"secure_contact"
+			],
+			"current_objective_id": "hook_to_continue",
+			"current_objective_text": "Carry the proof into dawn before the Governor's men close the harbor.",
+			"events_applied": [
+				"edrin"
+			],
+			"flags": {
+				"chosen_path": "ask_the_wharf",
+				"clue_missing_manifest_line": true,
+				"third_toast_heard": true
+			},
+			"note": "The first return grants a named contact and points the player toward dawn.",
+			"response_text": "Edrin Vale: Keep the missing line out of official ink until dawn. Come back when the harbor bell changes.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper",
+				"Named contact: Edrin Vale"
+			],
+			"reward_resolve": 5,
+			"step_id": "first_return_reward_and_contact"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper",
+				"choose_next_lead",
+				"lantern_at_wharf",
+				"secure_contact",
+				"hook_to_continue",
+				"follow_island_lead"
+			],
+			"current_objective_id": "travel_to_island_clue_site",
+			"current_objective_text": "Take the old road marker toward the signal rise and hidden landing.",
+			"events_applied": [
+				"isla"
+			],
+			"flags": {
+				"chosen_path": "ask_the_wharf",
+				"clue_missing_manifest_line": true,
+				"island_lead_active": true,
+				"island_lead_source": "farmhand",
+				"island_route_choice": "old_road_farm_path",
+				"island_route_choice_locked": true,
+				"third_toast_heard": true
+			},
+			"note": "The village edge becomes a readable island lead rather than a dead border.",
+			"response_text": "Isla Brooke: The hill lantern was not farmer's work. Follow the old road, but keep the harbor at your back.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper",
+				"Named contact: Edrin Vale",
+				"Access: old road island lead"
+			],
+			"reward_resolve": 5,
+			"step_id": "island_exit_unlock"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper",
+				"choose_next_lead",
+				"lantern_at_wharf",
+				"secure_contact",
+				"hook_to_continue",
+				"follow_island_lead"
+			],
+			"current_objective_id": "travel_to_island_clue_site",
+			"current_objective_text": "Take the old road marker toward the signal rise and hidden landing.",
+			"events_applied": [
+				"elias"
+			],
+			"flags": {
+				"chosen_path": "ask_the_wharf",
+				"clue_missing_manifest_line": true,
+				"coded_whisper_confirmed": true,
+				"island_lead_active": true,
+				"island_lead_source": "farmhand",
+				"island_route_choice": "coded_old_road_path",
+				"island_route_choice_locked": true,
+				"third_toast_heard": true
+			},
+			"note": "The tavern code carries the player into island exploration.",
+			"response_text": "Elias Ward: The old road remembers kings better than clerks remember cargo. Look where the road stops pretending.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper",
+				"Named contact: Edrin Vale",
+				"Access: old road island lead"
+			],
+			"reward_resolve": 5,
+			"step_id": "old_road_explore"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper",
+				"choose_next_lead",
+				"lantern_at_wharf",
+				"secure_contact",
+				"hook_to_continue",
+				"follow_island_lead",
+				"travel_to_island_clue_site"
+			],
+			"current_objective_id": "discover_physical_evidence",
+			"current_objective_text": "Search the hidden landing for proof of the missing manifest line.",
+			"events_applied": [
+				"mara_oren"
+			],
+			"flags": {
+				"chosen_path": "ask_the_wharf",
+				"clue_missing_manifest_line": true,
+				"coded_whisper_confirmed": true,
+				"island_lead_active": true,
+				"island_lead_source": "farmhand",
+				"island_route_choice": "signal_cache_optional_path",
+				"island_route_choice_locked": true,
+				"optional_clue_enriched_journal": true,
+				"optional_signal_cache_clue": true,
+				"third_toast_heard": true
+			},
+			"note": "Optional signal lore enriches the route without blocking progress.",
+			"response_text": "Mara Oren: One lantern for weather, two for warning, three for men who should not be ashore.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper",
+				"Named contact: Edrin Vale",
+				"Access: old road island lead"
+			],
+			"reward_resolve": 5,
+			"step_id": "optional_signal_discovery"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper",
+				"choose_next_lead",
+				"lantern_at_wharf",
+				"secure_contact",
+				"hook_to_continue",
+				"follow_island_lead",
+				"travel_to_island_clue_site",
+				"discover_physical_evidence"
+			],
+			"current_objective_id": "return_or_report_choice",
+			"current_objective_text": "Choose who receives the proof: Edrin at the Counting House or Annelise on the return lane.",
+			"events_applied": [
+				"tomas"
+			],
+			"flags": {
+				"chosen_path": "ask_the_wharf",
+				"clue_missing_manifest_line": true,
+				"coded_whisper_confirmed": true,
+				"hidden_landing_manifest_mark": true,
+				"island_lead_active": true,
+				"island_lead_source": "farmhand",
+				"island_physical_evidence_found": true,
+				"island_route_choice": "signal_cache_optional_path",
+				"island_route_choice_locked": true,
+				"optional_clue_enriched_journal": true,
+				"optional_signal_cache_clue": true,
+				"third_toast_heard": true
+			},
+			"note": "The hidden landing provides physical evidence and a Resolve reward.",
+			"response_text": "Tomas Reed: If the manifest lost a line, the cove kept the ink. That rope was cut after midnight.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper",
+				"Named contact: Edrin Vale",
+				"Access: old road island lead",
+				"Reward: Resolve +8 for proving the island clue"
+			],
+			"reward_resolve": 13,
+			"step_id": "hidden_landing_evidence"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper",
+				"choose_next_lead",
+				"lantern_at_wharf",
+				"secure_contact",
+				"hook_to_continue",
+				"follow_island_lead",
+				"travel_to_island_clue_site",
+				"discover_physical_evidence",
+				"return_or_report_choice"
+			],
+			"current_objective_id": "hook_to_continue",
+			"current_objective_text": "Carry the proof into dawn before the Governor's men close the harbor.",
+			"events_applied": [
+				"annelise"
+			],
+			"flags": {
+				"chosen_path": "ask_the_wharf",
+				"clue_missing_manifest_line": true,
+				"coded_whisper_confirmed": true,
+				"hidden_landing_manifest_mark": true,
+				"island_lead_active": true,
+				"island_lead_source": "farmhand",
+				"island_physical_evidence_found": true,
+				"island_route_choice": "signal_cache_optional_path",
+				"island_route_choice_locked": true,
+				"optional_clue_enriched_journal": true,
+				"optional_signal_cache_clue": true,
+				"return_report_choice": true,
+				"return_report_contact": "rumor contact",
+				"return_report_route_choice": "annelise_rumor_contact",
+				"third_toast_heard": true
+			},
+			"note": "Annelise makes the return route socially meaningful and gives the player a choice in who carries the truth.",
+			"response_text": "Annelise Crow: Bring the rope mark to Edrin. I will make sure the tavern hears the safer half of the truth.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper",
+				"Named contact: Edrin Vale",
+				"Access: old road island lead",
+				"Reward: Resolve +8 for proving the island clue",
+				"Named contact: Annelise Crow"
+			],
+			"reward_resolve": 13,
+			"step_id": "return_report_choice"
+		},
+		{
+			"completed_objectives": [
+				"make_landfall",
+				"report_to_counting_house",
+				"investigate_missing_line",
+				"follow_tavern_whisper",
+				"choose_next_lead",
+				"lantern_at_wharf",
+				"secure_contact",
+				"hook_to_continue",
+				"follow_island_lead",
+				"travel_to_island_clue_site",
+				"discover_physical_evidence",
+				"return_or_report_choice"
+			],
+			"current_objective_id": "hook_to_continue",
+			"current_objective_text": "Carry the proof into dawn before the Governor's men close the harbor.",
+			"events_applied": [
+				"edrin"
+			],
+			"flags": {
+				"chosen_path": "ask_the_wharf",
+				"clue_missing_manifest_line": true,
+				"coded_whisper_confirmed": true,
+				"hidden_landing_manifest_mark": true,
+				"island_lead_active": true,
+				"island_lead_source": "farmhand",
+				"island_physical_evidence_found": true,
+				"island_report_ready": true,
+				"island_route_choice": "signal_cache_optional_path",
+				"island_route_choice_locked": true,
+				"optional_clue_enriched_journal": true,
+				"optional_signal_cache_clue": true,
+				"reason_to_continue_after_island": true,
+				"return_report_choice": true,
+				"return_report_contact": "rumor contact",
+				"return_report_route_choice": "edrin_counting_house_proof",
+				"third_toast_heard": true
+			},
+			"note": "Edrin accepts the proof and turns the dawn signal into the reason to continue.",
+			"response_text": "Edrin Vale: This tar mark is not Newport work. At first light, the Governor's men will ask the wrong questions. We ask first.",
+			"reward_log": [
+				"Reward: Resolve +5 for following the tavern whisper",
+				"Named contact: Edrin Vale",
+				"Access: old road island lead",
+				"Reward: Resolve +8 for proving the island clue",
+				"Named contact: Annelise Crow"
+			],
+			"reward_resolve": 13,
+			"step_id": "final_reward_next_hook"
+		}
+	],
+	"quest_available": true,
+	"quest_geography_integration_score": 8.7,
+	"quest_geography_loop": "harbor arrival -> Counting House -> wharf/commercial/tavern -> island road -> hidden landing -> return/report -> dawn hook",
+	"return_report": true,
+	"reward_cadence_score": 8.7,
+	"reward_feedback_visible": true,
+	"reward_log": [
+		"Reward: Resolve +5 for following the tavern whisper",
+		"Named contact: Edrin Vale",
+		"Access: old road island lead",
+		"Reward: Resolve +8 for proving the island clue",
+		"Named contact: Annelise Crow"
+	],
+	"reward_progression": true,
+	"reward_resolve": 13,
+	"route_hint_visible": true,
+	"source_blockout": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+	"source_guidance": "res://data/ux/g19_player_guidance_map_journal_interaction_v1.json",
+	"source_loop": "res://data/quests/g20_first_session_gameplay_loop_reward_v1.json",
+	"source_runtime_layout": "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+	"status": "PASS",
+	"talk": true,
+	"unlock_next_hook": true,
+	"world_cohesion_score": 8.6
+}

@@ -1,0 +1,389 @@
+{
+  "schema_id": "wayfarer.g19r.newport.street_hierarchy.v1",
+  "phase": "G-19R",
+  "generated_at": "2026-05-19",
+  "source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "streets": [
+    {
+      "id": "main_commercial_avenue",
+      "name": "Main Commercial Avenue",
+      "start_point": {
+        "x": 260,
+        "y": 705
+      },
+      "end_point": {
+        "x": 1785,
+        "y": 705
+      },
+      "width_character_units": 12.0,
+      "width_world_units": 326.4,
+      "districts_connected": [
+        "tavern_inn_rumor_hub",
+        "counting_house_clerk",
+        "commercial_avenue",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Primary first-session spine from harbor arrival through tavern, counting house, shops, and island exit.",
+      "npc_route_usage": [
+        "merchant_shopkeeper",
+        "tavern_patron_rumor_carrier",
+        "clerk_runner"
+      ],
+      "quest_usage": [
+        "first_objective",
+        "counting_house_missing_manifest",
+        "tavern_whisper",
+        "island_lead"
+      ],
+      "ground_type": "wide cobble and wagon-worn harbor street",
+      "landmark_sightline": "Tavern west, Counting House center, guidepost east.",
+      "camera_readability_note": "At gameplay zoom this road must read as a place the player is standing in, not a thin map line.",
+      "blockout_rect": {
+        "x": 260,
+        "y": 542,
+        "w": 1525,
+        "h": 326.4
+      }
+    },
+    {
+      "id": "harborfront_road",
+      "name": "Harborfront Road",
+      "start_point": {
+        "x": 220,
+        "y": 910
+      },
+      "end_point": {
+        "x": 1810,
+        "y": 910
+      },
+      "width_character_units": 10.0,
+      "width_world_units": 272.0,
+      "districts_connected": [
+        "harbor_wharf",
+        "commercial_avenue",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Southern working road where cargo moves between wharf apron and commercial lots.",
+      "npc_route_usage": [
+        "dockworker",
+        "sailor",
+        "merchant_shopkeeper"
+      ],
+      "quest_usage": [
+        "arrival_harbor",
+        "dock_clue",
+        "wharf_lantern_rumor"
+      ],
+      "ground_type": "wet cobble, planks at wharf edge, mud feathering",
+      "landmark_sightline": "Water edge and warehouse doors always visible south of the road.",
+      "camera_readability_note": "Camera must preserve the water/wharf edge so the player understands arrival.",
+      "blockout_rect": {
+        "x": 220,
+        "y": 774,
+        "w": 1590,
+        "h": 272.0
+      }
+    },
+    {
+      "id": "rear_service_street",
+      "name": "Rear Service Street",
+      "start_point": {
+        "x": 260,
+        "y": 360
+      },
+      "end_point": {
+        "x": 1700,
+        "y": 360
+      },
+      "width_character_units": 5.5,
+      "width_world_units": 149.6,
+      "districts_connected": [
+        "rear_service_lane",
+        "tavern_inn_rumor_hub",
+        "counting_house_clerk",
+        "residential_edge"
+      ],
+      "player_purpose": "Back-of-house service route that makes lots and daily work believable.",
+      "npc_route_usage": [
+        "clerk_runner",
+        "suspicious_patron",
+        "courier_guard_sailor"
+      ],
+      "quest_usage": [
+        "hidden_clue",
+        "two_npc_rumor",
+        "return_report"
+      ],
+      "ground_type": "packed dirt and broken cobble",
+      "landmark_sightline": "Rear gates and residence row establish that buildings have backs.",
+      "camera_readability_note": "Should read narrower than the main avenue but still allow two NPC clearances.",
+      "blockout_rect": {
+        "x": 260,
+        "y": 285,
+        "w": 1440,
+        "h": 149.6
+      }
+    },
+    {
+      "id": "central_upland_counting_house_connector",
+      "name": "Central Upland Counting House Connector",
+      "start_point": {
+        "x": 1060,
+        "y": 875
+      },
+      "end_point": {
+        "x": 1060,
+        "y": 325
+      },
+      "width_character_units": 7.5,
+      "width_world_units": 204.0,
+      "districts_connected": [
+        "harbor_wharf",
+        "main_commercial_avenue",
+        "counting_house_clerk",
+        "rear_service_lane"
+      ],
+      "player_purpose": "Clear uphill route from harbor work into official records and civic pressure.",
+      "npc_route_usage": [
+        "clerk_runner",
+        "dockworker"
+      ],
+      "quest_usage": [
+        "counting_house_missing_manifest",
+        "dock_clue",
+        "return_report"
+      ],
+      "ground_type": "cobble center with dirt shoulder",
+      "landmark_sightline": "Counting House sits at the north end; wharf cargo remains visible behind player.",
+      "camera_readability_note": "Route view must show the target building and enough street width for human scale.",
+      "blockout_rect": {
+        "x": 958,
+        "y": 325,
+        "w": 204.0,
+        "h": 550
+      }
+    },
+    {
+      "id": "west_tavern_connector",
+      "name": "West Tavern Connector",
+      "start_point": {
+        "x": 510,
+        "y": 870
+      },
+      "end_point": {
+        "x": 510,
+        "y": 335
+      },
+      "width_character_units": 6.5,
+      "width_world_units": 176.8,
+      "districts_connected": [
+        "harbor_wharf",
+        "tavern_inn_rumor_hub",
+        "rear_service_lane"
+      ],
+      "player_purpose": "Secondary arrival-to-tavern route with strong landmark pull.",
+      "npc_route_usage": [
+        "tavern_patron_rumor_carrier",
+        "dockworker"
+      ],
+      "quest_usage": [
+        "tavern_whisper",
+        "two_npc_rumor"
+      ],
+      "ground_type": "cobble with tavern threshold shoulders",
+      "landmark_sightline": "Tavern sign and porch are the vertical target.",
+      "camera_readability_note": "Must feel like walking uphill into a social node, not cutting between icons.",
+      "blockout_rect": {
+        "x": 422,
+        "y": 335,
+        "w": 176.8,
+        "h": 535
+      }
+    },
+    {
+      "id": "east_market_connector",
+      "name": "East Market Connector",
+      "start_point": {
+        "x": 1560,
+        "y": 890
+      },
+      "end_point": {
+        "x": 1560,
+        "y": 360
+      },
+      "width_character_units": 6.0,
+      "width_world_units": 163.2,
+      "districts_connected": [
+        "harbor_wharf",
+        "commercial_avenue",
+        "rear_service_lane",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Market and exit connector that makes the east side a district, not a dead end.",
+      "npc_route_usage": [
+        "merchant_shopkeeper",
+        "courier_guard_sailor"
+      ],
+      "quest_usage": [
+        "two_npc_rumor",
+        "island_lead",
+        "village_exit"
+      ],
+      "ground_type": "cobble-to-dirt transition",
+      "landmark_sightline": "Market shed and exit guidepost line the player's next move.",
+      "camera_readability_note": "Should show continuation out of town without swallowing the market lots.",
+      "blockout_rect": {
+        "x": 1478,
+        "y": 360,
+        "w": 163.2,
+        "h": 530
+      }
+    },
+    {
+      "id": "dock_paths",
+      "name": "Dock Paths and Cargo Landings",
+      "start_point": {
+        "x": 420,
+        "y": 1030
+      },
+      "end_point": {
+        "x": 1490,
+        "y": 1030
+      },
+      "width_character_units": 5.0,
+      "width_world_units": 136.0,
+      "districts_connected": [
+        "harbor_wharf"
+      ],
+      "player_purpose": "Work paths across cargo landings and finger piers.",
+      "npc_route_usage": [
+        "dockworker",
+        "sailor"
+      ],
+      "quest_usage": [
+        "dock_clue",
+        "arrival_harbor"
+      ],
+      "ground_type": "planks, wet mud, rope-bounded walking lanes",
+      "landmark_sightline": "Warehouse and boathouse doors anchor pause points.",
+      "camera_readability_note": "Camera must prove wharf apron width, not hide it behind cargo scatter.",
+      "blockout_rect": {
+        "x": 360,
+        "y": 960,
+        "w": 1240,
+        "h": 136.0
+      }
+    },
+    {
+      "id": "hidden_rumor_cutthrough",
+      "name": "Hidden Rumor Service Cut-through",
+      "start_point": {
+        "x": 680,
+        "y": 420
+      },
+      "end_point": {
+        "x": 840,
+        "y": 925
+      },
+      "width_character_units": 3.5,
+      "width_world_units": 95.2,
+      "districts_connected": [
+        "rear_service_lane",
+        "hidden_rumor_clue_route",
+        "harbor_wharf"
+      ],
+      "player_purpose": "Optional narrow route for hidden clue discovery and overheard rumor geography.",
+      "npc_route_usage": [
+        "suspicious_patron",
+        "clerk_runner"
+      ],
+      "quest_usage": [
+        "optional_hidden_clue",
+        "two_npc_rumor"
+      ],
+      "ground_type": "packed dirt, broken cobble, low fence edges",
+      "landmark_sightline": "Tavern rear gate and cargo stack mark both ends.",
+      "camera_readability_note": "Narrow, but still at least 3 character widths and not clutter-blocked.",
+      "blockout_rect": {
+        "x": 650,
+        "y": 420,
+        "w": 95.2,
+        "h": 505
+      }
+    },
+    {
+      "id": "village_to_island_road",
+      "name": "Village-to-Island Road",
+      "start_point": {
+        "x": 1720,
+        "y": 610
+      },
+      "end_point": {
+        "x": 2320,
+        "y": 500
+      },
+      "width_character_units": 8.0,
+      "width_world_units": 217.6,
+      "districts_connected": [
+        "commercial_avenue",
+        "rear_service_lane",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Obvious exit route that pulls the player from town into island exploration.",
+      "npc_route_usage": [
+        "courier_guard_sailor",
+        "merchant_shopkeeper"
+      ],
+      "quest_usage": [
+        "island_lead",
+        "village_exit",
+        "return_report"
+      ],
+      "ground_type": "cobble fading to dirt and grass shoulder",
+      "landmark_sightline": "Guidepost and road bend visible from market edge.",
+      "camera_readability_note": "Exit should read as continuation, not a blank map border.",
+      "blockout_rect": {
+        "x": 1700,
+        "y": 500,
+        "w": 640,
+        "h": 217.6
+      }
+    },
+    {
+      "id": "secret_side_path",
+      "name": "Optional Secret / Side Path",
+      "start_point": {
+        "x": 1520,
+        "y": 370
+      },
+      "end_point": {
+        "x": 2080,
+        "y": 315
+      },
+      "width_character_units": 3.5,
+      "width_world_units": 95.2,
+      "districts_connected": [
+        "rear_service_lane",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Subtle clue route for players following rumor-network hints.",
+      "npc_route_usage": [
+        "courier_guard_sailor",
+        "suspicious_patron"
+      ],
+      "quest_usage": [
+        "optional_hidden_clue",
+        "island_lead_enriched"
+      ],
+      "ground_type": "grass/dirt footpath with sparse edge markers",
+      "landmark_sightline": "Back-lane fence break points toward the island road.",
+      "camera_readability_note": "Must remain readable as optional, not confuse the critical route.",
+      "blockout_rect": {
+        "x": 1510,
+        "y": 295,
+        "w": 590,
+        "h": 95.2
+      }
+    }
+  ]
+}

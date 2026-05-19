@@ -1,0 +1,1007 @@
+{
+  "actor_count": 5,
+  "frame_sequence": [
+    {
+      "absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_00.png",
+      "dimensions": {
+        "h": 1000,
+        "w": 1600
+      },
+      "filename": "g17_motion_frame_00.png",
+      "focus_npc_id": "isla_brooke_farmhand",
+      "path": "res://artifacts/review/g17_motion_proof/g17_motion_frame_00.png",
+      "png_verification": {
+        "average_rgb": 0.970045277200496,
+        "sample_count": 260,
+        "status": "PASS"
+      },
+      "timestamp_seconds": 0.0
+    },
+    {
+      "absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_01.png",
+      "dimensions": {
+        "h": 1000,
+        "w": 1600
+      },
+      "filename": "g17_motion_frame_01.png",
+      "focus_npc_id": "tomas_reed_dock_runner",
+      "path": "res://artifacts/review/g17_motion_proof/g17_motion_frame_01.png",
+      "png_verification": {
+        "average_rgb": 0.970045277200496,
+        "sample_count": 260,
+        "status": "PASS"
+      },
+      "timestamp_seconds": 4.4
+    },
+    {
+      "absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_02.png",
+      "dimensions": {
+        "h": 1000,
+        "w": 1600
+      },
+      "filename": "g17_motion_frame_02.png",
+      "focus_npc_id": "elias_ward_suspicious_courier",
+      "path": "res://artifacts/review/g17_motion_proof/g17_motion_frame_02.png",
+      "png_verification": {
+        "average_rgb": 0.970045277200496,
+        "sample_count": 260,
+        "status": "PASS"
+      },
+      "timestamp_seconds": 8.8
+    },
+    {
+      "absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_03.png",
+      "dimensions": {
+        "h": 1000,
+        "w": 1600
+      },
+      "filename": "g17_motion_frame_03.png",
+      "focus_npc_id": "mara_oren_coast_patrol",
+      "path": "res://artifacts/review/g17_motion_proof/g17_motion_frame_03.png",
+      "png_verification": {
+        "average_rgb": 0.970045277200496,
+        "sample_count": 260,
+        "status": "PASS"
+      },
+      "timestamp_seconds": 13.2
+    },
+    {
+      "absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_04.png",
+      "dimensions": {
+        "h": 1000,
+        "w": 1600
+      },
+      "filename": "g17_motion_frame_04.png",
+      "focus_npc_id": "annelise_crow_rumor_contact",
+      "path": "res://artifacts/review/g17_motion_proof/g17_motion_frame_04.png",
+      "png_verification": {
+        "average_rgb": 0.970045277200496,
+        "sample_count": 260,
+        "status": "PASS"
+      },
+      "timestamp_seconds": 17.6
+    }
+  ],
+  "motion_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+  "no_hover_glide_slide": true,
+  "phase": "G-22",
+  "position_drift_detected": false,
+  "route_walking_enabled": false,
+  "schema_id": "wayfarer.g22.ovi1.npc_motion_trace.v1",
+  "snapshots": [
+    {
+      "actor_count": 5,
+      "actors": [
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "farmhand_grounded_service_edge",
+          "current_action": "check_fence_break",
+          "current_bark": "Fence was open before dawn.",
+          "display_name": "Isla Brooke",
+          "district": "farms_pastures_service_lands",
+          "facing_direction": "right",
+          "global_position": {
+            "x": 1886.0,
+            "y": 572.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "isla_brooke_farmhand",
+          "phase": "G-17",
+          "rhythm_id": "island_farmhand_threshold_watch",
+          "role": "farmhand",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "pasture_crossing_fence",
+          "station_points": [
+            "pasture_crossing_fence",
+            "return_landmark",
+            "old_service_track"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "dock_runner_cove_tension",
+          "current_action": "guard_cove_mark",
+          "current_bark": "Not every landing wants a wharf.",
+          "display_name": "Tomas Reed",
+          "district": "rocky_coast_cove",
+          "facing_direction": "left",
+          "global_position": {
+            "x": 2220.0,
+            "y": 704.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "tomas_reed_dock_runner",
+          "phase": "G-17",
+          "rhythm_id": "island_cove_runner_watch",
+          "role": "dock_runner",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "hidden_landing_cargo_mark",
+          "station_points": [
+            "hidden_landing_cargo_mark",
+            "cove_descent",
+            "quest_clue_site"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "suspicious_courier_old_road",
+          "current_action": "hide_sealed_slip",
+          "current_bark": "You did not hear that from me.",
+          "display_name": "Elias Ward",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "down",
+          "global_position": {
+            "x": 2150.0,
+            "y": 420.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "elias_ward_suspicious_courier",
+          "phase": "G-17",
+          "rhythm_id": "island_old_road_courier_pause",
+          "role": "suspicious_courier",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "old_road_marker_shadow",
+          "station_points": [
+            "old_road_marker_shadow",
+            "quest_clue_site",
+            "optional_secret_cache"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "coast_patrol_signal_tension",
+          "current_action": "scan_harbor_mouth",
+          "current_bark": "One lantern for weather.",
+          "display_name": "Mara Oren",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "left",
+          "global_position": {
+            "x": 2238.0,
+            "y": 342.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "mara_oren_coast_patrol",
+          "phase": "G-17",
+          "rhythm_id": "island_signal_patrol_watch",
+          "role": "coast_patrol",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "signal_overlook_watch",
+          "station_points": [
+            "signal_overlook_watch",
+            "optional_secret_cache",
+            "old_road_marker"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "rumor_contact_return_momentum",
+          "current_action": "watch_for_returning_player",
+          "current_bark": "Newport will ask what you found.",
+          "display_name": "Annelise Crow",
+          "district": "return_path",
+          "facing_direction": "right",
+          "global_position": {
+            "x": 1780.0,
+            "y": 642.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "annelise_crow_rumor_contact",
+          "phase": "G-17",
+          "rhythm_id": "island_return_contact_watch",
+          "role": "rumor_contact",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "return_landmark_wait",
+          "station_points": [
+            "return_landmark_wait",
+            "pasture_crossing_fence",
+            "newport_east_gate"
+          ],
+          "stationary_until_walk_sheet": true
+        }
+      ],
+      "force_bark": true,
+      "position_drift_detected": false,
+      "timestamp_seconds": 0.0
+    },
+    {
+      "actor_count": 5,
+      "actors": [
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "farmhand_grounded_service_edge",
+          "current_action": "check_fence_break",
+          "current_bark": "Fence was open before dawn.",
+          "display_name": "Isla Brooke",
+          "district": "farms_pastures_service_lands",
+          "facing_direction": "right",
+          "global_position": {
+            "x": 1886.0,
+            "y": 572.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "isla_brooke_farmhand",
+          "phase": "G-17",
+          "rhythm_id": "island_farmhand_threshold_watch",
+          "role": "farmhand",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "pasture_crossing_fence",
+          "station_points": [
+            "pasture_crossing_fence",
+            "return_landmark",
+            "old_service_track"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "dock_runner_cove_tension",
+          "current_action": "guard_cove_mark",
+          "current_bark": "Not every landing wants a wharf.",
+          "display_name": "Tomas Reed",
+          "district": "rocky_coast_cove",
+          "facing_direction": "left",
+          "global_position": {
+            "x": 2220.0,
+            "y": 704.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "tomas_reed_dock_runner",
+          "phase": "G-17",
+          "rhythm_id": "island_cove_runner_watch",
+          "role": "dock_runner",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "hidden_landing_cargo_mark",
+          "station_points": [
+            "hidden_landing_cargo_mark",
+            "cove_descent",
+            "quest_clue_site"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "suspicious_courier_old_road",
+          "current_action": "hide_sealed_slip",
+          "current_bark": "You did not hear that from me.",
+          "display_name": "Elias Ward",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "down",
+          "global_position": {
+            "x": 2150.0,
+            "y": 420.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "elias_ward_suspicious_courier",
+          "phase": "G-17",
+          "rhythm_id": "island_old_road_courier_pause",
+          "role": "suspicious_courier",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "old_road_marker_shadow",
+          "station_points": [
+            "old_road_marker_shadow",
+            "quest_clue_site",
+            "optional_secret_cache"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "coast_patrol_signal_tension",
+          "current_action": "scan_harbor_mouth",
+          "current_bark": "One lantern for weather.",
+          "display_name": "Mara Oren",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "left",
+          "global_position": {
+            "x": 2238.0,
+            "y": 342.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "mara_oren_coast_patrol",
+          "phase": "G-17",
+          "rhythm_id": "island_signal_patrol_watch",
+          "role": "coast_patrol",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "signal_overlook_watch",
+          "station_points": [
+            "signal_overlook_watch",
+            "optional_secret_cache",
+            "old_road_marker"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "rumor_contact_return_momentum",
+          "current_action": "watch_for_returning_player",
+          "current_bark": "Newport will ask what you found.",
+          "display_name": "Annelise Crow",
+          "district": "return_path",
+          "facing_direction": "right",
+          "global_position": {
+            "x": 1780.0,
+            "y": 642.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "annelise_crow_rumor_contact",
+          "phase": "G-17",
+          "rhythm_id": "island_return_contact_watch",
+          "role": "rumor_contact",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "return_landmark_wait",
+          "station_points": [
+            "return_landmark_wait",
+            "pasture_crossing_fence",
+            "newport_east_gate"
+          ],
+          "stationary_until_walk_sheet": true
+        }
+      ],
+      "force_bark": true,
+      "position_drift_detected": false,
+      "timestamp_seconds": 4.4
+    },
+    {
+      "actor_count": 5,
+      "actors": [
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "farmhand_grounded_service_edge",
+          "current_action": "watch_signal_rise",
+          "current_bark": "That lantern is no farm light.",
+          "display_name": "Isla Brooke",
+          "district": "farms_pastures_service_lands",
+          "facing_direction": "up",
+          "global_position": {
+            "x": 1886.0,
+            "y": 572.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "isla_brooke_farmhand",
+          "phase": "G-17",
+          "rhythm_id": "island_farmhand_threshold_watch",
+          "role": "farmhand",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "pasture_crossing_fence",
+          "station_points": [
+            "pasture_crossing_fence",
+            "return_landmark",
+            "old_service_track"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "dock_runner_cove_tension",
+          "current_action": "listen_to_hidden_landing",
+          "current_bark": "Low tide tells on careless men.",
+          "display_name": "Tomas Reed",
+          "district": "rocky_coast_cove",
+          "facing_direction": "down",
+          "global_position": {
+            "x": 2220.0,
+            "y": 704.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "tomas_reed_dock_runner",
+          "phase": "G-17",
+          "rhythm_id": "island_cove_runner_watch",
+          "role": "dock_runner",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "hidden_landing_cargo_mark",
+          "station_points": [
+            "hidden_landing_cargo_mark",
+            "cove_descent",
+            "quest_clue_site"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "suspicious_courier_old_road",
+          "current_action": "check_old_marker",
+          "current_bark": "The mark is older than the town.",
+          "display_name": "Elias Ward",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "right",
+          "global_position": {
+            "x": 2150.0,
+            "y": 420.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "elias_ward_suspicious_courier",
+          "phase": "G-17",
+          "rhythm_id": "island_old_road_courier_pause",
+          "role": "suspicious_courier",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "old_road_marker_shadow",
+          "station_points": [
+            "old_road_marker_shadow",
+            "quest_clue_site",
+            "optional_secret_cache"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "coast_patrol_signal_tension",
+          "current_action": "listen_for_branch_crack",
+          "current_bark": "Two for warning.",
+          "display_name": "Mara Oren",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "down",
+          "global_position": {
+            "x": 2238.0,
+            "y": 342.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "mara_oren_coast_patrol",
+          "phase": "G-17",
+          "rhythm_id": "island_signal_patrol_watch",
+          "role": "coast_patrol",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "signal_overlook_watch",
+          "station_points": [
+            "signal_overlook_watch",
+            "optional_secret_cache",
+            "old_road_marker"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "rumor_contact_return_momentum",
+          "current_action": "listen_toward_town",
+          "current_bark": "Proof travels safer than rumor.",
+          "display_name": "Annelise Crow",
+          "district": "return_path",
+          "facing_direction": "left",
+          "global_position": {
+            "x": 1780.0,
+            "y": 642.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "annelise_crow_rumor_contact",
+          "phase": "G-17",
+          "rhythm_id": "island_return_contact_watch",
+          "role": "rumor_contact",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "return_landmark_wait",
+          "station_points": [
+            "return_landmark_wait",
+            "pasture_crossing_fence",
+            "newport_east_gate"
+          ],
+          "stationary_until_walk_sheet": true
+        }
+      ],
+      "force_bark": true,
+      "position_drift_detected": false,
+      "timestamp_seconds": 8.8
+    },
+    {
+      "actor_count": 5,
+      "actors": [
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "farmhand_grounded_service_edge",
+          "current_action": "return_to_work_pose",
+          "current_bark": "Mind the old road after rain.",
+          "display_name": "Isla Brooke",
+          "district": "farms_pastures_service_lands",
+          "facing_direction": "left",
+          "global_position": {
+            "x": 1886.0,
+            "y": 572.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "isla_brooke_farmhand",
+          "phase": "G-17",
+          "rhythm_id": "island_farmhand_threshold_watch",
+          "role": "farmhand",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "pasture_crossing_fence",
+          "station_points": [
+            "pasture_crossing_fence",
+            "return_landmark",
+            "old_service_track"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "dock_runner_cove_tension",
+          "current_action": "watch_return_lane",
+          "current_bark": "A missing line came through here.",
+          "display_name": "Tomas Reed",
+          "district": "rocky_coast_cove",
+          "facing_direction": "up",
+          "global_position": {
+            "x": 2220.0,
+            "y": 704.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "tomas_reed_dock_runner",
+          "phase": "G-17",
+          "rhythm_id": "island_cove_runner_watch",
+          "role": "dock_runner",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "hidden_landing_cargo_mark",
+          "station_points": [
+            "hidden_landing_cargo_mark",
+            "cove_descent",
+            "quest_clue_site"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "suspicious_courier_old_road",
+          "current_action": "check_old_marker",
+          "current_bark": "The mark is older than the town.",
+          "display_name": "Elias Ward",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "right",
+          "global_position": {
+            "x": 2150.0,
+            "y": 420.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "elias_ward_suspicious_courier",
+          "phase": "G-17",
+          "rhythm_id": "island_old_road_courier_pause",
+          "role": "suspicious_courier",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "old_road_marker_shadow",
+          "station_points": [
+            "old_road_marker_shadow",
+            "quest_clue_site",
+            "optional_secret_cache"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "coast_patrol_signal_tension",
+          "current_action": "listen_for_branch_crack",
+          "current_bark": "Two for warning.",
+          "display_name": "Mara Oren",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "down",
+          "global_position": {
+            "x": 2238.0,
+            "y": 342.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "mara_oren_coast_patrol",
+          "phase": "G-17",
+          "rhythm_id": "island_signal_patrol_watch",
+          "role": "coast_patrol",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "signal_overlook_watch",
+          "station_points": [
+            "signal_overlook_watch",
+            "optional_secret_cache",
+            "old_road_marker"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "rumor_contact_return_momentum",
+          "current_action": "hold_return_landmark",
+          "current_bark": "Bring it home before bells.",
+          "display_name": "Annelise Crow",
+          "district": "return_path",
+          "facing_direction": "down",
+          "global_position": {
+            "x": 1780.0,
+            "y": 642.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "annelise_crow_rumor_contact",
+          "phase": "G-17",
+          "rhythm_id": "island_return_contact_watch",
+          "role": "rumor_contact",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "return_landmark_wait",
+          "station_points": [
+            "return_landmark_wait",
+            "pasture_crossing_fence",
+            "newport_east_gate"
+          ],
+          "stationary_until_walk_sheet": true
+        }
+      ],
+      "force_bark": true,
+      "position_drift_detected": false,
+      "timestamp_seconds": 13.2
+    },
+    {
+      "actor_count": 5,
+      "actors": [
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "farmhand_grounded_service_edge",
+          "current_action": "return_to_work_pose",
+          "current_bark": "Mind the old road after rain.",
+          "display_name": "Isla Brooke",
+          "district": "farms_pastures_service_lands",
+          "facing_direction": "left",
+          "global_position": {
+            "x": 1886.0,
+            "y": 572.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "isla_brooke_farmhand",
+          "phase": "G-17",
+          "rhythm_id": "island_farmhand_threshold_watch",
+          "role": "farmhand",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "pasture_crossing_fence",
+          "station_points": [
+            "pasture_crossing_fence",
+            "return_landmark",
+            "old_service_track"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "dock_runner_cove_tension",
+          "current_action": "watch_return_lane",
+          "current_bark": "A missing line came through here.",
+          "display_name": "Tomas Reed",
+          "district": "rocky_coast_cove",
+          "facing_direction": "up",
+          "global_position": {
+            "x": 2220.0,
+            "y": 704.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "tomas_reed_dock_runner",
+          "phase": "G-17",
+          "rhythm_id": "island_cove_runner_watch",
+          "role": "dock_runner",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "hidden_landing_cargo_mark",
+          "station_points": [
+            "hidden_landing_cargo_mark",
+            "cove_descent",
+            "quest_clue_site"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "suspicious_courier_old_road",
+          "current_action": "watch_quest_clue_path",
+          "current_bark": "Follow proof, not rumor.",
+          "display_name": "Elias Ward",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "left",
+          "global_position": {
+            "x": 2150.0,
+            "y": 420.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "elias_ward_suspicious_courier",
+          "phase": "G-17",
+          "rhythm_id": "island_old_road_courier_pause",
+          "role": "suspicious_courier",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "old_road_marker_shadow",
+          "station_points": [
+            "old_road_marker_shadow",
+            "quest_clue_site",
+            "optional_secret_cache"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "coast_patrol_signal_tension",
+          "current_action": "hold_signal_post",
+          "current_bark": "Three means run.",
+          "display_name": "Mara Oren",
+          "district": "old_road_signal_point_ruin_lookout",
+          "facing_direction": "right",
+          "global_position": {
+            "x": 2238.0,
+            "y": 342.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "mara_oren_coast_patrol",
+          "phase": "G-17",
+          "rhythm_id": "island_signal_patrol_watch",
+          "role": "coast_patrol",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "signal_overlook_watch",
+          "station_points": [
+            "signal_overlook_watch",
+            "optional_secret_cache",
+            "old_road_marker"
+          ],
+          "stationary_until_walk_sheet": true
+        },
+        {
+          "ambient_bark_count": 3,
+          "ambient_barks_enabled": true,
+          "behavior_tag": "rumor_contact_return_momentum",
+          "current_action": "hold_return_landmark",
+          "current_bark": "Bring it home before bells.",
+          "display_name": "Annelise Crow",
+          "district": "return_path",
+          "facing_direction": "down",
+          "global_position": {
+            "x": 1780.0,
+            "y": 642.0
+          },
+          "ground_shadow_visible": true,
+          "group_namespace": "opening_island",
+          "movement_policy": "stationary_grounded_facing_bark_until_dedicated_walk_sheets",
+          "movement_speed": 0.0,
+          "no_static_sprite_translation": true,
+          "npc_id": "annelise_crow_rumor_contact",
+          "phase": "G-17",
+          "rhythm_id": "island_return_contact_watch",
+          "role": "rumor_contact",
+          "route_walking_enabled": false,
+          "stage_count": 3,
+          "station": "return_landmark_wait",
+          "station_points": [
+            "return_landmark_wait",
+            "pasture_crossing_fence",
+            "newport_east_gate"
+          ],
+          "stationary_until_walk_sheet": true
+        }
+      ],
+      "force_bark": true,
+      "position_drift_detected": false,
+      "timestamp_seconds": 17.6
+    }
+  ],
+  "status": "PASS",
+  "source_trace": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_island_npc_motion_trace.json",
+  "g22_frame_sequence": [
+    {
+      "filename": "g17_motion_frame_00.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_00.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_00.png",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "g17_motion_frame_01.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_01.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_01.png",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "g17_motion_frame_02.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_02.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_02.png",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "g17_motion_frame_03.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_03.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_03.png",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    },
+    {
+      "filename": "g17_motion_frame_04.png",
+      "path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g17_motion_frame_04.png",
+      "source_artifact": "wayfarer_godot_vertical_slice/artifacts/review/g17_motion_proof/g17_motion_frame_04.png",
+      "png_verification": {
+        "status": "PASS",
+        "format": "PNG",
+        "dimensions": {
+          "w": 1600,
+          "h": 1000
+        },
+        "mode": "RGBA"
+      }
+    }
+  ]
+}

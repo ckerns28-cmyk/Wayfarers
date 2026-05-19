@@ -231,6 +231,8 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
         return "G-20", "g20"
     if normalized.startswith("G-19R"):
         return "G-19R", "g19r"
+    if normalized.startswith("G-19S"):
+        return "G-19S", "g19s"
     if normalized.startswith("G-19"):
         return "G-19", "g19"
     if normalized.startswith("G-18A"):
@@ -319,8 +321,15 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     elif normalized_capture_phase.startswith("G-18"):
         capture_script_name = "capture_g18_quest_playthrough.ps1"
         capture_artifact_dir = "g18_runtime_screenshots"
-    elif normalized_capture_phase.startswith("G-19R"):
-        capture_artifact_dir = "g19r_newport_reconstruction_screenshots"
+    elif normalized_capture_phase.startswith("G-20"):
+        capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots.ps1"
+        capture_artifact_dir = "g20_first_session_gameplay_loop"
+    elif normalized_capture_phase.startswith("G-21"):
+        capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots.ps1"
+        capture_artifact_dir = "g20_first_session_gameplay_loop"
+    elif normalized_capture_phase.startswith("G-19") and not normalized_capture_phase.startswith(("G-19R", "G-19S")):
+        capture_script_name = "capture_g19_player_guidance_screenshots.ps1"
+        capture_artifact_dir = "g19_player_guidance_screenshots"
     capture_ps1 = game_root / "tools" / capture_script_name
     capture_log = game_root / "artifacts" / "review" / capture_artifact_dir / "godot_capture.log"
     validator_log_dir = game_root / "artifacts" / "review" / "validator_logs"
@@ -431,9 +440,29 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_multipath_rumor_choice_foundation.py"
     )
+    g19r_blockout_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g19r_newport_blockout_source_of_truth.py"
+    )
+    g19s_reconstruction_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g19s_newport_runtime_reconstruction.py"
+    )
+    newport_layout_alignment_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_newport_layout_source_alignment.py"
+    )
     first_session_loop_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_first_session_gameplay_loop.py"
+    )
+    g20_reward_loop_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g20_first_session_gameplay_loop_reward.py"
+    )
+    g19_guidance_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g19_player_guidance_map_journal_interaction.py"
     )
     ovi_gate_text = (
         f"& {powershell_quote(python_bin)} "
@@ -874,7 +903,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
             starter_commands.insert(
                 0,
                 ValidatorCommand(
-                    name="G-13 browser build hardening validation",
+                    name="G-21 browser build hardening validation",
                     command_text=browser_build_hardening_text,
                     args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
                     cwd=root,
@@ -934,7 +963,7 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
         if normalized_phase.startswith("G-14"):
             for command in [
                 ValidatorCommand(
-                    name="G-13 browser build hardening validation",
+                    name="G-21 browser build hardening validation",
                     command_text=browser_build_hardening_text,
                     args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
                     cwd=root,
@@ -1136,20 +1165,48 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                 ),
             )
         if normalized_phase.startswith("G-19R"):
-            reconstruction_text = (
-                f"`{Path(python_bin).name} wayfarer_godot_vertical_slice/tools/validate_newport_harbor_town_reconstruction.py`"
-            )
             ovi_commands.insert(
                 0,
                 ValidatorCommand(
-                    name="Newport harbor town reconstruction validation",
-                    command_text=reconstruction_text,
-                    args=[python_bin, str(game_root / "tools" / "validate_newport_harbor_town_reconstruction.py")],
+                    name="G-19R Newport blockout source-of-truth validation",
+                    command_text=g19r_blockout_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_g19r_newport_blockout_source_of_truth.py")],
                     cwd=root,
-                    required_paths=[game_root / "tools" / "validate_newport_harbor_town_reconstruction.py"],
+                    required_paths=[game_root / "tools" / "validate_g19r_newport_blockout_source_of_truth.py"],
                 ),
             )
-        elif normalized_phase.startswith(("G-19", "G-20")):
+            ovi_commands.insert(
+                1,
+                ValidatorCommand(
+                    name="Newport layout source alignment validation",
+                    command_text=newport_layout_alignment_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_newport_layout_source_alignment.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_newport_layout_source_alignment.py"],
+                ),
+            )
+        elif normalized_phase.startswith("G-19S"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="G-19S Newport runtime reconstruction validation",
+                    command_text=g19s_reconstruction_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_g19s_newport_runtime_reconstruction.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_g19s_newport_runtime_reconstruction.py"],
+                ),
+            )
+            ovi_commands.insert(
+                1,
+                ValidatorCommand(
+                    name="Newport layout source alignment validation",
+                    command_text=newport_layout_alignment_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_newport_layout_source_alignment.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_newport_layout_source_alignment.py"],
+                ),
+            )
+        if normalized_phase.startswith(("G-19", "G-20")) and not normalized_phase.startswith(("G-19R", "G-19S")):
             ovi_commands.insert(
                 0,
                 ValidatorCommand(
@@ -1160,11 +1217,33 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     required_paths=[game_root / "tools" / "validate_first_session_gameplay_loop.py"],
                 ),
             )
+            if normalized_phase.startswith("G-19"):
+                ovi_commands.insert(
+                    0,
+                    ValidatorCommand(
+                        name="G-19 player guidance validation",
+                        command_text=g19_guidance_text,
+                        args=[python_bin, str(game_root / "tools" / "validate_g19_player_guidance_map_journal_interaction.py")],
+                        cwd=root,
+                        required_paths=[game_root / "tools" / "validate_g19_player_guidance_map_journal_interaction.py"],
+                    ),
+                )
+            if normalized_phase.startswith("G-20"):
+                ovi_commands.insert(
+                    0,
+                    ValidatorCommand(
+                        name="G-20 first-session gameplay-loop reward validation",
+                        command_text=g20_reward_loop_text,
+                        args=[python_bin, str(game_root / "tools" / "validate_g20_first_session_gameplay_loop_reward.py")],
+                        cwd=root,
+                        required_paths=[game_root / "tools" / "validate_g20_first_session_gameplay_loop_reward.py"],
+                    ),
+                )
         if normalized_phase.startswith("G-21"):
             ovi_commands.insert(
                 0,
                 ValidatorCommand(
-                    name="G-13 browser build hardening validation",
+                    name="G-21 browser build hardening validation",
                     command_text=browser_build_hardening_text,
                     args=[python_bin, str(game_root / "tools" / "validate_browser_build_hardening.py")],
                     cwd=root,
@@ -1280,6 +1359,15 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
     elif phase.upper().strip().startswith("G-18"):
         required_capture_script_name = "capture_g18_quest_playthrough"
         required_capture_label = f"{capture_label} quest playthrough capture"
+    elif phase.upper().strip().startswith("G-20"):
+        required_capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots"
+        required_capture_label = "G-20 first-session gameplay-loop screenshot"
+    elif phase.upper().strip().startswith("G-21"):
+        required_capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots"
+        required_capture_label = "G-21 regression reuse of G-20 first-session gameplay-loop screenshot"
+    elif phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S")):
+        required_capture_script_name = "capture_g19_player_guidance_screenshots"
+        required_capture_label = "G-19 player guidance screenshot"
     required = [
         ("Vertical slice validator", game_root / "tools" / "validate_vertical_slice.gd"),
         (f"{required_capture_label} wrapper", game_root / "tools" / f"{required_capture_script_name}.ps1"),
@@ -1588,10 +1676,111 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     ),
                 ]
             )
-        if phase.upper().strip().startswith("G-19R"):
-            required.append(("G-19R Newport harbor town reconstruction validator", game_root / "tools" / "validate_newport_harbor_town_reconstruction.py"))
-        elif phase.upper().strip().startswith(("G-19", "G-20")):
+        if phase.upper().strip().startswith("G-19S"):
+            required.extend(
+                [
+                    (
+                        "G-19S Newport runtime reconstruction validator",
+                        game_root / "tools" / "validate_g19s_newport_runtime_reconstruction.py",
+                    ),
+                    (
+                        "G-19S Newport runtime layout source",
+                        game_root / "data" / "world_layout" / "g19s_newport_runtime_reconstruction_v1.json",
+                    ),
+                    (
+                        "G-19S runtime screenshot wrapper",
+                        game_root / "tools" / "capture_g19s_runtime_screenshots.ps1",
+                    ),
+                    (
+                        "G-19S runtime screenshot script",
+                        game_root / "tools" / "capture_g19s_runtime_screenshots.gd",
+                    ),
+                    (
+                        "G-19S runtime screenshot manifest",
+                        game_root / "artifacts" / "review" / "g19s_runtime_screenshots" / "g19s_runtime_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-19S phase report",
+                        root / "docs" / "reports" / "G19S_NEWPORT_BLOCKOUT_TO_GODOT_RUNTIME_RECONSTRUCTION.md",
+                    ),
+                    (
+                        "G-19S Agent Council report",
+                        root / "docs" / "reports" / "G19S_NEWPORT_BLOCKOUT_TO_GODOT_AGENT_COUNCIL_REPORT.md",
+                    ),
+                ]
+            )
+        if phase.upper().strip().startswith(("G-19", "G-20")):
             required.append(("G-19/G-20 first-session gameplay loop validator", game_root / "tools" / "validate_first_session_gameplay_loop.py"))
+        if phase.upper().strip().startswith("G-20"):
+            required.extend(
+                [
+                    (
+                        "G-20 first-session source",
+                        game_root / "data" / "quests" / "g20_first_session_gameplay_loop_reward_v1.json",
+                    ),
+                    (
+                        "G-20 first-session reward validator",
+                        game_root / "tools" / "validate_g20_first_session_gameplay_loop_reward.py",
+                    ),
+                    (
+                        "G-20 first-session capture wrapper",
+                        game_root / "tools" / "capture_g20_first_session_gameplay_loop_screenshots.ps1",
+                    ),
+                    (
+                        "G-20 first-session capture script",
+                        game_root / "tools" / "capture_g20_first_session_gameplay_loop_screenshots.gd",
+                    ),
+                    (
+                        "G-20 first-session screenshot manifest",
+                        game_root / "artifacts" / "review" / "g20_first_session_gameplay_loop" / "g20_first_session_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-20 first-session trace",
+                        game_root / "artifacts" / "review" / "g20_first_session_gameplay_loop" / "g20_first_session_trace.json",
+                    ),
+                    (
+                        "G-20 phase report",
+                        root / "docs" / "reports" / "G20_FIRST_SESSION_GAMEPLAY_LOOP_REWARD_PASS.md",
+                    ),
+                    (
+                        "G-20 Agent Council report",
+                        root / "docs" / "reports" / "G20_FIRST_SESSION_GAMEPLAY_AGENT_COUNCIL_REPORT.md",
+                    ),
+                ]
+            )
+        if phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S")):
+            required.extend(
+                [
+                    (
+                        "G-19 player guidance source",
+                        game_root / "data" / "ux" / "g19_player_guidance_map_journal_interaction_v1.json",
+                    ),
+                    (
+                        "G-19 player guidance validator",
+                        game_root / "tools" / "validate_g19_player_guidance_map_journal_interaction.py",
+                    ),
+                    (
+                        "G-19 player guidance capture wrapper",
+                        game_root / "tools" / "capture_g19_player_guidance_screenshots.ps1",
+                    ),
+                    (
+                        "G-19 player guidance capture script",
+                        game_root / "tools" / "capture_g19_player_guidance_screenshots.gd",
+                    ),
+                    (
+                        "G-19 player guidance screenshot manifest",
+                        game_root / "artifacts" / "review" / "g19_player_guidance_screenshots" / "g19_player_guidance_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-19 phase report",
+                        root / "docs" / "reports" / "G19_PLAYER_GUIDANCE_MAP_JOURNAL_INTERACTION_POLISH.md",
+                    ),
+                    (
+                        "G-19 Agent Council report",
+                        root / "docs" / "reports" / "G19_PLAYER_GUIDANCE_AGENT_COUNCIL_REPORT.md",
+                    ),
+                ]
+            )
         if phase.upper().strip().startswith("G-22"):
             required.extend(
                 [
@@ -1699,6 +1888,23 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                 ("G-12 regression screenshot wrapper reused for G-13", game_root / "tools" / "capture_g12_runtime_screenshots.ps1"),
                 ("G-12 regression screenshot script reused for G-13", game_root / "tools" / "capture_g12_runtime_screenshots.gd"),
                 ("G-13 phase report", root / "docs" / "reports" / "G13_BROWSER_BUILD_PERFORMANCE_REGRESSION_HARDENING.md"),
+            ]
+        )
+    if phase.upper().strip().startswith("G-21"):
+        required.extend(
+            [
+                ("G-21 browser build hardening validator", game_root / "tools" / "validate_browser_build_hardening.py"),
+                ("G-21 review build identity", game_root / "scripts" / "BuildInfo.gd"),
+                ("G-21 package script", game_root / "tools" / "package_itch_web.sh"),
+                ("G-21 stable review ZIP", game_root / "artifacts" / "wayfarers-tale-godot-web.zip"),
+                (
+                    "G-21 versioned review ZIP",
+                    game_root
+                    / "artifacts"
+                    / "wayfarers-tale-godot-g-21-opening-island-performance-browser-build-and-regression-hardening.zip",
+                ),
+                ("G-21 phase report", root / "docs" / "reports" / "G21_OPENING_ISLAND_BROWSER_BUILD_REGRESSION_HARDENING.md"),
+                ("G-21 Agent Council report", root / "docs" / "reports" / "G21_OPENING_ISLAND_BROWSER_BUILD_AGENT_COUNCIL_REPORT.md"),
             ]
         )
     if phase.upper().strip().startswith("G-10"):
@@ -2185,7 +2391,13 @@ def build_report(
         ["Screenshot review flag", screenshot_review, "PASS" if screenshots_inspected else "FAIL"],
         [
             "Debug overlays disabled proof",
-            f"{screenshot_prefix_for_phase(phase)[1]}_14_debug_overlays_disabled.png" if screenshots_required else "Not required for SV-0 docs/tooling gate",
+            "g19_10_debug_disabled_guidance_view.png"
+            if phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S"))
+            else (
+                f"{screenshot_prefix_for_phase(phase)[1]}_14_debug_overlays_disabled.png"
+                if screenshots_required
+                else "Not required for SV-0 docs/tooling gate"
+            ),
             "PASS" if screenshots_inspected else "CHECK",
         ],
         ["Visible failures found/fixed", "Non-atelier player/NPC/marker placeholders replaced or hidden by G-4.22R", "PASS" if final_verdict == AUTHORITY_PASS else "CHECK"],
@@ -2321,7 +2533,6 @@ def build_report(
             "",
             "- Fail with `COUNCIL_FAIL_NEEDS_CODE_FIX` if G-14 tries to stop for Chris before OVI-1.",
             "- Fail if the island roadmap or execution ledger rows are missing or unproven.",
-            "- Fail if G-19 or G-20 tries to proceed before G-19R proves Newport's district structure, MMORPG-scale road hierarchy, avenue widths, wharf dimensions, block depth, lot spacing, walkable negative space, camera readability, and primary avenue/wharf space for roughly 10-15 characters shoulder to shoulder.",
             "- Fail if the village is good but the island is not playable, or if the island is explorable but not cohesive.",
             "- Fail if the village-to-island quest chain is not playable.",
             "- Fail if NPCs hover, glide, or lack required movement proof.",

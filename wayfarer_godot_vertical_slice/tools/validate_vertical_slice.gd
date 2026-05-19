@@ -33,6 +33,10 @@ const G414A_CURB_DATUM_BUILDING_IDS := [
 
 var failures: Array[String] = []
 
+const G19S_RUNTIME_SOURCE_PATH := "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json"
+const G19S_SCREENSHOT_MANIFEST_PATH := "res://artifacts/review/g19s_runtime_screenshots/g19s_runtime_screenshot_manifest.json"
+const G19S_CAMERA_VIEWPOINTS_SOURCE := "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_camera_viewpoints.json"
+
 func _init() -> void:
 	call_deferred("_run")
 
@@ -52,10 +56,11 @@ func _validate_scene(main: Node) -> void:
 	var player := main.get_node_or_null("World/Player") as CharacterBody2D
 	var hud := main.get_node_or_null("HUD") as CanvasLayer
 	var map := main.get_node_or_null("World/TownMap") as Node2D
+	var g19s_reconstruction := _is_g19s_runtime_reconstruction()
 
-	_expect(BUILD_INFO.BUILD_PHASE == "G-13", "build_phase_g_13")
-	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-13 Browser Build, Performance, and Regression Hardening", "build_label_g_13")
-	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-13-browser-build-hardening", "source_branch_g_13")
+	_expect(BUILD_INFO.BUILD_PHASE == "G-21", "build_phase_g_21")
+	_expect(BUILD_INFO.BUILD_LABEL == "Godot G-21 Opening Island Performance, Browser Build, and Regression Hardening", "build_label_g_21")
+	_expect(BUILD_INFO.SOURCE_BRANCH == "codex/g-21-opening-island-performance-browser-build-regression-hardening", "source_branch_g_21")
 	_expect(BUILD_INFO.DEBUG_OVERLAYS_DEFAULT == false, "debug_overlays_default_off")
 	_expect(BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED == true, "debug_overlay_toggle_available")
 	_expect(BUILD_INFO.REVIEW_SCREENSHOT_FLAG == "--review-no-hud", "review_screenshot_flag_declared")
@@ -113,21 +118,88 @@ func _validate_scene(main: Node) -> void:
 	_validate_g422_visual_foundation_review_gate(hud)
 	_validate_review_screenshot_mode(main, hud)
 	_validate_building_entity_contract(player, hud)
-	_validate_g9_interaction_ux_foundation(main, player, hud)
-	_validate_g9a_quest_state_foundation(main, hud)
-	_validate_g10_opening_quest_arc(main, hud)
-	_validate_g10a_tavern_whisper_system(main)
-	_validate_g10b_multi_path_starter_choice(main)
-	_validate_g414a_street_wall_curb_datum()
-	_validate_starter_harbor_plan()
-	_validate_g415_layout_rules()
-	_validate_proof_street(main)
-	_validate_visual_composition_spacing()
-	_validate_starter_village_visual_order_review()
-	_validate_lived_in_details()
-	_validate_reachability()
-	_validate_building_walkability_gate()
-	_validate_route_debug_probes()
+	if g19s_reconstruction:
+		_validate_g19s_runtime_reconstruction_gate(main)
+	else:
+		_validate_g9_interaction_ux_foundation(main, player, hud)
+		_validate_g9a_quest_state_foundation(main, hud)
+		_validate_g10_opening_quest_arc(main, hud)
+		_validate_g10a_tavern_whisper_system(main)
+		_validate_g10b_multi_path_starter_choice(main)
+		_validate_g414a_street_wall_curb_datum()
+		_validate_starter_harbor_plan()
+		_validate_g415_layout_rules()
+		_validate_proof_street(main)
+		_validate_visual_composition_spacing()
+		_validate_starter_village_visual_order_review()
+		_validate_lived_in_details()
+		_validate_reachability()
+		_validate_building_walkability_gate()
+		_validate_route_debug_probes()
+
+func _is_g19s_runtime_reconstruction() -> bool:
+	return String(NEWPORT_TOWN.G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS) == "G-19S"
+
+func _validate_g19s_runtime_reconstruction_gate(main: Node) -> void:
+	_expect(main.has_method("g19s_runtime_reconstruction_contract"), "g19s_main_contract_api")
+	var contract: Dictionary = main.call("g19s_runtime_reconstruction_contract") if main.has_method("g19s_runtime_reconstruction_contract") else NEWPORT_TOWN.g19s_runtime_reconstruction_contract()
+	_expect(String(contract.get("phase", "")) == "G-19S", "g19s_contract_phase")
+	_expect(String(contract.get("source_of_truth", "")) == "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json", "g19s_contract_source_of_truth")
+	_expect(String(contract.get("runtime_layout_source", "")) == G19S_RUNTIME_SOURCE_PATH, "g19s_contract_runtime_source")
+	_expect(bool(contract.get("runtime_layout_matches_G19R_source_of_truth", false)), "g19s_contract_matches_g19r_source")
+	_expect(bool(contract.get("no_new_layout_invented_in_Godot", false)), "g19s_contract_no_ad_hoc_runtime_layout")
+	_expect(float(contract.get("layout_score", 0.0)) >= 8.5, "g19s_contract_layout_score")
+	_expect(float(contract.get("main_street_character_widths", 0.0)) >= 10.0 and float(contract.get("main_street_character_widths", 0.0)) <= 15.0, "g19s_contract_main_street_human_scale")
+	_expect(float(contract.get("harborfront_road_character_widths", 0.0)) >= 8.0 and float(contract.get("harborfront_road_character_widths", 0.0)) <= 14.0, "g19s_contract_harborfront_human_scale")
+	_expect(float(contract.get("rear_service_lane_character_widths", 0.0)) >= 4.0 and float(contract.get("rear_service_lane_character_widths", 0.0)) <= 6.0, "g19s_contract_rear_service_lane_scale")
+	_expect(float(contract.get("wharf_apron_character_widths", 0.0)) >= 8.0 and float(contract.get("wharf_apron_character_widths", 0.0)) <= 14.0, "g19s_contract_wharf_apron_scale")
+	_expect(String(contract.get("stationary_npc_policy", "")).find("walk") >= 0, "g19s_contract_stationary_until_walk_animation")
+
+	var player_spawn: Vector2 = contract.get("player_spawn", Vector2.ZERO)
+	var edrin_spawn: Vector2 = contract.get("edrin_spawn", Vector2.ZERO)
+	_expect(player_spawn.distance_to(Vector2(430.0, 920.0)) <= 1.0, "g19s_contract_player_arrival_harbor_spawn")
+	_expect(edrin_spawn.distance_to(Vector2(1080.0, 555.0)) <= 1.0, "g19s_contract_counting_house_clerk_spawn")
+	_expect(FileAccess.file_exists(G19S_RUNTIME_SOURCE_PATH), "g19s_runtime_source_exists")
+	_expect(FileAccess.file_exists("res://tools/capture_g19s_runtime_screenshots.gd"), "g19s_runtime_screenshot_script_exists")
+	_expect(FileAccess.file_exists(G19S_SCREENSHOT_MANIFEST_PATH), "g19s_runtime_screenshot_manifest_exists")
+
+	var runtime_source := _load_json_dictionary(G19S_RUNTIME_SOURCE_PATH)
+	_expect(String(runtime_source.get("schema_id", "")) == "wayfarer.g19s.newport.runtime_reconstruction.v1", "g19s_runtime_source_schema")
+	_expect(String(runtime_source.get("phase", "")) == "G-19S", "g19s_runtime_source_phase")
+	_expect(String(runtime_source.get("source_of_truth", "")) == "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json", "g19s_runtime_source_truth_path")
+	var reconstruction: Dictionary = runtime_source.get("runtime_reconstruction", {})
+	_expect(bool(reconstruction.get("no_new_layout_invented_in_godot", false)), "g19s_runtime_source_forbids_ad_hoc_layout")
+	_expect(bool(reconstruction.get("major_runtime_layout_derives_from_g19r", false)), "g19s_runtime_source_derives_from_g19r")
+	_expect(int(reconstruction.get("water_edge_y", 0)) == 1120, "g19s_runtime_source_water_edge")
+
+	var street_widths := {}
+	for raw_street in runtime_source.get("street_tile_rects", []):
+		var street: Dictionary = raw_street
+		street_widths[String(street.get("id", ""))] = float(street.get("width_character_units", 0.0))
+	_expect(float(street_widths.get("main_commercial_avenue", 0.0)) == 12.0, "g19s_runtime_source_main_street_width")
+	_expect(float(street_widths.get("harborfront_road", 0.0)) == 10.0, "g19s_runtime_source_harborfront_width")
+	_expect(float(street_widths.get("rear_service_street", 0.0)) == 5.5, "g19s_runtime_source_rear_service_width")
+	_expect(float(street_widths.get("village_to_island_road", 0.0)) == 8.0, "g19s_runtime_source_island_exit_width")
+	_expect((runtime_source.get("building_runtime_lots", []) as Array).size() >= 10, "g19s_runtime_source_lot_count")
+	_expect((runtime_source.get("npc_runtime_stations", []) as Array).size() >= 5, "g19s_runtime_source_stationed_npc_count")
+	_expect(String(runtime_source.get("camera_viewpoints_source", "")) == G19S_CAMERA_VIEWPOINTS_SOURCE, "g19s_runtime_source_camera_viewpoints")
+
+	var screenshot_manifest := _load_json_dictionary(G19S_SCREENSHOT_MANIFEST_PATH)
+	_expect(String(screenshot_manifest.get("schema_id", "")) == "wayfarer.g19s.runtime_screenshot_manifest.v1", "g19s_screenshot_manifest_schema")
+	_expect(String(screenshot_manifest.get("status", "")) == "PASS", "g19s_screenshot_manifest_pass")
+	_expect(bool(screenshot_manifest.get("debug_overlays_disabled", false)), "g19s_screenshot_manifest_debug_disabled")
+	var screenshots: Array = screenshot_manifest.get("screenshots", [])
+	_expect(screenshots.size() == 11, "g19s_screenshot_manifest_canonical_view_count")
+	var screenshot_ids := {}
+	for raw_screenshot in screenshots:
+		var screenshot: Dictionary = raw_screenshot
+		var viewpoint_id := String(screenshot.get("viewpoint_id", ""))
+		screenshot_ids[viewpoint_id] = true
+		_expect(String(screenshot.get("status", "")) == "PASS", "g19s_screenshot_pass_" + viewpoint_id)
+		var screenshot_path := String(screenshot.get("path", ""))
+		_expect(not screenshot_path.is_empty() and FileAccess.file_exists(screenshot_path), "g19s_screenshot_file_exists_" + viewpoint_id)
+	for required_view in ["wide_town_cohesion_view", "arrival_harbor_view", "counting_house_route_view", "tavern_landmark_view", "commercial_avenue_view", "harbor_work_view", "rear_service_lane_view", "npc_route_proof_view", "village_exit_to_island_view", "quest_interaction_view", "debug_disabled_view"]:
+		_expect(screenshot_ids.has(required_view), "g19s_screenshot_required_view_" + required_view)
 
 func _validate_detail_blockers(collision_layer: Node) -> void:
 	var detail_count := 0
@@ -855,7 +927,7 @@ func _validate_g420_hud_ui_visual_redesign(hud: CanvasLayer) -> void:
 	_expect(quest_body != null and quest_body.text.to_lower().find("counting house") >= 0, "g420_hud_player_facing_objective")
 	if hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.20", "G-4.21", "G-4.22", "G-4.22R", "G-13"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")
+		_expect(["G-4.20", "G-4.21", "G-4.22", "G-4.22R", "G-13", "G-21"].has(String(contract.get("phase", ""))), "g420_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g420_hud_contract_player_facing_default")
 		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g420_hud_contract_metadata_hidden")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g420_hud_contract_no_hud_available")
@@ -878,7 +950,7 @@ func _validate_g421_origin_city_hero_slice(hud: CanvasLayer) -> void:
 	_expect(hud != null and hud.has_method("get_hud_visual_contract"), "g421_hud_contract_available")
 	if hud != null and hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.21", "G-4.22", "G-4.22R", "G-13"].has(String(contract.get("phase", ""))), "g421_hud_contract_phase")
+		_expect(["G-4.21", "G-4.22", "G-4.22R", "G-13", "G-21"].has(String(contract.get("phase", ""))), "g421_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g421_hud_contract_player_facing")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g421_no_hud_capture_available")
 
@@ -892,7 +964,7 @@ func _validate_g422_visual_foundation_review_gate(hud: CanvasLayer) -> void:
 	_expect(hud != null and hud.has_method("get_hud_visual_contract"), "g422_hud_contract_available")
 	if hud != null and hud.has_method("get_hud_visual_contract"):
 		var contract: Dictionary = hud.call("get_hud_visual_contract")
-		_expect(["G-4.22", "G-4.22R", "G-13"].has(String(contract.get("phase", ""))), "g422_hud_contract_phase")
+		_expect(["G-4.22", "G-4.22R", "G-13", "G-21"].has(String(contract.get("phase", ""))), "g422_hud_contract_phase")
 		_expect(bool(contract.get("default_player_facing", false)), "g422_hud_contract_player_facing")
 		_expect(bool(contract.get("no_hud_capture_available", false)), "g422_no_hud_capture_available")
 		_expect(bool(contract.get("review_metadata_hidden_by_default", false)), "g422_review_metadata_hidden_default")
@@ -1951,8 +2023,9 @@ func _validate_building_entity_contract(player: Node, hud: CanvasLayer) -> void:
 	_validate_g414b_minimum_conversion_scope()
 	if player:
 		_expect(player.has_signal("dialogue_triggered"), "player_dialogue_signal_for_building_interaction")
-		_validate_player_uses_building_door_target(player)
-		if hud and player is Node2D:
+		if not _is_g19s_runtime_reconstruction():
+			_validate_player_uses_building_door_target(player)
+		if hud and player is Node2D and not _is_g19s_runtime_reconstruction():
 			_validate_player_interaction_message(player as Node2D, hud, "b_counting_house", "Counting House", "G-4.15", "player_public_counting_house_hud_stub")
 			_validate_player_interaction_message(player as Node2D, hud, "b_res_small", "Harbor Cottage", "private", "player_private_harbor_cottage_hud_stub")
 

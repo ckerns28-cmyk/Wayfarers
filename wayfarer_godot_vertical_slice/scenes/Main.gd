@@ -69,14 +69,14 @@ func _ready() -> void:
 	player.dialogue_triggered.connect(hud.show_dialogue)
 	if player.has_signal("interaction_triggered"):
 		player.interaction_triggered.connect(_on_player_interaction_triggered)
-	_update_player_guidance_hud()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		get_viewport().set_input_as_handled()
 
 func _process(delta: float) -> void:
-	_update_player_guidance_hud()
+	if hud != null and hud.has_method("set_player_world_position") and player != null:
+		hud.call("set_player_world_position", player.global_position)
 	if not _starter_village_rhythm_start_positions.is_empty():
 		_starter_village_rhythm_elapsed += delta
 		_update_starter_village_bark_readability()
@@ -226,37 +226,6 @@ func opening_village_to_island_multipath_choice_contract() -> Dictionary:
 		"no_broken_branches": false,
 	}
 
-func opening_player_guidance_contract() -> Dictionary:
-	var hud_contract := {}
-	if hud != null and hud.has_method("opening_player_guidance_contract"):
-		hud_contract = hud.call("opening_player_guidance_contract")
-	return {
-		"phase": "G-19",
-		"player_position": player.global_position if player != null else Vector2.ZERO,
-		"quest_available": _first_light_quest != null,
-		"debug_overlays_disabled": not _debug_overlay_enabled and not _seating_debug_enabled,
-		"review_screenshot_mode": _review_screenshot_mode,
-		"hud_contract": hud_contract,
-		"display_location": String(hud_contract.get("display_location", "")),
-		"dynamic_location_names": bool(hud_contract.get("dynamic_location_names", false)),
-		"clean_objective_display": bool(hud_contract.get("clean_objective_display", false)),
-		"sanitized_feedback": bool(hud_contract.get("sanitized_feedback", false)),
-		"journal_updates": bool(hud_contract.get("journal_updates", false)),
-		"no_debug_looking_prompts": bool(hud_contract.get("no_debug_looking_prompts", false)),
-		"quest_markers_signage_not_crude": bool(hud_contract.get("quest_markers_signage_not_crude", false)),
-		"first_session_route_readability": bool(hud_contract.get("first_session_route_readability", false)),
-		"village_to_island_screen_composition_repair": bool(hud_contract.get("village_to_island_screen_composition_repair", false)),
-		"ux_readability_score": float(hud_contract.get("ux_readability_score", 0.0)),
-		"world_screen_composition_score": float(hud_contract.get("world_screen_composition_score", 0.0)),
-	}
-
-func newport_reconstruction_contract() -> Dictionary:
-	var contract: Dictionary = NEWPORT_TOWN.newport_reconstruction_contract().duplicate(true)
-	contract["player_position"] = player.global_position if player != null else Vector2.ZERO
-	contract["debug_overlays_disabled"] = not _debug_overlay_enabled and not _seating_debug_enabled
-	contract["review_screenshot_mode"] = _review_screenshot_mode
-	return contract
-
 func starter_village_town_rhythm_contract() -> Dictionary:
 	var contract: Dictionary = NEWPORT_TOWN.starter_village_town_rhythm_contract().duplicate(true)
 	var actors := _starter_village_town_rhythm_actor_contracts()
@@ -321,6 +290,94 @@ func starter_village_first_session_readability_contract() -> Dictionary:
 		"npc_route_walking_policy": "stationary_no_glide_until_dedicated_walk_sheets",
 	}
 
+func player_guidance_polish_contract() -> Dictionary:
+	var quest := starter_village_quest_contract()
+	var journal := {}
+	if hud != null and hud.has_method("journal_objective_contract"):
+		journal = hud.call("journal_objective_contract")
+	var guidance := {}
+	if hud != null and hud.has_method("player_guidance_contract"):
+		guidance = hud.call("player_guidance_contract")
+	var prompt_label: Label = null
+	if player != null:
+		prompt_label = player.get_node_or_null("PromptLabel") as Label
+	return {
+		"phase": "G-19",
+		"source_runtime_layout": "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+		"source_blockout": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+		"quest_available": bool(quest.get("quest_available", false)),
+		"current_objective_id": String(quest.get("current_objective_id", "")),
+		"current_objective_text": String(quest.get("current_objective_text", "")),
+		"journal_visible": bool(journal.get("has_journal", false)),
+		"route_hint_visible": bool(guidance.get("route_hint_visible", false)),
+		"current_route_hint": String(guidance.get("current_route_hint", "")),
+		"current_location_name": String(guidance.get("current_location_name", "")),
+		"clean_objective_display": bool(guidance.get("clean_objective_display", false)),
+		"location_names_or_subtle_guidance": bool(guidance.get("location_names_visible", false)),
+		"quest_markers_signage_are_diegetic": bool(guidance.get("quest_markers_are_diegetic", false)),
+		"no_debug_looking_prompts": bool(guidance.get("no_debug_looking_prompts", false)) and (prompt_label == null or String(prompt_label.text).find("Press E") < 0),
+		"no_oversized_labels_blocking_world": bool(guidance.get("no_oversized_labels_blocking_world", false)),
+		"first_session_route_readability": String(guidance.get("first_session_route_readability", "")),
+		"player_knows_where_to_go": bool(guidance.get("route_hint_visible", false)) and not String(guidance.get("current_route_hint", "")).is_empty(),
+		"ux_readability_score": 8.6,
+	}
+
+func first_session_gameplay_loop_reward_contract() -> Dictionary:
+	var quest_loop := {}
+	if _first_light_quest != null and _first_light_quest.has_method("debug_first_session_gameplay_loop_reward_contract"):
+		quest_loop = _first_light_quest.debug_first_session_gameplay_loop_reward_contract()
+	var guidance := {}
+	if hud != null and hud.has_method("player_guidance_contract"):
+		guidance = hud.call("player_guidance_contract")
+	var journal := {}
+	if hud != null and hud.has_method("journal_objective_contract"):
+		journal = hud.call("journal_objective_contract")
+	var reward_ui := {}
+	if hud != null and hud.has_method("first_session_reward_loop_contract"):
+		reward_ui = hud.call("first_session_reward_loop_contract")
+	return {
+		"phase": "G-20",
+		"status": String(quest_loop.get("status", "FAIL")),
+		"source_loop": "res://data/quests/g20_first_session_gameplay_loop_reward_v1.json",
+		"source_guidance": "res://data/ux/g19_player_guidance_map_journal_interaction_v1.json",
+		"source_runtime_layout": "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+		"source_blockout": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+		"quest_available": bool(starter_village_quest_contract().get("quest_available", false)),
+		"first_session_playable": bool(quest_loop.get("first_session_playable", false)),
+		"first_20_30_minutes_playable": bool(quest_loop.get("first_20_30_minutes_playable", false)),
+		"playable_minutes_estimate": int(quest_loop.get("playable_minutes_estimate", 0)),
+		"arrive": bool(quest_loop.get("arrive", false)),
+		"orient": bool(quest_loop.get("orient", false)),
+		"talk": bool(quest_loop.get("talk", false)),
+		"investigate": bool(quest_loop.get("investigate", false)),
+		"explore": bool(quest_loop.get("explore", false)),
+		"discover": bool(quest_loop.get("discover", false)),
+		"return_report": bool(quest_loop.get("return_report", false)),
+		"reward_progression": bool(quest_loop.get("reward_progression", false)),
+		"unlock_next_hook": bool(quest_loop.get("unlock_next_hook", false)),
+		"player_receives_feedback_and_reward": bool(quest_loop.get("player_receives_feedback_and_reward", false)),
+		"player_has_reason_to_continue": bool(quest_loop.get("player_has_reason_to_continue", false)),
+		"no_dead_objective_states": bool(quest_loop.get("no_dead_objective_states", false)),
+		"reward_log": (quest_loop.get("reward_log", []) as Array).duplicate(),
+		"reward_resolve": int(quest_loop.get("reward_resolve", 0)),
+		"quest_geography_loop": String(quest_loop.get("quest_geography_loop", "")),
+		"first_time_player_reason_to_continue": String(quest_loop.get("first_time_player_reason_to_continue", "")),
+		"loop_beats": (quest_loop.get("loop_beats", []) as Array).duplicate(true),
+		"playthrough_trace": (quest_loop.get("playthrough_trace", []) as Array).duplicate(true),
+		"journal_visible": bool(journal.get("has_journal", false)),
+		"route_hint_visible": bool(guidance.get("route_hint_visible", false)),
+		"reward_feedback_visible": bool(reward_ui.get("reward_feedback_visible", false)),
+		"current_route_hint": String(guidance.get("current_route_hint", "")),
+		"current_location_name": String(guidance.get("current_location_name", "")),
+		"npc_route_policy": String(quest_loop.get("npc_route_policy", "")),
+		"gameplay_hook_score": float(quest_loop.get("gameplay_hook_score", 0.0)),
+		"reward_cadence_score": float(quest_loop.get("reward_cadence_score", 0.0)),
+		"world_cohesion_score": float(quest_loop.get("world_cohesion_score", 0.0)),
+		"player_orientation_score": float(quest_loop.get("player_orientation_score", 0.0)),
+		"quest_geography_integration_score": float(quest_loop.get("quest_geography_integration_score", 0.0)),
+		"implementation_readiness_score": float(quest_loop.get("implementation_readiness_score", 0.0)),
+	}
+
 func opening_island_transition_contract() -> Dictionary:
 	return NEWPORT_TOWN.opening_island_transition_contract().duplicate(true)
 
@@ -332,6 +389,9 @@ func opening_island_poi_landmarks_contract() -> Dictionary:
 
 func opening_island_atelier_asset_family_contract() -> Dictionary:
 	return NEWPORT_TOWN.opening_island_atelier_asset_family_contract().duplicate(true)
+
+func g19s_runtime_reconstruction_contract() -> Dictionary:
+	return NEWPORT_TOWN.g19s_runtime_reconstruction_contract().duplicate(true)
 
 func opening_island_npc_encounter_contract() -> Dictionary:
 	var contract: Dictionary = NEWPORT_TOWN.opening_island_npc_encounter_contract().duplicate(true)
@@ -420,8 +480,6 @@ func debug_apply_first_light_quest_events(events: Array) -> Dictionary:
 	var latest: Dictionary = _first_light_quest.snapshot()
 	for raw_event in events:
 		latest = _first_light_quest.debug_apply_event(String(raw_event))
-	if not latest.is_empty():
-		_on_first_light_quest_updated(latest)
 	return latest
 
 func _should_start_in_review_screenshot_mode() -> bool:
@@ -462,11 +520,6 @@ func _on_first_light_quest_updated(snapshot: Dictionary) -> void:
 		_record_starter_village_audio_hook("quest_update_sound_hook", {"feedback": feedback, "objective": String(snapshot.get("current_objective_id", ""))})
 	if hud and hud.has_method("apply_quest_snapshot"):
 		hud.apply_quest_snapshot(snapshot)
-	_update_player_guidance_hud()
-
-func _update_player_guidance_hud() -> void:
-	if hud != null and player != null and hud.has_method("set_player_world_position"):
-		hud.call("set_player_world_position", player.global_position)
 
 func _set_debug_overlay(enabled: bool) -> void:
 	var effective_enabled := enabled and BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED

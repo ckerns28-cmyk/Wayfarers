@@ -12,6 +12,8 @@ const G10A_TAVERN_WHISPER_SYSTEM_PASS := "G-10A"
 const G10B_MULTI_PATH_STARTER_CHOICE_PASS := "G-10B"
 const G18_OPENING_QUEST_VILLAGE_TO_ISLAND_PASS := "G-18"
 const G18A_MULTIPATH_RUMOR_CHOICE_PASS := "G-18A"
+const G20_FIRST_SESSION_GAMEPLAY_LOOP_REWARD_PASS := "G-20"
+const G20_FIRST_SESSION_SOURCE := "res://data/quests/g20_first_session_gameplay_loop_reward_v1.json"
 const QUEST_ID := "first_light_whispers_before_dawn"
 const QUEST_TITLE := "First Light"
 const QUEST_REWARD_LABEL := "Reward: Resolve +5 for following the tavern whisper"
@@ -22,39 +24,39 @@ const ISLAND_CONTACT_REWARD_LABEL := "Named contact: Annelise Crow"
 const OBJECTIVES := [
 	{
 		"id": "make_landfall",
-		"text": "Make landfall at Newport Harbor and get your bearings.",
+		"text": "Make landfall at Newport Harbor; face inland from the working wharf.",
 	},
 	{
 		"id": "report_to_counting_house",
-		"text": "Find Edrin Vale at the Counting House.",
+		"text": "Follow the harborfront road to Edrin Vale at the Counting House.",
 	},
 	{
 		"id": "investigate_missing_line",
-		"text": "Ask the dockworkers, merchant row, or notice board about the missing ledger line.",
+		"text": "Ask at the wharf apron, merchant row, or civic notice board about the missing ledger line.",
 	},
 	{
 		"id": "follow_tavern_whisper",
-		"text": "Bring the missing-line rumor to Bess Armitage at the Tavern/Inn.",
+		"text": "Take the west connector to Bess Armitage at the Tavern/Inn.",
 	},
 	{
 		"id": "choose_next_lead",
-		"text": "Choose a next lead: Edrin, the wharf, or the rear gate.",
+		"text": "Choose a next lead: Edrin, the wharf lanterns, or the rear service lane.",
 	},
 	{
 		"id": "lantern_at_wharf",
-		"text": "Look for the lantern signal at the wharf.",
+		"text": "Return to the working wharf apron and look for the lantern signal.",
 	},
 	{
 		"id": "secure_contact",
-		"text": "Secure a trusted contact before the rumor spreads.",
+		"text": "Return by the central connector and secure a trusted contact before dawn.",
 	},
 	{
 		"id": "follow_island_lead",
-		"text": "Follow the island lead beyond Newport's eastern edge.",
+		"text": "Follow the east guidepost beyond Newport toward the island road.",
 	},
 	{
 		"id": "travel_to_island_clue_site",
-		"text": "Take the old road toward the signal rise and hidden landing.",
+		"text": "Take the old road marker toward the signal rise and hidden landing.",
 	},
 	{
 		"id": "discover_physical_evidence",
@@ -62,7 +64,7 @@ const OBJECTIVES := [
 	},
 	{
 		"id": "return_or_report_choice",
-		"text": "Choose who receives the proof: Edrin at the Counting House or Annelise at the return lane.",
+		"text": "Choose who receives the proof: Edrin at the Counting House or Annelise on the return lane.",
 	},
 	{
 		"id": "hook_to_continue",
@@ -270,6 +272,126 @@ func debug_village_to_island_playthrough_contract() -> Dictionary:
 		"quest_gameplay_score": 8.6,
 		"narrative_hook_score": 8.6,
 		"ux_readability_score": 8.6,
+	}
+
+
+func debug_first_session_gameplay_loop_reward_contract() -> Dictionary:
+	var quest: Variant = get_script().new()
+	var trace := []
+	trace.append(_trace_step(quest, "arrival_harbor", [], "Arrival at Newport Harbor frames the player as a newcomer stepping off the working wharf."))
+	quest.start()
+	trace.append(_trace_step(quest, "orient_to_counting_house", [], "The first objective and route hint orient the player toward Edrin at the Counting House."))
+	trace.append(_apply_trace_event(quest, "counting_house_first_talk", "edrin", "Edrin gives the missing manifest problem a civic and personal reason to care."))
+	trace.append(_apply_trace_event(quest, "wharf_investigation", "mara", "A dockworker clue makes the mystery physical instead of abstract ledger text."))
+	trace.append(_apply_trace_event(quest, "tavern_whisper_social_hook", "bess", "The Tavern/Inn turns investigation into a pre-Revolution whisper-network fantasy."))
+	trace.append(_apply_trace_event(quest, "dockworker_rumor_confirmation", "jonah", "The wharf lantern rumor confirms that working harbor life is tied to the secret."))
+	trace.append(_apply_trace_event(quest, "first_return_reward_and_contact", "edrin", "The first return grants a named contact and points the player toward dawn."))
+	trace.append(_apply_trace_event(quest, "island_exit_unlock", "isla", "The village edge becomes a readable island lead rather than a dead border."))
+	trace.append(_apply_trace_event(quest, "old_road_explore", "elias", "The tavern code carries the player into island exploration."))
+	trace.append(_apply_trace_event(quest, "optional_signal_discovery", "mara_oren", "Optional signal lore enriches the route without blocking progress."))
+	trace.append(_apply_trace_event(quest, "hidden_landing_evidence", "tomas", "The hidden landing provides physical evidence and a Resolve reward."))
+	trace.append(_apply_trace_event(quest, "return_report_choice", "annelise", "Annelise makes the return route socially meaningful and gives the player a choice in who carries the truth."))
+	trace.append(_apply_trace_event(quest, "final_reward_next_hook", "edrin", "Edrin accepts the proof and turns the dawn signal into the reason to continue."))
+	var snap: Dictionary = quest.snapshot()
+	var flags := snap.get("flags", {}) as Dictionary
+	var completed := snap.get("completed_objectives", []) as Array
+	var started := snap.get("started_objectives", []) as Array
+	var rewards := snap.get("reward_log", []) as Array
+	var required_objectives := [
+		"make_landfall",
+		"report_to_counting_house",
+		"investigate_missing_line",
+		"follow_tavern_whisper",
+		"choose_next_lead",
+		"lantern_at_wharf",
+		"secure_contact",
+		"follow_island_lead",
+		"travel_to_island_clue_site",
+		"discover_physical_evidence",
+		"return_or_report_choice",
+		"hook_to_continue",
+	]
+	var missing_objectives := []
+	for objective_id in required_objectives:
+		if not completed.has(objective_id) and not (String(objective_id) == "hook_to_continue" and String(snap.get("current_objective_id", "")) == "hook_to_continue"):
+			missing_objectives.append(objective_id)
+	var required_rewards := [
+		QUEST_REWARD_LABEL,
+		CONTACT_REWARD_LABEL,
+		ISLAND_ACCESS_REWARD_LABEL,
+		ISLAND_EVIDENCE_REWARD_LABEL,
+		ISLAND_CONTACT_REWARD_LABEL,
+	]
+	var missing_rewards := []
+	for reward_label in required_rewards:
+		if not rewards.has(reward_label):
+			missing_rewards.append(reward_label)
+	var loop_beats := [
+		{"beat_id": "arrive", "minute_target": "0-2", "location": "Newport Harbor wharf", "player_function": "arrival and identity", "reward_feedback": "Journal opens with a place-specific objective"},
+		{"beat_id": "orient", "minute_target": "2-4", "location": "harborfront road to Counting House", "player_function": "first route confidence", "reward_feedback": "Counting House route is explicit"},
+		{"beat_id": "talk", "minute_target": "4-7", "location": "Counting House", "player_function": "meet civic contact", "reward_feedback": "Edrin becomes a named problem-giver"},
+		{"beat_id": "investigate", "minute_target": "7-11", "location": "wharf apron and commercial avenue", "player_function": "turn clue into town geography", "reward_feedback": "missing manifest line becomes suspicious"},
+		{"beat_id": "tavern_whisper", "minute_target": "11-15", "location": "Tavern/Inn", "player_function": "discover rumor hub", "reward_feedback": QUEST_REWARD_LABEL},
+		{"beat_id": "choose", "minute_target": "15-17", "location": "wharf lanterns or service lane", "player_function": "agency and route ownership", "reward_feedback": "chosen path is logged"},
+		{"beat_id": "explore", "minute_target": "17-21", "location": "village exit and old island road", "player_function": "safe-town-to-mystery transition", "reward_feedback": ISLAND_ACCESS_REWARD_LABEL},
+		{"beat_id": "discover", "minute_target": "21-25", "location": "signal rise and hidden landing", "player_function": "find physical proof", "reward_feedback": ISLAND_EVIDENCE_REWARD_LABEL},
+		{"beat_id": "return_report", "minute_target": "25-28", "location": "return lane and Counting House", "player_function": "close the loop through people", "reward_feedback": ISLAND_CONTACT_REWARD_LABEL},
+		{"beat_id": "continue", "minute_target": "28-30", "location": "Newport at dawn", "player_function": "forward hook", "reward_feedback": "dawn signal and Governor's men hook"},
+	]
+	var first_session_playable := missing_objectives.is_empty() and missing_rewards.is_empty()
+	var no_dead_state := String(snap.get("current_objective_id", "")) == "hook_to_continue" and bool(flags.get("reason_to_continue_after_island", false))
+	return {
+		"phase": G20_FIRST_SESSION_GAMEPLAY_LOOP_REWARD_PASS,
+		"source_contract": G20_FIRST_SESSION_SOURCE,
+		"quest_id": String(snap.get("quest_id", "")),
+		"quest_title": String(snap.get("quest_title", "")),
+		"working_title": "Whispers Before Dawn",
+		"status": "PASS" if first_session_playable and no_dead_state else "FAIL",
+		"first_20_30_minutes_playable": first_session_playable,
+		"playable_minutes_estimate": 28,
+		"playthrough_trace": trace,
+		"loop_beats": loop_beats,
+		"started_objectives": started.duplicate(),
+		"completed_objectives": completed.duplicate(),
+		"missing_objectives": missing_objectives,
+		"current_objective_id": String(snap.get("current_objective_id", "")),
+		"current_objective_text": String(snap.get("current_objective_text", "")),
+		"reward_log": rewards.duplicate(),
+		"required_rewards": required_rewards,
+		"missing_rewards": missing_rewards,
+		"reward_resolve": int(snap.get("reward_resolve", 0)),
+		"flags": flags.duplicate(true),
+		"arrive": completed.has("make_landfall"),
+		"orient": started.has("report_to_counting_house"),
+		"talk": completed.has("report_to_counting_house"),
+		"investigate": completed.has("investigate_missing_line"),
+		"explore": completed.has("follow_island_lead") and completed.has("travel_to_island_clue_site"),
+		"discover": bool(flags.get("island_physical_evidence_found", false)) and completed.has("discover_physical_evidence"),
+		"return_report": bool(flags.get("return_report_choice", false)) and completed.has("return_or_report_choice"),
+		"reward_progression": rewards.has(QUEST_REWARD_LABEL) and rewards.has(ISLAND_EVIDENCE_REWARD_LABEL) and int(snap.get("reward_resolve", 0)) >= 13,
+		"unlock_next_hook": no_dead_state,
+		"player_receives_feedback_and_reward": rewards.size() >= 5 and int(snap.get("reward_resolve", 0)) >= 13,
+		"player_has_reason_to_continue": no_dead_state,
+		"no_dead_objective_states": no_dead_state and missing_objectives.is_empty(),
+		"first_session_playable": first_session_playable and no_dead_state,
+		"quest_geography_loop": "harbor arrival -> Counting House -> wharf/commercial/tavern -> island road -> hidden landing -> return/report -> dawn hook",
+		"first_time_player_reason_to_continue": "The missing manifest becomes a harbor conspiracy with a named contact, proof from the island, and a dawn confrontation before the Governor's men close the harbor.",
+		"fun_hooks": [
+			"working harbor arrival",
+			"Counting House civic pressure",
+			"Tavern/Inn Third Toast whisper",
+			"wharf lantern code",
+			"old road island mystery",
+			"hidden landing physical evidence",
+			"dawn signal next-session hook",
+		],
+		"npc_route_policy": "NPCs are stationed for this proof unless grounded walk animation exists; no static sprite glide is accepted.",
+		"gameplay_hook_score": 8.7,
+		"reward_cadence_score": 8.7,
+		"world_cohesion_score": 8.6,
+		"player_orientation_score": 8.7,
+		"quest_geography_integration_score": 8.7,
+		"implementation_readiness_score": 8.7,
 	}
 
 

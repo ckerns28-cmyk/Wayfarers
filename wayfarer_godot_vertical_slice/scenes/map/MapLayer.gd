@@ -47,7 +47,6 @@ const STARTER_VILLAGE_G8A_LIVING_NPC_POPULATION_PASS := "G-8A"
 const G8A_NPC_POPULATION_SCORE := 8.5
 const G8A_RUNTIME_NPC_NODES_ENABLED := true
 const G8A_NPC_MOVEMENT_POLICY := "stationary_work_pose_until_dedicated_walk_sheets"
-const G19_PLAYER_GUIDANCE_SCREEN_COMPOSITION_PASS := "G-19"
 const NEWPORT_SURFACE_KIT_MATERIALS := [
 	"commercial_street",
 	"curb_sidewalk",
@@ -713,13 +712,13 @@ const NEWPORT_G7C_LANDMARK_IDENTITY_PLACEMENTS := [
 	{"family": "grounding", "asset_id": "atelier_ground_wash_tub_buckets_01", "dest": Rect2(1320, 386, 62, 31), "purpose": "g7c_residential_edge_lived_in_yard_identity", "alpha": 0.40, "contact_shadow": true},
 ]
 const NEWPORT_ATELIER_CHARACTER_PLACEMENTS := [
-	{"id": "mara_pike_dockworker", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(390, 812), "size": Vector2(82, 82), "role": "dockworker", "district": "working_wharf", "station": "west_fish_offload", "route_intent": "harbor_loop", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "checks rope and fish baskets", "dialogue_seed": "Crates do not forget hands. Ledgers do.", "quest_relevance": "missing_manifest_line", "purpose": "g8a_west_dockworker_station_supports_harbor_labor", "contact_shadow": true},
-	{"id": "jonah_reed_dock_courier", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(1196, 812), "size": Vector2(82, 82), "role": "dockworker_courier", "district": "working_wharf", "station": "east_storehouse_queue", "route_intent": "east_storehouse_to_counting_house", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "waits by the storehouse barrels", "dialogue_seed": "A sealed cargo line went quiet before the tide turned.", "quest_relevance": "harbor_work_path", "purpose": "g8a_east_dock_courier_station_supports_storehouse_route", "contact_shadow": true},
-	{"id": "honor_finch_merchant_shopkeeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(1364, 636), "size": Vector2(82, 82), "role": "merchant_shopkeeper", "district": "harborfront_commercial", "station": "east_market_cart", "route_intent": "market_loop", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "counts parcels and watches the avenue", "dialogue_seed": "The missing line cost someone coin, and coin leaves footprints.", "quest_relevance": "merchant_or_street_path", "purpose": "g8a_merchant_shopkeeper_station_supports_commercial_spine", "contact_shadow": true},
-	{"id": "bess_armitage_tavern_keeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(302, 604), "size": Vector2(80, 80), "role": "tavern_keeper", "district": "harborfront_commercial", "station": "tavern_front_threshold", "route_intent": "tavern_rumor_path", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "keeps the door warm and hears the room before it speaks", "dialogue_seed": "Ask for the third toast only if you mean to hear the answer.", "quest_relevance": "tavern_whisper_hook", "purpose": "g8a_tavern_keeper_station_supports_rumor_hub", "contact_shadow": true},
-	{"id": "silas_crowe_suspicious_patron", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(386, 438), "size": Vector2(80, 80), "role": "suspicious_patron", "district": "support_lane", "station": "tavern_rear_service_gate", "route_intent": "secret_path_tavern_to_rear_lane", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "lingers near the rear gate with sealed notes", "dialogue_seed": "Some whispers arrive by the back door, not the bar.", "quest_relevance": "optional_secret_path", "purpose": "g8a_suspicious_patron_station_supports_secret_path", "contact_shadow": true},
-	{"id": "edrin_vale_counting_house_clerk", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(792, 570), "size": Vector2(80, 80), "role": "counting_house_clerk", "district": "inland_residential_civic", "station": "counting_house_records_route", "route_intent": "counting_house_clerk_path", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "holds the records route and watches the wharf", "dialogue_seed": "The ledger is missing a line, and no honest clerk misplaces ink by accident.", "quest_relevance": "first_light_counting_house", "purpose": "g8a_counting_house_clerk_station_supports_first_objective", "contact_shadow": true},
-	{"id": "nora_vale_rumor_carrier", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(748, 394), "size": Vector2(78, 78), "role": "rumor_carrier", "district": "inland_residential_civic", "station": "civic_notice_board", "route_intent": "notice_board_to_tavern", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "reads the notices and folds one into a sleeve", "dialogue_seed": "One notice was posted for officials; one was posted for people who know where to look.", "quest_relevance": "optional_notice_clue", "purpose": "g8a_rumor_carrier_station_supports_civic_to_tavern_whisper", "contact_shadow": true},
+	{"id": "mara_pike_dockworker", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(390, 812), "size": Vector2(82, 82), "role": "dockworker", "district": "working_wharf", "station": "west_pier_landing", "route_intent": "dockworker_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "checks rope and fish baskets", "dialogue_seed": "Crates do not forget hands. Ledgers do.", "quest_relevance": "missing_manifest_line", "purpose": "g19r_roof_station_repair_west_dockworker_on_landing_lip", "g8a_station_purpose": "g8a_west_dockworker_station_supports_harbor_labor", "contact_shadow": true},
+	{"id": "jonah_reed_dock_courier", "asset_id": "npc_dockworker_atelier_g422r", "position": Vector2(1196, 812), "size": Vector2(82, 82), "role": "dockworker_courier", "district": "working_wharf", "station": "east_storehouse_landing", "route_intent": "dockworker_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "waits by the storehouse barrels", "dialogue_seed": "A sealed cargo line went quiet before the tide turned.", "quest_relevance": "harbor_work_path", "purpose": "g19r_roof_station_repair_east_dockworker_on_front_landing", "contact_shadow": true},
+	{"id": "honor_finch_merchant_shopkeeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(815, 585), "size": Vector2(82, 82), "role": "merchant_shopkeeper", "district": "harborfront_commercial", "station": "mercantile_frontage", "route_intent": "merchant_shopkeeper_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "counts parcels and watches the avenue", "dialogue_seed": "The missing line cost someone coin, and coin leaves footprints.", "quest_relevance": "merchant_or_street_path", "purpose": "g19s_merchant_station_derived_from_g19r_route", "g8a_station_purpose": "g8a_merchant_shopkeeper_station_supports_commercial_spine", "contact_shadow": true},
+	{"id": "bess_armitage_tavern_keeper", "asset_id": "npc_market_vendor_atelier_g422r", "position": Vector2(500, 585), "size": Vector2(80, 80), "role": "tavern_keeper", "district": "harborfront_commercial", "station": "tavern_front_threshold", "route_intent": "tavern_patron_rumor_carrier_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "keeps the door warm and hears the room before it speaks", "dialogue_seed": "Ask for the third toast only if you mean to hear the answer.", "quest_relevance": "tavern_whisper_hook", "purpose": "g19s_tavern_keeper_station_derived_from_g19r_route", "g8a_station_purpose": "g8a_tavern_keeper_station_supports_rumor_hub", "contact_shadow": true},
+	{"id": "silas_crowe_suspicious_patron", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(610, 365), "size": Vector2(80, 80), "role": "suspicious_patron", "district": "support_lane", "station": "tavern_rear_service_gate", "route_intent": "tavern_patron_rumor_carrier_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "lingers near the rear gate with sealed notes", "dialogue_seed": "Some whispers arrive by the back door, not the bar.", "quest_relevance": "optional_secret_path", "purpose": "g19s_suspicious_patron_station_derived_from_g19r_route", "g8a_station_purpose": "g8a_suspicious_patron_station_supports_secret_path", "contact_shadow": true},
+	{"id": "edrin_vale_counting_house_clerk", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(1080, 555), "size": Vector2(80, 80), "role": "counting_house_clerk", "district": "inland_residential_civic", "station": "counting_house_records_route", "route_intent": "counting_house_clerk_runner_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "holds the records route and watches the wharf", "dialogue_seed": "The ledger is missing a line, and no honest clerk misplaces ink by accident.", "quest_relevance": "first_light_counting_house", "purpose": "g19s_counting_house_clerk_station_derived_from_g19r_route", "g8a_station_purpose": "g8a_counting_house_clerk_station_supports_first_objective", "contact_shadow": true},
+	{"id": "nora_vale_rumor_carrier", "asset_id": "npc_civic_clerk_atelier_g422r", "position": Vector2(1120, 620), "size": Vector2(78, 78), "role": "rumor_carrier", "district": "inland_residential_civic", "station": "civic_notice_board", "route_intent": "counting_house_clerk_runner_route", "movement_policy": G8A_NPC_MOVEMENT_POLICY, "idle_behavior": "reads the notices and folds one into a sleeve", "dialogue_seed": "One notice was posted for officials; one was posted for people who know where to look.", "quest_relevance": "optional_notice_clue", "purpose": "g19s_rumor_carrier_station_derived_from_g19r_route", "g8a_station_purpose": "g8a_rumor_carrier_station_supports_civic_to_tavern_whisper", "contact_shadow": true},
 ]
 const G417_HERO_PROP_REPLACEMENT_RECT := Rect2(240, 500, 1040, 280)
 
@@ -744,7 +743,6 @@ var _g418d1_m01b_proof: Texture2D
 var _g418d2_capability_asset: Texture2D
 var _green_origin_lab_enabled := false
 var _building_texture_cache := {}
-var _newport_reconstruction_layout := {}
 
 func _ready() -> void:
 	_newport_hero_atlas = ResourceLoader.load(NEWPORT_HERO_ATLAS_PATH, "Texture2D") as Texture2D
@@ -804,20 +802,6 @@ func _ready() -> void:
 	_g418d2_capability_asset = ResourceLoader.load(G418D2_CAPABILITY_ASSET_PATH, "Texture2D") as Texture2D
 	if _g418d2_capability_asset == null:
 		push_warning("Failed to load G-4.18D.2 capability asset: " + G418D2_CAPABILITY_ASSET_PATH)
-	_newport_reconstruction_layout = _load_runtime_json(NEWPORT_TOWN.newport_reconstruction_source_path())
-
-func _load_runtime_json(path: String) -> Dictionary:
-	if path.is_empty():
-		return {}
-	if not FileAccess.file_exists(path):
-		push_error("Missing Newport runtime JSON source: " + path)
-		return {}
-	var raw_json := FileAccess.get_file_as_string(path)
-	var parsed: Variant = JSON.parse_string(raw_json)
-	if parsed is Dictionary:
-		return parsed
-	push_error("Invalid Newport runtime JSON source: " + path)
-	return {}
 	queue_redraw()
 
 func newport_surface_kit_version() -> String:
@@ -948,227 +932,6 @@ func _draw() -> void:
 
 func _tile_rect(x: int, y: int, w: int = 1, h: int = 1) -> Rect2:
 	return Rect2(x * TILE, y * TILE, w * TILE, h * TILE)
-
-func _g19r_reconstruction_active() -> bool:
-	return NEWPORT_TOWN.G19R_NEWPORT_RECONSTRUCTION_PIVOT and not _newport_reconstruction_layout.is_empty()
-
-func _g19r_rect(raw: Variant) -> Rect2:
-	if raw is Dictionary:
-		return Rect2(
-			Vector2(float(raw.get("x", 0.0)), float(raw.get("y", 0.0))),
-			Vector2(float(raw.get("w", 0.0)), float(raw.get("h", 0.0)))
-		)
-	return Rect2()
-
-func _g19r_point(raw: Variant) -> Vector2:
-	if raw is Dictionary:
-		return Vector2(float(raw.get("x", 0.0)), float(raw.get("y", 0.0)))
-	return Vector2.ZERO
-
-func _g19r_color(raw: Variant, fallback: Color, alpha := -1.0) -> Color:
-	var color := fallback
-	if raw is String and not String(raw).is_empty():
-		color = Color(String(raw))
-	if alpha >= 0.0:
-		color.a = alpha
-	return color
-
-func _draw_g19r_reconstructed_town_ground() -> void:
-	if not _g19r_reconstruction_active():
-		return
-	_draw_newport_grass_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#4d6848"), Color("#314b35"), 0.94, 68)
-	_draw_newport_grass_rect(Rect2(72, 214, 1540, 560), Color("#586f50"), Color("#3c583e"), 0.62, 76)
-	_draw_newport_grass_swale(PackedVector2Array([
-		Vector2(72, 136), Vector2(340, 106), Vector2(720, 122), Vector2(1120, 104),
-		Vector2(1538, 136), Vector2(1650, 326), Vector2(1590, 650), Vector2(1360, 744),
-		Vector2(940, 756), Vector2(510, 734), Vector2(96, 760)
-	]), Color("#607a55", 0.16), Color("#3f5e3f", 0.08), 70)
-	_draw_newport_grass_swale(PackedVector2Array([
-		Vector2(124, 272), Vector2(450, 238), Vector2(760, 250), Vector2(1110, 232),
-		Vector2(1530, 285), Vector2(1585, 550), Vector2(1470, 700), Vector2(980, 724),
-		Vector2(490, 704), Vector2(122, 690)
-	]), Color("#697d5d", 0.13), Color("#405b40", 0.10), 54)
-	for raw_band in _newport_reconstruction_layout.get("district_bands", []):
-		if not (raw_band is Dictionary):
-			continue
-		var band: Dictionary = raw_band
-		if String(band.get("render_layer", "")) != "ground":
-			continue
-		var rect := _g19r_rect(band.get("rect", {}))
-		if rect.size.x <= 0.0 or rect.size.y <= 0.0:
-			continue
-		var alpha := float(band.get("alpha", 0.28))
-		var base := _g19r_color(band.get("base_color", ""), Color("#5f7353"), alpha)
-		var alt := _g19r_color(band.get("alt_color", ""), Color("#455f43"), alpha * 0.85)
-		_draw_soft_rect(rect, base, alt, alpha, max(12, int(rect.size.x / 42.0)))
-		_draw_g19r_band_edges(String(band.get("id", "")), rect)
-	for raw_lot in _newport_reconstruction_layout.get("lots", []):
-		if raw_lot is Dictionary:
-			_draw_g19r_lot_foundation(raw_lot)
-
-func _draw_g19r_band_edges(band_id: String, rect: Rect2) -> void:
-	if band_id == "upper_residential_terrace":
-		_draw_newport_grass_transition(Rect2(rect.position.x + 26.0, rect.end.y - 26.0, rect.size.x - 52.0, 14.0), "south", 0.15)
-		_draw_fence_line(Vector2(rect.position.x + 80.0, rect.end.y - 30.0), Vector2(rect.position.x + 560.0, rect.end.y - 34.0), Color("#d7c894", 0.22))
-		_draw_fence_line(Vector2(rect.position.x + 820.0, rect.end.y - 32.0), Vector2(rect.position.x + 1260.0, rect.end.y - 36.0), Color("#d7c894", 0.20))
-	elif band_id == "waterfront_avenue_lots":
-		_draw_newport_grass_transition(Rect2(rect.position.x + 10.0, rect.position.y + 24.0, rect.size.x - 20.0, 14.0), "north", 0.16)
-		_draw_newport_frontage_threshold(Rect2(rect.position.x + 18.0, rect.end.y - 34.0, rect.size.x - 36.0, 24.0), "commercial", 0.30)
-	elif band_id == "working_wharf_apron":
-		_draw_newport_frontage_threshold(Rect2(rect.position.x + 12.0, rect.position.y + 6.0, rect.size.x - 24.0, 18.0), "support", 0.28)
-		_draw_newport_grass_transition(Rect2(rect.position.x + 12.0, rect.end.y - 14.0, rect.size.x - 24.0, 10.0), "south", 0.13)
-	elif band_id == "civic_green_counting_house":
-		_draw_newport_grass_transition(Rect2(rect.position.x + 16.0, rect.end.y - 14.0, rect.size.x - 32.0, 12.0), "south", 0.13)
-	elif band_id == "east_gate_settlement_edge":
-		_draw_newport_grass_transition(Rect2(rect.position.x + 8.0, rect.end.y - 14.0, rect.size.x - 16.0, 12.0), "south", 0.15)
-
-func _draw_g19r_lot_foundation(lot: Dictionary) -> void:
-	var anchor := _g19r_point(lot.get("anchor", {}))
-	if anchor == Vector2.ZERO:
-		return
-	var role := String(lot.get("role", "street_wall"))
-	var rect := _g19r_lot_rect(anchor, role)
-	var kind := "commercial"
-	if role.contains("official"):
-		kind = "civic"
-	elif role.contains("upper") or role.contains("lodging"):
-		kind = "residential"
-	elif role.contains("cargo") or role.contains("boat") or role.contains("barrel"):
-		kind = "wharf"
-	elif role.contains("market"):
-		kind = "market"
-	_draw_g7a_named_lot_foundation({
-		"id": "g19r_" + String(lot.get("id", "lot")),
-		"rect": rect,
-		"kind": kind,
-		"front": "north" if kind == "wharf" else "south",
-		"anchor": anchor,
-	})
-
-func _g19r_lot_rect(anchor: Vector2, role: String) -> Rect2:
-	if role == "social_landmark":
-		return Rect2(anchor + Vector2(-136, -104), Vector2(292, 126))
-	if role == "official_pressure":
-		return Rect2(anchor + Vector2(-132, -92), Vector2(264, 120))
-	if role == "market_corner":
-		return Rect2(anchor + Vector2(-96, -86), Vector2(196, 112))
-	if role == "east_edge_street_wall":
-		return Rect2(anchor + Vector2(-72, -72), Vector2(116, 92))
-	if role == "upper_town_life":
-		return Rect2(anchor + Vector2(-102, -88), Vector2(216, 114))
-	if role == "lodging" or role == "working_lodging":
-		return Rect2(anchor + Vector2(-86, -76), Vector2(178, 100))
-	if role == "cargo" or role == "boat_work":
-		return Rect2(anchor + Vector2(-126, -72), Vector2(252, 86))
-	if role == "barrel_work":
-		return Rect2(anchor + Vector2(-88, -64), Vector2(176, 78))
-	return Rect2(anchor + Vector2(-86, -78), Vector2(180, 100))
-
-func _draw_g19r_reconstructed_town_routes() -> void:
-	if not _g19r_reconstruction_active():
-		return
-	for raw_route in _newport_reconstruction_layout.get("route_spines", []):
-		if not (raw_route is Dictionary):
-			continue
-		var route: Dictionary = raw_route
-		var kind := String(route.get("kind", ""))
-		var rect := _g19r_rect(route.get("rect", {}))
-		if rect.size.x > 0.0 and rect.size.y > 0.0:
-			_draw_g19r_route_rect(kind, rect)
-		var raw_points: Array = route.get("polyline", [])
-		if raw_points.size() >= 2:
-			var width := float(route.get("width", 36.0))
-			for i in range(raw_points.size() - 1):
-				_draw_g19r_route_segment(kind, _g19r_point(raw_points[i]), _g19r_point(raw_points[i + 1]), width)
-	for p in [Vector2(244, 596), Vector2(680, 596), Vector2(1018, 596), Vector2(1364, 636), Vector2(704, 392), Vector2(970, 402), Vector2(486, 704), Vector2(898, 704), Vector2(1323, 704)]:
-		_draw_door_step(p)
-
-func _draw_g19r_route_rect(kind: String, rect: Rect2) -> void:
-	if kind == "stone_avenue":
-		_draw_newport_commercial_street(rect, 160, 0.96)
-		_draw_street_wear(rect.grow(-16.0), 72)
-		_draw_newport_sidewalk_panel(Rect2(rect.position.x + 12.0, rect.position.y + 4.0, rect.size.x - 24.0, 10.0), "curb", 0.38)
-		_draw_newport_sidewalk_panel(Rect2(rect.position.x + 12.0, rect.end.y - 14.0, rect.size.x - 24.0, 10.0), "curb_shadow", 0.34)
-	elif kind == "civic_terrace":
-		_draw_newport_commercial_street(rect, 92, 0.74)
-		_draw_street_wear(rect.grow(-12.0), 42)
-		_draw_newport_sidewalk_panel(Rect2(rect.position.x + 18.0, rect.position.y + 5.0, rect.size.x - 36.0, 9.0), "curb", 0.28)
-		_draw_newport_sidewalk_panel(Rect2(rect.position.x + 18.0, rect.end.y - 13.0, rect.size.x - 36.0, 9.0), "curb_shadow", 0.28)
-	elif kind == "dock_apron":
-		_draw_newport_dock_planks(rect, 72)
-		draw_line(rect.position + Vector2(10, 0), Vector2(rect.end.x - 10, rect.position.y), Color("#d8bc78", 0.22), 1.2)
-		draw_line(Vector2(rect.position.x + 10, rect.end.y), rect.end - Vector2(10, 0), Color(0.02, 0.02, 0.015, 0.30), 1.4)
-	else:
-		_draw_newport_service_lane_rect(rect, 0.40)
-		_draw_street_wear(rect.grow(-8.0), 30)
-
-func _draw_g19r_route_segment(kind: String, a: Vector2, b: Vector2, width: float) -> void:
-	if a == Vector2.ZERO or b == Vector2.ZERO:
-		return
-	if width >= 100.0:
-		_draw_g19r_broad_street_segment(kind, a, b, width)
-		return
-	var stone := kind == "civic_climb" or kind == "threshold_lane"
-	_draw_newport_dirt_path(a, b, width, stone)
-	var alpha := 0.12 if stone else 0.09
-	draw_line(a, b, Color(0.05, 0.045, 0.028, alpha), maxf(1.0, width * 0.18), true)
-
-func _draw_g19r_broad_street_segment(kind: String, a: Vector2, b: Vector2, width: float) -> void:
-	var dir := (b - a).normalized()
-	var normal := Vector2(-dir.y, dir.x)
-	var half := width * 0.5
-	var points := PackedVector2Array([
-		a + normal * half - dir * 8.0,
-		b + normal * half + dir * 10.0,
-		b - normal * half + dir * 10.0,
-		a - normal * half - dir * 8.0,
-	])
-	var detail_count := maxi(28, int(a.distance_to(b) * width / 520.0))
-	_draw_newport_street_polygon(points, detail_count, 0.62 if kind == "threshold_lane" else 0.70)
-	draw_line(a + normal * half * 0.86, b + normal * half * 0.86, Color("#d0bd85", 0.10), 1.0, true)
-	draw_line(a - normal * half * 0.86, b - normal * half * 0.86, Color(0.025, 0.025, 0.02, 0.18), 1.2, true)
-
-func _draw_g19r_reconstructed_town_props() -> void:
-	if not _g19r_reconstruction_active():
-		return
-	for raw_prop in _newport_reconstruction_layout.get("functional_props", []):
-		if not (raw_prop is Dictionary):
-			continue
-		var prop: Dictionary = raw_prop
-		var placement := {
-			"asset_id": String(prop.get("asset_id", "")),
-			"dest": _g19r_rect(prop.get("dest", {})),
-			"purpose": String(prop.get("purpose", "g19r_functional_prop")),
-			"alpha": float(prop.get("alpha", 0.92)),
-			"contact_shadow": true,
-		}
-		_draw_g19r_functional_asset(String(prop.get("family", "")), placement)
-	for fence in [
-		[Vector2(154, 510), Vector2(370, 506)],
-		[Vector2(578, 460), Vector2(842, 454)],
-		[Vector2(1104, 462), Vector2(1368, 456)],
-		[Vector2(1464, 504), Vector2(1608, 500)],
-	]:
-		_draw_fence_line(fence[0], fence[1], Color("#d7c894", 0.34))
-	for pos in [Vector2(310, 602), Vector2(792, 570), Vector2(1218, 690), Vector2(1518, 548)]:
-		_draw_contact_shadow(pos + Vector2(0, 4), Vector2(28, 7), 0.08)
-
-func _draw_g19r_functional_asset(family: String, placement: Dictionary) -> void:
-	match family:
-		"lamps":
-			_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, placement)
-		"civic":
-			_draw_town_identity_atelier_placement(_newport_atelier_civic_market_atlas, NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS, placement)
-		"tavern":
-			_draw_g418e_hero_family_placement(_newport_g418e_tavern_inn_atlas, NEWPORT_G418E_TAVERN_INN_ATLAS_REGIONS, placement)
-		"commercial":
-			_draw_g418e_hero_family_placement(_newport_g418e_commercial_avenue_atlas, NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_REGIONS, placement)
-		"harbor":
-			_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
-		"service":
-			_draw_g418e_hero_family_placement(_newport_g418e_rear_service_connector_atlas, NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS, placement)
-		_:
-			_draw_environmental_atelier_placement(_newport_atelier_building_grounding_atlas, NEWPORT_ATELIER_BUILDING_GROUNDING_ATLAS_REGIONS, placement)
 
 func _draw_hero_atlas_piece(region_id: String, dest: Rect2, alpha := 1.0) -> void:
 	if _newport_hero_atlas == null:
@@ -1510,12 +1273,6 @@ func _draw_props() -> void:
 			draw_circle(pos + Vector2(0, -6), 3, Color("#d8b56f"))
 
 func _draw_g410_ground() -> void:
-	if _g19r_reconstruction_active():
-		_draw_g19r_reconstructed_town_ground()
-		_draw_g15a_transition_ground()
-		_draw_g15b_island_world_ground()
-		_draw_g410_background_depth()
-		return
 	_draw_newport_grass_rect(Rect2(Vector2.ZERO, NEWPORT_TOWN.WORLD_SIZE), Color("#4b6a42"), Color("#314d35"), 1.0, 64)
 	_draw_newport_grass_swale(PackedVector2Array([
 		Vector2(120, 206), Vector2(360, 178), Vector2(722, 188), Vector2(1078, 174),
@@ -1532,7 +1289,6 @@ func _draw_g410_ground() -> void:
 	_draw_g15b_island_world_ground()
 	_draw_g410_background_depth()
 	_draw_g422a_town_edge_boundaries()
-	_draw_g19_player_guidance_screen_composition_ground()
 	if NEWPORT_TOWN.G422A_SHOW_BLOCKOUT_GUIDES:
 		_draw_g410_lot_plan()
 	_draw_g415_parcel_grounding()
@@ -1741,15 +1497,12 @@ func _g415_threshold_width_for(id: String, band: String) -> float:
 			return 46.0 if band == "commercial" else 52.0
 
 func _draw_g410_street_plan() -> void:
-	if _g19r_reconstruction_active():
-		_draw_g19r_reconstructed_town_routes()
-		_draw_g15a_transition_streets()
-		_draw_g15b_island_world_routes()
+	if NEWPORT_TOWN.G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS == "G-19S":
+		_draw_g19s_source_truth_street_plan()
 		return
 	_draw_g423a_expanded_town_streets()
 	_draw_g15a_transition_streets()
 	_draw_g15b_island_world_routes()
-	_draw_g19_player_guidance_screen_composition_routes()
 	_draw_g7a_continuous_street_base()
 	_draw_street_wear(Rect2(178, 580, 1328, 58), 58)
 	_draw_street_wear(Rect2(250, 398, 1198, 42), 38)
@@ -1772,6 +1525,199 @@ func _draw_g410_street_plan() -> void:
 		for p in [Vector2(332, 596), Vector2(704, 592), Vector2(1010, 596), Vector2(1150, 594), Vector2(662, 408), Vector2(1094, 416), Vector2(390, 508), Vector2(1400, 590)]:
 			draw_circle(p, 4, Color("#2f251b"))
 			draw_circle(p + Vector2(0, -6), 3, Color("#d8b56f"))
+
+func _draw_g19s_source_truth_street_plan() -> void:
+	# G-19S: runtime street grammar is reconstructed from the G-19R measured
+	# blockout instead of the earlier narrow tile-era Newport road pass.
+	_draw_g19s_source_truth_lots()
+	_draw_newport_commercial_street(Rect2(260, 542, 1525, 326), 220, 0.84)
+	_draw_newport_commercial_street(Rect2(220, 774, 1590, 272), 180, 0.72)
+	_draw_newport_commercial_street(Rect2(260, 285, 1440, 150), 118, 0.54)
+	_draw_newport_commercial_street(Rect2(958, 325, 204, 550), 76, 0.60)
+	_draw_newport_commercial_street(Rect2(422, 335, 177, 535), 68, 0.58)
+	_draw_newport_commercial_street(Rect2(1478, 360, 164, 530), 66, 0.56)
+	_draw_newport_commercial_street(Rect2(1700, 500, 640, 218), 86, 0.60)
+	_draw_g7a_soft_service_trace(Vector2(698, 420), Vector2(698, 925), 30.0, 0.42)
+	_draw_g7a_soft_service_trace(Vector2(1510, 343), Vector2(2100, 343), 22.0, 0.34)
+	for curb in [
+		Rect2(270, 542, 1505, 12),
+		Rect2(270, 854, 1505, 14),
+		Rect2(230, 774, 1570, 12),
+		Rect2(230, 1034, 1570, 14),
+		Rect2(270, 285, 1420, 10),
+		Rect2(270, 424, 1420, 10),
+	]:
+		_draw_newport_sidewalk_panel(curb, "curb", 0.22)
+	for transition in [
+		{"rect": Rect2(260, 520, 1525, 20), "edge": "north", "alpha": 0.16},
+		{"rect": Rect2(260, 866, 1525, 24), "edge": "south", "alpha": 0.15},
+		{"rect": Rect2(220, 1046, 1590, 28), "edge": "south", "alpha": 0.16},
+		{"rect": Rect2(260, 260, 1440, 22), "edge": "north", "alpha": 0.13},
+	]:
+		_draw_newport_grass_transition(transition["rect"], String(transition["edge"]), float(transition["alpha"]))
+	for p in [Vector2(500, 585), Vector2(815, 585), Vector2(1100, 600), Vector2(1420, 585), Vector2(1510, 610), Vector2(1900, 585)]:
+		_draw_edge_grime(p, 120.0)
+		_draw_door_step(p)
+	for rut in [
+		[Vector2(280, 700), Vector2(1780, 700), 0.11],
+		[Vector2(260, 930), Vector2(1770, 930), 0.10],
+		[Vector2(300, 360), Vector2(1690, 360), 0.08],
+		[Vector2(1060, 340), Vector2(1060, 850), 0.09],
+		[Vector2(1540, 380), Vector2(1540, 850), 0.08],
+	]:
+		draw_line(rut[0], rut[1], Color(0.07, 0.055, 0.035, float(rut[2])), 2.2, true)
+
+func _draw_g19s_source_truth_lots() -> void:
+	# Lot pads mirror g19r_newport_lot_plan.json: buildings now sit on blocks,
+	# frontages, wharf aprons, and service yards rather than scattered icons.
+	for raw_lot in [
+		{"rect": Rect2(300, 350, 380, 250), "kind": "tavern", "front": "south", "anchor": Vector2(500, 585)},
+		{"rect": Rect2(970, 345, 330, 225), "kind": "civic", "front": "south", "anchor": Vector2(1080, 555)},
+		{"rect": Rect2(700, 370, 230, 190), "kind": "commercial", "front": "south", "anchor": Vector2(815, 585)},
+		{"rect": Rect2(1305, 370, 230, 190), "kind": "commercial", "front": "south", "anchor": Vector2(1420, 585)},
+		{"rect": Rect2(1535, 380, 245, 180), "kind": "market", "front": "south", "anchor": Vector2(1658, 585)},
+		{"rect": Rect2(390, 900, 330, 190), "kind": "wharf", "front": "north", "anchor": Vector2(555, 985)},
+		{"rect": Rect2(950, 940, 360, 175), "kind": "wharf", "front": "north", "anchor": Vector2(1130, 1000)},
+		{"rect": Rect2(1370, 880, 260, 190), "kind": "support", "front": "north", "anchor": Vector2(1503, 985)},
+		{"rect": Rect2(620, 105, 260, 180), "kind": "residential", "front": "south", "anchor": Vector2(750, 285)},
+		{"rect": Rect2(910, 105, 300, 180), "kind": "residential", "front": "south", "anchor": Vector2(1060, 285)},
+		{"rect": Rect2(1215, 115, 270, 175), "kind": "residential", "front": "south", "anchor": Vector2(1348, 290)},
+		{"rect": Rect2(1055, 565, 195, 100), "kind": "civic", "front": "south", "anchor": Vector2(1100, 600)},
+		{"rect": Rect2(1815, 500, 300, 175), "kind": "support", "front": "south", "anchor": Vector2(1900, 585)},
+	]:
+		var lot: Dictionary = raw_lot
+		_draw_g19s_source_truth_lot_grounding(lot)
+	for raw_route in [
+		[Vector2(430, 920), Vector2(500, 585), 0.34],
+		[Vector2(500, 585), Vector2(1080, 555), 0.30],
+		[Vector2(1080, 555), Vector2(1050, 1000), 0.28],
+		[Vector2(500, 585), Vector2(610, 365), 0.24],
+		[Vector2(1100, 600), Vector2(1900, 585), 0.30],
+	]:
+		var route: Array = raw_route
+		_draw_g7b_trade_route_trace(route[0], route[1], float(route[2]))
+	for raw_zone in [
+		{"rect": Rect2(430, 970, 155, 70), "kind": "manifest_cargo"},
+		{"rect": Rect2(780, 968, 160, 64), "kind": "rope_chandlery"},
+		{"rect": Rect2(1010, 956, 180, 76), "kind": "storehouse_queue"},
+		{"rect": Rect2(1465, 948, 170, 72), "kind": "fish_offload"},
+	]:
+		var zone: Dictionary = raw_zone
+		_draw_g7b_work_zone_surface(zone["rect"], String(zone["kind"]))
+
+func _draw_g19s_source_truth_lot_grounding(lot: Dictionary) -> void:
+	var rect: Rect2 = lot["rect"]
+	var kind := String(lot.get("kind", "commercial"))
+	var fill := Color("#5f7352", 0.040)
+	var edge := Color("#c6b275", 0.050)
+	if kind == "tavern":
+		fill = Color("#5b674a", 0.055)
+		edge = Color("#d0b776", 0.060)
+	elif kind == "civic":
+		fill = Color("#666a5a", 0.050)
+		edge = Color("#d1c083", 0.052)
+	elif kind == "market":
+		fill = Color("#6a604b", 0.054)
+		edge = Color("#d0b776", 0.055)
+	elif kind == "wharf":
+		fill = Color("#665b48", 0.070)
+		edge = Color("#c6a66d", 0.060)
+	elif kind == "residential":
+		fill = Color("#647b57", 0.032)
+		edge = Color("#a8b677", 0.038)
+	elif kind == "support":
+		fill = Color("#5f674e", 0.040)
+		edge = Color("#c4ad78", 0.042)
+
+	var inset := 18.0 if kind != "wharf" else 10.0
+	var softened := rect.grow(-inset)
+	if softened.size.x <= 8.0 or softened.size.y <= 8.0:
+		softened = rect
+	_draw_newport_lot_variation(softened, fill, edge, fill.a, kind)
+	var frontage_height := 12.0 if kind != "wharf" else 10.0
+	var frontage := Rect2(rect.position.x + 20.0, rect.end.y - frontage_height - 4.0, maxf(32.0, rect.size.x - 40.0), frontage_height)
+	if String(lot.get("front", "south")) == "north":
+		frontage = Rect2(rect.position.x + 20.0, rect.position.y + 4.0, maxf(32.0, rect.size.x - 40.0), frontage_height)
+	if kind == "residential":
+		_draw_newport_grass_transition(frontage, "south", 0.11)
+	else:
+		_draw_newport_frontage_threshold(frontage, "support" if kind == "wharf" else kind, 0.14)
+	var anchor: Vector2 = lot.get("anchor", rect.get_center())
+	_draw_surface_speckles(Rect2(anchor - Vector2(42.0, 12.0), Vector2(84.0, 24.0)), 7, edge, Vector2(22, 4))
+	if kind == "residential":
+		_draw_shrub_cluster(anchor + Vector2(-40.0, -16.0), 0.26)
+	elif kind == "support":
+		_draw_g7a_soft_service_trace(anchor + Vector2(-44.0, -8.0), anchor + Vector2(42.0, 4.0), 8.0, 0.18)
+
+func _draw_g19s_source_truth_wharf_water() -> void:
+	_draw_newport_water_rect(Rect2(0, 1120, NEWPORT_TOWN.WORLD_SIZE.x, maxf(480.0, NEWPORT_TOWN.WORLD_SIZE.y - 1120.0)), 1.0)
+	_draw_soft_rect(Rect2(0, 1184, NEWPORT_TOWN.WORLD_SIZE.x, 130), Color("#28687b"), Color("#1d4d62"), 0.20, 12)
+	_draw_soft_rect(Rect2(0, 1320, NEWPORT_TOWN.WORLD_SIZE.x, 150), Color("#225c70"), Color("#193f55"), 0.20, 12)
+	var shore_poly := PackedVector2Array([
+		Vector2(0, 1092), Vector2(180, 1080), Vector2(360, 1108), Vector2(540, 1094),
+		Vector2(760, 1112), Vector2(980, 1098), Vector2(1220, 1110), Vector2(1460, 1092),
+		Vector2(1700, 1118), Vector2(1980, 1106), Vector2(2400, 1120), Vector2(2400, 1164), Vector2(0, 1164)
+	])
+	draw_colored_polygon(shore_poly, Color(0.30, 0.43, 0.36, 0.46))
+	draw_polyline(PackedVector2Array([
+		Vector2(0, 1092), Vector2(180, 1080), Vector2(360, 1108), Vector2(540, 1094),
+		Vector2(760, 1112), Vector2(980, 1098), Vector2(1220, 1110), Vector2(1460, 1092),
+		Vector2(1700, 1118), Vector2(1980, 1106), Vector2(2400, 1120)
+	]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
+	_draw_newport_pier_edge(PackedVector2Array([
+		Vector2(0, 1092), Vector2(180, 1080), Vector2(360, 1108), Vector2(540, 1094),
+		Vector2(760, 1112), Vector2(980, 1098), Vector2(1220, 1110), Vector2(1460, 1092),
+		Vector2(1700, 1118), Vector2(1980, 1106), Vector2(2400, 1120)
+	]))
+	_draw_newport_dock_planks(Rect2(360, 960, 1240, 136), 150)
+	_draw_newport_dock_planks(Rect2(420, 1056, 112, 174), 34)
+	_draw_newport_dock_planks(Rect2(980, 1060, 128, 170), 36)
+	_draw_newport_dock_planks(Rect2(1500, 1054, 112, 176), 34)
+	for rect in [Rect2(420, 1056, 112, 174), Rect2(980, 1060, 128, 170), Rect2(1500, 1054, 112, 176)]:
+		draw_rect(Rect2(rect.position.x, rect.position.y + rect.size.y - 4.0, rect.size.x, 6.0), Color(0.02, 0.035, 0.025, 0.24), true)
+	_draw_post_line(Vector2(370, 966), Vector2(1588, 966), 72.0)
+	_draw_post_line(Vector2(426, 1070), Vector2(526, 1070), 36.0)
+	_draw_post_line(Vector2(988, 1074), Vector2(1100, 1074), 38.0)
+	_draw_post_line(Vector2(1508, 1068), Vector2(1608, 1068), 36.0)
+	for p in [Vector2(360, 1108), Vector2(540, 1094), Vector2(760, 1112), Vector2(980, 1098), Vector2(1220, 1110), Vector2(1460, 1092), Vector2(1700, 1118)]:
+		_draw_shore_rocks(p)
+	for p in [Vector2(475, 1228), Vector2(1040, 1228), Vector2(1556, 1228)]:
+		_draw_waterline_scum(p, 150.0)
+	for i in range(48):
+		var x := 28.0 + float((i * 89) % 2320)
+		var y := 1170.0 + float((i * 47) % 360)
+		draw_line(Vector2(x, y), Vector2(x + 18.0 + float(i % 4) * 5.0, y - 1.0), Color(0.75, 0.95, 1.0, 0.10), 1.4)
+
+func _draw_g19s_source_truth_props() -> void:
+	for placement in [
+		{"atlas": "tavern", "asset_id": "atelier_g418e_tavern_hanging_inn_sign_01", "dest": Rect2(470, 552, 74, 54), "purpose": "g19s_tavern_landmark_sign", "alpha": 0.96, "contact_shadow": true},
+		{"atlas": "commercial", "asset_id": "atelier_g418e_commercial_mercantile_sign_01", "dest": Rect2(786, 548, 74, 44), "purpose": "g19s_mercantile_frontage_sign", "alpha": 0.94, "contact_shadow": true},
+		{"atlas": "commercial", "asset_id": "atelier_g418e_commercial_fishmonger_sign_01", "dest": Rect2(1588, 552, 78, 48), "purpose": "g19s_market_edge_sign", "alpha": 0.94, "contact_shadow": true},
+		{"atlas": "harbor", "asset_id": "atelier_g418e_harbor_cargo_stack_01", "dest": Rect2(430, 980, 92, 48), "purpose": "g19s_west_dock_clue_cargo", "alpha": 0.97, "contact_shadow": true},
+		{"atlas": "harbor", "asset_id": "atelier_g418e_harbor_rope_coil_large_01", "dest": Rect2(810, 984, 76, 36), "purpose": "g19s_central_wharf_rope_work", "alpha": 0.96, "contact_shadow": true},
+		{"atlas": "harbor", "asset_id": "atelier_g418e_harbor_service_post_lantern_01", "dest": Rect2(1024, 944, 52, 66), "purpose": "g19s_harbor_lantern_rumor_marker", "alpha": 0.96, "contact_shadow": true},
+		{"atlas": "service", "asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(650, 458, 112, 51), "purpose": "g19s_hidden_rumor_gate", "alpha": 0.92, "contact_shadow": true},
+	]:
+		var atlas := String(placement.get("atlas", "commercial"))
+		match atlas:
+			"tavern":
+				_draw_g418e_hero_family_placement(_newport_g418e_tavern_inn_atlas, NEWPORT_G418E_TAVERN_INN_ATLAS_REGIONS, placement)
+			"harbor":
+				_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
+			"service":
+				_draw_g418e_hero_family_placement(_newport_g418e_rear_service_connector_atlas, NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS, placement)
+			_:
+				_draw_g418e_hero_family_placement(_newport_g418e_commercial_avenue_atlas, NEWPORT_G418E_COMMERCIAL_AVENUE_ATLAS_REGIONS, placement)
+	for placement in [
+		{"asset_id": "atelier_civic_town_notice_board_01", "dest": Rect2(1086, 570, 86, 72), "purpose": "g19s_counting_house_notice_board", "alpha": 0.94, "contact_shadow": true},
+		{"asset_id": "atelier_wayfinding_multi_arrow_signpost_01", "dest": Rect2(1870, 535, 58, 60), "purpose": "g19s_village_exit_guidepost", "alpha": 0.96, "contact_shadow": true},
+		{"asset_id": "atelier_wayfinding_dock_lantern_post_01", "dest": Rect2(428, 940, 45, 68), "purpose": "g19s_arrival_harbor_lantern", "alpha": 0.94, "contact_shadow": true},
+	]:
+		var asset_id := String(placement.get("asset_id", ""))
+		if NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS.has(asset_id):
+			_draw_town_identity_atelier_placement(_newport_atelier_civic_market_atlas, NEWPORT_ATELIER_CIVIC_MARKET_ATLAS_REGIONS, placement)
+		else:
+			_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, placement)
 
 func _draw_g7a_cohesive_ground_foundation() -> void:
 	# G-7A-SV0: one authored town terrace sits under the lots and streets so
@@ -2195,33 +2141,8 @@ func _draw_lab_badge(pos: Vector2) -> void:
 	_draw_label("Not normal review art", pos + Vector2(12, 40), 11, Color("#f0b1a3"))
 
 func _draw_g410_wharf_water() -> void:
-	if _g19r_reconstruction_active():
-		_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, maxf(282.0, NEWPORT_TOWN.WORLD_SIZE.y - 742.0)), 1.0)
-		_draw_water_depth_bands()
-		_draw_g15b_island_shoreline_water()
-		var shore_poly := PackedVector2Array([
-			Vector2(0, 710), Vector2(226, 704), Vector2(360, 722), Vector2(520, 706),
-			Vector2(694, 716), Vector2(880, 704), Vector2(1084, 718), Vector2(1278, 706),
-			Vector2(1460, 718), Vector2(1660, 706), Vector2(1660, 752), Vector2(0, 752)
-		])
-		draw_colored_polygon(shore_poly, Color(0.30, 0.43, 0.36, 0.46))
-		draw_polyline(PackedVector2Array([
-			Vector2(0, 710), Vector2(226, 704), Vector2(360, 722), Vector2(520, 706),
-			Vector2(694, 716), Vector2(880, 704), Vector2(1084, 718), Vector2(1278, 706),
-			Vector2(1460, 718), Vector2(1660, 706)
-		]), Color(0.05, 0.12, 0.13, 0.42), 4.0)
-		_draw_newport_pier_edge(PackedVector2Array([
-			Vector2(0, 710), Vector2(226, 704), Vector2(360, 722), Vector2(520, 706),
-			Vector2(694, 716), Vector2(880, 704), Vector2(1084, 718), Vector2(1278, 706),
-			Vector2(1460, 718), Vector2(1660, 706)
-		]))
-		_draw_newport_dock_planks(Rect2(240, 704, 1125, 48), 84)
-		_draw_newport_dock_planks(Rect2(344, 736, 48, 120), 24)
-		_draw_newport_dock_planks(Rect2(712, 728, 54, 128), 26)
-		_draw_newport_dock_planks(Rect2(1190, 736, 48, 120), 24)
-		_draw_post_line(Vector2(250, 708), Vector2(1354, 708), 68.0)
-		for p in [Vector2(290, 714), Vector2(392, 724), Vector2(540, 708), Vector2(746, 716), Vector2(1010, 714), Vector2(1240, 716), Vector2(1430, 722)]:
-			_draw_shore_rocks(p)
+	if NEWPORT_TOWN.G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS == "G-19S":
+		_draw_g19s_source_truth_wharf_water()
 		return
 	_draw_newport_water_rect(Rect2(0, 742, NEWPORT_TOWN.WORLD_SIZE.x, maxf(282.0, NEWPORT_TOWN.WORLD_SIZE.y - 742.0)), 1.0)
 	_draw_water_depth_bands()
@@ -2284,12 +2205,12 @@ func _draw_g410_wharf_water() -> void:
 	_draw_g418c_green_origin_lab_proof()
 
 func _draw_g410_props() -> void:
-	if _g19r_reconstruction_active():
+	if NEWPORT_TOWN.G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS == "G-19S":
 		_draw_g15a_transition_props()
 		_draw_g15b_island_world_props()
 		_draw_g16_island_poi_landmarks()
 		_draw_g16a_island_atelier_asset_family()
-		_draw_g19r_reconstructed_town_props()
+		_draw_g19s_source_truth_props()
 		return
 	# G-4.23A keeps dressing subordinate to the town grammar: props mark jobs and thresholds, not empty space.
 	_draw_g423a_expanded_town_fabric()
@@ -2297,7 +2218,6 @@ func _draw_g410_props() -> void:
 	_draw_g15b_island_world_props()
 	_draw_g16_island_poi_landmarks()
 	_draw_g16a_island_atelier_asset_family()
-	_draw_g19_player_guidance_screen_composition_props()
 	for pos in [Vector2(238, 612), Vector2(1028, 594), Vector2(1346, 624)]:
 		_draw_barrels(pos, 2)
 	for pos in [Vector2(454, 688), Vector2(1030, 688)]:
@@ -3005,103 +2925,6 @@ func _draw_g16a_island_atelier_asset_family() -> void:
 		{"asset_id": "atelier_g418e_harbor_fish_baskets_tub_01", "dest": Rect2(2306, 622, 82, 40), "purpose": "g16a_small_carts_crates_clue_site_work_props", "alpha": 0.82, "contact_shadow": true},
 	]:
 		_draw_g418e_hero_family_placement(_newport_g418e_harbor_dock_edge_atlas, NEWPORT_G418E_HARBOR_DOCK_EDGE_ATLAS_REGIONS, placement)
-
-func _draw_g19_player_guidance_screen_composition_ground() -> void:
-	# G-19 folds Chris's screenshot critique into normal-play proof: the east edge must read as authored Newport outskirts.
-	_draw_newport_grass_swale(PackedVector2Array([
-		Vector2(1378, 338), Vector2(1612, 304), Vector2(1884, 322), Vector2(2188, 276),
-		Vector2(2396, 308), Vector2(2396, 754), Vector2(2190, 776), Vector2(1924, 724),
-		Vector2(1664, 670), Vector2(1432, 640)
-	]), Color("#617a55", 0.24), Color("#415f42", 0.13), 68)
-	_draw_newport_grass_swale(PackedVector2Array([
-		Vector2(1518, 502), Vector2(1746, 468), Vector2(1934, 496), Vector2(2048, 574),
-		Vector2(1938, 638), Vector2(1714, 638), Vector2(1508, 590)
-	]), Color("#6c8059", 0.20), Color("#4e6545", 0.11), 36)
-	_draw_newport_grass_swale(PackedVector2Array([
-		Vector2(2068, 338), Vector2(2262, 288), Vector2(2392, 318), Vector2(2380, 430),
-		Vector2(2210, 438), Vector2(2070, 396)
-	]), Color("#697759", 0.18), Color("#4f5945", 0.10), 28)
-	_draw_newport_grass_swale(PackedVector2Array([
-		Vector2(2002, 682), Vector2(2212, 690), Vector2(2394, 708), Vector2(2394, 762),
-		Vector2(2220, 770), Vector2(2018, 742)
-	]), Color("#606a4d", 0.18), Color("#4a523d", 0.10), 20)
-	for rect in [
-		Rect2(1452, 514, 174, 34),
-		Rect2(1600, 562, 270, 28),
-		Rect2(1844, 610, 278, 28),
-		Rect2(2052, 432, 238, 24),
-	]:
-		_draw_newport_frontage_threshold(rect, "support", 0.24)
-	for rect in [
-		Rect2(1438, 648, 302, 14),
-		Rect2(1692, 656, 292, 12),
-		Rect2(1982, 604, 286, 12),
-		Rect2(2052, 748, 300, 10),
-	]:
-		_draw_newport_grass_transition(rect, "south", 0.14)
-
-func _draw_g19_player_guidance_screen_composition_routes() -> void:
-	_draw_newport_dirt_path(Vector2(1398, 548), Vector2(1608, 548), 28.0, true)
-	_draw_newport_dirt_path(Vector2(1608, 548), Vector2(1840, 626), 24.0, true)
-	_draw_newport_dirt_path(Vector2(1840, 626), Vector2(2048, 574), 22.0, true)
-	_draw_newport_dirt_path(Vector2(2048, 574), Vector2(2150, 420), 20.0, true)
-	_draw_newport_dirt_path(Vector2(2048, 574), Vector2(2132, 714), 18.0, true)
-	_draw_newport_dirt_path(Vector2(2132, 714), Vector2(1948, 690), 18.0, true)
-	_draw_newport_dirt_path(Vector2(1948, 690), Vector2(1608, 548), 18.0, true)
-	for placement in [
-		{"asset_id": "atelier_path_road_shoulder_earth_01", "dest": Rect2(1450, 534, 190, 34), "purpose": "g19_east_gate_road_shoulder_not_random_green", "alpha": 0.30},
-		{"asset_id": "atelier_path_dirt_worn_section_01", "dest": Rect2(1602, 552, 258, 38), "purpose": "g19_old_road_first_pull", "alpha": 0.36},
-		{"asset_id": "atelier_path_dirt_worn_section_01", "dest": Rect2(1832, 606, 260, 38), "purpose": "g19_island_main_trail_continuity", "alpha": 0.34},
-		{"asset_id": "atelier_path_road_shoulder_earth_01", "dest": Rect2(2038, 544, 236, 34), "purpose": "g19_signal_clue_route_not_patchwork", "alpha": 0.30},
-		{"asset_id": "atelier_path_dirt_worn_section_01", "dest": Rect2(2044, 690, 236, 34), "purpose": "g19_cove_return_path_readability", "alpha": 0.32},
-	]:
-		_draw_environmental_atelier_placement(_newport_atelier_cobble_path_atlas, NEWPORT_ATELIER_COBBLE_PATH_ATLAS_REGIONS, placement)
-	draw_polyline(PackedVector2Array([
-		Vector2(1438, 568), Vector2(1608, 568), Vector2(1838, 646),
-		Vector2(2052, 594), Vector2(2144, 718), Vector2(1948, 708), Vector2(1620, 568)
-	]), Color(0.05, 0.06, 0.035, 0.20), 2.0, true)
-
-func _draw_g19_player_guidance_screen_composition_props() -> void:
-	for fence in [
-		[Vector2(1500, 496), Vector2(1632, 492)],
-		[Vector2(1648, 606), Vector2(1858, 616)],
-		[Vector2(1888, 548), Vector2(2028, 520)],
-		[Vector2(2118, 736), Vector2(2326, 744)],
-	]:
-		_draw_fence_line(fence[0], fence[1], Color("#d7c894", 0.38))
-	_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, {
-		"asset_id": "atelier_wayfinding_harbor_road_marker_01",
-		"dest": Rect2(1518, 516, 42, 48),
-		"purpose": "g19_east_gate_location_guidance_not_debug_label",
-		"alpha": 0.94,
-		"contact_shadow": true,
-	})
-	_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, {
-		"asset_id": "atelier_wayfinding_street_lamp_post_01",
-		"dest": Rect2(1572, 492, 30, 82),
-		"purpose": "g19_last_newport_lantern_player_pull",
-		"alpha": 0.92,
-		"contact_shadow": true,
-	})
-	_draw_g418e_hero_family_placement(_newport_g418e_rear_service_connector_atlas, NEWPORT_G418E_REAR_SERVICE_CONNECTOR_ATLAS_REGIONS, {
-		"asset_id": "atelier_g418e_service_fence_gate_01",
-		"dest": Rect2(1604, 522, 112, 50),
-		"purpose": "g19_settlement_boundary_gate_screen_read",
-		"alpha": 0.84,
-		"contact_shadow": true,
-	})
-	_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, {
-		"asset_id": "atelier_wayfinding_coastal_waystone_01",
-		"dest": Rect2(2066, 546, 40, 48),
-		"purpose": "g19_old_road_choice_guidance_no_crude_marker",
-		"alpha": 0.88,
-		"contact_shadow": true,
-	})
-	for pos in [
-		Vector2(1668, 518), Vector2(1746, 536), Vector2(1888, 584),
-		Vector2(1998, 552), Vector2(2130, 488), Vector2(2188, 694),
-	]:
-		_draw_shrub_cluster(pos, 0.66)
 
 func _draw_g423a_expanded_town_ground() -> void:
 	_draw_newport_grass_swale(PackedVector2Array([
