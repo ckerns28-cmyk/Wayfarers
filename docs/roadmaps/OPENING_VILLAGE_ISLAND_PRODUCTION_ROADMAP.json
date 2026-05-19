@@ -346,7 +346,7 @@
         "validate_opening_quest_village_to_island.py",
         "validate_multi_path_starter_choice.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-19",

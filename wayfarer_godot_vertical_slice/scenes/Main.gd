@@ -183,6 +183,7 @@ func starter_village_quest_contract() -> Dictionary:
 		"tavern_whisper_contract": starter_village_tavern_whisper_contract(),
 		"multi_path_choice_contract": starter_village_multi_path_choice_contract(),
 		"village_to_island_quest_contract": opening_village_to_island_quest_contract(),
+		"village_to_island_multipath_choice_contract": opening_village_to_island_multipath_choice_contract(),
 	}
 
 func starter_village_tavern_whisper_contract() -> Dictionary:
@@ -211,6 +212,16 @@ func opening_village_to_island_quest_contract() -> Dictionary:
 		"phase": "G-18",
 		"quest_available": false,
 		"village_to_island_chain_playable_end_to_end": false,
+	}
+
+func opening_village_to_island_multipath_choice_contract() -> Dictionary:
+	if _first_light_quest != null and _first_light_quest.has_method("debug_village_to_island_multipath_choice_contract"):
+		return _first_light_quest.debug_village_to_island_multipath_choice_contract()
+	return {
+		"phase": "G-18A",
+		"quest_available": false,
+		"player_agency_exists": false,
+		"no_broken_branches": false,
 	}
 
 func starter_village_town_rhythm_contract() -> Dictionary:

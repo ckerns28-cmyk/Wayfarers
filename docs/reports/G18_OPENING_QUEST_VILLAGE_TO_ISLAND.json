@@ -9,7 +9,7 @@
   "implementing_prs": [
     "#487"
   ],
-  "merge_status": "pending",
+  "merge_status": "merged",
   "status": "PASS",
   "human_review_required": false,
   "reason_human_review_not_required": "G-18 is an ordinary autonomous OVI-1 runway phase. It extends the playable opening toward OVI-1 and does not stop for Chris unless a true blocker occurs.",

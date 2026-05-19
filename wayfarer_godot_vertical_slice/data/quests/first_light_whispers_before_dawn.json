@@ -1,7 +1,7 @@
 {
   "schema_id": "wayfarer.quest.first_light_whispers_before_dawn.v1",
   "phase": "G-10",
-  "phase_extensions": ["G-10A", "G-10B", "G-18"],
+  "phase_extensions": ["G-10A", "G-10B", "G-18", "G-18A"],
   "quest_id": "first_light_whispers_before_dawn",
   "title": "First Light / Whispers Before Dawn",
   "theme": "A missing ledger line pulls the player from Newport Harbor into counting-house pressure, tavern whisper culture, harbor rumors, and pre-Revolution unrest.",
@@ -132,6 +132,28 @@
       "reason_to_continue": "Edrin names the dawn signal and the Governor's men.",
       "quest_gameplay_score": 8.6,
       "narrative_hook_score": 8.6
+    }
+  },
+  "opening_island_multipath_choice_extension": {
+    "phase": "G-18A",
+    "source": "res://data/quests/whispers_before_dawn_multipath_rumor_choice_v1.json",
+    "purpose": "Keep Whispers Before Dawn from becoming a single route after Newport by letting counting-house pressure, tavern rumor, harbor work, and optional island clue discovery all shape the island lead.",
+    "required_paths": [
+      "counting_house_path",
+      "tavern_rumor_path",
+      "dockworker_harbor_path",
+      "optional_island_clue_path"
+    ],
+    "choice_effects": [
+      "island_route_choice",
+      "optional_clue_enriched_journal",
+      "return_report_route_choice"
+    ],
+    "acceptance": {
+      "player_agency_exists": true,
+      "quest_state_supports_branching": true,
+      "no_broken_branches": true,
+      "no_unclear_progression": true
     }
   }
 }
