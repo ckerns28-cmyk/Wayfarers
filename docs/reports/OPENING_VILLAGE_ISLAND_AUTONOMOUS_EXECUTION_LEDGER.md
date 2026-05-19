@@ -61,8 +61,8 @@ Agent Council pass verdict for merge-ready phases: `COUNCIL_PASS_READY_FOR_PR`
 | G-19S | Newport Blockout-To-Godot Runtime Reconstruction | `codex/g-19s-newport-blockout-to-godot-runtime-reconstruction` | #490 merged | PASS | `wayfarer_godot_vertical_slice/data/world_layout/g19s_newport_runtime_reconstruction_v1.json`, runtime streets/lots/wharf/NPC stations derived from G-19R, `docs/reports/G19S_NEWPORT_BLOCKOUT_TO_GODOT_RUNTIME_RECONSTRUCTION.md`, and `wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_runtime_screenshot_manifest.json`. |
 | G-19 | Player Guidance, Map, Journal, and Interaction Polish | `codex/g-19-player-guidance-map-journal-interaction-polish` | #491 merged | PASS | `wayfarer_godot_vertical_slice/data/ux/g19_player_guidance_map_journal_interaction_v1.json`, HUD route/location guidance, NPC-priority interaction prompts, `docs/reports/G19_PLAYER_GUIDANCE_MAP_JOURNAL_INTERACTION_POLISH.md`, and `wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_player_guidance_screenshot_manifest.json` prove readable first-session guidance without debug UI. |
 | G-20 | First-Session Gameplay Loop and Reward Pass | `codex/g-20-first-session-gameplay-loop-reward-pass` | #492 merged | PASS | `wayfarer_godot_vertical_slice/data/quests/g20_first_session_gameplay_loop_reward_v1.json`, `FirstLightQuest.debug_first_session_gameplay_loop_reward_contract()`, HUD reward feedback, refreshed G-12/G-18 regression proof, `docs/reports/G20_FIRST_SESSION_GAMEPLAY_LOOP_REWARD_PASS.md`, `docs/reports/G20_WAYFARER_AGENT_COUNCIL_TOOL_RUN.md`, and `wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_first_session_screenshot_manifest.json` prove a 28-minute first-session loop with 13 Resolve, named contacts, island evidence, return/report, and a dawn reason to continue. |
-| G-21 | Opening Island Performance, Browser Build, and Regression Hardening | `codex/g-21-opening-island-performance-browser-build-regression-hardening` | #493 open | PASS | G-21 updates review build identity to `G-21`, hardens the package script and validator, generates stable/versioned review ZIPs with root `index.html`, captures browser canvas proof with zero warning/error console entries, records `g21_browser_build_hardening_manifest.json`, and prepares the project to continue immediately to G-22 OVI-1. |
-| G-22 | OVI-1 Opening Village + Island Production Playable Gate | pending | pending | PENDING | Must generate the full OVI-1 review package from current main and then stop for Chris. |
+| G-21 | Opening Island Performance, Browser Build, and Regression Hardening | `codex/g-21-opening-island-performance-browser-build-regression-hardening` | #493 merged | PASS | G-21 updates review build identity to `G-21`, hardens the package script and validator, generates stable/versioned review ZIPs with root `index.html`, captures browser canvas proof with zero warning/error console entries, records `g21_browser_build_hardening_manifest.json`, merged at `5e29b0be37245bdc8c3e2c38018f492aa6adf222`, and handed off to G-22 OVI-1. |
+| G-22 | OVI-1 Opening Village + Island Production Playable Gate | `codex/g-22-ovi1-opening-village-island-production-playable-gate` | #494 open | PASS | Full OVI-1 review package created: `docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.md`, `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json`, `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json`, `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json`, browser ZIP proof, validators, and Agent Council verdict `COUNCIL_PASS_READY_FOR_PR`. Stop for Chris with PR #494. |
 
 ## G-19R Source-Of-Truth Gate
 
@@ -110,3 +110,15 @@ When G-22 passes, this ledger must include an `ovi1_review_package` record with:
 - atelier/provenance result
 - Agent Council final verdict
 - final recommendation
+
+## G-22 OVI-1 Review Package Record
+
+- current main commit: `5e29b0be37245bdc8c3e2c38018f492aa6adf222`
+- OVI-1 PR: #494 (`https://github.com/ckerns28-cmyk/Wayfarers/pull/494`)
+- clean worktree proof: Preflight before G-22 branch: clean worktree at 5e29b0be37245bdc8c3e2c38018f492aa6adf222.
+- no open PR proof: Preflight before G-22 branch: gh pr list --state open returned [].
+- screenshot manifest: `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json`
+- motion proof: `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json`
+- quest playthrough: `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json`
+- browser review ZIP: `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip`
+- agent council final verdict: `COUNCIL_PASS_READY_FOR_PR`

@@ -1,0 +1,36 @@
+{
+  "schema_id": "wayfarer.g22.ovi1.quest_playthrough_state_trace.v1",
+  "phase_id": "G-22",
+  "status": "PASS",
+  "generated_at": "2026-05-19T05:20:54Z",
+  "source_g20_trace": "wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_first_session_trace.json",
+  "source_g18_quest_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g18_quest_playthrough/quest_playthrough_screenshot_manifest.json",
+  "quest_id": "first_light_whispers_before_dawn",
+  "working_title": "Whispers Before Dawn",
+  "playable_minutes_estimate": 28,
+  "quest_geography_loop": "harbor arrival -> Counting House -> wharf/commercial/tavern -> island road -> hidden landing -> return/report -> dawn hook",
+  "completed_objectives": [
+    "make_landfall",
+    "report_to_counting_house",
+    "investigate_missing_line",
+    "follow_tavern_whisper",
+    "choose_next_lead",
+    "lantern_at_wharf",
+    "secure_contact",
+    "hook_to_continue",
+    "follow_island_lead",
+    "travel_to_island_clue_site",
+    "discover_physical_evidence",
+    "return_or_report_choice"
+  ],
+  "reward_resolve": 13,
+  "reward_log": [],
+  "first_time_player_reason_to_continue": "",
+  "source_playthrough_trace": [],
+  "scores": {
+    "opening_quest_gameplay": 8.7,
+    "narrative_hook": 8.7,
+    "ux_readability": 8.7,
+    "first_session_fun": 8.7
+  }
+}

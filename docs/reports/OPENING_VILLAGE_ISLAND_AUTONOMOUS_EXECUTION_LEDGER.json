@@ -900,12 +900,14 @@
         "#493"
       ],
       "commits": [
-        "e3666d3ea8467b40c5251d91610de26c5e0637b0"
+        "e3666d3ea8467b40c5251d91610de26c5e0637b0",
+        "f065bb9a505fe8aafd8ba801e10a72bcfde4289e",
+        "5e29b0be37245bdc8c3e2c38018f492aa6adf222"
       ],
-      "merge_status": "open_pr_pending_checks",
+      "merge_status": "merged",
       "current_status": "PASS",
-      "reason_for_status": "G-21 hardens the browser review route for the combined Newport village and opening island: BuildInfo now reports G-21, the package script guards against stale phase/source branch identity, stable and versioned ZIPs have root index.html with required Godot web files, a browser route loads the exported canvas into Newport gameplay, and the proof manifest records zero browser warning/error console entries.",
-      "next_required_action": "Verify PR #493 remote checks, merge if green and mergeable, sync main, then continue immediately to G-22 OVI-1 Opening Village + Island Production Playable Gate.",
+      "reason_for_status": "G-21 browser build hardening passed, PR #493 merged, and main was synced at 5e29b0be37245bdc8c3e2c38018f492aa6adf222 before G-22 began.",
+      "next_required_action": "Complete: G-21 merged into main at 5e29b0be37245bdc8c3e2c38018f492aa6adf222; G-22 OVI-1 review package branch started.",
       "files_changed": [
         "docs/reports/G21_OPENING_ISLAND_BROWSER_BUILD_REGRESSION_HARDENING.md",
         "docs/reports/G21_OPENING_ISLAND_BROWSER_BUILD_AGENT_COUNCIL_REPORT.md",
@@ -957,17 +959,99 @@
     {
       "phase_id": "G-22",
       "phase_name": "OVI-1 Opening Village + Island Production Playable Gate",
-      "branch": "pending",
+      "branch": "codex/g-22-ovi1-opening-village-island-production-playable-gate",
       "implementing_prs": [
-        "pending"
+        "#494"
       ],
       "commits": [
-        "pending"
+        "ea1b3604e093421421aff60f257fb1e04d84bee7"
       ],
-      "merge_status": "pending",
-      "current_status": "PENDING",
-      "reason_for_status": "OVI-1 final review package has not started.",
-      "next_required_action": "Start after G-21 passes and main is synced. When G-22 passes, stop for Chris with the full OVI-1 review package."
+      "merge_status": "formal_ovi1_review_pr_open",
+      "current_status": "PASS",
+      "reason_for_status": "G-22 composes the formal OVI-1 review package from refreshed current-branch screenshot, motion, quest, browser, roadmap, ledger, and Agent Council proof. OVI-1 is the true Chris stop.",
+      "next_required_action": "Stop for Chris with PR #494 and the full OVI-1 review package; do not auto-merge the formal OVI-1 milestone.",
+      "files_changed": [
+        "docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.md",
+        "docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.json",
+        "docs/reports/G22_OVI1_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/OVI1_REVIEW_INDEX.md",
+        "docs/reports/OVI1_REVIEW_INDEX.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/01_village_wide_cohesion.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/02_player_arrival_harbor.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/03_counting_house_route.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/04_tavern_rumor_hub.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/05_commercial_avenue.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/06_harbor_wharf_work_area.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/07_village_exit_to_island.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/08_island_entry_transition.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/09_island_main_trail.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/10_island_landmark_signal_or_overlook.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/11_island_cove_or_hidden_landing.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/12_island_optional_discovery.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/13_npc_village_movement.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/14_npc_island_movement.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/15_quest_journal_village_step.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/16_quest_journal_island_step.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/17_return_to_town_or_next_hook.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/18_interaction_ux_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/19_ysort_layering_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/20_debug_overlays_disabled.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/21_browser_review_identity_proof.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/22_contact_sheet_player_npc_world_assets.png"
+      ],
+      "motion_proof_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_npc_motion_trace.json"
+      ],
+      "quest_proof_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_log.md",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_screenshot_manifest.json"
+      ],
+      "validation_commands": [
+        "python wayfarer_godot_vertical_slice/tools/compose_g22_ovi1_review_package.py --all",
+        "python wayfarer_godot_vertical_slice/tools/validate_ovi1_gate.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
+        "Godot --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot --headless --path . --script res://tools/validate_vertical_slice.gd",
+        "powershell -File wayfarer_godot_vertical_slice/tools/capture_g22_ovi1_runtime_screenshots.ps1",
+        "tools/wayfarer_agent_council.py --phase \"G-22 OVI-1 Opening Village + Island Production Playable Gate\" --run-validators",
+        "git diff --check",
+        "git diff --cached --check"
+      ],
+      "validation_results": "PASS: G-22 package artifacts are present, OVI-1 gate contract is satisfied, refreshed screenshots/motion/quest/browser proof are included, local validators passed, and Agent Council records COUNCIL_PASS_READY_FOR_PR.",
+      "agent_council_report_path": "docs/reports/G22_OVI1_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "world_layout_score": 8.6,
+      "art_direction_score": 8.6,
+      "quest_narrative_score": 8.7,
+      "ux_readability_score": 8.7,
+      "technical_stability_score": 8.8,
+      "provenance_atelier_result": "PASS",
+      "north_star_result": "PASS: Newport and the opening island now form a source-driven, readable first-session loop with harbor arrival, civic route, tavern whispers, island clue discovery, return/report reward, and a dawn hook."
     }
-  ]
+  ],
+  "ovi1_review_package": {
+    "current_main_commit": "5e29b0be37245bdc8c3e2c38018f492aa6adf222",
+    "pull_request": "#494",
+    "pull_request_url": "https://github.com/ckerns28-cmyk/Wayfarers/pull/494",
+    "clean_worktree_proof": "Preflight before G-22 branch: clean worktree at 5e29b0be37245bdc8c3e2c38018f492aa6adf222.",
+    "no_open_pr_proof": "Preflight before G-22 branch: gh pr list --state open returned [].",
+    "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json",
+    "motion_proof_path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json",
+    "quest_playthrough_path": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json",
+    "browser_review_zip_path": "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip",
+    "agent_council_final_verdict": "COUNCIL_PASS_READY_FOR_PR"
+  }
 }
