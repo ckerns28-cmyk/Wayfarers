@@ -525,6 +525,66 @@
       "north_star_result": "PASS: G-18A makes Newport's opening mystery branch through social, official, harbor, and optional island clues while preserving the pre-Revolutionary RPG pull; OVI-1 remains incomplete until G-22."
     },
     {
+      "phase_id": "G-19R",
+      "phase_name": "Newport Harbor Town Reconstruction Pivot",
+      "branch": "codex/g-19-player-guidance-journal-polish",
+      "implementing_prs": ["pending"],
+      "commits": ["pending"],
+      "merge_status": "pending",
+      "current_status": "PASS",
+      "reason_for_status": "G-19R passes as the corrective city-structure gate after fresh runtime screenshots, the building/person scale correction, dockworker roof/body station repair, player motion proof, validator coverage, and Agent Council screenshot inspection. Newport now preserves the approved art while requiring district structure, MMORPG-scale road hierarchy, avenue widths, wharf dimensions, block depth, lot spacing, walkable negative space, and camera readability before guidance or fun-loop polish can pass; main avenues and the wharf must fit 10-15 characters shoulder to shoulder.",
+      "next_required_action": "Resume G-19 Player Guidance, Map, Journal, and Interaction Polish on top of the accepted G-19R town structure.",
+      "files_changed": [
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "wayfarer_godot_vertical_slice/data/world_layout/newport_harbor_town_reconstruction_v1.json",
+        "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+        "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g19r_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g19r_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/capture_g22_player_motion_proof.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g22_player_motion_proof.ps1",
+        "wayfarer_godot_vertical_slice/tools/validate_g22_player_motion_proof.py",
+        "wayfarer_godot_vertical_slice/tools/opening_village_island_validator_common.py",
+        "wayfarer_godot_vertical_slice/tools/validate_newport_harbor_town_reconstruction.py",
+        "docs/reports/G19R_NEWPORT_HARBOR_TOWN_RECONSTRUCTION_AGENT_COUNCIL_REPORT.md"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_01_village_wide_city_structure.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_02_harborfront_avenue_width.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_03_counting_house_civic_climb.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_04_wharf_work_apron.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_05_east_gate_settlement_edge.png"
+      ],
+      "motion_proof_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_player_motion_proof_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_player_motion_contact_sheet.png"
+      ],
+      "validation_commands": [
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_harbor_town_reconstruction.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_g22_player_motion_proof.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_npc_population_and_routes.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
+        "Godot 4.6.2 --headless --script res://tools/validate_vertical_slice.gd",
+        "tools/wayfarer_agent_council.py --phase G-19R --run-validators",
+        "git diff --check"
+      ],
+      "validation_results": "PASS: G-19R screenshots regenerated; Newport harbor town reconstruction, G-22 player motion proof, NPC population/routes, visual ordering, layout-source usage, OVI roadmap, OVI ledger, Godot import, vertical slice, and Agent Council validator run all passed. Screenshot review inspected the corrected scale and dock-station proof.",
+      "agent_council_report_path": "docs/reports/G19R_NEWPORT_HARBOR_TOWN_RECONSTRUCTION_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.5,
+      "world_layout_score": 8.6,
+      "art_direction_score": 8.5,
+      "ux_readability_score": 8.5,
+      "technical_stability_score": 8.8,
+      "provenance_atelier_result": "PASS",
+      "north_star_result": "PASS: G-19R turns the Newport critique into an authored harbor-town structure with believable building scale, grounded dock NPC stations, broad avenue/wharf grammar, fresh screenshot evidence, and a council-approved foundation for G-19 guidance polish."
+    },
+    {
       "phase_id": "G-19",
       "phase_name": "Player Guidance, Map, Journal, and Interaction Polish",
       "branch": "pending",
@@ -532,8 +592,8 @@
       "commits": ["pending"],
       "merge_status": "pending",
       "current_status": "PENDING",
-      "reason_for_status": "Combined opening guidance polish has not started.",
-      "next_required_action": "Start after G-18A passes and main is synced."
+      "reason_for_status": "Combined opening guidance polish is blocked behind G-19R because the underlying Newport town structure must pass before UI guidance can count.",
+      "next_required_action": "Start after G-19R passes and main is synced."
     },
     {
       "phase_id": "G-20",

@@ -69,12 +69,14 @@ func _ready() -> void:
 	player.dialogue_triggered.connect(hud.show_dialogue)
 	if player.has_signal("interaction_triggered"):
 		player.interaction_triggered.connect(_on_player_interaction_triggered)
+	_update_player_guidance_hud()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		get_viewport().set_input_as_handled()
 
 func _process(delta: float) -> void:
+	_update_player_guidance_hud()
 	if not _starter_village_rhythm_start_positions.is_empty():
 		_starter_village_rhythm_elapsed += delta
 		_update_starter_village_bark_readability()
@@ -223,6 +225,37 @@ func opening_village_to_island_multipath_choice_contract() -> Dictionary:
 		"player_agency_exists": false,
 		"no_broken_branches": false,
 	}
+
+func opening_player_guidance_contract() -> Dictionary:
+	var hud_contract := {}
+	if hud != null and hud.has_method("opening_player_guidance_contract"):
+		hud_contract = hud.call("opening_player_guidance_contract")
+	return {
+		"phase": "G-19",
+		"player_position": player.global_position if player != null else Vector2.ZERO,
+		"quest_available": _first_light_quest != null,
+		"debug_overlays_disabled": not _debug_overlay_enabled and not _seating_debug_enabled,
+		"review_screenshot_mode": _review_screenshot_mode,
+		"hud_contract": hud_contract,
+		"display_location": String(hud_contract.get("display_location", "")),
+		"dynamic_location_names": bool(hud_contract.get("dynamic_location_names", false)),
+		"clean_objective_display": bool(hud_contract.get("clean_objective_display", false)),
+		"sanitized_feedback": bool(hud_contract.get("sanitized_feedback", false)),
+		"journal_updates": bool(hud_contract.get("journal_updates", false)),
+		"no_debug_looking_prompts": bool(hud_contract.get("no_debug_looking_prompts", false)),
+		"quest_markers_signage_not_crude": bool(hud_contract.get("quest_markers_signage_not_crude", false)),
+		"first_session_route_readability": bool(hud_contract.get("first_session_route_readability", false)),
+		"village_to_island_screen_composition_repair": bool(hud_contract.get("village_to_island_screen_composition_repair", false)),
+		"ux_readability_score": float(hud_contract.get("ux_readability_score", 0.0)),
+		"world_screen_composition_score": float(hud_contract.get("world_screen_composition_score", 0.0)),
+	}
+
+func newport_reconstruction_contract() -> Dictionary:
+	var contract: Dictionary = NEWPORT_TOWN.newport_reconstruction_contract().duplicate(true)
+	contract["player_position"] = player.global_position if player != null else Vector2.ZERO
+	contract["debug_overlays_disabled"] = not _debug_overlay_enabled and not _seating_debug_enabled
+	contract["review_screenshot_mode"] = _review_screenshot_mode
+	return contract
 
 func starter_village_town_rhythm_contract() -> Dictionary:
 	var contract: Dictionary = NEWPORT_TOWN.starter_village_town_rhythm_contract().duplicate(true)
@@ -387,6 +420,8 @@ func debug_apply_first_light_quest_events(events: Array) -> Dictionary:
 	var latest: Dictionary = _first_light_quest.snapshot()
 	for raw_event in events:
 		latest = _first_light_quest.debug_apply_event(String(raw_event))
+	if not latest.is_empty():
+		_on_first_light_quest_updated(latest)
 	return latest
 
 func _should_start_in_review_screenshot_mode() -> bool:
@@ -427,6 +462,11 @@ func _on_first_light_quest_updated(snapshot: Dictionary) -> void:
 		_record_starter_village_audio_hook("quest_update_sound_hook", {"feedback": feedback, "objective": String(snapshot.get("current_objective_id", ""))})
 	if hud and hud.has_method("apply_quest_snapshot"):
 		hud.apply_quest_snapshot(snapshot)
+	_update_player_guidance_hud()
+
+func _update_player_guidance_hud() -> void:
+	if hud != null and player != null and hud.has_method("set_player_world_position"):
+		hud.call("set_player_world_position", player.global_position)
 
 func _set_debug_overlay(enabled: bool) -> void:
 	var effective_enabled := enabled and BUILD_INFO.DEBUG_OVERLAY_TOGGLE_ENABLED

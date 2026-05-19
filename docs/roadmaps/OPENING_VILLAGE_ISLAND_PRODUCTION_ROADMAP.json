@@ -349,10 +349,56 @@
       "status": "PASS"
     },
     {
+      "phase_id": "G-19R",
+      "title": "Newport Harbor Town Reconstruction Pivot",
+      "purpose": "Correct the cart-before-horse failure by making district structure, road hierarchy, avenue widths, wharf dimensions, block depth, lot spacing, and walkable camera composition the required foundation before guidance, props, or polish can pass.",
+      "objectives": [
+        "preserve_existing_newport_buildings_and_drawings",
+        "keep_atelier_provenance_standard",
+        "lock_landform_and_water_edge",
+        "lock_primary_harborfront_avenue",
+        "lock_uphill_civic_route",
+        "lock_rear_service_lane",
+        "lock_wharf_apron_and_work_docks",
+        "lock_district_lots_and_frontages",
+        "lock_building_anchors_after_streets",
+        "lock_npc_stations_after_lots",
+        "lock_quest_route_readability",
+        "props_last",
+        "wide_screenshot_must_not_read_as_clipart_pasted_on_page"
+      ],
+      "acceptance": [
+        "godot_engine_remains_valid_unless_hard_tooling_blocker_is_proven",
+        "waterfront_avenue_target_width_360_px_minimum_300_px",
+        "civic_uphill_route_target_width_190_px_minimum_160_px",
+        "rear_service_lane_target_width_180_px_minimum_140_px",
+        "west_tavern_climb_target_width_150_px_minimum_120_px",
+        "market_exit_target_width_180_px_minimum_150_px",
+        "wharf_work_apron_target_width_340_px_minimum_280_px",
+        "main_avenue_and_wharf_fit_10_15_characters_shoulder_to_shoulder",
+        "main avenue and wharf fit 10-15 characters shoulder to shoulder",
+        "areas_between_roads_are_named_lots_yards_greens_docks_work_aprons_or_service_space",
+        "empty_leftover_grass_cannot_count_as_village_cohesion",
+        "props_explain_labor_threshold_danger_or_social_life",
+        "props_cannot_hide_ground_street_lot_or_wharf_failure",
+        "fresh_wide_screenshot_proof_required",
+        "screenshot_contradiction_fails_phase_even_if_validators_pass"
+      ],
+      "primary_validators": [
+        "validate_newport_harbor_town_reconstruction.py",
+        "validate_starter_village_layout_source_usage.py",
+        "validate_newport_visual_ordering.py",
+        "validate_opening_village_island_roadmap.py",
+        "validate_opening_village_island_execution_ledger.py"
+      ],
+      "status": "PASS"
+    },
+    {
       "phase_id": "G-19",
       "title": "Player Guidance, Map, Journal, and Interaction Polish",
-      "purpose": "Make the first session readable without debug UI.",
+      "purpose": "Make the first session readable without debug UI only after G-19R proves the underlying Newport town structure.",
       "objectives": [
+        "G-19R town structure passed first",
         "clean_objective_display",
         "journal_updates",
         "interaction_prompts",
@@ -362,6 +408,7 @@
         "No debug-looking prompts"
       ],
       "acceptance": [
+        "newport_harbor_town_reconstruction_PASS",
         "player_knows_where_to_go",
         "ui_does_not_break_immersion",
         "no_oversized_labels_blocking_world",

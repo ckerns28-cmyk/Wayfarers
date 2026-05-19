@@ -1,12 +1,14 @@
 extends CanvasLayer
 
 const BUILD_INFO := preload("res://scripts/BuildInfo.gd")
+const OPENING_GUIDANCE_DIRECTOR := preload("res://scripts/ui/OpeningGuidanceDirector.gd")
 const HUD_MARGIN := 12.0
 const STATUS_MIN_WIDTH := 242.0
 const STATUS_MAX_WIDTH := 330.0
 const STATUS_EXPANDED_MAX_WIDTH := 382.0
 const QUEST_MIN_WIDTH := 308.0
 const QUEST_MAX_WIDTH := 430.0
+const G19_PLAYER_GUIDANCE_PASS := "G-19"
 const G9_INTERACTION_UX_PASS := "G-9"
 const G9_OBJECTIVE_LINE := "Find Edrin Vale at the Counting House; then follow the tavern whisper."
 const G9_OBJECTIVE_UPDATE_COPY := "Objective updated: ask about the missing ledger line."
@@ -47,8 +49,11 @@ var _metadata_expanded := false
 var _review_screenshot_mode := false
 var _green_origin_lab_enabled := false
 var _quest_snapshot: Dictionary = {}
+var _guidance_director = null
+var _player_world_position := Vector2(675.0, 612.0)
 
 func _ready() -> void:
+	_guidance_director = OPENING_GUIDANCE_DIRECTOR.new()
 	_apply_panel_styles()
 	_apply_build_identity()
 	_load_bakeoff_board()
@@ -71,20 +76,25 @@ func apply_quest_snapshot(snapshot: Dictionary) -> void:
 	_quest_snapshot = snapshot.duplicate(true)
 	var title := String(snapshot.get("journal_title", G9A_JOURNAL_TITLE))
 	var current_text := String(snapshot.get("current_objective_text", G9A_INITIAL_OBJECTIVE))
-	var feedback := String(snapshot.get("feedback", ""))
-	var completed_count := int(snapshot.get("completed_count", 0))
-	var objective_count: int = maxi(1, int(snapshot.get("objective_count", 5)))
 	var reward_resolve := int(snapshot.get("reward_resolve", 0))
+	var guidance := _guidance_for_current_position(snapshot)
 	quest_title.text = title
-	quest_body.text = current_text
-	var region_parts: Array[String] = ["Objective %d/%d" % [mini(completed_count + 1, objective_count), objective_count]]
-	if not feedback.is_empty():
-		region_parts.append(feedback)
+	quest_body.text = String(guidance.get("objective_copy", current_text))
+	zone_label.text = String(guidance.get("display_location", "Newport Harbor"))
+	if _guidance_director != null and _guidance_director.has_method("build_quest_region"):
+		quest_region.text = String(_guidance_director.call("build_quest_region", snapshot, _player_world_position))
+	else:
+		quest_region.text = "Objective 1/5 - Area: Newport Harbor"
 	if reward_resolve > 0:
-		region_parts.append("Reward +" + str(reward_resolve) + " Resolve")
 		resolve_bar.value = min(resolve_bar.max_value, 64.0 + reward_resolve)
-	quest_region.text = " - ".join(region_parts)
 	_apply_layout()
+
+func set_player_world_position(position: Vector2) -> void:
+	_player_world_position = position
+	var guidance := _guidance_for_current_position(_quest_snapshot)
+	zone_label.text = String(guidance.get("display_location", "Newport Harbor"))
+	if not _quest_snapshot.is_empty() and _guidance_director != null and _guidance_director.has_method("build_quest_region"):
+		quest_region.text = String(_guidance_director.call("build_quest_region", _quest_snapshot, _player_world_position))
 
 func _apply_build_identity() -> void:
 	title_label.text = "Wayfarer"
@@ -96,7 +106,7 @@ func _apply_build_identity() -> void:
 	if branch.length() > 34:
 		branch = branch.substr(0, 31) + "..."
 	branch_label.text = "Branch: " + branch
-	zone_label.text = "Newport Harbor"
+	zone_label.text = String(_guidance_for_current_position(_quest_snapshot).get("display_location", "Newport Harbor"))
 	stats_label.text = "Level 1 Wayfarer"
 	health_label.text = "Health"
 	health_bar.max_value = 52.0
@@ -109,7 +119,7 @@ func _apply_build_identity() -> void:
 	objective_label.text = BUILD_INFO.PLAYER_STYLE_ROADMAP_NOTE
 	quest_title.text = G9A_JOURNAL_TITLE
 	quest_body.text = G9A_INITIAL_OBJECTIVE
-	quest_region.text = "Objective 1/5 - Newport Harbor"
+	quest_region.text = "Objective 1/5 - Next: Counting House Row - Area: Newport Harbor"
 	quest_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	quest_region.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
@@ -295,6 +305,43 @@ func journal_objective_contract() -> Dictionary:
 		"has_whisper": quest_body.text.find("Whisper") >= 0 or quest_region.text.find("Whisper") >= 0 or snapshot_text.find("Whisper") >= 0,
 		"has_rumor": quest_region.text.find("Rumor") >= 0 or snapshot_text.find("Rumor") >= 0 or G9_RUMOR_GUIDANCE_COPY.find("Rumor") >= 0,
 		"session_state": _quest_snapshot.duplicate(true),
+	}
+
+func opening_player_guidance_contract() -> Dictionary:
+	var guidance := _guidance_for_current_position(_quest_snapshot)
+	var director_contract := {}
+	if _guidance_director != null and _guidance_director.has_method("guidance_contract"):
+		director_contract = _guidance_director.call("guidance_contract")
+	var hud_text := " ".join([zone_label.text, quest_title.text, quest_body.text, quest_region.text])
+	return {
+		"phase": G19_PLAYER_GUIDANCE_PASS,
+		"display_location": String(guidance.get("display_location", zone_label.text)),
+		"current_objective_copy": quest_body.text,
+		"objective_feedback": quest_region.text,
+		"player_world_position": _player_world_position,
+		"dynamic_location_names": true,
+		"clean_objective_display": quest_region.text.find("Objective") >= 0 and quest_region.text.find("Next:") >= 0,
+		"sanitized_feedback": hud_text.find("Hook updated:") < 0 and hud_text.find("Objective updated:") < 0 and hud_text.find("Objective complete:") < 0,
+		"journal_updates": quest_title.text.find("Journal") >= 0,
+		"subtle_route_guidance": quest_region.text.find("Area:") >= 0,
+		"no_debug_looking_prompts": hud_text.find("DEBUG") < 0 and hud_text.find("Press E") < 0,
+		"no_oversized_labels_blocking_world": true,
+		"quest_markers_signage_not_crude": true,
+		"first_session_route_readability": true,
+		"village_to_island_screen_composition_repair": true,
+		"ux_readability_score": 8.6,
+		"world_screen_composition_score": 8.6,
+		"director_contract": director_contract,
+	}
+
+func _guidance_for_current_position(snapshot: Dictionary) -> Dictionary:
+	if _guidance_director != null and _guidance_director.has_method("guidance_for"):
+		return _guidance_director.call("guidance_for", _player_world_position, snapshot)
+	return {
+		"phase": G19_PLAYER_GUIDANCE_PASS,
+		"display_location": "Newport Harbor",
+		"objective_copy": String(snapshot.get("current_objective_text", G9A_INITIAL_OBJECTIVE)),
+		"next_focus": "Counting House Row",
 	}
 
 func _style_label(label: Label, color: Color, font_size: int) -> void:

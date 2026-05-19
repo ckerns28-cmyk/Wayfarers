@@ -113,6 +113,7 @@ Do not stop for Chris between G-14 and G-22.
 | G-17 | Island NPC / Encounter / Ambient Life Foundation | Makes the island feel alive with grounded, purposeful, quest-relevant NPCs or encounters. |
 | G-18 | Opening Quest Extension: From Whispers to the Island | Extends Whispers Before Dawn from village rumors into island clue discovery, return/report, reward, and hook. |
 | G-18A | Multi-Path Rumor and Choice Foundation | Keeps the opening from becoming a single railroaded path with counting-house, tavern, harbor, and optional island clue routes. |
+| G-19R | Newport Harbor Town Reconstruction Pivot | Corrects the cart-before-horse failure: district structure, road hierarchy, avenue widths, wharf dimensions, block depth, lot spacing, and walkable camera composition must be authored before guidance, props, or polish can pass. |
 | G-19 | Player Guidance, Map, Journal, and Interaction Polish | Makes the first session readable without debug UI. |
 | G-20 | First-Session Gameplay Loop and Reward Pass | Makes the opening fun: arrive, orient, talk, investigate, explore, discover, return/report, reward, and continue. |
 | G-21 | Opening Island Performance, Browser Build, and Regression Hardening | Hardens the combined village/island browser review build, metadata, proof regeneration, performance, and regression gates. |
@@ -146,8 +147,36 @@ G-15 through G-21 acceptance:
   or continuing hook.
 - At least two village paths can advance the opening thread.
 - At least one optional clue changes or enriches the journal.
+- Before G-19 can pass, Newport must have an accepted authored town structure:
+  districts, road hierarchy, primary avenue width, uphill civic route, rear
+  service lane, wharf apron, lot spacing, and first-screen camera composition
+  must be proven from a source-of-truth layout.
 - The first 20-30 minutes are playable, rewarded, readable, and compelling.
 - Browser/review artifact is stable, current, and regression-hardened.
+
+G-19R acceptance:
+
+- Preserve the approved Newport building art, atelier props, player/NPC art,
+  quest/dialogue foundations, and provenance discipline.
+- Do not change engines or languages as a substitute for town authorship; Godot
+  remains valid unless a hard tooling blocker is proven.
+- Lock the fundamental city structure before decorating: landform, waterfront
+  avenue, uphill civic route, rear service lane, wharf apron, district bands,
+  lots, building anchors, NPC stations, and quest route readability.
+- Author MMORPG-scale road widths for the gameplay camera: waterfront avenue
+  target 360 px and minimum 300 px; civic uphill route target 190 px and
+  minimum 160 px; rear service lane target 180 px and minimum 140 px; west
+  tavern climb target 150 px and minimum 120 px; market exit target 180 px and
+  minimum 150 px; wharf work apron target 340 px and minimum 280 px. The main
+  avenue and wharf must plausibly fit 10-15 characters shoulder to shoulder.
+- Guardrail token: waterfront avenue target 360 px.
+- Author areas between roads as named lots, yards, greens, docks, work aprons,
+  or service space. Empty leftover grass cannot count as village cohesion.
+- Props are last and must explain labor, threshold, danger, or social life.
+  Props cannot hide weak ground, street, lot, or wharf structure.
+- Fresh wide screenshots must show a cohesive Newport-inspired harbor village
+  that feels worth walking through from a computer screen.
+- Screenshot contradiction fails the phase even if validators pass.
 
 G-22 / OVI-1 acceptance:
 

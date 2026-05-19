@@ -1,0 +1,184 @@
+{
+  "schema_id": "wayfarer.ui.opening_first_session_guidance.v1",
+  "phase": "G-19",
+  "purpose": "Make the first Wayfarer session readable from the player's screen without debug-looking copy, static area labels, or validator-facing quest text.",
+  "north_star_guardrail": "Newport guidance must feel like authored RPG affordance in a pre-Revolutionary harbor world, not a checklist overlay. If a screenshot reads as patchwork, random, or merely functional, G-19 fails.",
+  "runtime_contract": "res://scripts/ui/OpeningGuidanceDirector.gd::guidance_contract",
+  "hud_contract": "res://scenes/ui/HUD.gd::opening_player_guidance_contract",
+  "zones": [
+    {
+      "id": "newport_harbor",
+      "display_name": "Newport Harbor",
+      "rect": {"x": 0, "y": 520, "w": 1460, "h": 260},
+      "route_hint": "Harborfront avenue",
+      "route_role": "arrival, wharf labor, and tavern-front orientation"
+    },
+    {
+      "id": "working_wharf",
+      "display_name": "Working Wharf",
+      "rect": {"x": 0, "y": 680, "w": 1460, "h": 260},
+      "route_hint": "Wharf planks and cargo line",
+      "route_role": "harbor ledger and dockworker route"
+    },
+    {
+      "id": "counting_house_row",
+      "display_name": "Counting House Row",
+      "rect": {"x": 650, "y": 330, "w": 330, "h": 250},
+      "route_hint": "Stone frontage",
+      "route_role": "official pressure and missing manifest"
+    },
+    {
+      "id": "third_toast_tavern",
+      "display_name": "Third Toast Tavern",
+      "rect": {"x": 120, "y": 430, "w": 420, "h": 260},
+      "route_hint": "Tavern lamps and market edge",
+      "route_role": "rumor hub and social lead"
+    },
+    {
+      "id": "commercial_avenue",
+      "display_name": "Commercial Avenue",
+      "rect": {"x": 520, "y": 500, "w": 820, "h": 180},
+      "route_hint": "Harborfront shops",
+      "route_role": "shop, chandlery, and market scan path"
+    },
+    {
+      "id": "east_gate",
+      "display_name": "East Gate",
+      "rect": {"x": 1420, "y": 500, "w": 230, "h": 150},
+      "route_hint": "Fence break to the old road",
+      "route_role": "settlement threshold"
+    },
+    {
+      "id": "old_road",
+      "display_name": "Old Road",
+      "rect": {"x": 1620, "y": 360, "w": 500, "h": 280},
+      "route_hint": "Worn road stones",
+      "route_role": "mystery route from Newport to signal rise"
+    },
+    {
+      "id": "signal_rise",
+      "display_name": "Signal Rise",
+      "rect": {"x": 2100, "y": 240, "w": 300, "h": 260},
+      "route_hint": "Overlook and warning stones",
+      "route_role": "coded whisper and optional signal clue"
+    },
+    {
+      "id": "hidden_landing",
+      "display_name": "Hidden Landing",
+      "rect": {"x": 2040, "y": 640, "w": 360, "h": 160},
+      "route_hint": "Cove edge",
+      "route_role": "physical evidence and smuggling read"
+    },
+    {
+      "id": "return_lane",
+      "display_name": "Return Lane",
+      "rect": {"x": 1600, "y": 620, "w": 480, "h": 150},
+      "route_hint": "Harbor road back to town",
+      "route_role": "report choice and social handoff"
+    }
+  ],
+  "objective_guidance": [
+    {
+      "objective_id": "make_landfall",
+      "player_copy": "Find your footing on the harborfront.",
+      "next_focus": "Counting House Row",
+      "preferred_zone": "newport_harbor"
+    },
+    {
+      "objective_id": "report_to_counting_house",
+      "player_copy": "Find Edrin Vale at the Counting House.",
+      "next_focus": "Counting House Row",
+      "preferred_zone": "counting_house_row"
+    },
+    {
+      "objective_id": "investigate_missing_line",
+      "player_copy": "Ask who touched the missing manifest line.",
+      "next_focus": "Working Wharf or Third Toast Tavern",
+      "preferred_zone": "working_wharf"
+    },
+    {
+      "objective_id": "follow_tavern_whisper",
+      "player_copy": "Follow the Third Toast whisper.",
+      "next_focus": "Third Toast Tavern",
+      "preferred_zone": "third_toast_tavern"
+    },
+    {
+      "objective_id": "choose_next_lead",
+      "player_copy": "Choose a lead: clerk, tavern, or harbor worker.",
+      "next_focus": "Newport Harbor",
+      "preferred_zone": "newport_harbor"
+    },
+    {
+      "objective_id": "lantern_at_wharf",
+      "player_copy": "Read the wharf lantern rumor.",
+      "next_focus": "Working Wharf",
+      "preferred_zone": "working_wharf"
+    },
+    {
+      "objective_id": "secure_contact",
+      "player_copy": "Secure a contact before leaving town.",
+      "next_focus": "Commercial Avenue",
+      "preferred_zone": "commercial_avenue"
+    },
+    {
+      "objective_id": "follow_island_lead",
+      "player_copy": "Leave Newport by the east gate.",
+      "next_focus": "East Gate",
+      "preferred_zone": "east_gate"
+    },
+    {
+      "objective_id": "travel_to_island_clue_site",
+      "player_copy": "Follow the old road toward the island clue.",
+      "next_focus": "Old Road",
+      "preferred_zone": "old_road"
+    },
+    {
+      "objective_id": "discover_physical_evidence",
+      "player_copy": "Search the cove for physical evidence.",
+      "next_focus": "Hidden Landing",
+      "preferred_zone": "hidden_landing"
+    },
+    {
+      "objective_id": "return_or_report_choice",
+      "player_copy": "Carry the proof back before dawn closes the harbor.",
+      "next_focus": "Return Lane",
+      "preferred_zone": "return_lane"
+    },
+    {
+      "objective_id": "hook_to_continue",
+      "player_copy": "Before dawn, decide who gets the proof.",
+      "next_focus": "Newport Harbor",
+      "preferred_zone": "newport_harbor"
+    }
+  ],
+  "forbidden_copy": [
+    "DEBUG",
+    "debug",
+    "Press E",
+    "Hook updated:",
+    "Objective updated:",
+    "Objective complete:"
+  ],
+  "required_screen_corrections": [
+    "dynamic_location_names",
+    "clean_objective_display",
+    "sanitized_feedback",
+    "subtle_route_guidance",
+    "quest_markers_signage_not_crude",
+    "village_to_island_screen_composition_repair",
+    "no_oversized_labels_blocking_world"
+  ],
+  "acceptance": {
+    "clean_objective_display": true,
+    "journal_updates": true,
+    "interaction_prompts_are_compact": true,
+    "location_names_or_subtle_guidance": true,
+    "quest_markers_signage_do_not_look_crude": true,
+    "first_session_route_readability": true,
+    "no_debug_looking_prompts": true,
+    "screenshot_contradiction_fails_phase": true,
+    "ux_readability_score": 8.6,
+    "world_screen_composition_score": 8.6,
+    "north_star_alignment": "PASS"
+  }
+}

@@ -70,6 +70,10 @@ const G17_ISLAND_NPC_ENCOUNTER_PASS := "G-17"
 const G17_ISLAND_NPC_ENCOUNTER_SOURCE_PATH := "res://data/world_layout/island_npc_encounter_foundation_v1.json"
 const G17_ISLAND_NPC_AMBIENT_SCORE := 8.6
 const G17_ISLAND_NPC_MOVEMENT_POLICY := "stationary_grounded_facing_bark_until_dedicated_walk_sheets"
+const G19R_NEWPORT_RECONSTRUCTION_PIVOT := true
+const G19R_NEWPORT_HARBOR_TOWN_RECONSTRUCTION_PASS := "G-19R"
+const G19R_NEWPORT_RECONSTRUCTION_SOURCE_PATH := "res://data/world_layout/newport_harbor_town_reconstruction_v1.json"
+const G19R_NEWPORT_RECONSTRUCTION_STATUS := "CORRECTIVE_IN_PROGRESS"
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -780,6 +784,36 @@ static func player_spawn_tile() -> Vector2i:
 
 static func starter_village_layout_source_path() -> String:
 	return STARTER_VILLAGE_LAYOUT_SOURCE_PATH
+
+static func newport_reconstruction_source_path() -> String:
+	return G19R_NEWPORT_RECONSTRUCTION_SOURCE_PATH
+
+static func newport_reconstruction_contract() -> Dictionary:
+	return {
+		"phase": G19R_NEWPORT_HARBOR_TOWN_RECONSTRUCTION_PASS,
+		"source": G19R_NEWPORT_RECONSTRUCTION_SOURCE_PATH,
+		"status": G19R_NEWPORT_RECONSTRUCTION_STATUS,
+		"pivot_active": G19R_NEWPORT_RECONSTRUCTION_PIVOT,
+		"engine_change_required": false,
+		"preserve_buildings_and_drawings": true,
+		"reject_false_g19_pass": true,
+		"method_reset": "composition_first_authoring",
+		"runtime_override_from_source": true,
+		"north_star_guardrail": "Newport must read as a cohesive, exciting pre-Revolutionary harbor village before any phase can call the opening production-playable.",
+		"hard_fail_conditions": [
+			"clipart_pasted_on_page_read",
+			"validator_pass_without_screenshot_acceptance",
+			"props_hiding_ground_or_street_failure",
+			"village_exit_random_edge_feeling",
+		],
+		"required_viewpoints": [
+			"g19r_village_wide_cohesion",
+			"g19r_harbor_arrival",
+			"g19r_tavern_social_landmark",
+			"g19r_counting_house_climb",
+			"g19r_east_gate_transition",
+		],
+	}
 
 static func opening_island_transition_source_path() -> String:
 	return G15A_VILLAGE_TO_ISLAND_TRANSITION_SOURCE_PATH
@@ -1737,7 +1771,7 @@ static func starter_village_npc_specs() -> Array:
 			"Mara Pike",
 			"dockworker",
 			"npc_dockworker_atelier_g422r",
-			Vector2(420.0, 690.0),
+			Vector2(390.0, 812.0),
 			"working_wharf",
 			"west_fish_offload",
 			"harbor_loop",
@@ -1789,7 +1823,7 @@ static func starter_village_npc_specs() -> Array:
 			"Jonah Reed",
 			"dockworker_courier",
 			"npc_dockworker_atelier_g422r",
-			Vector2(1218.0, 690.0),
+			Vector2(1196.0, 812.0),
 			"working_wharf",
 			"east_storehouse_queue",
 			"east_storehouse_to_counting_house",
@@ -1937,8 +1971,8 @@ static func interaction_anchors() -> Array:
 		_anchor("shop_house_entrance", "shop", "harborfront_commercial", Vector2(1170.0, 596.0), "Shop House entrance marker."),
 		_anchor("town_notice_board", "notice_board", "inland_residential_civic", Vector2(760.0, 390.0), "Civic notice board near Town Hall / Counting House."),
 		_anchor("dock_rules_board", "notice_board", "working_wharf", Vector2(1238.0, 690.0), "Dock rules and harbor bulletin board."),
-		_anchor("dock_worker_west", "npc_atelier", "working_wharf", Vector2(420.0, 690.0), "Atelier dock worker near west cargo."),
-		_anchor("dock_worker_east", "npc_atelier", "working_wharf", Vector2(1218.0, 690.0), "Atelier dock worker near east storehouse."),
+		_anchor("dock_worker_west", "npc_atelier", "working_wharf", Vector2(390.0, 812.0), "Atelier dock worker on the west landing offload lip, clear of the warehouse roof/body."),
+		_anchor("dock_worker_east", "npc_atelier", "working_wharf", Vector2(1196.0, 812.0), "Atelier dock worker on the east front-deck queue, clear of the storehouse roof/body."),
 		_anchor("market_vendor", "npc_atelier", "harborfront_commercial", Vector2(1364.0, 636.0), "Atelier market vendor on the east avenue pocket."),
 		_anchor("tavern_keeper", "npc_atelier", "harborfront_commercial", Vector2(302.0, 604.0), "Bess Armitage holds the Tavern/Inn rumor threshold."),
 		_anchor("rumor_carrier", "npc_atelier", "inland_residential_civic", Vector2(748.0, 394.0), "Nora Vale carries the notice-board rumor thread."),

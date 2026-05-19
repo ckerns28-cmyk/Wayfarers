@@ -29,6 +29,11 @@ The council must therefore separate:
 
 Newport approaches 8.5+/10 only when it reads as a coherent colonial harbor city with:
 
+- finalized city structure before decoration: district bands, road hierarchy,
+  avenue widths, wharf dimensions, block depth, lot spacing, and walkable
+  camera composition,
+- MMORPG-scale primary avenue and wharf widths that can plausibly fit roughly
+  10-15 characters shoulder to shoulder,
 - a clear waterfront avenue parallel to harbor work,
 - roads running uphill into town,
 - a back street behind the first road,
@@ -43,6 +48,7 @@ Newport approaches 8.5+/10 only when it reads as a coherent colonial harbor city
 
 - Do not hide layout failures with prop scatter.
 - Do not hide ground/street failures with clutter.
+- Do not let approved artwork compensate for an unresolved town plan.
 - Do not promote temporary or uncertain art without provenance gates.
 - Do not call technical pass equal to design pass.
 - Never impersonate Chris or claim Chris approved a result.

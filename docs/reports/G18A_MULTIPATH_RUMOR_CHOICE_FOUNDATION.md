@@ -8,7 +8,7 @@ Commit: `1e96ba73f7af404b5bdc20806a74b61117f257d1`
 
 PR number: `#488`
 
-Merge status: `pending`
+Merge status: `merged`
 
 Status: PASS
 
@@ -19,6 +19,8 @@ Reason: G-18A is an ordinary autonomous phase inside the larger OVI-1 runway. It
 Agent Council verdict: `COUNCIL_PASS_READY_FOR_PR`
 
 Next phase: G-19 Player Guidance, Map, Journal, and Interaction Polish
+
+Merged main commit: `6e8c5fc59c827d1b3adf84eb90a452c7092f4e57`
 
 ## Purpose
 

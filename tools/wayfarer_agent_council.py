@@ -229,6 +229,8 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
         return "G-21", "g21"
     if normalized.startswith("G-20"):
         return "G-20", "g20"
+    if normalized.startswith("G-19R"):
+        return "G-19R", "g19r"
     if normalized.startswith("G-19"):
         return "G-19", "g19"
     if normalized.startswith("G-18A"):
@@ -317,6 +319,8 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     elif normalized_capture_phase.startswith("G-18"):
         capture_script_name = "capture_g18_quest_playthrough.ps1"
         capture_artifact_dir = "g18_runtime_screenshots"
+    elif normalized_capture_phase.startswith("G-19R"):
+        capture_artifact_dir = "g19r_newport_reconstruction_screenshots"
     capture_ps1 = game_root / "tools" / capture_script_name
     capture_log = game_root / "artifacts" / "review" / capture_artifact_dir / "godot_capture.log"
     validator_log_dir = game_root / "artifacts" / "review" / "validator_logs"
@@ -1131,7 +1135,21 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     required_paths=[game_root / "tools" / "validate_opening_quest_village_to_island.py"],
                 ),
             )
-        if normalized_phase.startswith(("G-19", "G-20")):
+        if normalized_phase.startswith("G-19R"):
+            reconstruction_text = (
+                f"`{Path(python_bin).name} wayfarer_godot_vertical_slice/tools/validate_newport_harbor_town_reconstruction.py`"
+            )
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Newport harbor town reconstruction validation",
+                    command_text=reconstruction_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_newport_harbor_town_reconstruction.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_newport_harbor_town_reconstruction.py"],
+                ),
+            )
+        elif normalized_phase.startswith(("G-19", "G-20")):
             ovi_commands.insert(
                 0,
                 ValidatorCommand(
@@ -1570,7 +1588,9 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
                     ),
                 ]
             )
-        if phase.upper().strip().startswith(("G-19", "G-20")):
+        if phase.upper().strip().startswith("G-19R"):
+            required.append(("G-19R Newport harbor town reconstruction validator", game_root / "tools" / "validate_newport_harbor_town_reconstruction.py"))
+        elif phase.upper().strip().startswith(("G-19", "G-20")):
             required.append(("G-19/G-20 first-session gameplay loop validator", game_root / "tools" / "validate_first_session_gameplay_loop.py"))
         if phase.upper().strip().startswith("G-22"):
             required.extend(
@@ -2301,6 +2321,7 @@ def build_report(
             "",
             "- Fail with `COUNCIL_FAIL_NEEDS_CODE_FIX` if G-14 tries to stop for Chris before OVI-1.",
             "- Fail if the island roadmap or execution ledger rows are missing or unproven.",
+            "- Fail if G-19 or G-20 tries to proceed before G-19R proves Newport's district structure, MMORPG-scale road hierarchy, avenue widths, wharf dimensions, block depth, lot spacing, walkable negative space, camera readability, and primary avenue/wharf space for roughly 10-15 characters shoulder to shoulder.",
             "- Fail if the village is good but the island is not playable, or if the island is explorable but not cohesive.",
             "- Fail if the village-to-island quest chain is not playable.",
             "- Fail if NPCs hover, glide, or lack required movement proof.",

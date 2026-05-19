@@ -18,6 +18,15 @@ const PLAYER_GROUND_SHADOW_SIZE := Vector2(34.0, 8.0)
 const PLAYER_GROUND_SHADOW_ALPHA := 0.17
 const PLAYER_WALK_ANIMATION_FPS := 7.0
 const PLAYER_MOVEMENT_SPEED_SYNC := 185.0
+const G22_PLAYER_MOTION_CORRECTIVE_PASS := "G-22 OVI-1 player motion corrective"
+const PLAYER_STRIDE_DISTANCE_PIXELS := 96.0
+const PLAYER_LOCOMOTION_BOB_PIXELS := 2.6
+const PLAYER_LOCOMOTION_SWAY_PIXELS := 1.1
+const PLAYER_LOCOMOTION_TILT_RADIANS := 0.018
+const PLAYER_LOCOMOTION_SHADOW_PULSE := 0.09
+const PLAYER_IDLE_BREATH_PIXELS := 0.42
+const PLAYER_IDLE_BREATH_SPEED := 1.55
+const PLAYER_GLIDE_GUARD_POLICY := "Walk frames, body bob, and shadow pulse are driven by actual move_and_slide displacement, not input-only translation."
 const G9_INTERACTION_UX_PASS := "G-9"
 const PROMPT_MAX_WIDTH := 160.0
 const PROMPT_FONT_SIZE := 12
@@ -49,6 +58,9 @@ var _world_limits := Rect2(Vector2(WORLD_LIMIT_LEFT, WORLD_LIMIT_TOP), Vector2(W
 var _facing_direction := "down"
 var _current_visual_animation := ""
 var _prompt_suppressed := false
+var _walk_distance_px := 0.0
+var _idle_breath_time := 0.0
+var _last_actual_displacement := Vector2.ZERO
 
 func _ready() -> void:
 	add_to_group("player")
@@ -69,11 +81,15 @@ func _ready() -> void:
 	prompt_label.add_theme_color_override("font_outline_color", Color(0.055, 0.035, 0.018, 0.94))
 	prompt_label.add_theme_constant_override("outline_size", 2)
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	var input := _movement_axis()
+	if input.length_squared() > 0.01:
+		_update_facing_direction(input)
 	velocity = input.normalized() * speed
-	_update_visual_animation(input)
+	var before_position := global_position
 	move_and_slide()
+	_last_actual_displacement = global_position - before_position
+	_update_visual_animation(input, _last_actual_displacement, delta)
 	_update_interaction_target()
 
 	var interact_down := Input.is_key_pressed(KEY_E)
@@ -103,11 +119,16 @@ func set_review_visual_state(direction: String, moving: bool, frame_index := 0) 
 		var frame_count := visual_sprite.sprite_frames.get_frame_count(animation_name)
 		visual_sprite.frame = clampi(frame_index, 0, maxi(0, frame_count - 1))
 		if moving:
+			_walk_distance_px = (float(visual_sprite.frame) / float(maxi(1, frame_count))) * PLAYER_STRIDE_DISTANCE_PIXELS
+			_apply_locomotion_pose(true, _locomotion_phase())
 			visual_sprite.pause()
+		else:
+			_apply_locomotion_pose(false, 0.0)
 
 func character_motion_contract() -> Dictionary:
 	return {
 		"phase": G8_CHARACTER_MOTION_FOUNDATION_PASS,
+		"corrective_phase": G22_PLAYER_MOTION_CORRECTIVE_PASS,
 		"states": PLAYER_MOTION_STATE_NAMES.duplicate(),
 		"foot_anchor": PLAYER_FOOT_ANCHOR,
 		"visual_offset": PLAYER_VISUAL_OFFSET,
@@ -115,7 +136,55 @@ func character_motion_contract() -> Dictionary:
 		"movement_speed": speed,
 		"movement_speed_synced_to_animation": absf(speed - PLAYER_MOVEMENT_SPEED_SYNC) < 0.01,
 		"walk_animation_fps": PLAYER_WALK_ANIMATION_FPS,
+		"stride_distance_pixels": PLAYER_STRIDE_DISTANCE_PIXELS,
+		"locomotion_bob_pixels": PLAYER_LOCOMOTION_BOB_PIXELS,
+		"locomotion_sway_pixels": PLAYER_LOCOMOTION_SWAY_PIXELS,
+		"animation_driven_by_actual_displacement": true,
+		"glide_guard_policy": PLAYER_GLIDE_GUARD_POLICY,
 		"pause_behavior": "idle state holds the last facing direction when movement input stops",
+	}
+
+func player_motion_corrective_contract() -> Dictionary:
+	return {
+		"phase": G22_PLAYER_MOTION_CORRECTIVE_PASS,
+		"no_static_sprite_glide": true,
+		"animation_frame_source": "actual_move_and_slide_displacement",
+		"walk_pose_layers": ["distance_synced_frame", "body_bob", "lateral_sway", "shadow_pulse"],
+		"blocked_input_policy": "input without actual displacement keeps the player in idle facing state",
+		"stride_distance_pixels": PLAYER_STRIDE_DISTANCE_PIXELS,
+		"bob_pixels": PLAYER_LOCOMOTION_BOB_PIXELS,
+		"sway_pixels": PLAYER_LOCOMOTION_SWAY_PIXELS,
+		"tilt_radians": PLAYER_LOCOMOTION_TILT_RADIANS,
+		"shadow_pulse": PLAYER_LOCOMOTION_SHADOW_PULSE,
+	}
+
+func player_motion_debug_state() -> Dictionary:
+	var visual_position := PLAYER_VISUAL_OFFSET
+	var visual_rotation := 0.0
+	var visual_frame := 0
+	var visual_animation := ""
+	var shadow_scale := Vector2.ONE
+	var shadow_alpha := PLAYER_GROUND_SHADOW_ALPHA
+	if visual_sprite != null:
+		visual_position = visual_sprite.position
+		visual_rotation = visual_sprite.rotation
+		visual_frame = visual_sprite.frame
+		visual_animation = visual_sprite.animation
+	if ground_shadow != null:
+		shadow_scale = ground_shadow.scale
+		shadow_alpha = ground_shadow.color.a
+	return {
+		"global_position": global_position,
+		"velocity": velocity,
+		"actual_displacement": _last_actual_displacement,
+		"facing_direction": _facing_direction,
+		"animation": visual_animation,
+		"frame": visual_frame,
+		"visual_position": visual_position,
+		"visual_rotation": visual_rotation,
+		"shadow_scale": shadow_scale,
+		"shadow_alpha": shadow_alpha,
+		"walk_distance_px": _walk_distance_px,
 	}
 
 func prompt_ux_contract() -> Dictionary:
@@ -193,6 +262,7 @@ func _configure_visual_sprite() -> void:
 	visual_sprite.z_as_relative = true
 	visual_sprite.z_index = 1
 	_play_visual_animation("idle_down")
+	_apply_locomotion_pose(false, 0.0)
 
 func _atlas_frame(atlas: Texture2D, direction: String, variant: String) -> AtlasTexture:
 	var direction_index := PLAYER_DIRECTIONS.find(direction)
@@ -212,12 +282,18 @@ func _atlas_frame(atlas: Texture2D, direction: String, variant: String) -> Atlas
 	frame.filter_clip = true
 	return frame
 
-func _update_visual_animation(input: Vector2) -> void:
-	if input.length_squared() > 0.01:
-		_update_facing_direction(input)
+func _update_visual_animation(input: Vector2, actual_displacement: Vector2, delta: float) -> void:
+	if input.length_squared() > 0.01 and actual_displacement.length_squared() > 0.01:
+		_walk_distance_px += actual_displacement.length()
+		_idle_breath_time = 0.0
 		_play_visual_animation("walk_" + _facing_direction)
+		_sync_walk_frame_from_distance()
+		_apply_locomotion_pose(true, _locomotion_phase())
 	else:
+		if input.length_squared() <= 0.01:
+			_idle_breath_time += delta
 		_play_visual_animation("idle_" + _facing_direction)
+		_apply_locomotion_pose(false, 0.0)
 
 func _update_facing_direction(input: Vector2) -> void:
 	if absf(input.x) > absf(input.y):
@@ -234,6 +310,49 @@ func _play_visual_animation(animation_name: String) -> void:
 		return
 	_current_visual_animation = animation_name
 	visual_sprite.play(animation_name)
+
+func _sync_walk_frame_from_distance() -> void:
+	if visual_sprite == null or visual_sprite.sprite_frames == null:
+		return
+	var animation_name := "walk_" + _facing_direction
+	if not visual_sprite.sprite_frames.has_animation(animation_name):
+		return
+	var frame_count := visual_sprite.sprite_frames.get_frame_count(animation_name)
+	if frame_count <= 0:
+		return
+	var cycle := fposmod(_walk_distance_px, PLAYER_STRIDE_DISTANCE_PIXELS) / PLAYER_STRIDE_DISTANCE_PIXELS
+	visual_sprite.frame = int(floor(cycle * float(frame_count))) % frame_count
+	visual_sprite.frame_progress = 0.0
+	visual_sprite.pause()
+
+func _locomotion_phase() -> float:
+	return fposmod(_walk_distance_px, PLAYER_STRIDE_DISTANCE_PIXELS) / PLAYER_STRIDE_DISTANCE_PIXELS * TAU
+
+func _apply_locomotion_pose(is_moving: bool, phase: float) -> void:
+	if visual_sprite == null:
+		return
+	if is_moving:
+		var lift := absf(sin(phase))
+		var sway := sin(phase) * PLAYER_LOCOMOTION_SWAY_PIXELS
+		var offset := Vector2(sway, -lift * PLAYER_LOCOMOTION_BOB_PIXELS)
+		if _facing_direction == "left" or _facing_direction == "right":
+			offset = Vector2(sway * 0.35, -lift * PLAYER_LOCOMOTION_BOB_PIXELS)
+		visual_sprite.position = PLAYER_VISUAL_OFFSET + offset
+		visual_sprite.rotation = sin(phase) * PLAYER_LOCOMOTION_TILT_RADIANS
+		_apply_shadow_pose(lift)
+		return
+	var breath := sin(_idle_breath_time * PLAYER_IDLE_BREATH_SPEED) * PLAYER_IDLE_BREATH_PIXELS
+	visual_sprite.position = PLAYER_VISUAL_OFFSET + Vector2(0.0, breath)
+	visual_sprite.rotation = 0.0
+	_apply_shadow_pose(0.0)
+
+func _apply_shadow_pose(lift: float) -> void:
+	if ground_shadow == null:
+		return
+	ground_shadow.scale = Vector2(1.0 + lift * PLAYER_LOCOMOTION_SHADOW_PULSE, 1.0 - lift * PLAYER_LOCOMOTION_SHADOW_PULSE * 0.65)
+	var shadow_color := ground_shadow.color
+	shadow_color.a = PLAYER_GROUND_SHADOW_ALPHA * (1.0 - lift * 0.18)
+	ground_shadow.color = shadow_color
 
 func _configure_camera() -> void:
 	camera.enabled = true
