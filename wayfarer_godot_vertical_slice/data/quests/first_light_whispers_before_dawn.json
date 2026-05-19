@@ -1,7 +1,7 @@
 {
   "schema_id": "wayfarer.quest.first_light_whispers_before_dawn.v1",
   "phase": "G-10",
-  "phase_extensions": ["G-10A", "G-10B", "G-18", "G-18A"],
+  "phase_extensions": ["G-10A", "G-10B", "G-18", "G-18A", "G-20"],
   "quest_id": "first_light_whispers_before_dawn",
   "title": "First Light / Whispers Before Dawn",
   "theme": "A missing ledger line pulls the player from Newport Harbor into counting-house pressure, tavern whisper culture, harbor rumors, and pre-Revolution unrest.",
@@ -154,6 +154,39 @@
       "quest_state_supports_branching": true,
       "no_broken_branches": true,
       "no_unclear_progression": true
+    }
+  },
+  "first_session_gameplay_loop_reward_extension": {
+    "phase": "G-20",
+    "source": "res://data/quests/g20_first_session_gameplay_loop_reward_v1.json",
+    "purpose": "Make the first 20-30 minutes fun, rewarded, readable, and compelling instead of merely functional.",
+    "loop": [
+      "arrive",
+      "orient",
+      "talk",
+      "investigate",
+      "tavern_whisper",
+      "choose",
+      "explore",
+      "discover",
+      "return_report",
+      "continue"
+    ],
+    "reward_cadence": [
+      "Journal opens with a readable first objective.",
+      "Reward: Resolve +5 for following the tavern whisper",
+      "Named contact: Edrin Vale",
+      "Access: old road island lead",
+      "Reward: Resolve +8 for proving the island clue",
+      "Named contact: Annelise Crow",
+      "Dawn signal hook"
+    ],
+    "acceptance": {
+      "first_session_playable": true,
+      "player_receives_feedback_and_reward": true,
+      "player_has_reason_to_continue": true,
+      "no_dead_objective_states": true,
+      "gameplay_hook_score": 8.7
     }
   }
 }

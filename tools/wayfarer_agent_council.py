@@ -321,6 +321,9 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     elif normalized_capture_phase.startswith("G-18"):
         capture_script_name = "capture_g18_quest_playthrough.ps1"
         capture_artifact_dir = "g18_runtime_screenshots"
+    elif normalized_capture_phase.startswith("G-20"):
+        capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots.ps1"
+        capture_artifact_dir = "g20_first_session_gameplay_loop"
     elif normalized_capture_phase.startswith("G-19") and not normalized_capture_phase.startswith(("G-19R", "G-19S")):
         capture_script_name = "capture_g19_player_guidance_screenshots.ps1"
         capture_artifact_dir = "g19_player_guidance_screenshots"
@@ -449,6 +452,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     first_session_loop_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_first_session_gameplay_loop.py"
+    )
+    g20_reward_loop_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g20_first_session_gameplay_loop_reward.py"
     )
     g19_guidance_text = (
         f"& {powershell_quote(python_bin)} "
@@ -1218,6 +1225,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                         required_paths=[game_root / "tools" / "validate_g19_player_guidance_map_journal_interaction.py"],
                     ),
                 )
+            if normalized_phase.startswith("G-20"):
+                ovi_commands.insert(
+                    0,
+                    ValidatorCommand(
+                        name="G-20 first-session gameplay-loop reward validation",
+                        command_text=g20_reward_loop_text,
+                        args=[python_bin, str(game_root / "tools" / "validate_g20_first_session_gameplay_loop_reward.py")],
+                        cwd=root,
+                        required_paths=[game_root / "tools" / "validate_g20_first_session_gameplay_loop_reward.py"],
+                    ),
+                )
         if normalized_phase.startswith("G-21"):
             ovi_commands.insert(
                 0,
@@ -1338,6 +1356,9 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
     elif phase.upper().strip().startswith("G-18"):
         required_capture_script_name = "capture_g18_quest_playthrough"
         required_capture_label = f"{capture_label} quest playthrough capture"
+    elif phase.upper().strip().startswith("G-20"):
+        required_capture_script_name = "capture_g20_first_session_gameplay_loop_screenshots"
+        required_capture_label = "G-20 first-session gameplay-loop screenshot"
     elif phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S")):
         required_capture_script_name = "capture_g19_player_guidance_screenshots"
         required_capture_label = "G-19 player guidance screenshot"
@@ -1684,6 +1705,43 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
             )
         if phase.upper().strip().startswith(("G-19", "G-20")):
             required.append(("G-19/G-20 first-session gameplay loop validator", game_root / "tools" / "validate_first_session_gameplay_loop.py"))
+        if phase.upper().strip().startswith("G-20"):
+            required.extend(
+                [
+                    (
+                        "G-20 first-session source",
+                        game_root / "data" / "quests" / "g20_first_session_gameplay_loop_reward_v1.json",
+                    ),
+                    (
+                        "G-20 first-session reward validator",
+                        game_root / "tools" / "validate_g20_first_session_gameplay_loop_reward.py",
+                    ),
+                    (
+                        "G-20 first-session capture wrapper",
+                        game_root / "tools" / "capture_g20_first_session_gameplay_loop_screenshots.ps1",
+                    ),
+                    (
+                        "G-20 first-session capture script",
+                        game_root / "tools" / "capture_g20_first_session_gameplay_loop_screenshots.gd",
+                    ),
+                    (
+                        "G-20 first-session screenshot manifest",
+                        game_root / "artifacts" / "review" / "g20_first_session_gameplay_loop" / "g20_first_session_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-20 first-session trace",
+                        game_root / "artifacts" / "review" / "g20_first_session_gameplay_loop" / "g20_first_session_trace.json",
+                    ),
+                    (
+                        "G-20 phase report",
+                        root / "docs" / "reports" / "G20_FIRST_SESSION_GAMEPLAY_LOOP_REWARD_PASS.md",
+                    ),
+                    (
+                        "G-20 Agent Council report",
+                        root / "docs" / "reports" / "G20_FIRST_SESSION_GAMEPLAY_AGENT_COUNCIL_REPORT.md",
+                    ),
+                ]
+            )
         if phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S")):
             required.extend(
                 [

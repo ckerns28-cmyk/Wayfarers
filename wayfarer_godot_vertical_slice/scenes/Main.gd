@@ -322,6 +322,62 @@ func player_guidance_polish_contract() -> Dictionary:
 		"ux_readability_score": 8.6,
 	}
 
+func first_session_gameplay_loop_reward_contract() -> Dictionary:
+	var quest_loop := {}
+	if _first_light_quest != null and _first_light_quest.has_method("debug_first_session_gameplay_loop_reward_contract"):
+		quest_loop = _first_light_quest.debug_first_session_gameplay_loop_reward_contract()
+	var guidance := {}
+	if hud != null and hud.has_method("player_guidance_contract"):
+		guidance = hud.call("player_guidance_contract")
+	var journal := {}
+	if hud != null and hud.has_method("journal_objective_contract"):
+		journal = hud.call("journal_objective_contract")
+	var reward_ui := {}
+	if hud != null and hud.has_method("first_session_reward_loop_contract"):
+		reward_ui = hud.call("first_session_reward_loop_contract")
+	return {
+		"phase": "G-20",
+		"status": String(quest_loop.get("status", "FAIL")),
+		"source_loop": "res://data/quests/g20_first_session_gameplay_loop_reward_v1.json",
+		"source_guidance": "res://data/ux/g19_player_guidance_map_journal_interaction_v1.json",
+		"source_runtime_layout": "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+		"source_blockout": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+		"quest_available": bool(starter_village_quest_contract().get("quest_available", false)),
+		"first_session_playable": bool(quest_loop.get("first_session_playable", false)),
+		"first_20_30_minutes_playable": bool(quest_loop.get("first_20_30_minutes_playable", false)),
+		"playable_minutes_estimate": int(quest_loop.get("playable_minutes_estimate", 0)),
+		"arrive": bool(quest_loop.get("arrive", false)),
+		"orient": bool(quest_loop.get("orient", false)),
+		"talk": bool(quest_loop.get("talk", false)),
+		"investigate": bool(quest_loop.get("investigate", false)),
+		"explore": bool(quest_loop.get("explore", false)),
+		"discover": bool(quest_loop.get("discover", false)),
+		"return_report": bool(quest_loop.get("return_report", false)),
+		"reward_progression": bool(quest_loop.get("reward_progression", false)),
+		"unlock_next_hook": bool(quest_loop.get("unlock_next_hook", false)),
+		"player_receives_feedback_and_reward": bool(quest_loop.get("player_receives_feedback_and_reward", false)),
+		"player_has_reason_to_continue": bool(quest_loop.get("player_has_reason_to_continue", false)),
+		"no_dead_objective_states": bool(quest_loop.get("no_dead_objective_states", false)),
+		"reward_log": (quest_loop.get("reward_log", []) as Array).duplicate(),
+		"reward_resolve": int(quest_loop.get("reward_resolve", 0)),
+		"quest_geography_loop": String(quest_loop.get("quest_geography_loop", "")),
+		"first_time_player_reason_to_continue": String(quest_loop.get("first_time_player_reason_to_continue", "")),
+		"loop_beats": (quest_loop.get("loop_beats", []) as Array).duplicate(true),
+		"playthrough_trace": (quest_loop.get("playthrough_trace", []) as Array).duplicate(true),
+		"journal_visible": bool(journal.get("has_journal", false)),
+		"route_hint_visible": bool(guidance.get("route_hint_visible", false)),
+		"reward_feedback_visible": bool(reward_ui.get("reward_feedback_visible", false)),
+		"current_route_hint": String(guidance.get("current_route_hint", "")),
+		"current_location_name": String(guidance.get("current_location_name", "")),
+		"npc_route_policy": String(quest_loop.get("npc_route_policy", "")),
+		"gameplay_hook_score": float(quest_loop.get("gameplay_hook_score", 0.0)),
+		"reward_cadence_score": float(quest_loop.get("reward_cadence_score", 0.0)),
+		"world_cohesion_score": float(quest_loop.get("world_cohesion_score", 0.0)),
+		"player_orientation_score": float(quest_loop.get("player_orientation_score", 0.0)),
+		"quest_geography_integration_score": float(quest_loop.get("quest_geography_integration_score", 0.0)),
+		"implementation_readiness_score": float(quest_loop.get("implementation_readiness_score", 0.0)),
+	}
+
 func opening_island_transition_contract() -> Dictionary:
 	return NEWPORT_TOWN.opening_island_transition_contract().duplicate(true)
 

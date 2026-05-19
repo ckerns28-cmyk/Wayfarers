@@ -116,7 +116,7 @@ Do not stop for Chris between G-14 and G-22.
 | G-19R | Newport Scale + Street Blockout Source of Truth | Corrective layout-first gate with measured blockout, source JSON, districts, streets, lots, NPC routes, quest beats, cameras, and future governance. |
 | G-19S | Newport Blockout-To-Godot Runtime Reconstruction | Implements the approved G-19R blockout into Godot without inventing a new layout. |
 | G-19 | Player Guidance, Map, Journal, and Interaction Polish | Makes the first session readable without debug UI after G-19R/G-19S layout correction. PASS: `validate_g19_player_guidance_map_journal_interaction.py`, `validate_first_session_gameplay_loop.py`, and HUD-visible guidance screenshots. |
-| G-20 | First-Session Gameplay Loop and Reward Pass | Makes the opening fun: arrive, orient, talk, investigate, explore, discover, return/report, reward, and continue. |
+| G-20 | First-Session Gameplay Loop and Reward Pass | Makes the opening fun: arrive, orient, talk, investigate, explore, discover, return/report, reward, and continue. PASS: `validate_g20_first_session_gameplay_loop_reward.py`, `validate_first_session_gameplay_loop.py`, and HUD-visible first-session reward screenshots. |
 | G-21 | Opening Island Performance, Browser Build, and Regression Hardening | Hardens the combined village/island browser review build, metadata, proof regeneration, performance, and regression gates. |
 | G-22 | OVI-1 Opening Village + Island Production Playable Gate | The next true Chris review milestone: full review package from current main. |
 

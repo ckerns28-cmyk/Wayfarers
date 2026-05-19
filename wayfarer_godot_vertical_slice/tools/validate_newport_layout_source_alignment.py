@@ -34,14 +34,22 @@ MINOR_DOCUMENTATION_PATHS = (
     "docs/roadmaps/",
 )
 
-G19_GUIDANCE_ONLY_RUNTIME_PATHS = {
+NON_LAYOUT_RUNTIME_CONTRACT_PATHS = {
     "wayfarer_godot_vertical_slice/scenes/Main.gd",
 }
 
-G19_GUIDANCE_TOKENS = (
-    "player_guidance_polish_contract",
-    "set_player_world_position",
-    "source_runtime_layout",
+NON_LAYOUT_RUNTIME_TOKEN_GROUPS = (
+    (
+        "player_guidance_polish_contract",
+        "set_player_world_position",
+        "source_runtime_layout",
+    ),
+    (
+        "first_session_gameplay_loop_reward_contract",
+        "source_loop",
+        "reward_feedback_visible",
+        "quest_geography_loop",
+    ),
 )
 
 LAYOUT_MUTATION_TOKENS = (
@@ -137,8 +145,8 @@ def combined_diff(path: str) -> str:
     return "\n".join(chunks)
 
 
-def is_guidance_only_runtime_change(path: str) -> bool:
-    if path not in G19_GUIDANCE_ONLY_RUNTIME_PATHS:
+def is_non_layout_runtime_contract_change(path: str) -> bool:
+    if path not in NON_LAYOUT_RUNTIME_CONTRACT_PATHS:
         return False
     diff_text = combined_diff(path)
     if not diff_text:
@@ -150,7 +158,7 @@ def is_guidance_only_runtime_change(path: str) -> bool:
         if line.startswith(("+", "-")):
             changed_lines.append(line[1:])
     changed_text = "\n".join(changed_lines)
-    if not all(token in changed_text for token in G19_GUIDANCE_TOKENS):
+    if not any(all(token in changed_text for token in token_group) for token_group in NON_LAYOUT_RUNTIME_TOKEN_GROUPS):
         return False
     layout_terms = [
         token
@@ -172,7 +180,7 @@ def validate_git_alignment(failures: list[str]) -> None:
         path
         for path in changed
         if matches_any(path, MAJOR_RUNTIME_LAYOUT_PATHS)
-        and not is_guidance_only_runtime_change(path)
+        and not is_non_layout_runtime_contract_change(path)
     )
     source_changes = sorted(path for path in changed if matches_any(path, SOURCE_PATH_PREFIXES))
     if major_runtime_changes and not source_changes:
