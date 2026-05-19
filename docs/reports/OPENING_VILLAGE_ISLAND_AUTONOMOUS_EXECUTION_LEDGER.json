@@ -467,7 +467,7 @@
       "phase_name": "Multi-Path Rumor and Choice Foundation",
       "branch": "codex/g-18a-multipath-rumor-choice-foundation",
       "implementing_prs": ["pending"],
-      "commits": ["pending"],
+      "commits": ["1e96ba73f7af404b5bdc20806a74b61117f257d1"],
       "merge_status": "pending",
       "current_status": "PASS",
       "reason_for_status": "G-18A adds a runtime-backed multi-path village-to-island branch contract so counting-house pressure, tavern rumor, dockworker/harbor knowledge, and optional island clue discovery all advance or enrich Whispers Before Dawn without a single railroaded route.",
