@@ -1,0 +1,47 @@
+{
+  "schema_id": "wayfarer.g19s.newport.runtime_reconstruction.v1",
+  "phase": "G-19S",
+  "source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "planning_artifact_dir": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout",
+  "runtime_reconstruction": {
+    "status": "implemented",
+    "no_new_layout_invented_in_godot": true,
+    "major_runtime_layout_derives_from_g19r": true,
+    "player_spawn": {"x": 430, "y": 920},
+    "edrin_spawn": {"x": 1080, "y": 555},
+    "water_edge_y": 1120
+  },
+  "street_tile_rects": [
+    {"id": "main_commercial_avenue", "source_world_rect": {"x": 260, "y": 542, "w": 1525, "h": 326.4}, "runtime_tile_rect": {"x": 8, "y": 17, "w": 48, "h": 10}, "width_character_units": 12.0},
+    {"id": "harborfront_road", "source_world_rect": {"x": 220, "y": 774, "w": 1590, "h": 272.0}, "runtime_tile_rect": {"x": 7, "y": 24, "w": 50, "h": 9}, "width_character_units": 10.0},
+    {"id": "rear_service_street", "source_world_rect": {"x": 260, "y": 285, "w": 1440, "h": 149.6}, "runtime_tile_rect": {"x": 8, "y": 9, "w": 45, "h": 5}, "width_character_units": 5.5},
+    {"id": "central_upland_counting_house_connector", "source_world_rect": {"x": 958, "y": 325, "w": 204.0, "h": 550}, "runtime_tile_rect": {"x": 30, "y": 10, "w": 7, "h": 18}, "width_character_units": 7.5},
+    {"id": "west_tavern_connector", "source_world_rect": {"x": 422, "y": 335, "w": 176.8, "h": 535}, "runtime_tile_rect": {"x": 13, "y": 10, "w": 6, "h": 17}, "width_character_units": 6.5},
+    {"id": "east_market_connector", "source_world_rect": {"x": 1478, "y": 360, "w": 163.2, "h": 530}, "runtime_tile_rect": {"x": 46, "y": 11, "w": 6, "h": 17}, "width_character_units": 6.0},
+    {"id": "dock_paths", "source_world_rect": {"x": 360, "y": 960, "w": 1240, "h": 136.0}, "runtime_tile_rect": {"x": 11, "y": 30, "w": 39, "h": 5}, "width_character_units": 5.0},
+    {"id": "hidden_rumor_cutthrough", "source_world_rect": {"x": 650, "y": 420, "w": 95.2, "h": 505}, "runtime_tile_rect": {"x": 20, "y": 13, "w": 4, "h": 16}, "width_character_units": 3.5},
+    {"id": "village_to_island_road", "source_world_rect": {"x": 1700, "y": 500, "w": 640, "h": 217.6}, "runtime_tile_rect": {"x": 53, "y": 16, "w": 20, "h": 7}, "width_character_units": 8.0}
+  ],
+  "building_runtime_lots": [
+    {"building_id": "b_inn_tavern", "g19r_lot_id": "lot_tavern_inn_centerpiece", "runtime_position": {"x": 490, "y": 552}},
+    {"building_id": "b_counting_house", "g19r_lot_id": "lot_counting_house_clerk", "runtime_position": {"x": 1135, "y": 527}},
+    {"building_id": "b_mercantile", "g19r_lot_id": "lot_mercantile_shop", "runtime_position": {"x": 815, "y": 523}},
+    {"building_id": "b_chandlery_front", "g19r_lot_id": "lot_chandlery_outfitter", "runtime_position": {"x": 1420, "y": 525}},
+    {"building_id": "b_market_shed", "g19r_lot_id": "lot_market_shed", "runtime_position": {"x": 1658, "y": 525}},
+    {"building_id": "b_dock_warehouse", "g19r_lot_id": "lot_west_dock_warehouse", "runtime_position": {"x": 555, "y": 1052}},
+    {"building_id": "b_wharf_boathouse", "g19r_lot_id": "lot_central_boathouse_landing", "runtime_position": {"x": 1130, "y": 1080}},
+    {"building_id": "b_cooperage_shed", "g19r_lot_id": "lot_cooperage_service", "runtime_position": {"x": 1503, "y": 1035}},
+    {"building_id": "b_boarding_house", "g19r_lot_id": "lot_boarding_house", "runtime_position": {"x": 750, "y": 255}},
+    {"building_id": "b_dockworker_rowhouse", "g19r_lot_id": "lot_dockworker_rowhouse", "runtime_position": {"x": 1060, "y": 253}},
+    {"building_id": "b_clerk_townhouse", "g19r_lot_id": "lot_clerk_lodging", "runtime_position": {"x": 1348, "y": 260}}
+  ],
+  "npc_runtime_stations": [
+    {"npc_id": "mara_pike_dockworker", "g19r_route_id": "dockworker_route", "runtime_position": {"x": 465, "y": 1025}, "movement_state": "stationed_until_dedicated_walk_animation"},
+    {"npc_id": "jonah_reed_dock_courier", "g19r_route_id": "dockworker_route", "runtime_position": {"x": 1050, "y": 1000}, "movement_state": "stationed_until_dedicated_walk_animation"},
+    {"npc_id": "edrin_vale_counting_house_clerk", "g19r_route_id": "counting_house_clerk_runner_route", "runtime_position": {"x": 1080, "y": 555}, "movement_state": "stationed_until_dedicated_walk_animation"},
+    {"npc_id": "bess_armitage_tavern_keeper", "g19r_route_id": "tavern_patron_rumor_carrier_route", "runtime_position": {"x": 500, "y": 585}, "movement_state": "stationed_until_dedicated_walk_animation"},
+    {"npc_id": "honor_finch_merchant_shopkeeper", "g19r_route_id": "merchant_shopkeeper_route", "runtime_position": {"x": 815, "y": 585}, "movement_state": "stationed_until_dedicated_walk_animation"},
+    {"npc_id": "silas_crowe_suspicious_patron", "g19r_route_id": "tavern_patron_rumor_carrier_route", "runtime_position": {"x": 610, "y": 365}, "movement_state": "stationed_until_dedicated_walk_animation"}
+  ],
+  "camera_viewpoints_source": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_camera_viewpoints.json"
+}

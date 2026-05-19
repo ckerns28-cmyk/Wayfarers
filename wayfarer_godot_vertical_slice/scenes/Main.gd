@@ -300,6 +300,9 @@ func opening_island_poi_landmarks_contract() -> Dictionary:
 func opening_island_atelier_asset_family_contract() -> Dictionary:
 	return NEWPORT_TOWN.opening_island_atelier_asset_family_contract().duplicate(true)
 
+func g19s_runtime_reconstruction_contract() -> Dictionary:
+	return NEWPORT_TOWN.g19s_runtime_reconstruction_contract().duplicate(true)
+
 func opening_island_npc_encounter_contract() -> Dictionary:
 	var contract: Dictionary = NEWPORT_TOWN.opening_island_npc_encounter_contract().duplicate(true)
 	var actors := _opening_island_ambient_actor_contracts()

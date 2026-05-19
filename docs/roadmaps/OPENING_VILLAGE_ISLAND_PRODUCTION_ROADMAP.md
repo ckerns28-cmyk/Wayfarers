@@ -142,6 +142,9 @@ G-19R corrective acceptance:
 - Districts, lots, NPC routes, quest beats, and camera viewpoints are planned before runtime placement.
 - Future phases fail if major Newport layout edits bypass the source of truth.
 - G-19S must implement the approved blockout rather than inventing a new layout.
+- G-19S must pass `validate_g19s_newport_runtime_reconstruction.py`,
+  `validate_newport_layout_source_alignment.py`, canonical G-19R screenshot
+  capture, and Agent Council runtime review before guidance/quest polish resumes.
 
 G-15 through G-21 acceptance:
 

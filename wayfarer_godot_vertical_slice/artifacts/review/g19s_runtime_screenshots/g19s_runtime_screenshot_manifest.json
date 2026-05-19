@@ -1,0 +1,356 @@
+{
+	"canonical_camera_viewpoints_source": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_camera_viewpoints.json",
+	"debug_overlays_disabled": true,
+	"g19s_runtime_reconstruction_contract": {
+		"canonical_camera_viewpoints_source": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_camera_viewpoints.json",
+		"edrin_spawn": {
+			"x": 1080.0,
+			"y": 555.0
+		},
+		"harborfront_road_character_widths": 10.0,
+		"layout_score": 8.6,
+		"main_street_character_widths": 12.0,
+		"no_new_layout_invented_in_Godot": true,
+		"phase": "G-19S",
+		"player_spawn": {
+			"x": 430.0,
+			"y": 920.0
+		},
+		"rear_service_lane_character_widths": 5.5,
+		"runtime_layout_matches_G19R_source_of_truth": true,
+		"runtime_layout_source": "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+		"source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+		"stationary_npc_policy": "stationary_work_pose_until_dedicated_walk_sheets",
+		"wharf_apron_character_widths": 10.5
+	},
+	"no_hud_capture": true,
+	"out_dir": "res://artifacts/review/g19s_runtime_screenshots",
+	"phase": "G-19S",
+	"schema_id": "wayfarer.g19s.runtime_screenshot_manifest.v1",
+	"screenshots": [
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_01_wide_town_cohesion_view.png",
+			"camera_position": {
+				"x": 1080.0,
+				"y": 710.0
+			},
+			"camera_zoom": {
+				"x": 0.819999992847443,
+				"y": 0.819999992847443
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_01_wide_town_cohesion_view.png",
+			"label": "wide town cohesion view / G-19R source blocks read as one human-scale harbor town",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_01_wide_town_cohesion_view.png",
+			"player_position": {
+				"x": 1080.0,
+				"y": 710.0
+			},
+			"png_verification": {
+				"average_rgb": 0.978416314473949,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "wide_town_cohesion_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_02_arrival_harbor_view.png",
+			"camera_position": {
+				"x": 430.0,
+				"y": 920.0
+			},
+			"camera_zoom": {
+				"x": 1.37999999523163,
+				"y": 1.37999999523163
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_02_arrival_harbor_view.png",
+			"label": "arrival harbor view / player starts on a working wharf edge with the town spine readable uphill",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_02_arrival_harbor_view.png",
+			"player_position": {
+				"x": 430.0,
+				"y": 920.0
+			},
+			"png_verification": {
+				"average_rgb": 0.991749649767119,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "arrival_harbor_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_03_counting_house_route_view.png",
+			"camera_position": {
+				"x": 1045.0,
+				"y": 645.0
+			},
+			"camera_zoom": {
+				"x": 1.37999999523163,
+				"y": 1.37999999523163
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_03_counting_house_route_view.png",
+			"label": "counting house route view / central official route is visible from harbor road to clerk target",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_03_counting_house_route_view.png",
+			"player_position": {
+				"x": 1045.0,
+				"y": 645.0
+			},
+			"png_verification": {
+				"average_rgb": 0.963635019990257,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "counting_house_route_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_04_tavern_landmark_view.png",
+			"camera_position": {
+				"x": 500.0,
+				"y": 645.0
+			},
+			"camera_zoom": {
+				"x": 1.37999999523163,
+				"y": 1.37999999523163
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_04_tavern_landmark_view.png",
+			"label": "tavern landmark view / tavern lot anchors the west social/rumor district rather than floating as an asset",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_04_tavern_landmark_view.png",
+			"player_position": {
+				"x": 500.0,
+				"y": 645.0
+			},
+			"png_verification": {
+				"average_rgb": 0.976968353650031,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "tavern_landmark_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_05_commercial_avenue_view.png",
+			"camera_position": {
+				"x": 1260.0,
+				"y": 675.0
+			},
+			"camera_zoom": {
+				"x": 1.37999999523163,
+				"y": 1.37999999523163
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_05_commercial_avenue_view.png",
+			"label": "commercial avenue view / shop row fronts a broad human-scale main street",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_05_commercial_avenue_view.png",
+			"player_position": {
+				"x": 1260.0,
+				"y": 675.0
+			},
+			"png_verification": {
+				"average_rgb": 0.992081475685924,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "commercial_avenue_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_06_harbor_work_view.png",
+			"camera_position": {
+				"x": 980.0,
+				"y": 1010.0
+			},
+			"camera_zoom": {
+				"x": 1.3400000333786,
+				"y": 1.3400000333786
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_06_harbor_work_view.png",
+			"label": "harbor work view / wharf apron, dock paths, cargo, rope, and waterline support a working harbor",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_06_harbor_work_view.png",
+			"player_position": {
+				"x": 980.0,
+				"y": 1010.0
+			},
+			"png_verification": {
+				"average_rgb": 1.00663652785767,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "harbor_work_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_07_rear_service_lane_view.png",
+			"camera_position": {
+				"x": 850.0,
+				"y": 380.0
+			},
+			"camera_zoom": {
+				"x": 1.37999999523163,
+				"y": 1.37999999523163
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_07_rear_service_lane_view.png",
+			"label": "rear service lane view / back street and hidden rumor cutthrough exist behind the public frontage",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_07_rear_service_lane_view.png",
+			"player_position": {
+				"x": 850.0,
+				"y": 380.0
+			},
+			"png_verification": {
+				"average_rgb": 0.983076949675496,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "rear_service_lane_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_08_npc_route_proof_view.png",
+			"camera_position": {
+				"x": 735.0,
+				"y": 700.0
+			},
+			"camera_zoom": {
+				"x": 1.37999999523163,
+				"y": 1.37999999523163
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_08_npc_route_proof_view.png",
+			"label": "NPC route proof view / stationed NPCs sit on planned pause points until grounded walk animation exists",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_08_npc_route_proof_view.png",
+			"player_position": {
+				"x": 735.0,
+				"y": 700.0
+			},
+			"png_verification": {
+				"average_rgb": 0.979532454875656,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "npc_route_proof_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_09_village_exit_to_island_view.png",
+			"camera_position": {
+				"x": 1880.0,
+				"y": 610.0
+			},
+			"camera_zoom": {
+				"x": 1.25,
+				"y": 1.25
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_09_village_exit_to_island_view.png",
+			"label": "village exit to island view / exit road and guidepost carry the player out of town without map-like ambiguity",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_09_village_exit_to_island_view.png",
+			"player_position": {
+				"x": 1880.0,
+				"y": 610.0
+			},
+			"png_verification": {
+				"average_rgb": 0.950211188376236,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "village_exit_to_island_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_10_quest_interaction_view.png",
+			"camera_position": {
+				"x": 1100.0,
+				"y": 600.0
+			},
+			"camera_zoom": {
+				"x": 1.37999999523163,
+				"y": 1.37999999523163
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_10_quest_interaction_view.png",
+			"label": "quest interaction view / counting house, notice board, and civic target sit in the first objective geography",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_10_quest_interaction_view.png",
+			"player_position": {
+				"x": 1100.0,
+				"y": 600.0
+			},
+			"png_verification": {
+				"average_rgb": 1.00444949866774,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "quest_interaction_view"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_11_debug_disabled_view.png",
+			"camera_position": {
+				"x": 1080.0,
+				"y": 720.0
+			},
+			"camera_zoom": {
+				"x": 1.37999999523163,
+				"y": 1.37999999523163
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "g19s_11_debug_disabled_view.png",
+			"label": "debug disabled view / normal review capture has no HUD, debug markers, or blockout overlays",
+			"path": "res://artifacts/review/g19s_runtime_screenshots/g19s_11_debug_disabled_view.png",
+			"player_position": {
+				"x": 1080.0,
+				"y": 720.0
+			},
+			"png_verification": {
+				"average_rgb": 0.973408774042932,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "debug_disabled_view"
+		}
+	],
+	"status": "PASS",
+	"viewport": {
+		"h": 1000,
+		"w": 1600
+	}
+}
