@@ -39,6 +39,13 @@ This repository uses Codex as a production collaborator, not as an automatic app
 - Player and NPC sprites must always be atelier-standard; crude humanoid placeholders, beige/tan stand-ins, primitive sign/marker shapes, debug boxes, and untracked runtime sprites may not appear in normal screenshots.
 - Do not solve layout problems with random prop scatter.
 - Do not hide ground or street problems with clutter.
+- For Newport and OVI-1 work, city structure must come before decoration:
+  landform, waterfront edge, district placement, road hierarchy, avenue widths,
+  wharf dimensions, block depth, lot spacing, walkable negative space, and
+  camera readability must be authored and proven before buildings, props, UI
+  guidance, or quest polish can claim production readiness. Newport's primary
+  avenue and wharf must read at MMORPG scale, able to fit roughly 10-15
+  characters shoulder to shoulder, not as narrow Pokemon-style paths.
 - Buildings must sit on believable streets, lots, yards, docks, alleys, or civic spaces.
 - Newport city passes must prove street grammar, ground cohesion, player/NPC walkability, district logic, and visual cohesion.
 - Starter Village layout passes must use the locked SV-0 world layout source

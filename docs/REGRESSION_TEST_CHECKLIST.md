@@ -317,6 +317,7 @@ the JavaScript Worker route by accident.
 - [ ] The visual regression manifest covers the recurring Newport views and is treated as a warning system, not automatic art approval.
 - [ ] Runtime movement proof is produced for NPC/player movement phases before the Agent Council can pass them.
 - [ ] Ground/material cohesion follows the locked Godot-native material stack before props or clutter are used.
+- [ ] Newport city-structure work proves districts, road hierarchy, avenue widths, wharf dimensions, block depth, lot spacing, walkable negative space, and camera readability before buildings, props, UI guidance, or quest polish can claim production readiness; the primary avenue and wharf must plausibly fit 10-15 characters shoulder to shoulder.
 - [ ] No paid, unknown-license, admin-only, or external-drive-modifying tool is required for the Starter Village path.
 - [ ] Any adopted free tool has source, license, free status, install path, rollback path, export/web-review impact, credential status, and validation proof in the Tool Acquisition Manifest.
 
@@ -326,6 +327,7 @@ the JavaScript Worker route by accident.
 - [ ] `wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py` reports `PASS`.
 - [ ] G-14 reports `Human review required: no` and `Next phase: G-15 Opening Island Masterplan + World Topology`.
 - [ ] G-14 does not stop for Chris unless a true hard blocker exists.
+- [ ] G-19R Newport Harbor Town Reconstruction Pivot passes before G-19/G-20 can pass; `validate_newport_harbor_town_reconstruction.py` covers district structure, road widths, wharf work apron, lots, props-last discipline, and screenshot-contradiction failure policy.
 - [ ] G-15 through G-21 each have phase PR, merge status, screenshots/proof, validators, Agent Council verdict, scores, and ledger rows.
 - [ ] Island topology validator covers authored island structure, danger/safety gradient, routes, loops, quest destination, optional secret, and return path.
 - [ ] Village-to-island transition validator covers clear town exit, natural boundary, readable route, and first mystery threshold.

@@ -2314,6 +2314,16 @@ Journal, and Interaction Polish, G-20 First-Session Gameplay Loop and Reward
 Pass, G-21 Opening Island Performance, Browser Build, and Regression
 Hardening, and G-22 OVI-1 Opening Village + Island Production Playable Gate.
 
+Chris's G-19 steering critique adds a corrective G-19R Newport Harbor Town
+Reconstruction Pivot before G-19 can pass. G-19R exists because the project put
+the artwork before the final town plan. The approved buildings and drawings are
+preserved, but Newport must now be rebuilt from authored city structure:
+districts, road hierarchy, avenue widths, wharf dimensions, block depth, lot
+spacing, walkable negative space, and camera readability. The waterfront avenue,
+uphill civic route, rear service lane, wharf work apron, and east gate must be
+dimensioned as gameplay spaces first; buildings sit on those lots second; props
+come last and cannot hide layout failure.
+
 Ordinary roadmap-bound autonomous PRs before OVI-1 may be merged by Codex when
 branch/PR preflight is current, required validators pass, runtime proof passes
 where applicable, the Agent Council verdict is `COUNCIL_PASS_READY_FOR_PR`,

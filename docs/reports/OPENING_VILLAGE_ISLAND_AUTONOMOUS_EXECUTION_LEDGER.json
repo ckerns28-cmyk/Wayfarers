@@ -565,17 +565,19 @@
       "phase_name": "Newport Scale + Street Blockout Source of Truth",
       "branch": "codex/g-19r-newport-scale-street-blockout-source-of-truth",
       "implementing_prs": [
-        "#489"
+        "#489",
+        "#495"
       ],
       "commits": [
         "7e3911cabb19e05dfb50e2691bc83dfdcda60723",
         "935989f0d50e8158d46e88cc54137e32f3252ecc",
-        "f089baf36cb664519f0efd65824140979db4634f"
+        "f089baf36cb664519f0efd65824140979db4634f",
+        "1d93fe18faecacab2d708915622896366299dcbd"
       ],
       "merge_status": "merged",
       "current_status": "PASS",
-      "reason_for_status": "G-19R creates a measured, player-scale source-of-truth Newport town blockout with district, street, lot, NPC route, quest beat, camera, manifest, governance, and validator coverage before further Godot placement.",
-      "next_required_action": "Complete: PR #489 merged at f089baf36cb664519f0efd65824140979db4634f; G-19S started from synced main.",
+      "reason_for_status": "G-19R creates a measured, player-scale source-of-truth Newport town blockout with district, street, lot, NPC route, quest beat, camera, manifest, governance, and validator coverage before further Godot placement. Supplemental PR #495 adds the Newport harbor reconstruction guardrail after Chris screenshot critique fails the current G-19 direction: building/person scale, wharf dimensions, dockworker landing stations, and roof/body station repair are validated against runtime source.",
+      "next_required_action": "Complete: PR #489 merged at f089baf36cb664519f0efd65824140979db4634f; supplemental PR #495 records the integrated reconstruction guardrail before further OVI work.",
       "files_changed": [
         "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.md",
         "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
@@ -597,21 +599,37 @@
         "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_blockout_manifest.json",
         "wayfarer_godot_vertical_slice/tools/generate_g19r_newport_blockout_artifacts.py",
         "wayfarer_godot_vertical_slice/tools/validate_g19r_newport_blockout_source_of_truth.py",
-        "wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py"
+        "wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py",
+        "docs/reports/G19R_NEWPORT_HARBOR_TOWN_RECONSTRUCTION_AGENT_COUNCIL_REPORT.md",
+        "wayfarer_godot_vertical_slice/data/world_layout/newport_harbor_town_reconstruction_v1.json",
+        "wayfarer_godot_vertical_slice/tools/capture_g19r_runtime_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g19r_runtime_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/capture_g22_player_motion_proof.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g22_player_motion_proof.ps1",
+        "wayfarer_godot_vertical_slice/tools/validate_g22_player_motion_proof.py",
+        "wayfarer_godot_vertical_slice/tools/validate_newport_harbor_town_reconstruction.py"
       ],
       "screenshot_paths": [
-        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_measured_blockout.png"
+        "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_measured_blockout.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_runtime_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_01_village_wide_city_structure.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_02_harborfront_avenue_width.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_03_counting_house_civic_climb.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_04_wharf_work_apron.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19r_newport_reconstruction_screenshots/g19r_05_east_gate_settlement_edge.png"
       ],
       "validation_commands": [
         "python wayfarer_godot_vertical_slice/tools/validate_g19r_newport_blockout_source_of_truth.py",
         "python wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_harbor_town_reconstruction.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_g22_player_motion_proof.py",
         "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py",
         "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
         "tools/wayfarer_agent_council.py --phase \"G-19R Newport Scale + Street Blockout Source of Truth\" --run-validators",
         "git diff --check",
         "git diff --cached --check"
       ],
-      "validation_results": "PASS: G-19R source-of-truth validator, future source-alignment validator, OVI roadmap, OVI ledger, JSON syntax, and Agent Council design review.",
+      "validation_results": "PASS: G-19R source-of-truth validator, future source-alignment validator, Newport harbor town reconstruction validator, G-22 player motion proof, OVI roadmap, OVI ledger, JSON syntax, and Agent Council design review.",
       "agent_council_report_path": "docs/reports/G19R_NEWPORT_SCALE_STREET_BLOCKOUT_AGENT_COUNCIL_REPORT.md",
       "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
       "design_score": 8.7,
@@ -620,7 +638,7 @@
       "ux_readability_score": 8.6,
       "technical_stability_score": 8.7,
       "provenance_atelier_result": "PASS",
-      "north_star_result": "PASS: Newport now has a measured human-scale harbor-town source of truth strong enough for G-19S runtime reconstruction; no production-playable claim is made until the runtime matches it."
+      "north_star_result": "PASS: Newport now has a measured human-scale harbor-town source of truth plus supplemental runtime guardrails for inhabitable building scale, dock landing stations, and wharf/avenue readability; no production-playable claim is made until the active runtime matches it."
     },
     {
       "phase_id": "G-19S",

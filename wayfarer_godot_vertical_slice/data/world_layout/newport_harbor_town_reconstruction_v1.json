@@ -1,0 +1,275 @@
+{
+  "schema_id": "wayfarer.newport.harbor_town_reconstruction.v1",
+  "phase": "G-19R",
+  "phase_name": "Newport Harbor Town Reconstruction Pivot",
+  "authoring_mode": "composition_first_godot_native_json",
+  "source_trigger": "Chris screenshot critique: the village reads as clipart pasted onto a page instead of a cohesive Newport-inspired harbor town.",
+  "purpose": "Preserve the approved building and atelier asset art, but reset the way Newport is authored so streets, waterfront, lots, docks, and camera composition carry the place before props or validators can claim success.",
+  "world_size": {"w": 2400, "h": 1600},
+  "method_reset": {
+    "engine_change_required": false,
+    "engine_reason": "Godot is capable; the failure is authoring discipline and composition, not GDScript or the engine.",
+    "preserve_assets": true,
+    "preserved_asset_families": [
+      "Newport building sprites",
+      "Newport atelier props",
+      "player and NPC atelier sprites",
+      "quest/dialogue foundations"
+    ],
+    "reject_method": "layered procedural repair passes that add more translucent roads, grass blocks, and prop scatter over an unresolved town plan",
+    "new_method": "author the town as a readable harbor settlement: landform, water edge, district terraces, routes, lots, building frontages, then restrained functional props"
+  },
+  "planning_order": [
+    "landform_and_water_edge",
+    "primary_harborfront_avenue",
+    "uphill_civic_route",
+    "rear_service_lane",
+    "wharf_apron_and_work_docks",
+    "district_lots_and_frontages",
+    "building_anchors",
+    "npc_stations",
+    "quest_route_readability",
+    "functional_props_last",
+    "fresh_wide_screenshot_review"
+  ],
+  "city_structure_requirements": {
+    "road_hierarchy_required": true,
+    "street_widths_authored_before_props": true,
+    "districts_authored_before_lots": true,
+    "walkable_negative_space_required": true,
+    "camera_readability_required": true,
+    "road_widths_px": {
+      "waterfront_avenue_main": {"target": 360, "minimum": 300, "reason": "primary first-session MMORPG-scale avenue must fit 10-15 people shoulder to shoulder, NPC clusters, shopfront readability, and camera breathing room"},
+      "civic_uphill_route": {"target": 190, "minimum": 160, "reason": "official route from harbor to Counting House should support a small crowd and procession, not a one-character path"},
+      "rear_service_lane": {"target": 180, "minimum": 140, "reason": "back street supports service carts, NPCs, and whisper paths without becoming a cramped corridor"},
+      "west_tavern_climb": {"target": 150, "minimum": 120, "reason": "side climb should still support multiple characters and feel like a real street"},
+      "market_exit_to_island": {"target": 180, "minimum": 150, "reason": "leaving Newport must read as a broad settlement threshold, not a single-file trail"},
+      "wharf_work_apron": {"target": 340, "minimum": 280, "reason": "harbor work edge must fit cargo, NPC stations, and 10-15 character crowd scale"}
+    },
+    "district_depths_px": {
+      "upper_residential_terrace": {"target": 260, "minimum": 220},
+      "civic_green_counting_house": {"target": 240, "minimum": 200},
+      "rear_service_lane": {"target": 210, "minimum": 170},
+      "waterfront_avenue_lots": {"target": 360, "minimum": 300},
+      "working_wharf_apron": {"target": 340, "minimum": 280},
+      "east_gate_settlement_edge": {"target": 250, "minimum": 210}
+    },
+    "block_spacing_px": {
+      "commercial_frontage_gap_min": 120,
+      "civic_lot_gap_min": 180,
+      "wharf_building_gap_min": 110,
+      "edge_camera_margin_min": 70
+    },
+    "review_questions": [
+      "Can a player immediately tell where the waterfront avenue is?",
+      "Can the waterfront avenue and wharf plausibly fit 10-15 characters shoulder to shoulder?",
+      "Can a player see how the road climbs from harbor to civic power?",
+      "Does the tavern block have enough room to feel like a social destination?",
+      "Does the wharf have a continuous work apron rather than separate pasted docks?",
+      "Are the areas between roads sized as lots, yards, greens, or work spaces instead of leftover grass?",
+      "Does the camera view explain the town before labels do?"
+    ]
+  },
+  "composition_goals": [
+    "The first screen must read as an authored harbor settlement before any UI or quest copy is considered.",
+    "Wide streets must feel walkable and intentional, not empty green space or editor geometry.",
+    "The waterfront avenue must be the organizing spine of the village.",
+    "The counting house route must climb naturally from harbor work into civic pressure.",
+    "The tavern must feel like a social landmark, not a cropped asset cluster.",
+    "The village exit must feel like leaving a lived place, not stepping off a board into scattered trails.",
+    "Props must explain labor, threshold, danger, or social life; props cannot hide bad ground."
+  ],
+  "district_bands": [
+    {
+      "id": "upper_residential_terrace",
+      "render_layer": "ground",
+      "rect": {"x": 70, "y": 90, "w": 1540, "h": 300},
+      "base_color": "#637b57",
+      "alt_color": "#435d42",
+      "alpha": 0.50,
+      "purpose": "quiet upland homes framing Newport as a town with class depth"
+    },
+    {
+      "id": "civic_green_counting_house",
+      "render_layer": "ground",
+      "rect": {"x": 500, "y": 284, "w": 700, "h": 236},
+      "base_color": "#66775d",
+      "alt_color": "#4b6048",
+      "alpha": 0.46,
+      "purpose": "Counting House and Customs authority above the harbor"
+    },
+    {
+      "id": "rear_service_lane",
+      "render_layer": "ground",
+      "rect": {"x": 180, "y": 340, "w": 1370, "h": 220},
+      "base_color": "#59684f",
+      "alt_color": "#435842",
+      "alpha": 0.44,
+      "purpose": "back doors, service pressure, whisper routes"
+    },
+    {
+      "id": "waterfront_avenue_lots",
+      "render_layer": "ground",
+      "rect": {"x": 42, "y": 402, "w": 1545, "h": 360},
+      "base_color": "#5d6751",
+      "alt_color": "#454f40",
+      "alpha": 0.56,
+      "purpose": "main street lots and commercial walking space"
+    },
+    {
+      "id": "working_wharf_apron",
+      "render_layer": "ground",
+      "rect": {"x": 74, "y": 632, "w": 1470, "h": 340},
+      "base_color": "#625846",
+      "alt_color": "#483f33",
+      "alpha": 0.55,
+      "purpose": "cargo, rope, fish, and missing-manifest labor"
+    },
+    {
+      "id": "east_gate_settlement_edge",
+      "render_layer": "ground",
+      "rect": {"x": 1380, "y": 430, "w": 340, "h": 250},
+      "base_color": "#61704f",
+      "alt_color": "#4b5c43",
+      "alpha": 0.34,
+      "purpose": "the last coherent Newport threshold before the island"
+    }
+  ],
+  "route_spines": [
+    {
+      "id": "upper_residential_backstreet",
+      "kind": "dirt_service_lane",
+      "rect": {"x": 128, "y": 286, "w": 1160, "h": 160},
+      "purpose": "visible back street tying upper houses into Newport instead of leaving them isolated in grass"
+    },
+    {
+      "id": "civic_counting_terrace",
+      "kind": "civic_terrace",
+      "rect": {"x": 520, "y": 350, "w": 650, "h": 210},
+      "purpose": "stone civic terrace that grounds the Counting House and Customs House as a district"
+    },
+    {
+      "id": "waterfront_avenue_main",
+      "kind": "stone_avenue",
+      "rect": {"x": 48, "y": 410, "w": 1540, "h": 360},
+      "frontages": ["lot_tavern_inn", "lot_clerk_townhouse", "lot_mercantile", "lot_chandlery", "lot_shop_house", "lot_market_shed", "lot_printer_rowhouse"],
+      "purpose": "first walkable east-west village spine"
+    },
+    {
+      "id": "civic_uphill_route",
+      "kind": "civic_climb",
+      "polyline": [{"x": 775, "y": 705}, {"x": 775, "y": 565}, {"x": 735, "y": 430}, {"x": 735, "y": 325}],
+      "width": 190,
+      "purpose": "harbor work climbs toward the Counting House"
+    },
+    {
+      "id": "rear_service_lane",
+      "kind": "dirt_service_lane",
+      "rect": {"x": 178, "y": 358, "w": 1340, "h": 180},
+      "purpose": "parallel back street behind the waterfront avenue"
+    },
+    {
+      "id": "tavern_forecourt_plaza",
+      "kind": "stone_avenue",
+      "rect": {"x": 72, "y": 430, "w": 410, "h": 278},
+      "purpose": "social forecourt that makes the tavern read as a destination on the avenue"
+    },
+    {
+      "id": "market_corner_square",
+      "kind": "stone_avenue",
+      "rect": {"x": 1198, "y": 430, "w": 392, "h": 282},
+      "purpose": "commercial corner that frames the route out of town without becoming random grass"
+    },
+    {
+      "id": "west_tavern_climb",
+      "kind": "dirt_service_lane",
+      "polyline": [{"x": 390, "y": 705}, {"x": 405, "y": 560}, {"x": 380, "y": 315}],
+      "width": 150,
+      "purpose": "west road visibly runs uphill beside the tavern block"
+    },
+    {
+      "id": "market_exit_to_island",
+      "kind": "threshold_lane",
+      "polyline": [{"x": 1390, "y": 675}, {"x": 1540, "y": 590}, {"x": 1660, "y": 548}],
+      "width": 180,
+      "purpose": "readable way out of Newport toward the island"
+    },
+    {
+      "id": "wharf_work_apron",
+      "kind": "dock_apron",
+      "rect": {"x": 110, "y": 632, "w": 1370, "h": 340},
+      "purpose": "continuous labor edge between harbor buildings and water"
+    }
+  ],
+  "lots": [
+    {"id": "lot_tavern_inn", "district": "tavern_social", "building_id": "b_inn_tavern", "anchor": {"x": 244, "y": 596}, "frontage": "waterfront_avenue_main", "role": "social_landmark"},
+    {"id": "lot_clerk_townhouse", "district": "waterfront_avenue", "building_id": "b_clerk_townhouse", "anchor": {"x": 500, "y": 596}, "frontage": "waterfront_avenue_main", "role": "street_wall"},
+    {"id": "lot_mercantile", "district": "commercial_spine", "building_id": "b_mercantile", "anchor": {"x": 680, "y": 596}, "frontage": "waterfront_avenue_main", "role": "commercial_anchor"},
+    {"id": "lot_counting_house", "district": "civic_counting", "building_id": "b_counting_house", "anchor": {"x": 704, "y": 392}, "frontage": "civic_uphill_route", "role": "official_pressure"},
+    {"id": "lot_chandlery", "district": "commercial_spine", "building_id": "b_chandlery_front", "anchor": {"x": 1018, "y": 596}, "frontage": "waterfront_avenue_main", "role": "harbor_trade"},
+    {"id": "lot_shop_house", "district": "commercial_spine", "building_id": "b_shop_house", "anchor": {"x": 1180, "y": 596}, "frontage": "waterfront_avenue_main", "role": "commercial_depth"},
+    {"id": "lot_market_shed", "district": "commercial_spine", "building_id": "b_market_shed", "anchor": {"x": 1364, "y": 636}, "frontage": "waterfront_avenue_main", "role": "market_corner"},
+    {"id": "lot_printer_rowhouse", "district": "commercial_spine", "building_id": "b_printer_rowhouse", "anchor": {"x": 1522, "y": 596}, "frontage": "market_exit_to_island", "role": "east_edge_street_wall"},
+    {"id": "lot_customs_house", "district": "civic_counting", "building_id": "b_custom_house", "anchor": {"x": 970, "y": 402}, "frontage": "rear_service_lane", "role": "official_pressure"},
+    {"id": "lot_small_residence", "district": "residential_edge", "building_id": "b_res_small", "anchor": {"x": 300, "y": 275}, "frontage": "west_tavern_climb", "role": "upper_town_life"},
+    {"id": "lot_large_residence", "district": "residential_edge", "building_id": "b_large_residence", "anchor": {"x": 980, "y": 275}, "frontage": "rear_service_lane", "role": "upper_town_life"},
+    {"id": "lot_boarding_house", "district": "rear_service_lane", "building_id": "b_boarding_house", "anchor": {"x": 1160, "y": 430}, "frontage": "rear_service_lane", "role": "lodging"},
+    {"id": "lot_dockworker_rowhouse", "district": "rear_service_lane", "building_id": "b_dockworker_rowhouse", "anchor": {"x": 1320, "y": 430}, "frontage": "rear_service_lane", "role": "working_lodging"},
+    {"id": "lot_cooperage_wharf", "district": "harbor_waterfront", "building_id": "b_cooperage_shed", "anchor": {"x": 1165, "y": 705}, "frontage": "wharf_work_apron", "role": "barrel_work"},
+    {"id": "lot_west_dock_warehouse", "district": "harbor_waterfront", "building_id": "b_dock_warehouse", "anchor": {"x": 486, "y": 758}, "frontage": "wharf_work_apron", "role": "cargo"},
+    {"id": "lot_wharf_boathouse", "district": "harbor_waterfront", "building_id": "b_wharf_boathouse", "anchor": {"x": 898, "y": 758}, "frontage": "wharf_work_apron", "role": "boat_work"},
+    {"id": "lot_east_dock_storehouse", "district": "harbor_waterfront", "building_id": "b_dock_storehouse", "anchor": {"x": 1323, "y": 758}, "frontage": "wharf_work_apron", "role": "manifest_cargo"}
+  ],
+  "functional_props": [
+    {"id": "last_newport_lamp", "family": "lamps", "asset_id": "atelier_wayfinding_street_lamp_post_01", "dest": {"x": 1518, "y": 500, "w": 30, "h": 82}, "purpose": "threshold pull toward the island"},
+    {"id": "east_gate_marker", "family": "lamps", "asset_id": "atelier_wayfinding_harbor_road_marker_01", "dest": {"x": 1468, "y": 526, "w": 42, "h": 48}, "purpose": "village exit with in-world wayfinding"},
+    {"id": "tavern_threshold_lanterns", "family": "tavern", "asset_id": "atelier_g418e_tavern_entry_lantern_pair_01", "dest": {"x": 206, "y": 548, "w": 68, "h": 56}, "purpose": "social landmark entrance"},
+    {"id": "counting_house_notice", "family": "civic", "asset_id": "atelier_civic_town_notice_board_01", "dest": {"x": 786, "y": 422, "w": 64, "h": 58}, "purpose": "official pressure and first objective"},
+    {"id": "chandlery_rope_work", "family": "commercial", "asset_id": "atelier_g418e_commercial_directional_signpost_01", "dest": {"x": 982, "y": 556, "w": 48, "h": 64}, "purpose": "functional harbor commerce"},
+    {"id": "market_crates", "family": "commercial", "asset_id": "atelier_g418e_commercial_produce_crates_01", "dest": {"x": 1310, "y": 616, "w": 76, "h": 42}, "purpose": "market corner work"},
+    {"id": "wharf_cargo_stack", "family": "harbor", "asset_id": "atelier_g418e_harbor_cargo_stack_01", "dest": {"x": 1006, "y": 688, "w": 84, "h": 50}, "purpose": "manifest cargo beat"},
+    {"id": "net_drying_work", "family": "harbor", "asset_id": "atelier_g418e_harbor_net_drying_frame_01", "dest": {"x": 270, "y": 690, "w": 96, "h": 58}, "purpose": "fish labor at the wharf"}
+  ],
+  "npc_station_guardrails": [
+    {
+      "id": "mara_pike_dockworker",
+      "position": {"x": 390, "y": 812},
+      "standing_surface": "west_pier_landing",
+      "must_not_overlap_building_body": ["b_dock_warehouse"],
+      "purpose": "West dockworker must stand on the offload lip in front of the warehouse, never on its roof or body."
+    },
+    {
+      "id": "jonah_reed_dock_courier",
+      "position": {"x": 1196, "y": 812},
+      "standing_surface": "east_storehouse_landing",
+      "must_not_overlap_building_body": ["b_dock_storehouse"],
+      "purpose": "East dock courier must stand on the work queue deck beside the storehouse, never on its roof or body."
+    }
+  ],
+  "camera_viewpoints": [
+    {"id": "g19r_village_wide_cohesion", "center": {"x": 800, "y": 540}, "zoom": 1.04, "purpose": "prove the town reads before island extension"},
+    {"id": "g19r_harbor_arrival", "center": {"x": 675, "y": 612}, "zoom": 1.18, "purpose": "first player drop-in"},
+    {"id": "g19r_tavern_social_landmark", "center": {"x": 300, "y": 600}, "zoom": 1.22, "purpose": "tavern as social anchor"},
+    {"id": "g19r_counting_house_climb", "center": {"x": 770, "y": 500}, "zoom": 1.18, "purpose": "harbor-to-civic quest route"},
+    {"id": "g19r_east_gate_transition", "center": {"x": 1510, "y": 555}, "zoom": 1.10, "purpose": "leave town intentionally"}
+  ],
+  "hard_fail_conditions": [
+    "Any fresh wide screenshot reads as clipart pasted onto a page.",
+    "Town cohesion is claimed because validators pass while screenshot proof contradicts it.",
+    "Props are used to hide weak street or ground structure.",
+    "The waterfront avenue is not the primary village organizing spine.",
+    "Buildings appear to float without lots, frontages, yards, docks, or civic space.",
+    "The east exit feels like a random map edge instead of the village opening into the island.",
+    "The phase tries to merge as a normal G-19 pass without explicit G-19R reconstruction proof."
+  ],
+  "acceptance": {
+    "human_review_required": false,
+    "ordinary_phase_can_pass_only_after_fresh_screenshot_review": true,
+    "preserves_atelier_assets": true,
+    "requires_runtime_override_from_source": true,
+    "requires_validator_guardrail": true,
+    "requires_no_false_pass_report": true,
+    "target_town_cohesion_score": 8.5,
+    "current_state": "CORRECTIVE_IN_PROGRESS"
+  }
+}

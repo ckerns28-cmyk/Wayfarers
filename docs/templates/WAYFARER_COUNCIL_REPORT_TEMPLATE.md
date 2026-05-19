@@ -109,4 +109,4 @@ TECHNICAL PASS DOES NOT EQUAL DESIGN PASS.
 - Required repairs:
 - PR readiness conditions:
 - Merge authority result:
-- OVI-1 rule: fail if G-14 tries to stop for Chris, if island roadmap rows are missing, if village/island/quest chain are not playable and cohesive, if NPCs hover/glide, if assets are non-atelier, if first-session loop is boring/confusing/incomplete, if browser/review identity is stale, or if any required roadmap row is unproven.
+- OVI-1 rule: fail if G-14 tries to stop for Chris, if G-19/G-20 tries to proceed before G-19R proves Newport's district structure, MMORPG-scale road hierarchy, avenue widths, wharf dimensions, block depth, lot spacing, walkable negative space, and camera readability, if the primary avenue/wharf cannot plausibly fit 10-15 characters shoulder to shoulder, if island roadmap rows are missing, if village/island/quest chain are not playable and cohesive, if NPCs hover/glide, if assets are non-atelier, if first-session loop is boring/confusing/incomplete, if browser/review identity is stale, or if any required roadmap row is unproven.

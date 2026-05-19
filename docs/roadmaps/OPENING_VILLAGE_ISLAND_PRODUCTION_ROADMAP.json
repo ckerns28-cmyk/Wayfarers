@@ -363,6 +363,10 @@
         "opening quest beat geography",
         "canonical camera viewpoints",
         "future placement governance",
+        "supplemental_Newport_harbor_reconstruction_guardrail",
+        "waterfront avenue target 360 px",
+        "Props are last",
+        "Screenshot contradiction fails the phase",
         "COUNCIL_PASS_READY_FOR_PR"
       ],
       "acceptance": [
@@ -377,11 +381,14 @@
         "quest_beats_mapped_to_town_geography",
         "camera_viewpoints_defined",
         "future_phases_block_ad_hoc_layout_edits",
+        "dockworker_landing_stations_clear_building_roof_and_body_rects",
+        "building_person_scale_and_wharf_dimensions_block_toy_building_regression",
         "all_design_scores_at_least_8_5"
       ],
       "primary_validators": [
         "validate_g19r_newport_blockout_source_of_truth.py",
-        "validate_newport_layout_source_alignment.py"
+        "validate_newport_layout_source_alignment.py",
+        "validate_newport_harbor_town_reconstruction.py"
       ],
       "status": "PASS"
     },

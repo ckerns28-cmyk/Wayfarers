@@ -9,7 +9,7 @@
   "implementing_prs": [
     "#488"
   ],
-  "merge_status": "pending",
+  "merge_status": "merged",
   "status": "PASS",
   "human_review_required": false,
   "reason_human_review_not_required": "G-18A is an ordinary autonomous OVI-1 runway phase. It hardens village-to-island agency and does not stop for Chris unless a true blocker occurs.",
@@ -66,5 +66,6 @@
   "north_star_result": "PASS",
   "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
   "agent_council_report_path": "docs/reports/G18A_MULTIPATH_RUMOR_CHOICE_AGENT_COUNCIL_REPORT.md",
+  "merged_main_commit": "6e8c5fc59c827d1b3adf84eb90a452c7092f4e57",
   "next_phase": "G-19 Player Guidance, Map, Journal, and Interaction Polish"
 }
