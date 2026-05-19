@@ -627,15 +627,15 @@
       "phase_name": "Newport Blockout-To-Godot Runtime Reconstruction",
       "branch": "codex/g-19s-newport-blockout-to-godot-runtime-reconstruction",
       "implementing_prs": [
-        "pending_pr"
+        "#490"
       ],
       "commits": [
-        "pending_commit_before_pr"
+        "7adeee8bb68e8b3c919aafef9d3edcc9a0e314e5"
       ],
-      "merge_status": "local_pass_pending_pr",
+      "merge_status": "pr_open_pending_remote_checks",
       "current_status": "PASS",
       "reason_for_status": "G-19S reconstructs Newport runtime streets, lots, wharf, NPC stations, quest geography anchors, and canonical camera proof from the approved G-19R source of truth without inventing a new layout.",
-      "next_required_action": "Open and merge the G-19S PR when green and mergeable, sync main, then continue immediately to G-19 Player Guidance, Map, Journal, and Interaction Polish.",
+      "next_required_action": "Merge PR #490 when green and mergeable, sync main, then continue immediately to G-19 Player Guidance, Map, Journal, and Interaction Polish.",
       "files_changed": [
         "docs/reports/G19S_NEWPORT_BLOCKOUT_TO_GODOT_RUNTIME_RECONSTRUCTION.md",
         "docs/reports/G19S_NEWPORT_BLOCKOUT_TO_GODOT_AGENT_COUNCIL_REPORT.md",
