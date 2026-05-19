@@ -2,7 +2,7 @@
 
 Phase: `G-19`
 Branch: `codex/g-19-player-guidance-map-journal-interaction-polish`
-Status: `PASS` pending PR
+Status: `PASS`; PR #491 open
 
 ## Summary
 

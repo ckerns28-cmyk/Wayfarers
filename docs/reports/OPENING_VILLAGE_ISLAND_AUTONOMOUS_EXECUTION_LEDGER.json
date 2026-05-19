@@ -706,15 +706,15 @@
       "phase_name": "Player Guidance, Map, Journal, and Interaction Polish",
       "branch": "codex/g-19-player-guidance-map-journal-interaction-polish",
       "implementing_prs": [
-        "pending_pr"
+        "#491"
       ],
       "commits": [
-        "pending_commit_before_pr"
+        "bb90d29b53cc5ca378501fcbd3bdceffb9fadf87"
       ],
-      "merge_status": "local_pass_pending_pr",
+      "merge_status": "pr_open_pending_remote_checks",
       "current_status": "PASS",
       "reason_for_status": "G-19 makes the G-19S Newport reconstruction readable to a first-session player through HUD route hints, world-position location bands, source-derived quest copy, journal updates, NPC-priority interaction prompts, and HUD-visible screenshot proof without debug overlays.",
-      "next_required_action": "Open the G-19 PR, verify remote checks, merge if green and mergeable, sync main, then continue immediately to G-20 First-Session Gameplay Loop and Reward Pass.",
+      "next_required_action": "Verify PR #491 remote checks, merge if green and mergeable, sync main, then continue immediately to G-20 First-Session Gameplay Loop and Reward Pass.",
       "files_changed": [
         "docs/reports/G19_PLAYER_GUIDANCE_MAP_JOURNAL_INTERACTION_POLISH.md",
         "docs/reports/G19_PLAYER_GUIDANCE_AGENT_COUNCIL_REPORT.md",
