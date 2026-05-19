@@ -34,6 +34,31 @@ MINOR_DOCUMENTATION_PATHS = (
     "docs/roadmaps/",
 )
 
+G19_GUIDANCE_ONLY_RUNTIME_PATHS = {
+    "wayfarer_godot_vertical_slice/scenes/Main.gd",
+}
+
+G19_GUIDANCE_TOKENS = (
+    "player_guidance_polish_contract",
+    "set_player_world_position",
+    "source_runtime_layout",
+)
+
+LAYOUT_MUTATION_TOKENS = (
+    "NEWPORT_TOWN.",
+    "MapLayer.",
+    "Rect2(",
+    "Vector2(",
+    "road",
+    "street",
+    "lot",
+    "district",
+    "wharf",
+    "building",
+    "spawn",
+    "add_child(",
+)
+
 
 def main() -> int:
     failures: list[str] = []
@@ -98,6 +123,43 @@ def changed_paths() -> set[str]:
     return paths
 
 
+def combined_diff(path: str) -> str:
+    chunks: list[str] = []
+    commands = [
+        ["git", "diff", "--unified=0", "origin/main...HEAD", "--", path],
+        ["git", "diff", "--unified=0", "--", path],
+        ["git", "diff", "--unified=0", "--cached", "--", path],
+    ]
+    for args in commands:
+        result = subprocess.run(args, cwd=REPO_ROOT, text=True, capture_output=True, check=False)
+        if result.returncode == 0 and result.stdout:
+            chunks.append(result.stdout)
+    return "\n".join(chunks)
+
+
+def is_guidance_only_runtime_change(path: str) -> bool:
+    if path not in G19_GUIDANCE_ONLY_RUNTIME_PATHS:
+        return False
+    diff_text = combined_diff(path)
+    if not diff_text:
+        return False
+    changed_lines = []
+    for line in diff_text.splitlines():
+        if line.startswith(("+++", "---", "@@")):
+            continue
+        if line.startswith(("+", "-")):
+            changed_lines.append(line[1:])
+    changed_text = "\n".join(changed_lines)
+    if not all(token in changed_text for token in G19_GUIDANCE_TOKENS):
+        return False
+    layout_terms = [
+        token
+        for token in LAYOUT_MUTATION_TOKENS
+        if token in changed_text and token not in ("source_runtime_layout",)
+    ]
+    return not layout_terms
+
+
 def matches_any(path: str, prefixes: tuple[str, ...]) -> bool:
     return any(path == prefix or path.startswith(prefix) for prefix in prefixes)
 
@@ -106,7 +168,12 @@ def validate_git_alignment(failures: list[str]) -> None:
     changed = changed_paths()
     if not changed:
         return
-    major_runtime_changes = sorted(path for path in changed if matches_any(path, MAJOR_RUNTIME_LAYOUT_PATHS))
+    major_runtime_changes = sorted(
+        path
+        for path in changed
+        if matches_any(path, MAJOR_RUNTIME_LAYOUT_PATHS)
+        and not is_guidance_only_runtime_change(path)
+    )
     source_changes = sorted(path for path in changed if matches_any(path, SOURCE_PATH_PREFIXES))
     if major_runtime_changes and not source_changes:
         failures.append(

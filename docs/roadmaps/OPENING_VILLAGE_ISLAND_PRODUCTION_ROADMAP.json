@@ -434,10 +434,11 @@
         "ux_readability_score_at_least_8_5"
       ],
       "primary_validators": [
+        "validate_g19_player_guidance_map_journal_interaction.py",
         "validate_first_session_gameplay_loop.py",
         "validate_interaction_ux.py"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-20",

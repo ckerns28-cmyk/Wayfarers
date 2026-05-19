@@ -321,6 +321,9 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     elif normalized_capture_phase.startswith("G-18"):
         capture_script_name = "capture_g18_quest_playthrough.ps1"
         capture_artifact_dir = "g18_runtime_screenshots"
+    elif normalized_capture_phase.startswith("G-19") and not normalized_capture_phase.startswith(("G-19R", "G-19S")):
+        capture_script_name = "capture_g19_player_guidance_screenshots.ps1"
+        capture_artifact_dir = "g19_player_guidance_screenshots"
     capture_ps1 = game_root / "tools" / capture_script_name
     capture_log = game_root / "artifacts" / "review" / capture_artifact_dir / "godot_capture.log"
     validator_log_dir = game_root / "artifacts" / "review" / "validator_logs"
@@ -446,6 +449,10 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     first_session_loop_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_first_session_gameplay_loop.py"
+    )
+    g19_guidance_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g19_player_guidance_map_journal_interaction.py"
     )
     ovi_gate_text = (
         f"& {powershell_quote(python_bin)} "
@@ -1200,6 +1207,17 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     required_paths=[game_root / "tools" / "validate_first_session_gameplay_loop.py"],
                 ),
             )
+            if normalized_phase.startswith("G-19"):
+                ovi_commands.insert(
+                    0,
+                    ValidatorCommand(
+                        name="G-19 player guidance validation",
+                        command_text=g19_guidance_text,
+                        args=[python_bin, str(game_root / "tools" / "validate_g19_player_guidance_map_journal_interaction.py")],
+                        cwd=root,
+                        required_paths=[game_root / "tools" / "validate_g19_player_guidance_map_journal_interaction.py"],
+                    ),
+                )
         if normalized_phase.startswith("G-21"):
             ovi_commands.insert(
                 0,
@@ -1320,6 +1338,9 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
     elif phase.upper().strip().startswith("G-18"):
         required_capture_script_name = "capture_g18_quest_playthrough"
         required_capture_label = f"{capture_label} quest playthrough capture"
+    elif phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S")):
+        required_capture_script_name = "capture_g19_player_guidance_screenshots"
+        required_capture_label = "G-19 player guidance screenshot"
     required = [
         ("Vertical slice validator", game_root / "tools" / "validate_vertical_slice.gd"),
         (f"{required_capture_label} wrapper", game_root / "tools" / f"{required_capture_script_name}.ps1"),
@@ -1663,6 +1684,39 @@ def required_path_status(root: Path, phase: str) -> list[tuple[str, str, str]]:
             )
         if phase.upper().strip().startswith(("G-19", "G-20")):
             required.append(("G-19/G-20 first-session gameplay loop validator", game_root / "tools" / "validate_first_session_gameplay_loop.py"))
+        if phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S")):
+            required.extend(
+                [
+                    (
+                        "G-19 player guidance source",
+                        game_root / "data" / "ux" / "g19_player_guidance_map_journal_interaction_v1.json",
+                    ),
+                    (
+                        "G-19 player guidance validator",
+                        game_root / "tools" / "validate_g19_player_guidance_map_journal_interaction.py",
+                    ),
+                    (
+                        "G-19 player guidance capture wrapper",
+                        game_root / "tools" / "capture_g19_player_guidance_screenshots.ps1",
+                    ),
+                    (
+                        "G-19 player guidance capture script",
+                        game_root / "tools" / "capture_g19_player_guidance_screenshots.gd",
+                    ),
+                    (
+                        "G-19 player guidance screenshot manifest",
+                        game_root / "artifacts" / "review" / "g19_player_guidance_screenshots" / "g19_player_guidance_screenshot_manifest.json",
+                    ),
+                    (
+                        "G-19 phase report",
+                        root / "docs" / "reports" / "G19_PLAYER_GUIDANCE_MAP_JOURNAL_INTERACTION_POLISH.md",
+                    ),
+                    (
+                        "G-19 Agent Council report",
+                        root / "docs" / "reports" / "G19_PLAYER_GUIDANCE_AGENT_COUNCIL_REPORT.md",
+                    ),
+                ]
+            )
         if phase.upper().strip().startswith("G-22"):
             required.extend(
                 [
@@ -2256,7 +2310,13 @@ def build_report(
         ["Screenshot review flag", screenshot_review, "PASS" if screenshots_inspected else "FAIL"],
         [
             "Debug overlays disabled proof",
-            f"{screenshot_prefix_for_phase(phase)[1]}_14_debug_overlays_disabled.png" if screenshots_required else "Not required for SV-0 docs/tooling gate",
+            "g19_10_debug_disabled_guidance_view.png"
+            if phase.upper().strip().startswith("G-19") and not phase.upper().strip().startswith(("G-19R", "G-19S"))
+            else (
+                f"{screenshot_prefix_for_phase(phase)[1]}_14_debug_overlays_disabled.png"
+                if screenshots_required
+                else "Not required for SV-0 docs/tooling gate"
+            ),
             "PASS" if screenshots_inspected else "CHECK",
         ],
         ["Visible failures found/fixed", "Non-atelier player/NPC/marker placeholders replaced or hidden by G-4.22R", "PASS" if final_verdict == AUTHORITY_PASS else "CHECK"],

@@ -504,10 +504,10 @@
       "commits": [
         "1e96ba73f7af404b5bdc20806a74b61117f257d1"
       ],
-      "merge_status": "pending",
+      "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-18A adds a runtime-backed multi-path village-to-island branch contract so counting-house pressure, tavern rumor, dockworker/harbor knowledge, and optional island clue discovery all advance or enrich Whispers Before Dawn without a single railroaded route.",
-      "next_required_action": "Open and merge the G-18A PR when green, sync main, and continue to G-19 Player Guidance, Map, Journal, and Interaction Polish.",
+      "next_required_action": "Complete: G-18A PR #488 merged into main at 6e8c5fc59c827d1b3adf84eb90a452c7092f4e57; continue through the OVI-1 runway.",
       "files_changed": [
         "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
         "docs/reports/G18_OPENING_QUEST_VILLAGE_TO_ISLAND.md",
@@ -630,12 +630,13 @@
         "#490"
       ],
       "commits": [
-        "7adeee8bb68e8b3c919aafef9d3edcc9a0e314e5"
+        "7adeee8bb68e8b3c919aafef9d3edcc9a0e314e5",
+        "c370e6a0ec804f6dc065557789a1c22e99f1531a"
       ],
-      "merge_status": "pr_open_pending_remote_checks",
+      "merge_status": "merged",
       "current_status": "PASS",
-      "reason_for_status": "G-19S reconstructs Newport runtime streets, lots, wharf, NPC stations, quest geography anchors, and canonical camera proof from the approved G-19R source of truth without inventing a new layout.",
-      "next_required_action": "Merge PR #490 when green and mergeable, sync main, then continue immediately to G-19 Player Guidance, Map, Journal, and Interaction Polish.",
+      "reason_for_status": "G-19S reconstructs Newport runtime streets, lots, wharf, NPC stations, quest geography anchors, and canonical camera proof from the approved G-19R source of truth without inventing a new layout. PR #490 merged into main.",
+      "next_required_action": "Complete: G-19S PR #490 merged into main at e873425b8111793e2fd8385859c2224f333e49d2; continue immediately to G-19 Player Guidance, Map, Journal, and Interaction Polish.",
       "files_changed": [
         "docs/reports/G19S_NEWPORT_BLOCKOUT_TO_GODOT_RUNTIME_RECONSTRUCTION.md",
         "docs/reports/G19S_NEWPORT_BLOCKOUT_TO_GODOT_AGENT_COUNCIL_REPORT.md",
@@ -703,17 +704,89 @@
     {
       "phase_id": "G-19",
       "phase_name": "Player Guidance, Map, Journal, and Interaction Polish",
-      "branch": "pending",
+      "branch": "codex/g-19-player-guidance-map-journal-interaction-polish",
       "implementing_prs": [
-        "pending"
+        "pending_pr"
       ],
       "commits": [
-        "pending"
+        "pending_commit_before_pr"
       ],
-      "merge_status": "pending",
-      "current_status": "PENDING",
-      "reason_for_status": "Guidance polish waits for the G-19R/G-19S Newport layout correction.",
-      "next_required_action": "Start after G-19S passes and main is synced."
+      "merge_status": "local_pass_pending_pr",
+      "current_status": "PASS",
+      "reason_for_status": "G-19 makes the G-19S Newport reconstruction readable to a first-session player through HUD route hints, world-position location bands, source-derived quest copy, journal updates, NPC-priority interaction prompts, and HUD-visible screenshot proof without debug overlays.",
+      "next_required_action": "Open the G-19 PR, verify remote checks, merge if green and mergeable, sync main, then continue immediately to G-20 First-Session Gameplay Loop and Reward Pass.",
+      "files_changed": [
+        "docs/reports/G19_PLAYER_GUIDANCE_MAP_JOURNAL_INTERACTION_POLISH.md",
+        "docs/reports/G19_PLAYER_GUIDANCE_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/G19_WAYFARER_AGENT_COUNCIL_TOOL_RUN.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
+        "tools/wayfarer_agent_council.py",
+        "wayfarer_godot_vertical_slice/data/ux/g19_player_guidance_map_journal_interaction_v1.json",
+        "wayfarer_godot_vertical_slice/scenes/Main.gd",
+        "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.gd",
+        "wayfarer_godot_vertical_slice/scenes/ui/HUD.tscn",
+        "wayfarer_godot_vertical_slice/scripts/quests/FirstLightQuest.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g19_player_guidance_screenshots.gd",
+        "wayfarer_godot_vertical_slice/tools/capture_g19_player_guidance_screenshots.gd.uid",
+        "wayfarer_godot_vertical_slice/tools/capture_g19_player_guidance_screenshots.ps1",
+        "wayfarer_godot_vertical_slice/tools/validate_g19_player_guidance_map_journal_interaction.py",
+        "wayfarer_godot_vertical_slice/tools/validate_first_session_gameplay_loop.py",
+        "wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_player_guidance_screenshot_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_01_arrival_journal_route.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_02_counting_house_route_prompt.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_03_counting_house_journal_update.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_04_wharf_lantern_guidance.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_05_tavern_whisper_route.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_06_commercial_branch_guidance.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_07_rear_service_lane_secret.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_08_island_exit_guidance.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_09_journal_reward_return_route.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_10_debug_disabled_guidance_view.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/godot_capture.log"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_01_arrival_journal_route.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_02_counting_house_route_prompt.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_03_counting_house_journal_update.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_04_wharf_lantern_guidance.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_05_tavern_whisper_route.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_06_commercial_branch_guidance.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_07_rear_service_lane_secret.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_08_island_exit_guidance.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_09_journal_reward_return_route.png",
+        "wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots/g19_10_debug_disabled_guidance_view.png"
+      ],
+      "validation_commands": [
+        "python wayfarer_godot_vertical_slice/tools/validate_g19_player_guidance_map_journal_interaction.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_first_session_gameplay_loop.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_interaction_ux.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
+        "Godot --headless --path wayfarer_godot_vertical_slice --import",
+        "Godot --headless --path . --script res://tools/validate_vertical_slice.gd",
+        "powershell -File wayfarer_godot_vertical_slice/tools/capture_g19_player_guidance_screenshots.ps1",
+        "tools/wayfarer_agent_council.py --phase \"G-19 Player Guidance, Map, Journal, and Interaction Polish\" --run-validators",
+        "git diff --check",
+        "git diff --cached --check"
+      ],
+      "validation_results": "PASS pending final rerun on this branch: G-19 guidance source, first-session gameplay loop, interaction UX, Newport source alignment, OVI roadmap, OVI ledger, Godot import, vertical slice, HUD-visible screenshot capture, and Agent Council.",
+      "agent_council_report_path": "docs/reports/G19_PLAYER_GUIDANCE_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "world_layout_score": 8.6,
+      "art_direction_score": 8.5,
+      "quest_narrative_score": 8.6,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.7,
+      "provenance_atelier_result": "PASS",
+      "north_star_result": "PASS: G-19 makes the source-driven Newport opening readable through route, location, journal, and interaction guidance; OVI-1 remains incomplete until G-20 fun/reward, G-21 hardening, and G-22 review gates pass."
     },
     {
       "phase_id": "G-20",
