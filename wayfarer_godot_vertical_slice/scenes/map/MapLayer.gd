@@ -1283,7 +1283,7 @@ func _draw_g410_ground() -> void:
 		Vector2(168, 636), Vector2(522, 628), Vector2(880, 646), Vector2(1410, 632),
 		Vector2(1394, 744), Vector2(916, 754), Vector2(540, 736), Vector2(156, 758)
 	]), Color("#5b6350", 0.10), Color("#454f3d", 0.06), 28)
-	_draw_g7a_cohesive_ground_foundation()
+	_draw_ovi2_origin_ground_foundation()
 	_draw_g423a_expanded_town_ground()
 	_draw_g15a_transition_ground()
 	_draw_g15b_island_world_ground()
@@ -1527,72 +1527,70 @@ func _draw_g410_street_plan() -> void:
 			draw_circle(p + Vector2(0, -6), 3, Color("#d8b56f"))
 
 func _draw_g19s_source_truth_street_plan() -> void:
-	# G-19S: runtime street grammar is reconstructed from the G-19R measured
-	# blockout instead of the earlier narrow tile-era Newport road pass.
+	# OVI-2 keeps the measured G-19R/G-19S navigation grammar, but it renders
+	# streets as authored districts instead of oversized translucent rectangles.
 	_draw_g19s_source_truth_lots()
-	_draw_newport_commercial_street(Rect2(260, 542, 1525, 326), 220, 0.84)
-	_draw_newport_commercial_street(Rect2(220, 774, 1590, 272), 180, 0.72)
-	_draw_newport_commercial_street(Rect2(260, 285, 1440, 150), 118, 0.54)
-	_draw_newport_commercial_street(Rect2(958, 325, 204, 550), 76, 0.60)
-	_draw_newport_commercial_street(Rect2(422, 335, 177, 535), 68, 0.58)
-	_draw_newport_commercial_street(Rect2(1478, 360, 164, 530), 66, 0.56)
-	_draw_newport_commercial_street(Rect2(1700, 500, 640, 218), 86, 0.60)
-	_draw_g7a_soft_service_trace(Vector2(698, 420), Vector2(698, 925), 30.0, 0.42)
-	_draw_g7a_soft_service_trace(Vector2(1510, 343), Vector2(2100, 343), 22.0, 0.34)
-	for curb in [
-		Rect2(270, 542, 1505, 12),
-		Rect2(270, 854, 1505, 14),
-		Rect2(230, 774, 1570, 12),
-		Rect2(230, 1034, 1570, 14),
-		Rect2(270, 285, 1420, 10),
-		Rect2(270, 424, 1420, 10),
-	]:
-		_draw_newport_sidewalk_panel(curb, "curb", 0.22)
-	for transition in [
-		{"rect": Rect2(260, 520, 1525, 20), "edge": "north", "alpha": 0.16},
-		{"rect": Rect2(260, 866, 1525, 24), "edge": "south", "alpha": 0.15},
-		{"rect": Rect2(220, 1046, 1590, 28), "edge": "south", "alpha": 0.16},
-		{"rect": Rect2(260, 260, 1440, 22), "edge": "north", "alpha": 0.13},
-	]:
-		_draw_newport_grass_transition(transition["rect"], String(transition["edge"]), float(transition["alpha"]))
-	for p in [Vector2(500, 585), Vector2(815, 585), Vector2(1100, 600), Vector2(1420, 585), Vector2(1510, 610), Vector2(1900, 585)]:
-		_draw_edge_grime(p, 120.0)
-		_draw_door_step(p)
-	for rut in [
-		[Vector2(280, 700), Vector2(1780, 700), 0.11],
-		[Vector2(260, 930), Vector2(1770, 930), 0.10],
-		[Vector2(300, 360), Vector2(1690, 360), 0.08],
-		[Vector2(1060, 340), Vector2(1060, 850), 0.09],
-		[Vector2(1540, 380), Vector2(1540, 850), 0.08],
-	]:
-		draw_line(rut[0], rut[1], Color(0.07, 0.055, 0.035, float(rut[2])), 2.2, true)
+	_draw_ovi2_harborfront_avenue_segments()
+	_draw_ovi2_civic_counting_house_terrace()
+	_draw_ovi2_rear_service_lane_network()
+	_draw_ovi2_wharf_work_apron()
+	_draw_ovi2_route_curbs_and_edges()
+	_draw_g15a_transition_streets()
+	_draw_g15b_island_world_routes()
 
 func _draw_g19s_source_truth_lots() -> void:
-	# Lot pads mirror g19r_newport_lot_plan.json: buildings now sit on blocks,
-	# frontages, wharf aprons, and service yards rather than scattered icons.
+	_draw_ovi2_source_truth_lots()
+
+func _draw_ovi2_origin_ground_foundation() -> void:
+	# OVI-2: no_oversized_translucent_road_rectangles. The origin town uses
+	# district landforms, shoulders, and parcels instead of a single flat plane.
+	for raw_swale in [
+		{"points": PackedVector2Array([Vector2(90, 230), Vector2(390, 190), Vector2(760, 210), Vector2(1140, 188), Vector2(1588, 232), Vector2(1560, 418), Vector2(1190, 440), Vector2(840, 432), Vector2(470, 452), Vector2(118, 416)]), "base": Color("#617c55", 0.025), "edge": Color("#42633e", 0.014), "detail": 38},
+		{"points": PackedVector2Array([Vector2(142, 470), Vector2(492, 438), Vector2(870, 462), Vector2(1265, 444), Vector2(1788, 490), Vector2(1798, 626), Vector2(1360, 668), Vector2(930, 650), Vector2(508, 676), Vector2(136, 624)]), "base": Color("#5e7152", 0.028), "edge": Color("#445a3e", 0.016), "detail": 44},
+		{"points": PackedVector2Array([Vector2(84, 744), Vector2(430, 704), Vector2(820, 724), Vector2(1260, 706), Vector2(1810, 748), Vector2(1818, 1052), Vector2(1458, 1084), Vector2(1010, 1060), Vector2(570, 1094), Vector2(136, 1044)]), "base": Color("#62624f", 0.030), "edge": Color("#4b4739", 0.018), "detail": 50},
+		{"points": PackedVector2Array([Vector2(270, 1080), Vector2(620, 1054), Vector2(1010, 1086), Vector2(1468, 1052), Vector2(1750, 1098), Vector2(1740, 1176), Vector2(1280, 1182), Vector2(820, 1162), Vector2(398, 1192), Vector2(238, 1152)]), "base": Color("#5f614f", 0.020), "edge": Color("#444234", 0.012), "detail": 28},
+	]:
+		var swale: Dictionary = raw_swale
+		_draw_newport_grass_swale(swale["points"], swale["base"], swale["edge"], int(swale["detail"]))
+
+	for raw_transition in [
+		{"rect": Rect2(280, 506, 410, 18), "edge": "north", "alpha": 0.060},
+		{"rect": Rect2(718, 500, 350, 18), "edge": "north", "alpha": 0.055},
+		{"rect": Rect2(1120, 502, 360, 18), "edge": "north", "alpha": 0.055},
+		{"rect": Rect2(1510, 514, 280, 16), "edge": "north", "alpha": 0.050},
+		{"rect": Rect2(310, 858, 350, 18), "edge": "south", "alpha": 0.060},
+		{"rect": Rect2(800, 872, 360, 18), "edge": "south", "alpha": 0.055},
+		{"rect": Rect2(1250, 858, 340, 18), "edge": "south", "alpha": 0.055},
+	]:
+		var transition: Dictionary = raw_transition
+		_draw_newport_grass_transition(transition["rect"], String(transition["edge"]), float(transition["alpha"]))
+
+func _draw_ovi2_source_truth_lots() -> void:
+	# Source-authored town plan: tavern, civic, shops, service lanes, and wharf
+	# parcels each own a frontage so buildings stop reading as isolated sprites.
 	for raw_lot in [
-		{"rect": Rect2(300, 350, 380, 250), "kind": "tavern", "front": "south", "anchor": Vector2(500, 585)},
-		{"rect": Rect2(970, 345, 330, 225), "kind": "civic", "front": "south", "anchor": Vector2(1080, 555)},
-		{"rect": Rect2(700, 370, 230, 190), "kind": "commercial", "front": "south", "anchor": Vector2(815, 585)},
-		{"rect": Rect2(1305, 370, 230, 190), "kind": "commercial", "front": "south", "anchor": Vector2(1420, 585)},
-		{"rect": Rect2(1535, 380, 245, 180), "kind": "market", "front": "south", "anchor": Vector2(1658, 585)},
-		{"rect": Rect2(390, 900, 330, 190), "kind": "wharf", "front": "north", "anchor": Vector2(555, 985)},
-		{"rect": Rect2(950, 940, 360, 175), "kind": "wharf", "front": "north", "anchor": Vector2(1130, 1000)},
-		{"rect": Rect2(1370, 880, 260, 190), "kind": "support", "front": "north", "anchor": Vector2(1503, 985)},
-		{"rect": Rect2(620, 105, 260, 180), "kind": "residential", "front": "south", "anchor": Vector2(750, 285)},
-		{"rect": Rect2(910, 105, 300, 180), "kind": "residential", "front": "south", "anchor": Vector2(1060, 285)},
-		{"rect": Rect2(1215, 115, 270, 175), "kind": "residential", "front": "south", "anchor": Vector2(1348, 290)},
-		{"rect": Rect2(1055, 565, 195, 100), "kind": "civic", "front": "south", "anchor": Vector2(1100, 600)},
-		{"rect": Rect2(1815, 500, 300, 175), "kind": "support", "front": "south", "anchor": Vector2(1900, 585)},
+		{"points": PackedVector2Array([Vector2(306, 338), Vector2(688, 348), Vector2(712, 520), Vector2(660, 622), Vector2(356, 632), Vector2(278, 552), Vector2(286, 404)]), "kind": "tavern", "front": "south", "anchor": Vector2(500, 585)},
+		{"points": PackedVector2Array([Vector2(718, 360), Vector2(946, 366), Vector2(956, 526), Vector2(920, 606), Vector2(722, 602), Vector2(682, 526)]), "kind": "commercial", "front": "south", "anchor": Vector2(815, 585)},
+		{"points": PackedVector2Array([Vector2(976, 332), Vector2(1298, 342), Vector2(1322, 520), Vector2(1254, 626), Vector2(1036, 620), Vector2(944, 540)]), "kind": "civic", "front": "south", "anchor": Vector2(1080, 555)},
+		{"points": PackedVector2Array([Vector2(1300, 360), Vector2(1544, 366), Vector2(1552, 526), Vector2(1510, 612), Vector2(1328, 610), Vector2(1266, 536)]), "kind": "commercial", "front": "south", "anchor": Vector2(1420, 585)},
+		{"points": PackedVector2Array([Vector2(1536, 374), Vector2(1798, 392), Vector2(1812, 546), Vector2(1748, 642), Vector2(1556, 624), Vector2(1504, 548)]), "kind": "market", "front": "south", "anchor": Vector2(1658, 585)},
+		{"points": PackedVector2Array([Vector2(1848, 492), Vector2(2142, 514), Vector2(2130, 674), Vector2(1908, 690), Vector2(1798, 618)]), "kind": "support", "front": "south", "anchor": Vector2(1900, 585)},
+		{"points": PackedVector2Array([Vector2(388, 904), Vector2(730, 914), Vector2(720, 1088), Vector2(438, 1114), Vector2(350, 1044)]), "kind": "wharf", "front": "north", "anchor": Vector2(555, 985)},
+		{"points": PackedVector2Array([Vector2(946, 924), Vector2(1324, 938), Vector2(1308, 1112), Vector2(984, 1132), Vector2(906, 1040)]), "kind": "wharf", "front": "north", "anchor": Vector2(1130, 1000)},
+		{"points": PackedVector2Array([Vector2(1362, 874), Vector2(1642, 894), Vector2(1632, 1068), Vector2(1430, 1092), Vector2(1320, 1018)]), "kind": "support", "front": "north", "anchor": Vector2(1503, 985)},
+		{"points": PackedVector2Array([Vector2(618, 106), Vector2(880, 120), Vector2(884, 274), Vector2(756, 312), Vector2(610, 262)]), "kind": "residential", "front": "south", "anchor": Vector2(750, 285)},
+		{"points": PackedVector2Array([Vector2(910, 104), Vector2(1220, 118), Vector2(1216, 278), Vector2(1068, 318), Vector2(906, 264)]), "kind": "residential", "front": "south", "anchor": Vector2(1060, 285)},
+		{"points": PackedVector2Array([Vector2(1210, 114), Vector2(1492, 130), Vector2(1498, 280), Vector2(1354, 322), Vector2(1206, 266)]), "kind": "residential", "front": "south", "anchor": Vector2(1348, 290)},
+		{"points": PackedVector2Array([Vector2(1048, 560), Vector2(1250, 570), Vector2(1258, 672), Vector2(1102, 696), Vector2(1018, 632)]), "kind": "civic", "front": "south", "anchor": Vector2(1100, 600)},
 	]:
 		var lot: Dictionary = raw_lot
-		_draw_g19s_source_truth_lot_grounding(lot)
+		_draw_ovi2_origin_lot_grounding(lot)
 	for raw_route in [
-		[Vector2(430, 920), Vector2(500, 585), 0.34],
-		[Vector2(500, 585), Vector2(1080, 555), 0.30],
-		[Vector2(1080, 555), Vector2(1050, 1000), 0.28],
-		[Vector2(500, 585), Vector2(610, 365), 0.24],
-		[Vector2(1100, 600), Vector2(1900, 585), 0.30],
+		[Vector2(430, 920), Vector2(500, 585), 0.12],
+		[Vector2(500, 585), Vector2(1080, 555), 0.11],
+		[Vector2(1080, 555), Vector2(1050, 1000), 0.10],
+		[Vector2(500, 585), Vector2(610, 365), 0.09],
+		[Vector2(1100, 600), Vector2(1900, 585), 0.10],
 	]:
 		var route: Array = raw_route
 		_draw_g7b_trade_route_trace(route[0], route[1], float(route[2]))
@@ -1604,6 +1602,170 @@ func _draw_g19s_source_truth_lots() -> void:
 	]:
 		var zone: Dictionary = raw_zone
 		_draw_g7b_work_zone_surface(zone["rect"], String(zone["kind"]))
+
+func _draw_ovi2_origin_lot_grounding(lot: Dictionary) -> void:
+	var points: PackedVector2Array = lot.get("points", PackedVector2Array())
+	if points.size() < 3:
+		return
+	var kind := String(lot.get("kind", "commercial"))
+	var fill := Color("#5f7352", 0.012)
+	var stroke := Color("#c6b275", 0.018)
+	if kind == "tavern":
+		fill = Color("#596847", 0.018)
+		stroke = Color("#d4ba72", 0.022)
+	elif kind == "civic":
+		fill = Color("#686c5a", 0.018)
+		stroke = Color("#d1c083", 0.021)
+	elif kind == "market":
+		fill = Color("#6a604b", 0.020)
+		stroke = Color("#d0b776", 0.022)
+	elif kind == "wharf":
+		fill = Color("#675a45", 0.024)
+		stroke = Color("#c6a66d", 0.024)
+	elif kind == "residential":
+		fill = Color("#647d57", 0.010)
+		stroke = Color("#a8b677", 0.014)
+	elif kind == "support":
+		fill = Color("#5f674e", 0.014)
+		stroke = Color("#c4ad78", 0.018)
+	draw_colored_polygon(points, fill)
+	var bounds := _bounds_for_points(points)
+	_draw_surface_speckles(bounds.grow(-12.0), maxi(10, int(bounds.size.x / 42.0)), Color(stroke.r, stroke.g, stroke.b, stroke.a * 0.82), Vector2(26, 4))
+	var anchor: Vector2 = lot.get("anchor", bounds.get_center())
+	var frontage_width := clampf(bounds.size.x * (0.54 if kind != "wharf" else 0.70), 80.0, 260.0)
+	var frontage_height: float = 16.0 if kind != "wharf" else 14.0
+	var frontage_y := bounds.end.y - 24.0
+	if String(lot.get("front", "south")) == "north":
+		frontage_y = bounds.position.y + 14.0
+	var frontage := Rect2(anchor.x - frontage_width * 0.5, frontage_y, frontage_width, frontage_height)
+	_draw_newport_frontage_threshold(frontage, "support" if kind == "wharf" else kind, 0.24)
+	if kind != "wharf":
+		_draw_g7a_soft_service_trace(Vector2(anchor.x, frontage_y + frontage_height), anchor, 12.0, 0.30)
+	_draw_surface_speckles(Rect2(anchor - Vector2(54.0, 13.0), Vector2(108.0, 26.0)), 8, stroke, Vector2(22, 4))
+
+func _draw_ovi2_harborfront_avenue_segments() -> void:
+	for raw_segment in [
+		{"points": PackedVector2Array([Vector2(286, 622), Vector2(612, 604), Vector2(684, 652), Vector2(650, 748), Vector2(328, 770), Vector2(246, 720)]), "label": "tavern_west_avenue", "wear": Rect2(342, 670, 260, 42)},
+		{"points": PackedVector2Array([Vector2(650, 626), Vector2(994, 604), Vector2(1066, 652), Vector2(1030, 760), Vector2(676, 776), Vector2(612, 720)]), "label": "mercantile_counting_avenue", "wear": Rect2(710, 672, 286, 44)},
+		{"points": PackedVector2Array([Vector2(1020, 626), Vector2(1398, 604), Vector2(1468, 654), Vector2(1432, 762), Vector2(1068, 778), Vector2(986, 724)]), "label": "civic_shopfront_avenue", "wear": Rect2(1092, 674, 304, 44)},
+		{"points": PackedVector2Array([Vector2(1410, 632), Vector2(1780, 630), Vector2(1842, 684), Vector2(1784, 790), Vector2(1484, 792), Vector2(1392, 730)]), "label": "market_harborfront_avenue", "wear": Rect2(1498, 692, 248, 44)},
+		{"points": PackedVector2Array([Vector2(1782, 574), Vector2(2138, 584), Vector2(2176, 650), Vector2(2084, 724), Vector2(1818, 704), Vector2(1748, 638)]), "label": "east_service_exit_avenue", "wear": Rect2(1848, 622, 220, 38)},
+	]:
+		var segment: Dictionary = raw_segment
+		var points: PackedVector2Array = segment["points"]
+		_draw_newport_street_polygon(points, 96, 0.88)
+		_draw_g423b_polyline(points, Color("#d2bd7a", 0.045), 1.0)
+		var bounds := _bounds_for_points(points)
+		_draw_surface_speckles(bounds.grow(-14.0), 34, Color(0.10, 0.075, 0.045, 0.22), Vector2(30, 4))
+		_draw_street_wear(segment["wear"], 32)
+		_draw_environmental_atelier_placement(_newport_atelier_cobble_path_atlas, NEWPORT_ATELIER_COBBLE_PATH_ATLAS_REGIONS, {
+			"asset_id": "atelier_path_market_cobble_long_01",
+			"dest": Rect2(bounds.position.x + 20.0, bounds.get_center().y - 27.0, minf(330.0, bounds.size.x - 40.0), 56.0),
+			"purpose": "ovi2_segmented_harborfront_avenue_no_slab_%s" % String(segment.get("label", "")),
+			"alpha": 0.60,
+		})
+
+func _draw_ovi2_civic_counting_house_terrace() -> void:
+	for raw_segment in [
+		{"a": Vector2(1102, 824), "b": Vector2(1100, 662), "width": 46.0, "alpha": 0.40},
+		{"a": Vector2(1100, 662), "b": Vector2(1094, 540), "width": 38.0, "alpha": 0.38},
+		{"a": Vector2(1094, 540), "b": Vector2(1082, 410), "width": 30.0, "alpha": 0.34},
+	]:
+		var segment: Dictionary = raw_segment
+		_draw_newport_dirt_path(segment["a"], segment["b"], float(segment["width"]) * 0.82, true)
+		draw_line(segment["a"], segment["b"], Color("#d0b06e", float(segment["alpha"]) * 0.45), 2.0, true)
+	for raw_plaza in [
+		PackedVector2Array([Vector2(990, 520), Vector2(1252, 530), Vector2(1262, 632), Vector2(1134, 692), Vector2(1016, 630)]),
+		PackedVector2Array([Vector2(1016, 392), Vector2(1236, 404), Vector2(1244, 504), Vector2(1110, 540), Vector2(986, 492)]),
+	]:
+		var plaza: PackedVector2Array = raw_plaza
+		_draw_newport_street_polygon(plaza, 46, 0.66)
+		_draw_g423b_polyline(plaza, Color("#d5c284", 0.040), 1.0)
+		_draw_surface_speckles(_bounds_for_points(plaza).grow(-10.0), 14, Color("#d5c284", 0.10), Vector2(22, 4))
+	for dest in [Rect2(1040, 596, 122, 24), Rect2(1084, 500, 134, 24), Rect2(1144, 566, 94, 20)]:
+		_draw_newport_frontage_threshold(dest, "civic", 0.22)
+
+func _draw_ovi2_rear_service_lane_network() -> void:
+	for raw_segment in [
+		{"a": Vector2(470, 402), "b": Vector2(928, 390), "width": 25.0, "alpha": 0.34},
+		{"a": Vector2(1186, 390), "b": Vector2(1566, 408), "width": 24.0, "alpha": 0.32},
+		{"a": Vector2(1566, 408), "b": Vector2(2028, 506), "width": 22.0, "alpha": 0.30},
+		{"a": Vector2(506, 402), "b": Vector2(496, 624), "width": 24.0, "alpha": 0.32},
+		{"a": Vector2(1506, 416), "b": Vector2(1508, 630), "width": 22.0, "alpha": 0.30},
+	]:
+		var segment: Dictionary = raw_segment
+		_draw_g7a_soft_service_trace(segment["a"], segment["b"], float(segment["width"]), float(segment["alpha"]))
+	for raw_patch in [
+		Rect2(472, 374, 238, 34),
+		Rect2(736, 370, 190, 32),
+		Rect2(1190, 374, 230, 34),
+		Rect2(1430, 392, 150, 30),
+		Rect2(498, 474, 42, 142),
+		Rect2(1492, 480, 42, 142),
+	]:
+		var patch: Rect2 = raw_patch
+		_draw_environmental_atelier_placement(_newport_atelier_cobble_path_atlas, NEWPORT_ATELIER_COBBLE_PATH_ATLAS_REGIONS, {
+			"asset_id": "atelier_path_dirt_worn_section_01",
+			"dest": patch,
+			"purpose": "ovi2_rear_service_lane_segmented_backstreet",
+			"alpha": 0.28,
+		})
+
+func _draw_ovi2_wharf_work_apron() -> void:
+	for raw_segment in [
+		{"points": PackedVector2Array([Vector2(326, 846), Vector2(720, 856), Vector2(752, 938), Vector2(674, 1016), Vector2(386, 1002), Vector2(286, 924)]), "wear": Rect2(386, 902, 282, 38)},
+		{"points": PackedVector2Array([Vector2(766, 862), Vector2(1220, 866), Vector2(1286, 946), Vector2(1212, 1042), Vector2(820, 1032), Vector2(724, 946)]), "wear": Rect2(842, 914, 332, 42)},
+		{"points": PackedVector2Array([Vector2(1276, 856), Vector2(1666, 872), Vector2(1706, 952), Vector2(1608, 1038), Vector2(1348, 1028), Vector2(1228, 944)]), "wear": Rect2(1354, 912, 246, 42)},
+	]:
+		var segment: Dictionary = raw_segment
+		var points: PackedVector2Array = segment["points"]
+		_draw_newport_street_polygon(points, 82, 0.74)
+		_draw_g423b_polyline(points, Color("#c8a66c", 0.045), 1.0)
+		_draw_surface_speckles(_bounds_for_points(points).grow(-12.0), 30, Color("#d0b06e", 0.130), Vector2(28, 4))
+		_draw_street_wear(segment["wear"], 24)
+	for raw_dest in [
+		Rect2(420, 960, 112, 36),
+		Rect2(806, 936, 132, 34),
+		Rect2(1014, 946, 176, 38),
+		Rect2(1458, 930, 166, 36),
+	]:
+		var dest: Rect2 = raw_dest
+		_draw_environmental_atelier_placement(_newport_atelier_cobble_path_atlas, NEWPORT_ATELIER_COBBLE_PATH_ATLAS_REGIONS, {
+			"asset_id": "atelier_path_cobble_plank_seam_01",
+			"dest": dest,
+			"purpose": "ovi2_wharf_apron_cobble_to_plank_transition",
+			"alpha": 0.58,
+		})
+
+func _draw_ovi2_route_curbs_and_edges() -> void:
+	for raw_edge in [
+		{"rect": Rect2(318, 610, 306, 10), "kind": "curb", "alpha": 0.26},
+		{"rect": Rect2(694, 608, 304, 10), "kind": "curb", "alpha": 0.25},
+		{"rect": Rect2(1082, 608, 318, 10), "kind": "curb", "alpha": 0.25},
+		{"rect": Rect2(1498, 626, 244, 10), "kind": "curb", "alpha": 0.24},
+		{"rect": Rect2(328, 766, 312, 10), "kind": "frontage", "alpha": 0.22},
+		{"rect": Rect2(704, 776, 306, 10), "kind": "frontage", "alpha": 0.22},
+		{"rect": Rect2(1086, 778, 320, 10), "kind": "frontage", "alpha": 0.22},
+		{"rect": Rect2(1490, 790, 260, 10), "kind": "frontage", "alpha": 0.21},
+		{"rect": Rect2(404, 846, 260, 10), "kind": "support", "alpha": 0.22},
+		{"rect": Rect2(838, 858, 310, 10), "kind": "support", "alpha": 0.22},
+		{"rect": Rect2(1350, 846, 260, 10), "kind": "support", "alpha": 0.22},
+	]:
+		var edge: Dictionary = raw_edge
+		_draw_newport_sidewalk_panel(edge["rect"], String(edge["kind"]), float(edge["alpha"]))
+	for p in [Vector2(500, 585), Vector2(815, 585), Vector2(1100, 600), Vector2(1420, 585), Vector2(1510, 610), Vector2(1658, 610), Vector2(1900, 585)]:
+		_draw_edge_grime(p, 74.0)
+		_draw_door_step(p)
+	for rut in [
+		[Vector2(330, 704), Vector2(632, 696), 0.10],
+		[Vector2(724, 704), Vector2(1002, 696), 0.10],
+		[Vector2(1094, 708), Vector2(1394, 698), 0.09],
+		[Vector2(1498, 718), Vector2(1740, 716), 0.09],
+		[Vector2(420, 925), Vector2(656, 934), 0.09],
+		[Vector2(840, 948), Vector2(1190, 944), 0.09],
+		[Vector2(1368, 940), Vector2(1600, 944), 0.08],
+	]:
+		draw_line(rut[0], rut[1], Color(0.07, 0.055, 0.035, float(rut[2])), 2.0, true)
 
 func _draw_g19s_source_truth_lot_grounding(lot: Dictionary) -> void:
 	var rect: Rect2 = lot["rect"]
@@ -1719,13 +1881,51 @@ func _draw_g19s_source_truth_props() -> void:
 		else:
 			_draw_town_identity_atelier_placement(_newport_atelier_lamps_wayfinding_atlas, NEWPORT_ATELIER_LAMPS_WAYFINDING_ATLAS_REGIONS, placement)
 
+func _draw_ovi2_origin_district_props() -> void:
+	# OVI-2 authored density: each cluster explains a frontage, work edge, or
+	# route decision, leaving the movement lanes open instead of scattering filler.
+	for placement in [
+		{"family": "tavern", "asset_id": "atelier_g418e_tavern_entry_lantern_pair_01", "dest": Rect2(424, 586, 92, 52), "purpose": "ovi2_tavern_inn_centerpiece_warm_entry", "alpha": 0.99, "contact_shadow": true},
+		{"family": "tavern", "asset_id": "atelier_g418e_tavern_threshold_planters_01", "dest": Rect2(338, 636, 96, 53), "purpose": "ovi2_tavern_social_threshold_parcel_edge", "alpha": 0.98, "contact_shadow": true},
+		{"family": "tavern", "asset_id": "atelier_g418e_tavern_brick_threshold_01", "dest": Rect2(438, 628, 132, 37), "purpose": "ovi2_tavern_brick_threshold_ground_contact", "alpha": 0.90},
+		{"family": "tavern", "asset_id": "atelier_g418e_tavern_service_barrel_crate_01", "dest": Rect2(596, 646, 84, 49), "purpose": "ovi2_tavern_service_lane_to_harbor_labor", "alpha": 0.96, "contact_shadow": true},
+		{"family": "tavern", "asset_id": "atelier_g418e_tavern_firewood_coal_scuttle_01", "dest": Rect2(316, 456, 80, 38), "purpose": "ovi2_tavern_back_of_house_lived_in_edge", "alpha": 0.92, "contact_shadow": true},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_mercantile_sign_01", "dest": Rect2(774, 582, 68, 60), "purpose": "ovi2_mercantile_frontage_sign_aligned_to_avenue", "alpha": 0.98, "contact_shadow": true},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_canvas_awning_roll_01", "dest": Rect2(850, 604, 82, 37), "purpose": "ovi2_mercantile_awning_frontage_depth", "alpha": 0.88},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_produce_crates_01", "dest": Rect2(1344, 630, 82, 57), "purpose": "ovi2_shopfront_goods_belong_to_commercial_street", "alpha": 0.96, "contact_shadow": true},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_basket_parcel_display_01", "dest": Rect2(1440, 646, 74, 39), "purpose": "ovi2_shopfront_compact_display_clear_of_lane", "alpha": 0.96, "contact_shadow": true},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_market_cart_01", "dest": Rect2(1586, 660, 98, 68), "purpose": "ovi2_market_cart_marks_east_commercial_pocket", "alpha": 0.97, "contact_shadow": true},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_fishmonger_sign_01", "dest": Rect2(1640, 596, 74, 68), "purpose": "ovi2_market_fishmonger_harbor_economy_read", "alpha": 0.97, "contact_shadow": true},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_directional_signpost_01", "dest": Rect2(1814, 644, 54, 74), "purpose": "ovi2_market_to_wharf_route_wayfinding", "alpha": 0.96, "contact_shadow": true},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_street_lamp_01", "dest": Rect2(690, 604, 32, 84), "purpose": "ovi2_harborfront_lamp_rhythm_west", "alpha": 0.94, "contact_shadow": true},
+		{"family": "commercial", "asset_id": "atelier_g418e_commercial_street_lamp_01", "dest": Rect2(1286, 604, 32, 84), "purpose": "ovi2_harborfront_lamp_rhythm_east", "alpha": 0.94, "contact_shadow": true},
+		{"family": "civic", "asset_id": "atelier_civic_town_notice_board_01", "dest": Rect2(1096, 628, 90, 74), "purpose": "ovi2_counting_house_notice_board_first_objective_anchor", "alpha": 0.94, "contact_shadow": true},
+		{"family": "civic", "asset_id": "atelier_civic_flag_cluster_01", "dest": Rect2(1192, 560, 70, 41), "purpose": "ovi2_civic_counting_house_formal_anchor", "alpha": 0.90, "contact_shadow": true},
+		{"family": "civic", "asset_id": "atelier_civic_posting_pole_01", "dest": Rect2(1024, 606, 36, 62), "purpose": "ovi2_civic_posting_pole_on_plaza_edge", "alpha": 0.91, "contact_shadow": true},
+		{"family": "civic", "asset_id": "atelier_civic_harbor_bulletin_board_01", "dest": Rect2(1164, 482, 92, 58), "purpose": "ovi2_civic_harbor_manifest_story_hook", "alpha": 0.92, "contact_shadow": true},
+		{"family": "civic", "asset_id": "atelier_civic_dock_rules_board_01", "dest": Rect2(930, 888, 82, 68), "purpose": "ovi2_wharf_rules_link_civic_to_dock_work", "alpha": 0.90, "contact_shadow": true},
+		{"family": "harbor", "asset_id": "atelier_g418e_harbor_cargo_stack_01", "dest": Rect2(432, 1016, 96, 50), "purpose": "ovi2_west_wharf_manifest_cargo_stack", "alpha": 0.97, "contact_shadow": true},
+		{"family": "harbor", "asset_id": "atelier_g418e_harbor_dock_barrel_row_01", "dest": Rect2(540, 982, 94, 37), "purpose": "ovi2_west_wharf_barrel_work_edge", "alpha": 0.96, "contact_shadow": true},
+		{"family": "harbor", "asset_id": "atelier_g418e_harbor_rope_coil_large_01", "dest": Rect2(800, 970, 82, 39), "purpose": "ovi2_chandlery_rope_service_economy", "alpha": 0.97, "contact_shadow": true},
+		{"family": "harbor", "asset_id": "atelier_g418e_harbor_bollard_pair_01", "dest": Rect2(1008, 974, 76, 42), "purpose": "ovi2_central_wharf_mooring_bollards", "alpha": 0.97, "contact_shadow": true},
+		{"family": "harbor", "asset_id": "atelier_g418e_harbor_fishing_crate_net_stack_01", "dest": Rect2(1394, 966, 84, 49), "purpose": "ovi2_east_fish_offload_net_crates", "alpha": 0.97, "contact_shadow": true},
+		{"family": "harbor", "asset_id": "atelier_g418e_harbor_fish_baskets_tub_01", "dest": Rect2(1504, 1002, 88, 42), "purpose": "ovi2_fish_baskets_tie_market_to_wharf", "alpha": 0.96, "contact_shadow": true},
+		{"family": "harbor", "asset_id": "atelier_g418e_harbor_net_drying_frame_01", "dest": Rect2(1582, 916, 104, 57), "purpose": "ovi2_dock_service_identity_net_frame", "alpha": 0.95, "contact_shadow": true},
+		{"family": "harbor", "asset_id": "atelier_g418e_harbor_service_post_lantern_01", "dest": Rect2(1186, 884, 54, 70), "purpose": "ovi2_wharf_lantern_route_through_town", "alpha": 0.96, "contact_shadow": true},
+		{"family": "service", "asset_id": "atelier_g418e_service_fence_gate_01", "dest": Rect2(504, 430, 116, 52), "purpose": "ovi2_tavern_rear_lane_gate", "alpha": 0.92, "contact_shadow": true},
+		{"family": "service", "asset_id": "atelier_g418e_service_alley_crates_01", "dest": Rect2(728, 430, 80, 45), "purpose": "ovi2_rear_service_alley_crates_ordered_not_random", "alpha": 0.92, "contact_shadow": true},
+		{"family": "service", "asset_id": "atelier_g418e_service_utility_barrels_01", "dest": Rect2(1304, 430, 84, 47), "purpose": "ovi2_shop_back_utility_barrels", "alpha": 0.92, "contact_shadow": true},
+		{"family": "service", "asset_id": "atelier_g418e_service_repair_sawhorse_01", "dest": Rect2(1466, 812, 78, 58), "purpose": "ovi2_cooperage_repair_zone_clear_of_route", "alpha": 0.91, "contact_shadow": true},
+		{"family": "service", "asset_id": "atelier_g418e_service_stone_edge_01", "dest": Rect2(620, 410, 118, 35), "purpose": "ovi2_rear_lane_stone_edge_ground_transition", "alpha": 0.76},
+		{"family": "lamps", "asset_id": "atelier_wayfinding_dock_lantern_post_01", "dest": Rect2(422, 876, 48, 72), "purpose": "ovi2_player_spawn_harbor_lantern_first_impression", "alpha": 0.94, "contact_shadow": true},
+		{"family": "lamps", "asset_id": "atelier_wayfinding_harbor_road_marker_01", "dest": Rect2(660, 804, 44, 48), "purpose": "ovi2_harborfront_marker_links_spawn_to_avenue", "alpha": 0.91, "contact_shadow": true},
+		{"family": "lamps", "asset_id": "atelier_wayfinding_bollard_lantern_01", "dest": Rect2(1236, 806, 42, 58), "purpose": "ovi2_civic_to_wharf_low_lantern", "alpha": 0.94, "contact_shadow": true},
+	]:
+		_draw_g7c_landmark_placement(placement)
+
 func _draw_g7a_cohesive_ground_foundation() -> void:
-	# G-7A-SV0: one authored town terrace sits under the lots and streets so
-	# individual surfaces stop reading as loose editor slabs in wide screenshots.
-	draw_rect(Rect2(70, 170, 1468, 574), Color("#4f6849", 0.055), true)
-	draw_rect(Rect2(96, 314, 1410, 146), Color("#53664a", 0.050), true)
-	draw_rect(Rect2(92, 500, 1438, 170), Color("#555f4a", 0.065), true)
-	draw_rect(Rect2(206, 650, 1242, 94), Color("#5c5748", 0.055), true)
+	# G-7A legacy callers keep a cohesive foundation, but OVI-2 removed the
+	# broad rectangular washes that read like debug slabs in human screenshots.
 	_draw_newport_grass_swale(PackedVector2Array([
 		Vector2(52, 302), Vector2(254, 286), Vector2(550, 300), Vector2(820, 288),
 		Vector2(1120, 298), Vector2(1506, 306), Vector2(1538, 462), Vector2(1350, 486),
@@ -2211,6 +2411,7 @@ func _draw_g410_props() -> void:
 		_draw_g16_island_poi_landmarks()
 		_draw_g16a_island_atelier_asset_family()
 		_draw_g19s_source_truth_props()
+		_draw_ovi2_origin_district_props()
 		return
 	# G-4.23A keeps dressing subordinate to the town grammar: props mark jobs and thresholds, not empty space.
 	_draw_g423a_expanded_town_fabric()
@@ -3647,7 +3848,7 @@ func _draw_newport_street_polygon(points: PackedVector2Array, detail_count: int,
 		var n := fmod(float(i * 19), 100.0) / 100.0
 		var stone := Color("#6f6958").lerp(Color("#a69a75"), n * 0.34)
 		draw_rect(Rect2(Vector2(x, y), Vector2(w, h)), Color(stone.r, stone.g, stone.b, 0.18 * alpha), true)
-	draw_polyline(points, Color("#d0bd85", 0.10 * alpha), 1.0, true)
+	draw_polyline(points, Color("#d0bd85", 0.055 * alpha), 1.0, true)
 
 func _draw_newport_uphill_street(center: Vector2, width: float, top: float, bottom: float, detail_count: int, alpha := 1.0) -> void:
 	var half := width * 0.5

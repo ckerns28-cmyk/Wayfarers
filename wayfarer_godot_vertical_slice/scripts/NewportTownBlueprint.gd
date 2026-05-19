@@ -74,6 +74,9 @@ const G19S_NEWPORT_RUNTIME_RECONSTRUCTION_PASS := "G-19S"
 const G19S_NEWPORT_SOURCE_OF_TRUTH_PATH := "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json"
 const G19S_NEWPORT_RUNTIME_LAYOUT_SOURCE_PATH := "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json"
 const G19S_NEWPORT_RUNTIME_LAYOUT_SCORE := 8.6
+const OVI2_NEWPORT_ORIGIN_IMMERSION_PASS := "OVI-2"
+const OVI2_NEWPORT_ORIGIN_IMMERSION_SOURCE_PATH := "res://data/world_layout/ovi2_newport_origin_immersion_city_plan_v1.json"
+const OVI2_NEWPORT_IMMERSION_SCORE_TARGET := 8.5
 const STARTER_VILLAGE_G7A_TOOL_BACKED_LAYOUT_REPAIR_PASS := "G-7A-SV0"
 const G422A_SHOW_BLOCKOUT_GUIDES := false
 const G422A_SHOW_LEGACY_PROOF_OVERLAYS := false
@@ -1078,6 +1081,74 @@ static func g19s_runtime_reconstruction_contract() -> Dictionary:
 		"edrin_spawn": EDRIN_SPAWN,
 		"canonical_camera_viewpoints_source": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_camera_viewpoints.json",
 		"stationary_npc_policy": STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY,
+	}
+
+static func ovi2_newport_origin_immersion_contract() -> Dictionary:
+	return {
+		"phase": OVI2_NEWPORT_ORIGIN_IMMERSION_PASS,
+		"purpose": "Newport Origin Village Immersion & City-Planning Gate",
+		"source": OVI2_NEWPORT_ORIGIN_IMMERSION_SOURCE_PATH,
+		"baseline_commit": "e36949f3fa824ebee178f048a59f8f1778483c2f",
+		"baseline_failure_reference": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/01_village_wide_cohesion.png",
+		"target_visual_art_direction_score": OVI2_NEWPORT_IMMERSION_SCORE_TARGET,
+		"not_outward_gameplay_expansion": true,
+		"do_not_proceed_to_field_loop": true,
+		"no_combat_or_wilderness_scope": true,
+		"forensic_diagnosis": {
+			"screen_read": "G-19S rendered measured movement corridors as giant translucent street rectangles, so the town read as a test plane with buildings placed on top.",
+			"slab_source": "MapLayer._draw_g19s_source_truth_street_plan used large _draw_newport_commercial_street Rect2 corridors, and legacy G-7A ground washes added broad rectangular terrace bands.",
+			"debug_overlay_status": "not_debug_overlays; the rectangles were intentional runtime road and ground surfaces.",
+			"building_integration_failure": "Buildings had valid lot anchors, but the surface language did not show parcels, thresholds, secondary lanes, or work edges strongly enough.",
+			"source_fix": "Render the G-19R navigation grammar as segmented avenue pieces, civic terrace, rear lanes, wharf aprons, parcel frontages, and purpose-bound atelier prop clusters.",
+		},
+		"town_planning_rules": [
+			"clear_harborfront_commercial_avenue",
+			"civic_counting_house_district_integrated_with_road_plan",
+			"tavern_inn_centerpiece_integrated_with_frontage_and_service_lane",
+			"shopfronts_aligned_to_streets_and_parcels",
+			"working_wharf_service_edge_visible_from_harborfront",
+			"secondary_lanes_and_alleys_behind_main_road",
+			"readable_player_spawn_origin_area",
+			"environmental_storytelling_supports_function_not_random_scatter",
+			"designed_negative_space",
+			"people_live_and_work_here_read",
+		],
+		"validator_criteria": [
+			"no_visible_debug_overlays_in_production_screenshots",
+			"No oversized translucent road/region rectangles dominating the play area",
+			"road_avenue_continuity",
+			"building_to_street_frontage_alignment",
+			"building_spacing_gap_sanity",
+			"prop_density_in_large_negative_spaces",
+			"no_huge_undecorated_rectangles_in_core_starting_view",
+			"tavern_inn_integrated_into_main_town_structure",
+			"civic_counting_house_district_integrated_into_road_plan",
+			"harbor_wharf_identity_visible_in_harborfront_screenshots",
+			"NPCs placed only on believable walkable/station surfaces",
+			"player_movement_lanes_preserved",
+			"z_order_and_occlusion_preserved",
+			"representative_human_review_angles_captured",
+		],
+		"representative_screenshots": [
+			"ovi2_01_player_spawn_first_impression_hud.png",
+			"ovi2_02_player_spawn_first_impression_no_hud.png",
+			"ovi2_03_harborfront_avenue.png",
+			"ovi2_04_tavern_inn_district.png",
+			"ovi2_05_counting_house_civic_district.png",
+			"ovi2_06_shopfront_commercial_street.png",
+			"ovi2_07_wharf_dock_service_district.png",
+			"ovi2_08_wide_town_composition.png",
+			"ovi2_09_movement_route_through_town.png",
+			"ovi2_10_before_after_reference_current_failure.png",
+		],
+		"guardrails_preserved": {
+			"g19r_g19s_measured_layout_source": G19S_NEWPORT_RUNTIME_LAYOUT_SOURCE_PATH,
+			"starter_village_layout_source": STARTER_VILLAGE_LAYOUT_SOURCE_PATH,
+			"stationary_npc_policy": STARTER_VILLAGE_G8A_NPC_MOVEMENT_POLICY,
+			"roof_station_fix_preserved": true,
+			"movement_lanes_preserved": true,
+			"z_order_review_preserved": true,
+		},
 	}
 
 static func opening_island_npc_specs() -> Array:

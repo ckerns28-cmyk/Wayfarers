@@ -98,7 +98,9 @@ For every phase from G-14 through G-22:
 12. Update the ledger.
 13. Continue to the next phase.
 
-Do not stop for Chris between G-14 and G-22.
+Do not stop for Chris between G-14 and G-22. After the May 19, 2026 human
+screenshot override, do not proceed to an outward field-loop phase from G-22;
+complete OVI-2 first so Newport itself meets the origin-village immersion bar.
 
 ## Phase Sequence
 
@@ -119,6 +121,7 @@ Do not stop for Chris between G-14 and G-22.
 | G-20 | First-Session Gameplay Loop and Reward Pass | Makes the opening fun: arrive, orient, talk, investigate, explore, discover, return/report, reward, and continue. PASS: `validate_g20_first_session_gameplay_loop_reward.py`, `validate_first_session_gameplay_loop.py`, and HUD-visible first-session reward screenshots. |
 | G-21 | Opening Island Performance, Browser Build, and Regression Hardening | PASS: hardens the combined village/island browser review build identity, package ZIP root, browser canvas proof, console-log proof, artifact hygiene, and regression gate before G-22. |
 | G-22 | OVI-1 Opening Village + Island Production Playable Gate | The next true Chris review milestone: full review package from current main. |
+| OVI-2 | Newport Origin Village Immersion & City-Planning Gate | Human screenshot override gate: fix Newport as a believable origin harbor town before any outward field loop, combat, wilderness, dungeon, or broader quest expansion. |
 
 ## Acceptance Summary
 
@@ -183,6 +186,34 @@ G-22 / OVI-1 acceptance:
 When G-22 passes, stop for Chris with the full OVI-1 review package.
 
 G-22 current status: PASS. The OVI-1 package is ready for PR publication and formal Chris milestone review.
+
+## OVI-2 Human Screenshot Override
+
+OVI-2 exists because the OVI-1/G-19R technical validators passed while the
+human-visible first Newport screenshot still failed the production origin-town
+standard. Passing validators are not proof that Newport is production-ready.
+
+Do not proceed to an outward field-loop phase. OVI-2 is an origin-village
+immersion and city-planning gate, not a wilderness, combat, dungeon, or larger
+quest-loop phase.
+
+OVI-2 acceptance:
+
+- No oversized translucent road/region rectangles dominate the play area.
+- The first screen reads as a real origin village / harbor town.
+- Roads, lanes, plazas, and wharf surfaces have purpose, edges, variation, and transitions.
+- Buildings belong to parcels, frontages, streets, service lanes, civic spaces, and wharf work areas.
+- The tavern/inn is a memorable integrated social anchor.
+- The counting house/civic district is readable and spatially tied to the road plan.
+- Shops and wharf structures make sense in relation to the commercial avenue and harbor economy.
+- Props support worldbuilding and function rather than hiding layout problems.
+- Negative space is designed and not accidental empty slab space.
+- Player movement lanes, NPC stations/routes, roof-station repair, and z-order remain preserved.
+- The OVI-2 screenshot package and Agent Council report pass the origin-village immersion bar.
+
+OVI-2 current status: PASS on `codex/ovi-2-newport-origin-immersion-gate` pending
+PR publication. The phase repairs Newport presentation and validator coverage;
+it does not authorize outward gameplay expansion.
 
 ## Required OVI-1 Proof
 
