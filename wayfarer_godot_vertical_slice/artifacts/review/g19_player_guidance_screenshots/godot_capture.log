@@ -1,0 +1,14 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 Core Profile Context 24.9.1.240813 - Compatibility - Using Device: ATI Technologies Inc. - AMD Radeon(TM) Graphics
+
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_01_arrival_journal_route.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_02_counting_house_route_prompt.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_03_counting_house_journal_update.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_04_wharf_lantern_guidance.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_05_tavern_whisper_route.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_06_commercial_branch_guidance.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_07_rear_service_lane_secret.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_08_island_exit_guidance.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_09_journal_reward_return_route.png 1600x1000
+Wrote res://artifacts/review/g19_player_guidance_screenshots/g19_10_debug_disabled_guidance_view.png 1600x1000
+PASS: G-19 player guidance screenshots -> C:/Users/Chris/Documents/New project/.codex_worktrees/g19r_newport_blockout/wayfarer_godot_vertical_slice/artifacts/review/g19_player_guidance_screenshots

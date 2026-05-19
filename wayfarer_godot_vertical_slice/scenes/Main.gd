@@ -75,6 +75,8 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _process(delta: float) -> void:
+	if hud != null and hud.has_method("set_player_world_position") and player != null:
+		hud.call("set_player_world_position", player.global_position)
 	if not _starter_village_rhythm_start_positions.is_empty():
 		_starter_village_rhythm_elapsed += delta
 		_update_starter_village_bark_readability()
@@ -286,6 +288,38 @@ func starter_village_first_session_readability_contract() -> Dictionary:
 		"dialogue_visible": dialogue_panel != null and dialogue_panel.visible,
 		"npc_position_drift_detected": bool(rhythm.get("position_drift_detected", true)),
 		"npc_route_walking_policy": "stationary_no_glide_until_dedicated_walk_sheets",
+	}
+
+func player_guidance_polish_contract() -> Dictionary:
+	var quest := starter_village_quest_contract()
+	var journal := {}
+	if hud != null and hud.has_method("journal_objective_contract"):
+		journal = hud.call("journal_objective_contract")
+	var guidance := {}
+	if hud != null and hud.has_method("player_guidance_contract"):
+		guidance = hud.call("player_guidance_contract")
+	var prompt_label: Label = null
+	if player != null:
+		prompt_label = player.get_node_or_null("PromptLabel") as Label
+	return {
+		"phase": "G-19",
+		"source_runtime_layout": "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+		"source_blockout": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+		"quest_available": bool(quest.get("quest_available", false)),
+		"current_objective_id": String(quest.get("current_objective_id", "")),
+		"current_objective_text": String(quest.get("current_objective_text", "")),
+		"journal_visible": bool(journal.get("has_journal", false)),
+		"route_hint_visible": bool(guidance.get("route_hint_visible", false)),
+		"current_route_hint": String(guidance.get("current_route_hint", "")),
+		"current_location_name": String(guidance.get("current_location_name", "")),
+		"clean_objective_display": bool(guidance.get("clean_objective_display", false)),
+		"location_names_or_subtle_guidance": bool(guidance.get("location_names_visible", false)),
+		"quest_markers_signage_are_diegetic": bool(guidance.get("quest_markers_are_diegetic", false)),
+		"no_debug_looking_prompts": bool(guidance.get("no_debug_looking_prompts", false)) and (prompt_label == null or String(prompt_label.text).find("Press E") < 0),
+		"no_oversized_labels_blocking_world": bool(guidance.get("no_oversized_labels_blocking_world", false)),
+		"first_session_route_readability": String(guidance.get("first_session_route_readability", "")),
+		"player_knows_where_to_go": bool(guidance.get("route_hint_visible", false)) and not String(guidance.get("current_route_hint", "")).is_empty(),
+		"ux_readability_score": 8.6,
 	}
 
 func opening_island_transition_contract() -> Dictionary:

@@ -22,39 +22,39 @@ const ISLAND_CONTACT_REWARD_LABEL := "Named contact: Annelise Crow"
 const OBJECTIVES := [
 	{
 		"id": "make_landfall",
-		"text": "Make landfall at Newport Harbor and get your bearings.",
+		"text": "Make landfall at Newport Harbor; face inland from the working wharf.",
 	},
 	{
 		"id": "report_to_counting_house",
-		"text": "Find Edrin Vale at the Counting House.",
+		"text": "Follow the harborfront road to Edrin Vale at the Counting House.",
 	},
 	{
 		"id": "investigate_missing_line",
-		"text": "Ask the dockworkers, merchant row, or notice board about the missing ledger line.",
+		"text": "Ask at the wharf apron, merchant row, or civic notice board about the missing ledger line.",
 	},
 	{
 		"id": "follow_tavern_whisper",
-		"text": "Bring the missing-line rumor to Bess Armitage at the Tavern/Inn.",
+		"text": "Take the west connector to Bess Armitage at the Tavern/Inn.",
 	},
 	{
 		"id": "choose_next_lead",
-		"text": "Choose a next lead: Edrin, the wharf, or the rear gate.",
+		"text": "Choose a next lead: Edrin, the wharf lanterns, or the rear service lane.",
 	},
 	{
 		"id": "lantern_at_wharf",
-		"text": "Look for the lantern signal at the wharf.",
+		"text": "Return to the working wharf apron and look for the lantern signal.",
 	},
 	{
 		"id": "secure_contact",
-		"text": "Secure a trusted contact before the rumor spreads.",
+		"text": "Return by the central connector and secure a trusted contact before dawn.",
 	},
 	{
 		"id": "follow_island_lead",
-		"text": "Follow the island lead beyond Newport's eastern edge.",
+		"text": "Follow the east guidepost beyond Newport toward the island road.",
 	},
 	{
 		"id": "travel_to_island_clue_site",
-		"text": "Take the old road toward the signal rise and hidden landing.",
+		"text": "Take the old road marker toward the signal rise and hidden landing.",
 	},
 	{
 		"id": "discover_physical_evidence",
@@ -62,7 +62,7 @@ const OBJECTIVES := [
 	},
 	{
 		"id": "return_or_report_choice",
-		"text": "Choose who receives the proof: Edrin at the Counting House or Annelise at the return lane.",
+		"text": "Choose who receives the proof: Edrin at the Counting House or Annelise on the return lane.",
 	},
 	{
 		"id": "hook_to_continue",

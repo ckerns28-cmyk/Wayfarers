@@ -120,9 +120,14 @@ theme_override_font_sizes/font_size = 13
 text = "Find Edrin Vale at the Counting House."
 autowrap_mode = 3
 
+[node name="QuestRoute" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
+theme_override_font_sizes/font_size = 11
+text = "Route: harborfront road -> Counting House clerk"
+autowrap_mode = 3
+
 [node name="QuestRegion" type="Label" parent="QuestPanel/MarginContainer/VBoxContainer"]
 theme_override_font_sizes/font_size = 10
-text = "Objective 1/5 - Newport Harbor"
+text = "Objective 1/5 - Newport Harbor - Wharf Arrival"
 autowrap_mode = 3
 
 [node name="DialoguePanel" type="PanelContainer" parent="."]
