@@ -794,15 +794,15 @@
       "phase_name": "First-Session Gameplay Loop and Reward Pass",
       "branch": "codex/g-20-first-session-gameplay-loop-reward-pass",
       "implementing_prs": [
-        "pending"
+        "#492"
       ],
       "commits": [
-        "pending"
+        "b8b9403c184cff19e61221b8b1d5b6bc9dea68cd"
       ],
-      "merge_status": "local_pass_pending_pr",
+      "merge_status": "open_pr_pending_checks",
       "current_status": "PASS",
       "reason_for_status": "G-20 adds a runtime-backed first-session gameplay-loop and reward gate: source contract, quest simulation, HUD reward feedback, 11 screenshot proof frames, trace, and playtest log now prove arrival, orientation, talk, investigation, tavern whisper, route choice, island exploration, discovery, return/report, 13 Resolve, named contacts, and a dawn reason to continue.",
-      "next_required_action": "Open PR, verify remote checks, merge if green and mergeable, sync main, then continue immediately to G-21 Opening Island Performance, Browser Build, and Regression Hardening.",
+      "next_required_action": "Verify PR #492 remote checks, merge if green and mergeable, sync main, then continue immediately to G-21 Opening Island Performance, Browser Build, and Regression Hardening.",
       "files_changed": [
         "docs/reports/G20_FIRST_SESSION_GAMEPLAY_LOOP_REWARD_PASS.md",
         "docs/reports/G20_FIRST_SESSION_GAMEPLAY_AGENT_COUNCIL_REPORT.md",
