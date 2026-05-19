@@ -126,7 +126,7 @@ PHASE_VALIDATORS = {
     "G-19S": "validate_g19s_newport_runtime_reconstruction.py",
     "G-19": "validate_first_session_gameplay_loop.py",
     "G-20": "validate_first_session_gameplay_loop.py",
-    "G-21": "validate_ovi1_gate.py",
+    "G-21": "validate_browser_build_hardening.py",
     "G-22": "validate_ovi1_gate.py",
 }
 

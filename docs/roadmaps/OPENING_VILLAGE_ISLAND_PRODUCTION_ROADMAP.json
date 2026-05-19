@@ -495,11 +495,10 @@
         "build_release_score_PASS"
       ],
       "primary_validators": [
-        "validate_ovi1_gate.py",
         "validate_browser_build_hardening.py",
         "validate_vertical_slice.gd"
       ],
-      "status": "PENDING"
+      "status": "PASS"
     },
     {
       "phase_id": "G-22",

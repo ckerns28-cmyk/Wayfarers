@@ -797,12 +797,13 @@
         "#492"
       ],
       "commits": [
-        "b8b9403c184cff19e61221b8b1d5b6bc9dea68cd"
+        "b8b9403c184cff19e61221b8b1d5b6bc9dea68cd",
+        "f97821cc49e4fbd37eac0effff41726d246a2945"
       ],
-      "merge_status": "open_pr_pending_checks",
+      "merge_status": "merged",
       "current_status": "PASS",
       "reason_for_status": "G-20 adds a runtime-backed first-session gameplay-loop and reward gate: source contract, quest simulation, HUD reward feedback, 11 screenshot proof frames, trace, and playtest log now prove arrival, orientation, talk, investigation, tavern whisper, route choice, island exploration, discovery, return/report, 13 Resolve, named contacts, and a dawn reason to continue.",
-      "next_required_action": "Verify PR #492 remote checks, merge if green and mergeable, sync main, then continue immediately to G-21 Opening Island Performance, Browser Build, and Regression Hardening.",
+      "next_required_action": "Complete: PR #492 merged into main at 1951e2f4cf8d6d09129dfea67c754947d6ec1f1f; continue immediately to G-21 Opening Island Performance, Browser Build, and Regression Hardening.",
       "files_changed": [
         "docs/reports/G20_FIRST_SESSION_GAMEPLAY_LOOP_REWARD_PASS.md",
         "docs/reports/G20_FIRST_SESSION_GAMEPLAY_AGENT_COUNCIL_REPORT.md",
@@ -894,17 +895,64 @@
     {
       "phase_id": "G-21",
       "phase_name": "Opening Island Performance, Browser Build, and Regression Hardening",
-      "branch": "pending",
+      "branch": "codex/g-21-opening-island-performance-browser-build-regression-hardening",
       "implementing_prs": [
-        "pending"
+        "#493"
       ],
       "commits": [
-        "pending"
+        "e3666d3ea8467b40c5251d91610de26c5e0637b0"
       ],
-      "merge_status": "pending",
-      "current_status": "PENDING",
-      "reason_for_status": "Combined village/island build hardening has not started.",
-      "next_required_action": "Start after G-20 passes and main is synced."
+      "merge_status": "open_pr_pending_checks",
+      "current_status": "PASS",
+      "reason_for_status": "G-21 hardens the browser review route for the combined Newport village and opening island: BuildInfo now reports G-21, the package script guards against stale phase/source branch identity, stable and versioned ZIPs have root index.html with required Godot web files, a browser route loads the exported canvas into Newport gameplay, and the proof manifest records zero browser warning/error console entries.",
+      "next_required_action": "Verify PR #493 remote checks, merge if green and mergeable, sync main, then continue immediately to G-22 OVI-1 Opening Village + Island Production Playable Gate.",
+      "files_changed": [
+        "docs/reports/G21_OPENING_ISLAND_BROWSER_BUILD_REGRESSION_HARDENING.md",
+        "docs/reports/G21_OPENING_ISLAND_BROWSER_BUILD_AGENT_COUNCIL_REPORT.md",
+        "docs/reports/G21_WAYFARER_AGENT_COUNCIL_TOOL_RUN.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.md",
+        "docs/reports/OPENING_VILLAGE_ISLAND_AUTONOMOUS_EXECUTION_LEDGER.json",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.md",
+        "docs/roadmaps/OPENING_VILLAGE_ISLAND_PRODUCTION_ROADMAP.json",
+        "tools/wayfarer_agent_council.py",
+        "wayfarer_godot_vertical_slice/scripts/BuildInfo.gd",
+        "wayfarer_godot_vertical_slice/tools/package_itch_web.sh",
+        "wayfarer_godot_vertical_slice/tools/validate_browser_build_hardening.py",
+        "wayfarer_godot_vertical_slice/tools/validate_vertical_slice.gd",
+        "wayfarer_godot_vertical_slice/tools/validate_asset_hygiene.sh",
+        "wayfarer_godot_vertical_slice/tools/opening_village_island_validator_common.py",
+        "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_build_hardening_manifest.json",
+        "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_review_identity_proof.jpg",
+        "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_review_loaded_surface.jpg",
+        "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_review_loaded_console_log.json"
+      ],
+      "screenshot_paths": [
+        "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_review_identity_proof.jpg",
+        "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_review_loaded_surface.jpg"
+      ],
+      "validation_commands": [
+        "bash wayfarer_godot_vertical_slice/tools/package_itch_web.sh",
+        "browser route http://127.0.0.1:8766/index.html",
+        "python wayfarer_godot_vertical_slice/tools/validate_browser_build_hardening.py",
+        "Godot --headless --path . --script res://tools/validate_vertical_slice.gd",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_roadmap.py",
+        "python wayfarer_godot_vertical_slice/tools/validate_opening_village_island_execution_ledger.py",
+        "bash wayfarer_godot_vertical_slice/tools/validate_asset_hygiene.sh",
+        "tools/wayfarer_agent_council.py --phase \"G-21 Opening Island Performance, Browser Build, and Regression Hardening\" --run-validators --screenshot-review inspected --design-score 8.6 --art-direction-score 8.6 --world-layout-score 8.6 --gameplay-readability-score 8.6 --technical-stability-score 8.8",
+        "git diff --check",
+        "git diff --cached --check"
+      ],
+      "validation_results": "PASS: G-21 package route, stable/versioned review ZIPs, root index.html, no web_build ZIP nesting, BuildInfo G-21 identity, browser canvas load proof, zero warning/error console log, browser hardening validator, vertical slice identity gate, OVI roadmap/ledger validators, artifact hygiene, G-20 first-session screenshot regression reuse, and Agent Council report pass for browser build hardening scope.",
+      "agent_council_report_path": "docs/reports/G21_OPENING_ISLAND_BROWSER_BUILD_AGENT_COUNCIL_REPORT.md",
+      "agent_council_verdict": "COUNCIL_PASS_READY_FOR_PR",
+      "design_score": 8.6,
+      "world_layout_score": 8.6,
+      "art_direction_score": 8.6,
+      "quest_narrative_score": 8.6,
+      "ux_readability_score": 8.6,
+      "technical_stability_score": 8.8,
+      "provenance_atelier_result": "PASS",
+      "north_star_result": "PASS: G-21 does not claim OVI-1 completion, but it protects the North Star by proving the current source-driven Newport and opening-island experience can be packaged and loaded through a browser review route with current metadata, no ZIP nesting mistakes, no missing core web export files, and zero browser warning/error console entries."
     },
     {
       "phase_id": "G-22",

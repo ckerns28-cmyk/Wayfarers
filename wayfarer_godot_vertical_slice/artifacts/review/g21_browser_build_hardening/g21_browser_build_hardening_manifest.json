@@ -1,0 +1,127 @@
+{
+  "schema_id": "wayfarer.ovi1.g21.browser_build_hardening_manifest.v1",
+  "phase_id": "G-21",
+  "phase_name": "Opening Island Performance, Browser Build, and Regression Hardening",
+  "branch": "codex/g-21-opening-island-performance-browser-build-regression-hardening",
+  "generated_at": "2026-05-19T04:41:00Z",
+  "tools_used": [
+    "Godot 4.6.2 web export",
+    "wayfarer_godot_vertical_slice/tools/package_itch_web.sh",
+    "local COOP/COEP HTTP browser proof server",
+    "Codex Browser in-app Playwright route",
+    "PowerShell ZIP/hash inspection"
+  ],
+  "build_identity": {
+    "BUILD_PHASE": "G-21",
+    "BUILD_LABEL": "Godot G-21 Opening Island Performance, Browser Build, and Regression Hardening",
+    "SOURCE_BRANCH": "codex/g-21-opening-island-performance-browser-build-regression-hardening",
+    "REVIEW_HOST": "itch",
+    "REVIEW_CHANNEL": "manual ZIP",
+    "REVIEW_SCREENSHOT_FLAG": "--review-no-hud"
+  },
+  "zip_artifacts": {
+    "stable": {
+      "path": "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip",
+      "tracked_in_git": false,
+      "generated_and_ignored": true,
+      "size_bytes": 107885759,
+      "sha256": "2726646EBCE3D7FC6E9D35E2AC02A4254AD633A1943B96145194A70BC3113BF8",
+      "entry_count": 10,
+      "index_html_at_zip_root": true,
+      "contains_web_build_index_html": false,
+      "entries": [
+        "_headers",
+        "index.apple-touch-icon.png",
+        "index.audio.position.worklet.js",
+        "index.audio.worklet.js",
+        "index.html",
+        "index.icon.png",
+        "index.js",
+        "index.pck",
+        "index.png",
+        "index.wasm"
+      ]
+    },
+    "versioned": {
+      "path": "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-g-21-opening-island-performance-browser-build-and-regression-hardening.zip",
+      "tracked_in_git": false,
+      "generated_and_ignored": true,
+      "size_bytes": 107885759,
+      "sha256": "2726646EBCE3D7FC6E9D35E2AC02A4254AD633A1943B96145194A70BC3113BF8",
+      "entry_count": 10,
+      "index_html_at_zip_root": true,
+      "contains_web_build_index_html": false,
+      "entries": [
+        "_headers",
+        "index.apple-touch-icon.png",
+        "index.audio.position.worklet.js",
+        "index.audio.worklet.js",
+        "index.html",
+        "index.icon.png",
+        "index.js",
+        "index.pck",
+        "index.png",
+        "index.wasm"
+      ]
+    }
+  },
+  "browser_proof": {
+    "local_url": "http://127.0.0.1:8766/index.html",
+    "headers_verified_by_server": [
+      "Cross-Origin-Opener-Policy: same-origin",
+      "Cross-Origin-Embedder-Policy: require-corp",
+      "Cross-Origin-Resource-Policy: same-origin",
+      "X-Content-Type-Options: nosniff"
+    ],
+    "page_info": {
+      "title": "Wayfarer Godot Vertical Slice",
+      "href": "http://127.0.0.1:8766/index.html",
+      "ready_state": "complete",
+      "canvas_count": 1,
+      "canvas_width": 1920,
+      "canvas_height": 1080,
+      "canvas_client_width": 1280,
+      "canvas_client_height": 720,
+      "script_count": 2
+    },
+    "screenshots": [
+      {
+        "path": "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_review_identity_proof.jpg",
+        "purpose": "Loader proof that the exported Godot Web app boots from the generated review route.",
+        "size_bytes": 20265
+      },
+      {
+        "path": "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_review_loaded_surface.jpg",
+        "purpose": "Loaded gameplay proof: Newport HUD, wharf apron location, journal objective, player sprite, and runtime scene render in browser.",
+        "size_bytes": 65231
+      }
+    ],
+    "console_log_path": "wayfarer_godot_vertical_slice/artifacts/review/g21_browser_build_hardening/g21_browser_review_loaded_console_log.json",
+    "console_warning_error_count": 0
+  },
+  "regression_inputs": {
+    "source_layout_chain": [
+      "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+      "wayfarer_godot_vertical_slice/data/world_layout/g19s_newport_runtime_reconstruction_v1.json"
+    ],
+    "quest_guidance_chain": [
+      "wayfarer_godot_vertical_slice/data/ux/g19_player_guidance_map_journal_interaction_v1.json",
+      "wayfarer_godot_vertical_slice/data/quests/g20_first_session_gameplay_loop_reward_v1.json"
+    ],
+    "visual_regression_reference": [
+      "wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_first_session_screenshot_manifest.json",
+      "wayfarer_godot_vertical_slice/artifacts/review/g19s_runtime_screenshots/g19s_runtime_screenshot_manifest.json",
+      "wayfarer_godot_vertical_slice/artifacts/review/g18_runtime_screenshots/g18_runtime_screenshot_manifest.json",
+      "wayfarer_godot_vertical_slice/artifacts/review/g12_runtime_screenshots/g12_runtime_screenshot_manifest.json"
+    ]
+  },
+  "acceptance": {
+    "browser_review_artifact_is_valid": true,
+    "no_open_critical_regressions": true,
+    "no_stale_phase_identity": true,
+    "no_missing_core_web_export_assets": true,
+    "generated_zip_artifacts_remain_ignored": true,
+    "human_review_required": false,
+    "next_phase": "G-22 OVI-1 Opening Village + Island Production Playable Gate"
+  }
+}

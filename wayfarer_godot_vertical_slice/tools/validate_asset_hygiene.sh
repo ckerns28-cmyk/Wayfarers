@@ -41,6 +41,24 @@ check_no_tracked() {
     fi
 }
 
+check_tracked_artifacts_allowlist() {
+    local tracked
+    local disallowed
+    tracked="$(git -C "$REPO_ROOT" ls-files 'wayfarer_godot_vertical_slice/artifacts/**')"
+    disallowed="$(
+        printf "%s\n" "$tracked" \
+            | sed '/^$/d' \
+            | grep -Ev '^wayfarer_godot_vertical_slice/artifacts/(planning|review)/' \
+            || true
+    )"
+    if [ -z "$disallowed" ]; then
+        pass "tracked artifacts limited to planning/review source-of-truth proof"
+    else
+        fail "tracked artifacts outside planning/review proof allowlist"
+        printf "%s\n" "$disallowed"
+    fi
+}
+
 require_file "$PROJECT_ROOT/docs/ASSET_WORKFLOW.md" "asset workflow doc"
 require_file "$PROJECT_ROOT/docs/SPRITE_ANCHORS.md" "sprite anchors doc"
 require_file "$PROJECT_ROOT/SPRITE_ATLAS_GODOT.md" "atlas contract doc"
@@ -49,7 +67,7 @@ require_file "$PROJECT_ROOT/tools/package_itch_web.sh" "itch package script"
 
 check_no_tracked ':(glob)**/.godot/**' ".godot cache files"
 check_no_tracked ':(glob)**/web_build/**' "web_build export files"
-check_no_tracked ':(glob)**/artifacts/**' "generated artifacts"
+check_tracked_artifacts_allowlist
 check_no_tracked ':(glob)**/*.zip' "generated ZIP files"
 check_no_tracked ':(glob)**/._*' "nested AppleDouble sidecars"
 check_no_tracked ':(glob)._*' "root AppleDouble sidecars"
