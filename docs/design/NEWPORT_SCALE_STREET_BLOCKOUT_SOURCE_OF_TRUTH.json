@@ -1,0 +1,2145 @@
+{
+  "schema_id": "wayfarer.g19r.newport_scale_street_blockout_source_of_truth.v1",
+  "phase": "G-19R",
+  "phase_name": "G-19R Newport Scale + Street Blockout Source of Truth",
+  "status": "PASS",
+  "generated_at": "2026-05-19",
+  "starting_main_commit": "6e8c5fc59c827d1b3adf84eb90a452c7092f4e57",
+  "branch": "codex/g-19r-newport-scale-street-blockout-source-of-truth",
+  "figma_figjam": {
+    "used": false,
+    "reason": "Not used because G-19R needed repo-contained, reusable source files with no cloud/account friction. The SVG/PNG/JSON artifact set is the compatible visual planning artifact.",
+    "artifact_name": "",
+    "export_method": "",
+    "repo_mirror": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/"
+  },
+  "tooling_used": [
+    "browser research into level flow, blockout, critical path, colonial wharf/tavern context",
+    "Python/Pillow measured blockout generation",
+    "repo Godot player/camera source inspection",
+    "JSON source-of-truth schema",
+    "SVG/PNG visual blockout export",
+    "G-19R and future source alignment validators"
+  ],
+  "browser_research_sources": [
+    {
+      "label": "The Level Design Book - Flow",
+      "url": "https://book.leveldesignbook.com/process/layout/flow",
+      "used_for": "movement, wayfinding, metrics, blockout/playtest framing"
+    },
+    {
+      "label": "The Level Design Book - Critical Path",
+      "url": "https://book.leveldesignbook.com/process/layout/criticalpath",
+      "used_for": "player start, exit, beat, and route markup discipline"
+    },
+    {
+      "label": "National Park Service - Salem Maritime history",
+      "url": "https://www.nps.gov/articles/000/history.htm",
+      "used_for": "colonial port wharves, warehouses, custom house, trade waterfront logic"
+    },
+    {
+      "label": "Colonial Williamsburg - Early American taverns",
+      "url": "https://www.colonialwilliamsburg.org/discover/historic-area/historic-places/a-time-travelers-guide-to-early-american-taverns/",
+      "used_for": "tavern as public/social/rumor/economic node"
+    },
+    {
+      "label": "National Park Service - Annapolis",
+      "url": "https://www.nps.gov/stsp/learn/annapolis.htm",
+      "used_for": "planned colonial seaport precedent and 18th-century town character"
+    }
+  ],
+  "coordinate_system": {
+    "world_units": "Godot 2D world pixels",
+    "blockout_world_size": {
+      "w": 2400,
+      "h": 1600
+    },
+    "water_edge_y": 1120,
+    "north_is_up": true,
+    "major_layout_changes_require_source_update": true
+  },
+  "scale_metrics_path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_scale_metrics.json",
+  "scale_summary": {
+    "schema_id": "wayfarer.g19r.newport.scale_metrics.v1",
+    "phase": "G-19R",
+    "generated_at": "2026-05-19",
+    "source_commit": "6e8c5fc59c827d1b3adf84eb90a452c7092f4e57",
+    "player_derived_scale": {
+      "player_scene": "wayfarer_godot_vertical_slice/scenes/player/Player.tscn",
+      "player_script": "wayfarer_godot_vertical_slice/scenes/player/Player.gd",
+      "player_atlas": "wayfarer_godot_vertical_slice/art_pipeline/player_identity/atlases/player_wayfarer_atelier_g422r_v1.png",
+      "frame_size_px": {
+        "w": 256,
+        "h": 256
+      },
+      "runtime_visual_scale": 0.32,
+      "alpha_bbox_samples": [
+        {
+          "direction": "down",
+          "variant": "idle",
+          "alpha_bbox": [
+            85,
+            38,
+            170,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "down",
+          "variant": "walk_a",
+          "alpha_bbox": [
+            81,
+            38,
+            166,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "down",
+          "variant": "walk_b",
+          "alpha_bbox": [
+            89,
+            38,
+            174,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "up",
+          "variant": "idle",
+          "alpha_bbox": [
+            85,
+            38,
+            170,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "up",
+          "variant": "walk_a",
+          "alpha_bbox": [
+            81,
+            38,
+            166,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "up",
+          "variant": "walk_b",
+          "alpha_bbox": [
+            89,
+            38,
+            174,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "left",
+          "variant": "idle",
+          "alpha_bbox": [
+            85,
+            38,
+            170,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "left",
+          "variant": "walk_a",
+          "alpha_bbox": [
+            85,
+            38,
+            170,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "left",
+          "variant": "walk_b",
+          "alpha_bbox": [
+            85,
+            38,
+            170,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "right",
+          "variant": "idle",
+          "alpha_bbox": [
+            85,
+            38,
+            170,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "right",
+          "variant": "walk_a",
+          "alpha_bbox": [
+            85,
+            38,
+            170,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        },
+        {
+          "direction": "right",
+          "variant": "walk_b",
+          "alpha_bbox": [
+            85,
+            38,
+            170,
+            244
+          ],
+          "visible_size_px": {
+            "w": 85,
+            "h": 206
+          }
+        }
+      ],
+      "player_visual_width_world_units": 27.2,
+      "player_visual_height_world_units": 65.92,
+      "player_frame_draw_width_world_units": 81.92,
+      "player_frame_draw_height_world_units": 81.92,
+      "player_collision_body_width_world_units": 20.0,
+      "player_collision_body_height_world_units": 28.0,
+      "player_movement_speed_world_units_per_second": 185.0,
+      "camera_viewport_assumption_px": {
+        "w": 1280,
+        "h": 720
+      },
+      "gameplay_zoom_assumption": 1.38,
+      "gameplay_visible_world_rect_at_zoom": {
+        "w": 927.536,
+        "h": 521.739
+      },
+      "pixels_per_character_width": 27.2,
+      "world_units_per_character_width": 27.2,
+      "measurement_basis": "Alpha bounds of the current G-4.22R player atlas, scaled by Player.gd PLAYER_VISUAL_SCALE. Collision values are read from Player.tscn CapsuleShape2D."
+    },
+    "street_width_targets": {
+      "main_commercial_harbor_street": {
+        "target_character_widths": [
+          10,
+          15
+        ],
+        "selected_character_widths": 12.0,
+        "width_world_units": 326.4
+      },
+      "secondary_street": {
+        "target_character_widths": [
+          6,
+          9
+        ],
+        "selected_character_widths": 7.5,
+        "width_world_units": 204.0
+      },
+      "rear_service_lane": {
+        "target_character_widths": [
+          4,
+          6
+        ],
+        "selected_character_widths": 5.5,
+        "width_world_units": 149.6
+      },
+      "alley_service_cutthrough": {
+        "target_character_widths": [
+          3,
+          4
+        ],
+        "selected_character_widths": 3.5,
+        "width_world_units": 95.2
+      },
+      "wharf_working_apron": {
+        "target_character_widths": [
+          8,
+          14
+        ],
+        "selected_character_widths": 10.5,
+        "width_world_units": 285.6
+      },
+      "building_setback": {
+        "target_character_widths": [
+          1,
+          3
+        ],
+        "selected_character_widths": 2.0,
+        "width_world_units": 54.4
+      },
+      "npc_route_clearance": {
+        "target_character_widths": [
+          2,
+          3
+        ],
+        "selected_character_widths": 2.5,
+        "width_world_units": 68.0
+      },
+      "interaction_clearance": {
+        "target_character_widths": [
+          2,
+          3
+        ],
+        "selected_character_widths": 2.5,
+        "width_world_units": 68.0
+      },
+      "minimum_readable_landmark_spacing": {
+        "selected_character_widths": 12.0,
+        "width_world_units": 326.4
+      }
+    },
+    "building_frontage_ranges": {
+      "small_shop_or_rowhouse": {
+        "character_widths": [
+          5.0,
+          8.0
+        ],
+        "world_units": [
+          136.0,
+          217.6
+        ]
+      },
+      "tavern_or_counting_house_landmark": {
+        "character_widths": [
+          10.0,
+          14.0
+        ],
+        "world_units": [
+          272.0,
+          380.8
+        ]
+      },
+      "warehouse_or_boathouse": {
+        "character_widths": [
+          9.0,
+          14.0
+        ],
+        "world_units": [
+          244.8,
+          380.8
+        ]
+      }
+    },
+    "lot_depth_ranges": {
+      "commercial_lot": {
+        "character_widths": [
+          7.0,
+          11.0
+        ],
+        "world_units": [
+          190.4,
+          299.2
+        ]
+      },
+      "landmark_lot": {
+        "character_widths": [
+          9.0,
+          13.0
+        ],
+        "world_units": [
+          244.8,
+          353.6
+        ]
+      },
+      "residential_lot": {
+        "character_widths": [
+          7.0,
+          10.0
+        ],
+        "world_units": [
+          190.4,
+          272.0
+        ]
+      }
+    },
+    "dock_width_ranges": {
+      "minor_finger_pier": {
+        "character_widths": [
+          3.0,
+          4.0
+        ],
+        "world_units": [
+          81.6,
+          108.8
+        ]
+      },
+      "cargo_landing": {
+        "character_widths": [
+          5.0,
+          7.0
+        ],
+        "world_units": [
+          136.0,
+          190.4
+        ]
+      }
+    },
+    "current_runtime_scale_audit": {
+      "tile_size_world_units": 32,
+      "current_primary_road_three_tiles_world_units": 96,
+      "current_primary_road_three_tiles_character_widths": 3.529,
+      "verdict": "Current three-tile Newport roads are below the 10-15 character-width harbor/commercial target and cannot be used as proof that road scale is correct."
+    }
+  },
+  "districts": [
+    {
+      "id": "harbor_wharf",
+      "name": "Harbor / Wharf District",
+      "zone_rect": {
+        "x": 180,
+        "y": 860,
+        "w": 1640,
+        "h": 300
+      },
+      "purpose": "Working edge where arrival, trade, cargo, sailors, and clues physically enter Newport.",
+      "player_function": "Arrival read, dock clue, visible working harbor life, optional cargo inspection, transition from boat/wharf to town street.",
+      "npc_roles": [
+        "dockworker",
+        "sailor",
+        "warehouse hand"
+      ],
+      "quest_relevance": "Arrival harbor beat, dock clue beat, wharf lantern rumor, manifest cargo discrepancy.",
+      "landmark": "Central cargo landing and warehouse doors aligned to the harborfront road.",
+      "dominant_ground_treatment": "Weathered planks, wet cobble, mud at cargo edges, water boundary below.",
+      "prop_families": [
+        "bollards",
+        "rope coils",
+        "barrels",
+        "crates",
+        "cargo carts",
+        "lanterns"
+      ],
+      "street_path_connections": [
+        "harborfront_road",
+        "dock_paths",
+        "central_upland_counting_house_connector"
+      ],
+      "camera_viewpoint": "harbor_work_view",
+      "required_screenshots": [
+        "arrival_harbor_view",
+        "harbor_work_view",
+        "debug_disabled_view"
+      ]
+    },
+    {
+      "id": "counting_house_clerk",
+      "name": "Counting House / Clerk District",
+      "zone_rect": {
+        "x": 940,
+        "y": 330,
+        "w": 390,
+        "h": 260
+      },
+      "purpose": "Official trade-pressure node where the missing manifest becomes a concrete problem instead of a vague rumor.",
+      "player_function": "First official objective, records window interaction, clear central route target.",
+      "npc_roles": [
+        "clerk",
+        "runner",
+        "custom-house assistant"
+      ],
+      "quest_relevance": "Missing manifest beat, first objective confirmation, return/report option.",
+      "landmark": "Counting House frontage and notice board visible from the main avenue.",
+      "dominant_ground_treatment": "Drier cobble forecourt with paper/posting board and stone threshold.",
+      "prop_families": [
+        "notice board",
+        "ledger desk marker",
+        "sealed crates",
+        "wayfinding sign"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "rear_service_street",
+        "central_upland_counting_house_connector"
+      ],
+      "camera_viewpoint": "counting_house_route_view",
+      "required_screenshots": [
+        "counting_house_route_view",
+        "quest_interaction_view"
+      ]
+    },
+    {
+      "id": "tavern_inn_rumor_hub",
+      "name": "Tavern / Inn Rumor Hub",
+      "zone_rect": {
+        "x": 280,
+        "y": 335,
+        "w": 430,
+        "h": 280
+      },
+      "purpose": "Social landmark that converts harbor facts into pre-Revolution whisper network play.",
+      "player_function": "Memorable west landmark, rumor hub, route choice, safe place to hear named people and motives.",
+      "npc_roles": [
+        "tavern keeper",
+        "rumor carrier",
+        "patron"
+      ],
+      "quest_relevance": "Tavern whisper beat, two-NPC rumor beat, optional hidden clue route.",
+      "landmark": "Large Tavern/Inn lot at the west bend of the commercial avenue.",
+      "dominant_ground_treatment": "Warm cobble threshold, porch/stoop, tavern yard edge, rear gate into service lane.",
+      "prop_families": [
+        "bench",
+        "lanterns",
+        "hanging sign",
+        "stable/yard hints",
+        "barrels"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "rear_service_street",
+        "hidden_rumor_cutthrough"
+      ],
+      "camera_viewpoint": "tavern_landmark_view",
+      "required_screenshots": [
+        "tavern_landmark_view",
+        "npc_route_proof_view"
+      ]
+    },
+    {
+      "id": "commercial_avenue",
+      "name": "Commercial Avenue",
+      "zone_rect": {
+        "x": 630,
+        "y": 355,
+        "w": 1160,
+        "h": 270
+      },
+      "purpose": "Readable shop street that ties tavern, counting house, chandlery, market, and island exit into one town spine.",
+      "player_function": "Human-scale movement corridor with storefronts and repeated orientation anchors.",
+      "npc_roles": [
+        "merchant",
+        "shopkeeper",
+        "runner",
+        "courier"
+      ],
+      "quest_relevance": "Two-NPC rumor, market-route clue, guidepost to island exit.",
+      "landmark": "Shop row and market shed stepping toward the east exit.",
+      "dominant_ground_treatment": "Wide cobble/wagon street with worn pedestrian shoulders and storefront stoops.",
+      "prop_families": [
+        "shop signs",
+        "awnings",
+        "market crates",
+        "hand carts",
+        "street lamps"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "east_market_connector",
+        "village_to_island_road"
+      ],
+      "camera_viewpoint": "commercial_avenue_view",
+      "required_screenshots": [
+        "commercial_avenue_view"
+      ]
+    },
+    {
+      "id": "rear_service_lane",
+      "name": "Rear Service Lane",
+      "zone_rect": {
+        "x": 240,
+        "y": 270,
+        "w": 1500,
+        "h": 220
+      },
+      "purpose": "Back-of-house circulation for deliveries, gossip, hidden clues, and believable town operations.",
+      "player_function": "Secondary route that teaches the town is not a flat frontage board.",
+      "npc_roles": [
+        "runner",
+        "suspicious patron",
+        "courier"
+      ],
+      "quest_relevance": "Hidden rumor/clue route, return/report variant, service-gate overheard lead.",
+      "landmark": "Rear gate between Tavern/Inn and clerk lodging.",
+      "dominant_ground_treatment": "Packed dirt, broken cobble, service mud, fence/yard edges.",
+      "prop_families": [
+        "fences",
+        "barrels",
+        "wash lines",
+        "small sheds",
+        "lanterns"
+      ],
+      "street_path_connections": [
+        "rear_service_street",
+        "hidden_rumor_cutthrough",
+        "north_residential_lane"
+      ],
+      "camera_viewpoint": "rear_service_lane_view",
+      "required_screenshots": [
+        "rear_service_lane_view"
+      ]
+    },
+    {
+      "id": "residential_edge",
+      "name": "Residential Edge",
+      "zone_rect": {
+        "x": 260,
+        "y": 75,
+        "w": 1250,
+        "h": 225
+      },
+      "purpose": "Quiet lived-in town edge that gives workers and clerks homes instead of making Newport only storefronts.",
+      "player_function": "Soft boundary, optional exploration, believable life beyond the quest route.",
+      "npc_roles": [
+        "resident",
+        "dockworker family",
+        "clerk lodger"
+      ],
+      "quest_relevance": "Optional return/report flavor and worldbuilding.",
+      "landmark": "Boarding house row above the rear lane.",
+      "dominant_ground_treatment": "Grass yards, compact footpaths, garden edges, dry dirt.",
+      "prop_families": [
+        "fences",
+        "laundry",
+        "garden boxes",
+        "small carts"
+      ],
+      "street_path_connections": [
+        "north_residential_lane",
+        "rear_service_street"
+      ],
+      "camera_viewpoint": "wide_town_cohesion_view",
+      "required_screenshots": [
+        "wide_town_cohesion_view"
+      ]
+    },
+    {
+      "id": "village_to_island_exit",
+      "name": "Village-to-Island Exit",
+      "zone_rect": {
+        "x": 1710,
+        "y": 400,
+        "w": 640,
+        "h": 330
+      },
+      "purpose": "Clear eastward threshold where town composition opens into island exploration.",
+      "player_function": "Next-step orientation and first-session pull beyond Newport.",
+      "npc_roles": [
+        "courier",
+        "guidepost guard",
+        "sailor"
+      ],
+      "quest_relevance": "Island lead beat, village exit beat.",
+      "landmark": "Guidepost and narrowing road beyond the market edge.",
+      "dominant_ground_treatment": "Cobble-to-dirt transition, shoulder grass, direction sign.",
+      "prop_families": [
+        "guidepost",
+        "stone markers",
+        "fence break",
+        "lantern"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "village_to_island_road",
+        "rear_service_street"
+      ],
+      "camera_viewpoint": "village_exit_to_island_view",
+      "required_screenshots": [
+        "village_exit_to_island_view"
+      ]
+    },
+    {
+      "id": "civic_notice_board",
+      "name": "Civic / Notice Board Node",
+      "zone_rect": {
+        "x": 1010,
+        "y": 555,
+        "w": 260,
+        "h": 115
+      },
+      "purpose": "Small official public node that makes the counting-house route readable and gives the journal/objective fiction a place.",
+      "player_function": "First objective confirmation and route reassurance.",
+      "npc_roles": [
+        "clerk runner",
+        "merchant",
+        "courier"
+      ],
+      "quest_relevance": "First objective beat, missing manifest beat, return/report beat.",
+      "landmark": "Notice board at the central avenue/cross street joint.",
+      "dominant_ground_treatment": "Worn cobble node, chalk/posted-paper board, compact interaction apron.",
+      "prop_families": [
+        "notice board",
+        "bench",
+        "lamp",
+        "paper bundles"
+      ],
+      "street_path_connections": [
+        "main_commercial_avenue",
+        "central_upland_counting_house_connector"
+      ],
+      "camera_viewpoint": "quest_interaction_view",
+      "required_screenshots": [
+        "quest_interaction_view"
+      ]
+    },
+    {
+      "id": "hidden_rumor_clue_route",
+      "name": "Hidden Rumor / Clue Route",
+      "zone_rect": {
+        "x": 605,
+        "y": 455,
+        "w": 330,
+        "h": 470
+      },
+      "purpose": "Optional service cut-through that lets social stealth and dock knowledge feel spatial rather than menu-driven.",
+      "player_function": "Discoverable alternate path from tavern/rear lane to wharf clue.",
+      "npc_roles": [
+        "suspicious patron",
+        "dock runner"
+      ],
+      "quest_relevance": "Optional hidden clue beat and enriched journal state.",
+      "landmark": "Narrow gate between tavern yard and wharf-side cargo stack.",
+      "dominant_ground_treatment": "Dirt/cobble service cut-through with clear clearance and no clutter hiding path.",
+      "prop_families": [
+        "gate",
+        "barrels at edge only",
+        "low fence",
+        "rope marker"
+      ],
+      "street_path_connections": [
+        "rear_service_street",
+        "dock_paths",
+        "harborfront_road"
+      ],
+      "camera_viewpoint": "npc_route_proof_view",
+      "required_screenshots": [
+        "npc_route_proof_view",
+        "rear_service_lane_view"
+      ]
+    }
+  ],
+  "streets": [
+    {
+      "id": "main_commercial_avenue",
+      "name": "Main Commercial Avenue",
+      "start_point": {
+        "x": 260,
+        "y": 705
+      },
+      "end_point": {
+        "x": 1785,
+        "y": 705
+      },
+      "width_character_units": 12.0,
+      "width_world_units": 326.4,
+      "districts_connected": [
+        "tavern_inn_rumor_hub",
+        "counting_house_clerk",
+        "commercial_avenue",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Primary first-session spine from harbor arrival through tavern, counting house, shops, and island exit.",
+      "npc_route_usage": [
+        "merchant_shopkeeper",
+        "tavern_patron_rumor_carrier",
+        "clerk_runner"
+      ],
+      "quest_usage": [
+        "first_objective",
+        "counting_house_missing_manifest",
+        "tavern_whisper",
+        "island_lead"
+      ],
+      "ground_type": "wide cobble and wagon-worn harbor street",
+      "landmark_sightline": "Tavern west, Counting House center, guidepost east.",
+      "camera_readability_note": "At gameplay zoom this road must read as a place the player is standing in, not a thin map line.",
+      "blockout_rect": {
+        "x": 260,
+        "y": 542,
+        "w": 1525,
+        "h": 326.4
+      }
+    },
+    {
+      "id": "harborfront_road",
+      "name": "Harborfront Road",
+      "start_point": {
+        "x": 220,
+        "y": 910
+      },
+      "end_point": {
+        "x": 1810,
+        "y": 910
+      },
+      "width_character_units": 10.0,
+      "width_world_units": 272.0,
+      "districts_connected": [
+        "harbor_wharf",
+        "commercial_avenue",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Southern working road where cargo moves between wharf apron and commercial lots.",
+      "npc_route_usage": [
+        "dockworker",
+        "sailor",
+        "merchant_shopkeeper"
+      ],
+      "quest_usage": [
+        "arrival_harbor",
+        "dock_clue",
+        "wharf_lantern_rumor"
+      ],
+      "ground_type": "wet cobble, planks at wharf edge, mud feathering",
+      "landmark_sightline": "Water edge and warehouse doors always visible south of the road.",
+      "camera_readability_note": "Camera must preserve the water/wharf edge so the player understands arrival.",
+      "blockout_rect": {
+        "x": 220,
+        "y": 774,
+        "w": 1590,
+        "h": 272.0
+      }
+    },
+    {
+      "id": "rear_service_street",
+      "name": "Rear Service Street",
+      "start_point": {
+        "x": 260,
+        "y": 360
+      },
+      "end_point": {
+        "x": 1700,
+        "y": 360
+      },
+      "width_character_units": 5.5,
+      "width_world_units": 149.6,
+      "districts_connected": [
+        "rear_service_lane",
+        "tavern_inn_rumor_hub",
+        "counting_house_clerk",
+        "residential_edge"
+      ],
+      "player_purpose": "Back-of-house service route that makes lots and daily work believable.",
+      "npc_route_usage": [
+        "clerk_runner",
+        "suspicious_patron",
+        "courier_guard_sailor"
+      ],
+      "quest_usage": [
+        "hidden_clue",
+        "two_npc_rumor",
+        "return_report"
+      ],
+      "ground_type": "packed dirt and broken cobble",
+      "landmark_sightline": "Rear gates and residence row establish that buildings have backs.",
+      "camera_readability_note": "Should read narrower than the main avenue but still allow two NPC clearances.",
+      "blockout_rect": {
+        "x": 260,
+        "y": 285,
+        "w": 1440,
+        "h": 149.6
+      }
+    },
+    {
+      "id": "central_upland_counting_house_connector",
+      "name": "Central Upland Counting House Connector",
+      "start_point": {
+        "x": 1060,
+        "y": 875
+      },
+      "end_point": {
+        "x": 1060,
+        "y": 325
+      },
+      "width_character_units": 7.5,
+      "width_world_units": 204.0,
+      "districts_connected": [
+        "harbor_wharf",
+        "main_commercial_avenue",
+        "counting_house_clerk",
+        "rear_service_lane"
+      ],
+      "player_purpose": "Clear uphill route from harbor work into official records and civic pressure.",
+      "npc_route_usage": [
+        "clerk_runner",
+        "dockworker"
+      ],
+      "quest_usage": [
+        "counting_house_missing_manifest",
+        "dock_clue",
+        "return_report"
+      ],
+      "ground_type": "cobble center with dirt shoulder",
+      "landmark_sightline": "Counting House sits at the north end; wharf cargo remains visible behind player.",
+      "camera_readability_note": "Route view must show the target building and enough street width for human scale.",
+      "blockout_rect": {
+        "x": 958,
+        "y": 325,
+        "w": 204.0,
+        "h": 550
+      }
+    },
+    {
+      "id": "west_tavern_connector",
+      "name": "West Tavern Connector",
+      "start_point": {
+        "x": 510,
+        "y": 870
+      },
+      "end_point": {
+        "x": 510,
+        "y": 335
+      },
+      "width_character_units": 6.5,
+      "width_world_units": 176.8,
+      "districts_connected": [
+        "harbor_wharf",
+        "tavern_inn_rumor_hub",
+        "rear_service_lane"
+      ],
+      "player_purpose": "Secondary arrival-to-tavern route with strong landmark pull.",
+      "npc_route_usage": [
+        "tavern_patron_rumor_carrier",
+        "dockworker"
+      ],
+      "quest_usage": [
+        "tavern_whisper",
+        "two_npc_rumor"
+      ],
+      "ground_type": "cobble with tavern threshold shoulders",
+      "landmark_sightline": "Tavern sign and porch are the vertical target.",
+      "camera_readability_note": "Must feel like walking uphill into a social node, not cutting between icons.",
+      "blockout_rect": {
+        "x": 422,
+        "y": 335,
+        "w": 176.8,
+        "h": 535
+      }
+    },
+    {
+      "id": "east_market_connector",
+      "name": "East Market Connector",
+      "start_point": {
+        "x": 1560,
+        "y": 890
+      },
+      "end_point": {
+        "x": 1560,
+        "y": 360
+      },
+      "width_character_units": 6.0,
+      "width_world_units": 163.2,
+      "districts_connected": [
+        "harbor_wharf",
+        "commercial_avenue",
+        "rear_service_lane",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Market and exit connector that makes the east side a district, not a dead end.",
+      "npc_route_usage": [
+        "merchant_shopkeeper",
+        "courier_guard_sailor"
+      ],
+      "quest_usage": [
+        "two_npc_rumor",
+        "island_lead",
+        "village_exit"
+      ],
+      "ground_type": "cobble-to-dirt transition",
+      "landmark_sightline": "Market shed and exit guidepost line the player's next move.",
+      "camera_readability_note": "Should show continuation out of town without swallowing the market lots.",
+      "blockout_rect": {
+        "x": 1478,
+        "y": 360,
+        "w": 163.2,
+        "h": 530
+      }
+    },
+    {
+      "id": "dock_paths",
+      "name": "Dock Paths and Cargo Landings",
+      "start_point": {
+        "x": 420,
+        "y": 1030
+      },
+      "end_point": {
+        "x": 1490,
+        "y": 1030
+      },
+      "width_character_units": 5.0,
+      "width_world_units": 136.0,
+      "districts_connected": [
+        "harbor_wharf"
+      ],
+      "player_purpose": "Work paths across cargo landings and finger piers.",
+      "npc_route_usage": [
+        "dockworker",
+        "sailor"
+      ],
+      "quest_usage": [
+        "dock_clue",
+        "arrival_harbor"
+      ],
+      "ground_type": "planks, wet mud, rope-bounded walking lanes",
+      "landmark_sightline": "Warehouse and boathouse doors anchor pause points.",
+      "camera_readability_note": "Camera must prove wharf apron width, not hide it behind cargo scatter.",
+      "blockout_rect": {
+        "x": 360,
+        "y": 960,
+        "w": 1240,
+        "h": 136.0
+      }
+    },
+    {
+      "id": "hidden_rumor_cutthrough",
+      "name": "Hidden Rumor Service Cut-through",
+      "start_point": {
+        "x": 680,
+        "y": 420
+      },
+      "end_point": {
+        "x": 840,
+        "y": 925
+      },
+      "width_character_units": 3.5,
+      "width_world_units": 95.2,
+      "districts_connected": [
+        "rear_service_lane",
+        "hidden_rumor_clue_route",
+        "harbor_wharf"
+      ],
+      "player_purpose": "Optional narrow route for hidden clue discovery and overheard rumor geography.",
+      "npc_route_usage": [
+        "suspicious_patron",
+        "clerk_runner"
+      ],
+      "quest_usage": [
+        "optional_hidden_clue",
+        "two_npc_rumor"
+      ],
+      "ground_type": "packed dirt, broken cobble, low fence edges",
+      "landmark_sightline": "Tavern rear gate and cargo stack mark both ends.",
+      "camera_readability_note": "Narrow, but still at least 3 character widths and not clutter-blocked.",
+      "blockout_rect": {
+        "x": 650,
+        "y": 420,
+        "w": 95.2,
+        "h": 505
+      }
+    },
+    {
+      "id": "village_to_island_road",
+      "name": "Village-to-Island Road",
+      "start_point": {
+        "x": 1720,
+        "y": 610
+      },
+      "end_point": {
+        "x": 2320,
+        "y": 500
+      },
+      "width_character_units": 8.0,
+      "width_world_units": 217.6,
+      "districts_connected": [
+        "commercial_avenue",
+        "rear_service_lane",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Obvious exit route that pulls the player from town into island exploration.",
+      "npc_route_usage": [
+        "courier_guard_sailor",
+        "merchant_shopkeeper"
+      ],
+      "quest_usage": [
+        "island_lead",
+        "village_exit",
+        "return_report"
+      ],
+      "ground_type": "cobble fading to dirt and grass shoulder",
+      "landmark_sightline": "Guidepost and road bend visible from market edge.",
+      "camera_readability_note": "Exit should read as continuation, not a blank map border.",
+      "blockout_rect": {
+        "x": 1700,
+        "y": 500,
+        "w": 640,
+        "h": 217.6
+      }
+    },
+    {
+      "id": "secret_side_path",
+      "name": "Optional Secret / Side Path",
+      "start_point": {
+        "x": 1520,
+        "y": 370
+      },
+      "end_point": {
+        "x": 2080,
+        "y": 315
+      },
+      "width_character_units": 3.5,
+      "width_world_units": 95.2,
+      "districts_connected": [
+        "rear_service_lane",
+        "village_to_island_exit"
+      ],
+      "player_purpose": "Subtle clue route for players following rumor-network hints.",
+      "npc_route_usage": [
+        "courier_guard_sailor",
+        "suspicious_patron"
+      ],
+      "quest_usage": [
+        "optional_hidden_clue",
+        "island_lead_enriched"
+      ],
+      "ground_type": "grass/dirt footpath with sparse edge markers",
+      "landmark_sightline": "Back-lane fence break points toward the island road.",
+      "camera_readability_note": "Must remain readable as optional, not confuse the critical route.",
+      "blockout_rect": {
+        "x": 1510,
+        "y": 295,
+        "w": 590,
+        "h": 95.2
+      }
+    }
+  ],
+  "lots": [
+    {
+      "id": "lot_tavern_inn_centerpiece",
+      "district": "tavern_inn_rumor_hub",
+      "building_role": "Tavern/Inn centerpiece landmark",
+      "frontage_street": "main_commercial_avenue",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 300,
+        "y": 350,
+        "w": 380,
+        "h": 250
+      },
+      "building_footprint_target": {
+        "x": 342,
+        "y": 390,
+        "w": 296,
+        "h": 162
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "hanging sign",
+        "bench",
+        "lantern",
+        "rear gate"
+      ],
+      "npc_use": [
+        "tavern keeper",
+        "rumor carrier",
+        "patron"
+      ],
+      "quest_use": [
+        "tavern_whisper",
+        "two_npc_rumor",
+        "optional_hidden_clue"
+      ],
+      "sightline_purpose": "West landmark visible from arrival and the central avenue.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_counting_house_clerk",
+      "district": "counting_house_clerk",
+      "building_role": "Counting House / Clerk official lot",
+      "frontage_street": "main_commercial_avenue",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 970,
+        "y": 345,
+        "w": 330,
+        "h": 225
+      },
+      "building_footprint_target": {
+        "x": 1015,
+        "y": 382,
+        "w": 240,
+        "h": 145
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "notice board",
+        "sealed crates",
+        "paper bundles"
+      ],
+      "npc_use": [
+        "clerk",
+        "runner"
+      ],
+      "quest_use": [
+        "first_objective",
+        "counting_house_missing_manifest",
+        "return_report"
+      ],
+      "sightline_purpose": "Central official target visible from harborfront and rear lane connector.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_mercantile_shop",
+      "district": "commercial_avenue",
+      "building_role": "Mercantile shop row lot",
+      "frontage_street": "main_commercial_avenue",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 700,
+        "y": 370,
+        "w": 230,
+        "h": 190
+      },
+      "building_footprint_target": {
+        "x": 725,
+        "y": 405,
+        "w": 180,
+        "h": 118
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "awning sign",
+        "crate edge",
+        "lamp"
+      ],
+      "npc_use": [
+        "merchant"
+      ],
+      "quest_use": [
+        "two_npc_rumor"
+      ],
+      "sightline_purpose": "Fills the street wall between tavern and counting house.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_chandlery_outfitter",
+      "district": "commercial_avenue",
+      "building_role": "Chandlery / outfitter shop lot",
+      "frontage_street": "main_commercial_avenue",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 1305,
+        "y": 370,
+        "w": 230,
+        "h": 190
+      },
+      "building_footprint_target": {
+        "x": 1330,
+        "y": 405,
+        "w": 180,
+        "h": 120
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "rope rack",
+        "sail cloth",
+        "shop sign"
+      ],
+      "npc_use": [
+        "shopkeeper"
+      ],
+      "quest_use": [
+        "dock_clue_support"
+      ],
+      "sightline_purpose": "Connects official trade to working wharf function.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_market_shed",
+      "district": "commercial_avenue",
+      "building_role": "Market shed and fishmonger lot",
+      "frontage_street": "east_market_connector",
+      "entry_orientation": "southwest",
+      "lot_size": {
+        "x": 1535,
+        "y": 380,
+        "w": 245,
+        "h": 180
+      },
+      "building_footprint_target": {
+        "x": 1565,
+        "y": 415,
+        "w": 185,
+        "h": 110
+      },
+      "setback_character_widths": 1.0,
+      "setback_world_units": 27.2,
+      "adjacent_props": [
+        "fish crates",
+        "hand cart",
+        "lamp"
+      ],
+      "npc_use": [
+        "merchant",
+        "courier"
+      ],
+      "quest_use": [
+        "two_npc_rumor",
+        "island_lead"
+      ],
+      "sightline_purpose": "Last commercial landmark before the island exit turn.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_west_dock_warehouse",
+      "district": "harbor_wharf",
+      "building_role": "Harbor service / storage lot",
+      "frontage_street": "harborfront_road",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 390,
+        "y": 900,
+        "w": 330,
+        "h": 190
+      },
+      "building_footprint_target": {
+        "x": 430,
+        "y": 932,
+        "w": 250,
+        "h": 120
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "cargo stack",
+        "bollards",
+        "rope"
+      ],
+      "npc_use": [
+        "dockworker"
+      ],
+      "quest_use": [
+        "dock_clue"
+      ],
+      "sightline_purpose": "Working storage visible from arrival, not a decorative warehouse.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_central_boathouse_landing",
+      "district": "harbor_wharf",
+      "building_role": "Boathouse and cargo landing lot",
+      "frontage_street": "dock_paths",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 950,
+        "y": 940,
+        "w": 360,
+        "h": 175
+      },
+      "building_footprint_target": {
+        "x": 995,
+        "y": 970,
+        "w": 270,
+        "h": 110
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "mooring post",
+        "barrels",
+        "water edge"
+      ],
+      "npc_use": [
+        "sailor",
+        "dockworker"
+      ],
+      "quest_use": [
+        "arrival_harbor",
+        "dock_clue"
+      ],
+      "sightline_purpose": "Centers the wharf as working waterfront.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_cooperage_service",
+      "district": "harbor_wharf",
+      "building_role": "Cooperage / barrel service lot",
+      "frontage_street": "harborfront_road",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 1370,
+        "y": 880,
+        "w": 260,
+        "h": 190
+      },
+      "building_footprint_target": {
+        "x": 1405,
+        "y": 915,
+        "w": 195,
+        "h": 120
+      },
+      "setback_character_widths": 1.5,
+      "setback_world_units": 40.8,
+      "adjacent_props": [
+        "barrel hoops",
+        "small cart",
+        "rope"
+      ],
+      "npc_use": [
+        "dockworker"
+      ],
+      "quest_use": [
+        "optional_hidden_clue"
+      ],
+      "sightline_purpose": "Shows harbor economy beyond generic crates.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_boarding_house",
+      "district": "residential_edge",
+      "building_role": "Boarding house residential lot",
+      "frontage_street": "north_residential_lane",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 620,
+        "y": 105,
+        "w": 260,
+        "h": 180
+      },
+      "building_footprint_target": {
+        "x": 650,
+        "y": 135,
+        "w": 200,
+        "h": 120
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "fence",
+        "laundry",
+        "garden"
+      ],
+      "npc_use": [
+        "dockworker family"
+      ],
+      "quest_use": [
+        "worldbuilding_return_flavor"
+      ],
+      "sightline_purpose": "Humanizes the workers who use the wharf.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_dockworker_rowhouse",
+      "district": "residential_edge",
+      "building_role": "Dockworker rowhouse lot",
+      "frontage_street": "north_residential_lane",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 910,
+        "y": 105,
+        "w": 300,
+        "h": 180
+      },
+      "building_footprint_target": {
+        "x": 940,
+        "y": 135,
+        "w": 240,
+        "h": 118
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "yard fence",
+        "bucket",
+        "lamp"
+      ],
+      "npc_use": [
+        "dockworker"
+      ],
+      "quest_use": [
+        "two_npc_rumor_support"
+      ],
+      "sightline_purpose": "Makes the rear service street feel lived in.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_clerk_lodging",
+      "district": "residential_edge",
+      "building_role": "Clerk lodging / townhouse lot",
+      "frontage_street": "rear_service_street",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 1215,
+        "y": 115,
+        "w": 270,
+        "h": 175
+      },
+      "building_footprint_target": {
+        "x": 1240,
+        "y": 145,
+        "w": 215,
+        "h": 115
+      },
+      "setback_character_widths": 2.0,
+      "setback_world_units": 54.4,
+      "adjacent_props": [
+        "mail crate",
+        "notice scrap",
+        "small bench"
+      ],
+      "npc_use": [
+        "clerk runner"
+      ],
+      "quest_use": [
+        "counting_house_missing_manifest"
+      ],
+      "sightline_purpose": "Connects official function to residential back street.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_civic_notice_board",
+      "district": "civic_notice_board",
+      "building_role": "Notice board civic node",
+      "frontage_street": "central_upland_counting_house_connector",
+      "entry_orientation": "south",
+      "lot_size": {
+        "x": 1055,
+        "y": 565,
+        "w": 195,
+        "h": 100
+      },
+      "building_footprint_target": {
+        "x": 1100,
+        "y": 582,
+        "w": 105,
+        "h": 48
+      },
+      "setback_character_widths": 1.0,
+      "setback_world_units": 27.2,
+      "adjacent_props": [
+        "bench",
+        "lamp",
+        "posted papers"
+      ],
+      "npc_use": [
+        "runner",
+        "courier"
+      ],
+      "quest_use": [
+        "first_objective",
+        "return_report"
+      ],
+      "sightline_purpose": "Gives objective/journal fiction a spatial anchor.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    },
+    {
+      "id": "lot_village_exit_guidepost",
+      "district": "village_to_island_exit",
+      "building_role": "Village exit / guidepost area",
+      "frontage_street": "village_to_island_road",
+      "entry_orientation": "east",
+      "lot_size": {
+        "x": 1815,
+        "y": 500,
+        "w": 300,
+        "h": 175
+      },
+      "building_footprint_target": {
+        "x": 1870,
+        "y": 535,
+        "w": 95,
+        "h": 55
+      },
+      "setback_character_widths": 1.0,
+      "setback_world_units": 27.2,
+      "adjacent_props": [
+        "guidepost",
+        "stone marker",
+        "fence break"
+      ],
+      "npc_use": [
+        "courier",
+        "sailor"
+      ],
+      "quest_use": [
+        "island_lead",
+        "village_exit"
+      ],
+      "sightline_purpose": "Makes the island route legible before the player reaches the edge.",
+      "placement_rule": "Building footprint must front the named street, stay inside the lot, preserve the measured street width, and keep entry clearance free of clutter."
+    }
+  ],
+  "npc_routes": [
+    {
+      "id": "dockworker_route",
+      "npc_role": "dockworker",
+      "home_station": "lot_west_dock_warehouse",
+      "work_destination": "central cargo landing and west warehouse doors",
+      "walking_path": [
+        "west_service_pier",
+        "lot_west_dock_warehouse",
+        "central_boathouse_landing",
+        "harborfront_road"
+      ],
+      "pause_points": [
+        {
+          "x": 465,
+          "y": 1025
+        },
+        {
+          "x": 835,
+          "y": 1010
+        },
+        {
+          "x": 1050,
+          "y": 1000
+        }
+      ],
+      "facing_directions": [
+        "down",
+        "right",
+        "left"
+      ],
+      "quest_interaction_points": [
+        "dock_clue",
+        "wharf_lantern_rumor"
+      ],
+      "district_role": "Shows the harbor economy in motion once grounded walk sheets exist.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "No static sprite may translate along this route. Use grounded idle/facing now; unlock route walking only with timestamped idle/walk/facing proof."
+    },
+    {
+      "id": "counting_house_clerk_runner_route",
+      "npc_role": "counting house clerk or runner",
+      "home_station": "lot_counting_house_clerk",
+      "work_destination": "notice board, tavern porch, wharf cargo inspection",
+      "walking_path": [
+        "lot_counting_house_clerk",
+        "central_upland_counting_house_connector",
+        "lot_civic_notice_board",
+        "lot_tavern_inn_centerpiece",
+        "lot_west_dock_warehouse"
+      ],
+      "pause_points": [
+        {
+          "x": 1080,
+          "y": 555
+        },
+        {
+          "x": 1120,
+          "y": 620
+        },
+        {
+          "x": 520,
+          "y": 590
+        },
+        {
+          "x": 455,
+          "y": 985
+        }
+      ],
+      "facing_directions": [
+        "down",
+        "left",
+        "down",
+        "right"
+      ],
+      "quest_interaction_points": [
+        "first_objective",
+        "counting_house_missing_manifest",
+        "return_report"
+      ],
+      "district_role": "Official pressure thread tying the counting house to social and harbor evidence.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "Do not glide a static clerk sprite. Use idle/facing station changes only until clerk walk sheet exists."
+    },
+    {
+      "id": "tavern_patron_rumor_carrier_route",
+      "npc_role": "tavern patron / rumor carrier",
+      "home_station": "lot_tavern_inn_centerpiece",
+      "work_destination": "tavern porch, rear service gate, central avenue social pocket",
+      "walking_path": [
+        "tavern_porch",
+        "rear_service_street",
+        "hidden_rumor_cutthrough",
+        "main_commercial_avenue"
+      ],
+      "pause_points": [
+        {
+          "x": 500,
+          "y": 585
+        },
+        {
+          "x": 610,
+          "y": 365
+        },
+        {
+          "x": 690,
+          "y": 500
+        },
+        {
+          "x": 560,
+          "y": 720
+        }
+      ],
+      "facing_directions": [
+        "down",
+        "right",
+        "down",
+        "left"
+      ],
+      "quest_interaction_points": [
+        "tavern_whisper",
+        "two_npc_rumor",
+        "optional_hidden_clue"
+      ],
+      "district_role": "Social route that makes whisper-network geography readable.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "Do not glide a static patron between tavern and lane. Use stationed barks/facing until full movement proof exists."
+    },
+    {
+      "id": "merchant_shopkeeper_route",
+      "npc_role": "merchant / shopkeeper",
+      "home_station": "lot_mercantile_shop",
+      "work_destination": "market shed, mercantile door, counting-house forecourt",
+      "walking_path": [
+        "lot_mercantile_shop",
+        "main_commercial_avenue",
+        "lot_market_shed",
+        "lot_counting_house_clerk"
+      ],
+      "pause_points": [
+        {
+          "x": 815,
+          "y": 585
+        },
+        {
+          "x": 1510,
+          "y": 610
+        },
+        {
+          "x": 1115,
+          "y": 610
+        }
+      ],
+      "facing_directions": [
+        "down",
+        "left",
+        "up"
+      ],
+      "quest_interaction_points": [
+        "two_npc_rumor",
+        "island_lead"
+      ],
+      "district_role": "Commercial life and alternate rumor path.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "Do not glide a static shopkeeper sprite. Short route can animate only after grounded shopkeeper walk/facing proof."
+    },
+    {
+      "id": "courier_guard_sailor_route",
+      "npc_role": "optional guard / courier / sailor",
+      "home_station": "lot_village_exit_guidepost",
+      "work_destination": "market connector, village-to-island road, rear service lane",
+      "walking_path": [
+        "lot_village_exit_guidepost",
+        "village_to_island_road",
+        "east_market_connector",
+        "rear_service_street"
+      ],
+      "pause_points": [
+        {
+          "x": 1900,
+          "y": 585
+        },
+        {
+          "x": 1760,
+          "y": 650
+        },
+        {
+          "x": 1560,
+          "y": 520
+        }
+      ],
+      "facing_directions": [
+        "right",
+        "left",
+        "up"
+      ],
+      "quest_interaction_points": [
+        "island_lead",
+        "village_exit",
+        "return_report"
+      ],
+      "district_role": "Signals the next destination and guards against east-edge confusion.",
+      "movement_state": "stationed_until_dedicated_walk_animation",
+      "animation_movement_requirements": "Do not glide a static courier or sailor sprite. Station at guidepost until movement proof can show grounded step cycle."
+    }
+  ],
+  "quest_beats": [
+    {
+      "id": "arrival_harbor_beat",
+      "location": "central cargo landing",
+      "district": "harbor_wharf",
+      "npc_involved": "Edrin / sailor handoff",
+      "interaction_object": "arrival marker and mooring post",
+      "camera_screenshot_viewpoint": "arrival_harbor_view",
+      "objective_text": "Find the Counting House above the harborfront road.",
+      "why_the_beat_belongs_there": "The player arrives through the harbor economy; the first view must explain water, wharf, and town."
+    },
+    {
+      "id": "first_objective_beat",
+      "location": "notice board at central avenue connector",
+      "district": "civic_notice_board",
+      "npc_involved": "clerk runner",
+      "interaction_object": "notice board",
+      "camera_screenshot_viewpoint": "quest_interaction_view",
+      "objective_text": "Check the posted harbor notice.",
+      "why_the_beat_belongs_there": "The board ties UI objective language to an in-world civic node."
+    },
+    {
+      "id": "counting_house_missing_manifest_beat",
+      "location": "Counting House south frontage",
+      "district": "counting_house_clerk",
+      "npc_involved": "counting house clerk",
+      "interaction_object": "records window / ledger desk",
+      "camera_screenshot_viewpoint": "counting_house_route_view",
+      "objective_text": "Ask about the missing manifest.",
+      "why_the_beat_belongs_there": "Official trade conflict belongs in the counting house, not as loose dialogue on a random street."
+    },
+    {
+      "id": "dock_clue_beat",
+      "location": "west dock warehouse cargo edge",
+      "district": "harbor_wharf",
+      "npc_involved": "dockworker",
+      "interaction_object": "cargo stack with wet-lantern mark",
+      "camera_screenshot_viewpoint": "harbor_work_view",
+      "objective_text": "Inspect the cargo that was moved before dawn.",
+      "why_the_beat_belongs_there": "Cargo evidence belongs in the working wharf where goods enter and leave town."
+    },
+    {
+      "id": "tavern_whisper_beat",
+      "location": "Tavern/Inn porch and warm threshold",
+      "district": "tavern_inn_rumor_hub",
+      "npc_involved": "tavern keeper",
+      "interaction_object": "tavern sign / porch",
+      "camera_screenshot_viewpoint": "tavern_landmark_view",
+      "objective_text": "Listen for the Third Toast rumor.",
+      "why_the_beat_belongs_there": "The tavern is the public rumor hub, matching colonial public-house function."
+    },
+    {
+      "id": "two_npc_rumor_beat",
+      "location": "main avenue between tavern and mercantile",
+      "district": "commercial_avenue",
+      "npc_involved": "rumor carrier and merchant",
+      "interaction_object": "social pocket bench",
+      "camera_screenshot_viewpoint": "npc_route_proof_view",
+      "objective_text": "Compare the dock story with the market rumor.",
+      "why_the_beat_belongs_there": "This makes NPC information spatial and social instead of a single railroaded speaker."
+    },
+    {
+      "id": "island_lead_beat",
+      "location": "market edge guidepost",
+      "district": "village_to_island_exit",
+      "npc_involved": "courier / sailor",
+      "interaction_object": "guidepost",
+      "camera_screenshot_viewpoint": "village_exit_to_island_view",
+      "objective_text": "Follow the east road toward the old island marker.",
+      "why_the_beat_belongs_there": "The town geography points the player to the island before runtime reconstruction begins."
+    },
+    {
+      "id": "village_exit_beat",
+      "location": "east cobble-to-dirt threshold",
+      "district": "village_to_island_exit",
+      "npc_involved": "courier / guide",
+      "interaction_object": "stone marker and fence break",
+      "camera_screenshot_viewpoint": "village_exit_to_island_view",
+      "objective_text": "Leave Newport by the old island road.",
+      "why_the_beat_belongs_there": "The exit is a place and threshold, not an arbitrary screen edge."
+    },
+    {
+      "id": "optional_hidden_clue_beat",
+      "location": "rear gate to wharf service cut-through",
+      "district": "hidden_rumor_clue_route",
+      "npc_involved": "suspicious patron",
+      "interaction_object": "rear gate / barrel edge",
+      "camera_screenshot_viewpoint": "rear_service_lane_view",
+      "objective_text": "Check the back way behind the tavern.",
+      "why_the_beat_belongs_there": "The optional clue uses service geography so the town gains depth."
+    },
+    {
+      "id": "return_report_beat",
+      "location": "Counting House notice board or tavern porch",
+      "district": "counting_house_clerk",
+      "npc_involved": "clerk or tavern keeper",
+      "interaction_object": "notice board / tavern sign",
+      "camera_screenshot_viewpoint": "quest_interaction_view",
+      "objective_text": "Report what you found and choose who hears it first.",
+      "why_the_beat_belongs_there": "Return/report choices use existing town nodes, strengthening memory of Newport."
+    }
+  ],
+  "camera_viewpoints": [
+    {
+      "id": "wide_town_cohesion_view",
+      "camera_position": {
+        "x": 1080,
+        "y": 710
+      },
+      "zoom": 0.82,
+      "purpose": "Review the whole blockout as a town plan.",
+      "what_should_be_visible": [
+        "water edge",
+        "wharf",
+        "main avenue",
+        "rear lane",
+        "district zones",
+        "island exit"
+      ],
+      "what_should_not_be_visible": [
+        "debug overlays",
+        "tiny unreadable street lines as acceptance proof"
+      ],
+      "quality_bar": "Wide review may be map-like, but it must prove one authored harbor town."
+    },
+    {
+      "id": "arrival_harbor_view",
+      "camera_position": {
+        "x": 430,
+        "y": 920
+      },
+      "zoom": 1.38,
+      "purpose": "First gameplay arrival framing.",
+      "what_should_be_visible": [
+        "water",
+        "wharf apron",
+        "main street approach",
+        "tavern pull"
+      ],
+      "what_should_not_be_visible": [
+        "unrelated island sprawl",
+        "debug labels"
+      ],
+      "quality_bar": "Player understands arrival and where town begins within 10 seconds."
+    },
+    {
+      "id": "counting_house_route_view",
+      "camera_position": {
+        "x": 1045,
+        "y": 645
+      },
+      "zoom": 1.38,
+      "purpose": "Show route from main avenue to counting house.",
+      "what_should_be_visible": [
+        "counting house",
+        "notice board",
+        "wide street clearance",
+        "connector"
+      ],
+      "what_should_not_be_visible": [
+        "road hidden under buildings",
+        "floating lots"
+      ],
+      "quality_bar": "Counting House is a clear destination, not a scattered icon."
+    },
+    {
+      "id": "tavern_landmark_view",
+      "camera_position": {
+        "x": 500,
+        "y": 645
+      },
+      "zoom": 1.38,
+      "purpose": "Show tavern as landmark and rumor hub.",
+      "what_should_be_visible": [
+        "tavern lot",
+        "main avenue",
+        "rear gate hint",
+        "social pocket"
+      ],
+      "what_should_not_be_visible": [
+        "tavern treated as same-weight shop",
+        "clutter hiding street"
+      ],
+      "quality_bar": "Tavern reads as memorable social hub."
+    },
+    {
+      "id": "commercial_avenue_view",
+      "camera_position": {
+        "x": 1260,
+        "y": 675
+      },
+      "zoom": 1.38,
+      "purpose": "Show human-scale commercial street wall.",
+      "what_should_be_visible": [
+        "shop row",
+        "market",
+        "street width marker",
+        "counting house edge"
+      ],
+      "what_should_not_be_visible": [
+        "thin path read",
+        "prop scatter as layout"
+      ],
+      "quality_bar": "Avenue feels walkable at character scale."
+    },
+    {
+      "id": "harbor_work_view",
+      "camera_position": {
+        "x": 980,
+        "y": 1010
+      },
+      "zoom": 1.34,
+      "purpose": "Show working wharf apron and dock life.",
+      "what_should_be_visible": [
+        "warehouse",
+        "boathouse",
+        "cargo landings",
+        "water edge"
+      ],
+      "what_should_not_be_visible": [
+        "cargo clutter blocking route",
+        "blank water edge"
+      ],
+      "quality_bar": "Wharf reads as working harbor, not decoration."
+    },
+    {
+      "id": "rear_service_lane_view",
+      "camera_position": {
+        "x": 850,
+        "y": 380
+      },
+      "zoom": 1.38,
+      "purpose": "Show back street and optional clue route.",
+      "what_should_be_visible": [
+        "rear lane",
+        "tavern back",
+        "residential edge",
+        "hidden gate"
+      ],
+      "what_should_not_be_visible": [
+        "dead flat frontage-only town",
+        "confusing main route"
+      ],
+      "quality_bar": "Back-of-house circulation is legible."
+    },
+    {
+      "id": "npc_route_proof_view",
+      "camera_position": {
+        "x": 735,
+        "y": 700
+      },
+      "zoom": 1.38,
+      "purpose": "Show planned NPC station/route geography.",
+      "what_should_be_visible": [
+        "tavern porch",
+        "service cut-through",
+        "main avenue pause points"
+      ],
+      "what_should_not_be_visible": [
+        "static sprite glide",
+        "unanchored NPC"
+      ],
+      "quality_bar": "NPC movement remains stationed until animation is proven."
+    },
+    {
+      "id": "village_exit_to_island_view",
+      "camera_position": {
+        "x": 1880,
+        "y": 610
+      },
+      "zoom": 1.25,
+      "purpose": "Show east exit and island-road pull.",
+      "what_should_be_visible": [
+        "market edge",
+        "guidepost",
+        "road leaving town"
+      ],
+      "what_should_not_be_visible": [
+        "ambiguous map edge",
+        "unexplained blank terrain"
+      ],
+      "quality_bar": "Player knows how town continues toward the island."
+    },
+    {
+      "id": "quest_interaction_view",
+      "camera_position": {
+        "x": 1100,
+        "y": 600
+      },
+      "zoom": 1.38,
+      "purpose": "Show objective/journal interaction geography.",
+      "what_should_be_visible": [
+        "notice board",
+        "counting house forecourt",
+        "player marker clearance"
+      ],
+      "what_should_not_be_visible": [
+        "oversized UI labels",
+        "debug prompts"
+      ],
+      "quality_bar": "Quest beats belong to visible town nodes."
+    },
+    {
+      "id": "debug_disabled_view",
+      "camera_position": {
+        "x": 1080,
+        "y": 720
+      },
+      "zoom": 1.38,
+      "purpose": "Canonical clean review state.",
+      "what_should_be_visible": [
+        "street hierarchy",
+        "lots",
+        "districts without debug HUD"
+      ],
+      "what_should_not_be_visible": [
+        "debug overlays",
+        "collision labels",
+        "temporary markers"
+      ],
+      "quality_bar": "No debug artifacts may be needed to understand the plan."
+    }
+  ],
+  "acceptance_scores": {
+    "blockout_layout_plan_score": 8.7,
+    "world_cohesion_plan_score": 8.7,
+    "player_orientation_plan_score": 8.6,
+    "quest_geography_integration_score": 8.6,
+    "implementation_readiness_score": 8.6
+  },
+  "future_placement_governance": {
+    "rule": "After G-19R, all major Newport street, lot, district, wharf, NPC route, quest beat, or camera placement changes must update this source of truth and the mirrored planning artifacts before runtime placement changes can pass.",
+    "major_layout_files_guarded": [
+      "wayfarer_godot_vertical_slice/scripts/NewportTownBlueprint.gd",
+      "wayfarer_godot_vertical_slice/scenes/map/MapLayer.gd",
+      "wayfarer_godot_vertical_slice/scenes/Main.gd",
+      "wayfarer_godot_vertical_slice/data/world_layout/"
+    ],
+    "minor_tuning_allowed": "Small art/collision offsets are allowed only when documented in the implementation report and when street widths, lot frontage, district boundaries, quest beats, NPC route intent, and camera viewpoints remain aligned.",
+    "validator": "wayfarer_godot_vertical_slice/tools/validate_newport_layout_source_alignment.py",
+    "g19s_requirement": "G-19S must consume or validate against the G-19R source JSON and implement the approved plan without inventing a new layout."
+  }
+}

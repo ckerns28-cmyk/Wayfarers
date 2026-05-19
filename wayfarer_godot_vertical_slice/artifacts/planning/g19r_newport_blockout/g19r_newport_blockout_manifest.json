@@ -1,0 +1,68 @@
+{
+  "schema_id": "wayfarer.g19r.newport.blockout_manifest.v1",
+  "phase": "G-19R",
+  "status": "PASS",
+  "generated_at": "2026-05-19",
+  "starting_main_commit": "6e8c5fc59c827d1b3adf84eb90a452c7092f4e57",
+  "branch": "codex/g-19r-newport-scale-street-blockout-source-of-truth",
+  "primary_change_type": "design_source_of_truth",
+  "godot_runtime_placement_changed": false,
+  "source_of_truth": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.json",
+  "source_of_truth_markdown": "docs/design/NEWPORT_SCALE_STREET_BLOCKOUT_SOURCE_OF_TRUTH.md",
+  "figma_figjam_used": false,
+  "fallback_blockout_method": "Python-generated SVG/PNG plus JSON schema artifacts.",
+  "design_research_used": true,
+  "future_placement_governance_present": true,
+  "blockout_layout_plan_score": 8.7,
+  "world_cohesion_plan_score": 8.7,
+  "player_orientation_plan_score": 8.6,
+  "quest_geography_integration_score": 8.6,
+  "implementation_readiness_score": 8.6,
+  "artifacts": [
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_camera_viewpoints.json",
+      "sha256": "d3a32c4aac9f91ea584fdc63ce9d194ef4d4f2604feb5429adeb9a815ff9c205",
+      "purpose": "canonical review/playtest cameras"
+    },
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_district_plan.json",
+      "sha256": "5322436261aa583ca1c6e0a6894c96eec5cc393a83be1b8ccd81ae9896b1c759",
+      "purpose": "district logic"
+    },
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_lot_plan.json",
+      "sha256": "b2097c9685c592114940a4caf4bc36e6fccd9ec8b90bb05e79bfafa7cdcad3f0",
+      "purpose": "lot and frontage plan"
+    },
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_measured_blockout.png",
+      "sha256": "7bace2969420e61a945674e0df2098cd58eb2ea0a29a7e8acf74f623965cf78e",
+      "purpose": "human-readable raster blockout"
+    },
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_measured_blockout.svg",
+      "sha256": "7107b26760905cd6c3c9caeefee24a597c914bfc3c861b5ac0baeef7d2c74d08",
+      "purpose": "human-readable vector blockout"
+    },
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_npc_route_plan.json",
+      "sha256": "e3d668992d6f2526cefd8e0e59142d9cc35b7ecb01282e4f4f9de67e2ffd5110",
+      "purpose": "NPC station/route plan"
+    },
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_quest_beat_locations.json",
+      "sha256": "354c171927f30c93285a794e61550bf635ebd0304a4704698e605a3bce252014",
+      "purpose": "quest geography plan"
+    },
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_scale_metrics.json",
+      "sha256": "ae58c1169d53dfee09a4ea7a9cd998d4652edf21c78da60ae635ccd7e242c2a0",
+      "purpose": "player-derived scale and target widths"
+    },
+    {
+      "path": "wayfarer_godot_vertical_slice/artifacts/planning/g19r_newport_blockout/g19r_newport_street_hierarchy.json",
+      "sha256": "bcda32d42c441b1456e2ca0fb95058bc4b90d3fac2945723c2fc17bb8baa85d9",
+      "purpose": "measured street/path hierarchy"
+    }
+  ]
+}

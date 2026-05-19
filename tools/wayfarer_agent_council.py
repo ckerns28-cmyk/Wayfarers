@@ -229,6 +229,10 @@ def screenshot_prefix_for_phase(phase: str) -> tuple[str, str]:
         return "G-21", "g21"
     if normalized.startswith("G-20"):
         return "G-20", "g20"
+    if normalized.startswith("G-19R"):
+        return "G-19R", "g19r"
+    if normalized.startswith("G-19S"):
+        return "G-19S", "g19s"
     if normalized.startswith("G-19"):
         return "G-19", "g19"
     if normalized.startswith("G-18A"):
@@ -426,6 +430,14 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
     multipath_rumor_text = (
         f"& {powershell_quote(python_bin)} "
         r"wayfarer_godot_vertical_slice\tools\validate_multipath_rumor_choice_foundation.py"
+    )
+    g19r_blockout_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_g19r_newport_blockout_source_of_truth.py"
+    )
+    newport_layout_alignment_text = (
+        f"& {powershell_quote(python_bin)} "
+        r"wayfarer_godot_vertical_slice\tools\validate_newport_layout_source_alignment.py"
     )
     first_session_loop_text = (
         f"& {powershell_quote(python_bin)} "
@@ -1131,7 +1143,39 @@ def build_validator_commands(root: Path, godot_bin: str, python_bin: str, phase:
                     required_paths=[game_root / "tools" / "validate_opening_quest_village_to_island.py"],
                 ),
             )
-        if normalized_phase.startswith(("G-19", "G-20")):
+        if normalized_phase.startswith("G-19R"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="G-19R Newport blockout source-of-truth validation",
+                    command_text=g19r_blockout_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_g19r_newport_blockout_source_of_truth.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_g19r_newport_blockout_source_of_truth.py"],
+                ),
+            )
+            ovi_commands.insert(
+                1,
+                ValidatorCommand(
+                    name="Newport layout source alignment validation",
+                    command_text=newport_layout_alignment_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_newport_layout_source_alignment.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_newport_layout_source_alignment.py"],
+                ),
+            )
+        elif normalized_phase.startswith("G-19S"):
+            ovi_commands.insert(
+                0,
+                ValidatorCommand(
+                    name="Newport layout source alignment validation",
+                    command_text=newport_layout_alignment_text,
+                    args=[python_bin, str(game_root / "tools" / "validate_newport_layout_source_alignment.py")],
+                    cwd=root,
+                    required_paths=[game_root / "tools" / "validate_newport_layout_source_alignment.py"],
+                ),
+            )
+        if normalized_phase.startswith(("G-19", "G-20")) and not normalized_phase.startswith(("G-19R", "G-19S")):
             ovi_commands.insert(
                 0,
                 ValidatorCommand(

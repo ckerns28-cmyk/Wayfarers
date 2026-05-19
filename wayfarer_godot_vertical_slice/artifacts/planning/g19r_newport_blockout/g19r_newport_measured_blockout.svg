@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1600" viewBox="0 0 2400 1600">
+<rect x="0" y="0" width="2400" height="1600" fill="#d8cfaa" />
+<rect x="0" y="1120" width="2400" height="480" fill="#4b8ba3" fill-opacity="0.95" stroke="#2e6078" stroke-width="0" rx="0" />
+<text x="34" y="54" font-family="Arial, sans-serif" font-size="34" fill="#1d2c34">G-19R Newport Measured Blockout Source of Truth</text>
+<text x="36" y="94" font-family="Arial, sans-serif" font-size="20" fill="#34434a">Scale: player visible width = 27.2 world units; main avenue = 12 character widths; wharf apron = 10.5 character widths</text>
+<rect x="180" y="860" width="1640" height="300" fill="#b28a62" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="190" y="888" font-family="Arial, sans-serif" font-size="17" fill="#263128">Harbor / Wharf District</text>
+<rect x="940" y="330" width="390" height="260" fill="#c6b98e" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="950" y="358" font-family="Arial, sans-serif" font-size="17" fill="#263128">Counting House / Clerk District</text>
+<rect x="280" y="335" width="430" height="280" fill="#d9825b" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="290" y="363" font-family="Arial, sans-serif" font-size="17" fill="#263128">Tavern / Inn Rumor Hub</text>
+<rect x="630" y="355" width="1160" height="270" fill="#d0af62" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="640" y="383" font-family="Arial, sans-serif" font-size="17" fill="#263128">Commercial Avenue</text>
+<rect x="240" y="270" width="1500" height="220" fill="#9b8462" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="250" y="298" font-family="Arial, sans-serif" font-size="17" fill="#263128">Rear Service Lane</text>
+<rect x="260" y="75" width="1250" height="225" fill="#86a874" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="270" y="103" font-family="Arial, sans-serif" font-size="17" fill="#263128">Residential Edge</text>
+<rect x="1710" y="400" width="640" height="330" fill="#bdd08a" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="1720" y="428" font-family="Arial, sans-serif" font-size="17" fill="#263128">Village-to-Island Exit</text>
+<rect x="1010" y="555" width="260" height="115" fill="#e1cf8f" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="1020" y="583" font-family="Arial, sans-serif" font-size="17" fill="#263128">Civic / Notice Board Node</text>
+<rect x="605" y="455" width="330" height="470" fill="#a989a8" fill-opacity="0.28" stroke="#405142" stroke-width="2" rx="8" />
+<text x="615" y="483" font-family="Arial, sans-serif" font-size="17" fill="#263128">Hidden Rumor / Clue Route</text>
+<rect x="260" y="542" width="1525" height="326.4" fill="#b6a06d" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 260,705 L 1785,705" fill="none" stroke="#372918" stroke-width="26.112" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="1030.5" y="697.0" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">main_commercial_avenue (12.0cw)</text>
+<rect x="220" y="774" width="1590" height="272.0" fill="#9a8060" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 220,910 L 1810,910" fill="none" stroke="#372918" stroke-width="21.76" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="1023.0" y="902.0" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">harborfront_road (10.0cw)</text>
+<rect x="260" y="285" width="1440" height="149.6" fill="#8b7656" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 260,360 L 1700,360" fill="none" stroke="#372918" stroke-width="11.968" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="988.0" y="352.0" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">rear_service_street (5.5cw)</text>
+<rect x="958" y="325" width="204.0" height="550" fill="#8b7656" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 1060,875 L 1060,325" fill="none" stroke="#372918" stroke-width="16.32" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="1068.0" y="592.0" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">central_upland_counting_house_connector (7.5cw)</text>
+<rect x="422" y="335" width="176.8" height="535" fill="#8b7656" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 510,870 L 510,335" fill="none" stroke="#372918" stroke-width="14.144000000000002" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="518.0" y="594.5" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">west_tavern_connector (6.5cw)</text>
+<rect x="1478" y="360" width="163.2" height="530" fill="#8b7656" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 1560,890 L 1560,360" fill="none" stroke="#372918" stroke-width="13.056" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="1568.0" y="617.0" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">east_market_connector (6.0cw)</text>
+<rect x="360" y="960" width="1240" height="136.0" fill="#9a8060" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 420,1030 L 1490,1030" fill="none" stroke="#372918" stroke-width="10.88" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="963.0" y="1022.0" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">dock_paths (5.0cw)</text>
+<rect x="650" y="420" width="95.2" height="505" fill="#caa2c6" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 680,420 L 840,925" fill="none" stroke="#372918" stroke-width="7.6160000000000005" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="768.0" y="664.5" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">hidden_rumor_cutthrough (3.5cw)</text>
+<rect x="1700" y="500" width="640" height="217.6" fill="#b4c485" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 1720,610 L 2320,500" fill="none" stroke="#372918" stroke-width="17.408" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="2028.0" y="547.0" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">village_to_island_road (8.0cw)</text>
+<rect x="1510" y="295" width="590" height="95.2" fill="#caa2c6" fill-opacity="0.55" stroke="#5d4a2d" stroke-width="2" rx="10" />
+<path d="M 1520,370 L 2080,315" fill="none" stroke="#372918" stroke-width="7.6160000000000005" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" />
+<text x="1808.0" y="334.5" font-family="Arial, sans-serif" font-size="16" fill="#3a2c1f">secret_side_path (3.5cw)</text>
+<rect x="300" y="350" width="380" height="250" fill="#d47f54" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="342" y="390" width="296" height="162" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="308" y="372" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">tavern_inn_centerpiece</text>
+<rect x="970" y="345" width="330" height="225" fill="#c7c2a0" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="1015" y="382" width="240" height="145" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="978" y="367" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">counting_house_clerk</text>
+<rect x="700" y="370" width="230" height="190" fill="#d5b76d" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="725" y="405" width="180" height="118" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="708" y="392" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">mercantile_shop</text>
+<rect x="1305" y="370" width="230" height="190" fill="#d5b76d" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="1330" y="405" width="180" height="120" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="1313" y="392" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">chandlery_outfitter</text>
+<rect x="1535" y="380" width="245" height="180" fill="#d5b76d" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="1565" y="415" width="185" height="110" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="1543" y="402" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">market_shed</text>
+<rect x="390" y="900" width="330" height="190" fill="#f1ddaa" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="430" y="932" width="250" height="120" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="398" y="922" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">west_dock_warehouse</text>
+<rect x="950" y="940" width="360" height="175" fill="#f1ddaa" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="995" y="970" width="270" height="110" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="958" y="962" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">central_boathouse_landing</text>
+<rect x="1370" y="880" width="260" height="190" fill="#f1ddaa" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="1405" y="915" width="195" height="120" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="1378" y="902" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">cooperage_service</text>
+<rect x="620" y="105" width="260" height="180" fill="#89a878" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="650" y="135" width="200" height="120" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="628" y="127" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">boarding_house</text>
+<rect x="910" y="105" width="300" height="180" fill="#89a878" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="940" y="135" width="240" height="118" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="918" y="127" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">dockworker_rowhouse</text>
+<rect x="1215" y="115" width="270" height="175" fill="#89a878" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="1240" y="145" width="215" height="115" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="1223" y="137" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">clerk_lodging</text>
+<rect x="1055" y="565" width="195" height="100" fill="#f1ddaa" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="1100" y="582" width="105" height="48" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="1063" y="587" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">civic_notice_board</text>
+<rect x="1815" y="500" width="300" height="175" fill="#b4c485" fill-opacity="0.62" stroke="#513b27" stroke-width="3" rx="6" />
+<rect x="1870" y="535" width="95" height="55" fill="#f8f0d0" fill-opacity="0.92" stroke="#2f2a1e" stroke-width="2" rx="4" />
+<text x="1823" y="522" font-family="Arial, sans-serif" font-size="14" fill="#2b231c">village_exit_guidepost</text>
+<path d="M 465,1025 L 835,1010 L 1050,1000" fill="none" stroke="#6b2e90" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" stroke-dasharray="12 10" />
+<circle cx="465" cy="1025" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="835" cy="1010" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="1050" cy="1000" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<path d="M 1080,555 L 1120,620 L 520,590 L 455,985" fill="none" stroke="#6b2e90" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" stroke-dasharray="12 10" />
+<circle cx="1080" cy="555" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="1120" cy="620" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="520" cy="590" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="455" cy="985" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<path d="M 500,585 L 610,365 L 690,500 L 560,720" fill="none" stroke="#6b2e90" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" stroke-dasharray="12 10" />
+<circle cx="500" cy="585" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="610" cy="365" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="690" cy="500" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="560" cy="720" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<path d="M 815,585 L 1510,610 L 1115,610" fill="none" stroke="#6b2e90" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" stroke-dasharray="12 10" />
+<circle cx="815" cy="585" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="1510" cy="610" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="1115" cy="610" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<path d="M 1900,585 L 1760,650 L 1560,520" fill="none" stroke="#6b2e90" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85" stroke-dasharray="12 10" />
+<circle cx="1900" cy="585" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="1760" cy="650" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<circle cx="1560" cy="520" r="12" fill="#6b2e90" fill-opacity="0.75" stroke="#fff" stroke-width="2" />
+<path d="M 430,1035 L 1080,630 L 500,585 L 1060,1030 L 1900,585" fill="none" stroke="#f7f0d4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92" stroke-dasharray="20 14" />
+<path d="M 430,1035 L 1080,630 L 500,585 L 1060,1030 L 1900,585" fill="none" stroke="#b33a2b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92" stroke-dasharray="12 14" />
+<circle cx="1080" cy="710" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="1100" y="716" font-family="Arial, sans-serif" font-size="13" fill="#123449">wide_town_cohesion_view</text>
+<circle cx="430" cy="920" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="450" y="926" font-family="Arial, sans-serif" font-size="13" fill="#123449">arrival_harbor_view</text>
+<circle cx="1045" cy="645" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="1065" y="651" font-family="Arial, sans-serif" font-size="13" fill="#123449">counting_house_route_view</text>
+<circle cx="500" cy="645" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="520" y="651" font-family="Arial, sans-serif" font-size="13" fill="#123449">tavern_landmark_view</text>
+<circle cx="1260" cy="675" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="1280" y="681" font-family="Arial, sans-serif" font-size="13" fill="#123449">commercial_avenue_view</text>
+<circle cx="980" cy="1010" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="1000" y="1016" font-family="Arial, sans-serif" font-size="13" fill="#123449">harbor_work_view</text>
+<circle cx="850" cy="380" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="870" y="386" font-family="Arial, sans-serif" font-size="13" fill="#123449">rear_service_lane_view</text>
+<circle cx="735" cy="700" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="755" y="706" font-family="Arial, sans-serif" font-size="13" fill="#123449">npc_route_proof_view</text>
+<circle cx="1880" cy="610" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="1900" y="616" font-family="Arial, sans-serif" font-size="13" fill="#123449">village_exit_to_island_view</text>
+<circle cx="1100" cy="600" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="1120" y="606" font-family="Arial, sans-serif" font-size="13" fill="#123449">quest_interaction_view</text>
+<circle cx="1080" cy="720" r="18" fill="#1b4f72" fill-opacity="0.9" stroke="#ffffff" stroke-width="3" />
+<text x="1100" y="726" font-family="Arial, sans-serif" font-size="13" fill="#123449">debug_disabled_view</text>
+<rect x="60.0" y="1450" width="27.2" height="46" fill="#333" stroke="#111" stroke-width="1" />
+<rect x="87.2" y="1450" width="27.2" height="46" fill="#eee" stroke="#111" stroke-width="1" />
+<rect x="114.4" y="1450" width="27.2" height="46" fill="#333" stroke="#111" stroke-width="1" />
+<rect x="141.6" y="1450" width="27.2" height="46" fill="#eee" stroke="#111" stroke-width="1" />
+<rect x="168.8" y="1450" width="27.2" height="46" fill="#333" stroke="#111" stroke-width="1" />
+<rect x="196.0" y="1450" width="27.2" height="46" fill="#eee" stroke="#111" stroke-width="1" />
+<rect x="223.2" y="1450" width="27.2" height="46" fill="#333" stroke="#111" stroke-width="1" />
+<rect x="250.4" y="1450" width="27.2" height="46" fill="#eee" stroke="#111" stroke-width="1" />
+<rect x="277.6" y="1450" width="27.2" height="46" fill="#333" stroke="#111" stroke-width="1" />
+<rect x="304.79999999999995" y="1450" width="27.2" height="46" fill="#eee" stroke="#111" stroke-width="1" />
+<rect x="332.0" y="1450" width="27.2" height="46" fill="#333" stroke="#111" stroke-width="1" />
+<rect x="359.2" y="1450" width="27.2" height="46" fill="#eee" stroke="#111" stroke-width="1" />
+<rect x="386.4" y="1450" width="27.2" height="46" fill="#333" stroke="#111" stroke-width="1" />
+<rect x="413.59999999999997" y="1450" width="27.2" height="46" fill="#eee" stroke="#111" stroke-width="1" />
+<rect x="440.8" y="1450" width="27.2" height="46" fill="#333" stroke="#111" stroke-width="1" />
+<text x="60" y="1436" font-family="Arial, sans-serif" font-size="18" fill="#1f2a2e">15 player-width street scale reference</text>
+<text x="60" y="1525" font-family="Arial, sans-serif" font-size="18" fill="#1f2a2e">Legend: zones = translucent bands, streets = measured corridors, cream rectangles = building footprints, purple dashed = NPC plans, red dashed = opening quest route.</text>
+</svg>
