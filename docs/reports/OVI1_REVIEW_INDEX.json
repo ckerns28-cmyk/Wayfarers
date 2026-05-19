@@ -10,6 +10,8 @@
   "quest_playthrough": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json",
   "browser_review_zip": "wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip",
   "branch": "codex/g-22-ovi1-opening-village-island-production-playable-gate",
+  "pull_request": "#494",
+  "pull_request_url": "https://github.com/ckerns28-cmyk/Wayfarers/pull/494",
   "starting_main_commit": "5e29b0be37245bdc8c3e2c38018f492aa6adf222",
-  "next_action": "Stop for Chris with the OVI-1 review package after PR publication."
+  "next_action": "Stop for Chris with the OVI-1 review package in PR #494."
 }

@@ -961,15 +961,15 @@
       "phase_name": "OVI-1 Opening Village + Island Production Playable Gate",
       "branch": "codex/g-22-ovi1-opening-village-island-production-playable-gate",
       "implementing_prs": [
-        "pending"
+        "#494"
       ],
       "commits": [
-        "pending"
+        "ea1b3604e093421421aff60f257fb1e04d84bee7"
       ],
-      "merge_status": "formal_ovi1_review_pr_pending",
+      "merge_status": "formal_ovi1_review_pr_open",
       "current_status": "PASS",
       "reason_for_status": "G-22 composes the formal OVI-1 review package from refreshed current-branch screenshot, motion, quest, browser, roadmap, ledger, and Agent Council proof. OVI-1 is the true Chris stop.",
-      "next_required_action": "Open PR and stop for Chris with the full OVI-1 review package; do not auto-merge the formal OVI-1 milestone.",
+      "next_required_action": "Stop for Chris with PR #494 and the full OVI-1 review package; do not auto-merge the formal OVI-1 milestone.",
       "files_changed": [
         "docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.md",
         "docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.json",
@@ -1044,6 +1044,8 @@
   ],
   "ovi1_review_package": {
     "current_main_commit": "5e29b0be37245bdc8c3e2c38018f492aa6adf222",
+    "pull_request": "#494",
+    "pull_request_url": "https://github.com/ckerns28-cmyk/Wayfarers/pull/494",
     "clean_worktree_proof": "Preflight before G-22 branch: clean worktree at 5e29b0be37245bdc8c3e2c38018f492aa6adf222.",
     "no_open_pr_proof": "Preflight before G-22 branch: gh pr list --state open returned [].",
     "screenshot_manifest": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json",

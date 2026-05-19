@@ -9,5 +9,6 @@ Status: PASS
 - Motion proof: `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json`
 - Quest playthrough: `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json`
 - Browser review ZIP: `wayfarer_godot_vertical_slice/artifacts/wayfarers-tale-godot-web.zip`
+- Pull request: #494 (`https://github.com/ckerns28-cmyk/Wayfarers/pull/494`)
 
-Next action: stop for Chris with this OVI-1 package after PR publication.
+Next action: stop for Chris with this OVI-1 package in PR #494.

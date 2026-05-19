@@ -5,6 +5,8 @@
   "generated_at": "2026-05-19T05:17:51Z",
   "starting_main_commit": "5e29b0be37245bdc8c3e2c38018f492aa6adf222",
   "current_branch": "codex/g-22-ovi1-opening-village-island-production-playable-gate",
+  "pull_request": "#494",
+  "pull_request_url": "https://github.com/ckerns28-cmyk/Wayfarers/pull/494",
   "source_main_commit": "5e29b0be37245bdc8c3e2c38018f492aa6adf222",
   "clean_worktree_proof": "Preflight before G-22 branch: clean worktree at 5e29b0be37245bdc8c3e2c38018f492aa6adf222.",
   "no_open_pr_proof": "Preflight before G-22 branch: gh pr list --state open returned [].",

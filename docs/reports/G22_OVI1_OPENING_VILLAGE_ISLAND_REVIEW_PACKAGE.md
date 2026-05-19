@@ -8,6 +8,7 @@ Human milestone: stop for Chris after PR publication.
 
 - Starting main commit: `5e29b0be37245bdc8c3e2c38018f492aa6adf222`
 - G-22 branch: `codex/g-22-ovi1-opening-village-island-production-playable-gate`
+- G-22 PR: #494 (`https://github.com/ckerns28-cmyk/Wayfarers/pull/494`)
 - Screenshot manifest: `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json`
 - Motion proof: `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json`
 - Quest playthrough: `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json`
