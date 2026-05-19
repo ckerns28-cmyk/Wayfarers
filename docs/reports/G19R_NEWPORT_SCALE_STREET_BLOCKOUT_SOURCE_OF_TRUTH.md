@@ -6,6 +6,8 @@ Branch: `codex/g-19r-newport-scale-street-blockout-source-of-truth`
 
 Starting main commit: `6e8c5fc59c827d1b3adf84eb90a452c7092f4e57`
 
+Implementation PR: `#489` (`https://github.com/ckerns28-cmyk/Wayfarers/pull/489`)
+
 ## Correction
 
 G-19R stops Newport from advancing as a code-coordinate problem. It establishes a measured, human-readable, machine-checkable town plan before more Godot placement, island expansion, quest expansion, or production-playable claims.

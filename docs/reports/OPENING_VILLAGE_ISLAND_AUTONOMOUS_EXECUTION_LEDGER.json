@@ -565,12 +565,12 @@
       "phase_name": "Newport Scale + Street Blockout Source of Truth",
       "branch": "codex/g-19r-newport-scale-street-blockout-source-of-truth",
       "implementing_prs": [
-        "pending_before_pr"
+        "#489"
       ],
       "commits": [
-        "pending_before_commit"
+        "7e3911cabb19e05dfb50e2691bc83dfdcda60723"
       ],
-      "merge_status": "pending",
+      "merge_status": "open_pr",
       "current_status": "PASS",
       "reason_for_status": "G-19R creates a measured, player-scale source-of-truth Newport town blockout with district, street, lot, NPC route, quest beat, camera, manifest, governance, and validator coverage before further Godot placement.",
       "next_required_action": "Open and merge the G-19R PR when green and mergeable, sync main, then continue immediately to G-19S Newport Blockout-To-Godot Runtime Reconstruction.",
