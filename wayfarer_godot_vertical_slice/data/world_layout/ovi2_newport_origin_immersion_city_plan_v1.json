@@ -1,0 +1,147 @@
+{
+  "schema_id": "wayfarer.ovi2.newport_origin_immersion_city_plan.v1",
+  "phase_id": "OVI-2",
+  "phase_name": "Newport Origin Village Immersion & City-Planning Gate",
+  "baseline_commit": "e36949f3fa824ebee178f048a59f8f1778483c2f",
+  "baseline_reference": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/01_village_wide_cohesion.png",
+  "human_screenshot_failure_summary": "The OVI-1/G-19R technically validating Newport view still read like isolated building sprites on a flat test plane, with giant translucent road and region rectangles, weak parcel logic, empty negative space, and a first impression that did not feel like a real origin harbor town.",
+  "scope_ruling": {
+    "not_outward_gameplay_expansion": true,
+    "do_not_proceed_to_field_loop": true,
+    "no_combat": true,
+    "no_wilderness_zone": true,
+    "no_dungeon": true,
+    "origin_village_immersion_gate": true
+  },
+  "target_scores": {
+    "visual_art_direction": 8.5,
+    "world_layout_believability": 8.5,
+    "origin_city_first_impression": 8.5
+  },
+  "forensic_diagnosis": {
+    "why_current_screen_reads_artificial": "The current view gives most of the screen to broad semi-transparent road and ground surfaces, so buildings read as sprites placed on top rather than structures belonging to lots, streets, blocks, thresholds, and work areas.",
+    "giant_slab_flat_plane_source": "MapLayer._draw_g19s_source_truth_street_plan rendered G-19R measured corridors through very large _draw_newport_commercial_street Rect2 calls, and the legacy G-7A foundation added broad rectangular terrace washes underneath.",
+    "rectangle_classification": "These rectangles were intentional road and ground surfaces, not debug overlays, camera artifacts, or hidden editor guides.",
+    "building_integration_failure": "The building anchors were source-driven, but the visual layer did not carry enough parcel edges, frontages, stoops, service lanes, wharf work surfaces, or purposeful prop clusters to make those anchors read as a town plan.",
+    "design_rule_fix": "OVI-2 keeps the measured walkable layout but renders it as segmented harborfront avenue pieces, a civic counting-house terrace, rear service lanes, wharf aprons, street curbs, parcel thresholds, and purpose-bound atelier props."
+  },
+  "town_plan": {
+    "harborfront_commercial_avenue": {
+      "role": "Primary first-screen avenue parallel to the harbor.",
+      "runtime_rule": "Use segmented cobble and dirt-wear polygons with curbs and frontages; never one large translucent street rectangle.",
+      "district_links": [
+        "tavern_inn_centerpiece",
+        "mercantile_shopfront",
+        "counting_house_connector",
+        "market_corner",
+        "wharf_service_edge"
+      ]
+    },
+    "civic_counting_house_district": {
+      "role": "Official first-objective anchor with notice boards, flags, posting poles, and a road climbing from harborfront to civic frontage.",
+      "runtime_rule": "Civic surfaces must connect to the main avenue and wharf route; the counting house may not float behind unrelated pavement."
+    },
+    "tavern_inn_district": {
+      "role": "Memorable west-side social hub and rumor anchor.",
+      "runtime_rule": "Tavern frontage needs warm entry lighting, threshold planters, brick stoop, service edge, and rear lane context."
+    },
+    "shopfront_commercial_street": {
+      "role": "Market and shop row showing the town economy from street frontage to wharf goods.",
+      "runtime_rule": "Signs, awnings, carts, crates, and lamps align to frontages and keep the movement lane open."
+    },
+    "wharf_dock_service_edge": {
+      "role": "Working harbor identity with cargo, rope, bollards, fish baskets, net drying, dock rules, lanterns, and plank transitions.",
+      "runtime_rule": "Wharf goods sit on aprons and piers, not random open pavement."
+    },
+    "secondary_lanes": {
+      "role": "Back street and service cuts that make the town feel built, inhabited, and explorable.",
+      "runtime_rule": "Service lanes connect tavern backs, shop backs, civic routes, and the east exit without drawing under building bodies."
+    },
+    "player_spawn_origin_area": {
+      "role": "The first impression must say harbor town before the UI says objective.",
+      "runtime_rule": "Spawn view includes waterline/wharf identity, route markers, lanterns, cargo, and a readable path into town."
+    }
+  },
+  "measurable_design_rules": [
+    "no_visible_debug_overlays_in_production_screenshots",
+    "No oversized translucent road/region rectangles dominating the play area",
+    "road_avenue_continuity",
+    "building_to_street_frontage_alignment",
+    "building_spacing_gap_sanity",
+    "prop_density_in_large_negative_spaces",
+    "no_huge_undecorated_rectangles_in_core_starting_view",
+    "tavern_inn_integrated_into_main_town_structure",
+    "civic_counting_house_district_integrated_into_road_plan",
+    "harbor_wharf_identity_visible_in_harborfront_screenshots",
+    "NPCs placed only on believable walkable/station surfaces",
+    "player_movement_lanes_preserved",
+    "z_order_and_occlusion_preserved",
+    "representative_human_review_angles_captured"
+  ],
+  "runtime_rendering_requirements": {
+    "forbidden_active_tokens": [
+      "_draw_newport_commercial_street(Rect2(260, 542, 1525, 326)",
+      "_draw_newport_commercial_street(Rect2(220, 774, 1590, 272)",
+      "_draw_newport_commercial_street(Rect2(260, 285, 1440, 150)",
+      "draw_rect(Rect2(70, 170, 1468, 574)"
+    ],
+    "required_maplayer_functions": [
+      "_draw_ovi2_origin_ground_foundation",
+      "_draw_ovi2_source_truth_lots",
+      "_draw_ovi2_harborfront_avenue_segments",
+      "_draw_ovi2_civic_counting_house_terrace",
+      "_draw_ovi2_rear_service_lane_network",
+      "_draw_ovi2_wharf_work_apron",
+      "_draw_ovi2_route_curbs_and_edges",
+      "_draw_ovi2_origin_district_props"
+    ],
+    "guardrail": "Automated validators do not claim full art approval, but they must fail the obvious slab, empty-plane, missing-frontage, and missing-screenshot failures visible in the baseline."
+  },
+  "screenshot_package": [
+    {
+      "filename": "ovi2_01_player_spawn_first_impression_hud.png",
+      "review_purpose": "Player spawn first impression with HUD."
+    },
+    {
+      "filename": "ovi2_02_player_spawn_first_impression_no_hud.png",
+      "review_purpose": "Player spawn first impression with HUD hidden."
+    },
+    {
+      "filename": "ovi2_03_harborfront_avenue.png",
+      "review_purpose": "Harborfront avenue continuity and frontage."
+    },
+    {
+      "filename": "ovi2_04_tavern_inn_district.png",
+      "review_purpose": "Tavern/Inn as a memorable integrated anchor."
+    },
+    {
+      "filename": "ovi2_05_counting_house_civic_district.png",
+      "review_purpose": "Counting House / civic district integration."
+    },
+    {
+      "filename": "ovi2_06_shopfront_commercial_street.png",
+      "review_purpose": "Shopfront/commercial street and market pocket."
+    },
+    {
+      "filename": "ovi2_07_wharf_dock_service_district.png",
+      "review_purpose": "Wharf/dock/service harbor economy."
+    },
+    {
+      "filename": "ovi2_08_wide_town_composition.png",
+      "review_purpose": "Wide town composition and negative-space control."
+    },
+    {
+      "filename": "ovi2_09_movement_route_through_town.png",
+      "review_purpose": "Movement route proof through authored town lanes."
+    },
+    {
+      "filename": "ovi2_10_before_after_reference_current_failure.png",
+      "review_purpose": "Current branch composition captured against the baseline failure reference."
+    }
+  ],
+  "known_limits_of_automation": [
+    "The validator can detect structural visual failures, missing screenshots, and forbidden slab tokens.",
+    "The validator cannot fully score beauty, mood, player desire to explore, or all art-direction taste calls.",
+    "Agent Council screenshot inspection remains required for the final OVI-2 verdict."
+  ]
+}

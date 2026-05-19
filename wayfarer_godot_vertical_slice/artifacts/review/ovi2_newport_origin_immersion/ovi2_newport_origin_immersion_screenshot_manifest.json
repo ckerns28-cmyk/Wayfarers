@@ -1,0 +1,392 @@
+{
+	"baseline_failure_reference": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/01_village_wide_cohesion.png",
+	"debug_overlays_disabled": true,
+	"not_outward_gameplay_expansion": true,
+	"out_dir": "res://artifacts/review/ovi2_newport_origin_immersion",
+	"ovi2_newport_origin_immersion_contract": {
+		"baseline_commit": "e36949f3fa824ebee178f048a59f8f1778483c2f",
+		"baseline_failure_reference": "wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/01_village_wide_cohesion.png",
+		"do_not_proceed_to_field_loop": true,
+		"forensic_diagnosis": {
+			"building_integration_failure": "Buildings had valid lot anchors, but the surface language did not show parcels, thresholds, secondary lanes, or work edges strongly enough.",
+			"debug_overlay_status": "not_debug_overlays; the rectangles were intentional runtime road and ground surfaces.",
+			"screen_read": "G-19S rendered measured movement corridors as giant translucent street rectangles, so the town read as a test plane with buildings placed on top.",
+			"slab_source": "MapLayer._draw_g19s_source_truth_street_plan used large _draw_newport_commercial_street Rect2 corridors, and legacy G-7A ground washes added broad rectangular terrace bands.",
+			"source_fix": "Render the G-19R navigation grammar as segmented avenue pieces, civic terrace, rear lanes, wharf aprons, parcel frontages, and purpose-bound atelier prop clusters."
+		},
+		"guardrails_preserved": {
+			"g19r_g19s_measured_layout_source": "res://data/world_layout/g19s_newport_runtime_reconstruction_v1.json",
+			"movement_lanes_preserved": true,
+			"roof_station_fix_preserved": true,
+			"starter_village_layout_source": "res://data/world_layout/starter_village_world_layout_v1.json",
+			"stationary_npc_policy": "stationary_work_pose_until_dedicated_walk_sheets",
+			"z_order_review_preserved": true
+		},
+		"no_combat_or_wilderness_scope": true,
+		"not_outward_gameplay_expansion": true,
+		"phase": "OVI-2",
+		"purpose": "Newport Origin Village Immersion & City-Planning Gate",
+		"representative_screenshots": [
+			"ovi2_01_player_spawn_first_impression_hud.png",
+			"ovi2_02_player_spawn_first_impression_no_hud.png",
+			"ovi2_03_harborfront_avenue.png",
+			"ovi2_04_tavern_inn_district.png",
+			"ovi2_05_counting_house_civic_district.png",
+			"ovi2_06_shopfront_commercial_street.png",
+			"ovi2_07_wharf_dock_service_district.png",
+			"ovi2_08_wide_town_composition.png",
+			"ovi2_09_movement_route_through_town.png",
+			"ovi2_10_before_after_reference_current_failure.png"
+		],
+		"source": "res://data/world_layout/ovi2_newport_origin_immersion_city_plan_v1.json",
+		"target_visual_art_direction_score": 8.5,
+		"town_planning_rules": [
+			"clear_harborfront_commercial_avenue",
+			"civic_counting_house_district_integrated_with_road_plan",
+			"tavern_inn_centerpiece_integrated_with_frontage_and_service_lane",
+			"shopfronts_aligned_to_streets_and_parcels",
+			"working_wharf_service_edge_visible_from_harborfront",
+			"secondary_lanes_and_alleys_behind_main_road",
+			"readable_player_spawn_origin_area",
+			"environmental_storytelling_supports_function_not_random_scatter",
+			"designed_negative_space",
+			"people_live_and_work_here_read"
+		],
+		"validator_criteria": [
+			"no_visible_debug_overlays_in_production_screenshots",
+			"No oversized translucent road/region rectangles dominating the play area",
+			"road_avenue_continuity",
+			"building_to_street_frontage_alignment",
+			"building_spacing_gap_sanity",
+			"prop_density_in_large_negative_spaces",
+			"no_huge_undecorated_rectangles_in_core_starting_view",
+			"tavern_inn_integrated_into_main_town_structure",
+			"civic_counting_house_district_integrated_into_road_plan",
+			"harbor_wharf_identity_visible_in_harborfront_screenshots",
+			"NPCs placed only on believable walkable/station surfaces",
+			"player_movement_lanes_preserved",
+			"z_order_and_occlusion_preserved",
+			"representative_human_review_angles_captured"
+		]
+	},
+	"phase": "OVI-2",
+	"representative_human_review_angles": true,
+	"schema_id": "wayfarer.ovi2.newport_origin_immersion_screenshot_manifest.v1",
+	"screenshots": [
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_01_player_spawn_first_impression_hud.png",
+			"camera_position": {
+				"x": 430.0,
+				"y": 920.0
+			},
+			"camera_zoom": {
+				"x": 1.25,
+				"y": 1.25
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_01_player_spawn_first_impression_hud.png",
+			"hide_hud": false,
+			"label": "Player spawn first impression with HUD; harbor goods, lanterns, wharf route, and town avenue must read before the UI explains anything.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_01_player_spawn_first_impression_hud.png",
+			"player_position": {
+				"x": 430.0,
+				"y": 920.0
+			},
+			"png_verification": {
+				"average_rgb": 0.973650100920349,
+				"bright_samples": 256,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "player_spawn_first_impression_hud"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_02_player_spawn_first_impression_no_hud.png",
+			"camera_position": {
+				"x": 430.0,
+				"y": 920.0
+			},
+			"camera_zoom": {
+				"x": 1.25,
+				"y": 1.25
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_02_player_spawn_first_impression_no_hud.png",
+			"hide_hud": true,
+			"label": "Player spawn first impression with HUD hidden; world must carry origin-town identity on its own.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_02_player_spawn_first_impression_no_hud.png",
+			"player_position": {
+				"x": 430.0,
+				"y": 920.0
+			},
+			"png_verification": {
+				"average_rgb": 0.975776798600474,
+				"bright_samples": 259,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "player_spawn_first_impression_no_hud"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_03_harborfront_avenue.png",
+			"camera_position": {
+				"x": 1100.0,
+				"y": 710.0
+			},
+			"camera_zoom": {
+				"x": 1.10000002384186,
+				"y": 1.10000002384186
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_03_harborfront_avenue.png",
+			"hide_hud": true,
+			"label": "Harborfront avenue: segmented street surfaces, shopfronts, civic approach, and wharf link replace the old giant slab read.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_03_harborfront_avenue.png",
+			"player_position": {
+				"x": 1100.0,
+				"y": 710.0
+			},
+			"png_verification": {
+				"average_rgb": 0.9525490454219,
+				"bright_samples": 251,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "harborfront_avenue"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_04_tavern_inn_district.png",
+			"camera_position": {
+				"x": 505.0,
+				"y": 640.0
+			},
+			"camera_zoom": {
+				"x": 1.27999997138977,
+				"y": 1.27999997138977
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_04_tavern_inn_district.png",
+			"hide_hud": true,
+			"label": "Tavern/Inn district: warm entry, parcel frontage, rear lane, and service goods make it a social anchor rather than an isolated sprite.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_04_tavern_inn_district.png",
+			"player_position": {
+				"x": 505.0,
+				"y": 640.0
+			},
+			"png_verification": {
+				"average_rgb": 0.980075443109784,
+				"bright_samples": 258,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "tavern_inn_district"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_05_counting_house_civic_district.png",
+			"camera_position": {
+				"x": 1120.0,
+				"y": 610.0
+			},
+			"camera_zoom": {
+				"x": 1.24000000953674,
+				"y": 1.24000000953674
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_05_counting_house_civic_district.png",
+			"hide_hud": true,
+			"label": "Counting House / civic district: notice boards, flags, posting pole, and plaza route integrate the first objective with the road plan.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_05_counting_house_civic_district.png",
+			"player_position": {
+				"x": 1120.0,
+				"y": 610.0
+			},
+			"png_verification": {
+				"average_rgb": 0.952081474122735,
+				"bright_samples": 249,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "counting_house_civic_district"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_06_shopfront_commercial_street.png",
+			"camera_position": {
+				"x": 1510.0,
+				"y": 675.0
+			},
+			"camera_zoom": {
+				"x": 1.17999994754791,
+				"y": 1.17999994754791
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_06_shopfront_commercial_street.png",
+			"hide_hud": true,
+			"label": "Shopfront/commercial street: signs, awnings, market goods, lamps, and route openings align to storefronts.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_06_shopfront_commercial_street.png",
+			"player_position": {
+				"x": 1510.0,
+				"y": 675.0
+			},
+			"png_verification": {
+				"average_rgb": 0.980663677437517,
+				"bright_samples": 251,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "shopfront_commercial_street"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_07_wharf_dock_service_district.png",
+			"camera_position": {
+				"x": 1110.0,
+				"y": 1000.0
+			},
+			"camera_zoom": {
+				"x": 1.17999994754791,
+				"y": 1.17999994754791
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_07_wharf_dock_service_district.png",
+			"hide_hud": true,
+			"label": "Wharf/dock/service district: cargo, rope, bollards, dock rules, fish baskets, and plank seams show a working harbor economy.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_07_wharf_dock_service_district.png",
+			"player_position": {
+				"x": 1110.0,
+				"y": 1000.0
+			},
+			"png_verification": {
+				"average_rgb": 1.00508298242751,
+				"bright_samples": 259,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "wharf_dock_service_district"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_08_wide_town_composition.png",
+			"camera_position": {
+				"x": 1080.0,
+				"y": 720.0
+			},
+			"camera_zoom": {
+				"x": 0.779999971389771,
+				"y": 0.779999971389771
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_08_wide_town_composition.png",
+			"hide_hud": true,
+			"label": "Wide town composition: the origin city must read as authored blocks, lanes, waterfront, civic anchor, tavern, shops, and wharf.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_08_wide_town_composition.png",
+			"player_position": {
+				"x": 1080.0,
+				"y": 720.0
+			},
+			"png_verification": {
+				"average_rgb": 0.987481173081324,
+				"bright_samples": 255,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "wide_town_composition"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_09_movement_route_through_town.png",
+			"camera_position": {
+				"x": 815.0,
+				"y": 735.0
+			},
+			"camera_zoom": {
+				"x": 1.20000004768372,
+				"y": 1.20000004768372
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_09_movement_route_through_town.png",
+			"hide_hud": true,
+			"label": "Movement proof through town: authored lanes remain playable without flattening Newport into an empty test track.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_09_movement_route_through_town.png",
+			"player_position": {
+				"x": 815.0,
+				"y": 735.0
+			},
+			"png_verification": {
+				"average_rgb": 0.939291126538928,
+				"bright_samples": 250,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "movement_route_through_town"
+		},
+		{
+			"absolute_path": "C:/Users/Chris/Documents/New project/wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_10_before_after_reference_current_failure.png",
+			"camera_position": {
+				"x": 1080.0,
+				"y": 720.0
+			},
+			"camera_zoom": {
+				"x": 0.819999992847443,
+				"y": 0.819999992847443
+			},
+			"dimensions": {
+				"h": 1000,
+				"w": 1600
+			},
+			"filename": "ovi2_10_before_after_reference_current_failure.png",
+			"hide_hud": true,
+			"label": "Current branch wide review angle captured against the baseline OVI-1 failure reference recorded in the manifest.",
+			"path": "res://artifacts/review/ovi2_newport_origin_immersion/ovi2_10_before_after_reference_current_failure.png",
+			"player_position": {
+				"x": 1080.0,
+				"y": 720.0
+			},
+			"png_verification": {
+				"average_rgb": 0.964268502310062,
+				"bright_samples": 255,
+				"sample_count": 260,
+				"status": "PASS"
+			},
+			"status": "PASS",
+			"viewpoint_id": "before_after_reference_current_failure"
+		}
+	],
+	"status": "PASS",
+	"viewport": {
+		"h": 1000,
+		"w": 1600
+	}
+}

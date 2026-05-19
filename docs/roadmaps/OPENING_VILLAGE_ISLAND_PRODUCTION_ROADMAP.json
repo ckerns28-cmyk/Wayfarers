@@ -545,6 +545,52 @@
         "validate_opening_village_island_execution_ledger.py"
       ],
       "status": "PASS"
+    },
+    {
+      "phase_id": "OVI-2",
+      "title": "Newport Origin Village Immersion & City-Planning Gate",
+      "purpose": "Human screenshot override: OVI-2 stops the roadmap from moving into an outward field-loop phase and repairs Newport as an origin-village immersion gate before any wilderness, combat, dungeon, or broader quest-loop expansion.",
+      "objectives": [
+        "Do not proceed to an outward field-loop phase",
+        "origin-village immersion",
+        "forensic diagnosis of the artificial slab-plane screenshot failure",
+        "clear harborfront/commercial avenue",
+        "tavern_inn_centerpiece_integrated_with_frontage_and_service_lane",
+        "civic_counting_house_district_integrated_into_road_plan",
+        "shopfronts_aligned_to_streets_and_parcels",
+        "working_wharf_service_edge_visible_from_harborfront",
+        "secondary_lanes_and_alleys_behind_main_road",
+        "designed_negative_space",
+        "environmental_storytelling_supports_function_not_random_scatter",
+        "future validators catch obvious structural visual failures"
+      ],
+      "acceptance": [
+        "No oversized translucent road/region rectangles dominate the play area",
+        "player_spawn_first_impression_feels_like_real_origin_harbor_town",
+        "roads_lanes_plazas_and_wharf_surfaces_have_edges_variation_and_transitions",
+        "buildings_belong_to_parcels_streets_and_work_edges",
+        "tavern_inn_is_memorable_integrated_anchor",
+        "counting_house_civic_district_is_readable",
+        "shops_and_wharf_structures_make_spatial_sense",
+        "props_support_worldbuilding_without_cluttering_navigation",
+        "movement_lanes_NPC_routes_roof_station_fix_and_z_order_preserved",
+        "OVI-2 screenshot package captured and referenced",
+        "Agent Council origin-village immersion verdict PASS"
+      ],
+      "primary_validators": [
+        "validate_ovi2_newport_origin_immersion.py",
+        "validate_ovi1_gate.py",
+        "validate_first_session_gameplay_loop.py",
+        "validate_newport_harbor_town_reconstruction.py",
+        "validate_g22_player_motion_proof.py",
+        "validate_npc_population_and_routes.py",
+        "validate_opening_village_island_roadmap.py",
+        "validate_opening_village_island_execution_ledger.py",
+        "validate_starter_village_layout_source_usage.py",
+        "validate_newport_visual_ordering.py",
+        "validate_vertical_slice.gd"
+      ],
+      "status": "PASS"
     }
   ]
 }

@@ -24,7 +24,9 @@ Next phase: G-15 Opening Island Masterplan + World Topology
 
 The next true Chris review milestone is `OVI-1 Opening Village + Island
 Production Playable Gate`. Do not stop for Chris between G-14 and G-22 unless a
-true hard blocker occurs.
+true hard blocker occurs. After the May 19, 2026 human screenshot override, do
+not move from G-22 into an outward field-loop phase until OVI-2 repairs Newport
+as an origin-village immersion gate.
 
 Production-playable never means merely functional. Each phase is judged against
 authored world pull, readable routes, grounded NPC life, mystery, reward, social
@@ -63,6 +65,7 @@ Agent Council pass verdict for merge-ready phases: `COUNCIL_PASS_READY_FOR_PR`
 | G-20 | First-Session Gameplay Loop and Reward Pass | `codex/g-20-first-session-gameplay-loop-reward-pass` | #492 merged | PASS | `wayfarer_godot_vertical_slice/data/quests/g20_first_session_gameplay_loop_reward_v1.json`, `FirstLightQuest.debug_first_session_gameplay_loop_reward_contract()`, HUD reward feedback, refreshed G-12/G-18 regression proof, `docs/reports/G20_FIRST_SESSION_GAMEPLAY_LOOP_REWARD_PASS.md`, `docs/reports/G20_WAYFARER_AGENT_COUNCIL_TOOL_RUN.md`, and `wayfarer_godot_vertical_slice/artifacts/review/g20_first_session_gameplay_loop/g20_first_session_screenshot_manifest.json` prove a 28-minute first-session loop with 13 Resolve, named contacts, island evidence, return/report, and a dawn reason to continue. |
 | G-21 | Opening Island Performance, Browser Build, and Regression Hardening | `codex/g-21-opening-island-performance-browser-build-regression-hardening` | #493 merged | PASS | G-21 updates review build identity to `G-21`, hardens the package script and validator, generates stable/versioned review ZIPs with root `index.html`, captures browser canvas proof with zero warning/error console entries, records `g21_browser_build_hardening_manifest.json`, merged at `5e29b0be37245bdc8c3e2c38018f492aa6adf222`, and handed off to G-22 OVI-1. |
 | G-22 | OVI-1 Opening Village + Island Production Playable Gate | `codex/g-22-ovi1-opening-village-island-production-playable-gate` | #494 open | PASS | Full OVI-1 review package created: `docs/reports/G22_OVI1_OPENING_VILLAGE_ISLAND_REVIEW_PACKAGE.md`, `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_review_screenshots/g22_ovi1_screenshot_manifest.json`, `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_motion_proof/g22_ovi1_motion_proof_manifest.json`, `wayfarer_godot_vertical_slice/artifacts/review/g22_ovi1_quest_playthrough/quest_playthrough_state_trace.json`, browser ZIP proof, validators, and Agent Council verdict `COUNCIL_PASS_READY_FOR_PR`. Stop for Chris with PR #494. |
+| OVI-2 | Newport Origin Village Immersion & City-Planning Gate | `codex/ovi-2-newport-origin-immersion-gate` | pending PR | PASS | Human screenshot override gate: `docs/reports/OVI2_NEWPORT_ORIGIN_IMMERSION_CITY_PLANNING_GATE.md`, `docs/reports/OVI2_NEWPORT_ORIGIN_IMMERSION_AGENT_COUNCIL_REPORT.md`, `wayfarer_godot_vertical_slice/data/world_layout/ovi2_newport_origin_immersion_city_plan_v1.json`, `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_newport_origin_immersion_screenshot_manifest.json`, and the OVI-2 screenshot package prove Newport origin-village immersion/city-planning repair. Do not proceed to an outward field-loop phase. |
 
 ## G-19R Source-Of-Truth Gate
 
@@ -73,6 +76,34 @@ Future Newport runtime reconstruction must update or validate against `docs/desi
 ## G-19S Runtime Reconstruction Gate
 
 G-19S consumes the approved G-19R source-of-truth blockout and rebuilds Newport runtime placement from it. Runtime reconstruction must keep `runtime_layout_matches_G19R_source_of_truth` and `no_new_layout_invented_in_Godot` true, preserve measured street widths, use G-19R lots/frontages for major building placement, keep NPCs stationed until grounded walk animation exists, and provide canonical G-19R screenshot proof with HUD/debug overlays disabled.
+
+## OVI-2 Newport Origin Immersion Gate
+
+OVI-2 is the human screenshot override gate that corrects a false sense of
+readiness after OVI-1/G-19R validators passed. It is not an outward gameplay
+expansion and it is not a cosmetic polish pass.
+
+Required OVI-2 proof:
+
+- `docs/reports/OVI2_NEWPORT_ORIGIN_IMMERSION_CITY_PLANNING_GATE.md`
+- `docs/reports/OVI2_NEWPORT_ORIGIN_IMMERSION_AGENT_COUNCIL_REPORT.md`
+- `wayfarer_godot_vertical_slice/data/world_layout/ovi2_newport_origin_immersion_city_plan_v1.json`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_newport_origin_immersion_screenshot_manifest.json`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_01_player_spawn_first_impression_hud.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_02_player_spawn_first_impression_no_hud.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_03_harborfront_avenue.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_04_tavern_inn_district.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_05_counting_house_civic_district.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_06_shopfront_commercial_street.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_07_wharf_dock_service_district.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_08_wide_town_composition.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_09_movement_route_through_town.png`
+- `wayfarer_godot_vertical_slice/artifacts/review/ovi2_newport_origin_immersion/ovi2_10_before_after_reference_current_failure.png`
+
+OVI-2 current status: PASS. The branch preserves G-19R/G-19S movement and lot
+source contracts while replacing slab-like runtime surfaces with segmented
+streets, parcel frontages, civic terrace, rear lanes, wharf work aprons, and
+purpose-bound atelier district props.
 
 ## Required Per-Phase Report Fields
 

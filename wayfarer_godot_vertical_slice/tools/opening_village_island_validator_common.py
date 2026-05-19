@@ -55,6 +55,7 @@ REQUIRED_PHASES = [
     "G-20",
     "G-21",
     "G-22",
+    "OVI-2",
 ]
 
 ALLOWED_LEDGER_STATUSES = {
@@ -128,6 +129,7 @@ PHASE_VALIDATORS = {
     "G-20": "validate_first_session_gameplay_loop.py",
     "G-21": "validate_browser_build_hardening.py",
     "G-22": "validate_ovi1_gate.py",
+    "OVI-2": "validate_ovi2_newport_origin_immersion.py",
 }
 
 PHASE_REQUIRED_TOKENS = {
@@ -151,6 +153,12 @@ PHASE_REQUIRED_TOKENS = {
     "G-20": ["First-Session Gameplay Loop and Reward Pass", "first 20-30 minutes", "reason to continue"],
     "G-21": ["Opening Island Performance, Browser Build, and Regression Hardening", "Browser/review artifact"],
     "G-22": ["OVI-1 Opening Village + Island Production Playable Gate", "North Star alignment PASS"],
+    "OVI-2": [
+        "Newport Origin Village Immersion & City-Planning Gate",
+        "Do not proceed to an outward field-loop phase",
+        "No oversized translucent road/region rectangles",
+        "origin-village immersion",
+    ],
 }
 
 PASS_ROW_REQUIRED_FIELDS = [
@@ -360,7 +368,7 @@ def validate_pass_row(phase_id: str, row: dict[str, Any], failures: list[str]) -
             failures.append(f"{phase_id} PASS row missing {key}")
     if row.get("agent_council_verdict") != "COUNCIL_PASS_READY_FOR_PR":
         failures.append(f"{phase_id} PASS row must have council verdict COUNCIL_PASS_READY_FOR_PR")
-    if phase_id in {"G-14", "G-15", "G-15A", "G-15B", "G-16", "G-16A", "G-17", "G-18", "G-18A", "G-19S", "G-19", "G-20", "G-21", "G-22"}:
+    if phase_id in {"G-14", "G-15", "G-15A", "G-15B", "G-16", "G-16A", "G-17", "G-18", "G-18A", "G-19S", "G-19", "G-20", "G-21", "G-22", "OVI-2"}:
         if not row.get("screenshot_paths"):
             failures.append(f"{phase_id} PASS row missing screenshot_paths")
     if phase_id in {"G-14", "G-17", "G-22"} and not row.get("motion_proof_paths"):
