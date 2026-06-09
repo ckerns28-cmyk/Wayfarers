@@ -1,0 +1,208 @@
+{
+  "schema_id": "wayfarer.roadmap.newport_tile_grid.v1",
+  "milestone_id": "NTG-1",
+  "milestone_name": "Newport Tile-Grid Foundational Map Production Gate",
+  "generated_at": "2026-06-09",
+  "source_authorization": "Chris June 2026 directive: square-grid source of truth for the entire Newport starting village, art-to-grid crosswalk, multi-square building footprints, cohesive harbor-town composition, itch.io-ready Godot web ZIP.",
+  "next_human_review_milestone": "NTG-8 itch.io Production Build Gate",
+  "autonomous_merge_authorized_until": "NTG-8",
+  "engine_decision": {
+    "verdict": "CONTINUE_GODOT",
+    "engine": "Godot 4.x",
+    "rationale": [
+      "TileMapLayer + TileSet terrain autotiling natively implements the square-value architecture",
+      "Proven itch.io web packaging already exists (tools/package_itch_web.sh, G-21 hardening)",
+      "Free MIT license, no runtime fees",
+      "~495 merged PRs of validators, capture tooling, and atelier pipeline would be discarded by migration with no capability gain"
+    ],
+    "reassess_trigger": "hard_blocker_only"
+  },
+  "north_star_guardrail": "The starting village must read as a lively 1700s colonial Newport harbor town at the Tibia / Ragnarok Online craft bar, composed entirely from the authored tile grid with atelier-standard, provenance-traceable art.",
+  "core_architecture": {
+    "single_source_of_truth": "data/world_layout/newport_master_grid_v1.json",
+    "human_review_mirrors": ["CSV grid", "color-coded PNG preview"],
+    "tile_equals_character_footprint": true,
+    "recommended_tile_px": 64,
+    "avenue_width_squares": "10-15, reconciled with G-19R 360px target at NTG-0",
+    "crosswalk_manifest": "data/world_layout/newport_art_crosswalk_v1.json",
+    "multi_square_building_footprints": true,
+    "layer_order": ["water_landform", "terrain_ground", "roads_docks", "lots_buildings", "props", "npc_stations"],
+    "no_layout_invented_in_editor": true,
+    "structure_before_decoration": true
+  },
+  "required_council_roles": [
+    "Scrum Master",
+    "World-class Game Designer",
+    "Game Programmer",
+    "Art Director",
+    "World/Layout Designer",
+    "Narrative Designer",
+    "Quest Designer",
+    "Animation/NPC Behavior Director",
+    "UX Designer",
+    "QA Analyst",
+    "Build/Release Engineer"
+  ],
+  "chris_inputs_required": [
+    {
+      "id": "local_working_copy_reconciliation",
+      "blocking_phase": "NTG-0",
+      "detail": "Push or confirm parity for C:/Users/Chris/Documents/Wayfarer v2/Projects/wayfarer_newport against this GitHub repository before grid authoring begins."
+    },
+    {
+      "id": "tile_size_confirmation",
+      "blocking_phase": "NTG-0",
+      "detail": "Confirm or override recommended 64px square with character = 1 square footprint."
+    }
+  ],
+  "phases": [
+    {
+      "phase_id": "NTG-0",
+      "title": "Source Reconciliation + Grid Spec Lock",
+      "purpose": "Establish authoritative sources and lock the grid specification.",
+      "objectives": [
+        "local_repo_parity_confirmed_or_pushed",
+        "tile_size_locked",
+        "map_dimensions_in_squares_locked",
+        "semantic_tile_taxonomy_locked",
+        "avenue_width_reconciled_with_G19R"
+      ],
+      "acceptance": [
+        "grid_spec_document_committed",
+        "validate_ntg0_grid_spec_PASS",
+        "no_unreconciled_local_work"
+      ]
+    },
+    {
+      "phase_id": "NTG-1",
+      "title": "Master Grid Authoring",
+      "purpose": "Assign every square of the Newport map a semantic value from the G-19R measured blockout.",
+      "objectives": [
+        "full_coverage_no_orphan_squares",
+        "road_hierarchy_tiers_authored",
+        "waterfront_wharf_dock_squares_authored",
+        "district_lot_civic_zones_authored",
+        "csv_and_png_preview_generated_for_chris_review"
+      ],
+      "acceptance": [
+        "validate_ntg1_master_grid_PASS",
+        "no_unreachable_roads",
+        "no_lotless_building_zones",
+        "council_design_review_PASS"
+      ]
+    },
+    {
+      "phase_id": "NTG-2",
+      "title": "Art-to-Grid Crosswalk + Gap Analysis",
+      "purpose": "Map every atelier asset to tile IDs and multi-square footprints; queue missing art.",
+      "objectives": [
+        "all_existing_atelier_assets_crosswalked_with_provenance",
+        "building_footprints_declared_in_squares_with_door_and_collision_squares",
+        "terrain_transition_coverage_assessed",
+        "missing_art_gap_list_produced_as_production_queue"
+      ],
+      "acceptance": [
+        "validate_ntg2_crosswalk_PASS",
+        "zero_placeholders_in_crosswalk",
+        "provenance_intact_for_all_entries"
+      ]
+    },
+    {
+      "phase_id": "NTG-3",
+      "title": "Terrain TileMap Implementation",
+      "purpose": "Seamless ground composition in Godot generated from the master grid.",
+      "objectives": [
+        "tileset_terrain_autotiling_built",
+        "tilemaplayer_ground_generated_from_grid",
+        "grass_dirt_cobble_sand_water_transitions_seamless"
+      ],
+      "acceptance": [
+        "validate_ntg3_terrain_PASS",
+        "screenshot_proof_zero_patchwork_seams",
+        "runtime_layout_matches_master_grid"
+      ]
+    },
+    {
+      "phase_id": "NTG-4",
+      "title": "Building Footprint Placement",
+      "purpose": "Place all buildings on grid lots with believable multi-square scale.",
+      "objectives": [
+        "all_buildings_on_declared_footprints",
+        "door_squares_face_street_frontage",
+        "collision_derived_from_footprints",
+        "ysort_depth_correct_for_character_overlap",
+        "building_scale_believable_vs_roads_and_characters"
+      ],
+      "acceptance": [
+        "validate_ntg4_buildings_PASS",
+        "no_building_without_lot",
+        "screenshot_scale_proof_PASS"
+      ]
+    },
+    {
+      "phase_id": "NTG-5",
+      "title": "Props + Street Furniture Layer",
+      "purpose": "Function-first harbor-town life props on prop-anchor squares.",
+      "objectives": [
+        "props_only_on_authored_anchor_squares",
+        "function_tags_for_every_prop",
+        "no_random_scatter",
+        "no_clutter_hiding_ground_problems"
+      ],
+      "acceptance": [
+        "validate_ntg5_props_PASS",
+        "council_visual_review_PASS"
+      ]
+    },
+    {
+      "phase_id": "NTG-6",
+      "title": "Walkability + NPC Route Validation",
+      "purpose": "Prove the town is traversable by players and NPCs from grid-derived collision.",
+      "objectives": [
+        "collision_navigation_derived_from_grid",
+        "all_roads_alleys_docks_civic_spaces_walkable",
+        "every_door_reachable",
+        "npc_stations_and_routes_valid_against_grid"
+      ],
+      "acceptance": [
+        "validate_ntg6_walkability_PASS",
+        "automated_path_checks_PASS",
+        "runtime_motion_proof_PASS"
+      ]
+    },
+    {
+      "phase_id": "NTG-7",
+      "title": "Cohesion + Atelier Visual QA",
+      "purpose": "Full-town review against the Newport Review Bar.",
+      "objectives": [
+        "harbor_city_read_verified",
+        "waterfront_avenue_parallel_to_harbor",
+        "uphill_roads_and_back_street_legible",
+        "district_legibility_verified",
+        "unified_ground_material_language"
+      ],
+      "acceptance": [
+        "town_cohesion_score_at_least_8_5",
+        "screenshot_sweep_no_contradictions",
+        "council_final_verdict_COUNCIL_PASS_READY_FOR_PR"
+      ]
+    },
+    {
+      "phase_id": "NTG-8",
+      "title": "itch.io Production Build Gate",
+      "purpose": "Ship the production web ZIP and stop for Chris review.",
+      "objectives": [
+        "web_export_packaged_via_package_itch_web",
+        "zip_root_index_html_verified",
+        "browser_canvas_proof_clean_console",
+        "regression_gate_PASS",
+        "chris_review_package_assembled"
+      ],
+      "acceptance": [
+        "validate_browser_build_hardening_PASS",
+        "versioned_itch_zip_published_in_artifacts",
+        "hard_stop_for_chris_review"
+      ]
+    }
+  ]
+}
